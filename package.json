@@ -8,7 +8,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "npm run unit && npm run ciao",
+    "unit": "node test/unit/run.js | tap-spec",
     "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao"
   },
   "repository": {
@@ -29,7 +30,11 @@
     "elasticsearch": ">=1.2.1"
   },
   "dependencies": {
-    "ciao": "^0.3.4",
     "express": "^4.8.8"
+  },
+  "devDependencies": {
+    "ciao": "^0.3.4",
+    "tape": "^2.13.4",
+    "tap-spec": "^0.2.0"
   }
 }
