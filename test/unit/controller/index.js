@@ -26,7 +26,7 @@ module.exports.tests.info = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape(name + ' / ' , testFunction);
+    return tape('GET / ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
