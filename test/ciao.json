@@ -1,0 +1,11 @@
+{
+  "defaults": {
+    "protocol": "http",
+    "host": "localhost",
+    "port": 3100,
+    "headers": {
+      "User-Agent": "Ciao/Client 1.0"
+    }
+  },
+  "config": {}
+}
