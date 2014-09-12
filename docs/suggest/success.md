@@ -1,6 +1,6 @@
 # valid suggest query
 
-*Generated: Fri Sep 12 2014 19:16:14 GMT+0100 (BST)*
+*Generated: Fri Sep 12 2014 20:51:45 GMT+0100 (BST)*
 ## Request
 ```javascript
 {
@@ -16,23 +16,24 @@
 ```javascript
 Status: 200
 {
-  "x-powered-by": "pelias",
+  "x-powered-by": "mapzen",
   "charset": "utf8",
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET",
   "access-control-allow-headers": "X-Requested-With,content-type",
   "access-control-allow-credentials": "true",
+  "server": "Pelias/0.0.0",
   "cache-control": "public,max-age=60",
   "content-type": "application/json; charset=utf-8",
   "content-length": "1248",
-  "etag": "W/\"htT1UWW77Ibdm7ncnD9KgA==\"",
-  "date": "Fri, 12 Sep 2014 18:16:14 GMT",
+  "etag": "W/\"o9NALcf9i0O3JoLO7pfqog==\"",
+  "date": "Fri, 12 Sep 2014 19:51:44 GMT",
   "connection": "close"
 }
 ```
 ```javascript
 {
-  "date": 1410545774257,
+  "date": 1410551504928,
   "body": [
     {
       "text": "ACRELÃNDIA, Brazil",

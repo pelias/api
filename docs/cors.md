@@ -1,6 +1,6 @@
 # cross-origin resource sharing
 
-*Generated: Fri Sep 12 2014 19:16:14 GMT+0100 (BST)*
+*Generated: Fri Sep 12 2014 20:51:44 GMT+0100 (BST)*
 ## Request
 ```javascript
 {
@@ -16,17 +16,18 @@
 ```javascript
 Status: 200
 {
-  "x-powered-by": "pelias",
+  "x-powered-by": "mapzen",
   "charset": "utf8",
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET",
   "access-control-allow-headers": "X-Requested-With,content-type",
   "access-control-allow-credentials": "true",
+  "server": "Pelias/0.0.0",
   "cache-control": "public,max-age=60",
   "content-type": "application/json; charset=utf-8",
   "content-length": "50",
   "etag": "W/\"32-85536434\"",
-  "date": "Fri, 12 Sep 2014 18:16:14 GMT",
+  "date": "Fri, 12 Sep 2014 19:51:44 GMT",
   "connection": "close"
 }
 ```
