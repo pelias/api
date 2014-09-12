@@ -2,15 +2,15 @@
 
 Pelias RESTful API
 
+## Documentation
+
+[API Documentation](https://github.com/pelias/api/tree/master/docs)
+
 ## Install Dependencies
 
 ```bash
 $ npm install
 ```
-
-## Documentation
-
-Documentation is provided as [generated markdown](https://github.com/pelias/api/tree/master/docs):
 
 ## Contributing
 
