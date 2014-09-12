@@ -1,0 +1,12 @@
+
+// querable indeces
+
+module.exports = [
+  'geoname',
+  'osmnode',
+  'osmway',
+  'admin0',
+  'admin1',
+  'admin2',
+  'neighborhood'
+];
