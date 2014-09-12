@@ -10,7 +10,8 @@
     "start": "node index.js",
     "test": "npm run unit && npm run ciao",
     "unit": "node test/unit/run.js | tap-spec",
-    "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao"
+    "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao",
+    "docs": "cd test/ciao; node ../../node_modules/ciao/bin/ciao -c ../ciao.json . -d ../../docs"
   },
   "repository": {
     "type": "git",

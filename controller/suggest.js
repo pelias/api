@@ -1,32 +1,35 @@
 
-var logger = require('../src/logger'),
-    responder = require('../src/responder'),
-    query = require('../query/suggest'),
+var query = require('../query/suggest'),
     backend = require('../src/backend');
 
-module.exports = function( req, res, next ){
+function controller( req, res, next ){
 
-  var reply = {
-    date: new Date().getTime(),
-    body: []
-  };
-
+  // backend command
   var cmd = {
     index: 'pelias',
-    body: query( req.clean ) // generate query from clean params
+    body: query( req.clean )
   };
 
-  // Proxy request to ES backend & map response to a valid FeatureCollection
+  // query backend
   backend().client.suggest( cmd, function( err, data ){
 
-    if( err ){ return responder.error( req, res, next, err ); }
-    if( data && data.pelias && data.pelias.length ){
+    var docs = [];
 
-      // map options to reply body
-      reply.body = data['pelias'][0].options;
+    // handle backend errors
+    if( err ){ return next( err ); }
+
+    // map response to a valid FeatureCollection
+    if( data && Array.isArray( data.pelias ) && data.pelias.length ){
+      docs = data['pelias'][0].options || [];
     }
 
-    return responder.cors( req, res, reply );
+    // respond
+    return res.status(200).json({
+      date: new Date().getTime(),
+      body: docs
+    });
   });
 
-};
+}
+
+module.exports = controller;
