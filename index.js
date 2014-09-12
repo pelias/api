@@ -1,5 +1,6 @@
 
-var app = require('express')();
+var pkg = require('./package'),
+    app = require('express')();
 
 /** ----------------------- middleware ----------------------- **/
 
@@ -10,7 +11,8 @@ app.use(function(req, res, next){
   res.header('Access-Control-Allow-Methods', 'GET');
   res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   res.header('Access-Control-Allow-Credentials', true);
-  res.header('X-Powered-By', 'pelias');
+  res.header('Server', 'Pelias/'+pkg.version);
+  res.header('X-Powered-By', 'mapzen');
   next();
 });
 
