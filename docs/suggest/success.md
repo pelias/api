@@ -1,6 +1,6 @@
 # valid suggest query
 
-*Generated: Fri Sep 12 2014 19:14:09 GMT+0100 (BST)*
+*Generated: Fri Sep 12 2014 19:16:14 GMT+0100 (BST)*
 ## Request
 ```javascript
 {
@@ -8,10 +8,7 @@
   "host": "localhost",
   "method": "GET",
   "port": 3100,
-  "path": "/suggest?input=a&lat=0&lon=0",
-  "headers": {
-    "User-Agent": "Ciao/Client 1.0"
-  }
+  "path": "/suggest?input=a&lat=0&lon=0"
 }
 ```
 
@@ -28,14 +25,14 @@ Status: 200
   "cache-control": "public,max-age=60",
   "content-type": "application/json; charset=utf-8",
   "content-length": "1248",
-  "etag": "W/\"jtfnMCXDw5frK6L5eD1thg==\"",
-  "date": "Fri, 12 Sep 2014 18:14:09 GMT",
+  "etag": "W/\"htT1UWW77Ibdm7ncnD9KgA==\"",
+  "date": "Fri, 12 Sep 2014 18:16:14 GMT",
   "connection": "close"
 }
 ```
 ```javascript
 {
-  "date": 1410545649156,
+  "date": 1410545774257,
   "body": [
     {
       "text": "ACRELÃNDIA, Brazil",
@@ -123,11 +120,6 @@ Status: 200
 
 ## Tests
 
-### ✓ 200 ok
-```javascript
-response.statusCode.should.equal 200
-```
-
 ### ✓ valid response
 ```javascript
 now = new Date().getTime()
@@ -137,5 +129,10 @@ should.exist json.date
 json.date.should.be.within now-1000, now+1000
 should.exist json.body
 json.body.should.be.instanceof Array
+```
+
+### ✓ 200 ok
+```javascript
+response.statusCode.should.equal 200
 ```
 

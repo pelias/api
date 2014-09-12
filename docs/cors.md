@@ -1,6 +1,6 @@
 # cross-origin resource sharing
 
-*Generated: Fri Sep 12 2014 19:14:09 GMT+0100 (BST)*
+*Generated: Fri Sep 12 2014 19:16:14 GMT+0100 (BST)*
 ## Request
 ```javascript
 {
@@ -8,10 +8,7 @@
   "host": "localhost",
   "method": "GET",
   "port": 3100,
-  "path": "/",
-  "headers": {
-    "User-Agent": "Ciao/Client 1.0"
-  }
+  "path": "/"
 }
 ```
 
@@ -29,7 +26,7 @@ Status: 200
   "content-type": "application/json; charset=utf-8",
   "content-length": "50",
   "etag": "W/\"32-85536434\"",
-  "date": "Fri, 12 Sep 2014 18:14:09 GMT",
+  "date": "Fri, 12 Sep 2014 18:16:14 GMT",
   "connection": "close"
 }
 ```
