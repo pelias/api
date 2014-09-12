@@ -30,7 +30,9 @@
     "elasticsearch": ">=1.2.1"
   },
   "dependencies": {
-    "express": "^4.8.8"
+    "express": "^4.8.8",
+    "geopipes-elasticsearch-backend": "0.0.7",
+    "pelias-esclient": "0.0.25"
   },
   "devDependencies": {
     "ciao": "^0.3.4",
