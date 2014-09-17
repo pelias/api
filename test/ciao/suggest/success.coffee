@@ -10,6 +10,6 @@ now = new Date().getTime()
 should.exist json
 should.not.exist json.error
 should.exist json.date
-json.date.should.be.within now-1000, now+1000
+json.date.should.be.within now-2000, now+2000
 should.exist json.body
 json.body.should.be.instanceof Array
