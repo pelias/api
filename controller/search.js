@@ -1,9 +1,10 @@
 
-var query = require('../query/search'),
-    backend = require('../src/backend');
+var backend = require('../src/backend');
 
 function controller( req, res, next ){
-
+  var required_query = req.required_query ? req.required_query : 'search';
+  var query = require('../query/' + required_query);
+  
   // backend command
   var cmd = {
     index: 'pelias',
