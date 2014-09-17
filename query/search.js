@@ -4,11 +4,22 @@ var logger = require('../src/logger');
 function generate( params ){
   
   var cmd = {
-    "query": {
-      "query_string": {
-        "query": params.input,
-        "fields": ['name.default'],
-        "default_operator": 'OR'
+    "query":{
+      "filtered" : {
+        "query" : {
+            "match" : {
+              "name.default": params.input
+            }
+        },
+        "filter" : {
+            "geo_distance" : {
+                "distance" : "200km",
+                "center_point" : {
+                  "lat": params.lat, 
+                  "lon": params.lon 
+                }
+            }
+        }
       }
     },
     "size": 30
