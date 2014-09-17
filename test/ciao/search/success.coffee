@@ -1,5 +1,5 @@
 #> valid search query
-path: '/search?input=z&lat=0&lon=0'
+path: '/search?input=lake&lat=29.49136&lon=-82.50622'
 
 #? 200 ok
 response.statusCode.should.equal 200
