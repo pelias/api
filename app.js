@@ -11,14 +11,14 @@ app.use( require('./middleware/jsonp') );
 /** ----------------------- routes ----------------------- **/
 
 // api root
-app.get( '/', require('./controller/index') );
+app.get( '/', require('./controller/index')() );
 
 // suggest API
-app.get( '/suggest', require('./sanitiser/suggest'), require('./controller/suggest') );
+app.get( '/suggest', require('./sanitiser/suggest'), require('./controller/suggest')() );
 
 /** ----------------------- error middleware ----------------------- **/
 
 app.use( require('./middleware/404') );
 app.use( require('./middleware/500') );
 
-app.listen( process.env.PORT || 3100 );
+module.exports = app;
