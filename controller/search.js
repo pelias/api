@@ -1,36 +1,42 @@
 
-var query = require('../query/search'),
-    backend = require('../src/backend');
+function setup( backend, query ){
 
-function controller( req, res, next ){
+  // allow overriding of dependencies
+  backend = backend || require('../src/backend');
+  query = query || require('../query/search');
 
-  // backend command
-  var cmd = {
-    index: 'pelias',
-    body: query( req.clean )
-  };
+  function controller( req, res, next ){
 
-  // query backend
-  backend().client.search( cmd, function( err, data ){
+    // backend command
+    var cmd = {
+      index: 'pelias',
+      body: query( req.clean )
+    };
 
-    var docs = [];
+    // query backend
+    backend().client.search( cmd, function( err, data ){
 
-    // handle backend errors
-    if( err ){ return next( err ); }
+      var docs = [];
 
-    if( data && data.hits && data.hits.total){
-      docs = data.hits.hits.map( function( hit ){
-        return hit._source;
+      // handle backend errors
+      if( err ){ return next( err ); }
+
+      if( data && data.hits && data.hits.total){
+        docs = data.hits.hits.map( function( hit ){
+          return hit._source;
+        });
+      }
+
+      // respond
+      return res.status(200).json({
+        date: new Date().getTime(),
+        body: docs
       });
-    }
-
-    // respond
-    return res.status(200).json({
-      date: new Date().getTime(),
-      body: docs
     });
-  });
 
+  }
+
+  return controller;
 }
 
-module.exports = controller;
+module.exports = setup;

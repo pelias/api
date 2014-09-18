@@ -1,16 +1,22 @@
 
 var pkg = require('../package');
 
-function controller( req, res, next ){
+function setup(){
 
-  // stats
-  res.json({
-    name: pkg.name,
-    version: {
-      number: pkg.version
-    }
-  });
+  function controller( req, res, next ){
+
+    // stats
+    res.json({
+      name: pkg.name,
+      version: {
+        number: pkg.version
+      }
+    });
+
+  }
+
+  return controller;
 
 }
 
-module.exports = controller;
+module.exports = setup;

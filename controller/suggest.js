@@ -1,35 +1,41 @@
 
-var query = require('../query/suggest'),
-    backend = require('../src/backend');
+function setup( backend, query ){
 
-function controller( req, res, next ){
+  // allow overriding of dependencies
+  backend = backend || require('../src/backend');
+  query = query || require('../query/suggest');
 
-  // backend command
-  var cmd = {
-    index: 'pelias',
-    body: query( req.clean )
-  };
+  function controller( req, res, next ){
 
-  // query backend
-  backend().client.suggest( cmd, function( err, data ){
+    // backend command
+    var cmd = {
+      index: 'pelias',
+      body: query( req.clean )
+    };
 
-    var docs = [];
+    // query backend
+    backend().client.suggest( cmd, function( err, data ){
 
-    // handle backend errors
-    if( err ){ return next( err ); }
+      var docs = [];
 
-    // map response to a valid FeatureCollection
-    if( data && Array.isArray( data.pelias ) && data.pelias.length ){
-      docs = data['pelias'][0].options || [];
-    }
+      // handle backend errors
+      if( err ){ return next( err ); }
 
-    // respond
-    return res.status(200).json({
-      date: new Date().getTime(),
-      body: docs
+      // map response to a valid FeatureCollection
+      if( data && Array.isArray( data.pelias ) && data.pelias.length ){
+        docs = data['pelias'][0].options || [];
+      }
+
+      // respond
+      return res.status(200).json({
+        date: new Date().getTime(),
+        body: docs
+      });
     });
-  });
 
+  }
+
+  return controller;
 }
 
-module.exports = controller;
+module.exports = setup;

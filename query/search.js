@@ -22,7 +22,7 @@ function generate( params ){
         }
       }
     },
-    "size": 30
+    "size": params.size
   };
 
   logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
