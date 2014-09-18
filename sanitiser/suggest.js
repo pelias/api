@@ -21,7 +21,7 @@ function sanitize( params, cb ){
   // total results
   var size = parseInt( params.size, 10 );
   if( !isNaN( size ) ){
-    clean.size = Math.min( size, 40 ); // max
+    clean.size = Math.min( Math.max( size, 1 ), 40 ); // max
   } else {
     clean.size = 10; // default
   }
@@ -33,7 +33,7 @@ function sanitize( params, cb ){
     });
     for( var x=0; x<layers.length; x++ ){
       if( -1 === indeces.indexOf( layers[x] ) ){
-        return cb( 'invalid param \'layer\': must be one or more of ' + layers.join(',') );
+        return cb( 'invalid param \'layer\': must be one or more of ' + indeces.join(',') );
       }
     }
     clean.layers = layers;
@@ -59,7 +59,7 @@ function sanitize( params, cb ){
   // zoom level
   var zoom = parseInt( params.zoom, 10 );
   if( !isNaN( zoom ) ){
-    clean.zoom = Math.min( zoom, 18 ); // max
+    clean.zoom = Math.min( Math.max( zoom, 1 ), 18 ); // max
   } else {
     clean.zoom = 10; // default
   }
