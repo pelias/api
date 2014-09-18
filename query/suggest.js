@@ -3,7 +3,7 @@ var logger = require('../src/logger');
 
 // Build pelias suggest query
 function generate( params ){
-  
+
   var cmd = {
     'pelias' : {
       'text' : params.input,
@@ -23,7 +23,7 @@ function generate( params ){
     }
   };
 
-  logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
+  // logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
   return cmd;
 
 }
