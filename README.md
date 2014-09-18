@@ -31,6 +31,7 @@ $ npm run unit
 ```
 
 ### Running Functional Tests
+(this requires the server to be running)
 
 ```bash
 $ npm run ciao
