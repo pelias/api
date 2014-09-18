@@ -21,7 +21,7 @@ function setup( backend, query ){
       // handle backend errors
       if( err ){ return next( err ); }
 
-      if( data && data.hits && data.hits.total){
+      if( data && data.hits && data.hits.total && Array.isArray(data.hits.hits)){
         docs = data.hits.hits.map( function( hit ){
           return hit._source;
         });

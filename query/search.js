@@ -2,7 +2,7 @@ var logger = require('../src/logger');
 
 // Build pelias search query
 function generate( params ){
-  
+
   var cmd = {
     "query":{
       "filtered" : {
@@ -15,8 +15,8 @@ function generate( params ){
             "geo_distance" : {
                 "distance" : "200km",
                 "center_point" : {
-                  "lat": params.lat, 
-                  "lon": params.lon 
+                  "lat": params.lat,
+                  "lon": params.lon
                 }
             }
         }
@@ -25,7 +25,7 @@ function generate( params ){
     "size": params.size
   };
 
-  logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
+  // logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
   return cmd;
 
 }
