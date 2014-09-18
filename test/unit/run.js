@@ -5,9 +5,11 @@ var common = {};
 var tests = [
   require('./controller/index'),
   require('./controller/suggest'),
-  require('./sanitiser/suggest'),
+  require('./controller/search'),
+  require('./sanitiser/sanitise'),
   require('./query/indeces'),
-  require('./query/suggest')
+  require('./query/suggest'),
+  require('./query/search')
 ];
 
 tests.map(function(t) {

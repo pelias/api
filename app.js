@@ -11,13 +11,14 @@ app.use( require('./middleware/jsonp') );
 /** ----------------------- sanitisers ----------------------- **/
 
 var sanitisers = {};
-sanitisers.suggest = require('./sanitiser/suggest');
+sanitisers.sanitiser = require('./sanitiser/sanitise');
 
 /** ----------------------- controllers ----------------------- **/
 
-var controllers = {};
-controllers.index = require('./controller/index');
+var controllers     = {};
+controllers.index   = require('./controller/index');
 controllers.suggest = require('./controller/suggest');
+controllers.search  = require('./controller/search');
 
 /** ----------------------- routes ----------------------- **/
 
@@ -25,7 +26,10 @@ controllers.suggest = require('./controller/suggest');
 app.get( '/', controllers.index() );
 
 // suggest API
-app.get( '/suggest', sanitisers.suggest.middleware, controllers.suggest() );
+app.get( '/suggest', sanitisers.sanitiser.middleware, controllers.suggest() );
+
+// search API
+app.get( '/search', sanitisers.sanitiser.middleware, controllers.search() );
 
 /** ----------------------- error middleware ----------------------- **/
 

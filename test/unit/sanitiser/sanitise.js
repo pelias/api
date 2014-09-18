@@ -1,5 +1,5 @@
 
-var sanitize = require('../../../sanitiser/suggest'),
+var sanitize = require('../../../sanitiser/sanitise'),
     defaultError = 'invalid param \'input\': text length, must be >0',
     defaultClean = { input: 'test', lat: 0, layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood' ], lon: 0, size: 10, zoom: 10 };
 
@@ -194,7 +194,7 @@ module.exports.tests.middleware_success = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /suggest ' + name, testFunction);
+    return tape('SANTIZE /sanitise ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
