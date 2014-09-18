@@ -1,37 +1,42 @@
 
-var backend = require('../src/backend');
+function setup( backend, query ){
 
-function controller( req, res, next ){
-  var required_query = req.required_query ? req.required_query : 'search';
-  var query = require('../query/' + required_query);
-  
-  // backend command
-  var cmd = {
-    index: 'pelias',
-    body: query( req.clean )
-  };
+  // allow overriding of dependencies
+  backend = backend || require('../src/backend');
+  query = query || require('../query/search');
 
-  // query backend
-  backend().client.search( cmd, function( err, data ){
+  function controller( req, res, next ){
 
-    var docs = [];
+    // backend command
+    var cmd = {
+      index: 'pelias',
+      body: query( req.clean )
+    };
 
-    // handle backend errors
-    if( err ){ return next( err ); }
+    // query backend
+    backend().client.search( cmd, function( err, data ){
 
-    if( data && data.hits && data.hits.total){
-      docs = data.hits.hits.map( function( hit ){
-        return hit._source;
+      var docs = [];
+
+      // handle backend errors
+      if( err ){ return next( err ); }
+
+      if( data && data.hits && data.hits.total){
+        docs = data.hits.hits.map( function( hit ){
+          return hit._source;
+        });
+      }
+
+      // respond
+      return res.status(200).json({
+        date: new Date().getTime(),
+        body: docs
       });
-    }
-
-    // respond
-    return res.status(200).json({
-      date: new Date().getTime(),
-      body: docs
     });
-  });
 
+  }
+
+  return controller;
 }
 
-module.exports = controller;
+module.exports = setup;

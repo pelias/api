@@ -23,7 +23,7 @@ function generate( params ){
     "size": 1
   };
 
-  logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
+  // logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
   return cmd;
 
 }

@@ -1,6 +1,6 @@
 # valid suggest query
 
-*Generated: Fri Sep 12 2014 20:51:45 GMT+0100 (BST)*
+*Generated: Thu Sep 18 2014 14:53:39 GMT+0100 (BST)*
 ## Request
 ```javascript
 {
@@ -18,22 +18,22 @@ Status: 200
 {
   "x-powered-by": "mapzen",
   "charset": "utf8",
+  "cache-control": "public,max-age=60",
+  "server": "Pelias/0.0.0",
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET",
   "access-control-allow-headers": "X-Requested-With,content-type",
   "access-control-allow-credentials": "true",
-  "server": "Pelias/0.0.0",
-  "cache-control": "public,max-age=60",
   "content-type": "application/json; charset=utf-8",
   "content-length": "1248",
-  "etag": "W/\"o9NALcf9i0O3JoLO7pfqog==\"",
-  "date": "Fri, 12 Sep 2014 19:51:44 GMT",
+  "etag": "W/\"H7TGcVqWuu8sAb6aBhpd6A==\"",
+  "date": "Thu, 18 Sep 2014 13:53:39 GMT",
   "connection": "close"
 }
 ```
 ```javascript
 {
-  "date": 1410551504928,
+  "date": 1411048419796,
   "body": [
     {
       "text": "ACRELÃNDIA, Brazil",
@@ -121,6 +121,11 @@ Status: 200
 
 ## Tests
 
+### ✓ 200 ok
+```javascript
+response.statusCode.should.equal 200
+```
+
 ### ✓ valid response
 ```javascript
 now = new Date().getTime()
@@ -130,10 +135,5 @@ should.exist json.date
 json.date.should.be.within now-1000, now+1000
 should.exist json.body
 json.body.should.be.instanceof Array
-```
-
-### ✓ 200 ok
-```javascript
-response.statusCode.should.equal 200
 ```
 

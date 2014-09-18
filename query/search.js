@@ -35,10 +35,10 @@ function generate( params ){
               "unit": 'km'
           }
       }],
-    "size": 30
+    "size": params.size
   };
 
-  logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
+  // logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
   return cmd;
 
 }
