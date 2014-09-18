@@ -2,7 +2,7 @@ var logger = require('../src/logger');
 
 // Build pelias search query
 function generate( params ){
-  
+
   var cmd = {
     "query":{
       "query_string" : {
