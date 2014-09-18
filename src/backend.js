@@ -1,14 +1,7 @@
 
 var Backend = require('geopipes-elasticsearch-backend'),
-    backends = {},
-    client;
-
-// set env specific client
-if( process.env.NODE_ENV === 'test' ){
-  client = require('./pelias-mockclient');
-} else {
-  client = require('pelias-esclient')();
-}
+    client = require('pelias-esclient')(),
+    backends = {};
 
 function getBackend( index, type ){
   var key = ( index + ':' + type );
