@@ -8,13 +8,24 @@ app.use( require('./middleware/headers') );
 app.use( require('./middleware/cors') );
 app.use( require('./middleware/jsonp') );
 
+/** ----------------------- sanitisers ----------------------- **/
+
+var sanitisers = {};
+sanitisers.suggest = require('./sanitiser/suggest');
+
+/** ----------------------- controllers ----------------------- **/
+
+var controllers = {};
+controllers.index = require('./controller/index');
+controllers.suggest = require('./controller/suggest');
+
 /** ----------------------- routes ----------------------- **/
 
 // api root
-app.get( '/', require('./controller/index')() );
+app.get( '/', controllers.index() );
 
 // suggest API
-app.get( '/suggest', require('./sanitiser/suggest').middleware, require('./controller/suggest')() );
+app.get( '/suggest', sanitisers.suggest.middleware, controllers.suggest() );
 
 /** ----------------------- error middleware ----------------------- **/
 
