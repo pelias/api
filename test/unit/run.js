@@ -4,7 +4,8 @@ var common = {};
 
 var tests = [
   require('./controller/index'),
-  require('./controller/suggest')
+  require('./controller/suggest'),
+  require('./sanitiser/suggest')
 ];
 
 tests.map(function(t) {

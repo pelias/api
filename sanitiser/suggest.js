@@ -68,8 +68,11 @@ function sanitize( params, cb ){
 
 }
 
+// export function
+module.exports = sanitize;
+
 // middleware
-module.exports = function( req, res, next ){
+module.exports.middleware = function( req, res, next ){
   sanitize( req.query, function( err, clean ){
     if( err ){
       res.status(400); // 400 Bad Request

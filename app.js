@@ -14,7 +14,7 @@ app.use( require('./middleware/jsonp') );
 app.get( '/', require('./controller/index')() );
 
 // suggest API
-app.get( '/suggest', require('./sanitiser/suggest'), require('./controller/suggest')() );
+app.get( '/suggest', require('./sanitiser/suggest').middleware, require('./controller/suggest')() );
 
 /** ----------------------- error middleware ----------------------- **/
 
