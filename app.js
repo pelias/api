@@ -35,7 +35,7 @@ app.get( '/suggest', sanitisers.sanitiser.middleware, controllers.suggest() );
 app.get( '/search', sanitisers.sanitiser.middleware, middlewares.search.middleware, controllers.search() );
 
 // reverse API
-app.get( '/reverse', sanitisers.sanitiser.middleware, controllers.search(undefined, require('../query/reverse')) );
+app.get( '/reverse', sanitisers.sanitiser.middleware, controllers.search(undefined, require('query/reverse')) );
 
 
 /** ----------------------- error middleware ----------------------- **/

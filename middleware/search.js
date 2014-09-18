@@ -61,4 +61,5 @@ function middleware(req, res, next){
   next();
 }
 
-module.exports = middleware;
+// middleware
+module.exports.middleware = middleware
