@@ -10,7 +10,8 @@
     "start": "node index.js",
     "test": "npm run unit && npm run ciao",
     "unit": "node test/unit/run.js | tap-spec",
-    "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao"
+    "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao",
+    "audit": "npm shrinkwrap; node node_modules/nsp/bin/nspCLI.js audit-shrinkwrap; rm npm-shrinkwrap.json;"
   },
   "repository": {
     "type": "git",
@@ -37,6 +38,7 @@
   "devDependencies": {
     "ciao": "^0.3.4",
     "tape": "^2.13.4",
-    "tap-spec": "^0.2.0"
+    "tap-spec": "^0.2.0",
+    "nsp": "^0.3.0"
   }
 }
