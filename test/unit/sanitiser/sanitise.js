@@ -1,7 +1,10 @@
 
-var sanitize = require('../../../sanitiser/sanitise'),
+var suggest  = require('../../../sanitiser/suggest'),
+    _sanitize = suggest.sanitize,
+    middleware = suggest.middleware,
     defaultError = 'invalid param \'input\': text length, must be >0',
-    defaultClean = { input: 'test', lat: 0, layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood' ], lon: 0, size: 10, zoom: 10 };
+    defaultClean = { input: 'test', lat: 0, layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood' ], lon: 0, size: 10, zoom: 10 },
+    sanitize = function(query, cb) { _sanitize({'query':query}, cb); }
 
 module.exports.tests = {};
 
@@ -12,8 +15,8 @@ module.exports.tests.interface = function(test, common) {
     t.end();
   });
   test('middleware interface', function(t) {
-    t.equal(typeof sanitize.middleware, 'function', 'middleware is a function');
-    t.equal(sanitize.middleware.length, 3, 'sanitize is valid middleware');
+    t.equal(typeof middleware, 'function', 'middleware is a function');
+    t.equal(middleware.length, 3, 'sanitizee has a valid middleware');
     t.end();
   });
 };
@@ -175,7 +178,7 @@ module.exports.tests.middleware_failure = function(test, common) {
       t.equal(message, defaultError);
       t.end();
     };
-    sanitize.middleware( {}, res, next );
+    middleware( {}, res, next );
   });
 };
 
@@ -187,7 +190,7 @@ module.exports.tests.middleware_success = function(test, common) {
       t.deepEqual(req.clean, defaultClean);
       t.end();
     };
-    sanitize.middleware( req, undefined, next );
+    middleware( req, undefined, next );
   });
 };
 

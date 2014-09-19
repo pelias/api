@@ -9,7 +9,8 @@ var tests = [
   require('./sanitiser/sanitise'),
   require('./query/indeces'),
   require('./query/suggest'),
-  require('./query/search')
+  require('./query/search'),
+  require('./query/reverse')
 ];
 
 tests.map(function(t) {
