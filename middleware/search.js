@@ -26,7 +26,7 @@ function WGS84EarthRadius(lat){
 function boundingBox(latitudeInDegrees, longitudeInDegrees, halfSideInKm) {
 	var lat = deg2rad(latitudeInDegrees);
     var lon = deg2rad(longitudeInDegrees);
-    var halfSide = 1000*halfSideInKm;
+    var halfSide = 1000000*halfSideInKm;
 
     // Radius of Earth at given latitude
     var radius = WGS84EarthRadius(lat);
