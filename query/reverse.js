@@ -7,16 +7,16 @@ function generate( params ){
     "query":{
       "filtered" : {
         "query" : {
-            "match_all" : {}
+          "match_all" : {}
         },
         "filter" : {
-            "geo_distance" : {
-                "distance" : "1km",
-                "center_point" : {
-                  "lat": params.lat,
-                  "lon": params.lon
-                }
+          "geo_distance" : {
+            "distance" : "1km",
+            "center_point" : {
+              "lat": params.lat,
+              "lon": params.lon
             }
+          }
         }
       }
     },
