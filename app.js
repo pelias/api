@@ -16,7 +16,7 @@ middlewares.search  = require('./middleware/search');
 var sanitisers = {};
 sanitisers.suggest  = require('./sanitiser/suggest');
 sanitisers.search   = sanitisers.suggest;
-sanitisers.reverse  = require('./sanitiser/reverse'); 
+sanitisers.reverse  = require('./sanitiser/reverse');
 
 /** ----------------------- controllers ----------------------- **/
 
@@ -37,7 +37,7 @@ app.get( '/suggest', sanitisers.suggest.middleware, controllers.suggest() );
 app.get( '/search', sanitisers.search.middleware, middlewares.search.middleware, controllers.search() );
 
 // reverse API
-app.get( '/reverse', sanitisers.reverse.middleware, controllers.search(undefined, require('query/reverse')) );
+app.get( '/reverse', sanitisers.reverse.middleware, controllers.search(undefined, require('./query/reverse')) );
 
 
 /** ----------------------- error middleware ----------------------- **/
