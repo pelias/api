@@ -1,6 +1,6 @@
 # api root
 
-*Generated: Thu Sep 18 2014 14:53:39 GMT+0100 (BST)*
+*Generated: Fri Sep 19 2014 14:38:01 GMT+0100 (BST)*
 ## Request
 ```javascript
 {
@@ -27,7 +27,7 @@ Status: 200
   "content-type": "application/json; charset=utf-8",
   "content-length": "50",
   "etag": "W/\"32-85536434\"",
-  "date": "Thu, 18 Sep 2014 13:53:39 GMT",
+  "date": "Fri, 19 Sep 2014 13:38:01 GMT",
   "connection": "close"
 }
 ```
@@ -42,17 +42,6 @@ Status: 200
 
 ## Tests
 
-### ✓ server header correctly set
-```javascript
-response.should.have.header 'Server'
-response.headers.server.should.match /Pelias\/\d{1,2}\.\d{1,2}\.\d{1,2}/
-```
-
-### ✓ content-type header correctly set
-```javascript
-response.should.have.header 'Content-Type','application/json; charset=utf-8'
-```
-
 ### ✓ endpoint available
 ```javascript
 response.statusCode.should.equal 200
@@ -63,9 +52,9 @@ response.statusCode.should.equal 200
 response.should.have.header 'Cache-Control','public,max-age=60'
 ```
 
-### ✓ vanity header correctly set
+### ✓ content-type header correctly set
 ```javascript
-response.should.have.header 'X-Powered-By','mapzen'
+response.should.have.header 'Content-Type','application/json; charset=utf-8'
 ```
 
 ### ✓ charset header correctly set
@@ -78,5 +67,16 @@ response.should.have.header 'Charset','utf8'
 should.exist json
 should.exist json.name
 should.exist json.version
+```
+
+### ✓ vanity header correctly set
+```javascript
+response.should.have.header 'X-Powered-By','mapzen'
+```
+
+### ✓ server header correctly set
+```javascript
+response.should.have.header 'Server'
+response.headers.server.should.match /Pelias\/\d{1,2}\.\d{1,2}\.\d{1,2}/
 ```
 

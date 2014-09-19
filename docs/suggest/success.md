@@ -1,6 +1,6 @@
 # valid suggest query
 
-*Generated: Thu Sep 18 2014 14:53:39 GMT+0100 (BST)*
+*Generated: Fri Sep 19 2014 14:38:01 GMT+0100 (BST)*
 ## Request
 ```javascript
 {
@@ -26,14 +26,14 @@ Status: 200
   "access-control-allow-credentials": "true",
   "content-type": "application/json; charset=utf-8",
   "content-length": "1248",
-  "etag": "W/\"H7TGcVqWuu8sAb6aBhpd6A==\"",
-  "date": "Thu, 18 Sep 2014 13:53:39 GMT",
+  "etag": "W/\"l7SMjqn0lVxkVsxRTJizhA==\"",
+  "date": "Fri, 19 Sep 2014 13:38:01 GMT",
   "connection": "close"
 }
 ```
 ```javascript
 {
-  "date": 1411048419796,
+  "date": 1411133881441,
   "body": [
     {
       "text": "ACRELÃNDIA, Brazil",
@@ -121,19 +121,19 @@ Status: 200
 
 ## Tests
 
-### ✓ 200 ok
-```javascript
-response.statusCode.should.equal 200
-```
-
 ### ✓ valid response
 ```javascript
 now = new Date().getTime()
 should.exist json
 should.not.exist json.error
 should.exist json.date
-json.date.should.be.within now-1000, now+1000
+json.date.should.be.within now-2000, now+2000
 should.exist json.body
 json.body.should.be.instanceof Array
+```
+
+### ✓ 200 ok
+```javascript
+response.statusCode.should.equal 200
 ```
 

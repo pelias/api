@@ -1,6 +1,6 @@
 # valid reverse query
 
-*Generated: Fri Sep 19 2014 01:19:18 GMT-0400 (EDT)*
+*Generated: Fri Sep 19 2014 14:38:01 GMT+0100 (BST)*
 ## Request
 ```javascript
 {
@@ -25,43 +25,25 @@ Status: 200
   "access-control-allow-headers": "X-Requested-With,content-type",
   "access-control-allow-credentials": "true",
   "content-type": "application/json; charset=utf-8",
-  "content-length": "319",
-  "etag": "W/\"13f-2852cff1\"",
-  "date": "Fri, 19 Sep 2014 05:19:18 GMT",
+  "content-length": "32",
+  "etag": "W/\"20-a1afccd5\"",
+  "date": "Fri, 19 Sep 2014 13:38:01 GMT",
   "connection": "close"
 }
 ```
 ```javascript
 {
-  "date": 1411103958553,
-  "body": [
-    {
-      "name": {
-        "default": "Adam"
-      },
-      "admin0": "United States",
-      "admin1": "Florida",
-      "admin2": "Alachua County",
-      "center_point": {
-        "lat": "29.49136",
-        "lon": "-82.50622"
-      },
-      "suggest": {
-        "input": [
-          "adam"
-        ],
-        "payload": {
-          "id": "geoname/4145612",
-          "geo": "-82.50622,29.49136"
-        },
-        "output": "Adam, Alachua County, United States"
-      }
-    }
-  ]
+  "date": 1411133881593,
+  "body": []
 }
 ```
 
 ## Tests
+
+### ✓ 200 ok
+```javascript
+response.statusCode.should.equal 200
+```
 
 ### ✓ valid response
 ```javascript
@@ -72,10 +54,5 @@ should.exist json.date
 json.date.should.be.within now-2000, now+2000
 should.exist json.body
 json.body.should.be.instanceof Array
-```
-
-### ✓ 200 ok
-```javascript
-response.statusCode.should.equal 200
 ```
 

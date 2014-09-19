@@ -1,6 +1,6 @@
 # valid search query
 
-*Generated: Fri Sep 19 2014 01:19:18 GMT-0400 (EDT)*
+*Generated: Fri Sep 19 2014 14:38:01 GMT+0100 (BST)*
 ## Request
 ```javascript
 {
@@ -25,234 +25,254 @@ Status: 200
   "access-control-allow-headers": "X-Requested-With,content-type",
   "access-control-allow-credentials": "true",
   "content-type": "application/json; charset=utf-8",
-  "content-length": "3127",
-  "etag": "W/\"w8ylf9fjcQKf+FF+Qzff1Q==\"",
-  "date": "Fri, 19 Sep 2014 05:19:18 GMT",
+  "content-length": "3549",
+  "etag": "W/\"Koi2nJQQ+otDRPmBy8JU7g==\"",
+  "date": "Fri, 19 Sep 2014 13:38:01 GMT",
   "connection": "close"
 }
 ```
 ```javascript
 {
-  "date": 1411103958550,
+  "date": 1411133881591,
   "body": [
     {
-      "name": {
-        "default": "Blue Pete Lake"
-      },
-      "admin0": "United States",
+      "admin2": "Alachua",
       "admin1": "Florida",
-      "admin2": "Alachua County",
-      "center_point": {
-        "lat": "29.50312",
-        "lon": "-82.5052"
+      "admin0": "United States",
+      "name": {
+        "default": "Hidden Lake"
       },
+      "gn_id": 0,
       "suggest": {
         "input": [
-          "blue pete lake"
+          "hidden lake"
         ],
         "payload": {
-          "id": "geoname/4148289",
-          "geo": "-82.5052,29.50312"
+          "id": "neighborhood/29372:_:_:_:hidden_lake",
+          "geo": "-82.357442,29.720890"
         },
-        "output": "Blue Pete Lake, Alachua County, United States"
+        "output": "Hidden Lake, Alachua, United States"
+      },
+      "woe_id": 0,
+      "center_point": {
+        "lon": "-82.357442",
+        "lat": "29.720890"
       }
     },
     {
-      "name": {
-        "default": "Sawgrass Lake"
-      },
       "admin0": "United States",
-      "admin1": "Florida",
-      "admin2": "Levy County",
-      "center_point": {
-        "lat": "29.47185",
-        "lon": "-82.52097"
+      "name": {
+        "default": "Lake Butler",
+        "alt": "Lake Butler city"
       },
+      "gn_id": "4161171",
       "suggest": {
         "input": [
-          "sawgrass lake"
+          "lake butler",
+          "lake butler city"
         ],
         "payload": {
-          "id": "geoname/4172213",
-          "geo": "-82.52097,29.47185"
+          "id": "locality/4387:locality:u:us:lake_butler",
+          "geo": "-82.339724,30.015529"
         },
-        "output": "Sawgrass Lake, Levy County, United States"
+        "output": "Lake Butler, United States"
+      },
+      "woe_id": null,
+      "center_point": {
+        "lon": "-82.339724",
+        "lat": "30.015529"
       }
     },
     {
-      "name": {
-        "default": "Johnson Lake"
-      },
       "admin0": "United States",
-      "admin1": "Florida",
-      "admin2": "Marion County",
-      "center_point": {
-        "lat": "29.4468",
-        "lon": "-82.39141"
+      "name": {
+        "default": "Lake City",
+        "alt": "Lake City city"
       },
+      "gn_id": "4161187",
       "suggest": {
         "input": [
-          "johnson lake"
+          "lake city",
+          "lake city city"
         ],
         "payload": {
-          "id": "geoname/4160400",
-          "geo": "-82.39141,29.4468"
+          "id": "locality/4346:locality:u:us:lake_city",
+          "geo": "-82.659959,30.201687"
         },
-        "output": "Johnson Lake, Marion County, United States"
+        "output": "Lake City, United States"
+      },
+      "woe_id": null,
+      "center_point": {
+        "lon": "-82.659959",
+        "lat": "30.201687"
       }
     },
     {
-      "name": {
-        "default": "Ledwith Lake"
-      },
-      "admin0": "United States",
+      "admin2": "Lake",
       "admin1": "Florida",
-      "admin2": "Alachua County",
-      "center_point": {
-        "lat": "29.49526",
-        "lon": "-82.35435"
+      "admin0": "United States",
+      "name": {
+        "default": "Villages Of Lady Lake"
       },
+      "gn_id": 0,
       "suggest": {
         "input": [
-          "ledwith lake"
+          "villages of lady lake"
         ],
         "payload": {
-          "id": "geoname/4161738",
-          "geo": "-82.35435,29.49526"
+          "id": "neighborhood/34180:_:_:_:villages_of_lady_lake",
+          "geo": "-81.952515,28.916553"
         },
-        "output": "Ledwith Lake, Alachua County, United States"
+        "output": "Villages Of Lady Lake, Lake, United States"
+      },
+      "woe_id": 0,
+      "center_point": {
+        "lon": "-81.952515",
+        "lat": "28.916553"
       }
     },
     {
-      "name": {
-        "default": "Levy Lake"
-      },
       "admin0": "United States",
-      "admin1": "Florida",
-      "admin2": "Alachua County",
-      "center_point": {
-        "lat": "29.52469",
-        "lon": "-82.35316"
+      "name": {
+        "default": "Lady Lake",
+        "alt": "Lady Lake town"
       },
+      "gn_id": "4161118",
       "suggest": {
         "input": [
-          "levy lake"
+          "lady lake",
+          "lady lake town"
         ],
         "payload": {
-          "id": "geoname/4047808",
-          "geo": "-82.35316,29.52469"
+          "id": "locality/4478:locality:u:us:lady_lake",
+          "geo": "-81.922691,28.921806"
         },
-        "output": "Levy Lake, Alachua County, United States"
+        "output": "Lady Lake, United States"
+      },
+      "woe_id": null,
+      "center_point": {
+        "lon": "-81.922691",
+        "lat": "28.921806"
       }
     },
     {
-      "name": {
-        "default": "Fox Lake"
-      },
       "admin0": "United States",
-      "admin1": "Florida",
-      "admin2": "Levy County",
-      "center_point": {
-        "lat": "29.54036",
-        "lon": "-82.66311"
+      "name": {
+        "default": "Lake Panasoffkee",
+        "alt": "Lake Panasoffkee CDP"
       },
+      "gn_id": "4161327",
       "suggest": {
         "input": [
-          "fox lake"
+          "lake panasoffkee",
+          "lake panasoffkee cdp"
         ],
         "payload": {
-          "id": "geoname/4156149",
-          "geo": "-82.66311,29.54036"
+          "id": "locality/4888:locality:u:us:lake_panasoffkee",
+          "geo": "-82.125431,28.785189"
         },
-        "output": "Fox Lake, Levy County, United States"
+        "output": "Lake Panasoffkee, United States"
+      },
+      "woe_id": null,
+      "center_point": {
+        "lon": "-82.125431",
+        "lat": "28.785189"
       }
     },
     {
-      "name": {
-        "default": "Lake Kanapaha"
-      },
       "admin0": "United States",
-      "admin1": "Florida",
-      "admin2": "Alachua County",
-      "center_point": {
-        "lat": "29.61705",
-        "lon": "-82.40502"
+      "name": {
+        "default": "Asbury Lake",
+        "alt": "Asbury Lake CDP"
       },
+      "gn_id": "4146302",
       "suggest": {
         "input": [
-          "lake kanapaha"
+          "asbury lake",
+          "asbury lake cdp"
         ],
         "payload": {
-          "id": "geoname/4161281",
-          "geo": "-82.40502,29.61705"
+          "id": "locality/4797:locality:u:us:asbury_lake",
+          "geo": "-81.780018,30.050684"
         },
-        "output": "Lake Kanapaha, Alachua County, United States"
+        "output": "Asbury Lake, United States"
+      },
+      "woe_id": null,
+      "center_point": {
+        "lon": "-81.780018",
+        "lat": "30.050684"
       }
     },
     {
-      "name": {
-        "default": "Doorshutter Lake"
-      },
       "admin0": "United States",
-      "admin1": "Florida",
-      "admin2": "Levy County",
-      "center_point": {
-        "lat": "29.53274",
-        "lon": "-82.70873"
+      "name": {
+        "default": "Silver Lake",
+        "alt": "Silver Lake CDP"
       },
+      "gn_id": "4172971",
       "suggest": {
         "input": [
-          "doorshutter lake"
+          "silver lake",
+          "silver lake cdp"
         ],
         "payload": {
-          "id": "geoname/4153479",
-          "geo": "-82.70873,29.53274"
+          "id": "locality/4992:locality:u:us:silver_lake",
+          "geo": "-81.804157,28.846269"
         },
-        "output": "Doorshutter Lake, Levy County, United States"
+        "output": "Silver Lake, United States"
+      },
+      "woe_id": null,
+      "center_point": {
+        "lon": "-81.804157",
+        "lat": "28.846269"
       }
     },
     {
-      "name": {
-        "default": "Wauberg Lake"
-      },
-      "admin0": "United States",
+      "admin2": "Lake",
       "admin1": "Florida",
-      "admin2": "Alachua County",
-      "center_point": {
-        "lat": "29.52978",
-        "lon": "-82.30215"
+      "admin0": "United States",
+      "name": {
+        "default": "Oaks At Lake Dorr"
       },
+      "gn_id": 0,
       "suggest": {
         "input": [
-          "wauberg lake"
+          "oaks at lake dorr"
         ],
         "payload": {
-          "id": "geoname/4177568",
-          "geo": "-82.30215,29.52978"
+          "id": "neighborhood/33992:_:_:_:oaks_at_lake_dorr",
+          "geo": "-81.639404,28.993127"
         },
-        "output": "Wauberg Lake, Alachua County, United States"
+        "output": "Oaks At Lake Dorr, Lake, United States"
+      },
+      "woe_id": 0,
+      "center_point": {
+        "lon": "-81.639404",
+        "lat": "28.993127"
       }
     },
     {
-      "name": {
-        "default": "Lake Stafford"
-      },
-      "admin0": "United States",
+      "admin2": "Lake",
       "admin1": "Florida",
-      "admin2": "Levy County",
-      "center_point": {
-        "lat": "29.30795",
-        "lon": "-82.47914"
+      "admin0": "United States",
+      "name": {
+        "default": "Lake South"
       },
+      "gn_id": 0,
       "suggest": {
         "input": [
-          "lake stafford"
+          "lake south"
         ],
         "payload": {
-          "id": "geoname/4173950",
-          "geo": "-82.47914,29.30795"
+          "id": "neighborhood/34534:_:_:_:lake_south",
+          "geo": "-81.742766,28.797112"
         },
-        "output": "Lake Stafford, Levy County, United States"
+        "output": "Lake South, Lake, United States"
+      },
+      "woe_id": 0,
+      "center_point": {
+        "lon": "-81.742766",
+        "lat": "28.797112"
       }
     }
   ]
