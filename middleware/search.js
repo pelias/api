@@ -26,7 +26,7 @@ function WGS84EarthRadius(lat){
 function boundingBox(latitudeInDegrees, longitudeInDegrees, halfSideInKm) {
 	var lat = deg2rad(latitudeInDegrees);
     var lon = deg2rad(longitudeInDegrees);
-    var halfSide = 1000000*halfSideInKm;
+    var halfSide = 1000*halfSideInKm;
 
     // Radius of Earth at given latitude
     var radius = WGS84EarthRadius(lat);
@@ -39,11 +39,11 @@ function boundingBox(latitudeInDegrees, longitudeInDegrees, halfSideInKm) {
     var lonMax = lon + halfSide/pradius;
 
     return {
-    	'top_left': {
+    	'bottom_left': {
     		'lat': rad2deg(latMin), 
     		'lon': rad2deg(lonMin)
     	},
-    	'bottom_right': {
+    	'top_right': {
     		'lat': rad2deg(latMax), 
     		'lon': rad2deg(lonMax)	
     	} 
@@ -57,7 +57,7 @@ function middleware(req, res, next){
   req.clean = req.clean || {};
   // ideally, bbox should be part of the req (and not to be calculated)
   // TBD
-  req.clean.bbox = boundingBox(req.query.lat, req.query.lon, 2000);
+  req.clean.bbox = boundingBox(req.query.lat, req.query.lon, 20);
   next();
 }
 

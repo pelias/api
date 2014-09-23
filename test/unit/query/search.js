@@ -16,11 +16,11 @@ module.exports.tests.query = function(test, common) {
       input: 'test', size: 10,
       lat: 29.49136, lon: -82.50622,
       bbox: {
-        top_left: {
+        bottom_left: {
           lat: 11.51053655297385,
           lon: -103.16362455862279
         },
-        bottom_right: {
+        top_right: {
           lat: 47.472183447026154,
           lon: -61.84881544137721
         }
@@ -38,11 +38,11 @@ module.exports.tests.query = function(test, common) {
         filter: {
           geo_bounding_box: {
             center_point: {
-              top_left: {
+              bottom_left: {
                 lat: 11.51053655297385,
                 lon: -103.16362455862279
               },
-              bottom_right: {
+              top_right: {
                 lat: 47.472183447026154,
                 lon: -61.84881544137721
               }

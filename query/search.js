@@ -14,13 +14,13 @@ function generate( params ){
       "filter": {
         "geo_bounding_box": {
           "center_point": {
-            "top_left": {
-              "lat": params.bbox.top_left.lat,
-              "lon": params.bbox.top_left.lon
+            "bottom_left": {
+              "lat": params.bbox.bottom_left.lat,
+              "lon": params.bbox.bottom_left.lon
             },
-            "bottom_right": {
-              "lat": params.bbox.bottom_right.lat,
-              "lon": params.bbox.bottom_right.lon
+            "top_right": {
+              "lat": params.bbox.top_right.lat,
+              "lon": params.bbox.top_right.lon
             }
           }
         }
