@@ -25,7 +25,7 @@ function setup( backend, query ){
 
       // map response to a valid FeatureCollection
       if( data && Array.isArray( data.pelias ) && data.pelias.length ){
-        docs = data['pelias'][0].options || [];
+        docs = data.pelias[0].options || [];
       }
 
       // convert docs to geojson
@@ -56,16 +56,16 @@ function geoJsonifyDocs( docs ){
   var geodata = docs.map( function( doc ){
 
     // something went very wrong
-    if( !doc || !doc.payload ) return warning();
+    if( !doc || !doc.payload ){ return warning(); }
 
     // split payload id string in to geojson properties
-    if( 'string' !== typeof doc.payload.id ) return warning();
+    if( 'string' !== typeof doc.payload.id ){ return warning(); }
     var idParts = doc.payload.id.split('/');
     doc.type = idParts[0];
     doc.id = idParts[1];
 
     // split payload geo string in to geojson properties
-    if( 'string' !== typeof doc.payload.geo ) return warning();
+    if( 'string' !== typeof doc.payload.geo ){ return warning(); }
     var geoParts = doc.payload.geo.split(',');
     doc.lat = parseFloat( geoParts[1] );
     doc.lng = parseFloat( geoParts[0] );

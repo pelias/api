@@ -1,14 +1,17 @@
 
 var logger = require('../src/logger'),
-    _sanitize = require('../sanitiser/_sanitize'),
-    sanitizers = {
-      input: require('../sanitiser/_input'),
-      size: require('../sanitiser/_size'),
-      layers: require('../sanitiser/_layers'),
-      latlonzoom: require('../sanitiser/_latlonzoom')
-    };
+    _sanitize = require('../sanitiser/_sanitize');
 
-var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); }
+var sanitizers = {
+  input: require('../sanitiser/_input'),
+  size: require('../sanitiser/_size'),
+  layers: require('../sanitiser/_layers'),
+  latlonzoom: require('../sanitiser/_latlonzoom')
+};
+
+var sanitize = function(req, cb) {
+  _sanitize(req, sanitizers, cb);
+};
 
 // export sanitize for testing
 module.exports.sanitize = sanitize;

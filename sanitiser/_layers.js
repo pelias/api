@@ -21,7 +21,7 @@ function sanitize( req ){
         return {
           'error': true,
           'message': 'invalid param \'layer\': must be one or more of ' + indeces.join(',') 
-        }
+        };
       }
     }
     clean.layers = layers;

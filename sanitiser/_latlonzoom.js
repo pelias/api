@@ -15,7 +15,7 @@ function sanitize( req ){
     return {
       'error': true,
       'message': 'invalid param \'lat\': must be >0 and <90' 
-    }
+    };
   }
   clean.lat = lat;
 
@@ -25,7 +25,7 @@ function sanitize( req ){
     return {
       'error': true,
       'message': 'invalid param \'lon\': must be >-180 and <180' 
-    }
+    };
   }
   clean.lon = lon;
 
