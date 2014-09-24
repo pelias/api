@@ -52,7 +52,6 @@ module.exports.tests.functional_success = function(test, common) {
         return res;
       },
       json: function( json ){
-        console.log(json);
         t.equal(typeof json, 'object', 'returns json');
         t.equal(typeof json.date, 'number', 'date set');
         t.equal(json.type, 'FeatureCollection', 'valid geojson');
