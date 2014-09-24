@@ -19,7 +19,7 @@ responses['client/search/fail/1'] = function( cmd, cb ){
 };
 
 function setup( key, cmdCb ){
-  function backend( a, b ){
+  function backend(){
     return {
       client: {
         suggest: function( cmd, cb ){

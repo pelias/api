@@ -11,7 +11,7 @@ var WGS84_a = 6378137.0;  // Major semiaxis [m]
 var WGS84_b = 6356752.3;  // Minor semiaxis [m]
 
 // Earth radius at a given latitude, according to the WGS-84 ellipsoid [m]
-function WGS84EarthRadius(lat){
+function wGS84EarthRadius(lat){
 	// http://en.wikipedia.org/wiki/Earth_radius
     var An = WGS84_a*WGS84_a * Math.cos(lat);
     var Bn = WGS84_b*WGS84_b * Math.sin(lat);
@@ -29,7 +29,7 @@ function boundingBox(latitudeInDegrees, longitudeInDegrees, halfSideInKm) {
     var halfSide = 1000*halfSideInKm;
 
     // Radius of Earth at given latitude
-    var radius = WGS84EarthRadius(lat);
+    var radius = wGS84EarthRadius(lat);
     // Radius of the parallel at given latitude
     var pradius = radius*Math.cos(lat);
 
@@ -62,4 +62,4 @@ function middleware(req, res, next){
 }
 
 // middleware
-module.exports.middleware = middleware
+module.exports.middleware = middleware;

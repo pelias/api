@@ -4,23 +4,23 @@ var logger = require('../src/logger');
 function generate( params ){
 
   var cmd = {
-    "query":{
-      "filtered" : {
-        "query" : {
-          "match_all" : {}
+    'query':{
+      'filtered' : {
+        'query' : {
+          'match_all' : {}
         },
-        "filter" : {
-          "geo_distance" : {
-            "distance" : "1km",
-            "center_point" : {
-              "lat": params.lat,
-              "lon": params.lon
+        'filter' : {
+          'geo_distance' : {
+            'distance' : '1km',
+            'center_point' : {
+              'lat': params.lat,
+              'lon': params.lon
             }
           }
         }
       }
     },
-    "size": 1
+    'size': 1
   };
 
   // logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
