@@ -29,15 +29,13 @@ function setup( backend, query ){
       }
 
       // convert docs to geojson
-      geoJsonifyDocs( docs, function( geojson ){
+      var geojson = geoJsonifyDocs( docs );
 
-        // response envelope
-        geojson.date = new Date().getTime();
+      // response envelope
+      geojson.date = new Date().getTime();
 
-        // respond
-        return res.status(200).json( geojson );
-
-      });
+      // respond
+      return res.status(200).json( geojson );
     });
 
   }
@@ -45,7 +43,7 @@ function setup( backend, query ){
   return controller;
 }
 
-function geoJsonifyDocs( docs, cb ){
+function geoJsonifyDocs( docs ){
 
   // emit a warning if the doc format is invalid
   // @note: if you see this error, fix it ASAP!
@@ -82,7 +80,7 @@ function geoJsonifyDocs( docs, cb ){
   });
 
   // convert to geojson
-  GeoJSON.parse( geodata, { Point: ['lat', 'lng'] }, cb );
+  return GeoJSON.parse( geodata, { Point: ['lat', 'lng'] } );
 }
 
 module.exports = setup;
