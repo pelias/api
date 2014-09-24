@@ -1,7 +1,12 @@
 
+var mockPayload = {
+  id: 'mocktype/mockid',
+  geo: '101,-10.1'
+};
+
 var responses = {};
 responses['client/suggest/ok/1'] = function( cmd, cb ){
-  return cb( undefined, suggestEnvelope([ { value: 1 }, { value: 2 } ]) );
+  return cb( undefined, suggestEnvelope([ { value: 1, payload: mockPayload }, { value: 2, payload: mockPayload } ]) );
 };
 responses['client/suggest/fail/1'] = function( cmd, cb ){
   return cb( 'a backend error occurred' );

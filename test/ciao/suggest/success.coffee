@@ -9,7 +9,8 @@ response.statusCode.should.equal 200
 now = new Date().getTime()
 should.exist json
 should.not.exist json.error
-should.exist json.date
-json.date.should.be.within now-2000, now+2000
-should.exist json.body
-json.body.should.be.instanceof Array
+json.date.should.be.within now-5000, now+5000
+
+#? valid geojson
+json.type.should.equal 'FeatureCollection'
+json.features.should.be.instanceof Array
