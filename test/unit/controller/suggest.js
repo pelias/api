@@ -15,7 +15,33 @@ module.exports.tests.interface = function(test, common) {
 
 // functionally test controller (backend success)
 module.exports.tests.functional_success = function(test, common) {
-  test('functional test', function(t) {
+
+  // expected geojson features for 'client/suggest/ok/1' fixture
+  var expected = [{
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [ -10.1, 101 ]
+    },
+    properties: {
+      id: 'mockid',
+      type: 'mocktype',
+      value: 1
+    }
+  }, {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [ -10.1, 101 ]
+    },
+    properties: {
+      id: 'mockid',
+      type: 'mocktype',
+      value: 2
+    }
+  }];
+
+  test('functional success', function(t) {
     var backend = mockBackend( 'client/suggest/ok/1', function( cmd ){
       t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct backend command');
     });
@@ -26,10 +52,12 @@ module.exports.tests.functional_success = function(test, common) {
         return res;
       },
       json: function( json ){
+        console.log(json);
         t.equal(typeof json, 'object', 'returns json');
         t.equal(typeof json.date, 'number', 'date set');
-        t.true(Array.isArray(json.body), 'body is array');
-        t.deepEqual(json.body, [ { value: 1 }, { value: 2 } ], 'values correctly mapped');
+        t.equal(json.type, 'FeatureCollection', 'valid geojson');
+        t.true(Array.isArray(json.features), 'features is array');
+        t.deepEqual(json.features, expected, 'values correctly mapped');
         t.end();
       }
     };
@@ -39,7 +67,7 @@ module.exports.tests.functional_success = function(test, common) {
 
 // functionally test controller (backend failure)
 module.exports.tests.functional_failure = function(test, common) {
-  test('functional test', function(t) {
+  test('functional failure', function(t) {
     var backend = mockBackend( 'client/suggest/fail/1', function( cmd ){
       t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct backend command');
     });
