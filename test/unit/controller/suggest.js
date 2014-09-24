@@ -21,7 +21,7 @@ module.exports.tests.functional_success = function(test, common) {
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [ -10.1, 101 ]
+      coordinates: [ 101, -10.1 ]
     },
     properties: {
       id: 'mockid',
@@ -32,7 +32,7 @@ module.exports.tests.functional_success = function(test, common) {
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [ -10.1, 101 ]
+      coordinates: [ 101, -10.1 ]
     },
     properties: {
       id: 'mockid',

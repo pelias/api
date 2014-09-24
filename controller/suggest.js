@@ -67,8 +67,8 @@ function geoJsonifyDocs( docs ){
     // split payload geo string in to geojson properties
     if( 'string' !== typeof doc.payload.geo ) return warning();
     var geoParts = doc.payload.geo.split(',');
-    doc.lat = parseFloat( geoParts[0] );
-    doc.lng = parseFloat( geoParts[1] );
+    doc.lat = parseFloat( geoParts[1] );
+    doc.lng = parseFloat( geoParts[0] );
 
     // remove payload from doc
     delete doc.payload;
