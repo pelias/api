@@ -34,7 +34,7 @@ app.get( '/', controllers.index() );
 app.get( '/suggest', sanitisers.suggest.middleware, controllers.suggest() );
 
 // search API
-app.get( '/search', sanitisers.search.middleware, middlewares.search.middleware, controllers.search() );
+app.get( '/search', sanitisers.search.middleware, controllers.search() );
 
 // reverse API
 app.get( '/reverse', sanitisers.reverse.middleware, controllers.search(undefined, require('./query/reverse')) );
