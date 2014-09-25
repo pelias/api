@@ -10,7 +10,8 @@ var tests = [
   require('./query/indeces'),
   require('./query/suggest'),
   require('./query/search'),
-  require('./query/reverse')
+  require('./query/reverse'),
+  require('./helper/geojsonify')
 ];
 
 tests.map(function(t) {
