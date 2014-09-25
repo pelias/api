@@ -11,11 +11,11 @@ function sanitize( req ){
 
   // lat
   var lat = parseFloat( params.lat, 10 );
-  if( isNaN( lat ) || lat < 0 || lat > 90 ){
+  if( isNaN( lat ) || lat < -90 || lat > 90 ){
     return {
       'error': true,
-      'message': 'invalid param \'lat\': must be >0 and <90' 
-    }
+      'message': 'invalid param \'lat\': must be >-90 and <90'
+    };
   }
   clean.lat = lat;
 
@@ -24,8 +24,8 @@ function sanitize( req ){
   if( isNaN( lon ) || lon < -180 || lon > 180 ){
     return {
       'error': true,
-      'message': 'invalid param \'lon\': must be >-180 and <180' 
-    }
+      'message': 'invalid param \'lon\': must be >-180 and <180'
+    };
   }
   clean.lon = lon;
 

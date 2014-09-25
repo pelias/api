@@ -50,13 +50,13 @@ module.exports.tests.sanitize_input = function(test, common) {
 
 module.exports.tests.sanitize_lat = function(test, common) {
   var lats = {
-    invalid: [ -1, -45, -90, 91, 120, 181 ],
+    invalid: [ -181, -120, -91, 91, 120, 181 ],
     valid: [ 0, 45, 90, -0, '0', '45', '90' ]
   };
   lats.invalid.forEach( function( lat ){
     test('invalid lat', function(t) {
       sanitize({ input: 'test', lat: lat, lon: 0 }, function( err, clean ){
-        t.equal(err, 'invalid param \'lat\': must be >0 and <90', 'invalid latitude');
+        t.equal(err, 'invalid param \'lat\': must be >-90 and <90', 'invalid latitude');
         t.equal(clean, undefined, 'clean not set');
         t.end();
       });
