@@ -1,6 +1,6 @@
 # cross-origin resource sharing
 
-*Generated: Fri Sep 19 2014 14:38:01 GMT+0100 (BST)*
+*Generated: Thu Sep 25 2014 19:25:20 GMT+0100 (BST)*
 ## Request
 ```javascript
 {
@@ -27,7 +27,7 @@ Status: 200
   "content-type": "application/json; charset=utf-8",
   "content-length": "50",
   "etag": "W/\"32-85536434\"",
-  "date": "Fri, 19 Sep 2014 13:38:01 GMT",
+  "date": "Thu, 25 Sep 2014 18:25:20 GMT",
   "connection": "close"
 }
 ```

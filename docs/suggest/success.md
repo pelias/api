@@ -1,6 +1,6 @@
 # valid suggest query
 
-*Generated: Fri Sep 19 2014 14:38:01 GMT+0100 (BST)*
+*Generated: Thu Sep 25 2014 19:25:20 GMT+0100 (BST)*
 ## Request
 ```javascript
 {
@@ -25,115 +25,199 @@ Status: 200
   "access-control-allow-headers": "X-Requested-With,content-type",
   "access-control-allow-credentials": "true",
   "content-type": "application/json; charset=utf-8",
-  "content-length": "1248",
-  "etag": "W/\"l7SMjqn0lVxkVsxRTJizhA==\"",
-  "date": "Fri, 19 Sep 2014 13:38:01 GMT",
+  "content-length": "1933",
+  "etag": "W/\"I89q+0HZNmXyHsTfLSP5Ww==\"",
+  "date": "Thu, 25 Sep 2014 18:25:20 GMT",
   "connection": "close"
 }
 ```
 ```javascript
 {
-  "date": 1411133881441,
-  "body": [
+  "type": "FeatureCollection",
+  "features": [
     {
-      "text": "ACRELÃNDIA, Brazil",
-      "score": 1,
-      "payload": {
-        "id": "admin2/708:adm2:br:bra:acrel__ndia",
-        "geo": "-66.908143,-9.954353"
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.56019,
+          5.419786
+        ]
+      },
+      "properties": {
+        "text": "Abia, Nigeria",
+        "score": 1,
+        "type": "admin1",
+        "id": "1775:adm1:ng:nga:abia"
       }
     },
     {
-      "text": "ALTA FLORESTA, Brazil",
-      "score": 1,
-      "payload": {
-        "id": "admin2/2986:adm2:br:bra:alta_floresta",
-        "geo": "-56.404593,-10.042071"
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.908143,
+          -9.954353
+        ]
+      },
+      "properties": {
+        "text": "Acrelândia, Brazil",
+        "score": 1,
+        "type": "admin2",
+        "id": "708:adm2:br:bra:acrel_ndia"
       }
     },
     {
-      "text": "ALTO ALEGRE, Brazil",
-      "score": 1,
-      "payload": {
-        "id": "admin2/4611:adm2:br:bra:alto_alegre",
-        "geo": "-62.627879,3.103540"
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.005461,
+          -3.099378
+        ]
+      },
+      "properties": {
+        "text": "Adrianópolis, Manaus, Brasil",
+        "score": 1,
+        "type": "neighborhood",
+        "id": "799:_:_:_:adrian_polis"
       }
     },
     {
-      "text": "ALTO PARAÃSO, Brazil",
-      "score": 1,
-      "payload": {
-        "id": "admin2/4584:adm2:br:bra:alto_para__so",
-        "geo": "-63.418743,-9.697774"
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.909644,
+          5.013733
+        ]
+      },
+      "properties": {
+        "text": "Akwa Ibom, Nigeria",
+        "score": 1,
+        "type": "admin1",
+        "id": "1776:adm1:ng:nga:akwa_ibom"
       }
     },
     {
-      "text": "ALVARÃES, Brazil",
-      "score": 1,
-      "payload": {
-        "id": "admin2/832:adm2:br:bra:alvar__es",
-        "geo": "-65.296384,-3.674615"
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.691808,
+          4.050576
+        ]
+      },
+      "properties": {
+        "text": "Akwa, Littoral, Cameroun",
+        "score": 1,
+        "type": "neighborhood",
+        "id": "1863:_:_:_:akwa"
       }
     },
     {
-      "text": "AMAJARI, Brazil",
-      "score": 1,
-      "payload": {
-        "id": "admin2/4610:adm2:br:bra:amajari",
-        "geo": "-62.710104,3.724864"
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -56.404593,
+          -10.042071
+        ]
+      },
+      "properties": {
+        "text": "Alta Floresta, Brazil",
+        "score": 1,
+        "type": "admin2",
+        "id": "2986:adm2:br:bra:alta_floresta"
       }
     },
     {
-      "text": "AMAZONAS, Brazil",
-      "score": 1,
-      "payload": {
-        "id": "admin1/3232:adm1:br:bra:amazonas",
-        "geo": "-64.949558,-3.785708"
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -62.627879,
+          3.10354
+        ]
+      },
+      "properties": {
+        "text": "Alto Alegre, Brazil",
+        "score": 1,
+        "type": "admin2",
+        "id": "4611:adm2:br:bra:alto_alegre"
       }
     },
     {
-      "text": "ANAMÃ, Brazil",
-      "score": 1,
-      "payload": {
-        "id": "admin2/834:adm2:br:bra:anam__",
-        "geo": "-61.683670,-3.473836"
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -63.418743,
+          -9.697774
+        ]
+      },
+      "properties": {
+        "text": "Alto Paraíso, Brazil",
+        "score": 1,
+        "type": "admin2",
+        "id": "4584:adm2:br:bra:alto_para_so"
       }
     },
     {
-      "text": "ANORI, Brazil",
-      "score": 1,
-      "payload": {
-        "id": "admin2/835:adm2:br:bra:anori",
-        "geo": "-62.182138,-4.154809"
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -65.296384,
+          -3.674615
+        ]
+      },
+      "properties": {
+        "text": "Alvarães, Brazil",
+        "score": 1,
+        "type": "admin2",
+        "id": "832:adm2:br:bra:alvar_es"
       }
     },
     {
-      "text": "APIACÃS, Brazil",
-      "score": 1,
-      "payload": {
-        "id": "admin2/2992:adm2:br:bra:apiac__s",
-        "geo": "-57.803447,-8.583036"
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -62.710104,
+          3.724864
+        ]
+      },
+      "properties": {
+        "text": "Amajari, Brazil",
+        "score": 1,
+        "type": "admin2",
+        "id": "4610:adm2:br:bra:amajari"
       }
     }
-  ]
+  ],
+  "date": 1411669520909
 }
 ```
 
 ## Tests
+
+### ✓ 200 ok
+```javascript
+response.statusCode.should.equal 200
+```
+
+### ✓ valid geojson
+```javascript
+json.type.should.equal 'FeatureCollection'
+json.features.should.be.instanceof Array
+```
 
 ### ✓ valid response
 ```javascript
 now = new Date().getTime()
 should.exist json
 should.not.exist json.error
-should.exist json.date
-json.date.should.be.within now-2000, now+2000
-should.exist json.body
-json.body.should.be.instanceof Array
-```
-
-### ✓ 200 ok
-```javascript
-response.statusCode.should.equal 200
+json.date.should.be.within now-5000, now+5000
 ```
 
