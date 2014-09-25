@@ -12,7 +12,21 @@ responses['client/suggest/fail/1'] = function( cmd, cb ){
   return cb( 'a backend error occurred' );
 };
 responses['client/search/ok/1'] = function( cmd, cb ){
-  return cb( undefined, searchEnvelope([ { value: 1 }, { value: 2 } ]) );
+  return cb( undefined, searchEnvelope([{
+    _source: {
+      value: 1,
+      center_point: { lat: 100.1, lon: -50.5 },
+      name: { default: 'test name1' },
+      admin0: 'country1', admin1: 'state1', admin2: 'city1'
+    }
+  }, {
+    _source: {
+      value: 2,
+      center_point: { lat: 100.2, lon: -51.5 },
+      name: { default: 'test name2' },
+      admin0: 'country2', admin1: 'state2', admin2: 'city2'
+    }
+  }]));
 };
 responses['client/search/fail/1'] = function( cmd, cb ){
   return cb( 'a backend error occurred' );
@@ -41,7 +55,7 @@ function suggestEnvelope( options ){
 }
 
 function searchEnvelope( options ){
-  return { pelias: [{ options: options }]};
+  return { hits: { total: options.length, hits: options } };
 }
 
 module.exports = setup;
