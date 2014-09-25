@@ -15,26 +15,48 @@ module.exports.tests.query = function(test, common) {
     var query = generate({
       lat: 29.49136, lon: -82.50622
     });
+    
     var expected = {
-      query:{
-        filtered : {
-          query : {
-              match_all : {}
+      'query': {
+        'filtered': {
+          'query': {
+            'match_all': {}
           },
-          filter : {
-              geo_distance : {
-                  distance : '1km',
-                  center_point : {
-                    lat: 29.49136, 
-                    lon: -82.50622
+          'filter': {
+            'bool': {
+              'must': [
+                {
+                  'geo_distance': {
+                    'distance': '50km',
+                    'distance_type': 'plane',
+                    'optimize_bbox': 'indexed',
+                    '_cache': true,
+                    'center_point': {
+                      'lat': '29.49',
+                      'lon': '-82.51'
+                    }
                   }
-              }
+                }
+              ]
+            }
           }
         }
       },
-      size: 1
+      'sort': [
+        {
+          '_geo_distance': {
+            'center_point': {
+              'lat': 29.49136,
+              'lon': -82.50622
+            },
+            'order': 'asc',
+            'unit': 'km'
+          }
+        }
+      ],
+      'size': 1
     };
-    
+
     t.deepEqual(query, expected, 'valid reverse query');
     t.end();
   });

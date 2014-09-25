@@ -1,31 +1,15 @@
-var logger = require('../src/logger');
 
-// Build pelias search query
+var logger = require('../src/logger'),
+    queries = require('geopipes-elasticsearch-backend').queries;
+
 function generate( params ){
 
-  var cmd = {
-    "query":{
-      "filtered" : {
-        "query" : {
-          "match_all" : {}
-        },
-        "filter" : {
-          "geo_distance" : {
-            "distance" : "1km",
-            "center_point" : {
-              "lat": params.lat,
-              "lon": params.lon
-            }
-          }
-        }
-      }
-    },
-    "size": 1
+  var centroid = {
+    lat: params.lat,
+    lon: params.lon
   };
 
-  // logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
-  return cmd;
-
+  return queries.distance( centroid, { size: 1 } );
 }
 
 module.exports = generate;
