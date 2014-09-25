@@ -140,6 +140,7 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         "properties": {
+          "text": "'Round Midnight Jazz and Blues Bar, Angel, United Kingdom",
           "name": "'Round Midnight Jazz and Blues Bar",
           "admin0": "United Kingdom",
           "admin1": "Islington",
@@ -156,6 +157,7 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         "properties": {
+          "text": "Blues Cafe, Smithfield, United Kingdom",
           "name": "Blues Cafe",
           "admin0": "United Kingdom",
           "admin1": "City And County Of The City Of London",

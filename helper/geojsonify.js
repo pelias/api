@@ -73,6 +73,11 @@ function search( docs ){
     if( doc.admin1 ){ output.admin1 = doc.admin1; }
     if( doc.admin2 ){ output.admin2 = doc.admin2; }
 
+    // map suggest output
+    if( doc.suggest && doc.suggest.output ){
+      output.text = doc.suggest.output;
+    }
+
     return output;
 
   // filter-out invalid entries
