@@ -34,7 +34,7 @@
   "dependencies": {
     "express": "^4.8.8",
     "geojson": "^0.2.0",
-    "geopipes-elasticsearch-backend": "0.0.7",
+    "geopipes-elasticsearch-backend": "0.0.8",
     "pelias-esclient": "0.0.25",
     "toobusy": "^0.2.4"
   },
