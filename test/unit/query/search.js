@@ -27,41 +27,54 @@ module.exports.tests.query = function(test, common) {
       },
       layers: ['test']
     });
+
     var expected = {
-      query:{
-        query_string : {
-            query: 'test',
-            fields: ['name.default'],
-            default_operator: 'OR'
-          }
-        },
-        filter: {
-          geo_bounding_box: {
-            center_point: {
-              bottom_left: {
-                lat: 11.51053655297385,
-                lon: -103.16362455862279
-              },
-              top_right: {
-                lat: 47.472183447026154,
-                lon: -61.84881544137721
-              }
+      "query": {
+        "filtered": {
+          "query": {
+            "query_string": {
+              "query": "test",
+              "fields": [
+                "name.default"
+              ],
+              "default_operator": "OR"
             }
-          }
-        },
-        sort : [{
-            _geo_distance : {
-                center_point : {
-                  lat: 29.49136, 
-                  lon: -82.50622 
-                },
-                order: 'asc',
-                unit: 'km'
+          },
+          "filter": {
+            "bool": {
+              "must": [
+                {
+                  "geo_distance": {
+                    "distance": "50km",
+                    "distance_type": "plane",
+                    "optimize_bbox": "indexed",
+                    "_cache": true,
+                    "center_point": {
+                      "lat": "29.49",
+                      "lon": "-82.51"
+                    }
+                  }
+                }
+              ]
             }
-        }],
-      size: 10
+           }
+        }
+      },
+      "sort": [
+        {
+          "_geo_distance": {
+            "center_point": {
+              "lat": 29.49136,
+              "lon": -82.50622
+            },
+            "order": "asc",
+            "unit": "km"
+          }
+        }
+      ],
+      "size": 10
     };
-    
+
     t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
