@@ -15,7 +15,35 @@ module.exports.tests.interface = function(test, common) {
 
 // functionally test controller (backend success)
 module.exports.tests.functional_success = function(test, common) {
-  test('functional test', function(t) {
+
+  // expected geojson features for 'client/suggest/ok/1' fixture
+  var expected = [{
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [ -50.5, 100.1 ]
+    },
+    properties: {
+      name: 'test name1',
+      admin0: 'country1',
+      admin1: 'state1',
+      admin2: 'city1'
+    }
+  }, {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [ -51.5, 100.2 ]
+    },
+    properties: {
+      name: 'test name2',
+      admin0: 'country2',
+      admin1: 'state2',
+      admin2: 'city2'
+    }
+  }];
+
+  test('functional success', function(t) {
     var backend = mockBackend( 'client/search/ok/1', function( cmd ){
       t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct backend command');
     });
@@ -28,8 +56,9 @@ module.exports.tests.functional_success = function(test, common) {
       json: function( json ){
         t.equal(typeof json, 'object', 'returns json');
         t.equal(typeof json.date, 'number', 'date set');
-        t.true(Array.isArray(json.body), 'body is array');
-        // t.deepEqual(json.body, [ { value: 1 }, { value: 2 } ], 'values correctly mapped');
+        t.equal(json.type, 'FeatureCollection', 'valid geojson');
+        t.true(Array.isArray(json.features), 'features is array');
+        t.deepEqual(json.features, expected, 'values correctly mapped');
         t.end();
       }
     };
@@ -39,7 +68,7 @@ module.exports.tests.functional_success = function(test, common) {
 
 // functionally test controller (backend failure)
 module.exports.tests.functional_failure = function(test, common) {
-  test('functional test', function(t) {
+  test('functional failure', function(t) {
     var backend = mockBackend( 'client/search/fail/1', function( cmd ){
       t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct backend command');
     });

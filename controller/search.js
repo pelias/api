@@ -1,4 +1,6 @@
 
+var geojsonify = require('../helper/geojsonify').search;
+
 function setup( backend, query ){
 
   // allow overriding of dependencies
@@ -27,11 +29,14 @@ function setup( backend, query ){
         });
       }
 
+      // convert docs to geojson
+      var geojson = geojsonify( docs );
+
+      // response envelope
+      geojson.date = new Date().getTime();
+
       // respond
-      return res.status(200).json({
-        date: new Date().getTime(),
-        body: docs
-      });
+      return res.status(200).json( geojson );
     });
 
   }
