@@ -8,9 +8,6 @@ app.use( require('./middleware/headers') );
 app.use( require('./middleware/cors') );
 app.use( require('./middleware/jsonp') );
 
-var middlewares = {};
-middlewares.search  = require('./middleware/search');
-
 /** ----------------------- sanitisers ----------------------- **/
 
 var sanitisers = {};
