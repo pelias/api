@@ -4,6 +4,14 @@ var logger = require('../src/logger');
 // Build pelias suggest query
 function generate( params ){
 
+  var getPrecision = function(zoom) {
+    if (zoom>=15) {
+      return 9;
+    } else {
+      return parseInt(zoom/2) || 1;
+    }
+  };
+  
   var cmd = {
     'pelias' : {
       'text' : params.input,
@@ -14,9 +22,7 @@ function generate( params ){
           'dataset': params.layers,
           'location': {
             'value': [ params.lon, params.lat ],
-
-            // // commented out until they fix the precision bug in ES 1.3.3
-            'precision': 2 // params.zoom > 9 ? 3 : (params.zoom > 7 ? 2 : 1)
+            'precision': getPrecision(params.zoom)
           }
         }
       }
