@@ -39,7 +39,7 @@ module.exports.tests.query = function(test, common) {
 };
 
 module.exports.tests.precision = function(test, common) {
-  var inputs = [
+  var test_cases = [
     {zoom:1, precision:1},
     {zoom:2, precision:1},
     {zoom:3, precision:1},
@@ -62,11 +62,11 @@ module.exports.tests.precision = function(test, common) {
     {zoom:20, precision:5}
   ];
 
-  inputs.forEach( function( input ){
-    test('valid precision where zoom = ' + input.zoom, function(t) {
+  test_cases.forEach( function( test_case ){
+    test('valid precision where zoom = ' + test_case.zoom, function(t) {
       var query = generate({
         input: 'test', size: 10,
-        lat: 0, lon: 0, zoom:input.zoom,
+        lat: 0, lon: 0, zoom:test_case.zoom,
         layers: ['test']
       });
       var expected = {
@@ -78,7 +78,7 @@ module.exports.tests.precision = function(test, common) {
             context: {
               dataset: [ 'test' ],
               location: {
-                precision: input.precision,
+                precision: test_case.precision,
                 value: [ 0, 0 ]
               }
             }
