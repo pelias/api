@@ -14,7 +14,7 @@ module.exports.tests.query = function(test, common) {
   test('valid query', function(t) {
     var query = generate({
       input: 'test', size: 10,
-      lat: 0, lon: 0,
+      lat: 0, lon: 0, zoom:1,
       layers: ['test']
     });
     var expected = {
@@ -26,7 +26,7 @@ module.exports.tests.query = function(test, common) {
           context: {
             dataset: [ 'test' ],
             location: {
-              precision: 2,
+              precision: 1,
               value: [ 0, 0 ]
             }
           }
