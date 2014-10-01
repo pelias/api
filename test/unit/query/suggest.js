@@ -59,7 +59,9 @@ module.exports.tests.precision = function(test, common) {
     {zoom:17, precision:5},
     {zoom:18, precision:5},
     {zoom:19, precision:5},
-    {zoom:20, precision:5}
+    {zoom:'', precision:1},
+    {zoom:null, precision:1},
+    {zoom:undefined, precision:1}
   ];
 
   test_cases.forEach( function( test_case ){
