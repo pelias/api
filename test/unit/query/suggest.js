@@ -38,6 +38,59 @@ module.exports.tests.query = function(test, common) {
   });
 };
 
+module.exports.tests.precision = function(test, common) {
+  var inputs = [
+    {zoom:1, precision:1},
+    {zoom:2, precision:1},
+    {zoom:3, precision:1},
+    {zoom:4, precision:2},
+    {zoom:5, precision:2},
+    {zoom:6, precision:3},
+    {zoom:7, precision:3},
+    {zoom:8, precision:3},
+    {zoom:9, precision:3},
+    {zoom:10, precision:4},
+    {zoom:11, precision:4},
+    {zoom:12, precision:4},
+    {zoom:13, precision:4},
+    {zoom:14, precision:4},
+    {zoom:15, precision:4},
+    {zoom:16, precision:5},
+    {zoom:17, precision:5},
+    {zoom:18, precision:5},
+    {zoom:19, precision:5},
+    {zoom:20, precision:5}
+  ];
+
+  inputs.forEach( function( input ){
+    test('valid precision where zoom = ' + input.zoom, function(t) {
+      var query = generate({
+        input: 'test', size: 10,
+        lat: 0, lon: 0, zoom:input.zoom,
+        layers: ['test']
+      });
+      var expected = {
+        pelias: {
+          text: 'test',
+          completion: {
+            field: 'suggest',
+            size: 10,
+            context: {
+              dataset: [ 'test' ],
+              location: {
+                precision: input.precision,
+                value: [ 0, 0 ]
+              }
+            }
+          }
+        }
+      };
+      t.deepEqual(query, expected, 'valid suggest query');
+      t.end();
+    });
+  });
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {

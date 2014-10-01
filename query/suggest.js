@@ -6,7 +6,7 @@ function generate( params ){
 
   var getPrecision = function(zoom) {
     switch (true) {
-      case (zoom < 5):
+      case (zoom < 4):
         return 1; // zoom: 1-3
       case (zoom < 6):
         return 2; // zoom: 4-5
