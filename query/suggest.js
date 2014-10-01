@@ -5,13 +5,20 @@ var logger = require('../src/logger');
 function generate( params ){
 
   var getPrecision = function(zoom) {
-    if (zoom>=15) {
-      return 9;
-    } else {
-      return parseInt(zoom/2) || 1;
+    switch (true) {
+      case (zoom < 5):
+        return 1; // zoom: 1-3
+      case (zoom < 6):
+        return 2; // zoom: 4-5
+      case (zoom < 10):
+        return 3; // zoom: 6-9
+      case (zoom < 16):
+        return 4; // zoom: 10-15
+      default:
+        return 5; // zoom: >= 16
     }
   };
-  
+
   var cmd = {
     'pelias' : {
       'text' : params.input,
