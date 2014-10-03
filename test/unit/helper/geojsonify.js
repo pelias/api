@@ -88,9 +88,14 @@ module.exports.tests.search = function(test, common) {
         "street": "Liverpool Road",
         "zip": "N1 0RW"
       },
+      "alpha3": "GBR",
       "admin0": "United Kingdom",
       "admin1": "Islington",
+      "admin1_abbr": "ISL",
       "admin2": "Angel",
+      "local_admin": "test1",
+      "locality": "test2",
+      "neighborhood": "test3",
       "suggest": {
         "input": [
           "'round midnight jazz and blues bar"
@@ -111,9 +116,14 @@ module.exports.tests.search = function(test, common) {
         "lat": "51.517806",
         "lon": "-0.101795"
       },
+      "alpha3": "GBR",
       "admin0": "United Kingdom",
       "admin1": "City And County Of The City Of London",
+      "admin1_abbr": "COL",
       "admin2": "Smithfield",
+      "local_admin": "test1",
+      "locality": "test2",
+      "neighborhood": "test3",
       "suggest": {
         "input": [
           "blues cafe"
@@ -142,9 +152,14 @@ module.exports.tests.search = function(test, common) {
         "properties": {
           "text": "'Round Midnight Jazz and Blues Bar, Angel, United Kingdom",
           "name": "'Round Midnight Jazz and Blues Bar",
+          "alpha3": "GBR",
           "admin0": "United Kingdom",
           "admin1": "Islington",
-          "admin2": "Angel"
+          "admin1_abbr": "ISL",
+          "admin2": "Angel",
+          "local_admin": "test1",
+          "locality": "test2",
+          "neighborhood": "test3",
         }
       },
       {
@@ -159,9 +174,14 @@ module.exports.tests.search = function(test, common) {
         "properties": {
           "text": "Blues Cafe, Smithfield, United Kingdom",
           "name": "Blues Cafe",
+          "alpha3": "GBR",
           "admin0": "United Kingdom",
           "admin1": "City And County Of The City Of London",
-          "admin2": "Smithfield"
+          "admin1_abbr": "COL",
+          "admin2": "Smithfield",
+          "local_admin": "test1",
+          "locality": "test2",
+          "neighborhood": "test3",
         }
       }
     ]

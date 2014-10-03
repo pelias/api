@@ -69,9 +69,14 @@ function search( docs ){
     output.name = doc.name.default;
 
     // map admin values
+    if( doc.alpha3 ){ output.alpha3 = doc.alpha3; }
     if( doc.admin0 ){ output.admin0 = doc.admin0; }
     if( doc.admin1 ){ output.admin1 = doc.admin1; }
+    if( doc.admin1_abbr ){ output.admin1_abbr = doc.admin1_abbr; }
     if( doc.admin2 ){ output.admin2 = doc.admin2; }
+    if( doc.local_admin ){ output.local_admin = doc.local_admin; }
+    if( doc.locality ){ output.locality = doc.locality; }
+    if( doc.neighborhood ){ output.neighborhood = doc.neighborhood; }
 
     // map suggest output
     if( doc.suggest && doc.suggest.output ){
