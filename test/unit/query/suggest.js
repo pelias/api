@@ -14,7 +14,7 @@ module.exports.tests.query = function(test, common) {
   test('valid query', function(t) {
     var query = generate({
       input: 'test', size: 10,
-      lat: 0, lon: 0,
+      lat: 0, lon: 0, zoom:1,
       layers: ['test']
     });
     var expected = {
@@ -26,7 +26,7 @@ module.exports.tests.query = function(test, common) {
           context: {
             dataset: [ 'test' ],
             location: {
-              precision: 2,
+              precision: 1,
               value: [ 0, 0 ]
             }
           }
@@ -35,6 +35,61 @@ module.exports.tests.query = function(test, common) {
     };
     t.deepEqual(query, expected, 'valid suggest query');
     t.end();
+  });
+};
+
+module.exports.tests.precision = function(test, common) {
+  var test_cases = [
+    {zoom:1, precision:1},
+    {zoom:2, precision:1},
+    {zoom:3, precision:1},
+    {zoom:4, precision:2},
+    {zoom:5, precision:2},
+    {zoom:6, precision:3},
+    {zoom:7, precision:3},
+    {zoom:8, precision:3},
+    {zoom:9, precision:3},
+    {zoom:10, precision:4},
+    {zoom:11, precision:4},
+    {zoom:12, precision:4},
+    {zoom:13, precision:4},
+    {zoom:14, precision:4},
+    {zoom:15, precision:4},
+    {zoom:16, precision:5},
+    {zoom:17, precision:5},
+    {zoom:18, precision:5},
+    {zoom:19, precision:5},
+    {zoom:'', precision:1},
+    {zoom:null, precision:1},
+    {zoom:undefined, precision:1}
+  ];
+
+  test_cases.forEach( function( test_case ){
+    test('valid precision where zoom = ' + test_case.zoom, function(t) {
+      var query = generate({
+        input: 'test', size: 10,
+        lat: 0, lon: 0, zoom:test_case.zoom,
+        layers: ['test']
+      });
+      var expected = {
+        pelias: {
+          text: 'test',
+          completion: {
+            field: 'suggest',
+            size: 10,
+            context: {
+              dataset: [ 'test' ],
+              location: {
+                precision: test_case.precision,
+                value: [ 0, 0 ]
+              }
+            }
+          }
+        }
+      };
+      t.deepEqual(query, expected, 'valid suggest query');
+      t.end();
+    });
   });
 };
 
