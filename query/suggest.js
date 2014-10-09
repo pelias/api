@@ -7,13 +7,13 @@ function generate( params ){
   var getPrecision = function(zoom) {
     switch (true) {
       case (zoom > 15):
-        return 5; // zoom: >= 16
+        return [5,1]; // zoom: >= 16
       case (zoom > 9):
-        return 4; // zoom: 10-15
+        return [4,1]; // zoom: 10-15
       case (zoom > 5):
-        return 3; // zoom: 6-9
+        return [3,1]; // zoom: 6-9
       case (zoom > 3):
-        return 2; // zoom: 4-5
+        return [2,1]; // zoom: 4-5
       default:
         return 1; // zoom: 1-3 or when zoom: undefined
     }
