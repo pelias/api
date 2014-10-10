@@ -20,6 +20,8 @@ sanitisers.reverse  = require('./sanitiser/reverse');
 var controllers     = {};
 controllers.index   = require('./controller/index');
 controllers.suggest = require('./controller/suggest');
+controllers.suggest_poi = require('./controller/suggest_poi');
+controllers.suggest_admin = require('./controller/suggest_admin');
 controllers.search  = require('./controller/search');
 
 /** ----------------------- routes ----------------------- **/
@@ -29,6 +31,8 @@ app.get( '/', controllers.index() );
 
 // suggest API
 app.get( '/suggest', sanitisers.suggest.middleware, controllers.suggest() );
+app.get( '/suggest/poi', sanitisers.suggest.middleware, controllers.suggest_poi() );
+app.get( '/suggest/admin', sanitisers.suggest.middleware, controllers.suggest_admin() );
 
 // search API
 app.get( '/search', sanitisers.search.middleware, controllers.search() );
