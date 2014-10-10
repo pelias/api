@@ -10,7 +10,7 @@ function setup( backend, query ){
     // allow overriding of dependencies
     backend = backend || require('../src/backend');
     var query_admin = require('../query/suggest_admin');
-    var query_poi = require('../query/suggest_admin');
+    var query_poi = require('../query/suggest_poi');
 
     // **query_poi** command
     var cmd = {
