@@ -1,5 +1,6 @@
 
 var geojsonify = require('../helper/geojsonify').suggest;
+var async = require('async');
 
 function setup( backend, query ){
 
@@ -11,59 +12,49 @@ function setup( backend, query ){
     backend = backend || require('../src/backend');
     var query_admin = require('../query/suggest_admin');
     var query_poi = require('../query/suggest_poi');
-
-    // **query_poi** command
     var cmd = {
-      index: 'pelias',
-      body: query_poi( req.clean )
+      index: 'pelias'
     };
-
-    // query backend
-    backend().client.suggest( cmd, function( err, data ){
-
-      var docs = [];
-
-      // handle backend errors
-      if( err ){ return next( err ); }
-
-      // map response to a valid FeatureCollection
-      if( data && Array.isArray( data.pelias ) && data.pelias.length ){
-        docs = data['pelias'][0].options || [];
-      }
-
-      // **query_admin** command
-      var cmd = {
-        index: 'pelias',
-        body: query_admin( req.clean )
-      };
-
+    var query_backend = function(cmd, callback) {
       // query backend
       backend().client.suggest( cmd, function( err, data ){
 
-        var docs2 = [];
+        var docs = [];
 
         // handle backend errors
         if( err ){ return next( err ); }
 
         // map response to a valid FeatureCollection
         if( data && Array.isArray( data.pelias ) && data.pelias.length ){
-          docs2 = data['pelias'][0].options || [];
+          docs = data['pelias'][0].options || [];
         }
 
-        /** --- combine 2 doc sets --- **/
-        var combined = docs2.slice(0, 3).concat(docs);
-
-        // convert docs to geojson
-        var geojson = geojsonify( combined );
-
-        // response envelope
-        geojson.date = new Date().getTime();
-
-        // respond
-        return res.status(200).json( geojson );
-
+        callback(null, docs);
       });
+    };
 
+    async.parallel({
+      admin: function(callback){
+        cmd.body = query_admin( req.clean );
+        query_backend(cmd, callback);
+      },
+      poi: function(callback){
+        cmd.body = query_poi( req.clean );
+        query_backend(cmd, callback);
+      }
+    },
+    function(err, results) {
+      // results is now equals to: {admin: docs, poi: docs}
+      var combined = results.poi.slice(0, 3).concat(results.admin);
+
+      // convert docs to geojson
+      var geojson = geojsonify( combined );
+
+      // response envelope
+      geojson.date = new Date().getTime();
+
+      // respond
+      return res.status(200).json( geojson );
     });
 
   }
