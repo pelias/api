@@ -33,43 +33,69 @@ function setup( backend, query ){
       });
     };
 
-    async.parallel({
-      admin: function(callback){
-        cmd.body = query_admin( req.clean );
-        query_backend(cmd, callback);
-      },
-      poi: function(callback){
-        cmd.body = query_poi( req.clean );
-        query_backend(cmd, callback);
-      },
-      poi1: function(callback){
-        cmd.body = query_poi( req.clean, 1 );
-        query_backend(cmd, callback);
-      }
-    },
-    function(err, results) {
-      var splice_length = req.clean.size / 3;
-      // results is now equals to: {admin: docs, poi: docs, poi1: docs}
-      var combined = results.poi.splice(0,splice_length).concat(results.admin.splice(0,splice_length)).concat(results.poi1.splice(0,splice_length));
-
-      //dedup
+    var dedup = function(combined) {
       var unique_ids = [];
-      combined = combined.filter(function(item, pos) {
+      return combined.filter(function(item, pos) {
         if (unique_ids.indexOf(item.payload.id) == -1) {
           unique_ids.push(item.payload.id);
           return true;  
         }
         return false;
       });
-      
+    };
+
+    var respond = function(data) {
       // convert docs to geojson
-      var geojson = geojsonify( combined );
+      var geojson = geojsonify( data );
 
       // response envelope
       geojson.date = new Date().getTime();
 
       // respond
       return res.status(200).json( geojson );
+    };
+
+    var async_query;
+
+    if (req.clean.input.length < 4) {
+      async_query = {
+        a: function(callback){
+          cmd.body = query_admin( req.clean, [3,1] );
+          query_backend(cmd, callback);
+        },
+        b: function(callback) {
+          cmd.body = query_poi( req.clean );
+          query_backend(cmd, callback);
+        }
+      }
+    } else {
+      async_query = {
+        a: function(callback){
+          cmd.body = query_poi( req.clean );
+          query_backend(cmd, callback);
+        },
+        b: function(callback){
+          cmd.body = query_admin( req.clean );
+          query_backend(cmd, callback);
+        },
+        c: function(callback){
+          cmd.body = query_poi( req.clean, 1 );
+          query_backend(cmd, callback);
+        }
+      }
+    }
+
+    async.parallel(async_query, function(err, results) {
+      var splice_length = parseInt((req.clean.size / Object.keys(results).length), 10);
+      
+      // results is equal to: {one: docs, two: docs, three: docs}
+      var combined = []; 
+      for (keys in results) {
+        combined = combined.concat(results[keys].splice(0,splice_length));
+      }
+      
+      combined = dedup(combined);
+      respond(combined);
     });
 
   }
