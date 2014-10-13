@@ -58,6 +58,16 @@ module.exports.tests.query = function(test, common) {
     };
 
     t.deepEqual(query, expected, 'valid reverse query');
+
+    // test different sizes
+    var sizes = [1,2,10,undefined,null];
+    sizes.forEach( function(size) {
+      query = generate({
+        lat: 29.49136, lon: -82.50622, size: size
+      });
+      expected.size = size ? size : 1;
+      t.deepEqual(query, expected, 'valid reverse query for size: '+ size);      
+    });
     t.end();
   });
 };
