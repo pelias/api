@@ -60,13 +60,17 @@ function setup( backend, query ){
     if (req.clean.input.length < 4) {
       async_query = {
         a: function(callback){
-          cmd.body = query_admin( req.clean, [3,1] );
+          cmd.body = query_admin( req.clean, 4 );
           query_backend(cmd, callback);
         },
         b: function(callback) {
           cmd.body = query_poi( req.clean );
           query_backend(cmd, callback);
-        }
+        },
+        c: function(callback){
+          cmd.body = query_admin( req.clean );
+          query_backend(cmd, callback);
+        },
       }
     } else {
       async_query = {
@@ -88,7 +92,7 @@ function setup( backend, query ){
     async.parallel(async_query, function(err, results) {
       var splice_length = parseInt((req.clean.size / Object.keys(results).length), 10);
       
-      // results is equal to: {one: docs, two: docs, three: docs}
+      // results is equal to: {a: docs, b: docs, c: docs}
       var combined = []; 
       for (keys in results) {
         combined = combined.concat(results[keys].splice(0,splice_length));
