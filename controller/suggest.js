@@ -41,11 +41,19 @@ function setup( backend, query ){
       poi: function(callback){
         cmd.body = query_poi( req.clean );
         query_backend(cmd, callback);
+      },
+      poi3: function(callback){
+        cmd.body = query_poi( req.clean, 3 );
+        query_backend(cmd, callback);
+      },
+      poi1: function(callback){
+        cmd.body = query_poi( req.clean, 1 );
+        query_backend(cmd, callback);
       }
     },
     function(err, results) {
-      // results is now equals to: {admin: docs, poi: docs}
-      var combined = results.poi.slice(0, 3).concat(results.admin);
+      // results is now equals to: {admin: docs, poi: docs, poi1: docs, poi3: docs}
+      var combined = results.poi.concat(results.admin).concat(results.poi1).concat(results.poi3);
 
       // convert docs to geojson
       var geojson = geojsonify( combined );
