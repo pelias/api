@@ -63,9 +63,8 @@ module.exports.tests.precision = function(test, common) {
     {zoom:null, precision:1},
     {zoom:undefined, precision:1}
   ];
-
-  test_cases.forEach( function( test_case ){
-    test('valid precision where zoom = ' + test_case.zoom, function(t) {
+  test('valid precision', function(t) {
+    test_cases.forEach( function( test_case ){
       var query = generate({
         input: 'test', size: 10,
         lat: 0, lon: 0, zoom:test_case.zoom,
@@ -87,9 +86,9 @@ module.exports.tests.precision = function(test, common) {
           }
         }
       };
-      t.deepEqual(query, expected, 'valid suggest query');
-      t.end();
+      t.deepEqual(query, expected, 'valid suggest query for zoom = ' + test_case.zoom);
     });
+    t.end();
   });
 };
 
