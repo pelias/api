@@ -2,7 +2,7 @@
 var logger = require('../src/logger');
 
 // Build pelias suggest query
-function generate( params ){
+function generate( params, precision ){
 
   var cmd = {
     'pelias' : {
@@ -14,7 +14,7 @@ function generate( params ){
           'dataset': ['admin0','admin1','admin2'],
           'location': {
             'value': [ params.lon, params.lat ],
-            'precision': 1
+            'precision': precision || 1
           }
         }
       }
