@@ -153,8 +153,52 @@ module.exports.tests.sanitize_layers = function(test, common) {
   });
   test('invalid layer', function(t) {
     sanitize({ layers: 'test_layer', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      var msg = 'invalid param \'layer\': must be one or more of geoname,osmnode,osmway,admin0,admin1,admin2,neighborhood';
+      var msg = 'invalid param \'layer\': must be one or more of geoname,osmnode,osmway,admin0,admin1,admin2,neighborhood,poi,admin';
       t.equal(err, msg, 'invalid layer requested');
+      t.end();
+    });
+  });
+  test('poi (alias) layer', function(t) {
+    var poi_layers = ['geoname','osmnode','osmway'];
+    sanitize({ layers: 'poi', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, poi_layers, 'poi layers set');
+      t.end();
+    });
+  });
+  test('admin (alias) layer', function(t) {
+    var admin_layers = ['admin0','admin1','admin2','neighborhood'];
+    sanitize({ layers: 'admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, admin_layers, 'admin layers set');
+      t.end();
+    });
+  });
+  test('poi alias layer plus regular layers', function(t) {
+    var poi_layers = ['geoname','osmnode','osmway'];
+    var reg_layers = ['admin0', 'admin1'];
+    sanitize({ layers: 'poi,admin0,admin1', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, reg_layers.concat(poi_layers), 'poi + regular layers');
+      t.end();
+    });
+  });
+  test('admin alias layer plus regular layers', function(t) {
+    var admin_layers = ['admin0','admin1','admin2','neighborhood'];
+    var reg_layers   = ['geoname', 'osmway'];
+    sanitize({ layers: 'admin,geoname,osmway', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, reg_layers.concat(admin_layers), 'admin + regular layers set');
+      t.end();
+    });
+  });
+  test('alias layer plus regular layers (no duplicates)', function(t) {
+    var poi_layers = ['geoname','osmnode','osmway'];
+    sanitize({ layers: 'poi,geoname,osmnode', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, poi_layers, 'poi layers found (no duplicates)');
+      t.end();
+    });
+  });
+  test('multiple alias layers (no duplicates)', function(t) {
+    var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood'];
+    sanitize({ layers: 'poi,admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, alias_layers, 'all layers found (no duplicates)');
       t.end();
     });
   });
