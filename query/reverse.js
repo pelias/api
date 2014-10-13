@@ -9,7 +9,7 @@ function generate( params ){
     lon: params.lon
   };
 
-  return queries.distance( centroid, { size: 1 } );
+  return queries.distance( centroid, { size: params.size || 1 } );
 }
 
 module.exports = generate;

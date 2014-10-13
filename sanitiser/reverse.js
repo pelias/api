@@ -2,8 +2,12 @@
 var logger = require('../src/logger'),
     _sanitize = require('../sanitiser/_sanitize'),
     sanitiser = {
-		latlonzoom: require('../sanitiser/_latlonzoom')
-	};
+		  latlonzoom: require('../sanitiser/_latlonzoom'),
+      size: function( req ) {
+        var size = require('../sanitiser/_size');
+        return size(req, 1);
+      }
+	  };
 
 var sanitize = function(req, cb) { _sanitize(req, sanitiser, cb); }
 
