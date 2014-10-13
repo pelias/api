@@ -48,9 +48,10 @@ function setup( backend, query ){
       }
     },
     function(err, results) {
-      // results is now equals to: {admin: docs, poi: docs, poi1: docs, poi3: docs}
-      var combined = results.poi.splice(0,3).concat(results.admin.splice(0,4)).concat(results.poi1.splice(0,4));
-      
+      var splice_length = req.clean.size / 3;
+      // results is now equals to: {admin: docs, poi: docs, poi1: docs}
+      var combined = results.poi.splice(0,splice_length).concat(results.admin.splice(0,splice_length)).concat(results.poi1.splice(0,splice_length));
+
       //dedup
       var unique_ids = [];
       combined = combined.filter(function(item, pos) {
