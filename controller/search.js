@@ -12,7 +12,8 @@ function setup( backend, query ){
     // backend command
     var cmd = {
       index: 'pelias',
-      body: query( req.clean )
+      body: query( req.clean ),
+      type: req.clean.layers
     };
 
     // query backend
