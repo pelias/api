@@ -15,6 +15,9 @@ function setup( backend, query ){
       body: query( req.clean )
     };
 
+    if (req.clean.layers) {
+      cmd.type = req.clean.layers;
+    }
     // query backend
     backend().client.search( cmd, function( err, data ){
 
