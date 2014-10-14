@@ -57,10 +57,10 @@ function setup( backend, query ){
 
     var async_query;
 
-    if (req.clean.input.length < 4) {
+    if (req.clean.input.length < 4 && isNaN(parseInt(req.clean.input, 10))) {
       async_query = {
         a: function(callback){
-          cmd.body = query_admin( req.clean, 4 );
+          cmd.body = query_admin( req.clean, 3 );
           query_backend(cmd, callback);
         },
         b: function(callback) {
@@ -75,14 +75,18 @@ function setup( backend, query ){
     } else {
       async_query = {
         a: function(callback){
-          cmd.body = query_poi( req.clean );
+          cmd.body = query_poi( req.clean, 5);
           query_backend(cmd, callback);
         },
         b: function(callback){
-          cmd.body = query_admin( req.clean );
+          cmd.body = query_poi( req.clean, 3);
           query_backend(cmd, callback);
         },
         c: function(callback){
+          cmd.body = query_admin( req.clean );
+          query_backend(cmd, callback);
+        },
+        d: function(callback){
           cmd.body = query_poi( req.clean, 1 );
           query_backend(cmd, callback);
         }
