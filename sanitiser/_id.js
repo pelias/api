@@ -24,18 +24,33 @@ function sanitize( req ){
   if('string' !== typeof params.id || !params.id.length){
     return errormessage('id');
   }
+
+  // id format
+  if(params.id.indexOf('/') === -1) {
+    return errormessage('id', 'invalid: must be of the format type/id for ex: \'geoname/4163334\'');
+  }
   req.clean.id = params.id;
 
+  var param = params.id.split('/');
+  var param_type  = param[0];
+  var param_id    = param[1];
+
+  // id text
+  if('string' !== typeof param_id || !param_id.length){
+    return errormessage('id');
+  }
+
   // type text
-  if('string' !== typeof params.type || !params.type.length){
+  if('string' !== typeof param_type || !param_type.length){
     return errormessage('type');
   }
 
   // type text must be one of the indeces
-  if(indeces.indexOf(params.type) == -1){
+  if(indeces.indexOf(param_type) == -1){
     return errormessage('type', 'type must be one of these values - [' + indeces.join(", ") + ']');
   }
-  req.clean.type = params.type;
+  req.clean.id   = param_id;
+  req.clean.type = param_type;
 
   return { 'error': false };
 
