@@ -43,32 +43,33 @@ module.exports.tests.sanitize_id_and_type = function(test, common) {
     ]
   };
 
-  inputs.invalid.forEach( function( input ){
-    test('invalid id and/or type', function(t) {
+  test('invalid id and/or type', function(t) {
+    inputs.invalid.forEach( function( input ){
       sanitize({ id: input.id, type: input.type }, function( err, clean ){
         switch (err) {
           case defaultIdError:
-            t.equal(err, defaultIdError, 'missing id'); break;
+            t.equal(err, defaultIdError, input.id + ' is invalid (missing id)'); break;
           case defaultTypeError:
-            t.equal(err, defaultTypeError, 'missing type'); break;
+            t.equal(err, defaultTypeError, input.type + ' is invalid (missing type)'); break;
           case defaultMissingTypeError:
-            t.equal(err, defaultMissingTypeError, 'unknown type'); break;
+            t.equal(err, defaultMissingTypeError, input.type + ' is an unknown type'); break;
           default: break;
         }
         t.equal(clean, undefined, 'clean not set');
-        t.end();
       });
     });
+    t.end();
   });
-  inputs.valid.forEach( function( input ){
-    test('valid id and/or type', function(t) {
+
+  test('valid id and/or type', function(t) {
+    inputs.valid.forEach( function( input ){
       var expected = { id: input.id, type: input.type };
       sanitize({ id: input.id, type: input.type, }, function( err, clean ){
-        t.equal(err, undefined, 'no error');
-        t.deepEqual(clean, expected, 'clean set correctly');
-        t.end();
+        t.equal(err, undefined, 'no error (' + input.id + ', ' + input.type + ')' );
+        t.deepEqual(clean, expected, 'clean set correctly (' + input.id + ', ' + input.type + ')');
       });
     });
+    t.end();
   });
 };
 
