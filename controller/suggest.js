@@ -63,14 +63,14 @@ function setup( backend, query ){
           cmd.body = query_admin( req.clean, 3 );
           query_backend(cmd, callback);
         },
-        b: function(callback) {
-          cmd.body = query_poi( req.clean );
+        d: function(callback){
+          cmd.body = query_admin( req.clean, 1 );
           query_backend(cmd, callback);
         },
-        c: function(callback){
-          cmd.body = query_admin( req.clean );
+        c: function(callback) {
+          cmd.body = query_poi( req.clean, 3 );
           query_backend(cmd, callback);
-        },
+        }
       }
     } else {
       async_query = {
@@ -83,11 +83,11 @@ function setup( backend, query ){
           query_backend(cmd, callback);
         },
         c: function(callback){
-          cmd.body = query_admin( req.clean );
+          cmd.body = query_poi( req.clean, 1 );
           query_backend(cmd, callback);
         },
         d: function(callback){
-          cmd.body = query_poi( req.clean, 1 );
+          cmd.body = query_admin( req.clean );
           query_backend(cmd, callback);
         }
       }
