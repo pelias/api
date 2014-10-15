@@ -30,7 +30,6 @@ function sanitize( req ){
   if('string' !== typeof params.type || !params.type.length){
     return errormessage('type');
   }
-  req.clean.type = params.type;
 
   // type text must be one of the indeces
   if(indeces.indexOf(params.type) == -1){
