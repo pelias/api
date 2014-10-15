@@ -241,7 +241,7 @@ module.exports.tests.middleware_success = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /sanitise ' + name, testFunction);
+    return tape('SANTIZE /suggest ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
