@@ -3,13 +3,19 @@ var get  = require('../../../sanitiser/get'),
     _sanitize = get.sanitize,
     middleware = get.middleware,
     indeces = require('../../../query/indeces'),
-    defaultIdError = 'invalid param \'id\': text length, must be >0',
-    defaultTypeError = 'invalid param \'type\': text length, must be >0',
-    defaultFormatError = 'invalid: must be of the format type/id for ex: \'geoname/4163334\'',
-    defaultError = defaultIdError,
-    defaultMissingTypeError = 'type must be one of these values - [' + indeces.join(", ") + ']',
-    defaultClean = { id: '123', type: 'geoname' },
-    sanitize = function(query, cb) { _sanitize({'query':query}, cb); }
+    delimiter = ':',
+    defaultLengthError = function(input) { return 'invalid param \''+ input + '\': text length, must be >0' },
+    defaultFormatError = 'invalid: must be of the format type:id for ex: \'geoname:4163334\'',
+    defaultError = 'invalid param \'id\': text length, must be >0',
+    defaultMissingTypeError = function(input) { 
+      var type = input.split(delimiter)[0];
+      return type + ' is invalid. It must be one of these values - [' + indeces.join(", ") + ']'},
+    defaultClean = { ids: [ { id: '123', type: 'geoname' } ] },
+    sanitize = function(query, cb) { _sanitize({'query':query}, cb); },
+    inputs = {
+      valid: [ 'geoname:1', 'osmnode:2', 'admin0:53', 'osmway:44', 'geoname:5' ],
+      invalid: [ ':', '', '::', 'geoname:', ':234', 'gibberish:23' ]
+    };
 
 module.exports.tests = {};
 
@@ -26,37 +32,19 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-module.exports.tests.sanitize_id_and_type = function(test, common) {
-  var inputs = {
-    valid: [
-      'geoname/1',
-      'osmnode/2',
-      'admin0/53',
-      'osmway/44',
-      'geoname/5'
-    ],
-    invalid: [
-      '/',
-      '',
-      '//',
-      'geoname/',
-      '/234',
-      'gibberish/23'
-    ]
-  };
-
+module.exports.tests.sanitize_id = function(test, common) {
   test('invalid input', function(t) {
     inputs.invalid.forEach( function( input ){
       sanitize({ id: input }, function( err, clean ){
         switch (err) {
-          case defaultIdError:
-            t.equal(err, defaultIdError, input + ' is invalid (missing id)'); break;
-          case defaultTypeError:
-            t.equal(err, defaultTypeError, input + ' is invalid (missing type)'); break;
+          case defaultError:
+            t.equal(err, defaultError, input + ' is invalid input'); break;
+          case defaultLengthError(input):
+            t.equal(err, defaultLengthError(input), input + ' is invalid (missing id/type)'); break;
           case defaultFormatError:
             t.equal(err, defaultFormatError, input + ' is invalid (invalid format)'); break;
-          case defaultMissingTypeError:
-            t.equal(err, defaultMissingTypeError, input + ' is an unknown type'); break;
+          case defaultMissingTypeError(input):
+            t.equal(err, defaultMissingTypeError(input), input + ' is an unknown type'); break;
           default: break;
         }
         t.equal(clean, undefined, 'clean not set');
@@ -67,12 +55,48 @@ module.exports.tests.sanitize_id_and_type = function(test, common) {
 
   test('valid input', function(t) {
     inputs.valid.forEach( function( input ){
-      var input_parts = input.split('/');
-      var expected = { id: input_parts[1], type: input_parts[0] };
+      var input_parts = input.split(delimiter);
+      var expected = { ids: [ { id: input_parts[1], type: input_parts[0] } ] };
       sanitize({ id: input }, function( err, clean ){
         t.equal(err, undefined, 'no error (' + input + ')' );
         t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
       });
+    });
+    t.end();
+  });
+};
+
+
+module.exports.tests.sanitize_ids = function(test, common) {
+  test('invalid input', function(t) {
+    sanitize({ id: inputs.invalid }, function( err, clean ){
+      var input = inputs.invalid[0]; // since it breaks on the first invalid element
+      switch (err) {
+        case defaultError:
+          t.equal(err, defaultError, input + ' is invalid input'); break;
+        case defaultLengthError(input):
+          t.equal(err, defaultLengthError(input), input + ' is invalid (missing id/type)'); break;
+        case defaultFormatError:
+          t.equal(err, defaultFormatError, input + ' is invalid (invalid format)'); break;
+        case defaultMissingTypeError(input):
+          t.equal(err, defaultMissingTypeError(input), input + ' is an unknown type'); break;
+        default: break;
+      }
+      t.equal(clean, undefined, 'clean not set');
+    });
+    t.end();
+  });
+
+  test('valid input', function(t) {
+    var expected={};
+    expected.ids = [];
+    inputs.valid.forEach( function( input ){
+      var input_parts = input.split(delimiter);
+      expected.ids.push({ id: input_parts[1], type: input_parts[0] });
+    });
+    sanitize({ id: inputs.valid }, function( err, clean ){
+      t.equal(err, undefined, 'no error' );
+      t.deepEqual(clean, expected, 'clean set correctly');
     });
     t.end();
   });
@@ -102,7 +126,7 @@ module.exports.tests.middleware_failure = function(test, common) {
 
 module.exports.tests.middleware_success = function(test, common) {
   test('middleware success', function(t) {
-    var req = { query: { id: 'geoname/123' }};
+    var req = { query: { id: 'geoname' + delimiter + '123' }};
     var next = function( message ){
       t.equal(message, undefined, 'no error message set');
       t.deepEqual(req.clean, defaultClean);

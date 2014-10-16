@@ -1,5 +1,5 @@
 // validate inputs, convert types and apply defaults
-// id generally looks like 'geoname/4163334' (type/id)
+// id generally looks like 'geoname:4163334' (type:id)
 // so, both type and id are required fields.
 
 function sanitize( req ){
@@ -7,6 +7,7 @@ function sanitize( req ){
   req.clean   = req.clean || {};
   var params  = req.query;
   var indeces = require('../query/indeces');
+  var delim   = ':';
 
   // ensure params is a valid object
   if( Object.prototype.toString.call( params ) !== '[object Object]' ){
@@ -20,38 +21,45 @@ function sanitize( req ){
     }
   };
 
-  // id text
-  if('string' !== typeof params.id || !params.id.length){
+  if(('string' === typeof params.id && !params.id.length) || params.id === undefined){
     return errormessage('id');
   }
 
-  // id format
-  if(params.id.indexOf('/') === -1) {
-    return errormessage('id', 'invalid: must be of the format type/id for ex: \'geoname/4163334\'');
+  if( params && params.id && params.id.length ){
+    req.clean.ids = [];
+    params.ids = Array.isArray(params.id) ? params.id : [params.id];
+    
+    for (var i=0; i<params.ids.length; i++) {
+      var thisparam = params.ids[i];
+    
+      // basic format/ presence of ':'
+      if(thisparam.indexOf(delim) === -1) {
+        return errormessage(null, 'invalid: must be of the format type:id for ex: \'geoname:4163334\'');
+      }
+
+      var param = thisparam.split(delim);
+      var type= param[0];
+      var id  = param[1];
+
+      // id text
+      if('string' !== typeof id || !id.length){
+        return errormessage(thisparam);
+      }
+      // type text
+      if('string' !== typeof type || !type.length){
+        return errormessage(thisparam);
+      }
+      // type text must be one of the indeces
+      if(indeces.indexOf(type) == -1){
+        return errormessage('type', type + ' is invalid. It must be one of these values - [' + indeces.join(", ") + ']');
+      }
+      req.clean.ids.push({
+        id: id,
+        type: type
+      });
+    }
   }
-  req.clean.id = params.id;
-
-  var param = params.id.split('/');
-  var param_type  = param[0];
-  var param_id    = param[1];
-
-  // id text
-  if('string' !== typeof param_id || !param_id.length){
-    return errormessage('id');
-  }
-
-  // type text
-  if('string' !== typeof param_type || !param_type.length){
-    return errormessage('type');
-  }
-
-  // type text must be one of the indeces
-  if(indeces.indexOf(param_type) == -1){
-    return errormessage('type', 'type must be one of these values - [' + indeces.join(", ") + ']');
-  }
-  req.clean.id   = param_id;
-  req.clean.type = param_type;
-
+  
   return { 'error': false };
 
 }

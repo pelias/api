@@ -5,25 +5,36 @@ function setup( backend ){
 
   // allow overriding of dependencies
   backend = backend || require('../src/backend');
-
+  backend = new backend(); 
+  
   function controller( req, res, next ){
     
+    var docs = req.clean.ids.map( function(id) {
+      return {
+        _index: 'pelias',
+        _type: id.type,
+        _id: id.id
+      };
+    });
+
     // backend command
     var cmd = {
-      index: 'pelias',
-      type: req.clean.type,
-      id: req.clean.id
+      body: {
+        docs: docs
+      }
     };
     
-    // query backend
-    backend().client.get( cmd, function( err, data ){
-
+    // query new backend
+    backend.client.mget( cmd, function( err, data ){
+      
       var docs = [];
       // handle backend errors
       if( err ){ return next( err ); }
 
-      if( data && data.found && data._source ){
-        docs.push(data._source);
+      if( data && data.docs && Array.isArray(data.docs) && data.docs.length ){
+        docs = data.docs.map( function( doc ){
+          return doc._source;
+        });
       }
 
       // convert docs to geojson
