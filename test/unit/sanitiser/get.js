@@ -102,6 +102,17 @@ module.exports.tests.sanitize_ids = function(test, common) {
   });
 };
 
+module.exports.tests.de_dupe = function(test, common) {
+  var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ] };
+  test('duplicate ids', function(t) {
+    sanitize( { id: ['geoname:1', 'osmnode:2', 'geoname:1'] }, function( err, clean ){
+      t.equal(err, undefined, 'no error' );
+      t.deepEqual(clean, expected, 'clean set correctly');
+      t.end();
+    });
+  });
+};
+
 module.exports.tests.invalid_params = function(test, common) {
   test('invalid params', function(t) {
     sanitize( undefined, function( err, clean ){

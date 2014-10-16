@@ -29,6 +29,11 @@ function sanitize( req ){
     req.clean.ids = [];
     params.ids = Array.isArray(params.id) ? params.id : [params.id];
     
+    // de-dupe
+    params.ids = params.ids.filter(function(item, pos) {
+      return params.ids.indexOf(item) == pos;
+    });
+
     for (var i=0; i<params.ids.length; i++) {
       var thisparam = params.ids[i];
     
