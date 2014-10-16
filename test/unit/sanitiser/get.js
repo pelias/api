@@ -5,6 +5,7 @@ var get  = require('../../../sanitiser/get'),
     indeces = require('../../../query/indeces'),
     defaultIdError = 'invalid param \'id\': text length, must be >0',
     defaultTypeError = 'invalid param \'type\': text length, must be >0',
+    defaultFormatError = 'invalid: must be of the format type/id for ex: \'geoname/4163334\'',
     defaultError = defaultIdError,
     defaultMissingTypeError = 'type must be one of these values - [' + indeces.join(", ") + ']',
     defaultClean = { id: '123', type: 'geoname' },
@@ -28,31 +29,34 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.sanitize_id_and_type = function(test, common) {
   var inputs = {
     valid: [
-      {id:'1', type:'geoname'},
-      {id:'2', type:'osmnode'},
-      {id:'3', type:'geoname'},
-      {id:'4', type:'osmway'},
-      {id:'5', type:'admin0'}
+      'geoname/1',
+      'osmnode/2',
+      'admin0/53',
+      'osmway/44',
+      'geoname/5'
     ],
-    invalid: [ 
-      {id:undefined, type:undefined},
-      {id:null, type:null},
-      {id:'', type:''},
-      {id:'4', type:''},
-      {id:'5', type:'gibberish'}
+    invalid: [
+      '/',
+      '',
+      '//',
+      'geoname/',
+      '/234',
+      'gibberish/23'
     ]
   };
 
-  test('invalid id and/or type', function(t) {
+  test('invalid input', function(t) {
     inputs.invalid.forEach( function( input ){
-      sanitize({ id: input.id, type: input.type }, function( err, clean ){
+      sanitize({ id: input }, function( err, clean ){
         switch (err) {
           case defaultIdError:
-            t.equal(err, defaultIdError, input.id + ' is invalid (missing id)'); break;
+            t.equal(err, defaultIdError, input + ' is invalid (missing id)'); break;
           case defaultTypeError:
-            t.equal(err, defaultTypeError, input.type + ' is invalid (missing type)'); break;
+            t.equal(err, defaultTypeError, input + ' is invalid (missing type)'); break;
+          case defaultFormatError:
+            t.equal(err, defaultFormatError, input + ' is invalid (invalid format)'); break;
           case defaultMissingTypeError:
-            t.equal(err, defaultMissingTypeError, input.type + ' is an unknown type'); break;
+            t.equal(err, defaultMissingTypeError, input + ' is an unknown type'); break;
           default: break;
         }
         t.equal(clean, undefined, 'clean not set');
@@ -61,12 +65,13 @@ module.exports.tests.sanitize_id_and_type = function(test, common) {
     t.end();
   });
 
-  test('valid id and/or type', function(t) {
+  test('valid input', function(t) {
     inputs.valid.forEach( function( input ){
-      var expected = { id: input.id, type: input.type };
-      sanitize({ id: input.id, type: input.type, }, function( err, clean ){
-        t.equal(err, undefined, 'no error (' + input.id + ', ' + input.type + ')' );
-        t.deepEqual(clean, expected, 'clean set correctly (' + input.id + ', ' + input.type + ')');
+      var input_parts = input.split('/');
+      var expected = { id: input_parts[1], type: input_parts[0] };
+      sanitize({ id: input }, function( err, clean ){
+        t.equal(err, undefined, 'no error (' + input + ')' );
+        t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
       });
     });
     t.end();
@@ -97,7 +102,7 @@ module.exports.tests.middleware_failure = function(test, common) {
 
 module.exports.tests.middleware_success = function(test, common) {
   test('middleware success', function(t) {
-    var req = { query: { id: '123', type: 'geoname' }};
+    var req = { query: { id: 'geoname/123' }};
     var next = function( message ){
       t.equal(message, undefined, 'no error message set');
       t.deepEqual(req.clean, defaultClean);
