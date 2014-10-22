@@ -7,7 +7,7 @@ var tests = [
   require('./controller/suggest'),
   require('./controller/search'),
   require('./sanitiser/suggest'),
-  require('./sanitiser/get'),
+  require('./sanitiser/doc'),
   require('./query/indeces'),
   require('./query/suggest'),
   require('./query/search'),

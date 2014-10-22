@@ -1,6 +1,6 @@
 
-#> valid get query
-path: '/get?id=geoname:4221195&id=geoname:4193595'
+#> valid doc query
+path: '/doc?id=geoname:4221195'
 
 #? 200 ok
 response.statusCode.should.equal 200
