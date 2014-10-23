@@ -1,6 +1,6 @@
-# valid get query
+# valid doc query
 
-*Generated: Thu Oct 16 2014 17:02:52 GMT-0400 (EDT)*
+*Generated: Thu Oct 23 2014 11:58:14 GMT-0400 (EDT)*
 ## Request
 ```javascript
 {
@@ -8,7 +8,7 @@
   "host": "localhost",
   "method": "GET",
   "port": 3100,
-  "path": "/get?id=geoname:4221195"
+  "path": "/doc?id=geoname:4221195"
 }
 ```
 
@@ -25,9 +25,9 @@ Status: 200
   "access-control-allow-headers": "X-Requested-With,content-type",
   "access-control-allow-credentials": "true",
   "content-type": "application/json; charset=utf-8",
-  "content-length": "317",
-  "etag": "W/\"13d-bc388729\"",
-  "date": "Thu, 16 Oct 2014 21:02:52 GMT",
+  "content-length": "311",
+  "etag": "W/\"137-ab9138f7\"",
+  "date": "Thu, 23 Oct 2014 15:58:14 GMT",
   "connection": "close"
 }
 ```
@@ -49,26 +49,15 @@ Status: 200
         "admin0": "United States",
         "admin1": "Georgia",
         "admin2": "Hart County",
-        "text": "Sanders Grove Cemetery, Hart County, United States"
+        "text": "Sanders Grove Cemetery, Hart County, Georgia"
       }
     }
   ],
-  "date": 1413493372842
+  "date": 1414079894512
 }
 ```
 
 ## Tests
-
-### ✓ valid geojson
-```javascript
-json.type.should.equal 'FeatureCollection'
-json.features.should.be.instanceof Array
-```
-
-### ✓ 200 ok
-```javascript
-response.statusCode.should.equal 200
-```
 
 ### ✓ valid response
 ```javascript
@@ -76,5 +65,16 @@ now = new Date().getTime()
 should.exist json
 should.not.exist json.error
 json.date.should.be.within now-5000, now+5000
+```
+
+### ✓ 200 ok
+```javascript
+response.statusCode.should.equal 200
+```
+
+### ✓ valid geojson
+```javascript
+json.type.should.equal 'FeatureCollection'
+json.features.should.be.instanceof Array
 ```
 
