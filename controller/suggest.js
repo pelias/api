@@ -94,14 +94,20 @@ function setup( backend, query ){
     }
 
     async.parallel(async_query, function(err, results) {
-      var splice_length = parseInt((req.clean.size / Object.keys(results).length), 10);
-      
       // results is equal to: {a: docs, b: docs, c: docs}
-      var combined = []; 
+      var combined = [];
+      var total_results = 0;
+      
       for (keys in results) {
+        total_results += results[keys].length;
+      }
+
+      for (keys in results) {
+        var results_length= results[keys].length;
+        var splice_length = parseInt(Math.ceil(results_length*results_length/total_results),10);
         combined = combined.concat(results[keys].splice(0,splice_length));
       }
-      
+      combined = combined.splice(0, req.clean.size);
       combined = dedup(combined);
       respond(combined);
     });
