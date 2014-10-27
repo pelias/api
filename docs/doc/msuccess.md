@@ -1,6 +1,6 @@
-# valid get query
+# valid doc query
 
-*Generated: Thu Oct 16 2014 17:02:52 GMT-0400 (EDT)*
+*Generated: Thu Oct 23 2014 11:58:14 GMT-0400 (EDT)*
 ## Request
 ```javascript
 {
@@ -8,7 +8,7 @@
   "host": "localhost",
   "method": "GET",
   "port": 3100,
-  "path": "/get?id=geoname:4221195&id=geoname:4193595"
+  "path": "/doc?id=geoname:4221195&id=geoname:4193595"
 }
 ```
 
@@ -25,9 +25,9 @@ Status: 200
   "access-control-allow-headers": "X-Requested-With,content-type",
   "access-control-allow-credentials": "true",
   "content-type": "application/json; charset=utf-8",
-  "content-length": "567",
-  "etag": "W/\"237-e0425e36\"",
-  "date": "Thu, 16 Oct 2014 21:02:52 GMT",
+  "content-length": "555",
+  "etag": "W/\"22b-6aa14642\"",
+  "date": "Thu, 23 Oct 2014 15:58:14 GMT",
   "connection": "close"
 }
 ```
@@ -49,7 +49,7 @@ Status: 200
         "admin0": "United States",
         "admin1": "Georgia",
         "admin2": "Hart County",
-        "text": "Sanders Grove Cemetery, Hart County, United States"
+        "text": "Sanders Grove Cemetery, Hart County, Georgia"
       }
     },
     {
@@ -66,15 +66,20 @@ Status: 200
         "admin0": "United States",
         "admin1": "Georgia",
         "admin2": "Butts County",
-        "text": "Etheredge Cemetery, Butts County, United States"
+        "text": "Etheredge Cemetery, Butts County, Georgia"
       }
     }
   ],
-  "date": 1413493372681
+  "date": 1414079894512
 }
 ```
 
 ## Tests
+
+### ✓ 200 ok
+```javascript
+response.statusCode.should.equal 200
+```
 
 ### ✓ valid response
 ```javascript
@@ -88,10 +93,5 @@ json.date.should.be.within now-5000, now+5000
 ```javascript
 json.type.should.equal 'FeatureCollection'
 json.features.should.be.instanceof Array
-```
-
-### ✓ 200 ok
-```javascript
-response.statusCode.should.equal 200
 ```
 

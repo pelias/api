@@ -1,6 +1,6 @@
 # api root
 
-*Generated: Thu Sep 25 2014 19:25:20 GMT+0100 (BST)*
+*Generated: Thu Oct 23 2014 11:58:14 GMT-0400 (EDT)*
 ## Request
 ```javascript
 {
@@ -27,7 +27,7 @@ Status: 200
   "content-type": "application/json; charset=utf-8",
   "content-length": "50",
   "etag": "W/\"32-85536434\"",
-  "date": "Thu, 25 Sep 2014 18:25:20 GMT",
+  "date": "Thu, 23 Oct 2014 15:58:14 GMT",
   "connection": "close"
 }
 ```
@@ -42,9 +42,9 @@ Status: 200
 
 ## Tests
 
-### ✓ vanity header correctly set
+### ✓ endpoint available
 ```javascript
-response.should.have.header 'X-Powered-By','mapzen'
+response.statusCode.should.equal 200
 ```
 
 ### ✓ server header correctly set
@@ -53,9 +53,9 @@ response.should.have.header 'Server'
 response.headers.server.should.match /Pelias\/\d{1,2}\.\d{1,2}\.\d{1,2}/
 ```
 
-### ✓ content-type header correctly set
+### ✓ vanity header correctly set
 ```javascript
-response.should.have.header 'Content-Type','application/json; charset=utf-8'
+response.should.have.header 'X-Powered-By','mapzen'
 ```
 
 ### ✓ cache-control header correctly set
@@ -70,9 +70,9 @@ should.exist json.name
 should.exist json.version
 ```
 
-### ✓ endpoint available
+### ✓ content-type header correctly set
 ```javascript
-response.statusCode.should.equal 200
+response.should.have.header 'Content-Type','application/json; charset=utf-8'
 ```
 
 ### ✓ charset header correctly set
