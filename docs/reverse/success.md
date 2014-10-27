@@ -1,6 +1,6 @@
 # valid reverse query
 
-*Generated: Thu Sep 25 2014 19:25:20 GMT+0100 (BST)*
+*Generated: Thu Oct 23 2014 11:58:15 GMT-0400 (EDT)*
 ## Request
 ```javascript
 {
@@ -25,9 +25,9 @@ Status: 200
   "access-control-allow-headers": "X-Requested-With,content-type",
   "access-control-allow-credentials": "true",
   "content-type": "application/json; charset=utf-8",
-  "content-length": "263",
-  "etag": "W/\"107-75b55c25\"",
-  "date": "Thu, 25 Sep 2014 18:25:20 GMT",
+  "content-length": "282",
+  "etag": "W/\"11a-95fc1500\"",
+  "date": "Thu, 23 Oct 2014 15:58:15 GMT",
   "connection": "close"
 }
 ```
@@ -40,19 +40,20 @@ Status: 200
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -82.506198,
-          29.542519
+          -82.50622,
+          29.49136
         ]
       },
       "properties": {
-        "name": "Archer",
+        "name": "Adam",
         "admin0": "United States",
-        "admin1": "*florida",
-        "text": "Archer, *florida, United States"
+        "admin1": "Florida",
+        "admin2": "Alachua County",
+        "text": "Adam, Alachua County, Florida"
       }
     }
   ],
-  "date": 1411669520735
+  "date": 1414079895606
 }
 ```
 
@@ -63,17 +64,17 @@ Status: 200
 response.statusCode.should.equal 200
 ```
 
+### ✓ valid geojson
+```javascript
+json.type.should.equal 'FeatureCollection'
+json.features.should.be.instanceof Array
+```
+
 ### ✓ valid response
 ```javascript
 now = new Date().getTime()
 should.exist json
 should.not.exist json.error
 json.date.should.be.within now-5000, now+5000
-```
-
-### ✓ valid geojson
-```javascript
-json.type.should.equal 'FeatureCollection'
-json.features.should.be.instanceof Array
 ```
 
