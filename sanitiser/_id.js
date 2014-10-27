@@ -42,9 +42,9 @@ function sanitize( req ){
         return errormessage(null, 'invalid: must be of the format type:id for ex: \'geoname:4163334\'');
       }
 
-      var param = thisparam.split(delim);
-      var type= param[0];
-      var id  = param[1];
+      var param_index = thisparam.indexOf(delim);
+      var type = thisparam.substring(0, param_index );
+      var id   = thisparam.substring(param_index + 1);
 
       // id text
       if('string' !== typeof id || !id.length){
