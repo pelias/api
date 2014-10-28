@@ -1,5 +1,5 @@
 
-var setup = require('../../../controller/suggest'),
+var setup = require('../../../controller/suggest_poi'),
     mockBackend = require('../mock/backend'),
     mockQuery = require('../mock/query');
 
