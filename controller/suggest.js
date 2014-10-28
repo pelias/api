@@ -63,7 +63,7 @@ function setup( backend, query ){
           cmd.body = query_admin( req.clean, 3 );
           query_backend(cmd, callback);
         },
-        d: function(callback){
+        b: function(callback){
           cmd.body = query_admin( req.clean, 1 );
           query_backend(cmd, callback);
         },
