@@ -1,5 +1,5 @@
 
-var generate = require('../../../query/suggest_poi');
+var generate = require('../../../query/suggest');
 
 module.exports.tests = {};
 

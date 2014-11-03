@@ -4,17 +4,19 @@ var async = require('async');
 
 function setup( backend, query ){
 
+  // allow overriding of dependencies
+  backend = backend || require('../src/backend');
+  query = query || require('../query/suggest');
+
   function controller( req, res, next ){
 
-    // combine the 2 queries
-
-    // allow overriding of dependencies
-    backend = backend || require('../src/backend');
-    var query_admin = require('../query/suggest_admin');
-    var query_poi = require('../query/suggest_poi');
     var cmd = {
-      index: 'pelias'
+      index: 'pelias',
+      body: query( req.clean )
     };
+
+    var SIZE = req.clean.size || 10;
+
     var query_backend = function(cmd, callback) {
       // query backend
       backend().client.suggest( cmd, function( err, data ){
@@ -55,57 +57,67 @@ function setup( backend, query ){
       return res.status(200).json( geojson );
     };
 
-    var async_query;
+    if (req.clean.input) {
+      var async_query;
 
-    if (req.clean.input.length < 4 && isNaN(parseInt(req.clean.input, 10))) {
-      async_query = {
-        a: function(callback){
-          cmd.body = query_admin( req.clean, 3 );
-          query_backend(cmd, callback);
-        },
-        b: function(callback){
-          cmd.body = query_admin( req.clean, 1 );
-          query_backend(cmd, callback);
-        },
-        c: function(callback) {
-          cmd.body = query_poi( req.clean, 3 );
-          query_backend(cmd, callback);
+      // admin only
+      req.admin = {};
+      for (k in req.clean) { req.admin[k] = req.clean[k] }
+      req.admin.layers = ['admin0','admin1','admin2'];
+
+      if (req.clean.input.length < 4 && isNaN(parseInt(req.clean.input, 10))) {
+        async_query = {
+          a: function(callback){
+            cmd.body = query( req.admin, 3 );
+            query_backend(cmd, callback);
+          },
+          b: function(callback){
+            cmd.body = query( req.admin, 1 );
+            query_backend(cmd, callback);
+          },
+          c: function(callback) {
+            cmd.body = query( req.clean, 3 );
+            query_backend(cmd, callback);
+          }
+        }
+      } else {
+        async_query = {
+          a: function(callback){
+            cmd.body = query( req.clean, 5);
+            query_backend(cmd, callback);
+          },
+          b: function(callback){
+            cmd.body = query( req.clean, 3);
+            query_backend(cmd, callback);
+          },
+          c: function(callback){
+            cmd.body = query( req.clean, 1 );
+            query_backend(cmd, callback);
+          },
+          d: function(callback){
+            cmd.body = query( req.admin );
+            query_backend(cmd, callback);
+          }
         }
       }
+      
+      async.parallel(async_query, function(err, results) {
+        var splice_length = parseInt((SIZE / Object.keys(results).length), 10);
+        // results is equal to: {a: docs, b: docs, c: docs}
+        var combined = []; 
+        for (keys in results) {
+          combined = combined.concat(results[keys].splice(0,splice_length));
+        }
+        
+        combined = dedup(combined);
+        respond(combined);
+      });
     } else {
-      async_query = {
-        a: function(callback){
-          cmd.body = query_poi( req.clean, 5);
-          query_backend(cmd, callback);
-        },
-        b: function(callback){
-          cmd.body = query_poi( req.clean, 3);
-          query_backend(cmd, callback);
-        },
-        c: function(callback){
-          cmd.body = query_poi( req.clean, 1 );
-          query_backend(cmd, callback);
-        },
-        d: function(callback){
-          cmd.body = query_admin( req.clean );
-          query_backend(cmd, callback);
-        }
-      }
+      query_backend(cmd, function(err, results) {
+        respond(results);
+      });
     }
-
-    async.parallel(async_query, function(err, results) {
-      var splice_length = parseInt((req.clean.size / Object.keys(results).length), 10);
-      
-      // results is equal to: {a: docs, b: docs, c: docs}
-      var combined = []; 
-      for (keys in results) {
-        combined = combined.concat(results[keys].splice(0,splice_length));
-      }
-      
-      combined = dedup(combined);
-      respond(combined);
-    });
-
+  
   }
 
   return controller;
