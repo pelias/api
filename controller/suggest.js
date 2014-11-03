@@ -1,4 +1,5 @@
 
+var service = { suggest: require('../service/suggest') };
 var geojsonify = require('../helper/geojsonify').suggest;
 
 function setup( backend, query ){
@@ -16,17 +17,10 @@ function setup( backend, query ){
     };
 
     // query backend
-    backend().client.suggest( cmd, function( err, data ){
+    service.suggest( backend, cmd, function( err, docs ){
 
-      var docs = [];
-
-      // handle backend errors
+      // error handler
       if( err ){ return next( err ); }
-
-      // map response to a valid FeatureCollection
-      if( data && Array.isArray( data.pelias ) && data.pelias.length ){
-        docs = data['pelias'][0].options || [];
-      }
 
       // convert docs to geojson
       var geojson = geojsonify( docs );
