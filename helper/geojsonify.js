@@ -14,10 +14,15 @@ function search( docs ){
   // flatten & expand data for geojson conversion
   var geodata = docs.map( function( doc ){
 
-    var output = {};
-
     // something went very wrong
     if( !doc ) return warning();
+
+    var output = {};
+
+    // provide metadata to consumer
+    output.id = doc._id;
+    output.type = doc._type;
+    output.layer = doc._type;
 
     // map center_point
     if( !doc.center_point ) return warning();

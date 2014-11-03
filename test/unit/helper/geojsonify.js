@@ -15,6 +15,8 @@ module.exports.tests.search = function(test, common) {
 
   var input = [
     {
+      "_id": "id1",
+      "_type": "type1",
       "center_point": {
         "lat": 51.5337144,
         "lon": -0.1069716
@@ -48,6 +50,8 @@ module.exports.tests.search = function(test, common) {
       }
     },
     {
+      "_id": "id2",
+      "_type": "type2",
       "type": "way",
       "name": {
         "default": "Blues Cafe"
@@ -90,6 +94,9 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         "properties": {
+          "id": "id1",
+          "type": "type1",
+          "layer": "type1",
           "text": "'Round Midnight Jazz and Blues Bar, Angel, United Kingdom",
           "name": "'Round Midnight Jazz and Blues Bar",
           "alpha3": "GBR",
@@ -112,6 +119,9 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         "properties": {
+          "id": "id2",
+          "type": "type2",
+          "layer": "type2",
           "text": "Blues Cafe, Smithfield, United Kingdom",
           "name": "Blues Cafe",
           "alpha3": "GBR",
