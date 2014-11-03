@@ -1,18 +1,31 @@
 
-var mockPayload = {
-  id: 'mocktype/mockid',
-  geo: '101,-10.1'
-};
 
 var responses = {};
 responses['client/suggest/ok/1'] = function( cmd, cb ){
-  return cb( undefined, suggestEnvelope([ { value: 1, payload: mockPayload }, { value: 2, payload: mockPayload } ]) );
+  return cb( undefined, suggestEnvelope([ { score: 1, text: 'mocktype:mockid' }, { score: 2, text: 'mocktype:mockid' } ]) );
 };
 responses['client/suggest/fail/1'] = function( cmd, cb ){
   return cb( 'a backend error occurred' );
 };
 responses['client/search/ok/1'] = function( cmd, cb ){
   return cb( undefined, searchEnvelope([{
+    _source: {
+      value: 1,
+      center_point: { lat: 100.1, lon: -50.5 },
+      name: { default: 'test name1' },
+      admin0: 'country1', admin1: 'state1', admin2: 'city1'
+    }
+  }, {
+    _source: {
+      value: 2,
+      center_point: { lat: 100.2, lon: -51.5 },
+      name: { default: 'test name2' },
+      admin0: 'country2', admin1: 'state2', admin2: 'city2'
+    }
+  }]));
+};
+responses['client/mget/ok/1'] = function( cmd, cb ){
+  return cb( undefined, mgetEnvelope([{
     _source: {
       value: 1,
       center_point: { lat: 100.1, lon: -50.5 },
@@ -43,6 +56,10 @@ function setup( key, cmdCb ){
         search: function( cmd, cb ){
           if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
           return responses[key].apply( this, arguments );
+        },
+        mget: function( cmd, cb ){
+          if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
+          return responses['client/mget/ok/1'].apply( this, arguments );
         }
       }
     };
@@ -56,6 +73,10 @@ function suggestEnvelope( options ){
 
 function searchEnvelope( options ){
   return { hits: { total: options.length, hits: options } };
+}
+
+function mgetEnvelope( options ){
+  return { docs: options };
 }
 
 module.exports = setup;

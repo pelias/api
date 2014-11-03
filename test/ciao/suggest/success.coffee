@@ -12,5 +12,6 @@ should.not.exist json.error
 json.date.should.be.within now-5000, now+5000
 
 #? valid geojson
+console.log( json );
 json.type.should.equal 'FeatureCollection'
 json.features.should.be.instanceof Array

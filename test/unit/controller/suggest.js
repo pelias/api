@@ -16,34 +16,42 @@ module.exports.tests.interface = function(test, common) {
 // functionally test controller (backend success)
 module.exports.tests.functional_success = function(test, common) {
 
-  // expected geojson features for 'client/suggest/ok/1' fixture
+  // expected geojson features for 'client/mget/ok/1' fixture
   var expected = [{
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [ 101, -10.1 ]
+      coordinates: [ -50.5, 100.1 ]
     },
     properties: {
-      id: 'mockid',
-      type: 'mocktype',
-      value: 1
+      name: 'test name1',
+      admin0: 'country1',
+      admin1: 'state1',
+      admin2: 'city1'
     }
   }, {
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [ 101, -10.1 ]
+      coordinates: [ -51.5, 100.2 ]
     },
     properties: {
-      id: 'mockid',
-      type: 'mocktype',
-      value: 2
+      name: 'test name2',
+      admin0: 'country2',
+      admin1: 'state2',
+      admin2: 'city2'
     }
   }];
 
   test('functional success', function(t) {
+    var i = 0;
     var backend = mockBackend( 'client/suggest/ok/1', function( cmd ){
-      t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct backend command');
+      // the backend executes 2 commands, so we check them both
+      if( ++i === 1 ){
+        t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct suggest command');
+      } else {
+        t.deepEqual(cmd, { body: { docs: [ { _id: 'mockid', _index: 'pelias', _type: 'mocktype' }, { _id: 'mockid', _index: 'pelias', _type: 'mocktype' } ] } }, 'correct mget command');
+      }
     });
     var controller = setup( backend, mockQuery() );
     var res = {
@@ -52,6 +60,9 @@ module.exports.tests.functional_success = function(test, common) {
         return res;
       },
       json: function( json ){
+
+        console.log( 'json', json );
+
         t.equal(typeof json, 'object', 'returns json');
         t.equal(typeof json.date, 'number', 'date set');
         t.equal(json.type, 'FeatureCollection', 'valid geojson');
