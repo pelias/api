@@ -1,7 +1,7 @@
 
 /**
 
-  query can be any valid ES query
+  cmd can be any valid ES query command
 
 **/
 
