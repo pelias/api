@@ -1,4 +1,5 @@
 
+var service = { search: require('../service/search') };
 var geojsonify = require('../helper/geojsonify').search;
 
 function setup( backend, query ){
@@ -18,19 +19,12 @@ function setup( backend, query ){
     if (req.clean.layers) {
       cmd.type = req.clean.layers;
     }
+
     // query backend
-    backend().client.search( cmd, function( err, data ){
+    service.search( backend, cmd, function( err, docs ){
 
-      var docs = [];
-
-      // handle backend errors
+      // error handler
       if( err ){ return next( err ); }
-
-      if( data && data.hits && data.hits.total && Array.isArray(data.hits.hits)){
-        docs = data.hits.hits.map( function( hit ){
-          return hit._source;
-        });
-      }
 
       // convert docs to geojson
       var geojson = geojsonify( docs );
