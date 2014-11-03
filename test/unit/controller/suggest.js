@@ -27,7 +27,8 @@ module.exports.tests.functional_success = function(test, common) {
       name: 'test name1',
       admin0: 'country1',
       admin1: 'state1',
-      admin2: 'city1'
+      admin2: 'city1',
+      text: 'test name1, city1, state1'
     }
   }, {
     type: 'Feature',
@@ -39,7 +40,8 @@ module.exports.tests.functional_success = function(test, common) {
       name: 'test name2',
       admin0: 'country2',
       admin1: 'state2',
-      admin2: 'city2'
+      admin2: 'city2',
+      text: 'test name2, city2, state2'
     }
   }];
 

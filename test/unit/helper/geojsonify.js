@@ -72,7 +72,7 @@ module.exports.tests.search = function(test, common) {
           "id": "osmway/147495160",
           "geo": "-0.101795,51.517806"
         },
-        "output": "Blues Cafe, Smithfield, United Kingdom"
+        "output": "Blues Cafe, test3, COL"
       }
     }
   ];

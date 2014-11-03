@@ -1,5 +1,6 @@
 
-var GeoJSON = require('geojson');
+var GeoJSON = require('geojson'),
+    outputGenerator = require('./outputGenerator');
 
 function search( docs ){
 
@@ -37,10 +38,8 @@ function search( docs ){
     if( doc.locality ){ output.locality = doc.locality; }
     if( doc.neighborhood ){ output.neighborhood = doc.neighborhood; }
 
-    // map suggest output
-    if( doc.suggest && doc.suggest.output ){
-      output.text = doc.suggest.output;
-    }
+    // generate region-specific text string
+    output.text = outputGenerator( doc );
 
     return output;
 
