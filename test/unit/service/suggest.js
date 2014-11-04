@@ -16,14 +16,16 @@ module.exports.tests.interface = function(test, common) {
 // functionally test service 
 module.exports.tests.functional_success = function(test, common) {
 
-  var mockPayload = {
-    id: 'mocktype/mockid',
-    geo: '101,-10.1'
+  var mockPayload = function(id){
+    return { 
+      id: 'mocktype/mockid'+id,
+      geo: '101,-10.1'
+    }
   };
 
   var expected = [ 
-    { value: 1, payload: mockPayload }, 
-    { value: 2, payload: mockPayload } 
+    { value: 1, payload: mockPayload(1) }, 
+    { value: 2, payload: mockPayload(2) } 
   ];
 
   test('valid ES query', function(t) {
