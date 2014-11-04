@@ -4,6 +4,7 @@ var common = {};
 
 var tests = [
   require('./controller/index'),
+  require('./controller/doc'),
   require('./controller/suggest'),
   require('./controller/search'),
   require('./sanitiser/suggest'),
