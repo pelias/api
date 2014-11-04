@@ -1,7 +1,6 @@
 
 var setup = require('../../../controller/doc'),
-    mockBackend = require('../mock/backend'),
-    mockQuery = require('../mock/query');
+    mockBackend = require('../mock/backend');
 
 module.exports.tests = {};
 
@@ -47,7 +46,7 @@ module.exports.tests.functional_success = function(test, common) {
     var backend = mockBackend( 'client/doc/ok/1', function( cmd ){
       t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'a' } ] } }, 'correct backend command');
     });
-    var controller = setup( backend, mockQuery() );
+    var controller = setup( backend );
     var res = {
       status: function( code ){
         t.equal(code, 200, 'status set');
@@ -72,7 +71,7 @@ module.exports.tests.functional_failure = function(test, common) {
     var backend = mockBackend( 'client/doc/fail/1', function( cmd ){
       t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'b' } ] } }, 'correct backend command');
     });
-    var controller = setup( backend, mockQuery() );
+    var controller = setup( backend );
     var next = function( message ){
       t.equal(message,'a backend error occurred','error passed to errorHandler');
       t.end();
