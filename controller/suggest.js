@@ -62,34 +62,34 @@ function setup( backend, query ){
 
       if (req.clean.input.length < 4 && isNaN(parseInt(req.clean.input, 10))) {
         async_query = {
-          a: function(callback){
+          admin_3p: function(callback){
             cmd.body = query( req.admin, 3 );
             query_backend(cmd, callback);
           },
-          b: function(callback){
+          admin_1p: function(callback){
             cmd.body = query( req.admin, 1 );
             query_backend(cmd, callback);
           },
-          c: function(callback) {
+          all_3p: function(callback) {
             cmd.body = query( req.clean, 3 );
             query_backend(cmd, callback);
           }
         }
       } else {
         async_query = {
-          a: function(callback){
+          all_5p: function(callback){
             cmd.body = query( req.clean, 5);
             query_backend(cmd, callback);
           },
-          b: function(callback){
+          all_3p: function(callback){
             cmd.body = query( req.clean, 3);
             query_backend(cmd, callback);
           },
-          c: function(callback){
+          all_1p: function(callback){
             cmd.body = query( req.clean, 1 );
             query_backend(cmd, callback);
           },
-          d: function(callback){
+          admin_1p: function(callback){
             cmd.body = query( req.admin );
             query_backend(cmd, callback);
           }
@@ -97,12 +97,14 @@ function setup( backend, query ){
       }
       
       async.parallel(async_query, function(err, results) {
-        var splice_length = parseInt((SIZE / Object.keys(results).length), 10);
         // results is equal to: {a: docs, b: docs, c: docs}
+        var splice_length = parseInt((SIZE / Object.keys(results).length), 10);
+        var results_keys = Object.keys(async_query);
+        
         var combined = []; 
-        for (keys in results) {
-          combined = combined.concat(results[keys].splice(0,splice_length));
-        }
+        results_keys.forEach(function(key){
+          combined = combined.concat(results[key].splice(0,splice_length));
+        });
         
         combined = dedup(combined);
         respond(combined);
