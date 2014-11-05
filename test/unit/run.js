@@ -4,8 +4,12 @@ var common = {};
 
 var tests = [
   require('./controller/index'),
+  require('./controller/doc'),
   require('./controller/suggest'),
   require('./controller/search'),
+  require('./service/mget'),
+  require('./service/search'),
+  require('./service/suggest'),
   require('./sanitiser/suggest'),
   require('./sanitiser/doc'),
   require('./query/indeces'),
