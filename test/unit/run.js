@@ -6,7 +6,7 @@ var tests = [
   require('./controller/index'),
   require('./controller/doc'),
   require('./controller/suggest'),
-  require('./controller/suggest_near_me'),
+  require('./controller/suggest_nearby'),
   require('./controller/search'),
   require('./service/mget'),
   require('./service/search'),
