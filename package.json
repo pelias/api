@@ -36,7 +36,8 @@
     "geojson": "^0.2.0",
     "geopipes-elasticsearch-backend": "0.0.8",
     "pelias-esclient": "0.0.25",
-    "toobusy": "^0.2.4"
+    "toobusy": "^0.2.4",
+    "async": "^0.9.0"
   },
   "devDependencies": {
     "ciao": "^0.3.4",

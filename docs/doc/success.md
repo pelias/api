@@ -1,6 +1,6 @@
 # valid doc query
 
-*Generated: Thu Oct 23 2014 11:58:14 GMT-0400 (EDT)*
+*Generated: Thu Nov 06 2014 11:44:20 GMT-0500 (EST)*
 ## Request
 ```javascript
 {
@@ -26,8 +26,8 @@ Status: 200
   "access-control-allow-credentials": "true",
   "content-type": "application/json; charset=utf-8",
   "content-length": "311",
-  "etag": "W/\"137-ab9138f7\"",
-  "date": "Thu, 23 Oct 2014 15:58:14 GMT",
+  "etag": "W/\"137-1644173e\"",
+  "date": "Thu, 06 Nov 2014 16:44:20 GMT",
   "connection": "close"
 }
 ```
@@ -53,11 +53,17 @@ Status: 200
       }
     }
   ],
-  "date": 1414079894512
+  "date": 1415292260057
 }
 ```
 
 ## Tests
+
+### ✓ valid geojson
+```javascript
+json.type.should.equal 'FeatureCollection'
+json.features.should.be.instanceof Array
+```
 
 ### ✓ valid response
 ```javascript
@@ -70,11 +76,5 @@ json.date.should.be.within now-5000, now+5000
 ### ✓ 200 ok
 ```javascript
 response.statusCode.should.equal 200
-```
-
-### ✓ valid geojson
-```javascript
-json.type.should.equal 'FeatureCollection'
-json.features.should.be.instanceof Array
 ```
 
