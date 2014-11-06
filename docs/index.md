@@ -1,6 +1,6 @@
 # api root
 
-*Generated: Thu Oct 23 2014 11:58:14 GMT-0400 (EDT)*
+*Generated: Thu Nov 06 2014 11:44:19 GMT-0500 (EST)*
 ## Request
 ```javascript
 {
@@ -27,7 +27,7 @@ Status: 200
   "content-type": "application/json; charset=utf-8",
   "content-length": "50",
   "etag": "W/\"32-85536434\"",
-  "date": "Thu, 23 Oct 2014 15:58:14 GMT",
+  "date": "Thu, 06 Nov 2014 16:44:19 GMT",
   "connection": "close"
 }
 ```
@@ -42,6 +42,11 @@ Status: 200
 
 ## Tests
 
+### ✓ charset header correctly set
+```javascript
+response.should.have.header 'Charset','utf8'
+```
+
 ### ✓ endpoint available
 ```javascript
 response.statusCode.should.equal 200
@@ -53,16 +58,6 @@ response.should.have.header 'Server'
 response.headers.server.should.match /Pelias\/\d{1,2}\.\d{1,2}\.\d{1,2}/
 ```
 
-### ✓ vanity header correctly set
-```javascript
-response.should.have.header 'X-Powered-By','mapzen'
-```
-
-### ✓ cache-control header correctly set
-```javascript
-response.should.have.header 'Cache-Control','public,max-age=60'
-```
-
 ### ✓ should respond in json with server info
 ```javascript
 should.exist json
@@ -70,13 +65,18 @@ should.exist json.name
 should.exist json.version
 ```
 
+### ✓ vanity header correctly set
+```javascript
+response.should.have.header 'X-Powered-By','mapzen'
+```
+
 ### ✓ content-type header correctly set
 ```javascript
 response.should.have.header 'Content-Type','application/json; charset=utf-8'
 ```
 
-### ✓ charset header correctly set
+### ✓ cache-control header correctly set
 ```javascript
-response.should.have.header 'Charset','utf8'
+response.should.have.header 'Cache-Control','public,max-age=60'
 ```
 
