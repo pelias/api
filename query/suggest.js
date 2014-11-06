@@ -25,6 +25,9 @@ function generate( params, precision ){
       'completion' : {
         'size' : params.size,
         'field' : 'suggest',
+        'fuzzy' : {
+          'fuzziness' : 2
+        },
         'context': {
           'dataset': params.layers,
           'location': {
