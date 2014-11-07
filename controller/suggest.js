@@ -95,15 +95,6 @@ function setup( backend, query ){
           }
         }
       }
-      
-      // fuzzy
-      async_query.fuzzy = function(callback){
-        cmd.body = query( req.clean );
-        cmd.body.pelias.completion.fuzzy = {
-          'fuzziness': 2
-        };
-        query_backend(cmd, callback);
-      }
 
       async.parallel(async_query, function(err, results) {
         // results is equal to: {a: docs, b: docs, c: docs}
