@@ -40,6 +40,12 @@ function setup( backend, query ){
       });
     };
 
+    var sort_by_score = function(combined) {
+      return combined.sort(function(a,b) {
+        return b.score - a.score;
+      });
+    };
+
     var respond = function(data) {
 
       // convert docs to geojson
@@ -96,6 +102,15 @@ function setup( backend, query ){
         }
       }
 
+      // fuzzy
+      async_query.fuzzy = function(callback){
+        cmd.body = query( req.clean, 3 );
+        cmd.body.pelias.completion.fuzzy = {
+          'fuzziness': 'AUTO'
+        };
+        query_backend(cmd, callback);
+      };
+
       async.parallel(async_query, function(err, results) {
         // results is equal to: {a: docs, b: docs, c: docs}
         var splice_length = parseInt((SIZE / Object.keys(results).length), 10);
@@ -103,7 +118,7 @@ function setup( backend, query ){
         
         var combined = []; 
         results_keys.forEach(function(key){
-          combined = combined.concat(results[key].splice(0,splice_length));
+          combined = combined.concat(sort_by_score(results[key]).splice(0,splice_length));
         });
         
         combined = dedup(combined);
