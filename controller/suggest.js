@@ -104,10 +104,7 @@ function setup( backend, query ){
 
       // fuzzy
       async_query.fuzzy = function(callback){
-        cmd.body = query( req.clean, 3 );
-        cmd.body.pelias.completion.fuzzy = {
-          'fuzziness': 'AUTO'
-        };
+        cmd.body = query( req.clean, 3, 'AUTO' );
         query_backend(cmd, callback);
       };
 

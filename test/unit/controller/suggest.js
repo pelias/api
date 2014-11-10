@@ -43,6 +43,7 @@ module.exports.tests.functional_success = function(test, common) {
 
   test('functional success', function(t) {
     var backend = mockBackend( 'client/suggest/ok/1', function( cmd ){
+      console.log(cmd)
       if (cmd.body.layers) {
         // layers are set exclusively for admin: test for admin-only layers
         t.deepEqual(cmd, { body: { input: 'b', layers: [ 'admin0', 'admin1', 'admin2' ] }, index: 'pelias' }, 'correct backend command');  
