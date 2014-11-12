@@ -1,6 +1,6 @@
 # valid search query
 
-*Generated: Thu Oct 23 2014 11:58:15 GMT-0400 (EDT)*
+*Generated: Thu Nov 06 2014 11:44:19 GMT-0500 (EST)*
 ## Request
 ```javascript
 {
@@ -26,8 +26,8 @@ Status: 200
   "access-control-allow-credentials": "true",
   "content-type": "application/json; charset=utf-8",
   "content-length": "2398",
-  "etag": "W/\"0tqT2h50EMVuqDtvmB5nAQ==\"",
-  "date": "Thu, 23 Oct 2014 15:58:15 GMT",
+  "etag": "W/\"NldeHivz2maJ3rqa73a+2w==\"",
+  "date": "Thu, 06 Nov 2014 16:44:19 GMT",
   "connection": "close"
 }
 ```
@@ -206,7 +206,7 @@ Status: 200
       }
     }
   ],
-  "date": 1414079895605
+  "date": 1415292259730
 }
 ```
 
@@ -220,14 +220,14 @@ should.not.exist json.error
 json.date.should.be.within now-5000, now+5000
 ```
 
+### ✓ 200 ok
+```javascript
+response.statusCode.should.equal 200
+```
+
 ### ✓ valid geojson
 ```javascript
 json.type.should.equal 'FeatureCollection'
 json.features.should.be.instanceof Array
-```
-
-### ✓ 200 ok
-```javascript
-response.statusCode.should.equal 200
 ```
 
