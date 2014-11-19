@@ -1,6 +1,9 @@
 
-var service = { suggest: require('../service/suggest') };
-var geojsonify = require('../helper/geojsonify').suggest;
+var service = {
+  suggest: require('../service/suggest'),
+  mget: require('../service/mget')
+};
+var geojsonify = require('../helper/geojsonify').search;
 var async = require('async');
 
 function setup( backend, query ){
@@ -32,24 +35,53 @@ function setup( backend, query ){
     var dedup = function(combined) {
       var unique_ids = [];
       return combined.filter(function(item, pos) {
-        if (unique_ids.indexOf(item.payload.id) == -1) {
-          unique_ids.push(item.payload.id);
+        if (unique_ids.indexOf(item.text) == -1) {
+          unique_ids.push(item.text);
           return true;  
         }
         return false;
       });
     };
 
-    var respond = function(data) {
-
+    var reply = function(docs) {
+      
       // convert docs to geojson
-      var geojson = geojsonify( data );
+      var geojson = geojsonify( docs );
 
       // response envelope
       geojson.date = new Date().getTime();
 
       // respond
       return res.status(200).json( geojson );
+    };
+
+    var respond = function(data) {
+
+      // no documents suggested, return empty array to avoid ActionRequestValidationException
+      if( !Array.isArray( data ) || !data.length ){
+        return reply([]);
+      }
+
+      // map suggester output to mget query
+      var query = data.map( function( doc ) {
+        var idParts = doc.text.split(':');
+        return {
+          _index: 'pelias',
+          _type: idParts[0],
+          _id: idParts[1]
+        };
+      });
+
+      service.mget( backend, query, function( err, docs ){
+
+        // error handler
+        if( err ){ return next( err ); }
+
+        // reply
+        return reply( docs );
+
+      });
+
     };
 
     if (req.clean.input) {

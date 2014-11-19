@@ -16,12 +16,14 @@ module.exports.tests.functional_success = function(test, common) {
 
   var expected = [
     {
+      _id: 'myid1', _type: 'mytype1',
       value: 1,
       center_point: { lat: 100.1, lon: -50.5 },
       name: { default: 'test name1' },
       admin0: 'country1', admin1: 'state1', admin2: 'city1'
     }, 
     {
+      _id: 'myid2', _type: 'mytype2',
       value: 2,
       center_point: { lat: 100.2, lon: -51.5 },
       name: { default: 'test name2' },
@@ -30,7 +32,7 @@ module.exports.tests.functional_success = function(test, common) {
   ];
 
   test('valid query', function(t) {
-    var backend = mockBackend( 'client/doc/ok/1', function( cmd ){
+    var backend = mockBackend( 'client/mget/ok/1', function( cmd ){
       t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'a' } ] } }, 'correct backend command');
     });
     setup( backend, [ { _id: 123, _index: 'pelias', _type: 'a' } ], function(err, data) {
@@ -56,7 +58,7 @@ module.exports.tests.functional_failure = function(test, common) {
       { }
     ];
 
-    var backend = mockBackend( 'client/doc/fail/1', function( cmd ){
+    var backend = mockBackend( 'client/mget/fail/1', function( cmd ){
       t.notDeepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'a' } ] } }, 'incorrect backend command');
     });
     invalid_queries.forEach(function(query) {
