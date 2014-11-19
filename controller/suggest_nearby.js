@@ -1,12 +1,12 @@
 
-var service = { search: require('../service/search') };
-var geojsonify = require('../helper/geojsonify').search;
+var service = { suggest: require('../service/suggest') };
+var geojsonify = require('../helper/geojsonify').suggest;
 
 function setup( backend, query ){
 
   // allow overriding of dependencies
   backend = backend || require('../src/backend');
-  query = query || require('../query/search');
+  query = query || require('../query/suggest');
 
   function controller( req, res, next ){
 
@@ -16,12 +16,8 @@ function setup( backend, query ){
       body: query( req.clean )
     };
 
-    if (req.clean.layers) {
-      cmd.type = req.clean.layers;
-    }
-
     // query backend
-    service.search( backend, cmd, function( err, docs ){
+    service.suggest( backend, cmd, function( err, docs ){
 
       // error handler
       if( err ){ return next( err ); }

@@ -1,27 +1,23 @@
 
-var service = { search: require('../service/search') };
+var service = { mget: require('../service/mget') };
 var geojsonify = require('../helper/geojsonify').search;
 
-function setup( backend, query ){
+function setup( backend ){
 
   // allow overriding of dependencies
   backend = backend || require('../src/backend');
-  query = query || require('../query/search');
-
+  
   function controller( req, res, next ){
+    
+    var query = req.clean.ids.map( function(id) {
+      return {
+        _index: 'pelias',
+        _type: id.type,
+        _id: id.id
+      };
+    });
 
-    // backend command
-    var cmd = {
-      index: 'pelias',
-      body: query( req.clean )
-    };
-
-    if (req.clean.layers) {
-      cmd.type = req.clean.layers;
-    }
-
-    // query backend
-    service.search( backend, cmd, function( err, docs ){
+    service.mget( backend, query, function( err, docs ){
 
       // error handler
       if( err ){ return next( err ); }
@@ -34,6 +30,7 @@ function setup( backend, query ){
 
       // respond
       return res.status(200).json( geojson );
+
     });
 
   }

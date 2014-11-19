@@ -1,7 +1,6 @@
 
-var setup = require('../../../controller/suggest'),
-    mockBackend = require('../mock/backend'),
-    mockQuery = require('../mock/query');
+var setup = require('../../../controller/doc'),
+    mockBackend = require('../mock/backend');
 
 module.exports.tests = {};
 
@@ -16,41 +15,38 @@ module.exports.tests.interface = function(test, common) {
 // functionally test controller (backend success)
 module.exports.tests.functional_success = function(test, common) {
 
-  // expected geojson features for 'client/suggest/ok/1' fixture
+  // expected geojson features for 'client/doc/ok/1' fixture
   var expected = [{
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [ 101, -10.1 ]
+      coordinates: [ -50.5, 100.1 ]
     },
     properties: {
-      id: 'mockid1',
-      type: 'mocktype',
-      value: 1
+      name: 'test name1',
+      admin0: 'country1',
+      admin1: 'state1',
+      admin2: 'city1'
     }
   }, {
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [ 101, -10.1 ]
+      coordinates: [ -51.5, 100.2 ]
     },
     properties: {
-      id: 'mockid2',
-      type: 'mocktype',
-      value: 2
+      name: 'test name2',
+      admin0: 'country2',
+      admin1: 'state2',
+      admin2: 'city2'
     }
   }];
 
   test('functional success', function(t) {
-    var backend = mockBackend( 'client/suggest/ok/1', function( cmd ){
-      if (cmd.body.layers) {
-        // layers are set exclusively for admin: test for admin-only layers
-        t.deepEqual(cmd, { body: { input: 'b', layers: [ 'admin0', 'admin1', 'admin2' ] }, index: 'pelias' }, 'correct backend command');  
-      } else {
-        t.deepEqual(cmd, { body: { input: 'b' }, index: 'pelias' }, 'correct backend command');
-      }
+    var backend = mockBackend( 'client/doc/ok/1', function( cmd ){
+      t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'a' } ] } }, 'correct backend command');
     });
-    var controller = setup( backend, mockQuery() );
+    var controller = setup( backend );
     var res = {
       status: function( code ){
         t.equal(code, 200, 'status set');
@@ -65,29 +61,29 @@ module.exports.tests.functional_success = function(test, common) {
         t.end();
       }
     };
-    controller( { clean: { input: 'b' } }, res );
+    controller( { clean: { ids: [ {'id' : 123, 'type': 'a' } ] } }, res );
   });
 };
 
 // functionally test controller (backend failure)
 module.exports.tests.functional_failure = function(test, common) {
   test('functional failure', function(t) {
-    var backend = mockBackend( 'client/suggest/fail/1', function( cmd ){
-      t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct backend command');
+    var backend = mockBackend( 'client/doc/fail/1', function( cmd ){
+      t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'b' } ] } }, 'correct backend command');
     });
-    var controller = setup( backend, mockQuery() );
+    var controller = setup( backend );
     var next = function( message ){
       t.equal(message,'a backend error occurred','error passed to errorHandler');
       t.end();
     };
-    controller( { clean: { a: 'b' } }, undefined, next );
+    controller( { clean: { ids: [ {'id' : 123, 'type': 'b' } ] } }, undefined, next );
   });
 };
 
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('GET /suggest ' + name, testFunction);
+    return tape('GET /doc ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

@@ -1,6 +1,6 @@
-# valid suggest query
+# valid doc query
 
-*Generated: Thu Nov 06 2014 11:44:19 GMT-0500 (EST)*
+*Generated: Thu Nov 06 2014 11:44:20 GMT-0500 (EST)*
 ## Request
 ```javascript
 {
@@ -8,7 +8,7 @@
   "host": "localhost",
   "method": "GET",
   "port": 3100,
-  "path": "/suggest?input=a&lat=0&lon=0"
+  "path": "/doc?id=geoname:4221195"
 }
 ```
 
@@ -25,9 +25,9 @@ Status: 200
   "access-control-allow-headers": "X-Requested-With,content-type",
   "access-control-allow-credentials": "true",
   "content-type": "application/json; charset=utf-8",
-  "content-length": "571",
-  "etag": "W/\"23b-5d6e3dd3\"",
-  "date": "Thu, 06 Nov 2014 16:44:19 GMT",
+  "content-length": "311",
+  "etag": "W/\"137-1644173e\"",
+  "date": "Thu, 06 Nov 2014 16:44:20 GMT",
   "connection": "close"
 }
 ```
@@ -40,51 +40,20 @@ Status: 200
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -8.481618,
-          43.125692
+          -82.9207,
+          34.36094
         ]
       },
       "properties": {
-        "text": "A Coruña",
-        "score": 14,
-        "type": "admin1",
-        "id": "3374:adm1:es:esp:a_coru_a"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          7.56019,
-          5.419786
-        ]
-      },
-      "properties": {
-        "text": "Abia",
-        "score": 14,
-        "type": "admin1",
-        "id": "1775:adm1:ng:nga:abia"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          33.772337,
-          2.826081
-        ]
-      },
-      "properties": {
-        "text": "Abim",
-        "score": 14,
-        "type": "admin1",
-        "id": "2848:adm1:ug:uga:abim"
+        "name": "Sanders Grove Cemetery",
+        "admin0": "United States",
+        "admin1": "Georgia",
+        "admin2": "Hart County",
+        "text": "Sanders Grove Cemetery, Hart County, Georgia"
       }
     }
   ],
-  "date": 1415292259700
+  "date": 1415292260057
 }
 ```
 

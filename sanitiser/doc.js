@@ -1,15 +1,11 @@
 
 var logger = require('../src/logger'),
     _sanitize = require('../sanitiser/_sanitize'),
-    sanitiser = {
-      latlonzoom: require('../sanitiser/_latlonzoom'),
-      size: function( req ) {
-        var size = require('../sanitiser/_size');
-        return size(req, 1);
-      }
+    sanitizers = {
+      id: require('../sanitiser/_id')
     };
 
-var sanitize = function(req, cb) { _sanitize(req, sanitiser, cb); }
+var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); }
 
 // export sanitize for testing
 module.exports.sanitize = sanitize;

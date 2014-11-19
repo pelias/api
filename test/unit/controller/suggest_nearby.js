@@ -43,12 +43,7 @@ module.exports.tests.functional_success = function(test, common) {
 
   test('functional success', function(t) {
     var backend = mockBackend( 'client/suggest/ok/1', function( cmd ){
-      if (cmd.body.layers) {
-        // layers are set exclusively for admin: test for admin-only layers
-        t.deepEqual(cmd, { body: { input: 'b', layers: [ 'admin0', 'admin1', 'admin2' ] }, index: 'pelias' }, 'correct backend command');  
-      } else {
-        t.deepEqual(cmd, { body: { input: 'b' }, index: 'pelias' }, 'correct backend command');
-      }
+      t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct backend command');
     });
     var controller = setup( backend, mockQuery() );
     var res = {
@@ -65,7 +60,7 @@ module.exports.tests.functional_success = function(test, common) {
         t.end();
       }
     };
-    controller( { clean: { input: 'b' } }, res );
+    controller( { clean: { a: 'b' } }, res );
   });
 };
 

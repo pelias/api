@@ -26,25 +26,25 @@ module.exports.tests.sanitize_input = function(test, common) {
     invalid: [ '', 100, null, undefined, new Date() ],
     valid: [ 'a', 'aa', 'aaaaaaaa' ]
   };
-  inputs.invalid.forEach( function( input ){
-    test('invalid input', function(t) {
+  test('invalid input', function(t) {  
+    inputs.invalid.forEach( function( input ){
       sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
-        t.equal(err, 'invalid param \'input\': text length, must be >0', 'invalid input');
+        t.equal(err, 'invalid param \'input\': text length, must be >0', input + ' is an invalid input');
         t.equal(clean, undefined, 'clean not set');
-        t.end();
       });
     });
+    t.end();
   });
-  inputs.valid.forEach( function( input ){
-    test('valid input', function(t) {
+  test('valid input', function(t) {  
+    inputs.valid.forEach( function( input ){
       sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.input = input;
         t.equal(err, undefined, 'no error');
-        t.deepEqual(clean, expected, 'clean set correctly');
-        t.end();
+        t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
       });
     });
+    t.end();
   });
 };
 
@@ -53,25 +53,25 @@ module.exports.tests.sanitize_lat = function(test, common) {
     invalid: [ -181, -120, -91, 91, 120, 181 ],
     valid: [ 0, 45, 90, -0, '0', '45', '90' ]
   };
-  lats.invalid.forEach( function( lat ){
-    test('invalid lat', function(t) {
+  test('invalid lat', function(t) {  
+    lats.invalid.forEach( function( lat ){
       sanitize({ input: 'test', lat: lat, lon: 0 }, function( err, clean ){
-        t.equal(err, 'invalid param \'lat\': must be >-90 and <90', 'invalid latitude');
+        t.equal(err, 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
         t.equal(clean, undefined, 'clean not set');
-        t.end();
       });
     });
+    t.end();
   });
-  lats.valid.forEach( function( lat ){
-    test('valid lat', function(t) {
+  test('valid lat', function(t) {  
+    lats.valid.forEach( function( lat ){
       sanitize({ input: 'test', lat: lat, lon: 0 }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lat = parseFloat( lat );
         t.equal(err, undefined, 'no error');
-        t.deepEqual(clean, expected, 'clean set correctly');
-        t.end();
+        t.deepEqual(clean, expected, 'clean set correctly (' + lat + ')');
       });
     });
+    t.end();
   });
 };
 
@@ -80,25 +80,26 @@ module.exports.tests.sanitize_lon = function(test, common) {
     invalid: [ -360, -181, 181, 360 ],
     valid: [ -180, -1, -0, 0, 45, 90, '-180', '0', '180' ]
   };
-  lons.invalid.forEach( function( lon ){
-    test('invalid lon', function(t) {
+  test('invalid lon', function(t) {  
+    lons.invalid.forEach( function( lon ){
       sanitize({ input: 'test', lat: 0, lon: lon }, function( err, clean ){
-        t.equal(err, 'invalid param \'lon\': must be >-180 and <180', 'invalid longitude');
+        t.equal(err, 'invalid param \'lon\': must be >-180 and <180', lon + ' is an invalid longitude');
         t.equal(clean, undefined, 'clean not set');
-        t.end();
+        
       });
     });
+    t.end();
   });
-  lons.valid.forEach( function( lon ){
-    test('valid lon', function(t) {
+  test('valid lon', function(t) {  
+    lons.valid.forEach( function( lon ){
       sanitize({ input: 'test', lat: 0, lon: lon }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lon = parseFloat( lon );
         t.equal(err, undefined, 'no error');
-        t.deepEqual(clean, expected, 'clean set correctly');
-        t.end();
+        t.deepEqual(clean, expected, 'clean set correctly (' + lon + ')');
       });
     });
+    t.end();
   });
 };
 
@@ -153,8 +154,52 @@ module.exports.tests.sanitize_layers = function(test, common) {
   });
   test('invalid layer', function(t) {
     sanitize({ layers: 'test_layer', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      var msg = 'invalid param \'layer\': must be one or more of geoname,osmnode,osmway,admin0,admin1,admin2,neighborhood';
+      var msg = 'invalid param \'layer\': must be one or more of geoname,osmnode,osmway,admin0,admin1,admin2,neighborhood,poi,admin';
       t.equal(err, msg, 'invalid layer requested');
+      t.end();
+    });
+  });
+  test('poi (alias) layer', function(t) {
+    var poi_layers = ['geoname','osmnode','osmway'];
+    sanitize({ layers: 'poi', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, poi_layers, 'poi layers set');
+      t.end();
+    });
+  });
+  test('admin (alias) layer', function(t) {
+    var admin_layers = ['admin0','admin1','admin2','neighborhood'];
+    sanitize({ layers: 'admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, admin_layers, 'admin layers set');
+      t.end();
+    });
+  });
+  test('poi alias layer plus regular layers', function(t) {
+    var poi_layers = ['geoname','osmnode','osmway'];
+    var reg_layers = ['admin0', 'admin1'];
+    sanitize({ layers: 'poi,admin0,admin1', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, reg_layers.concat(poi_layers), 'poi + regular layers');
+      t.end();
+    });
+  });
+  test('admin alias layer plus regular layers', function(t) {
+    var admin_layers = ['admin0','admin1','admin2','neighborhood'];
+    var reg_layers   = ['geoname', 'osmway'];
+    sanitize({ layers: 'admin,geoname,osmway', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, reg_layers.concat(admin_layers), 'admin + regular layers set');
+      t.end();
+    });
+  });
+  test('alias layer plus regular layers (no duplicates)', function(t) {
+    var poi_layers = ['geoname','osmnode','osmway'];
+    sanitize({ layers: 'poi,geoname,osmnode', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, poi_layers, 'poi layers found (no duplicates)');
+      t.end();
+    });
+  });
+  test('multiple alias layers (no duplicates)', function(t) {
+    var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood'];
+    sanitize({ layers: 'poi,admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, alias_layers, 'all layers found (no duplicates)');
       t.end();
     });
   });
@@ -197,7 +242,7 @@ module.exports.tests.middleware_success = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /sanitise ' + name, testFunction);
+    return tape('SANTIZE /suggest ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
