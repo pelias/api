@@ -4,77 +4,19 @@ var geojsonify = require('../../../helper/geojsonify');
 module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
-  test('valid interface .suggest()', function(t) {
-    t.equal(typeof geojsonify.suggest, 'function', 'suggest is a function');
-    t.equal(geojsonify.suggest.length, 1, 'accepts x arguments');
+  test('valid interface .search()', function(t) {
+    t.equal(typeof geojsonify.search, 'function', 'search is a function');
+    t.equal(geojsonify.search.length, 1, 'accepts x arguments');
     t.end();
   });
 };
-
-module.exports.tests.suggest = function(test, common) {
-
-  var input = [{
-    bingo1: 'bango1',
-    payload: {
-      id: 'foo1/bar1',
-      geo: '100,-10.5'
-    }
-  },{
-    bingo2: 'bango2',
-    payload: {
-      id: 'foo2/bar2',
-      geo: '10,-1.5'
-    }
-  }];
-
-  var expected = {
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [
-            100,
-            -10.5
-          ]
-        },
-        "properties": {
-          "bingo1": "bango1",
-          "type": "foo1",
-          "id": "bar1"
-        }
-      },
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [
-            10,
-            -1.5
-          ]
-        },
-        "properties": {
-          "bingo2": "bango2",
-          "type": "foo2",
-          "id": "bar2"
-        }
-      }
-    ]
-  };
-
-  test('geojsonify.suggest()', function(t) {
-    var json = geojsonify.suggest( input );
-    t.deepEqual(json, expected, 'all docs mapped');
-    t.end();
-  });
-};
-
 
 module.exports.tests.search = function(test, common) {
 
   var input = [
     {
+      "_id": "id1",
+      "_type": "type1",
       "center_point": {
         "lat": 51.5337144,
         "lon": -0.1069716
@@ -108,6 +50,8 @@ module.exports.tests.search = function(test, common) {
       }
     },
     {
+      "_id": "id2",
+      "_type": "type2",
       "type": "way",
       "name": {
         "default": "Blues Cafe"
@@ -132,13 +76,14 @@ module.exports.tests.search = function(test, common) {
           "id": "osmway/147495160",
           "geo": "-0.101795,51.517806"
         },
-        "output": "Blues Cafe, Smithfield, United Kingdom"
+        "output": "Blues Cafe, test3, COL"
       }
     }
   ];
 
   var expected = {
     "type": "FeatureCollection",
+    "bbox": [ -0.1069716, 51.517806, -0.101795, 51.5337144 ],
     "features": [
       {
         "type": "Feature",
@@ -150,6 +95,9 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         "properties": {
+          "id": "id1",
+          "type": "type1",
+          "layer": "type1",
           "text": "'Round Midnight Jazz and Blues Bar, Angel, United Kingdom",
           "name": "'Round Midnight Jazz and Blues Bar",
           "alpha3": "GBR",
@@ -172,6 +120,9 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         "properties": {
+          "id": "id2",
+          "type": "type2",
+          "layer": "type2",
           "text": "Blues Cafe, Smithfield, United Kingdom",
           "name": "Blues Cafe",
           "alpha3": "GBR",
