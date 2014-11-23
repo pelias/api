@@ -55,13 +55,12 @@ function search( docs ){
   });
 
   // convert to geojson
-  var geojson = GeoJSON.parse( geodata, {
-    Point: ['lat', 'lng']
-  });
+  var geojson = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
 
+  // add bbox
   geojson.bbox = extent( geojson ) || undefined;
-  return geojson;
 
+  return geojson;
 }
 
 module.exports.search = search;
