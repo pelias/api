@@ -16,38 +16,51 @@ module.exports.tests.interface = function(test, common) {
 // functionally test controller (backend success)
 module.exports.tests.functional_success = function(test, common) {
 
-  // expected geojson features for 'client/suggest/ok/1' fixture
+  // expected geojson features for 'client/mget/ok/1' fixture
   var expected = [{
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [ 101, -10.1 ]
+      coordinates: [ -50.5, 100.1 ]
     },
     properties: {
-      id: 'mockid1',
-      type: 'mocktype',
-      value: 1
+      id: 'myid1',
+      type: 'mytype1',
+      layer: 'mytype1',
+      name: 'test name1',
+      admin0: 'country1',
+      admin1: 'state1',
+      admin2: 'city1',
+      text: 'test name1, city1, state1'
     }
   }, {
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [ 101, -10.1 ]
+      coordinates: [ -51.5, 100.2 ]
     },
     properties: {
-      id: 'mockid2',
-      type: 'mocktype',
-      value: 2
+      id: 'myid2',
+      type: 'mytype2',
+      layer: 'mytype2',
+      name: 'test name2',
+      admin0: 'country2',
+      admin1: 'state2',
+      admin2: 'city2',
+      text: 'test name2, city2, state2'
     }
   }];
 
   test('functional success', function(t) {
     var backend = mockBackend( 'client/suggest/ok/1', function( cmd ){
-      if (cmd.body.layers) {
+      // the backend executes suggest (vanilla and admin-only) and mget, so we check them all based on cmd
+      if( cmd.body.docs ){
+        t.deepEqual(cmd, { body: { docs: [ { _id: 'mockid2', _index: 'pelias', _type: 'mocktype' } , { _id: 'mockid1', _index: 'pelias', _type: 'mocktype' }] } }, 'correct mget command');
+      } else if (cmd.body.layers) {
         // layers are set exclusively for admin: test for admin-only layers
-        t.deepEqual(cmd, { body: { input: 'b', layers: [ 'admin0', 'admin1', 'admin2' ] }, index: 'pelias' }, 'correct backend command');  
+        t.deepEqual(cmd, { body: { input: 'b', layers: [ 'admin0', 'admin1', 'admin2' ] }, index: 'pelias' }, 'correct suggest/admin command');
       } else {
-        t.deepEqual(cmd, { body: { input: 'b' }, index: 'pelias' }, 'correct backend command');
+        t.deepEqual(cmd, { body: { input: 'b' }, index: 'pelias' }, 'correct suggest command');
       }
     });
     var controller = setup( backend, mockQuery() );
@@ -73,7 +86,14 @@ module.exports.tests.functional_success = function(test, common) {
 module.exports.tests.functional_failure = function(test, common) {
   test('functional failure', function(t) {
     var backend = mockBackend( 'client/suggest/fail/1', function( cmd ){
-      t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct backend command');
+      if( cmd.body.docs ){
+        t.deepEqual(cmd, { body: { docs: [ { _id: 'mockid1', _index: 'pelias', _type: 'mocktype' } , { _id: 'mockid2', _index: 'pelias', _type: 'mocktype' }] } }, 'correct mget command');
+      } else if (cmd.body.layers) {
+        // layers are set exclusively for admin: test for admin-only layers
+        t.deepEqual(cmd, { body: { a: 'b', layers: [ 'admin0', 'admin1', 'admin2' ] }, index: 'pelias' }, 'correct suggest/admin command');
+      } else {
+        t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct suggest command');
+      }
     });
     var controller = setup( backend, mockQuery() );
     var next = function( message ){

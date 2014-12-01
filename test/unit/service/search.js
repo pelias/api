@@ -18,12 +18,14 @@ module.exports.tests.functional_success = function(test, common) {
 
   var expected = [
     {
+      _id: 'myid1', _type: 'mytype1',
       value: 1,
       center_point: { lat: 100.1, lon: -50.5 },
       name: { default: 'test name1' },
       admin0: 'country1', admin1: 'state1', admin2: 'city1'
     }, 
     {
+      _id: 'myid2', _type: 'mytype2',
       value: 2,
       center_point: { lat: 100.2, lon: -51.5 },
       name: { default: 'test name2' },

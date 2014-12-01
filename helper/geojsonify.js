@@ -1,46 +1,7 @@
 
-var GeoJSON = require('geojson');
-
-function suggest( docs ){
-
-  // emit a warning if the doc format is invalid
-  // @note: if you see this error, fix it ASAP!
-  function warning(){
-    console.error( 'error: invalid doc', __filename );
-    return false; // remove offending doc from results
-  }
-
-  // flatten & expand data for geojson conversion
-  var geodata = docs.map( function( doc ){
-
-    // something went very wrong
-    if( !doc || !doc.payload ) return warning();
-
-    // split payload id string in to geojson properties
-    if( 'string' !== typeof doc.payload.id ) return warning();
-    var idParts = doc.payload.id.split('/');
-    doc.type = idParts[0];
-    doc.id = idParts[1];
-
-    // split payload geo string in to geojson properties
-    if( 'string' !== typeof doc.payload.geo ) return warning();
-    var geoParts = doc.payload.geo.split(',');
-    doc.lat = parseFloat( geoParts[1] );
-    doc.lng = parseFloat( geoParts[0] );
-
-    // remove payload from doc
-    delete doc.payload;
-    return doc;
-
-  // filter-out invalid entries
-  }).filter( function( doc ){
-    return doc;
-  });
-
-  // convert to geojson
-  return GeoJSON.parse( geodata, { Point: ['lat', 'lng'] } );
-
-}
+var GeoJSON = require('geojson'),
+    extent = require('geojson-extent'),
+    outputGenerator = require('./outputGenerator');
 
 function search( docs ){
 
@@ -54,10 +15,15 @@ function search( docs ){
   // flatten & expand data for geojson conversion
   var geodata = docs.map( function( doc ){
 
-    var output = {};
-
     // something went very wrong
     if( !doc ) return warning();
+
+    var output = {};
+
+    // provide metadata to consumer
+    output.id = doc._id;
+    output.type = doc._type;
+    output.layer = doc._type;
 
     // map center_point
     if( !doc.center_point ) return warning();
@@ -78,10 +44,8 @@ function search( docs ){
     if( doc.locality ){ output.locality = doc.locality; }
     if( doc.neighborhood ){ output.neighborhood = doc.neighborhood; }
 
-    // map suggest output
-    if( doc.suggest && doc.suggest.output ){
-      output.text = doc.suggest.output;
-    }
+    // generate region-specific text string
+    output.text = outputGenerator( doc );
 
     return output;
 
@@ -91,9 +55,12 @@ function search( docs ){
   });
 
   // convert to geojson
-  return GeoJSON.parse( geodata, { Point: ['lat', 'lng'] } );
+  var geojson = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
 
+  // add bbox
+  geojson.bbox = extent( geojson ) || undefined;
+
+  return geojson;
 }
 
-module.exports.suggest = suggest;
 module.exports.search = search;

@@ -29,7 +29,19 @@ function service( backend, query, cb ){
     // map returned documents
     var docs = [];
     if( data && Array.isArray(data.docs) ){
-      docs = data.docs.map( function( doc ){
+
+      docs = data.docs.filter( function( doc ){
+
+        // remove docs not actually found
+        return doc.found;
+      
+      }).map( function( doc ){
+
+        // map metadata in to _source so we
+        // can serve it up to the consumer
+        doc._source._id = doc._id;
+        doc._source._type = doc._type;
+
         return doc._source;
       });
     }
