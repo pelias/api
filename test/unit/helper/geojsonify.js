@@ -70,6 +70,32 @@ module.exports.tests.search = function(test, common) {
         ],
         "output": "osmway:147495160"
       }
+    },
+    {
+      "_id": "34633854",
+      "_type": "osmway",
+      "type": "osmway",
+      "name": {
+        "default": "Empire State Building"
+      },
+      "center_point": {
+        "lat": "40.748432",
+        "lon": "-73.985656"
+      },
+      "alpha3": "USA",
+      "admin0": "United States",
+      "admin1": "New York",
+      "admin1_abbr": "NY",
+      "admin2": "New York",
+      "local_admin": "Manhattan",
+      "locality": "New York",
+      "neighborhood": "Koreatown",
+      "suggest": {
+        "input": [
+          "empire state building"
+        ],
+        "output": "osmway:34633854"
+      }
     }
   ];
 
@@ -98,7 +124,7 @@ module.exports.tests.search = function(test, common) {
           "admin2": "Angel",
           "local_admin": "test1",
           "locality": "test2",
-          "neighborhood": "test3",
+          "neighborhood": "test3"
         }
       },
       {
@@ -123,7 +149,32 @@ module.exports.tests.search = function(test, common) {
           "admin2": "Smithfield",
           "local_admin": "test1",
           "locality": "test2",
-          "neighborhood": "test3",
+          "neighborhood": "test3"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -73.985656,
+            40.748432
+          ]
+        },
+        "properties": {
+          "id": "34633854",
+          "type": "osmway",
+          "layer": "osmway",
+          "text": "Empire State Building, Manhattan, NY",
+          "name": "Empire State Building",
+          "alpha3": "USA",
+          "admin0": "United States",
+          "admin1": "New York",
+          "admin1_abbr": "NY",
+          "admin2": "New York",
+          "local_admin": "Manhattan",
+          "locality": "New York",
+          "neighborhood": "Koreatown"
         }
       }
     ]
