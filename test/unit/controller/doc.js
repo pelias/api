@@ -23,10 +23,14 @@ module.exports.tests.functional_success = function(test, common) {
       coordinates: [ -50.5, 100.1 ]
     },
     properties: {
+      id: 'myid1',
+      type: 'mytype1',
+      layer: 'mytype1',
       name: 'test name1',
       admin0: 'country1',
       admin1: 'state1',
-      admin2: 'city1'
+      admin2: 'city1',
+      text: 'test name1, city1, state1'
     }
   }, {
     type: 'Feature',
@@ -35,15 +39,19 @@ module.exports.tests.functional_success = function(test, common) {
       coordinates: [ -51.5, 100.2 ]
     },
     properties: {
+      id: 'myid2',
+      type: 'mytype2',
+      layer: 'mytype2',
       name: 'test name2',
       admin0: 'country2',
       admin1: 'state2',
-      admin2: 'city2'
+      admin2: 'city2',
+      text: 'test name2, city2, state2'
     }
   }];
 
   test('functional success', function(t) {
-    var backend = mockBackend( 'client/doc/ok/1', function( cmd ){
+    var backend = mockBackend( 'client/mget/ok/1', function( cmd ){
       t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'a' } ] } }, 'correct backend command');
     });
     var controller = setup( backend );
@@ -68,7 +76,7 @@ module.exports.tests.functional_success = function(test, common) {
 // functionally test controller (backend failure)
 module.exports.tests.functional_failure = function(test, common) {
   test('functional failure', function(t) {
-    var backend = mockBackend( 'client/doc/fail/1', function( cmd ){
+    var backend = mockBackend( 'client/mget/fail/1', function( cmd ){
       t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'b' } ] } }, 'correct backend command');
     });
     var controller = setup( backend );

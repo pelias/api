@@ -1,20 +1,15 @@
 
-var mockPayload = function(id){
-  return { 
-    id: 'mocktype/mockid'+id,
-    geo: '101,-10.1'
-  }
-};
-
 var responses = {};
 responses['client/suggest/ok/1'] = function( cmd, cb ){
-  return cb( undefined, suggestEnvelope([ { value: 1, payload: mockPayload(1) }, { value: 2, payload: mockPayload(2) } ]) );
+  return cb( undefined, suggestEnvelope([ { score: 1, text: 'mocktype:mockid1' }, { score: 2, text: 'mocktype:mockid2' } ]) );
 };
 responses['client/suggest/fail/1'] = function( cmd, cb ){
   return cb( 'a backend error occurred' );
 };
 responses['client/search/ok/1'] = function( cmd, cb ){
   return cb( undefined, searchEnvelope([{
+    _id: 'myid1',
+    _type: 'mytype1',
     _source: {
       value: 1,
       center_point: { lat: 100.1, lon: -50.5 },
@@ -22,6 +17,8 @@ responses['client/search/ok/1'] = function( cmd, cb ){
       admin0: 'country1', admin1: 'state1', admin2: 'city1'
     }
   }, {
+    _id: 'myid2',
+    _type: 'mytype2',
     _source: {
       value: 2,
       center_point: { lat: 100.2, lon: -51.5 },
@@ -34,8 +31,11 @@ responses['client/search/fail/1'] = function( cmd, cb ){
   return cb( 'a backend error occurred' );
 };
 
-responses['client/doc/ok/1'] = function( cmd, cb ){
-  return cb( undefined, docEnvelope([{
+responses['client/mget/ok/1'] = function( cmd, cb ){
+  return cb( undefined, mgetEnvelope([{
+    _id: 'myid1',
+    _type: 'mytype1',
+    found: true,
     _source: {
       value: 1,
       center_point: { lat: 100.1, lon: -50.5 },
@@ -43,6 +43,9 @@ responses['client/doc/ok/1'] = function( cmd, cb ){
       admin0: 'country1', admin1: 'state1', admin2: 'city1'
     }
   }, {
+    _id: 'myid2',
+    _type: 'mytype2',
+    found: true,
     _source: {
       value: 2,
       center_point: { lat: 100.2, lon: -51.5 },
@@ -51,7 +54,7 @@ responses['client/doc/ok/1'] = function( cmd, cb ){
     }
   }]));
 };
-responses['client/doc/fail/1'] = responses['client/search/fail/1'];
+responses['client/mget/fail/1'] = responses['client/search/fail/1'];
 
 function setup( key, cmdCb ){
   function backend( a, b ){
@@ -59,7 +62,7 @@ function setup( key, cmdCb ){
       client: {
         mget: function( cmd, cb ){
           if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
-          return responses[key].apply( this, arguments );
+          return responses[key.indexOf('mget') === -1 ? 'client/mget/ok/1' : key].apply( this, arguments );
         },
         suggest: function( cmd, cb ){
           if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
@@ -75,7 +78,7 @@ function setup( key, cmdCb ){
   return backend;
 }
 
-function docEnvelope( options ){
+function mgetEnvelope( options ){
   return { docs: options };
 }
 
