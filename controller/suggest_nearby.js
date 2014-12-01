@@ -49,7 +49,7 @@ function setup( backend, query ){
         return {
           _index: 'pelias',
           _type: idParts[0],
-          _id: idParts[1]
+          _id: idParts.slice(1).join(':')
         };
       });
 
