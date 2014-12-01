@@ -24,7 +24,7 @@ function setup( backend, query ){
     var query_backend = function(cmd, callback) {
       // query backend
       service.suggest( backend, cmd, function( err, docs ){
-        
+
         // error handler
         if( err ){ return next( err ); }
 
@@ -37,7 +37,7 @@ function setup( backend, query ){
       return combined.filter(function(item, pos) {
         if (unique_ids.indexOf(item.text) == -1) {
           unique_ids.push(item.text);
-          return true;  
+          return true;
         }
         return false;
       });
@@ -68,7 +68,7 @@ function setup( backend, query ){
         return {
           _index: 'pelias',
           _type: idParts[0],
-          _id: idParts[1]
+          _id: idParts.slice(1).join(':')
         };
       });
 
@@ -89,7 +89,7 @@ function setup( backend, query ){
 
       // admin only
       req.admin = {};
-      for (k in req.clean) { req.admin[k] = req.clean[k] }
+      for (var k in req.clean) { req.admin[k] = req.clean[k]; }
       req.admin.layers = ['admin0','admin1','admin2'];
 
       if (req.clean.input.length < 4 && isNaN(parseInt(req.clean.input, 10))) {
@@ -106,7 +106,7 @@ function setup( backend, query ){
             cmd.body = query( req.clean, 3 );
             query_backend(cmd, callback);
           }
-        }
+        };
       } else {
         async_query = {
           all_5p: function(callback){
@@ -125,7 +125,7 @@ function setup( backend, query ){
             cmd.body = query( req.admin );
             query_backend(cmd, callback);
           }
-        }
+        };
       }
       
       async.parallel(async_query, function(err, results) {
@@ -133,7 +133,7 @@ function setup( backend, query ){
         var splice_length = parseInt((SIZE / Object.keys(results).length), 10);
         var results_keys = Object.keys(async_query);
         
-        var combined = []; 
+        var combined = [];
         results_keys.forEach(function(key){
           combined = combined.concat(results[key].splice(0,splice_length));
         });
