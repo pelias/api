@@ -1,5 +1,6 @@
 
 var GeoJSON = require('geojson'),
+    extent = require('geojson-extent'),
     outputGenerator = require('./outputGenerator');
 
 function search( docs ){
@@ -54,8 +55,12 @@ function search( docs ){
   });
 
   // convert to geojson
-  return GeoJSON.parse( geodata, { Point: ['lat', 'lng'] } );
+  var geojson = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
 
+  // add bbox
+  geojson.bbox = extent( geojson ) || undefined;
+
+  return geojson;
 }
 
 module.exports.search = search;

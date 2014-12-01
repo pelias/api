@@ -101,6 +101,7 @@ module.exports.tests.search = function(test, common) {
 
   var expected = {
     "type": "FeatureCollection",
+    "bbox": [ -0.1069716, 51.517806, -0.101795, 51.5337144 ],
     "features": [
       {
         "type": "Feature",
