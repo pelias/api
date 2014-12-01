@@ -42,11 +42,7 @@ module.exports.tests.search = function(test, common) {
         "input": [
           "'round midnight jazz and blues bar"
         ],
-        "payload": {
-          "id": "osmnode/2208150035",
-          "geo": "-0.10697160000000001,51.53371440000001"
-        },
-        "output": "'Round Midnight Jazz and Blues Bar, Angel, United Kingdom"
+        "output": "osmnode:2208150035"
       }
     },
     {
@@ -72,11 +68,7 @@ module.exports.tests.search = function(test, common) {
         "input": [
           "blues cafe"
         ],
-        "payload": {
-          "id": "osmway/147495160",
-          "geo": "-0.101795,51.517806"
-        },
-        "output": "Blues Cafe, test3, COL"
+        "output": "osmway:147495160"
       }
     }
   ];
@@ -97,7 +89,7 @@ module.exports.tests.search = function(test, common) {
           "id": "id1",
           "type": "type1",
           "layer": "type1",
-          "text": "'Round Midnight Jazz and Blues Bar, Angel, United Kingdom",
+          "text": "'Round Midnight Jazz and Blues Bar, test3, Angel",
           "name": "'Round Midnight Jazz and Blues Bar",
           "alpha3": "GBR",
           "admin0": "United Kingdom",
@@ -122,7 +114,7 @@ module.exports.tests.search = function(test, common) {
           "id": "id2",
           "type": "type2",
           "layer": "type2",
-          "text": "Blues Cafe, Smithfield, United Kingdom",
+          "text": "Blues Cafe, test3, Smithfield",
           "name": "Blues Cafe",
           "alpha3": "GBR",
           "admin0": "United Kingdom",
