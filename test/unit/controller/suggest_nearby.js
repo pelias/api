@@ -1,6 +1,7 @@
 
-var setup = require('../../../controller/doc'),
-    mockBackend = require('../mock/backend');
+var setup = require('../../../controller/suggest'),
+    mockBackend = require('../mock/backend'),
+    mockQuery = require('../mock/query');
 
 module.exports.tests = {};
 
@@ -15,7 +16,7 @@ module.exports.tests.interface = function(test, common) {
 // functionally test controller (backend success)
 module.exports.tests.functional_success = function(test, common) {
 
-  // expected geojson features for 'client/doc/ok/1' fixture
+  // expected geojson features for 'client/mget/ok/1' fixture
   var expected = [{
     type: 'Feature',
     geometry: {
@@ -51,10 +52,16 @@ module.exports.tests.functional_success = function(test, common) {
   }];
 
   test('functional success', function(t) {
-    var backend = mockBackend( 'client/mget/ok/1', function( cmd ){
-      t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'a' } ] } }, 'correct backend command');
+    var i = 0;
+    var backend = mockBackend( 'client/suggest/ok/1', function( cmd ){
+      // the backend executes 2 commands, so we check them both
+      if( ++i === 1 ){
+        t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct suggest command');
+      } else {
+        t.deepEqual(cmd, { body: { docs: [ { _id: 'mockid1', _index: 'pelias', _type: 'mocktype' }, { _id: 'mockid2', _index: 'pelias', _type: 'mocktype' } ] } }, 'correct mget command');
+      }
     });
-    var controller = setup( backend );
+    var controller = setup( backend, mockQuery() );
     var res = {
       status: function( code ){
         t.equal(code, 200, 'status set');
@@ -69,29 +76,29 @@ module.exports.tests.functional_success = function(test, common) {
         t.end();
       }
     };
-    controller( { clean: { ids: [ {'id' : 123, 'type': 'a' } ] } }, res );
+    controller( { clean: { a: 'b' } }, res );
   });
 };
 
 // functionally test controller (backend failure)
 module.exports.tests.functional_failure = function(test, common) {
   test('functional failure', function(t) {
-    var backend = mockBackend( 'client/mget/fail/1', function( cmd ){
-      t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'b' } ] } }, 'correct backend command');
+    var backend = mockBackend( 'client/suggest/fail/1', function( cmd ){
+      t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct backend command');
     });
-    var controller = setup( backend );
+    var controller = setup( backend, mockQuery() );
     var next = function( message ){
       t.equal(message,'a backend error occurred','error passed to errorHandler');
       t.end();
     };
-    controller( { clean: { ids: [ {'id' : 123, 'type': 'b' } ] } }, undefined, next );
+    controller( { clean: { a: 'b' } }, undefined, next );
   });
 };
 
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('GET /doc ' + name, testFunction);
+    return tape('GET /suggest/nearby ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

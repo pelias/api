@@ -1,6 +1,6 @@
 # valid reverse query
 
-*Generated: Thu Oct 23 2014 11:58:15 GMT-0400 (EDT)*
+*Generated: Thu Nov 06 2014 11:44:19 GMT-0500 (EST)*
 ## Request
 ```javascript
 {
@@ -26,8 +26,8 @@ Status: 200
   "access-control-allow-credentials": "true",
   "content-type": "application/json; charset=utf-8",
   "content-length": "282",
-  "etag": "W/\"11a-95fc1500\"",
-  "date": "Thu, 23 Oct 2014 15:58:15 GMT",
+  "etag": "W/\"11a-efcd00c9\"",
+  "date": "Thu, 06 Nov 2014 16:44:19 GMT",
   "connection": "close"
 }
 ```
@@ -53,11 +53,19 @@ Status: 200
       }
     }
   ],
-  "date": 1414079895606
+  "date": 1415292259729
 }
 ```
 
 ## Tests
+
+### ✓ valid response
+```javascript
+now = new Date().getTime()
+should.exist json
+should.not.exist json.error
+json.date.should.be.within now-5000, now+5000
+```
 
 ### ✓ 200 ok
 ```javascript
@@ -68,13 +76,5 @@ response.statusCode.should.equal 200
 ```javascript
 json.type.should.equal 'FeatureCollection'
 json.features.should.be.instanceof Array
-```
-
-### ✓ valid response
-```javascript
-now = new Date().getTime()
-should.exist json
-should.not.exist json.error
-json.date.should.be.within now-5000, now+5000
 ```
 

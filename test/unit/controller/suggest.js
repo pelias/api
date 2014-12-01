@@ -52,13 +52,15 @@ module.exports.tests.functional_success = function(test, common) {
   }];
 
   test('functional success', function(t) {
-    var i = 0;
     var backend = mockBackend( 'client/suggest/ok/1', function( cmd ){
-      // the backend executes 2 commands, so we check them both
-      if( ++i === 1 ){
-        t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct suggest command');
+      // the backend executes suggest (vanilla and admin-only) and mget, so we check them all based on cmd
+      if( cmd.body.docs ){
+        t.deepEqual(cmd, { body: { docs: [ { _id: 'mockid1', _index: 'pelias', _type: 'mocktype' } , { _id: 'mockid2', _index: 'pelias', _type: 'mocktype' }] } }, 'correct mget command');
+      } else if (cmd.body.layers) {
+        // layers are set exclusively for admin: test for admin-only layers
+        t.deepEqual(cmd, { body: { input: 'b', layers: [ 'admin0', 'admin1', 'admin2' ] }, index: 'pelias' }, 'correct suggest/admin command');
       } else {
-        t.deepEqual(cmd, { body: { docs: [ { _id: 'mockid', _index: 'pelias', _type: 'mocktype' }, { _id: 'mockid', _index: 'pelias', _type: 'mocktype' } ] } }, 'correct mget command');
+        t.deepEqual(cmd, { body: { input: 'b' }, index: 'pelias' }, 'correct suggest command');
       }
     });
     var controller = setup( backend, mockQuery() );
@@ -68,9 +70,6 @@ module.exports.tests.functional_success = function(test, common) {
         return res;
       },
       json: function( json ){
-
-        console.log( 'json', json );
-
         t.equal(typeof json, 'object', 'returns json');
         t.equal(typeof json.date, 'number', 'date set');
         t.equal(json.type, 'FeatureCollection', 'valid geojson');
@@ -79,7 +78,7 @@ module.exports.tests.functional_success = function(test, common) {
         t.end();
       }
     };
-    controller( { clean: { a: 'b' } }, res );
+    controller( { clean: { input: 'b' } }, res );
   });
 };
 
@@ -87,7 +86,14 @@ module.exports.tests.functional_success = function(test, common) {
 module.exports.tests.functional_failure = function(test, common) {
   test('functional failure', function(t) {
     var backend = mockBackend( 'client/suggest/fail/1', function( cmd ){
-      t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct backend command');
+      if( cmd.body.docs ){
+        t.deepEqual(cmd, { body: { docs: [ { _id: 'mockid1', _index: 'pelias', _type: 'mocktype' } , { _id: 'mockid2', _index: 'pelias', _type: 'mocktype' }] } }, 'correct mget command');
+      } else if (cmd.body.layers) {
+        // layers are set exclusively for admin: test for admin-only layers
+        t.deepEqual(cmd, { body: { a: 'b', layers: [ 'admin0', 'admin1', 'admin2' ] }, index: 'pelias' }, 'correct suggest/admin command');
+      } else {
+        t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct suggest command');
+      }
     });
     var controller = setup( backend, mockQuery() );
     var next = function( message ){
