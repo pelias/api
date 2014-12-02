@@ -4,7 +4,7 @@ function sanitize( req, default_size){
   var clean = req.clean || {};
   var params= req.query;
 
-  var default_size = default_size || 10;
+  default_size = default_size || 10;
 
   // ensure the input params are a valid object
   if( Object.prototype.toString.call( params ) !== '[object Object]' ){

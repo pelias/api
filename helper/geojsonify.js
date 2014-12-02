@@ -16,7 +16,7 @@ function search( docs ){
   var geodata = docs.map( function( doc ){
 
     // something went very wrong
-    if( !doc ) return warning();
+    if( !doc ) { return warning(); }
 
     var output = {};
 
@@ -26,12 +26,12 @@ function search( docs ){
     output.layer = doc._type;
 
     // map center_point
-    if( !doc.center_point ) return warning();
+    if( !doc.center_point ) { return warning(); }
     output.lat = parseFloat( doc.center_point.lat );
     output.lng = parseFloat( doc.center_point.lon );
 
     // map name
-    if( !doc.name || !doc.name.default ) return warning();
+    if( !doc.name || !doc.name.default ) { return warning(); }
     output.name = doc.name.default;
 
     // map admin values

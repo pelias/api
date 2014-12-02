@@ -25,7 +25,7 @@ function sanitize( req ){
         return {
           'error': true,
           'message': 'invalid param \'layer\': must be one or more of ' + alias_indeces.join(',') 
-        }
+        };
       }
     }
     var expand_aliases = function(alias, layers, layer_indeces) {
@@ -35,14 +35,14 @@ function sanitize( req ){
         layers = layers.concat(layer_indeces);
       }
       return layers;
-    }
+    };
 
     layers = expand_aliases('poi',   layers, ['geoname','osmnode','osmway']);
     layers = expand_aliases('admin', layers, ['admin0','admin1','admin2','neighborhood']);
     
     // de-dup
     layers = layers.filter(function(item, pos) {
-      return layers.indexOf(item) == pos;
+      return layers.indexOf(item) === pos;
     });
 
     clean.layers = layers;

@@ -4,12 +4,12 @@ var doc  = require('../../../sanitiser/doc'),
     middleware = doc.middleware,
     indeces = require('../../../query/indeces'),
     delimiter = ':',
-    defaultLengthError = function(input) { return 'invalid param \''+ input + '\': text length, must be >0' },
+    defaultLengthError = function(input) { return 'invalid param \''+ input + '\': text length, must be >0'; },
     defaultFormatError = 'invalid: must be of the format type:id for ex: \'geoname:4163334\'',
     defaultError = 'invalid param \'id\': text length, must be >0',
     defaultMissingTypeError = function(input) { 
       var type = input.split(delimiter)[0];
-      return type + ' is invalid. It must be one of these values - [' + indeces.join(", ") + ']'},
+      return type + ' is invalid. It must be one of these values - [' + indeces.join(', ') + ']'; },
     defaultClean = { ids: [ { id: '123', type: 'geoname' } ] },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); },
     inputs = {

@@ -18,7 +18,7 @@ function sanitize( req ){
     return {
       'error': true,
       'message': message || ('invalid param \''+ fieldname + '\': text length, must be >0')
-    }
+    };
   };
 
   if(('string' === typeof params.id && !params.id.length) || params.id === undefined){
@@ -31,7 +31,7 @@ function sanitize( req ){
     
     // de-dupe
     params.ids = params.ids.filter(function(item, pos) {
-      return params.ids.indexOf(item) == pos;
+      return params.ids.indexOf(item) === pos;
     });
 
     for (var i=0; i<params.ids.length; i++) {
@@ -55,8 +55,8 @@ function sanitize( req ){
         return errormessage(thisparam);
       }
       // type text must be one of the indeces
-      if(indeces.indexOf(type) == -1){
-        return errormessage('type', type + ' is invalid. It must be one of these values - [' + indeces.join(", ") + ']');
+      if(indeces.indexOf(type) === -1){
+        return errormessage('type', type + ' is invalid. It must be one of these values - [' + indeces.join(', ') + ']');
       }
       req.clean.ids.push({
         id: id,

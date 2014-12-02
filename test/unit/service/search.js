@@ -42,7 +42,7 @@ module.exports.tests.functional_success = function(test, common) {
       data.forEach(function(d) {
         t.true(typeof d === 'object', 'valid object');
       });
-      t.deepEqual(data, expected, 'values correctly mapped')
+      t.deepEqual(data, expected, 'values correctly mapped');
       t.end();
     });
   });

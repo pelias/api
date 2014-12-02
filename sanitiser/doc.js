@@ -5,7 +5,7 @@ var logger = require('../src/logger'),
       id: require('../sanitiser/_id')
     };
 
-var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); }
+var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); };
 
 // export sanitize for testing
 module.exports.sanitize = sanitize;

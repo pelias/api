@@ -16,7 +16,7 @@ function service( backend, cmd, cb ){
     // map returned documents
     var docs = [];
     if( data && Array.isArray( data.pelias ) && data.pelias.length ){
-      docs = data['pelias'][0].options || [];
+      docs = data.pelias[0].options || [];
     }
 
     // fire callback

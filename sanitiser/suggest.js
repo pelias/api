@@ -8,7 +8,7 @@ var logger = require('../src/logger'),
       latlonzoom: require('../sanitiser/_latlonzoom')
     };
 
-var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); }
+var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); };
 
 // export sanitize for testing
 module.exports.sanitize = sanitize;
