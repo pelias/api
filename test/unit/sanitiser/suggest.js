@@ -3,8 +3,14 @@ var suggest  = require('../../../sanitiser/suggest'),
     _sanitize = suggest.sanitize,
     middleware = suggest.middleware,
     defaultError = 'invalid param \'input\': text length, must be >0',
-    defaultClean = { input: 'test', lat: 0, layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood' ], lon: 0, size: 10, zoom: 10 },
-    sanitize = function(query, cb) { _sanitize({'query':query}, cb); }
+    defaultClean =  { input: 'test', 
+                      lat: 0, 
+                      layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood' ], 
+                      lon: 0, 
+                      size: 10, 
+                      zoom: 10 
+                    },
+    sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
 module.exports.tests = {};
 

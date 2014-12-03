@@ -21,14 +21,14 @@ module.exports.tests.valid = function(test, common) {
 
   var isValid = function(keys, schema) {
     test('valid key/object (' + keys + ')' , function(t) {
-      if (keys=="default") { 
+      if (keys === 'default') { 
         t.deepEqual(schema, default_schema, 'valid default schema');
       } else {
         t.equal(alpha3.hasOwnProperty(keys), true, 'valid key');  
       }
       t.equal(typeof schema, 'object', 'valid object');
       t.notEqual(Object.getOwnPropertyNames(schema).length, 0,  'object not empty');
-      for (levels in schema) {
+      for (var levels in schema) {
         t.equal(Object.prototype.toString.call(schema[levels]), '[object Array]', levels+' is an array');
         for (var i=0;i<schema[levels].length;i++) {
           var key = schema[levels][i];
@@ -37,8 +37,9 @@ module.exports.tests.valid = function(test, common) {
       }
       t.end();
     });
-  }
-  for (keys in schemas) { 
+  };
+
+  for (var keys in schemas) { 
     isValid(keys, schemas[keys]);
   }
 };

@@ -9,7 +9,7 @@ var logger = require('../src/logger'),
       }
     };
 
-var sanitize = function(req, cb) { _sanitize(req, sanitiser, cb); }
+var sanitize = function(req, cb) { _sanitize(req, sanitiser, cb); };
 
 // export sanitize for testing
 module.exports.sanitize = sanitize;
