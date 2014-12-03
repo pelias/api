@@ -35,7 +35,7 @@ function setup( backend, query ){
     var dedup = function(combined) {
       var unique_ids = [];
       return combined.filter(function(item, pos) {
-        if (unique_ids.indexOf(item.text) == -1) {
+        if (unique_ids.indexOf(item.text) === -1) {
           unique_ids.push(item.text);
           return true;
         }

@@ -58,7 +58,12 @@ module.exports.tests.functional_success = function(test, common) {
       if( ++i === 1 ){
         t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct suggest command');
       } else {
-        t.deepEqual(cmd, { body: { docs: [ { _id: 'mockid1', _index: 'pelias', _type: 'mocktype' }, { _id: 'mockid2', _index: 'pelias', _type: 'mocktype' } ] } }, 'correct mget command');
+        t.deepEqual(cmd, { 
+          body: { docs: [ 
+            { _id: 'mockid1', _index: 'pelias', _type: 'mocktype' }, 
+            { _id: 'mockid2', _index: 'pelias', _type: 'mocktype' } ] 
+          } 
+        }, 'correct mget command');
       }
     });
     var controller = setup( backend, mockQuery() );

@@ -30,7 +30,7 @@ module.exports = function( record ){
 
   // de-dupe outputs
   outputs = outputs.filter( function( i, pos ) {
-    return outputs.indexOf( i ) == pos;
+    return outputs.indexOf( i ) === pos;
   });
 
   return outputs.join(', ').trim();

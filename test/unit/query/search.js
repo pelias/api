@@ -29,29 +29,29 @@ module.exports.tests.query = function(test, common) {
     });
 
     var expected = {
-      "query": {
-        "filtered": {
-          "query": {
-            "query_string": {
-              "query": "test",
-              "fields": [
-                "name.default"
+      'query': {
+        'filtered': {
+          'query': {
+            'query_string': {
+              'query': 'test',
+              'fields': [
+                'name.default'
               ],
-              "default_operator": "OR"
+              'default_operator': 'OR'
             }
           },
-          "filter": {
-            "bool": {
-              "must": [
+          'filter': {
+            'bool': {
+              'must': [
                 {
-                  "geo_distance": {
-                    "distance": "50km",
-                    "distance_type": "plane",
-                    "optimize_bbox": "indexed",
-                    "_cache": true,
-                    "center_point": {
-                      "lat": "29.49",
-                      "lon": "-82.51"
+                  'geo_distance': {
+                    'distance': '50km',
+                    'distance_type': 'plane',
+                    'optimize_bbox': 'indexed',
+                    '_cache': true,
+                    'center_point': {
+                      'lat': '29.49',
+                      'lon': '-82.51'
                     }
                   }
                 }
@@ -60,19 +60,19 @@ module.exports.tests.query = function(test, common) {
            }
         }
       },
-      "sort": [
+      'sort': [
         {
-          "_geo_distance": {
-            "center_point": {
-              "lat": 29.49136,
-              "lon": -82.50622
+          '_geo_distance': {
+            'center_point': {
+              'lat': 29.49136,
+              'lon': -82.50622
             },
-            "order": "asc",
-            "unit": "km"
+            'order': 'asc',
+            'unit': 'km'
           }
         }
       ],
-      "size": 10
+      'size': 10
     };
 
     t.deepEqual(query, expected, 'valid search query');

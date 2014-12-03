@@ -5,13 +5,13 @@ var cluster = require('cluster'),
       port = ( process.env.PORT || 3100 );
 
 /** cluster webserver across all cores **/
-if( multicore ){
+// if( multicore ){
   // @todo: not finished yet
   // cluster(app)
   //   .use(cluster.stats())
   //   .listen( process.env.PORT || 3100 );
-}
-else {
+// } 
+if (!multicore){
   console.log( 'listening on ' + port );
   app.listen( process.env.PORT || 3100 );
 }
