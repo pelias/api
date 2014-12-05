@@ -6,7 +6,6 @@ var tests = [
   require('./controller/index'),
   require('./controller/doc'),
   require('./controller/suggest'),
-  require('./controller/suggest_nearby'),
   require('./controller/search'),
   require('./service/mget'),
   require('./service/search'),
@@ -18,7 +17,8 @@ var tests = [
   require('./query/search'),
   require('./query/reverse'),
   require('./helper/geojsonify'),
-  require('./helper/outputSchema')
+  require('./helper/outputSchema'),
+  require('./helper/queryMixer')
 ];
 
 tests.map(function(t) {

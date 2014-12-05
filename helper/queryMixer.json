@@ -1,0 +1,28 @@
+{
+  "suggest": [
+    {
+      "layers": "all",
+      "precision": [5, 3, 1]
+    },
+    {
+      "layers": "admin",
+      "precision": []
+    },
+    {
+      "layers": "all",
+      "precision": [3],
+      "fuzzy": "AUTO"
+    }
+  ],
+  "suggest_nearby": [
+    {
+      "layers": "all",
+      "precision": []
+    },
+    {
+      "layers": "all",
+      "precision": [],
+      "fuzzy": "AUTO"
+    }
+  ]
+}
