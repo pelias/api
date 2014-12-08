@@ -46,15 +46,8 @@ function setup( backend, query, query_mixer ){
     
     async.parallel(async_query, function(err, results) {
       // results is equal to: {a: docs, b: docs, c: docs}
-      var splice_length = parseInt((SIZE / Object.keys(results).length), 10);
       var results_keys = Object.keys(async_query);
-      
-      var combined = [];
-      results_keys.forEach(function(key){
-        combined = combined.concat(suggest.sort_by_score(results[key]).splice(0,splice_length));
-      });
-      
-      combined = suggest.dedup(combined);
+      var combined = suggest.mix_results(results, results_keys, SIZE);
       suggest.respond(combined);
     });
   

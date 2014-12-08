@@ -7,7 +7,7 @@ var geojsonify = require('../helper/geojsonify').search;
 function setup(backend, res, next) {
   var query_backend = function(cmd, callback) {
     // query backend
-    
+
     service.suggest( backend, cmd, function( err, docs ){
       
       // error handler
@@ -17,23 +17,48 @@ function setup(backend, res, next) {
     });
   };
 
-  var dedup = function(combined) {
-    var unique_ids = [];
-    return combined.filter(function(item, pos) {
-      if (unique_ids.indexOf(item.text) === -1) {
-        unique_ids.push(item.text);
-        return true;
-      }
-      return false;
-    });
-  };
-
   var sort_by_score = function(combined) {
-    return combined.sort(function(a,b) {
-      return b.score - a.score;
+    return combined.map(function(doc) {
+      return doc.sort(function(a,b) {
+        return b.score - a.score;
+      });
+    }).reduce(function(a,b) { //flatten
+      return a.concat(b);
     });
   };
 
+  var mix_results = function(results, results_keys, size) {
+    var i = 0;
+    var j = 0;
+    var l = results_keys.length;
+    var combined = [];
+    var unique_ids = [];
+
+    while (i<size && l > 0) {
+      if (results[results_keys[j]].length) {
+        combined[j] = combined[j] || [];
+
+        var res = results[results_keys[j]][0];
+        if (unique_ids.indexOf(res.text) === -1) {
+          combined[j].push(res);
+          unique_ids.push(res.text);
+          i++;
+        } 
+        results[results_keys[j]].splice(0,1);
+      } else {
+        results_keys.splice(j,1);
+        l = results_keys.length;
+        j--;
+      }
+      j++;
+      if (j%l === 0) {
+        j=0;
+      }
+    }
+    
+    return sort_by_score(combined);
+  };
+  
   var reply = function(res, docs) {
     
     // convert docs to geojson
@@ -77,9 +102,7 @@ function setup(backend, res, next) {
 
   return {
     query_backend: query_backend,
-    dedup: dedup,
-    sort_by_score: sort_by_score,
-    reply: reply,
+    mix_results: mix_results,
     respond: respond
   };
 
