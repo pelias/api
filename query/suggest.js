@@ -2,7 +2,7 @@
 var logger = require('../src/logger');
 
 // Build pelias suggest query
-function generate( params, precision ){
+function generate( params, precision, fuzziness ){
 
   var getPrecision = function(zoom) {
     switch (true) {
@@ -31,6 +31,9 @@ function generate( params, precision ){
             'value': [ params.lon, params.lat ],
             'precision': precision || getPrecision(params.zoom)
           }
+        },
+        'fuzzy' : {
+          'fuzziness': fuzziness || 0
         }
       }
     }
