@@ -16,7 +16,6 @@ module.exports = function( record ){
       var rec = record[schemaArr[i]];
       if (rec && rec.length) {
         parts.push( rec );
-        return parts;
       }
     }
     return parts;
