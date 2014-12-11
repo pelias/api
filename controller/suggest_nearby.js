@@ -1,15 +1,16 @@
 
 var service = {
-  suggest: require('../service/suggest'),
+  suggest: require('../service/suggest_multiple'),
   mget: require('../service/mget')
 };
 var geojsonify = require('../helper/geojsonify').search;
+var resultsHelper = require('../helper/results');
 
 function setup( backend, query ){
 
   // allow overriding of dependencies
   backend = backend || require('../src/backend');
-  query = query || require('../query/suggest');
+  query = query || require('../query/suggest_multiple');
 
   function controller( req, res, next ){
 
@@ -37,7 +38,10 @@ function setup( backend, query ){
 
       // error handler
       if( err ){ return next( err ); }
-
+      
+      // pick the required number of results 
+      suggested = resultsHelper.picker(suggested, req.clean.size);
+      
       // no documents suggested, return empty array to avoid ActionRequestValidationException
       if( !Array.isArray( suggested ) || !suggested.length ){
         return reply([]);
