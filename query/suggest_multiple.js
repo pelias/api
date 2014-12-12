@@ -4,7 +4,15 @@ var logger = require('../src/logger');
 // Build pelias suggest query
 function generate( params, precision ){
 
-  var getPrecision = function(zoom) {
+  var CmdGenerator = function(params){
+    this.params = params;
+    this.cmd = {
+      'text': params.input
+    };
+  };    
+
+  CmdGenerator.prototype.get_precision = function() {
+    var zoom = this.params.zoom;
     switch (true) {
       case (zoom > 15):
         return 5; // zoom: >= 16
@@ -16,81 +24,37 @@ function generate( params, precision ){
         return 2; // zoom: 4-5
       default:
         return 1; // zoom: 1-3 or when zoom: undefined
-    }
+    } 
   };
 
-  var cmd = {
-    'text' : params.input,
-    'pelias_1' : {
+  CmdGenerator.prototype.add_suggester = function(name, precision, layers, fuzzy) {
+    this.cmd[name] = {
       'completion' : {
-        'size' : params.size,
+        'size' : this.params.size,
         'field' : 'suggest',
         'context': {
-          'dataset': params.layers,
+          'dataset': layers || this.params.layers,
           'location': {
-            'value': [ params.lon, params.lat ],
-            'precision': 5
-          }
-        }
-      }
-    },
-    'pelias_2' : {
-      'completion' : {
-        'size' : params.size,
-        'field' : 'suggest',
-        'context': {
-          'dataset': params.layers,
-          'location': {
-            'value': [ params.lon, params.lat ],
-            'precision': 3
-          }
-        }
-      }
-    },
-    'pelias_3' : {
-      'completion' : {
-        'size' : params.size,
-        'field' : 'suggest',
-        'context': {
-          'dataset': params.layers,
-          'location': {
-            'value': [ params.lon, params.lat ],
-            'precision': 1
-          }
-        }
-      }
-    },
-    'pelias_4' : {
-      'completion' : {
-        'size' : params.size,
-        'field' : 'suggest',
-        'context': {
-          'dataset': ['admin0', 'admin1', 'admin2'],
-          'location': {
-            'value': [ params.lon, params.lat ],
-            'precision': precision || getPrecision(params.zoom)
-          }
-        }
-      }
-    },
-    'pelias_5' : {
-      'completion' : {
-        'size' : params.size,
-        'field' : 'suggest',
-        'context': {
-          'dataset': params.layers,
-          'location': {
-            'value': [ params.lon, params.lat ],
-            'precision': 3
+            'value': [ this.params.lon, this.params.lat ],
+            'precision': precision || this.get_precision()
           }
         },
-        'fuzzy': {}
+        'fuzzy': {
+          'fuzziness': fuzzy || 0
+        }
       }
-    }
+    };
   };
 
-  // logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
-  return cmd;
+  var cmd = new CmdGenerator(params);
+  cmd.add_suggester('pelias_1', 5);
+  cmd.add_suggester('pelias_2', 3);
+  cmd.add_suggester('pelias_3', 1);
+  cmd.add_suggester('pelias_4', undefined, ['admin0', 'admin1', 'admin2']);
+  cmd.add_suggester('pelias_5', 3, undefined, 'AUTO');
+  
+  // logger.log( 'cmd', JSON.stringify( cmd.cmd, null, 2 ) );
+  return cmd.cmd;
 
 }
 
