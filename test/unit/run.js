@@ -18,7 +18,8 @@ var tests = [
   require('./query/search'),
   require('./query/reverse'),
   require('./helper/geojsonify'),
-  require('./helper/outputSchema')
+  require('./helper/outputSchema'),
+  require('./helper/queryMixer')
 ];
 
 tests.map(function(t) {

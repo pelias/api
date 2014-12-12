@@ -6,18 +6,19 @@ var service = {
 var geojsonify = require('../helper/geojsonify').search;
 var resultsHelper = require('../helper/results');
 
-function setup( backend, query ){
+function setup( backend, query, query_mixer ){
 
   // allow overriding of dependencies
   backend = backend || require('../src/backend');
   query = query || require('../query/suggest_multiple');
+  query_mixer = query_mixer || require('../helper/queryMixer').suggest;
 
   function controller( req, res, next ){
 
     // backend command
     var cmd = {
       index: 'pelias',
-      body: query( req.clean )
+      body: query( req.clean, query_mixer )
     };
 
     // responder

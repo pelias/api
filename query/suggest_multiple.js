@@ -2,7 +2,7 @@
 var logger = require('../src/logger');
 
 // Build pelias suggest query
-function generate( params, precision ){
+function generate( params, query_mixer ){
 
   var CmdGenerator = function(params){
     this.params = params;
@@ -47,11 +47,15 @@ function generate( params, precision ){
   };
 
   var cmd = new CmdGenerator(params);
-  cmd.add_suggester('pelias_1', 5);
-  cmd.add_suggester('pelias_2', 3);
-  cmd.add_suggester('pelias_3', 1);
-  cmd.add_suggester('pelias_4', undefined, ['admin0', 'admin1', 'admin2']);
-  cmd.add_suggester('pelias_5', 3, undefined, 'AUTO');
+  query_mixer.forEach(function(item, index){
+    if (item.precision && Array.isArray( item.precision ) && item.precision.length ) {
+      item.precision.forEach(function(precision) {
+        cmd.add_suggester('pelias_'+index, precision, item.layers, item.fuzzy);
+      });
+    } else {
+      cmd.add_suggester('pelias_'+index,  undefined, item.layers, item.fuzzy);
+    }
+  });
   
   // logger.log( 'cmd', JSON.stringify( cmd.cmd, null, 2 ) );
   return cmd.cmd;

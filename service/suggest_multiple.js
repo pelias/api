@@ -19,7 +19,7 @@ function service( backend, cmd, cb ){
     var has_docs = function(obj) {
       return Array.isArray( obj ) && obj.length && obj[0].options && obj[0].options.length;
     };
-    for (var i=1, j=0; i<num_keys && j<num_keys; i++) {
+    for (var i=0, j=0; i<num_keys && j<num_keys; i++) {
       var keys = 'pelias_'+i;
       if ( has_docs(data[keys]) ){
         docs[i] = docs[i] || [];
