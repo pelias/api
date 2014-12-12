@@ -2,9 +2,17 @@
 var logger = require('../src/logger');
 
 // Build pelias suggest query
-function generate( params, precision ){
+function generate( params, query_mixer, fuzziness ){
 
-  var getPrecision = function(zoom) {
+  var CmdGenerator = function(params){
+    this.params = params;
+    this.cmd = {
+      'text': params.input
+    };
+  };    
+
+  CmdGenerator.prototype.get_precision = function() {
+    var zoom = this.params.zoom;
     switch (true) {
       case (zoom > 15):
         return 5; // zoom: >= 16
@@ -16,28 +24,46 @@ function generate( params, precision ){
         return 2; // zoom: 4-5
       default:
         return 1; // zoom: 1-3 or when zoom: undefined
-    }
+    } 
   };
 
-  var cmd = {
-    'pelias' : {
-      'text' : params.input,
+  CmdGenerator.prototype.add_suggester = function(name, precision, layers, fuzzy) {
+    this.cmd[name] = {
       'completion' : {
-        'size' : params.size,
+        'size' : this.params.size,
         'field' : 'suggest',
         'context': {
-          'dataset': params.layers,
+          'dataset': layers || this.params.layers,
           'location': {
-            'value': [ params.lon, params.lat ],
-            'precision': precision || getPrecision(params.zoom)
+            'value': [ this.params.lon, this.params.lat ],
+            'precision': precision || this.get_precision()
           }
+        },
+        'fuzzy': {
+          'fuzziness': fuzzy || fuzziness || 0
         }
       }
-    }
+    };
   };
 
-  // logger.log( 'cmd', JSON.stringify( cmd, null, 2 ) );
-  return cmd;
+  var cmd = new CmdGenerator(params);
+  if (query_mixer && query_mixer.length) {
+    query_mixer.forEach(function(item, index){
+      if (item.precision && Array.isArray( item.precision ) && item.precision.length ) {
+        item.precision.forEach(function(precision) {
+          cmd.add_suggester('pelias_'+index, precision, item.layers, item.fuzzy);
+        });
+      } else {
+        cmd.add_suggester('pelias_'+index,  undefined, item.layers, item.fuzzy);
+      }
+    });  
+  } else {
+    cmd.add_suggester('pelias_0');
+  }
+  
+  
+  // logger.log( 'cmd', JSON.stringify( cmd.cmd, null, 2 ) );
+  return cmd.cmd;
 
 }
 

@@ -4,46 +4,25 @@ var service = {
   mget: require('../service/mget')
 };
 var geojsonify = require('../helper/geojsonify').search;
-var async = require('async');
+var resultsHelper = require('../helper/results');
 
-function setup( backend, query ){
+function setup( backend, query, query_mixer ){
 
   // allow overriding of dependencies
   backend = backend || require('../src/backend');
   query = query || require('../query/suggest');
+  query_mixer = query_mixer || require('../helper/queryMixer').suggest;
 
   function controller( req, res, next ){
 
+    // backend command
     var cmd = {
       index: 'pelias',
-      body: query( req.clean )
+      body: query( req.clean, query_mixer )
     };
 
-    var SIZE = req.clean.size || 10;
-
-    var query_backend = function(cmd, callback) {
-      // query backend
-      service.suggest( backend, cmd, function( err, docs ){
-
-        // error handler
-        if( err ){ return next( err ); }
-
-        callback(null, docs);
-      });
-    };
-
-    var dedup = function(combined) {
-      var unique_ids = [];
-      return combined.filter(function(item, pos) {
-        if (unique_ids.indexOf(item.text) === -1) {
-          unique_ids.push(item.text);
-          return true;
-        }
-        return false;
-      });
-    };
-
-    var reply = function(docs) {
+    // responder
+    function reply( docs ){
       
       // convert docs to geojson
       var geojson = geojsonify( docs );
@@ -53,17 +32,24 @@ function setup( backend, query ){
 
       // respond
       return res.status(200).json( geojson );
-    };
+    }
 
-    var respond = function(data) {
+    // query backend
+    service.suggest( backend, cmd, function( err, suggested ){
 
+      // error handler
+      if( err ){ return next( err ); }
+      
+      // pick the required number of results 
+      suggested = resultsHelper.picker(suggested, req.clean.size);
+      
       // no documents suggested, return empty array to avoid ActionRequestValidationException
-      if( !Array.isArray( data ) || !data.length ){
+      if( !Array.isArray( suggested ) || !suggested.length ){
         return reply([]);
       }
 
       // map suggester output to mget query
-      var query = data.map( function( doc ) {
+      var query = suggested.map( function( doc ) {
         var idParts = doc.text.split(':');
         return {
           _index: 'pelias',
@@ -81,72 +67,8 @@ function setup( backend, query ){
         return reply( docs );
 
       });
+    });
 
-    };
-
-    if (req.clean.input) {
-      var async_query;
-
-      // admin only
-      req.admin = {};
-      for (var k in req.clean) { req.admin[k] = req.clean[k]; }
-      req.admin.layers = ['admin0','admin1','admin2'];
-
-      if (req.clean.input.length < 4 && isNaN(parseInt(req.clean.input, 10))) {
-        async_query = {
-          admin_3p: function(callback){
-            cmd.body = query( req.admin, 3 );
-            query_backend(cmd, callback);
-          },
-          admin_1p: function(callback){
-            cmd.body = query( req.admin, 1 );
-            query_backend(cmd, callback);
-          },
-          all_3p: function(callback) {
-            cmd.body = query( req.clean, 3 );
-            query_backend(cmd, callback);
-          }
-        };
-      } else {
-        async_query = {
-          all_5p: function(callback){
-            cmd.body = query( req.clean, 5);
-            query_backend(cmd, callback);
-          },
-          all_3p: function(callback){
-            cmd.body = query( req.clean, 3);
-            query_backend(cmd, callback);
-          },
-          all_1p: function(callback){
-            cmd.body = query( req.clean, 1 );
-            query_backend(cmd, callback);
-          },
-          admin_1p: function(callback){
-            cmd.body = query( req.admin );
-            query_backend(cmd, callback);
-          }
-        };
-      }
-      
-      async.parallel(async_query, function(err, results) {
-        // results is equal to: {a: docs, b: docs, c: docs}
-        var splice_length = parseInt((SIZE / Object.keys(results).length), 10);
-        var results_keys = Object.keys(async_query);
-        
-        var combined = [];
-        results_keys.forEach(function(key){
-          combined = combined.concat(results[key].splice(0,splice_length));
-        });
-        
-        combined = dedup(combined);
-        respond(combined);
-      });
-    } else {
-      query_backend(cmd, function(err, results) {
-        respond(results);
-      });
-    }
-  
   }
 
   return controller;

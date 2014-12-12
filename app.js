@@ -22,7 +22,6 @@ var controllers     = {};
 controllers.index   = require('./controller/index');
 controllers.doc     = require('./controller/doc');
 controllers.suggest = require('./controller/suggest');
-controllers.suggest_nearby = require('./controller/suggest_nearby');
 controllers.search  = require('./controller/search');
 
 /** ----------------------- routes ----------------------- **/
@@ -37,7 +36,7 @@ app.get( '/doc', sanitisers.doc.middleware, controllers.doc() );
 app.get( '/suggest', sanitisers.suggest.middleware, controllers.suggest() );
 app.get( '/suggest/nearby', 
 		sanitisers.suggest.middleware, 
-		controllers.suggest_nearby(undefined, undefined, require('./helper/queryMixer').suggest_nearby) );
+		controllers.suggest(undefined, undefined, require('./helper/queryMixer').suggest_nearby) );
 
 // search API
 app.get( '/search', sanitisers.search.middleware, controllers.search() );
