@@ -21,6 +21,8 @@ function setup( backend, query, query_mixer ){
       body: query( req.clean, query_mixer )
     };
 
+    var size = req.clean.size || 10; 
+
     // responder
     function reply( docs ){
       
@@ -41,8 +43,8 @@ function setup( backend, query, query_mixer ){
       if( err ){ return next( err ); }
       
       // pick the required number of results 
-      suggested = resultsHelper.picker(suggested, req.clean.size);
-      
+      suggested = resultsHelper.picker(suggested, size);
+
       // no documents suggested, return empty array to avoid ActionRequestValidationException
       if( !Array.isArray( suggested ) || !suggested.length ){
         return reply([]);

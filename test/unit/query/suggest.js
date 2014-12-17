@@ -19,7 +19,7 @@ module.exports.tests.query = function(test, common) {
     });
     var expected = {
       text: 'test',
-      pelias_0: {
+      0: {
         completion: {
           field: 'suggest',
           size: 10,
@@ -73,7 +73,7 @@ module.exports.tests.precision = function(test, common) {
       });
       var expected = {
         text: 'test',
-        pelias_0: {
+        0: {
           completion: {
             field: 'suggest',
             size: 10,
@@ -105,7 +105,7 @@ module.exports.tests.fuzziness = function(test, common) {
       }, undefined, test_case);
       var expected = {
         text: 'test',
-        pelias_0: {
+        0: {
           completion: {
             field: 'suggest',
             size: 10,

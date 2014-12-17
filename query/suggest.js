@@ -51,14 +51,14 @@ function generate( params, query_mixer, fuzziness ){
     query_mixer.forEach(function(item, index){
       if (item.precision && Array.isArray( item.precision ) && item.precision.length ) {
         item.precision.forEach(function(precision) {
-          cmd.add_suggester('pelias_'+index, precision, item.layers, item.fuzzy);
+          cmd.add_suggester(index, precision, item.layers, item.fuzzy);
         });
       } else {
-        cmd.add_suggester('pelias_'+index,  undefined, item.layers, item.fuzzy);
+        cmd.add_suggester(index, undefined, item.layers, item.fuzzy);
       }
     });  
   } else {
-    cmd.add_suggester('pelias_0');
+    cmd.add_suggester(0);
   }
   
   
