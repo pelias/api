@@ -9,9 +9,17 @@ function sanitize( req ){
     params = {};
   }
 
+  var is_invalid_lat = function(lat) {
+    return isNaN( lat ) || lat < -90 || lat > 90;
+  };
+
+  var is_invalid_lon = function(lon) {
+    return isNaN( lon ) || lon < -180 || lon > 180;
+  };
+
   // lat
   var lat = parseFloat( params.lat, 10 );
-  if( isNaN( lat ) || lat < -90 || lat > 90 ){
+  if( is_invalid_lat(lat) ){
     return {
       'error': true,
       'message': 'invalid param \'lat\': must be >-90 and <90'
@@ -21,7 +29,7 @@ function sanitize( req ){
 
   // lon
   var lon = parseFloat( params.lon, 10 );
-  if( isNaN( lon ) || lon < -180 || lon > 180 ){
+  if( is_invalid_lon(lon) ){
     return {
       'error': true,
       'message': 'invalid param \'lon\': must be >-180 and <180'
@@ -36,6 +44,28 @@ function sanitize( req ){
   } else {
     clean.zoom = 10; // default
   }
+
+  // bbox
+  if (params.bbox) {
+    var bbox = [];
+    var bboxArr = params.bbox.split(',');
+    if( Array.isArray(bboxArr) && bboxArr.length === 4 ){
+      bboxArr.forEach(function(latlon, index) {
+        latlon = parseFloat(latlon, 10);
+        if ( !(index % 2 === 0 ? is_invalid_lat(latlon) : is_invalid_lon(latlon)) ) {
+          bbox.push(latlon);
+        }
+      });
+      if (bbox.length === 4) {
+        clean.bbox = bbox;
+      } else {
+        return {
+          'error': true,
+          'message': 'invalid bbox'
+        };
+      }
+    }
+  } 
 
   req.clean = clean;
   

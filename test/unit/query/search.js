@@ -15,16 +15,17 @@ module.exports.tests.query = function(test, common) {
     var query = generate({
       input: 'test', size: 10,
       lat: 29.49136, lon: -82.50622,
-      bbox: {
-        bottom_left: {
-          lat: 11.51053655297385,
-          lon: -103.16362455862279
-        },
-        top_right: {
-          lat: 47.472183447026154,
-          lon: -61.84881544137721
-        }
-      },
+      bbox: [47.47, -61.84, 11.51, -103.16],
+      // bbox: { //TODO write a test where no bbox is provided
+      //   bottom_left: {
+      //     lat: 11.51053655297385,
+      //     lon: -103.16362455862279
+      //   },
+      //   top_right: {
+      //     lat: 47.472183447026154,
+      //     lon: -61.84881544137721
+      //   }
+      // },
       layers: ['test']
     });
 
@@ -44,34 +45,25 @@ module.exports.tests.query = function(test, common) {
             'bool': {
               'must': [
                 {
-                  'geo_distance': {
-                    'distance': '50km',
-                    'distance_type': 'plane',
-                    'optimize_bbox': 'indexed',
-                    '_cache': true,
+                  'geo_bounding_box': {
                     'center_point': {
-                      'lat': '29.49',
-                      'lon': '-82.51'
+                      'top_right': {
+                        'lat': '47.47',
+                        'lon': '-61.84'
+                      },
+                      'bottom_left': {
+                        'lat': '11.51',
+                        'lon': '-103.16'
+                      }
                     }
                   }
                 }
               ]
             }
-           }
-        }
-      },
-      'sort': [
-        {
-          '_geo_distance': {
-            'center_point': {
-              'lat': 29.49136,
-              'lon': -82.50622
-            },
-            'order': 'asc',
-            'unit': 'km'
           }
         }
-      ],
+      },
+      'sort': [],
       'size': 10
     };
 
