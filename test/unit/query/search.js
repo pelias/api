@@ -21,16 +21,6 @@ module.exports.tests.query = function(test, common) {
         bottom: 11.51, 
         left: -103.16
       },
-      // bbox: { //TODO write a test where no bbox is provided
-      //   bottom_left: {
-      //     lat: 11.51053655297385,
-      //     lon: -103.16362455862279
-      //   },
-      //   top_right: {
-      //     lat: 47.472183447026154,
-      //     lon: -61.84881544137721
-      //   }
-      // },
       layers: ['test']
     });
 
@@ -68,7 +58,65 @@ module.exports.tests.query = function(test, common) {
       'sort': [],
       'size': 10
     };
-    console.log(JSON.stringify(query, 2, null));
+    
+    t.deepEqual(query, expected, 'valid search query');
+    t.end();
+  });
+
+  test('valid query without bbox', function(t) {
+    var query = generate({
+      input: 'test', size: 10,
+      lat: 29.49136, lon: -82.50622,
+      layers: ['test']
+    });
+
+    var expected = {
+      'query': {
+        'filtered': {
+          'query': {
+            'query_string': {
+              'query': 'test',
+              'fields': [
+                'name.default'
+              ],
+              'default_operator': 'OR'
+            }
+          },
+          'filter': {
+            'bool': {
+              'must': [
+                {
+                  'geo_distance': {
+                    'distance': '50km',
+                    'distance_type': 'plane',
+                    'optimize_bbox': 'indexed',
+                    '_cache': true,
+                    'center_point': {
+                      'lat': '29.49',
+                      'lon': '-82.51'
+                    }
+                  }
+                }
+              ]
+            }
+           }
+        }
+      },
+      'sort': [
+        {
+          '_geo_distance': {
+            'center_point': {
+              'lat': 29.49136,
+              'lon': -82.50622
+            },
+            'order': 'asc',
+            'unit': 'km'
+          }
+        }
+      ],
+      'size': 10
+    };
+
     t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
