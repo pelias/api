@@ -143,7 +143,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
       sanitize({ input: 'test', lat: 0, lon: 0, bbox: bbox }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         t.equal(err, undefined, 'no error');
-        t.deepEqual(clean, expected, 'clean set correctly');
+        t.deepEqual(clean, expected, 'falling back on 50km distance from centroid');
       });
     });
     t.end();
@@ -156,10 +156,10 @@ module.exports.tests.sanitize_bbox = function(test, common) {
           return parseInt(i);
         });
         expected.bbox = {
-          top   : bboxArray[0],
-          right : bboxArray[1],
-          bottom: bboxArray[2],
-          left  : bboxArray[3]
+          top   : Math.max(bboxArray[0], bboxArray[2]),
+          right : Math.max(bboxArray[1], bboxArray[3]),
+          bottom: Math.min(bboxArray[0], bboxArray[2]),
+          left  : Math.min(bboxArray[1], bboxArray[3])
         };
         t.equal(err, undefined, 'no error');
         t.deepEqual(clean, expected, 'clean set correctly (' + bbox + ')');
