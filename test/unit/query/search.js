@@ -15,7 +15,12 @@ module.exports.tests.query = function(test, common) {
     var query = generate({
       input: 'test', size: 10,
       lat: 29.49136, lon: -82.50622,
-      bbox: [47.47, -61.84, 11.51, -103.16],
+      bbox: {
+        top: 47.47, 
+        right: -61.84, 
+        bottom: 11.51, 
+        left: -103.16
+      },
       // bbox: { //TODO write a test where no bbox is provided
       //   bottom_left: {
       //     lat: 11.51053655297385,
@@ -47,15 +52,12 @@ module.exports.tests.query = function(test, common) {
                 {
                   'geo_bounding_box': {
                     'center_point': {
-                      'top_right': {
-                        'lat': '47.47',
-                        'lon': '-61.84'
-                      },
-                      'bottom_left': {
-                        'lat': '11.51',
-                        'lon': '-103.16'
-                      }
-                    }
+                      'top': '47.47',
+                      'right': '-61.84',
+                      'bottom':'11.51',
+                      'left': '-103.16'
+                    },
+                    '_cache': true
                   }
                 }
               ]
@@ -66,7 +68,7 @@ module.exports.tests.query = function(test, common) {
       'sort': [],
       'size': 10
     };
-
+    console.log(JSON.stringify(query, 2, null));
     t.deepEqual(query, expected, 'valid search query');
     t.end();
   });

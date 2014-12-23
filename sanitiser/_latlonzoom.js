@@ -57,7 +57,12 @@ function sanitize( req ){
         }
       });
       if (bbox.length === 4) {
-        clean.bbox = bbox;
+        clean.bbox = {
+          top   : bbox[0],
+          right : bbox[1],
+          bottom: bbox[2],
+          left  : bbox[3]
+        };
       } else {
         return {
           'error': true,
