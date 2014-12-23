@@ -5,7 +5,7 @@ var logger = require('../src/logger'),
       input: require('../sanitiser/_input'),
       size: require('../sanitiser/_size'),
       layers: require('../sanitiser/_layers'),
-      latlonzoom: require('../sanitiser/_latlonzoom')
+      latlonzoom: require('../sanitiser/_geo')
     };
 
 var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); };

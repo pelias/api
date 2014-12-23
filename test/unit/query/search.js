@@ -16,15 +16,57 @@ module.exports.tests.query = function(test, common) {
       input: 'test', size: 10,
       lat: 29.49136, lon: -82.50622,
       bbox: {
-        bottom_left: {
-          lat: 11.51053655297385,
-          lon: -103.16362455862279
-        },
-        top_right: {
-          lat: 47.472183447026154,
-          lon: -61.84881544137721
+        top: 47.47, 
+        right: -61.84, 
+        bottom: 11.51, 
+        left: -103.16
+      },
+      layers: ['test']
+    });
+
+    var expected = {
+      'query': {
+        'filtered': {
+          'query': {
+            'query_string': {
+              'query': 'test',
+              'fields': [
+                'name.default'
+              ],
+              'default_operator': 'OR'
+            }
+          },
+          'filter': {
+            'bool': {
+              'must': [
+                {
+                  'geo_bounding_box': {
+                    'center_point': {
+                      'top': '47.47',
+                      'right': '-61.84',
+                      'bottom':'11.51',
+                      'left': '-103.16'
+                    },
+                    '_cache': true
+                  }
+                }
+              ]
+            }
+          }
         }
       },
+      'sort': [],
+      'size': 10
+    };
+    
+    t.deepEqual(query, expected, 'valid search query');
+    t.end();
+  });
+
+  test('valid query without bbox', function(t) {
+    var query = generate({
+      input: 'test', size: 10,
+      lat: 29.49136, lon: -82.50622,
       layers: ['test']
     });
 
