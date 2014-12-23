@@ -45,23 +45,24 @@ function sanitize( req ){
     clean.zoom = 10; // default
   }
 
-  // bbox
+  // bbox 
+  // bbox = bottom_left lat, bottom_left lon, top_right lat, top_right lon
+  // bbox = left,bottom,right,top
+  // bbox = min Longitude , min Latitude , max Longitude , max Latitude 
   if (params.bbox) {
     var bbox = [];
     var bboxArr = params.bbox.split(',');
-    if( Array.isArray(bboxArr) && bboxArr.length === 4 ){
-      bboxArr.forEach(function(latlon, index) {
+    if( Array.isArray(bboxArr) && bboxArr.length === 4 ) {
+      bbox = bboxArr.filter(function(latlon, index) {
         latlon = parseFloat(latlon, 10);
-        if ( !(index % 2 === 0 ? is_invalid_lat(latlon) : is_invalid_lon(latlon)) ) {
-          bbox.push(latlon);
-        }
+        return !(index % 2 === 0 ? is_invalid_lat(latlon) : is_invalid_lon(latlon)); 
       });
       if (bbox.length === 4) {
         clean.bbox = {
-          top   : bbox[0],
-          right : bbox[1],
-          bottom: bbox[2],
-          left  : bbox[3]
+          top   : Math.max(bbox[0], bbox[2]),
+          right : Math.max(bbox[1], bbox[3]),
+          bottom: Math.min(bbox[0], bbox[2]),
+          left  : Math.min(bbox[1], bbox[3])
         };
       } else {
         return {
