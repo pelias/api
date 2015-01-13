@@ -8,5 +8,6 @@ module.exports = [
   'admin0',
   'admin1',
   'admin2',
-  'neighborhood'
+  'neighborhood',
+  'openaddresses'
 ];
