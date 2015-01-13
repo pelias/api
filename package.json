@@ -37,6 +37,7 @@
     "geojson": "^0.2.0",
     "geojson-extent": "^0.3.1",
     "geopipes-elasticsearch-backend": "0.0.8",
+    "is-object": "^1.0.1",
     "pelias-esclient": "0.0.25",
     "toobusy": "^0.2.4"
   },

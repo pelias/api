@@ -1,4 +1,6 @@
-var indeces = require('../query/indeces');
+
+var isObject = require('is-object'),
+    indeces = require('../query/indeces');
 
 // validate inputs, convert types and apply defaults
 function sanitize( req ){
@@ -7,7 +9,7 @@ function sanitize( req ){
   var params= req.query;
 
   // ensure the input params are a valid object
-  if( Object.prototype.toString.call( params ) !== '[object Object]' ){
+  if( !isObject( params ) ){
     params = {};
   }
 
