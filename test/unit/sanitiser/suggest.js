@@ -220,8 +220,9 @@ module.exports.tests.sanitize_layers = function(test, common) {
   });
   test('invalid layer', function(t) {
     sanitize({ layers: 'test_layer', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      var msg = 'invalid param \'layer\': must be one or more of geoname,osmnode,osmway,admin0,admin1,admin2,neighborhood,poi,admin';
-      t.equal(err, msg, 'invalid layer requested');
+      var msg = 'invalid param \'layer\': must be one or more of ';
+      t.true(err.match(msg), 'invalid layer requested');
+      t.true(err.length > msg.length, 'invalid error message');
       t.end();
     });
   });
@@ -239,6 +240,13 @@ module.exports.tests.sanitize_layers = function(test, common) {
       t.end();
     });
   });
+  test('address (alias) layer', function(t) {
+    var address_layers = ['osmaddress','openaddresses'];
+    sanitize({ layers: 'address', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, address_layers, 'address layers set');
+      t.end();
+    });
+  });
   test('poi alias layer plus regular layers', function(t) {
     var poi_layers = ['geoname','osmnode','osmway'];
     var reg_layers = ['admin0', 'admin1'];
@@ -252,6 +260,14 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var reg_layers   = ['geoname', 'osmway'];
     sanitize({ layers: 'admin,geoname,osmway', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, reg_layers.concat(admin_layers), 'admin + regular layers set');
+      t.end();
+    });
+  });
+  test('address alias layer plus regular layers', function(t) {
+    var address_layers = ['osmaddress','openaddresses'];
+    var reg_layers   = ['geoname', 'osmway'];
+    sanitize({ layers: 'address,geoname,osmway', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.deepEqual(clean.layers, reg_layers.concat(address_layers), 'address + regular layers set');
       t.end();
     });
   });
