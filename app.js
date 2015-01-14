@@ -35,10 +35,10 @@ app.get( '/doc', sanitisers.doc.middleware, controllers.doc() );
 
 // suggest API
 app.get( '/suggest', sanitisers.suggest.middleware, controllers.suggest() );
-app.get( '/suggest_old', sanitisers.suggest.middleware, controllers.suggest_old() );
-app.get( '/suggest/nearby', 
-		sanitisers.suggest.middleware, 
-		controllers.suggest(undefined, undefined, require('./helper/queryMixer').suggest_nearby) );
+app.get( '/suggest/nearby', sanitisers.suggest.middleware, controllers.suggest_old() );
+// app.get( '/suggest/nearby', 
+// 		sanitisers.suggest.middleware, 
+// 		controllers.suggest(undefined, undefined, require('./helper/queryMixer').suggest_nearby) );
 
 // search API
 app.get( '/search', sanitisers.search.middleware, controllers.search() );
