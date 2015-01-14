@@ -9,5 +9,6 @@ module.exports = [
   'admin1',
   'admin2',
   'neighborhood',
+  'osmaddress',
   'openaddresses'
 ];

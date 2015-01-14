@@ -6,7 +6,7 @@ module.exports.tests = {};
 module.exports.tests.interface = function(test, common) {
   test('valid interface', function(t) {
     t.true(Array.isArray(indeces), 'valid array');
-    t.equal(indeces.length, 8, 'valid array');
+    t.equal(indeces.length, 9, 'valid array');
     t.end();
   });
 };

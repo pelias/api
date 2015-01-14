@@ -181,7 +181,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     });
   });
   test('address (alias) layer', function(t) {
-    var address_layers = ['openaddresses'];
+    var address_layers = ['osmaddress','openaddresses'];
     sanitize({ layers: 'address', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, address_layers, 'address layers set');
       t.end();
@@ -204,7 +204,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     });
   });
   test('address alias layer plus regular layers', function(t) {
-    var address_layers = ['openaddresses'];
+    var address_layers = ['osmaddress','openaddresses'];
     var reg_layers   = ['geoname', 'osmway'];
     sanitize({ layers: 'address,geoname,osmway', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, reg_layers.concat(address_layers), 'address + regular layers set');
