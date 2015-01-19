@@ -12,6 +12,7 @@ var tests = [
   require('./service/suggest'),
   require('./sanitiser/suggest'),
   require('./sanitiser/doc'),
+  require('./sanitiser/coarse'),
   require('./query/indeces'),
   require('./query/suggest'),
   require('./query/search'),
