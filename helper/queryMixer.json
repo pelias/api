@@ -24,5 +24,16 @@
       "precision": [],
       "fuzzy": "AUTO"
     }
+  ],
+  "coarse": [
+    {
+      "layers": ["admin0","admin1","admin2","neighborhood"],
+      "precision": []
+    },
+    {
+      "layers": ["admin0","admin1","admin2","neighborhood"],
+      "precision": [],
+      "fuzzy": "AUTO"
+    }
   ]
 }
