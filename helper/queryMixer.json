@@ -28,11 +28,11 @@
   "coarse": [
     {
       "layers": ["admin0","admin1","admin2","neighborhood"],
-      "precision": []
+      "precision": [5, 3, 1]
     },
     {
       "layers": ["admin0","admin1","admin2","neighborhood"],
-      "precision": [],
+      "precision": [5, 3, 1],
       "fuzzy": "AUTO"
     }
   ]
