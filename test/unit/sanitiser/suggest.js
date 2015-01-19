@@ -109,6 +109,66 @@ module.exports.tests.sanitize_lon = function(test, common) {
   });
 };
 
+module.exports.tests.sanitize_bbox = function(test, common) {
+  var bboxes = {
+    invalid_coordinates: [
+      '90,-181,-180,34', // invalid top_right lon, bottom_left lat
+      '91,-170,45,-181', // invalid top_right lat, bottom_left lon
+      '91,-181,-91,181', // invalid top_right lat/lon, bottom_left lat/lon
+      '91, -181,-91,181',// invalid - spaces between coordinates
+    ],
+    invalid: [
+      '91;-181,-91,181', // invalid - semicolon between coordinates
+      '91, -181, -91',   // invalid - missing a coordinate
+      '123,12',          // invalid - missing coordinates
+      ''                 // invalid - empty param
+    ],
+    valid: [
+      '90,-179,-80,34', // valid top_right lat/lon, bottom_left lat/lon
+      '0,0,0,0' // valid top_right lat/lon, bottom_left lat/lon
+    ]
+    
+  };
+  test('invalid bbox coordinates', function(t) {  
+    bboxes.invalid_coordinates.forEach( function( bbox ){
+      sanitize({ input: 'test', lat: 0, lon: 0, bbox: bbox }, function( err, clean ){
+        t.equal(err, 'invalid bbox', bbox + ' is invalid');
+        t.equal(clean, undefined, 'clean not set');
+      });
+    });
+    t.end();
+  });
+  test('invalid bbox', function(t) {  
+    bboxes.invalid.forEach( function( bbox ){
+      sanitize({ input: 'test', lat: 0, lon: 0, bbox: bbox }, function( err, clean ){
+        var expected = JSON.parse(JSON.stringify( defaultClean ));
+        t.equal(err, undefined, 'no error');
+        t.deepEqual(clean, expected, 'falling back on 50km distance from centroid');
+      });
+    });
+    t.end();
+  });
+  test('valid bbox', function(t) {  
+    bboxes.valid.forEach( function( bbox ){
+      sanitize({ input: 'test', lat: 0, lon: 0, bbox: bbox }, function( err, clean ){
+        var expected = JSON.parse(JSON.stringify( defaultClean ));
+        var bboxArray = bbox.split(',').map(function(i) {
+          return parseInt(i);
+        });
+        expected.bbox = {
+          top   : Math.max(bboxArray[0], bboxArray[2]),
+          right : Math.max(bboxArray[1], bboxArray[3]),
+          bottom: Math.min(bboxArray[0], bboxArray[2]),
+          left  : Math.min(bboxArray[1], bboxArray[3])
+        };
+        t.equal(err, undefined, 'no error');
+        t.deepEqual(clean, expected, 'clean set correctly (' + bbox + ')');
+      });
+    });
+    t.end();
+  });
+};
+
 module.exports.tests.sanitize_zoom = function(test, common) {
   test('invalid zoom value', function(t) {
     sanitize({ zoom: 'a', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
