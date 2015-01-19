@@ -32,7 +32,7 @@
     },
     {
       "layers": ["admin0","admin1","admin2","neighborhood"],
-      "precision": [5, 3, 1],
+      "precision": [3],
       "fuzzy": "AUTO"
     }
   ]
