@@ -1,0 +1,28 @@
+{
+  "suggest": [
+    {
+      "layers": ["geoname","osmnode","osmway","admin0","admin1","admin2","neighborhood"],
+      "precision": [5, 3, 1]
+    },
+    {
+      "layers": ["admin0","admin1","admin2","neighborhood"],
+      "precision": []
+    },
+    {
+      "layers": ["geoname","osmnode","osmway","admin0","admin1","admin2","neighborhood"],
+      "precision": [3],
+      "fuzzy": "AUTO"
+    }
+  ],
+  "suggest_nearby": [
+    {
+      "layers": ["geoname","osmnode","osmway","admin0","admin1","admin2","neighborhood"],
+      "precision": []
+    },
+    {
+      "layers": ["geoname","osmnode","osmway","admin0","admin1","admin2","neighborhood"],
+      "precision": [],
+      "fuzzy": "AUTO"
+    }
+  ]
+}

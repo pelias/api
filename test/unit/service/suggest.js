@@ -17,8 +17,8 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.functional_success = function(test, common) {
 
   var expected = [ 
-    { score: 1, text: 'mocktype:mockid1' }, 
-    { score: 2, text: 'mocktype:mockid2' } 
+    [{ score: 1, text: 'mocktype:mockid1' }], 
+    [{ score: 2, text: 'mocktype:mockid2' }] 
   ];
 
   test('valid ES query', function(t) {

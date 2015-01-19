@@ -18,8 +18,8 @@ module.exports.tests.query = function(test, common) {
       layers: ['test']
     });
     var expected = {
-      pelias: {
-        text: 'test',
+      text: 'test',
+      0: {
         completion: {
           field: 'suggest',
           size: 10,
@@ -29,7 +29,8 @@ module.exports.tests.query = function(test, common) {
               precision: 1,
               value: [ 0, 0 ]
             }
-          }
+          },
+          fuzzy: { fuzziness: 0 },
         }
       }
     };
@@ -71,8 +72,8 @@ module.exports.tests.precision = function(test, common) {
         layers: ['test']
       });
       var expected = {
-        pelias: {
-          text: 'test',
+        text: 'test',
+        0: {
           completion: {
             field: 'suggest',
             size: 10,
@@ -82,11 +83,44 @@ module.exports.tests.precision = function(test, common) {
                 precision: test_case.precision,
                 value: [ 0, 0 ]
               }
-            }
+            },
+            fuzzy: { fuzziness: 0 },
           }
         }
       };
       t.deepEqual(query, expected, 'valid suggest query for zoom = ' + test_case.zoom);
+    });
+    t.end();
+  });
+};
+
+module.exports.tests.fuzziness = function(test, common) {
+  var test_cases = [0,1,2,'AUTO', undefined, null, ''];
+  test('valid fuzziness', function(t) {
+    test_cases.forEach( function( test_case ){
+      var query = generate({
+        input: 'test', size: 10,
+        lat: 0, lon: 0, zoom:0,
+        layers: ['test']
+      }, undefined, test_case);
+      var expected = {
+        text: 'test',
+        0: {
+          completion: {
+            field: 'suggest',
+            size: 10,
+            context: {
+              dataset: [ 'test' ],
+              location: {
+                precision: 1,
+                value: [ 0, 0 ]
+              }
+            },
+            fuzzy: { fuzziness: test_case || 0 },
+          }
+        }
+      };
+      t.deepEqual(query, expected, 'valid suggest query for fuziness = ' + test_case);
     });
     t.end();
   });

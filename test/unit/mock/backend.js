@@ -1,7 +1,7 @@
 
 var responses = {};
 responses['client/suggest/ok/1'] = function( cmd, cb ){
-  return cb( undefined, suggestEnvelope([ { score: 1, text: 'mocktype:mockid1' }, { score: 2, text: 'mocktype:mockid2' } ]) );
+  return cb( undefined, suggestEnvelope([ { score: 1, text: 'mocktype:mockid1' } ], [ { score: 2, text: 'mocktype:mockid2' } ]) );
 };
 responses['client/suggest/fail/1'] = function( cmd, cb ){
   return cb( 'a backend error occurred' );
@@ -82,8 +82,8 @@ function mgetEnvelope( options ){
   return { docs: options };
 }
 
-function suggestEnvelope( options ){
-  return { pelias: [{ options: options }]};
+function suggestEnvelope( options1, options2 ){
+  return { 0: [{ options: options1 }], 1: [{ options: options2 }]};
 }
 
 function searchEnvelope( options ){
