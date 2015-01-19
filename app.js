@@ -14,6 +14,7 @@ var sanitisers = {};
 sanitisers.doc      = require('./sanitiser/doc');
 sanitisers.suggest  = require('./sanitiser/suggest');
 sanitisers.search   = sanitisers.suggest;
+sanitisers.coarse   = require('./sanitiser/coarse');
 sanitisers.reverse  = require('./sanitiser/reverse');
 
 /** ----------------------- controllers ----------------------- **/
@@ -47,6 +48,8 @@ app.get( '/search', sanitisers.search.middleware, controllers.search() );
 // reverse API
 app.get( '/reverse', sanitisers.reverse.middleware, controllers.search(undefined, require('./query/reverse')) );
 
+// coarse API
+app.get( '/search/coarse', sanitisers.coarse.middleware, controllers.search() );
 
 /** ----------------------- error middleware ----------------------- **/
 
