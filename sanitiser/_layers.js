@@ -16,8 +16,7 @@ function sanitize( req ){
 
   // default case (no layers specified in GET params)
   if('string' !== typeof params.layers || !params.layers.length){
-    // @note: 'address' alias disabled by default until feature testing completed
-    params.layers = 'poi,admin'; // default layers
+    params.layers = 'poi,admin,address'; // default layers
   }
 
   // decide which layers can be queried
