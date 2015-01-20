@@ -1,6 +1,7 @@
 
 var query_mixer = require('../../../helper/queryMixer.json');
 var indeces = require('../../../query/indeces');
+var alias_layers  = ['poi', 'admin', 'address'];
 
 module.exports.tests = {};
 
@@ -16,7 +17,7 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.valid = function(test, common) {
   var valid_keys = ['layers', 'precision', 'fuzzy'];
   var valid_fuzzy_vals = ['AUTO', 0, 1, 2];
-  var valid_layer_vals = indeces;
+  var valid_layer_vals = indeces.concat(alias_layers);
 
   var isValidPrecision = function(t, precisionArr) {
     precisionArr.forEach(function(precision) {

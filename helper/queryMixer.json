@@ -1,37 +1,37 @@
 {
   "suggest": [
     {
-      "layers": ["geoname","osmnode","osmway","admin0","admin1","admin2","neighborhood"],
+      "layers": ["poi", "admin"],
       "precision": [5, 3, 1]
     },
     {
-      "layers": ["admin0","admin1","admin2","neighborhood"],
+      "layers": ["admin"],
       "precision": []
     },
     {
-      "layers": ["geoname","osmnode","osmway","admin0","admin1","admin2","neighborhood"],
+      "layers": ["poi", "admin"],
       "precision": [3],
       "fuzzy": "AUTO"
     }
   ],
   "suggest_nearby": [
     {
-      "layers": ["geoname","osmnode","osmway","admin0","admin1","admin2","neighborhood"],
+      "layers": ["poi", "admin"],
       "precision": []
     },
     {
-      "layers": ["geoname","osmnode","osmway","admin0","admin1","admin2","neighborhood"],
+      "layers": ["poi", "admin"],
       "precision": [],
       "fuzzy": "AUTO"
     }
   ],
   "coarse": [
     {
-      "layers": ["admin0","admin1","admin2","neighborhood"],
+      "layers": ["admin"],
       "precision": [5, 3, 1]
     },
     {
-      "layers": ["admin0","admin1","admin2","neighborhood"],
+      "layers": ["admin"],
       "precision": [3],
       "fuzzy": "AUTO"
     }

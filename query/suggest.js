@@ -1,5 +1,6 @@
 
-var logger = require('../src/logger');
+var logger = require('../src/logger'),
+    get_layers = require('../helper/layers');
 
 // Build pelias suggest query
 function generate( params, query_mixer, fuzziness ){
@@ -49,12 +50,13 @@ function generate( params, query_mixer, fuzziness ){
   var cmd = new CmdGenerator(params);
   if (query_mixer && query_mixer.length) {
     query_mixer.forEach(function(item, index){
+      var expanded_layers = get_layers(item.layers);
       if (item.precision && Array.isArray( item.precision ) && item.precision.length ) {
         item.precision.forEach(function(precision) {
-          cmd.add_suggester(index, precision, item.layers, item.fuzzy);
+          cmd.add_suggester(index, precision, expanded_layers, item.fuzzy);
         });
       } else {
-        cmd.add_suggester(index, undefined, item.layers, item.fuzzy);
+        cmd.add_suggester(index, undefined, expanded_layers, item.fuzzy);
       }
     });  
   } else {

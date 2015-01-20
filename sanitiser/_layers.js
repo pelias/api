@@ -1,6 +1,7 @@
 
 var isObject = require('is-object'),
-    indeces = require('../query/indeces');
+    indeces = require('../query/indeces'),
+    get_layers = require('../helper/layers');
 
 // validate inputs, convert types and apply defaults
 function sanitize( req ){
@@ -38,27 +39,8 @@ function sanitize( req ){
     }
   }
 
-  // expand aliases
-  var expand_aliases = function(alias, layers, layer_indeces) {
-    var alias_index  = layers.indexOf(alias);
-    if (alias_index !== -1 ) {
-      layers.splice(alias_index, 1);
-      layers = layers.concat(layer_indeces);
-    }
-    return layers;
-  };
-
-  layers = expand_aliases('poi',   layers, ['geoname','osmnode','osmway']);
-  layers = expand_aliases('admin', layers, ['admin0','admin1','admin2','neighborhood']);
-  layers = expand_aliases('address', layers, ['osmaddress','openaddresses']);
-
-  // de-dupe
-  layers = layers.filter(function(item, pos) {
-    return layers.indexOf(item) === pos;
-  });
-
   // pass validated params to next middleware
-  clean.layers = layers;
+  clean.layers = get_layers(layers);
   req.clean = clean;
   
   return { 'error': false };
