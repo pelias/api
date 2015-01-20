@@ -1,7 +1,7 @@
 {
   "suggest": [
     {
-      "layers": ["poi", "admin"],
+      "layers": ["poi", "admin", "address"],
       "precision": [5, 3, 1]
     },
     {
@@ -9,18 +9,18 @@
       "precision": []
     },
     {
-      "layers": ["poi", "admin"],
+      "layers": ["poi", "admin", "address"],
       "precision": [3],
       "fuzzy": "AUTO"
     }
   ],
   "suggest_nearby": [
     {
-      "layers": ["poi", "admin"],
+      "layers": ["poi", "admin", "address"],
       "precision": []
     },
     {
-      "layers": ["poi", "admin"],
+      "layers": ["poi", "admin", "address"],
       "precision": [],
       "fuzzy": "AUTO"
     }
