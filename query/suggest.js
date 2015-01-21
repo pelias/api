@@ -48,19 +48,21 @@ function generate( params, query_mixer, fuzziness ){
   };
 
   var cmd = new CmdGenerator(params);
+  var suggester_index = 0;
+
   if (query_mixer && query_mixer.length) {
     query_mixer.forEach(function(item, index){
       var expanded_layers = get_layers(item.layers);
       if (item.precision && Array.isArray( item.precision ) && item.precision.length ) {
         item.precision.forEach(function(precision) {
-          cmd.add_suggester(index, precision, expanded_layers, item.fuzzy);
+          cmd.add_suggester(suggester_index++, precision, expanded_layers, item.fuzzy);
         });
       } else {
-        cmd.add_suggester(index, undefined, expanded_layers, item.fuzzy);
+        cmd.add_suggester(suggester_index++, undefined, expanded_layers, item.fuzzy);
       }
     });  
   } else {
-    cmd.add_suggester(0);
+    cmd.add_suggester(suggester_index++);
   }
   
   
