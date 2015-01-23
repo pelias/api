@@ -2,7 +2,7 @@
 var coarse  = require('../../../sanitiser/coarse'),
     _sanitize    = coarse.sanitize,
     middleware   = coarse.middleware,
-    valid_layers = [ 'geoname', 'admin0', 'admin1', 'admin2', 'neighborhood' ],
+    valid_layers = [ 'admin0', 'admin1', 'admin2', 'neighborhood' ],
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
 module.exports.tests = {};
@@ -51,7 +51,7 @@ module.exports.tests.middleware_success = function(test, common) {
       var defaultClean = { 
         input: 'test',
         size: 10,
-        layers: [ 'geoname', 'admin0', 'admin1', 'admin2', 'neighborhood' ],
+        layers: [ 'admin0', 'admin1', 'admin2', 'neighborhood' ],
         lat: 0,
         lon: 0 
       };
