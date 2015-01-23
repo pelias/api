@@ -27,11 +27,11 @@
   ],
   "coarse": [
     {
-      "layers": ["admin"],
+      "layers": ["admin", "geoname"],
       "precision": [5, 3, 1]
     },
     {
-      "layers": ["admin"],
+      "layers": ["admin", "geoname"],
       "precision": [3],
       "fuzzy": "AUTO"
     }

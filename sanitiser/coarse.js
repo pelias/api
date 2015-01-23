@@ -5,7 +5,7 @@ var logger = require('../src/logger'),
       input: require('../sanitiser/_input'),
       size: require('../sanitiser/_size'),
       layers: function( req ) {
-        req.query.layers = 'admin';
+        req.query.layers = 'admin,geoname';
         var layers = require('../sanitiser/_layers');
         return layers(req);
       },
