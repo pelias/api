@@ -63,6 +63,89 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  test('valid query without lat/lon', function(t) {
+    var query = generate({
+      input: 'test', size: 10,
+      bbox: {
+        top: 47.47, 
+        right: -61.84, 
+        bottom: 11.51, 
+        left: -103.16
+      },
+      layers: ['test']
+    });
+
+    var expected = {
+      'query': {
+        'filtered': {
+          'query': {
+            'query_string': {
+              'query': 'test',
+              'fields': [
+                'name.default'
+              ],
+              'default_operator': 'OR'
+            }
+          },
+          'filter': {
+            'bool': {
+              'must': [
+                {
+                  'geo_bounding_box': {
+                    'center_point': {
+                      'top': '47.47',
+                      'right': '-61.84',
+                      'bottom':'11.51',
+                      'left': '-103.16'
+                    },
+                    '_cache': true
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      'sort': [],
+      'size': 10
+    };
+    
+    t.deepEqual(query, expected, 'valid search query');
+    t.end();
+  });
+
+  test('valid query with no lat/lon and no bbox', function(t) {
+    var query = generate({
+      input: 'test', size: 10,
+      layers: ['test']
+    });
+
+    var expected = {
+      'query': {
+        'filtered': {
+          'query': {
+            'query_string': {
+              'query': 'test',
+              'fields': [
+                'name.default'
+              ],
+              'default_operator': 'OR'
+            }
+          },
+          'filter': {
+            'bool': {
+              'must': []
+            }
+          }
+        }
+      },
+      'size': 10
+    };
+    
+    t.deepEqual(query, expected, 'valid search query');
+    t.end();
+  });
+
   test('valid query without bbox', function(t) {
     var query = generate({
       input: 'test', size: 10,
