@@ -14,6 +14,7 @@ function generate( params ){
   } 
   
   var query = queries.distance( centroid, { size: params.size } );
+  
   if (params.bbox) {
     query = queries.bbox ( centroid, { size: params.size, bbox: params.bbox } );
   }
