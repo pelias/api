@@ -36,7 +36,7 @@ function generate( params, query_mixer, fuzziness ){
         'context': {
           'dataset': layers || this.params.layers,
           'location': {
-            'value': [ ],
+            'value': null,
             'precision': precision || this.get_precision()
           }
         },
