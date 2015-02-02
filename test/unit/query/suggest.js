@@ -37,6 +37,32 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(query, expected, 'valid suggest query');
     t.end();
   });
+
+  test('valid query without lat/lon', function(t) {
+    var query = generate({
+      input: 'test', size: 10,
+      layers: ['test']
+    });
+    var expected = {
+      text: 'test',
+      0: {
+        completion: {
+          field: 'suggest',
+          size: 10,
+          context: {
+            dataset: [ 'test' ],
+            location: {
+              precision: 1,
+              value: null
+            }
+          },
+          fuzzy: { fuzziness: 0 },
+        }
+      }
+    };
+    t.deepEqual(query, expected, 'valid suggest query');
+    t.end();
+  });
 };
 
 module.exports.tests.precision = function(test, common) {

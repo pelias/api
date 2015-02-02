@@ -4,12 +4,11 @@ var suggest  = require('../../../sanitiser/suggest'),
     middleware = suggest.middleware,
     defaultError = 'invalid param \'input\': text length, must be >0',
     defaultClean =  { input: 'test', 
-                      lat: 0, 
+                      lat:0,
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                                 'osmaddress', 'openaddresses' ], 
-                      lon: 0, 
-                      size: 10, 
-                      zoom: 10 
+                      lon: 0,
+                      size: 10
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
@@ -173,7 +172,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
 module.exports.tests.sanitize_zoom = function(test, common) {
   test('invalid zoom value', function(t) {
     sanitize({ zoom: 'a', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.zoom, 10, 'default zoom set');
+      t.equal(clean.zoom, undefined, 'zoom not set');
       t.end();
     });
   });

@@ -4,13 +4,16 @@ var logger = require('../src/logger'),
 
 function generate( params ){
 
-  var centroid = {
-    lat: params.lat,
-    lon: params.lon
-  };
+  var centroid = null;
 
+  if ( params.lat && params.lon ){
+    centroid = {
+      lat: params.lat,
+      lon: params.lon
+    };
+  } 
+  
   var query = queries.distance( centroid, { size: params.size } );
-
   if (params.bbox) {
     query = queries.bbox ( centroid, { size: params.size, bbox: params.bbox } );
   }

@@ -36,7 +36,7 @@ function generate( params, query_mixer, fuzziness ){
         'context': {
           'dataset': layers || this.params.layers,
           'location': {
-            'value': [ this.params.lon, this.params.lat ],
+            'value': null,
             'precision': precision || this.get_precision()
           }
         },
@@ -45,6 +45,9 @@ function generate( params, query_mixer, fuzziness ){
         }
       }
     };
+    if (!isNaN(this.params.lon) && !isNaN(this.params.lat)) {
+      this.cmd[name].completion.context.location.value = [ this.params.lon, this.params.lat ];
+    }
   };
 
   var cmd = new CmdGenerator(params);

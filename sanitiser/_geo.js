@@ -18,32 +18,34 @@ function sanitize( req ){
   };
 
   // lat
-  var lat = parseFloat( params.lat, 10 );
-  if( is_invalid_lat(lat) ){
-    return {
-      'error': true,
-      'message': 'invalid param \'lat\': must be >-90 and <90'
-    };
+  if (!isNaN(params.lat)) {
+    var lat = parseFloat( params.lat, 10 );
+    if( is_invalid_lat(lat) ){
+      return {
+        'error': true,
+        'message': 'invalid param \'lat\': must be >-90 and <90'
+      };
+    }
+    clean.lat = lat;
   }
-  clean.lat = lat;
 
   // lon
-  var lon = parseFloat( params.lon, 10 );
-  if( is_invalid_lon(lon) ){
-    return {
-      'error': true,
-      'message': 'invalid param \'lon\': must be >-180 and <180'
-    };
+  if (!isNaN(params.lon)) {
+    var lon = parseFloat( params.lon, 10 );
+    if( is_invalid_lon(lon) ){
+      return {
+        'error': true,
+        'message': 'invalid param \'lon\': must be >-180 and <180'
+      };
+    }
+    clean.lon = lon;
   }
-  clean.lon = lon;
 
   // zoom level
   var zoom = parseInt( params.zoom, 10 );
   if( !isNaN( zoom ) ){
     clean.zoom = Math.min( Math.max( zoom, 1 ), 18 ); // max
-  } else {
-    clean.zoom = 10; // default
-  }
+  } 
 
   // bbox 
   // bbox = bottom_left lat, bottom_left lon, top_right lat, top_right lon
