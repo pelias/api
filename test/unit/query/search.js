@@ -10,6 +10,42 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
+var sort = [
+  '_score',
+  {
+    '_script': {
+      'script': 'if (doc.containsKey(\'population\')) { return doc[\'population\'].value } else { return 0 }',
+      'type': 'number',
+      'order': 'desc'
+    }
+  },
+  {
+    '_script': {
+      'params': {
+        'weights': {
+          'geoname': 0,
+          'address': 4,
+          'osmnode': 6,
+          'osmway': 6,
+          'poi-address': 8,
+          'neighborhood': 10,
+          'local_admin': 12,
+          'locality': 12,
+          'admin2': 12,
+          'admin1': 14,
+          'admin0': 2
+        }
+      },
+      'script': 'if (doc.containsKey(\'_type\')) { '+
+                'type=doc[\'_type\'].value; '+
+                'return ( type in weights ) ? weights[ type ] : 0 }'+
+                'else { return 0 }',
+      'type': 'number',
+      'order': 'desc'
+    }
+  }
+];
+
 module.exports.tests.query = function(test, common) {
   test('valid query', function(t) {
     var query = generate({
@@ -55,10 +91,11 @@ module.exports.tests.query = function(test, common) {
           }
         }
       },
-      'sort': [],
-      'size': 10
+      'sort': sort,
+      'size': 10,
+      'track_scores': true
     };
-    
+
     t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
@@ -106,8 +143,9 @@ module.exports.tests.query = function(test, common) {
           }
         }
       },
-      'sort': [],
-      'size': 10
+      'sort': sort,
+      'size': 10,
+      'track_scores': true
     };
     
     t.deepEqual(query, expected, 'valid search query');
@@ -139,7 +177,9 @@ module.exports.tests.query = function(test, common) {
           }
         }
       },
-      'size': 10
+      'size': 10,
+      'sort': sort,
+      'track_scores': true
     };
     
     t.deepEqual(query, expected, 'valid search query');
@@ -185,7 +225,7 @@ module.exports.tests.query = function(test, common) {
            }
         }
       },
-      'sort': [
+      'sort': sort.concat([
         {
           '_geo_distance': {
             'center_point': {
@@ -196,8 +236,9 @@ module.exports.tests.query = function(test, common) {
             'unit': 'km'
           }
         }
-      ],
-      'size': 10
+      ]),
+      'size': 10,
+      'track_scores': true
     };
 
     t.deepEqual(query, expected, 'valid search query');
