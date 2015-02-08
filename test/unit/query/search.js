@@ -225,7 +225,8 @@ module.exports.tests.query = function(test, common) {
            }
         }
       },
-      'sort': sort.concat([
+      'sort': [
+        '_score',
         {
           '_geo_distance': {
             'center_point': {
@@ -236,7 +237,7 @@ module.exports.tests.query = function(test, common) {
             'unit': 'km'
           }
         }
-      ]),
+      ].concat(sort.slice(1)),
       'size': 10,
       'track_scores': true
     };

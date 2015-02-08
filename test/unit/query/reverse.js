@@ -11,7 +11,6 @@ module.exports.tests.interface = function(test, common) {
 };
 
 var sort = [
-  '_score',
   {
     '_script': {
       'script': 'if (doc.containsKey(\'population\')) { return doc[\'population\'].value } else { return 0 }',
@@ -78,7 +77,8 @@ module.exports.tests.query = function(test, common) {
           }
         }
       },
-      'sort': sort.concat([
+      'sort': [
+        '_score',
         {
           '_geo_distance': {
             'center_point': {
@@ -89,7 +89,7 @@ module.exports.tests.query = function(test, common) {
             'unit': 'km'
           }
         }
-      ]),
+      ].concat(sort),
       'size': 1,
       'track_scores': true
     };
