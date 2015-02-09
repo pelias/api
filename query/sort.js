@@ -1,5 +1,5 @@
 var population = 'population';
-var weights = require('pelias-model').weights;
+var weights = require('pelias-suggester-pipeline').weights;
 
 module.exports = [
   {
