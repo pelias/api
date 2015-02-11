@@ -14,7 +14,7 @@ var sort = [
   '_score',
   {
     '_script': {
-      'script': 'if (doc.containsKey(\'population\')) { return doc[\'population\'].value } else { return 0 }',
+      'file': 'population',
       'type': 'number',
       'order': 'desc'
     }
@@ -36,10 +36,7 @@ var sort = [
           'admin0': 2
         }
       },
-      'script': 'if (doc.containsKey(\'_type\')) { '+
-                'type=doc[\'_type\'].value; '+
-                'return ( type in weights ) ? weights[ type ] : 0 }'+
-                'else { return 0 }',
+      'file': 'weights',
       'type': 'number',
       'order': 'desc'
     }
