@@ -34,20 +34,16 @@ function generate( params, query_mixer, fuzziness ){
         'size' : this.params.size,
         'field' : 'suggest',
         'context': {
-          'dataset': layers || this.params.layers,
-          'location': {
-            'value': null,
-            'precision': precision || this.get_precision()
-          }
+          'dataset': layers || this.params.layers
         },
         'fuzzy': {
           'fuzziness': fuzzy || fuzziness || 0
         }
       }
     };
-    if (!isNaN(this.params.lon) && !isNaN(this.params.lat)) {
-      this.cmd[name].completion.context.location.value = [ this.params.lon, this.params.lat ];
-    }
+    // if (!isNaN(this.params.lon) && !isNaN(this.params.lat)) {
+      // this.cmd[name].completion.context.location.value = [ this.params.lon, this.params.lat ];
+    // }
   };
 
   var cmd = new CmdGenerator(params);
