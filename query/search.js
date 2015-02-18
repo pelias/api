@@ -33,7 +33,7 @@ function generate( params ){
   };
   
   if (params.input_admin) {
-    var admin_fields = ['admin0', 'admin1', 'alpha3'];
+    var admin_fields = ['admin0', 'admin1', 'admin1_abbr', 'admin2', 'alpha3'];
     query.query.filtered.query.bool.should = [];
 
     admin_fields.forEach(function(admin_field) {
