@@ -25,7 +25,7 @@ function sanitize( req ){
   var delim_index = params.input.indexOf(delim);
   if ( delim_index !== -1 ) {
     req.clean.input = params.input.substring(0, delim_index);
-    req.clean.input_admin = params.input.substring(delim_index +1);
+    req.clean.input_admin = params.input.substring(delim_index + 1).trim();
   }
 
   return { 'error': false };
