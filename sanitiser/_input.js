@@ -21,7 +21,7 @@ function sanitize( req ){
   req.clean.input = params.input;
 
   // for admin matching during query time
-  // split 'flatiron, new york, ny' into 'flatiron' and ' new york, ny'
+  // split 'flatiron, new york, ny' into 'flatiron' and 'new york, ny'
   var delim_index = params.input.indexOf(delim);
   if ( delim_index !== -1 ) {
     req.clean.input = params.input.substring(0, delim_index);
