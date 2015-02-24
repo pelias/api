@@ -1,5 +1,6 @@
 
 var generate = require('../../../query/search');
+var weights = require('pelias-suggester-pipeline').weights;
 
 module.exports.tests = {};
 
@@ -22,19 +23,7 @@ var sort = [
   {
     '_script': {
       'params': {
-        'weights': {
-          'geoname': 0,
-          'address': 4,
-          'osmnode': 6,
-          'osmway': 6,
-          'poi-address': 8,
-          'neighborhood': 10,
-          'local_admin': 12,
-          'locality': 12,
-          'admin2': 12,
-          'admin1': 14,
-          'admin0': 2
-        }
+        'weights': weights
       },
       'file': 'weights',
       'type': 'number',
