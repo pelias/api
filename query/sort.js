@@ -4,7 +4,7 @@ var weights = require('pelias-suggester-pipeline').weights;
 module.exports = [
   {
     '_script': {
-      'file': 'population',
+      'file': population,
       'type': 'number',
       'order': 'desc'
     }
