@@ -1,5 +1,6 @@
 
 var generate = require('../../../query/search');
+var weights = require('pelias-suggester-pipeline').weights;
 
 module.exports.tests = {};
 
@@ -9,6 +10,27 @@ module.exports.tests.interface = function(test, common) {
     t.end();
   });
 };
+
+var sort = [
+  '_score',
+  {
+    '_script': {
+      'file': 'population',
+      'type': 'number',
+      'order': 'desc'
+    }
+  },
+  {
+    '_script': {
+      'params': {
+        'weights': weights
+      },
+      'file': 'weights',
+      'type': 'number',
+      'order': 'desc'
+    }
+  }
+];
 
 module.exports.tests.query = function(test, common) {
   test('valid query', function(t) {
@@ -55,10 +77,11 @@ module.exports.tests.query = function(test, common) {
           }
         }
       },
-      'sort': [],
-      'size': 10
+      'sort': sort,
+      'size': 10,
+      'track_scores': true
     };
-    
+
     t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
@@ -106,8 +129,9 @@ module.exports.tests.query = function(test, common) {
           }
         }
       },
-      'sort': [],
-      'size': 10
+      'sort': sort,
+      'size': 10,
+      'track_scores': true
     };
     
     t.deepEqual(query, expected, 'valid search query');
@@ -139,7 +163,9 @@ module.exports.tests.query = function(test, common) {
           }
         }
       },
-      'size': 10
+      'size': 10,
+      'sort': sort,
+      'track_scores': true
     };
     
     t.deepEqual(query, expected, 'valid search query');
@@ -186,6 +212,7 @@ module.exports.tests.query = function(test, common) {
         }
       },
       'sort': [
+        '_score',
         {
           '_geo_distance': {
             'center_point': {
@@ -196,8 +223,9 @@ module.exports.tests.query = function(test, common) {
             'unit': 'km'
           }
         }
-      ],
-      'size': 10
+      ].concat(sort.slice(1)),
+      'size': 10,
+      'track_scores': true
     };
 
     t.deepEqual(query, expected, 'valid search query');

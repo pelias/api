@@ -1,6 +1,7 @@
 
 var logger = require('../src/logger'),
-    queries = require('geopipes-elasticsearch-backend').queries;
+    queries = require('geopipes-elasticsearch-backend').queries,
+    sort = require('../query/sort');
 
 function generate( params ){
 
@@ -14,6 +15,7 @@ function generate( params ){
   } 
   
   var query = queries.distance( centroid, { size: params.size } );
+  
   if (params.bbox) {
     query = queries.bbox ( centroid, { size: params.size, bbox: params.bbox } );
   }
@@ -26,6 +28,8 @@ function generate( params ){
       default_operator: 'OR'
     }
   };
+
+  query.sort = query.sort.concat(sort);
 
   return query;
 }

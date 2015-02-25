@@ -53,7 +53,7 @@ module.exports.tests.functional_success = function(test, common) {
 
   test('functional success', function(t) {
     var backend = mockBackend( 'client/search/ok/1', function( cmd ){
-      t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct backend command');
+      t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias', searchType: 'dfs_query_then_fetch' }, 'correct backend command');
     });
     var controller = setup( backend, mockQuery() );
     var res = {
@@ -78,7 +78,7 @@ module.exports.tests.functional_success = function(test, common) {
 module.exports.tests.functional_failure = function(test, common) {
   test('functional failure', function(t) {
     var backend = mockBackend( 'client/search/fail/1', function( cmd ){
-      t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias' }, 'correct backend command');
+      t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias', searchType: 'dfs_query_then_fetch' }, 'correct backend command');
     });
     var controller = setup( backend, mockQuery() );
     var next = function( message ){
