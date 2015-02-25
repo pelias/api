@@ -15,6 +15,7 @@ var tests = [
   require('./sanitiser/coarse'),
   require('./query/indeces'),
   require('./query/suggest'),
+  require('./query/sort'),
   require('./query/search'),
   require('./query/reverse'),
   require('./helper/geojsonify'),
