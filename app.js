@@ -3,7 +3,6 @@ var app = require('express')();
 
 /** ----------------------- middleware ----------------------- **/
 
-app.use( require('./middleware/toobusy') ); // should be first
 app.use( require('./middleware/headers') );
 app.use( require('./middleware/cors') );
 app.use( require('./middleware/jsonp') );
