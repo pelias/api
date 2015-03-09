@@ -2,6 +2,7 @@
 var suggest  = require('../../../sanitiser/suggest'),
     _sanitize = suggest.sanitize,
     middleware = suggest.middleware,
+    delim = ',',
     defaultError = 'invalid param \'input\': text length, must be >0',
     defaultClean =  { input: 'test', 
                       lat:0,
@@ -46,6 +47,29 @@ module.exports.tests.sanitize_input = function(test, common) {
       sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.input = input;
+        t.equal(err, undefined, 'no error');
+        t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
+      });
+    });
+    t.end();
+  });
+};
+
+module.exports.tests.sanitize_input_with_delim = function(test, common) {
+  var inputs = [ 'a,bcd', '123 main st, admin1', ',,,', ' ' ];
+
+  test('valid inputs with a comma', function(t) {  
+    inputs.forEach( function( input ){
+      sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
+        var expected = JSON.parse(JSON.stringify( defaultClean ));
+        expected.input = input;
+
+        var delim_index = input.indexOf(delim);
+        if (delim_index!==-1) {
+          expected.input = input.substring(0, input.indexOf(delim));
+          expected.input_admin = input.substring(delim_index + 1).trim();
+        }
+
         t.equal(err, undefined, 'no error');
         t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
       });

@@ -57,12 +57,13 @@ module.exports.tests.query = function(test, common) {
       'query': {
         'filtered': {
           'query': {
-            'query_string': {
-              'query': 'test',
-              'fields': [
-                'name.default'
-              ],
-              'default_operator': 'OR'
+            'bool': {
+              'must': [{ 
+                  'match': {
+                    'name.default': 'test'
+                  }
+                }
+              ]   
             }
           },
           'filter': {
@@ -109,12 +110,13 @@ module.exports.tests.query = function(test, common) {
       'query': {
         'filtered': {
           'query': {
-            'query_string': {
-              'query': 'test',
-              'fields': [
-                'name.default'
-              ],
-              'default_operator': 'OR'
+            'bool': {
+              'must': [{ 
+                  'match': {
+                    'name.default': 'test'
+                  }
+                }
+              ]   
             }
           },
           'filter': {
@@ -155,12 +157,13 @@ module.exports.tests.query = function(test, common) {
       'query': {
         'filtered': {
           'query': {
-            'query_string': {
-              'query': 'test',
-              'fields': [
-                'name.default'
-              ],
-              'default_operator': 'OR'
+            'bool': {
+              'must': [{ 
+                  'match': {
+                    'name.default': 'test'
+                  }
+                }
+              ]   
             }
           },
           'filter': {
@@ -190,12 +193,13 @@ module.exports.tests.query = function(test, common) {
       'query': {
         'filtered': {
           'query': {
-            'query_string': {
-              'query': 'test',
-              'fields': [
-                'name.default'
-              ],
-              'default_operator': 'OR'
+            'bool': {
+              'must': [{ 
+                  'match': {
+                    'name.default': 'test'
+                  }
+                }
+              ]   
             }
           },
           'filter': {
