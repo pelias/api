@@ -24,7 +24,6 @@ module.exports.tests.functional_success = function(test, common) {
     },
     properties: {
       id: 'myid1',
-      type: 'mytype1',
       layer: 'mytype1',
       name: 'test name1',
       admin0: 'country1',
@@ -40,7 +39,6 @@ module.exports.tests.functional_success = function(test, common) {
     },
     properties: {
       id: 'myid2',
-      type: 'mytype2',
       layer: 'mytype2',
       name: 'test name2',
       admin0: 'country2',
