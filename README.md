@@ -9,6 +9,14 @@ Pelias RESTful API
 
 ## Install Dependencies
 
+The API uses [scripts](https://github.com/pelias/scripts) for scoring/sorting that needs to be installed.
+
+You **must** install the `pelias scripts` from: https://github.com/pelias/scripts.
+
+Failing to do so will result in the following error: ```ElasticsearchIllegalArgumentException[Unable to find on disk script admin_boost]```
+
+Once you are done with installing the scripts, Run the following
+
 ```bash
 $ npm install
 ```
