@@ -39,8 +39,7 @@
     "geopipes-elasticsearch-backend": "0.0.11",
     "pelias-suggester-pipeline": "2.0.2",
     "is-object": "^1.0.1",
-    "pelias-esclient": "0.0.25",
-    "toobusy": "^0.2.4"
+    "pelias-esclient": "0.0.25"
   },
   "devDependencies": {
     "ciao": "^0.3.4",

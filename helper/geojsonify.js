@@ -22,7 +22,6 @@ function search( docs ){
 
     // provide metadata to consumer
     output.id = doc._id;
-    output.type = doc._type;
     output.layer = doc._type;
 
     // map center_point

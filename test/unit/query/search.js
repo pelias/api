@@ -1,5 +1,6 @@
 
 var generate = require('../../../query/search');
+var admin_boost = 'admin_boost';
 var population = 'population';
 var popularity = 'popularity';
 var weights = require('pelias-suggester-pipeline').weights;
@@ -15,6 +16,13 @@ module.exports.tests.interface = function(test, common) {
 
 var sort = [
   '_score',
+  {
+    '_script': {
+      'file': admin_boost,
+      'type': 'number',
+      'order': 'desc'
+    }
+  },
   {
     '_script': {
       'file': population,
@@ -59,12 +67,13 @@ module.exports.tests.query = function(test, common) {
       'query': {
         'filtered': {
           'query': {
-            'query_string': {
-              'query': 'test',
-              'fields': [
-                'name.default'
-              ],
-              'default_operator': 'OR'
+            'bool': {
+              'must': [{ 
+                  'match': {
+                    'name.default': 'test'
+                  }
+                }
+              ]   
             }
           },
           'filter': {
@@ -111,12 +120,13 @@ module.exports.tests.query = function(test, common) {
       'query': {
         'filtered': {
           'query': {
-            'query_string': {
-              'query': 'test',
-              'fields': [
-                'name.default'
-              ],
-              'default_operator': 'OR'
+            'bool': {
+              'must': [{ 
+                  'match': {
+                    'name.default': 'test'
+                  }
+                }
+              ]   
             }
           },
           'filter': {
@@ -157,12 +167,13 @@ module.exports.tests.query = function(test, common) {
       'query': {
         'filtered': {
           'query': {
-            'query_string': {
-              'query': 'test',
-              'fields': [
-                'name.default'
-              ],
-              'default_operator': 'OR'
+            'bool': {
+              'must': [{ 
+                  'match': {
+                    'name.default': 'test'
+                  }
+                }
+              ]   
             }
           },
           'filter': {
@@ -192,12 +203,13 @@ module.exports.tests.query = function(test, common) {
       'query': {
         'filtered': {
           'query': {
-            'query_string': {
-              'query': 'test',
-              'fields': [
-                'name.default'
-              ],
-              'default_operator': 'OR'
+            'bool': {
+              'must': [{ 
+                  'match': {
+                    'name.default': 'test'
+                  }
+                }
+              ]   
             }
           },
           'filter': {
