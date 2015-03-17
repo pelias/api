@@ -1,6 +1,8 @@
 
 var generate = require('../../../query/sort');
+var admin_boost = 'admin_boost';
 var population = 'population';
+var popularity = 'popularity';
 var weights = require('pelias-suggester-pipeline').weights;
 
 module.exports.tests = {};
@@ -15,7 +17,7 @@ module.exports.tests.interface = function(test, common) {
 var expected = [
   {
     '_script': {
-      'file': 'admin_boost',
+      'file': admin_boost,
       'type': 'number',
       'order': 'desc'
     }
@@ -23,6 +25,13 @@ var expected = [
   {
     '_script': {
       'file': population,
+      'type': 'number',
+      'order': 'desc'
+    }
+  },
+  {
+    '_script': {
+      'file': popularity,
       'type': 'number',
       'order': 'desc'
     }

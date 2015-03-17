@@ -1,5 +1,6 @@
 var admin_boost = 'admin_boost';
 var population = 'population';
+var popularity = 'popularity';
 var weights = require('pelias-suggester-pipeline').weights;
 
 module.exports = [
@@ -13,6 +14,13 @@ module.exports = [
   {
     '_script': {
       'file': population,
+      'type': 'number',
+      'order': 'desc'
+    }
+  },
+  {
+    '_script': {
+      'file': popularity,
       'type': 'number',
       'order': 'desc'
     }
