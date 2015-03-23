@@ -12,7 +12,7 @@ function setup( backend, query ){
 
     // backend command
     var cmd = {
-      index: 'pelias',
+      index: 'pelias_ngram',
       searchType: 'dfs_query_then_fetch',
       body: query( req.clean )
     };

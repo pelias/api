@@ -24,11 +24,7 @@ module.exports.tests.query = function(test, common) {
           field: 'suggest',
           size: 10,
           context: {
-            dataset: [ 'test' ],
-            location: {
-              precision: 1,
-              value: [ 0, 0 ]
-            }
+            dataset: [ 'test' ]
           },
           fuzzy: { fuzziness: 0 },
         }
@@ -50,11 +46,7 @@ module.exports.tests.query = function(test, common) {
           field: 'suggest',
           size: 10,
           context: {
-            dataset: [ 'test' ],
-            location: {
-              precision: 1,
-              value: null
-            }
+            dataset: [ 'test' ]
           },
           fuzzy: { fuzziness: 0 },
         }
@@ -104,11 +96,7 @@ module.exports.tests.precision = function(test, common) {
             field: 'suggest',
             size: 10,
             context: {
-              dataset: [ 'test' ],
-              location: {
-                precision: test_case.precision,
-                value: [ 0, 0 ]
-              }
+              dataset: [ 'test' ]
             },
             fuzzy: { fuzziness: 0 },
           }
@@ -136,11 +124,7 @@ module.exports.tests.fuzziness = function(test, common) {
             field: 'suggest',
             size: 10,
             context: {
-              dataset: [ 'test' ],
-              location: {
-                precision: 1,
-                value: [ 0, 0 ]
-              }
+              dataset: [ 'test' ]
             },
             fuzzy: { fuzziness: test_case || 0 },
           }

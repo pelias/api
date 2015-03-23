@@ -17,7 +17,7 @@ function setup( backend, query, query_mixer ){
 
     // backend command
     var cmd = {
-      index: 'pelias',
+      index: 'pelias_ngram',
       body: query( req.clean, query_mixer )
     };
 
