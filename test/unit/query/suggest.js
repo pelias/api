@@ -1,5 +1,6 @@
 
 var generate = require('../../../query/suggest');
+var queryMixer = require('../../../helper/queryMixer');
 
 module.exports.tests = {};
 
@@ -148,6 +149,58 @@ module.exports.tests.fuzziness = function(test, common) {
       };
       t.deepEqual(query, expected, 'valid suggest query for fuziness = ' + test_case);
     });
+    t.end();
+  });
+};
+
+module.exports.tests.queryMixer = function(test, common) {
+  test('valid query mixer', function(t) {
+    for (var suggester in queryMixer) {
+      var queryMix = queryMixer[suggester];
+
+      var number_of_suggesters = queryMix.reduce(function(sum, query) { 
+        return sum + (query.precision.length || 1); 
+      }, 0); 
+
+      var query = generate({
+        input: 'test', size: 10,
+        lat: 0, lon: 0, zoom:0
+      }, queryMix);
+
+      // adding one to number_of_suggesters to account for the key "text" in query.
+      t.deepEqual(Object.keys(query).length, number_of_suggesters + 1, 
+        suggester + ' has correct number of suggesters'
+      );
+    }
+    
+    t.end();
+  });
+};
+
+var isValidLayer = function(t, query, layers) {
+  for(var qKey in query) {
+    var q = query[qKey];
+    if (q.completion) {
+      var query_layers = q.completion.context.dataset;
+      t.deepEqual(query_layers, layers, layers + ' layers set correctly');  
+    }  
+  }
+};
+
+module.exports.tests.layers = function(test, common) {
+  test('valid layers with query-mixers', function(t) {
+    for (var suggester in queryMixer) {
+      var queryMix = queryMixer[suggester];
+      var layers= ['geoname', 'osm'];
+      var query = generate({
+        input: 'test', size: 10,
+        lat: 0, lon: 0, zoom:0,
+        layers: layers
+      }, queryMix);
+
+      isValidLayer(t, query, layers);
+    }
+    
     t.end();
   });
 };
