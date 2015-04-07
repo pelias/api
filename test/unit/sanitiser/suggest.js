@@ -7,7 +7,7 @@ var suggest  = require('../../../sanitiser/suggest'),
     defaultClean =  { input: 'test', 
                       lat:0,
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
-                                'osmaddress', 'openaddresses' ], 
+                                'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
                       lon: 0,
                       size: 10
                     },
@@ -258,7 +258,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     });
   });
   test('admin (alias) layer', function(t) {
-    var admin_layers = ['admin0','admin1','admin2','neighborhood'];
+    var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
     sanitize({ layers: 'admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, admin_layers, 'admin layers set');
       t.end();
@@ -280,7 +280,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     });
   });
   test('admin alias layer plus regular layers', function(t) {
-    var admin_layers = ['admin0','admin1','admin2','neighborhood'];
+    var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
     var reg_layers   = ['geoname', 'osmway'];
     sanitize({ layers: 'admin,geoname,osmway', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, reg_layers.concat(admin_layers), 'admin + regular layers set');
@@ -303,7 +303,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     });
   });
   test('multiple alias layers (no duplicates)', function(t) {
-    var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood'];
+    var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood','locality','local_admin'];
     sanitize({ layers: 'poi,admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, alias_layers, 'all layers found (no duplicates)');
       t.end();
