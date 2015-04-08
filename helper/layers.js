@@ -13,7 +13,7 @@ module.exports = function(alias_layers) {
   };
 
   layers = expand_aliases('poi',   layers, ['geoname','osmnode','osmway']);
-  layers = expand_aliases('admin', layers, ['admin0','admin1','admin2','neighborhood']);
+  layers = expand_aliases('admin', layers, ['admin0','admin1','admin2','neighborhood','locality','local_admin']);
   layers = expand_aliases('address', layers, ['osmaddress','openaddresses']);
 
   // de-dupe
