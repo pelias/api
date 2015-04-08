@@ -1,15 +1,14 @@
 
-var suggest  = require('../../../sanitiser/suggest'),
+var suggest  = require('../../../sanitiser/reverse'),
     _sanitize = suggest.sanitize,
     middleware = suggest.middleware,
     delim = ',',
-    defaultError = 'invalid param \'input\': text length, must be >0',
-    defaultClean =  { input: 'test', 
-                      lat:0,
+    defaultError = 'missing param \'lat\': must be >-90 and <90',
+    defaultClean =  { lat:0,
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
-                                'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
+                                'osmaddress', 'openaddresses' ], 
                       lon: 0,
-                      size: 10
+                      size: 1
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
@@ -28,64 +27,15 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-module.exports.tests.sanitize_input = function(test, common) {
-  var inputs = {
-    invalid: [ '', 100, null, undefined, new Date() ],
-    valid: [ 'a', 'aa', 'aaaaaaaa' ]
-  };
-  test('invalid input', function(t) {  
-    inputs.invalid.forEach( function( input ){
-      sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
-        t.equal(err, 'invalid param \'input\': text length, must be >0', input + ' is an invalid input');
-        t.equal(clean, undefined, 'clean not set');
-      });
-    });
-    t.end();
-  });
-  test('valid input', function(t) {  
-    inputs.valid.forEach( function( input ){
-      sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
-        var expected = JSON.parse(JSON.stringify( defaultClean ));
-        expected.input = input;
-        t.equal(err, undefined, 'no error');
-        t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
-      });
-    });
-    t.end();
-  });
-};
-
-module.exports.tests.sanitize_input_with_delim = function(test, common) {
-  var inputs = [ 'a,bcd', '123 main st, admin1', ',,,', ' ' ];
-
-  test('valid inputs with a comma', function(t) {  
-    inputs.forEach( function( input ){
-      sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
-        var expected = JSON.parse(JSON.stringify( defaultClean ));
-        expected.input = input;
-
-        var delim_index = input.indexOf(delim);
-        if (delim_index!==-1) {
-          expected.input = input.substring(0, input.indexOf(delim));
-          expected.input_admin = input.substring(delim_index + 1).trim();
-        }
-
-        t.equal(err, undefined, 'no error');
-        t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
-      });
-    });
-    t.end();
-  });
-};
-
 module.exports.tests.sanitize_lat = function(test, common) {
   var lats = {
     invalid: [ -181, -120, -91, 91, 120, 181 ],
-    valid: [ 0, 45, 90, -0, '0', '45', '90' ]
+    valid: [ 0, 45, 90, -0, '0', '45', '90' ],
+    missing: ['', undefined, ,null]
   };
   test('invalid lat', function(t) {  
     lats.invalid.forEach( function( lat ){
-      sanitize({ input: 'test', lat: lat, lon: 0 }, function( err, clean ){
+      sanitize({ lat: lat, lon: 0 }, function( err, clean ){
         t.equal(err, 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
         t.equal(clean, undefined, 'clean not set');
       });
@@ -94,11 +44,20 @@ module.exports.tests.sanitize_lat = function(test, common) {
   });
   test('valid lat', function(t) {  
     lats.valid.forEach( function( lat ){
-      sanitize({ input: 'test', lat: lat, lon: 0 }, function( err, clean ){
+      sanitize({ lat: lat, lon: 0 }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lat = parseFloat( lat );
         t.equal(err, undefined, 'no error');
         t.deepEqual(clean, expected, 'clean set correctly (' + lat + ')');
+      });
+    });
+    t.end();
+  });
+  test('missing lat', function(t) {  
+    lats.missing.forEach( function( lat ){
+      sanitize({ lat: lat, lon: 0 }, function( err, clean ){
+        t.equal(err, 'missing param \'lat\': must be >-90 and <90', 'latitude is a required field');
+        t.equal(clean, undefined, 'clean not set');
       });
     });
     t.end();
@@ -108,7 +67,8 @@ module.exports.tests.sanitize_lat = function(test, common) {
 module.exports.tests.sanitize_lon = function(test, common) {
   var lons = {
     invalid: [ -360, -181, 181, 360 ],
-    valid: [ -180, -1, -0, 0, 45, 90, '-180', '0', '180' ]
+    valid: [ -180, -1, -0, 0, 45, 90, '-180', '0', '180' ],
+    missing: ['', undefined, ,null]
   };
   test('invalid lon', function(t) {  
     lons.invalid.forEach( function( lon ){
@@ -131,93 +91,22 @@ module.exports.tests.sanitize_lon = function(test, common) {
     });
     t.end();
   });
-};
-
-module.exports.tests.sanitize_bbox = function(test, common) {
-  var bboxes = {
-    invalid_coordinates: [
-      '90,-181,-180,34', // invalid top_right lon, bottom_left lat
-      '91,-170,45,-181', // invalid top_right lat, bottom_left lon
-      '91,-181,-91,181', // invalid top_right lat/lon, bottom_left lat/lon
-      '91, -181,-91,181',// invalid - spaces between coordinates
-    ],
-    invalid: [
-      '91;-181,-91,181', // invalid - semicolon between coordinates
-      '91, -181, -91',   // invalid - missing a coordinate
-      '123,12',          // invalid - missing coordinates
-      ''                 // invalid - empty param
-    ],
-    valid: [
-      '90,-179,-80,34', // valid top_right lat/lon, bottom_left lat/lon
-      '0,0,0,0' // valid top_right lat/lon, bottom_left lat/lon
-    ]
-    
-  };
-  test('invalid bbox coordinates', function(t) {  
-    bboxes.invalid_coordinates.forEach( function( bbox ){
-      sanitize({ input: 'test', lat: 0, lon: 0, bbox: bbox }, function( err, clean ){
-        t.equal(err, 'invalid bbox', bbox + ' is invalid');
+  test('missing lon', function(t) {  
+    lons.missing.forEach( function( lon ){
+      sanitize({ lat: 0, lon: lon }, function( err, clean ){
+        t.equal(err, 'missing param \'lon\': must be >-180 and <180', 'longitude is a required field');
         t.equal(clean, undefined, 'clean not set');
       });
     });
     t.end();
   });
-  test('invalid bbox', function(t) {  
-    bboxes.invalid.forEach( function( bbox ){
-      sanitize({ input: 'test', lat: 0, lon: 0, bbox: bbox }, function( err, clean ){
-        var expected = JSON.parse(JSON.stringify( defaultClean ));
-        t.equal(err, undefined, 'no error');
-        t.deepEqual(clean, expected, 'falling back on 50km distance from centroid');
-      });
-    });
-    t.end();
-  });
-  test('valid bbox', function(t) {  
-    bboxes.valid.forEach( function( bbox ){
-      sanitize({ input: 'test', lat: 0, lon: 0, bbox: bbox }, function( err, clean ){
-        var expected = JSON.parse(JSON.stringify( defaultClean ));
-        var bboxArray = bbox.split(',').map(function(i) {
-          return parseInt(i);
-        });
-        expected.bbox = {
-          top   : Math.max(bboxArray[0], bboxArray[2]),
-          right : Math.max(bboxArray[1], bboxArray[3]),
-          bottom: Math.min(bboxArray[0], bboxArray[2]),
-          left  : Math.min(bboxArray[1], bboxArray[3])
-        };
-        t.equal(err, undefined, 'no error');
-        t.deepEqual(clean, expected, 'clean set correctly (' + bbox + ')');
-      });
-    });
-    t.end();
-  });
 };
 
-module.exports.tests.sanitize_zoom = function(test, common) {
-  test('invalid zoom value', function(t) {
-    sanitize({ zoom: 'a', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.zoom, undefined, 'zoom not set');
-      t.end();
-    });
-  });
-  test('below min zoom value', function(t) {
-    sanitize({ zoom: -100, input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.zoom, 1, 'min zoom set');
-      t.end();
-    });
-  });
-  test('above max zoom value', function(t) {
-    sanitize({ zoom: 9999, input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.zoom, 18, 'max zoom set');
-      t.end();
-    });
-  });
-};
 
 module.exports.tests.sanitize_size = function(test, common) {
   test('invalid size value', function(t) {
     sanitize({ size: 'a', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.size, 10, 'default size set');
+      t.equal(clean.size, 1, 'default size set');
       t.end();
     });
   });
@@ -258,7 +147,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     });
   });
   test('admin (alias) layer', function(t) {
-    var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
+    var admin_layers = ['admin0','admin1','admin2','neighborhood'];
     sanitize({ layers: 'admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, admin_layers, 'admin layers set');
       t.end();
@@ -280,7 +169,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     });
   });
   test('admin alias layer plus regular layers', function(t) {
-    var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
+    var admin_layers = ['admin0','admin1','admin2','neighborhood'];
     var reg_layers   = ['geoname', 'osmway'];
     sanitize({ layers: 'admin,geoname,osmway', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, reg_layers.concat(admin_layers), 'admin + regular layers set');
@@ -303,18 +192,9 @@ module.exports.tests.sanitize_layers = function(test, common) {
     });
   });
   test('multiple alias layers (no duplicates)', function(t) {
-    var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood','locality','local_admin'];
+    var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood'];
     sanitize({ layers: 'poi,admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, alias_layers, 'all layers found (no duplicates)');
-      t.end();
-    });
-  });
-};
-
-module.exports.tests.invalid_params = function(test, common) {
-  test('invalid input params', function(t) {
-    sanitize( undefined, function( err, clean ){
-      t.equal(err, defaultError, 'handle invalid params gracefully');
       t.end();
     });
   });
@@ -348,7 +228,7 @@ module.exports.tests.middleware_success = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /suggest ' + name, testFunction);
+    return tape('SANTIZE /reverse ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

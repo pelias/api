@@ -1,14 +1,12 @@
 
-var suggest  = require('../../../sanitiser/suggest'),
-    _sanitize = suggest.sanitize,
-    middleware = suggest.middleware,
+var search  = require('../../../sanitiser/search'),
+    _sanitize = search.sanitize,
+    middleware = search.middleware,
     delim = ',',
     defaultError = 'invalid param \'input\': text length, must be >0',
     defaultClean =  { input: 'test', 
-                      lat:0,
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
-                                'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
-                      lon: 0,
+                                'osmaddress', 'openaddresses' ], 
                       size: 10
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
@@ -35,7 +33,7 @@ module.exports.tests.sanitize_input = function(test, common) {
   };
   test('invalid input', function(t) {  
     inputs.invalid.forEach( function( input ){
-      sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
+      sanitize({ input: input }, function( err, clean ){
         t.equal(err, 'invalid param \'input\': text length, must be >0', input + ' is an invalid input');
         t.equal(clean, undefined, 'clean not set');
       });
@@ -44,7 +42,7 @@ module.exports.tests.sanitize_input = function(test, common) {
   });
   test('valid input', function(t) {  
     inputs.valid.forEach( function( input ){
-      sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
+      sanitize({ input: input }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.input = input;
         t.equal(err, undefined, 'no error');
@@ -60,7 +58,7 @@ module.exports.tests.sanitize_input_with_delim = function(test, common) {
 
   test('valid inputs with a comma', function(t) {  
     inputs.forEach( function( input ){
-      sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
+      sanitize({ input: input }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.input = input;
 
@@ -97,6 +95,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
       sanitize({ input: 'test', lat: lat, lon: 0 }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lat = parseFloat( lat );
+        expected.lon = 0;
         t.equal(err, undefined, 'no error');
         t.deepEqual(clean, expected, 'clean set correctly (' + lat + ')');
       });
@@ -125,9 +124,41 @@ module.exports.tests.sanitize_lon = function(test, common) {
       sanitize({ input: 'test', lat: 0, lon: lon }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lon = parseFloat( lon );
+        expected.lat = 0;
         t.equal(err, undefined, 'no error');
         t.deepEqual(clean, expected, 'clean set correctly (' + lon + ')');
       });
+    });
+    t.end();
+  });
+};
+
+module.exports.tests.sanitize_optional_geo = function(test, common) {
+  test('no lat/lon', function(t) {  
+    sanitize({ input: 'test' }, function( err, clean ){
+      var expected = defaultClean;
+      t.equal(err, undefined, 'no error');
+      t.equal(clean.lat, undefined, 'clean set without lat');
+      t.equal(clean.lon, undefined, 'clean set without lon');
+      t.deepEqual(clean, expected, 'clean set without lat/lon');
+    });
+    t.end();
+  });
+  test('no lat', function(t) {  
+    sanitize({ input: 'test', lon: 0 }, function( err, clean ){
+      var expected = JSON.parse(JSON.stringify( defaultClean ));
+      expected.lon = 0;
+      t.equal(err, undefined, 'no error');
+      t.deepEqual(clean, expected, 'clean set correctly (without any lat)');
+    });
+    t.end();
+  });
+  test('no lon', function(t) {  
+    sanitize({ input: 'test', lat: 0 }, function( err, clean ){
+      var expected = JSON.parse(JSON.stringify( defaultClean ));
+      expected.lat = 0;
+      t.equal(err, undefined, 'no error');
+      t.deepEqual(clean, expected, 'clean set correctly (without any lon)');
     });
     t.end();
   });
@@ -155,7 +186,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
   };
   test('invalid bbox coordinates', function(t) {  
     bboxes.invalid_coordinates.forEach( function( bbox ){
-      sanitize({ input: 'test', lat: 0, lon: 0, bbox: bbox }, function( err, clean ){
+      sanitize({ input: 'test', bbox: bbox }, function( err, clean ){
         t.equal(err, 'invalid bbox', bbox + ' is invalid');
         t.equal(clean, undefined, 'clean not set');
       });
@@ -164,7 +195,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
   });
   test('invalid bbox', function(t) {  
     bboxes.invalid.forEach( function( bbox ){
-      sanitize({ input: 'test', lat: 0, lon: 0, bbox: bbox }, function( err, clean ){
+      sanitize({ input: 'test', bbox: bbox }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         t.equal(err, undefined, 'no error');
         t.deepEqual(clean, expected, 'falling back on 50km distance from centroid');
@@ -174,7 +205,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
   });
   test('valid bbox', function(t) {  
     bboxes.valid.forEach( function( bbox ){
-      sanitize({ input: 'test', lat: 0, lon: 0, bbox: bbox }, function( err, clean ){
+      sanitize({ input: 'test', bbox: bbox }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         var bboxArray = bbox.split(',').map(function(i) {
           return parseInt(i);
@@ -237,13 +268,13 @@ module.exports.tests.sanitize_size = function(test, common) {
 
 module.exports.tests.sanitize_layers = function(test, common) {
   test('unspecified', function(t) {
-    sanitize({ layers: undefined, input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ layers: undefined, input: 'test' }, function( err, clean ){
       t.deepEqual(clean.layers, defaultClean.layers, 'default layers set');
       t.end();
     });
   });
   test('invalid layer', function(t) {
-    sanitize({ layers: 'test_layer', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ layers: 'test_layer', input: 'test' }, function( err, clean ){
       var msg = 'invalid param \'layer\': must be one or more of ';
       t.true(err.match(msg), 'invalid layer requested');
       t.true(err.length > msg.length, 'invalid error message');
@@ -252,21 +283,21 @@ module.exports.tests.sanitize_layers = function(test, common) {
   });
   test('poi (alias) layer', function(t) {
     var poi_layers = ['geoname','osmnode','osmway'];
-    sanitize({ layers: 'poi', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ layers: 'poi', input: 'test' }, function( err, clean ){
       t.deepEqual(clean.layers, poi_layers, 'poi layers set');
       t.end();
     });
   });
   test('admin (alias) layer', function(t) {
-    var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
-    sanitize({ layers: 'admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    var admin_layers = ['admin0','admin1','admin2','neighborhood'];
+    sanitize({ layers: 'admin', input: 'test' }, function( err, clean ){
       t.deepEqual(clean.layers, admin_layers, 'admin layers set');
       t.end();
     });
   });
   test('address (alias) layer', function(t) {
     var address_layers = ['osmaddress','openaddresses'];
-    sanitize({ layers: 'address', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ layers: 'address', input: 'test' }, function( err, clean ){
       t.deepEqual(clean.layers, address_layers, 'address layers set');
       t.end();
     });
@@ -274,15 +305,15 @@ module.exports.tests.sanitize_layers = function(test, common) {
   test('poi alias layer plus regular layers', function(t) {
     var poi_layers = ['geoname','osmnode','osmway'];
     var reg_layers = ['admin0', 'admin1'];
-    sanitize({ layers: 'poi,admin0,admin1', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ layers: 'poi,admin0,admin1', input: 'test' }, function( err, clean ){
       t.deepEqual(clean.layers, reg_layers.concat(poi_layers), 'poi + regular layers');
       t.end();
     });
   });
   test('admin alias layer plus regular layers', function(t) {
-    var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
+    var admin_layers = ['admin0','admin1','admin2','neighborhood'];
     var reg_layers   = ['geoname', 'osmway'];
-    sanitize({ layers: 'admin,geoname,osmway', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ layers: 'admin,geoname,osmway', input: 'test' }, function( err, clean ){
       t.deepEqual(clean.layers, reg_layers.concat(admin_layers), 'admin + regular layers set');
       t.end();
     });
@@ -290,21 +321,21 @@ module.exports.tests.sanitize_layers = function(test, common) {
   test('address alias layer plus regular layers', function(t) {
     var address_layers = ['osmaddress','openaddresses'];
     var reg_layers   = ['geoname', 'osmway'];
-    sanitize({ layers: 'address,geoname,osmway', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ layers: 'address,geoname,osmway', input: 'test' }, function( err, clean ){
       t.deepEqual(clean.layers, reg_layers.concat(address_layers), 'address + regular layers set');
       t.end();
     });
   });
   test('alias layer plus regular layers (no duplicates)', function(t) {
     var poi_layers = ['geoname','osmnode','osmway'];
-    sanitize({ layers: 'poi,geoname,osmnode', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ layers: 'poi,geoname,osmnode', input: 'test' }, function( err, clean ){
       t.deepEqual(clean.layers, poi_layers, 'poi layers found (no duplicates)');
       t.end();
     });
   });
   test('multiple alias layers (no duplicates)', function(t) {
-    var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood','locality','local_admin'];
-    sanitize({ layers: 'poi,admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood'];
+    sanitize({ layers: 'poi,admin', input: 'test' }, function( err, clean ){
       t.deepEqual(clean.layers, alias_layers, 'all layers found (no duplicates)');
       t.end();
     });
@@ -335,7 +366,7 @@ module.exports.tests.middleware_failure = function(test, common) {
 
 module.exports.tests.middleware_success = function(test, common) {
   test('middleware success', function(t) {
-    var req = { query: { input: 'test', lat: 0, lon: 0 }};
+    var req = { query: { input: 'test' }};
     var next = function( message ){
       t.equal(message, undefined, 'no error message set');
       t.deepEqual(req.clean, defaultClean);
@@ -348,7 +379,7 @@ module.exports.tests.middleware_success = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /suggest ' + name, testFunction);
+    return tape('SANTIZE /search ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
