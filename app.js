@@ -12,7 +12,7 @@ app.use( require('./middleware/jsonp') );
 var sanitisers = {};
 sanitisers.doc      = require('./sanitiser/doc');
 sanitisers.suggest  = require('./sanitiser/suggest');
-sanitisers.search   = sanitisers.suggest;
+sanitisers.search   = require('./sanitiser/search');
 sanitisers.coarse   = require('./sanitiser/coarse');
 sanitisers.reverse  = require('./sanitiser/reverse');
 
