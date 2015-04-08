@@ -49,6 +49,44 @@ var sort = [
   }
 ];
 
+var expected = {
+  'query': {
+    'filtered': {
+      'query': {
+        'bool': {
+          'must': [{ 
+              'match': {
+                'name.default': 'test'
+              }
+            }
+          ]   
+        }
+      },
+      'filter': {
+        'bool': {
+          'must': [
+            {
+              'geo_bounding_box': {
+                'center_point': {
+                  'top': '47.47',
+                  'right': '-61.84',
+                  'bottom':'11.51',
+                  'left': '-103.16'
+                },
+                '_cache': true,
+                'type': 'indexed'
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  'sort': sort,
+  'size': 10,
+  'track_scores': true
+};
+
 module.exports.tests.query = function(test, common) {
   test('valid query', function(t) {
     var query = generate({
@@ -62,43 +100,6 @@ module.exports.tests.query = function(test, common) {
       },
       layers: ['test']
     });
-
-    var expected = {
-      'query': {
-        'filtered': {
-          'query': {
-            'bool': {
-              'must': [{ 
-                  'match': {
-                    'name.default': 'test'
-                  }
-                }
-              ]   
-            }
-          },
-          'filter': {
-            'bool': {
-              'must': [
-                {
-                  'geo_bounding_box': {
-                    'center_point': {
-                      'top': '47.47',
-                      'right': '-61.84',
-                      'bottom':'11.51',
-                      'left': '-103.16'
-                    },
-                    '_cache': true
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      'sort': sort,
-      'size': 10,
-      'track_scores': true
-    };
 
     t.deepEqual(query, expected, 'valid search query');
     t.end();
@@ -115,43 +116,6 @@ module.exports.tests.query = function(test, common) {
       },
       layers: ['test']
     });
-
-    var expected = {
-      'query': {
-        'filtered': {
-          'query': {
-            'bool': {
-              'must': [{ 
-                  'match': {
-                    'name.default': 'test'
-                  }
-                }
-              ]   
-            }
-          },
-          'filter': {
-            'bool': {
-              'must': [
-                {
-                  'geo_bounding_box': {
-                    'center_point': {
-                      'top': '47.47',
-                      'right': '-61.84',
-                      'bottom':'11.51',
-                      'left': '-103.16'
-                    },
-                    '_cache': true
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      'sort': sort,
-      'size': 10,
-      'track_scores': true
-    };
     
     t.deepEqual(query, expected, 'valid search query');
     t.end();
