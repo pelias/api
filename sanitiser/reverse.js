@@ -2,7 +2,11 @@
 var logger = require('../src/logger'),
     _sanitize = require('../sanitiser/_sanitize'),
     sanitiser = {
-      latlonzoom: require('../sanitiser/_geo'),
+      latlonzoom: function( req ) {
+        var geo = require('../sanitiser/_geo');
+        return geo(req, true);
+      },
+      layers: require('../sanitiser/_layers'),
       size: function( req ) {
         var size = require('../sanitiser/_size');
         return size(req, 1);

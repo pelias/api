@@ -1,8 +1,9 @@
 // validate inputs, convert types and apply defaults
-function sanitize( req ){
+function sanitize( req, latlon_is_required ){
   
   var clean = req.clean || {};
   var params= req.query;
+  latlon_is_required = latlon_is_required || false;
 
   // ensure the input params are a valid object
   if( Object.prototype.toString.call( params ) !== '[object Object]' ){
@@ -18,8 +19,8 @@ function sanitize( req ){
   };
 
   // lat
-  if (!isNaN(params.lat)) {
-    var lat = parseFloat( params.lat, 10 );
+  var lat = parseFloat( params.lat, 10 );
+  if (!isNaN(lat)) {
     if( is_invalid_lat(lat) ){
       return {
         'error': true,
@@ -27,11 +28,16 @@ function sanitize( req ){
       };
     }
     clean.lat = lat;
+  } else if (latlon_is_required) {
+    return {
+      'error': true,
+      'message': 'missing param \'lat\': must be >-90 and <90'
+    };
   }
 
   // lon
-  if (!isNaN(params.lon)) {
-    var lon = parseFloat( params.lon, 10 );
+  var lon = parseFloat( params.lon, 10 );
+  if (!isNaN(lon)) {
     if( is_invalid_lon(lon) ){
       return {
         'error': true,
@@ -39,6 +45,11 @@ function sanitize( req ){
       };
     }
     clean.lon = lon;
+  } else if (latlon_is_required) {
+    return {
+      'error': true,
+      'message': 'missing param \'lon\': must be >-180 and <180'
+    };
   }
 
   // zoom level

@@ -11,6 +11,7 @@ var tests = [
   require('./service/search'),
   require('./service/suggest'),
   require('./sanitiser/suggest'),
+  require('./sanitiser/reverse'),
   require('./sanitiser/doc'),
   require('./sanitiser/coarse'),
   require('./query/indeces'),
