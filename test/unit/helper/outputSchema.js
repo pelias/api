@@ -17,7 +17,7 @@ module.exports.tests.valid = function(test, common) {
   var default_schema = {
     local: ['local_admin', 'locality', 'neighborhood', 'admin2'],
     regional: ['admin1_abbr', 'admin1'],
-    national: ['admin0', 'alpha3']
+    national: ['alpha3', 'admin0']
   };
 
   var isValid = function(keys, schema) {

@@ -115,7 +115,7 @@ module.exports.tests.search = function(test, common) {
         'properties': {
           'id': 'id1',
           'layer': 'type1',
-          'text': '\'Round Midnight Jazz and Blues Bar, test3, Angel, United Kingdom',
+          'text': '\'Round Midnight Jazz and Blues Bar, test3, Angel, GBR',
           'name': '\'Round Midnight Jazz and Blues Bar',
           'alpha3': 'GBR',
           'admin0': 'United Kingdom',
@@ -139,7 +139,7 @@ module.exports.tests.search = function(test, common) {
         'properties': {
           'id': 'id2',
           'layer': 'type2',
-          'text': 'Blues Cafe, test3, Smithfield, United Kingdom',
+          'text': 'Blues Cafe, test3, Smithfield, GBR',
           'name': 'Blues Cafe',
           'alpha3': 'GBR',
           'admin0': 'United Kingdom',

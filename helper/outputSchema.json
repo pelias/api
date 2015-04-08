@@ -7,11 +7,11 @@
   "GBR": {
     "local": ["neighborhood", "local_admin", "locality"],
     "regional": ["admin2", "admin1"],
-    "national": ["admin0", "alpha3"]
+    "national": ["alpha3", "admin0"]
   },
   "default": {
     "local": ["local_admin", "locality", "neighborhood", "admin2"],
     "regional": ["admin1_abbr", "admin1"],
-    "national": ["admin0", "alpha3"]
+    "national": ["alpha3", "admin0"]
   }
 }
