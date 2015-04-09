@@ -6,7 +6,7 @@ var suggest  = require('../../../sanitiser/reverse'),
     defaultError = 'missing param \'lat\': must be >-90 and <90',
     defaultClean =  { lat:0,
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
-                                'osmaddress', 'openaddresses' ], 
+                                'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
                       lon: 0,
                       size: 1
                     },
@@ -31,7 +31,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
   var lats = {
     invalid: [ -181, -120, -91, 91, 120, 181 ],
     valid: [ 0, 45, 90, -0, '0', '45', '90' ],
-    missing: ['', undefined, ,null]
+    missing: ['', undefined, null]
   };
   test('invalid lat', function(t) {  
     lats.invalid.forEach( function( lat ){
@@ -68,7 +68,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
   var lons = {
     invalid: [ -360, -181, 181, 360 ],
     valid: [ -180, -1, -0, 0, 45, 90, '-180', '0', '180' ],
-    missing: ['', undefined, ,null]
+    missing: ['', undefined, null]
   };
   test('invalid lon', function(t) {  
     lons.invalid.forEach( function( lon ){
@@ -147,7 +147,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     });
   });
   test('admin (alias) layer', function(t) {
-    var admin_layers = ['admin0','admin1','admin2','neighborhood'];
+    var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
     sanitize({ layers: 'admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, admin_layers, 'admin layers set');
       t.end();
@@ -169,7 +169,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     });
   });
   test('admin alias layer plus regular layers', function(t) {
-    var admin_layers = ['admin0','admin1','admin2','neighborhood'];
+    var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
     var reg_layers   = ['geoname', 'osmway'];
     sanitize({ layers: 'admin,geoname,osmway', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, reg_layers.concat(admin_layers), 'admin + regular layers set');
@@ -192,7 +192,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     });
   });
   test('multiple alias layers (no duplicates)', function(t) {
-    var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood'];
+    var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood','locality','local_admin'];
     sanitize({ layers: 'poi,admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, alias_layers, 'all layers found (no duplicates)');
       t.end();
