@@ -1,6 +1,7 @@
 
 var logger = require('../src/logger'),
     queries = require('geopipes-elasticsearch-backend').queries,
+    get_layers = require('../helper/layers'),
     sort = require('../query/sort');
 
 function generate( params ){
@@ -33,7 +34,7 @@ function generate( params ){
   };
   
   if (params.input_admin) {
-    var admin_fields = ['admin0', 'admin1', 'admin1_abbr', 'admin2', 'alpha3'];
+    var admin_fields = get_layers(['admin','admin1_abbr','alpha3']);
     query.query.filtered.query.bool.should = [];
 
     admin_fields.forEach(function(admin_field) {
@@ -46,6 +47,7 @@ function generate( params ){
   }
 
   query.sort = query.sort.concat(sort);
+  // console.log( JSON.stringify( query, null, 2 ) );
 
   return query;
 }

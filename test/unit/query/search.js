@@ -216,6 +216,109 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
+
+  test('valid query with an admin component', function(t) {
+    var query = generate({
+      input: 'test', input_admin:'usa', size: 10,
+      lat: 29.49136, lon: -82.50622,
+      layers: ['test']
+    });
+
+    var expected = {
+      'query': {
+        'filtered': {
+          'query': {
+            'bool': {
+              'must': [{ 
+                  'match': {
+                    'name.default': 'test'
+                  }
+                }
+              ],
+              'should': [
+                {
+                  'match': {
+                    'admin1_abbr': 'usa'
+                  }
+                },
+                {
+                  'match': {
+                    'alpha3': 'usa'
+                  }
+                },
+                {
+                  'match': {
+                    'admin0': 'usa'
+                  }
+                },
+                {
+                  'match': {
+                    'admin1': 'usa'
+                  }
+                },
+                {
+                  'match': {
+                    'admin2': 'usa'
+                  }
+                },
+                {
+                  'match': {
+                    'neighborhood': 'usa'
+                  }
+                },
+                {
+                  'match': {
+                    'locality': 'usa'
+                  }
+                },
+                {
+                  'match': {
+                    'local_admin': 'usa'
+                  }
+                }
+              ]   
+            }
+          },
+          'filter': {
+            'bool': {
+              'must': [
+                {
+                  'geo_distance': {
+                    'distance': '50km',
+                    'distance_type': 'plane',
+                    'optimize_bbox': 'indexed',
+                    '_cache': true,
+                    'center_point': {
+                      'lat': '29.49',
+                      'lon': '-82.51'
+                    }
+                  }
+                }
+              ]
+            }
+           }
+        }
+      },
+      'sort': [
+        '_score',
+        {
+          '_geo_distance': {
+            'center_point': {
+              'lat': 29.49136,
+              'lon': -82.50622
+            },
+            'order': 'asc',
+            'unit': 'km'
+          }
+        }
+      ].concat(sort.slice(1)),
+      'size': 10,
+      'track_scores': true
+    };
+    
+    t.deepEqual(query, expected, 'valid query with an admin component');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
