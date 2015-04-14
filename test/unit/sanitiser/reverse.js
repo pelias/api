@@ -8,7 +8,8 @@ var suggest  = require('../../../sanitiser/reverse'),
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
                       lon: 0,
-                      size: 1
+                      size: 1,
+                      details: false
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 

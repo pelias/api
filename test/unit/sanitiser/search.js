@@ -7,7 +7,8 @@ var search  = require('../../../sanitiser/search'),
     defaultClean =  { input: 'test', 
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
-                      size: 10
+                      size: 10,
+                      details: false
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 

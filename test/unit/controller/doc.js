@@ -16,7 +16,7 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.functional_success = function(test, common) {
 
   // expected geojson features for 'client/doc/ok/1' fixture
-  var expected = [{
+  var expected_details = [{
     type: 'Feature',
     geometry: {
       type: 'Point',
@@ -44,6 +44,30 @@ module.exports.tests.functional_success = function(test, common) {
       admin0: 'country2',
       admin1: 'state2',
       admin2: 'city2',
+      text: 'test name2, city2, state2'
+    }
+  }];
+
+  var expected = [{
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [ -50.5, 100.1 ]
+    },
+    properties: {
+      id: 'myid1',
+      layer: 'mytype1',
+      text: 'test name1, city1, state1'
+    }
+  }, {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [ -51.5, 100.2 ]
+    },
+    properties: {
+      id: 'myid2',
+      layer: 'mytype2',
       text: 'test name2, city2, state2'
     }
   }];

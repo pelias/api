@@ -9,7 +9,8 @@ var suggest  = require('../../../sanitiser/suggest'),
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
                       lon: 0,
-                      size: 10
+                      size: 10,
+                      details: false
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
