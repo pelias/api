@@ -267,6 +267,45 @@ module.exports.tests.sanitize_size = function(test, common) {
   });
 };
 
+module.exports.tests.sanitize_details = function(test, common) {
+  var invalid_values = [null, -1, 123, NaN, 'abc'];
+  invalid_values.forEach(function(details) {
+    test('invalid details param ' + details, function(t) {
+      sanitize({ input: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
+        t.equal(clean.details, false, 'default details set (to false)');
+        t.end();
+      });
+    });  
+  });
+
+  var valid_values = ['true', true, 1];
+  valid_values.forEach(function(details) {
+    test('valid details param ' + details, function(t) {
+      sanitize({ input: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
+        t.equal(clean.details, true, 'details set to true');
+        t.end();
+      });
+    });  
+  });
+
+  var valid_false_values = ['false', false, 0];
+  valid_false_values.forEach(function(details) {
+    test('test setting false explicitly ' + details, function(t) {
+      sanitize({ input: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
+        t.equal(clean.details, false, 'details set to false');
+        t.end();
+      });
+    }); 
+  });
+
+  test('test default behavior', function(t) {
+    sanitize({ input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.equal(clean.details, false, 'details set to false');
+      t.end();
+    });
+  });
+};
+
 module.exports.tests.sanitize_layers = function(test, common) {
   test('unspecified', function(t) {
     sanitize({ layers: undefined, input: 'test' }, function( err, clean ){
