@@ -11,7 +11,12 @@ function sanitize( req, default_value ){
     params = {};
   }
 
-  clean.details = !!params.details;
+  if (params.details !== undefined) {
+    var details = typeof params.details === 'string' ? params.details === 'true' : params.details;
+    clean.details = details === true || details === 1;  
+  } else {
+    clean.details = default_value;
+  }
 
   req.clean = clean;
   
