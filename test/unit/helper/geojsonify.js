@@ -183,6 +183,64 @@ module.exports.tests.search = function(test, common) {
     t.deepEqual(json, expected, 'all docs mapped');
     t.end();
   });
+
+  var no_details_expected = {
+    'type': 'FeatureCollection',
+    'bbox': [ -73.985656, 40.748432, -0.101795, 51.5337144 ],
+    'features': [
+      {
+        'type': 'Feature',
+        'geometry': {
+          'type': 'Point',
+          'coordinates': [
+            -0.1069716,
+            51.5337144
+          ]
+        },
+        'properties': {
+          'id': 'id1',
+          'layer': 'type1',
+          'text': '\'Round Midnight Jazz and Blues Bar, test3, Angel'
+        }
+      },
+      {
+        'type': 'Feature',
+        'geometry': {
+          'type': 'Point',
+          'coordinates': [
+            -0.101795,
+            51.517806
+          ]
+        },
+        'properties': {
+          'id': 'id2',
+          'layer': 'type2',
+          'text': 'Blues Cafe, test3, Smithfield'
+        }
+      },
+      {
+        'type': 'Feature',
+        'geometry': {
+          'type': 'Point',
+          'coordinates': [
+            -73.985656,
+            40.748432
+          ]
+        },
+        'properties': {
+          'id': '34633854',
+          'layer': 'osmway',
+          'text': 'Empire State Building, Manhattan, NY'
+        }
+      }
+    ]
+  };
+
+  test('geojsonify.search() with no details (default)', function(t) {
+    var json = geojsonify.search( input );
+    t.deepEqual(json, no_details_expected, 'all docs (with no details) mapped');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
