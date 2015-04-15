@@ -178,10 +178,20 @@ module.exports.tests.search = function(test, common) {
     ]
   };
 
-  test('geojsonify.search()', function(t) {
+  var truthy_params = [true, 1, -1, 123, 'abc'];
+
+  test('geojsonify.search(doc, true) with details', function(t) {
     var json = geojsonify.search( input, true );
-    t.deepEqual(json, expected, 'all docs mapped');
+    t.deepEqual(json, expected, 'all docs (with details) mapped');
     t.end();
+  });
+
+  truthy_params.forEach(function(details) {
+    test('geojsonify.search(doc, '+ details +') with details', function(t) {
+      var json = geojsonify.search( input, details );
+      t.deepEqual(json, expected, 'all docs (with details) mapped');
+      t.end();
+    });
   });
 
   var no_details_expected = {
@@ -236,10 +246,20 @@ module.exports.tests.search = function(test, common) {
     ]
   };
 
-  test('geojsonify.search() with no details (default)', function(t) {
+  test('geojsonify.search(doc) with no details (default)', function(t) {
     var json = geojsonify.search( input );
     t.deepEqual(json, no_details_expected, 'all docs (with no details) mapped');
     t.end();
+  });
+
+  var falsy_params = [false, undefined, null, 0 ];
+
+  falsy_params.forEach(function(details) {
+    test('geojsonify.search(doc, '+ details +') with no details', function(t) {
+      var json = geojsonify.search( input, details );
+      t.deepEqual(json, no_details_expected, 'all docs (with no details) mapped');
+      t.end();
+    });
   });
 };
 
