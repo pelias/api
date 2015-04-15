@@ -12,7 +12,7 @@ function search( docs, details ){
     return false; // remove offending doc from results
   }
 
-  details = details || false;
+  details = details === true || details === 1;
 
   // flatten & expand data for geojson conversion
   var geodata = docs.map( function( doc ){

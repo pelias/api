@@ -178,7 +178,7 @@ module.exports.tests.search = function(test, common) {
     ]
   };
 
-  var truthy_params = [true, 1, -1, 123, 'abc'];
+  var truthy_params = [true, 1];
 
   test('geojsonify.search(doc, true) with details', function(t) {
     var json = geojsonify.search( input, true );
@@ -252,7 +252,7 @@ module.exports.tests.search = function(test, common) {
     t.end();
   });
 
-  var falsy_params = [false, undefined, null, 0 ];
+  var falsy_params = [false, undefined, null, 0, -1, 123, 'abc'];
 
   falsy_params.forEach(function(details) {
     test('geojsonify.search(doc, '+ details +') with no details', function(t) {
