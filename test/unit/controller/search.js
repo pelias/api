@@ -17,38 +17,6 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.functional_success = function(test, common) {
 
   // expected geojson features for 'client/suggest/ok/1' fixture
-  var expected_details = [{
-    type: 'Feature',
-    geometry: {
-      type: 'Point',
-      coordinates: [ -50.5, 100.1 ]
-    },
-    properties: {
-      id: 'myid1',
-      layer: 'mytype1',
-      name: 'test name1',
-      admin0: 'country1',
-      admin1: 'state1',
-      admin2: 'city1',
-      text: 'test name1, city1, state1'
-    }
-  }, {
-    type: 'Feature',
-    geometry: {
-      type: 'Point',
-      coordinates: [ -51.5, 100.2 ]
-    },
-    properties: {
-      id: 'myid2',
-      layer: 'mytype2',
-      name: 'test name2',
-      admin0: 'country2',
-      admin1: 'state2',
-      admin2: 'city2',
-      text: 'test name2, city2, state2'
-    }
-  }];
-
   var expected = [{
     type: 'Feature',
     geometry: {
@@ -93,6 +61,60 @@ module.exports.tests.functional_success = function(test, common) {
       }
     };
     controller( { clean: { a: 'b' } }, res );
+  });
+
+  var detailed_expectation = [{
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [ -50.5, 100.1 ]
+    },
+    properties: {
+      id: 'myid1',
+      layer: 'mytype1',
+      name: 'test name1',
+      admin0: 'country1',
+      admin1: 'state1',
+      admin2: 'city1',
+      text: 'test name1, city1, state1'
+    }
+  }, {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [ -51.5, 100.2 ]
+    },
+    properties: {
+      id: 'myid2',
+      layer: 'mytype2',
+      name: 'test name2',
+      admin0: 'country2',
+      admin1: 'state2',
+      admin2: 'city2',
+      text: 'test name2, city2, state2'
+    }
+  }];
+
+  test('functional success (with details)', function(t) {
+    var backend = mockBackend( 'client/search/ok/1', function( cmd ){
+      t.deepEqual(cmd, { body: { a: 'b', details: true }, index: 'pelias', searchType: 'dfs_query_then_fetch' }, 'correct backend command');
+    });
+    var controller = setup( backend, mockQuery() );
+    var res = {
+      status: function( code ){
+        t.equal(code, 200, 'status set');
+        return res;
+      },
+      json: function( json ){
+        t.equal(typeof json, 'object', 'returns json');
+        t.equal(typeof json.date, 'number', 'date set');
+        t.equal(json.type, 'FeatureCollection', 'valid geojson');
+        t.true(Array.isArray(json.features), 'features is array');
+        t.deepEqual(json.features, detailed_expectation, 'values with details correctly mapped');
+        t.end();
+      }
+    };
+    controller( { clean: { a: 'b', details: true } }, res );
   });
 };
 
