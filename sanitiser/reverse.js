@@ -7,10 +7,7 @@ var logger = require('../src/logger'),
         return geo(req, true);
       },
       layers: require('../sanitiser/_layers'),
-      details: function( req ) {
-        var details = require('../sanitiser/_details');
-        return details(req, true);
-      },
+      details: require('../sanitiser/_details'),
       size: function( req ) {
         var size = require('../sanitiser/_size');
         return size(req, 1);
