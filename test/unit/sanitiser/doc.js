@@ -10,7 +10,7 @@ var doc  = require('../../../sanitiser/doc'),
     defaultMissingTypeError = function(input) { 
       var type = input.split(delimiter)[0];
       return type + ' is invalid. It must be one of these values - [' + indeces.join(', ') + ']'; },
-    defaultClean = { ids: [ { id: '123', type: 'geoname' } ], details: false },
+    defaultClean = { ids: [ { id: '123', type: 'geoname' } ], details: true },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); },
     inputs = {
       valid: [ 'geoname:1', 'osmnode:2', 'admin0:53', 'osmway:44', 'geoname:5' ],
@@ -56,7 +56,7 @@ module.exports.tests.sanitize_id = function(test, common) {
   test('valid input', function(t) {
     inputs.valid.forEach( function( input ){
       var input_parts = input.split(delimiter);
-      var expected = { ids: [ { id: input_parts[1], type: input_parts[0] } ], details: false };
+      var expected = { ids: [ { id: input_parts[1], type: input_parts[0] } ], details: true };
       sanitize({ id: input }, function( err, clean ){
         t.equal(err, undefined, 'no error (' + input + ')' );
         t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
@@ -94,7 +94,7 @@ module.exports.tests.sanitize_ids = function(test, common) {
       var input_parts = input.split(delimiter);
       expected.ids.push({ id: input_parts[1], type: input_parts[0] });
     });
-    expected.details = false;
+    expected.details = true;
     sanitize({ id: inputs.valid }, function( err, clean ){
       t.equal(err, undefined, 'no error' );
       t.deepEqual(clean, expected, 'clean set correctly');
@@ -136,14 +136,14 @@ module.exports.tests.sanitize_details = function(test, common) {
 
   test('test default behavior', function(t) {
     sanitize({ id:'geoname:123' }, function( err, clean ){
-      t.equal(clean.details, false, 'details set to false');
+      t.equal(clean.details, true, 'details set to true');
       t.end();
     });
   });
 };
 
 module.exports.tests.de_dupe = function(test, common) {
-  var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], details: false };
+  var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], details: true };
   test('duplicate ids', function(t) {
     sanitize( { id: ['geoname:1', 'osmnode:2', 'geoname:1'] }, function( err, clean ){
       t.equal(err, undefined, 'no error' );

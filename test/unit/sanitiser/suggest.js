@@ -10,7 +10,7 @@ var suggest  = require('../../../sanitiser/suggest'),
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
                       lon: 0,
                       size: 10,
-                      details: false
+                      details: true
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
@@ -269,7 +269,7 @@ module.exports.tests.sanitize_details = function(test, common) {
 
   test('test default behavior', function(t) {
     sanitize({ input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.details, false, 'details set to false');
+      t.equal(clean.details, true, 'details set to true');
       t.end();
     });
   });

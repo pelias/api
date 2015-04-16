@@ -4,6 +4,10 @@ function sanitize( req, default_value ){
   var clean = req.clean || {};
   var params= req.query;
 
+  if (default_value === undefined) {
+    default_value = true;
+  }
+  
   default_value = !!default_value;
 
   // ensure the input params are a valid object
