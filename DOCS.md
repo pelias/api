@@ -6,21 +6,21 @@ Full text search endpoint (queries the elasticsearch doc store, slightly slower 
 * **input**: query string
 
 #### Optional Parameters
-  * **lat**: latitude
-  * **lon**: longitude
-  * **zoom**: zoom level from which you wish to view the world
-  * **size**: number of results requested (defaults to 10)
-  * **layers**: datasets you wish to query (defaults to ```poi,admin,address```). 
-    * valid values are ```poi```, ```admin``` or ```address``` 
-      * ```poi``` expands internally to ```geoname```, ```osmnode```, ```osmway``` 
-      * ```admin``` expands to ```admin0```, ```admin1```, ```admin2```, ```neighborhood```, ```locality```, ```local_admin```
-      * ```address``` expands to ```osmaddress```, ```openaddresses```
-    * can also be specific to one particular dataset, for example ```geoname```
-  * **bbox**: the bounding box from which you want all your results to come
-    * can be one of the following comma separated string values
-      * bottom_left lat, bottom_left lon, top_right lat, top_right lon
-      * left, bottom, right, top
-      * min longitude, min latitude, max longitude, max latitude 
+* **lat**: latitude
+* **lon**: longitude
+* **zoom**: zoom level from which you wish to view the world
+* **size**: number of results requested (defaults to 10)
+* **layers**: datasets you wish to query (defaults to ```poi,admin,address```). 
+  * valid values are ```poi```, ```admin``` or ```address``` 
+    * ```poi``` expands internally to ```geoname```, ```osmnode```, ```osmway``` 
+    * ```admin``` expands to ```admin0```, ```admin1```, ```admin2```, ```neighborhood```, ```locality```, ```local_admin```
+    * ```address``` expands to ```osmaddress```, ```openaddresses```
+  * can also be specific to one particular dataset, for example ```geoname```
+* **bbox**: the bounding box from which you want all your results to come
+  * can be one of the following comma separated string values
+    * bottom_left lat, bottom_left lon, top_right lat, top_right lon
+    * left, bottom, right, top
+    * min longitude, min latitude, max longitude, max latitude 
 
 
 ## /search/coarse
@@ -53,7 +53,7 @@ The autocomplete endpoint, it offers fast response time. Mixes results from arou
   * lat/lon are **required** currently because of this [open issue](https://github.com/elasticsearch/elasticsearch/issues/6444)
 
 #### Optional Parameters
-* **zoom**: zoom level at which you are viewing the world
+* **zoom**: zoom level from which you wish to view the world
 * **size**: number of results requested (defaults to 10)
 * **layers**: datasets you wish to query (defaults to ```poi,admin,address```)
 
@@ -85,7 +85,7 @@ Works as autocomplete for places located near a latitude/longitude, this endpoin
   * lat/lon are **required** currently because of this [open issue](https://github.com/elasticsearch/elasticsearch/issues/6444)
 
 #### Optional Parameters
-* **zoom**: zoom level at which you are viewing the world
+* **zoom**: zoom level from which you wish to view the world
 * **size**: number of results you need (defaults to 10)
 * **layers**: datasets you wish to query (defaults to ```poi,admin,address```)
 
@@ -98,7 +98,7 @@ Reverse geocoding endpoint.
 * **lon**: longitude
 
 #### Optional Parameters
-* **zoom**: zoom level
+* **zoom**: zoom level from which you wish to view the world
 * **bbox**: bounding box
 * **layers** (defaults to ```poi,admin,address```)
 
