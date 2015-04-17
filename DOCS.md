@@ -39,8 +39,8 @@ This is a coarse forward geocoder endpoint which only searches admin dataset lay
     * bottom_left lat, bottom_left lon, top_right lat, top_right lon
     * left, bottom, right, top
     * min longitude, min latitude, max longitude, max latitude 
-* **size** (defaults to 10)
-* **layers** (defaults to ```admin```)
+* **size**: (defaults to 10)
+* **layers**: (defaults to ```admin```)
 
 
 ## /suggest
@@ -102,7 +102,7 @@ Reverse geocoding endpoint.
 #### Optional Parameters
 * **zoom**: zoom level from which you wish to view the world
 * **bbox**: bounding box
-* **layers** (defaults to ```poi,admin,address```)
+* **layers**: (defaults to ```poi,admin,address```)
 
 
 ## /doc
@@ -112,7 +112,7 @@ Retrieves a document or multiple documents at once.
 #### Required Parameters
 * one of **id** or **ids**
   * **id**:
-    * unique id of the document that to be retrieved
+    * unique id of the document to be retrieved
     * should be in the form of type:id, for example: ```geoname:4163334```
-  * **ids**
+  * **ids**:
     * if multiple docs are to be fetched in bulk, an array of ids
