@@ -38,7 +38,7 @@ app.get( '/suggest/nearby',
 		sanitisers.suggest.middleware, 
 		controllers.suggest(undefined, undefined, require('./helper/queryMixer').suggest_nearby) );
 app.get( '/suggest/coarse', 
-		sanitisers.suggest.middleware, 
+		sanitisers.coarse.middleware, 
 		controllers.suggest(undefined, undefined, require('./helper/queryMixer').coarse) );
 
 // search API
