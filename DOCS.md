@@ -18,7 +18,7 @@ Full text search endpoint (queries the elasticsearch doc store, slightly slower 
   * can also be specific to one particular dataset, for example ```geoname```
 * **bbox**: the bounding box from which you want all your results to come
   * can be one of the following comma separated string values
-    * bottom_left lat, bottom_left lon, top_right lat, top_right lon
+    * bottom left lat, bottom left lon, top right lat, top right lon
     * left, bottom, right, top
     * min longitude, min latitude, max longitude, max latitude 
 
@@ -35,10 +35,6 @@ This is a coarse forward geocoder endpoint which only searches admin dataset lay
 * **lon**: longitude
 * **zoom**: zoom level from which you wish to view the world
 * **bbox**: the bounding box frome which you want all your results to come
-  * can be one of the following comma separated string values
-    * bottom_left lat, bottom_left lon, top_right lat, top_right lon
-    * left, bottom, right, top
-    * min longitude, min latitude, max longitude, max latitude 
 * **size**: (defaults to 10)
 * **layers**: (defaults to ```admin```)
 
