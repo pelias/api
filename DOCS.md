@@ -24,7 +24,8 @@ Full text search endpoint (queries the elasticsearch doc store, slightly slower 
 
 
 ## /search/coarse
-This is a coarse forward geocoder endpoint: only searches admin dataset layers.
+
+This is a coarse forward geocoder endpoint which only searches admin dataset layers.
 
 #### Required Parameters
 * **input**: query string
@@ -88,6 +89,7 @@ Works as autocomplete for places located near a latitude/longitude, this endpoin
 * **zoom**: zoom level from which you wish to view the world
 * **size**: number of results you need (defaults to 10)
 * **layers**: datasets you wish to query (defaults to ```poi,admin,address```)
+
 
 ## /reverse
 
