@@ -20,6 +20,10 @@ module.exports.tests.info = function(test, common) {
       t.equal(typeof json.version, 'object', 'version');
       t.equal(typeof json.version.number, 'string', 'version number');
       t.end();
+    },
+      send: function( html ){
+      t.equal(typeof html, 'string', 'returns string');
+      t.end();
     }};
     controller( null, res );
   });

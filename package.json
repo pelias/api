@@ -1,7 +1,7 @@
 {
   "name": "pelias-api",
   "author": "mapzen",
-  "version": "0.0.0",
+  "version": "1.1.7",
   "description": "Pelias API",
   "homepage": "https://github.com/pelias/api",
   "license": "MIT",
@@ -39,7 +39,8 @@
     "geopipes-elasticsearch-backend": "0.0.12",
     "pelias-suggester-pipeline": "2.0.2",
     "is-object": "^1.0.1",
-    "pelias-esclient": "0.0.25"
+    "pelias-esclient": "0.0.25",
+    "markdown": "0.5.0"
   },
   "devDependencies": {
     "ciao": "^0.3.4",
