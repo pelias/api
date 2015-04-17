@@ -1,6 +1,6 @@
 ## /search
 
-Full text search endpoint (queries the elasticsearch doc store, slightly slower than suggest).
+Full text search endpoint which queries the elasticsearch doc store, slightly slower than suggest.
 
 #### Required Parameters
 * **input**: query string
