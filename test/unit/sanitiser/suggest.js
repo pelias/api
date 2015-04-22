@@ -244,7 +244,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
   });
   test('invalid layer', function(t) {
     sanitize({ layers: 'test_layer', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      var msg = 'invalid param \'layer\': must be one or more of ';
+      var msg = 'invalid param \'layers\': must be one or more of ';
       t.true(err.match(msg), 'invalid layer requested');
       t.true(err.length > msg.length, 'invalid error message');
       t.end();
