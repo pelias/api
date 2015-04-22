@@ -181,14 +181,14 @@ module.exports.tests.search = function(test, common) {
   var truthy_params = [true, 1];
 
   test('geojsonify.search(doc, true) with details', function(t) {
-    var json = geojsonify.search( input, true );
+    var json = geojsonify.search( input, { details: true } );
     t.deepEqual(json, expected, 'all docs (with details) mapped');
     t.end();
   });
 
   truthy_params.forEach(function(details) {
     test('geojsonify.search(doc, '+ details +') with details', function(t) {
-      var json = geojsonify.search( input, details );
+      var json = geojsonify.search( input, { details: details } );
       t.deepEqual(json, expected, 'all docs (with details) mapped');
       t.end();
     });
@@ -256,7 +256,7 @@ module.exports.tests.search = function(test, common) {
 
   falsy_params.forEach(function(details) {
     test('geojsonify.search(doc, '+ details +') with no details', function(t) {
-      var json = geojsonify.search( input, details );
+      var json = geojsonify.search( input, { details: details } );
       t.deepEqual(json, no_details_expected, 'all docs (with no details) mapped');
       t.end();
     });

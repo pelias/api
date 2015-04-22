@@ -3,7 +3,7 @@ var GeoJSON = require('geojson'),
     extent = require('geojson-extent'),
     outputGenerator = require('./outputGenerator');
 
-function search( docs, details ){
+function search( docs, params ){
 
   // emit a warning if the doc format is invalid
   // @note: if you see this error, fix it ASAP!
@@ -12,6 +12,7 @@ function search( docs, details ){
     return false; // remove offending doc from results
   }
 
+  var details = params ? params.details : {};
   details = details === true || details === 1;
 
   // flatten & expand data for geojson conversion
