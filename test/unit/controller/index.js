@@ -32,7 +32,7 @@ module.exports.tests.info_json = function(test, common) {
 };
 
 module.exports.tests.info_html = function(test, common) {
-  test('returns server info in json', function(t) {
+  test('returns server info in html', function(t) {
     var controller = setup();
     var req = {
       accepts: function () {
