@@ -11,7 +11,7 @@ function generate( params ){
   };
 
   var query  =  queries.distance( centroid, { size: params.size || 1 } );
-  query.sort = query.sort.concat( sort() );
+  query.sort = query.sort.concat( sort( params ) );
 
   return query;
 }
