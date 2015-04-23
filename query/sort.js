@@ -2,6 +2,7 @@ var admin_boost = 'admin_boost';
 var population = 'population';
 var popularity = 'popularity';
 var weights = require('pelias-suggester-pipeline').weights;
+var isObject = require( 'is-object' );
 
 module.exports = function( params ){
   var scriptsConfig = [
@@ -38,7 +39,7 @@ module.exports = function( params ){
     }
   ];
 
-  if( typeof params === 'object' && params.hasOwnProperty( 'input' ) ){
+  if( isObject( params ) && params.hasOwnProperty( 'input' ) ){
     scriptsConfig.push({
       _script: {
         params: {
