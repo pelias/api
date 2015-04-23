@@ -11,21 +11,40 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-module.exports.tests.info = function(test, common) {
-  test('returns server info', function(t) {
+module.exports.tests.info_json = function(test, common) {
+  test('returns server info in json', function(t) {
     var controller = setup();
+    var req = {
+      accepts: function (format) {
+        t.equal(format, 'html', 'check for Accepts:html');
+        return false;
+      }
+    };
     var res = { json: function( json ){
       t.equal(typeof json, 'object', 'returns json');
       t.equal(typeof json.name, 'string', 'name');
       t.equal(typeof json.version, 'object', 'version');
       t.equal(typeof json.version.number, 'string', 'version number');
       t.end();
-    },
-      send: function( html ){
-      t.equal(typeof html, 'string', 'returns string');
+    }};
+    controller( req, res );
+  });
+};
+
+module.exports.tests.info_html = function(test, common) {
+  test('returns server info in json', function(t) {
+    var controller = setup();
+    var req = {
+      accepts: function () {
+        return true;
+      }
+    };
+    var res = { send: function( content ){
+      t.equal(typeof content, 'string', 'returns string');
+      t.assert(content.indexOf('<style>html{font-family:monospace}</style>') === 0, 'style set to monospace');
       t.end();
     }};
-    controller( null, res );
+    controller( req, res );
   });
 };
 
