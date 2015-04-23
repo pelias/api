@@ -51,8 +51,8 @@ var expected = [
 
 module.exports.tests.query = function(test, common) {
   test('valid part of query', function(t) {
-    var sort = generate();
-    t.deepEqual(sort, expected, 'valid sort part of the query');
+    t.deepEqual(generate(), expected, 'valid sort part of the query');
+    t.deepEqual(generate( {} ), expected, 'valid sort part of the query');
     t.end();
   });
 };
