@@ -2,7 +2,8 @@
 var logger = require('../src/logger'),
     queries = require('geopipes-elasticsearch-backend').queries,
     get_layers = require('../helper/layers'),
-    sort = require('../query/sort');
+    sort = require('../query/sort'),
+    adminFieldWeights = require( '../config/queryAdminWeights' );
 
 function generate( params ){
 
@@ -39,15 +40,6 @@ function generate( params ){
    * levels (admin0 carries more weight than locality, for instance).
    */
   if (params.input_admin) {
-    var adminFieldWeights = {
-      admin0: 20,
-      alpha3: 20,
-      admin1: 10,
-      admin1_abbr: 10,
-      admin2: 5,
-      locality: 1,
-      local_admin: 1
-    };
     query.query.filtered.query.bool.should = Object.keys( adminFieldWeights ).map( function ( field ){
       var boostFactor = adminFieldWeights[ field ];
       var shouldClause = { match: { } };
