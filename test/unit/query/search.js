@@ -238,42 +238,58 @@ module.exports.tests.query = function(test, common) {
               'should': [
                 {
                   'match': {
-                    'admin1_abbr': 'usa'
+                    'admin0': {
+                      'query': 'usa',
+                      'boost': 20
+                    }
                   }
                 },
                 {
                   'match': {
-                    'alpha3': 'usa'
+                    'alpha3': {
+                      'query': 'usa',
+                      'boost': 20
+                    }
                   }
                 },
                 {
                   'match': {
-                    'admin0': 'usa'
+                    'admin1': {
+                      'query': 'usa',
+                      'boost': 10
+                    }
                   }
                 },
                 {
                   'match': {
-                    'admin1': 'usa'
+                    'admin1_abbr': {
+                      'query': 'usa',
+                      'boost': 10
+                    }
                   }
                 },
                 {
                   'match': {
-                    'admin2': 'usa'
+                    'admin2': {
+                      'query': 'usa',
+                      'boost': 5
+                    }
                   }
                 },
                 {
                   'match': {
-                    'neighborhood': 'usa'
+                    'locality': {
+                      'query': 'usa',
+                      'boost': 1
+                    }
                   }
                 },
                 {
                   'match': {
-                    'locality': 'usa'
-                  }
-                },
-                {
-                  'match': {
-                    'local_admin': 'usa'
+                    'local_admin': {
+                      'query': 'usa',
+                      'boost': 1
+                    }
                   }
                 }
               ]   

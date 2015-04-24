@@ -33,22 +33,33 @@ function generate( params ){
     }
   };
   
+  /**
+   * If the query contained an administrative region name, boost results that
+   * contain a matching admin value, assigning higher values to higher admin
+   * levels (admin0 carries more weight than locality, for instance).
+   */
   if (params.input_admin) {
-    var admin_fields = get_layers(['admin','admin1_abbr','alpha3']);
-    query.query.filtered.query.bool.should = [];
-
-    admin_fields.forEach(function(admin_field) {
-      var match = {};
-      match[admin_field] = params.input_admin;
-      query.query.filtered.query.bool.should.push({
-         'match': match
-      });
+    var adminFieldWeights = {
+      admin0: 20,
+      alpha3: 20,
+      admin1: 10,
+      admin1_abbr: 10,
+      admin2: 5,
+      locality: 1,
+      local_admin: 1
+    };
+    query.query.filtered.query.bool.should = Object.keys( adminFieldWeights ).map( function ( field ){
+      var boostFactor = adminFieldWeights[ field ];
+      var shouldClause = { match: { } };
+      shouldClause.match[ field ] = {
+        query: params.input_admin,
+        boost: boostFactor
+      };
+      return shouldClause;
     });
   }
 
   query.sort = query.sort.concat(sort);
-  // console.log( JSON.stringify( query, null, 2 ) );
-
   return query;
 }
 
