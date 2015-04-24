@@ -1,14 +1,14 @@
 {
   "name": "pelias-api",
   "author": "mapzen",
-  "version": "0.0.0",
+  "version": "1.1.7",
   "description": "Pelias API",
   "homepage": "https://github.com/pelias/api",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "npm run unit && npm run ciao",
+    "test": "npm run unit",
     "unit": "node test/unit/run.js | tap-spec",
     "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao",
     "audit": "npm shrinkwrap; node node_modules/nsp/bin/nspCLI.js audit-shrinkwrap; rm npm-shrinkwrap.json;",
@@ -37,16 +37,18 @@
     "geojson": "^0.2.0",
     "geojson-extent": "^0.3.1",
     "geopipes-elasticsearch-backend": "0.0.12",
-    "pelias-suggester-pipeline": "2.0.2",
     "is-object": "^1.0.1",
-    "pelias-esclient": "0.0.25"
+    "markdown": "0.5.0",
+    "pelias-esclient": "0.0.25",
+    "pelias-suggester-pipeline": "2.0.2"
   },
   "devDependencies": {
     "ciao": "^0.3.4",
     "jshint": "^2.5.6",
+    "nsp": "^0.3.0",
     "precommit-hook": "^1.0.7",
-    "tape": "^2.13.4",
+    "proxyquire": "^1.4.0",
     "tap-spec": "^0.2.0",
-    "nsp": "^0.3.0"
+    "tape": "^2.13.4"
   }
 }

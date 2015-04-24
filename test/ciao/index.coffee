@@ -6,7 +6,7 @@ path: '/'
 response.statusCode.should.equal 200
 
 #? content-type header correctly set
-response.should.have.header 'Content-Type','application/json; charset=utf-8'
+response.should.have.header 'Content-Type','text/html; charset=utf-8'
 
 #? charset header correctly set
 response.should.have.header 'Charset','utf8'
@@ -20,8 +20,3 @@ response.headers.server.should.match /Pelias\/\d{1,2}\.\d{1,2}\.\d{1,2}/
 
 #? vanity header correctly set
 response.should.have.header 'X-Powered-By','mapzen'
-
-#? should respond in json with server info
-should.exist json
-should.exist json.name
-should.exist json.version
