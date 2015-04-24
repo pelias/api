@@ -33,6 +33,20 @@ module.exports.tests.info_json = function(test, common) {
 
 module.exports.tests.info_html = function(test, common) {
   test('returns server info in html', function(t) {
+
+    var style = '<style>html{font-family:monospace}</style>';
+    var mockText = 'this text should show up in the html content';
+    var fsMock = {
+      readFileSync: function (path, format) {
+        t.equal(path, './DOCS.md', 'open DOCS.md file');
+        t.equal(format, 'utf8', 'file format');
+        return mockText;
+      }
+    };
+
+    var proxyquire = require('proxyquire');
+    var setup = proxyquire('../../../controller/index', { 'fs': fsMock });
+
     var controller = setup();
     var req = {
       accepts: function () {
@@ -41,7 +55,8 @@ module.exports.tests.info_html = function(test, common) {
     };
     var res = { send: function( content ){
       t.equal(typeof content, 'string', 'returns string');
-      t.assert(content.indexOf('<style>html{font-family:monospace}</style>') === 0, 'style set to monospace');
+      t.assert(content.indexOf(style) === 0, 'style set');
+      t.assert(content.indexOf(mockText) !== -1, 'file content added');
       t.end();
     }};
     controller( req, res );
