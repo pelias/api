@@ -1,7 +1,9 @@
 
 var logger = require('../src/logger'),
     queries = require('geopipes-elasticsearch-backend').queries,
-    sort = require('../query/sort');
+    get_layers = require('../helper/layers'),
+    sort = require('../query/sort'),
+    adminFieldWeights = require( '../config/queryAdminWeights' );
 
 function generate( params ){
 
@@ -32,21 +34,24 @@ function generate( params ){
     }
   };
   
+  /**
+   * If the query contained an administrative region name, boost results that
+   * contain a matching admin value, assigning higher values to higher admin
+   * levels (admin0 carries more weight than locality, for instance).
+   */
   if (params.input_admin) {
-    var admin_fields = ['admin0', 'admin1', 'admin1_abbr', 'admin2', 'alpha3'];
-    query.query.filtered.query.bool.should = [];
-
-    admin_fields.forEach(function(admin_field) {
-      var match = {};
-      match[admin_field] = params.input_admin;
-      query.query.filtered.query.bool.should.push({
-         'match': match
-      });
+    query.query.filtered.query.bool.should = Object.keys( adminFieldWeights ).map( function ( field ){
+      var boostFactor = adminFieldWeights[ field ];
+      var shouldClause = { match: { } };
+      shouldClause.match[ field ] = {
+        query: params.input_admin,
+        boost: boostFactor
+      };
+      return shouldClause;
     });
   }
 
   query.sort = query.sort.concat(sort);
-
   return query;
 }
 

@@ -22,7 +22,8 @@ var tests = [
   require('./query/reverse'),
   require('./helper/geojsonify'),
   require('./helper/outputSchema'),
-  require('./helper/queryMixer')
+  require('./helper/queryMixer'),
+  require('./config/queryAdminWeights')
 ];
 
 tests.map(function(t) {
