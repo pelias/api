@@ -20,15 +20,9 @@ function generate( params ){
 }
 
 function addCategoriesFilter( query, categories ) {
-  query.query.filtered.query = {
-    match: {
-      category: {
-        query: categories.join(' '),
-        analyzer: 'standard',
-        operator: 'or'
-      }
-    }
-  };
+  query.query.filtered.filter.bool.must.push({
+    terms: { category: categories }
+  });
 }
 
 module.exports = generate;

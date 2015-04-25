@@ -2,3 +2,8 @@ language: node_js
 script: "npm run unit"
 node_js:
   - "0.10"
+addons:
+  code_climate:
+    repo_token: a98bd9004512c8caf44e5cb2b3586d01baf190ee069ec0b731b451fc9966e639
+after_script:
+  - codeclimate < coverage/lcov.info

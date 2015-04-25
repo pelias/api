@@ -120,13 +120,7 @@ module.exports.tests.query = function(test, common) {
       'query': {
         'filtered': {
           'query': {
-            'match': {
-              'category': {
-                'query': 'food education entertainment',
-                'analyzer': 'standard',
-                'operator': 'or'
-              }
-            }
+            'match_all': {}
           },
           'filter': {
             'bool': {
@@ -141,6 +135,11 @@ module.exports.tests.query = function(test, common) {
                       'lat': '29.49',
                       'lon': '-82.51'
                     }
+                  }
+                },
+                {
+                  'terms': {
+                    'category': params.categories
                   }
                 }
               ]
