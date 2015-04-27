@@ -20,7 +20,10 @@ Full text search endpoint which queries the elasticsearch doc store, slightly sl
   * can be one of the following comma separated string values
     * bottom left lat, bottom left lon, top right lat, top right lon
     * left, bottom, right, top
-    * min longitude, min latitude, max longitude, max latitude 
+    * min longitude, min latitude, max longitude, max latitude
+* **details**: indicates if results should contain detailed, should be `true` or `false`
+  * when false results will only contain `id`, `layer`, and `text` properties
+  * when true, all available properties will be included in results
 
 
 ## /search/coarse
@@ -37,6 +40,7 @@ This is a coarse forward geocoder endpoint which only searches admin dataset lay
 * **bbox**: the bounding box frome which you want all your results to come
 * **size**: (defaults to 10)
 * **layers**: (defaults to ```admin```)
+* **details**: (defaults to `true`)
 
 
 ## /suggest
@@ -53,6 +57,7 @@ The autocomplete endpoint, it offers fast response time. Mixes results from arou
 * **zoom**: zoom level from which you wish to view the world
 * **size**: number of results requested (defaults to 10)
 * **layers**: datasets you wish to query (defaults to ```poi,admin,address```)
+* **details**: (defaults to `true`)
 
 
 ## /suggest/coarse
@@ -69,6 +74,7 @@ Only queries the admin layers.
 * **zoom**: zoom level from which you wish to view the world
 * **size**: number of results requested (defaults to 10)
 * **layers**: datasets you wish to query (defaults to ```admin```)
+* **details**: (defaults to `true`)
 
 
 ## /suggest/nearby
@@ -85,6 +91,7 @@ Works as autocomplete for places located near a latitude/longitude, this endpoin
 * **zoom**: zoom level from which you wish to view the world
 * **size**: number of results you need (defaults to 10)
 * **layers**: datasets you wish to query (defaults to ```poi,admin,address```)
+* **details**: (defaults to `true`)
 
 
 ## /reverse
@@ -99,6 +106,7 @@ Reverse geocoding endpoint.
 * **zoom**: zoom level from which you wish to view the world
 * **bbox**: bounding box
 * **layers**: (defaults to ```poi,admin,address```)
+* **details**: (defaults to `true`)
 
 
 ## /doc
