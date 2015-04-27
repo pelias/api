@@ -9,7 +9,8 @@ var suggest  = require('../../../sanitiser/reverse'),
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
                       lon: 0,
                       size: 1,
-                      details: true
+                      details: true,
+                      categories: []
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
@@ -173,7 +174,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
   });
   test('invalid layer', function(t) {
     sanitize({ layers: 'test_layer', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      var msg = 'invalid param \'layer\': must be one or more of ';
+      var msg = 'invalid param \'layers\': must be one or more of ';
       t.true(err.match(msg), 'invalid layer requested');
       t.true(err.length > msg.length, 'invalid error message');
       t.end();
@@ -235,6 +236,45 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood','locality','local_admin'];
     sanitize({ layers: 'poi,admin', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.deepEqual(clean.layers, alias_layers, 'all layers found (no duplicates)');
+      t.end();
+    });
+  });
+};
+
+module.exports.tests.sanitize_categories = function(test, common) {
+  var queryParams = { input: 'test', lat: 0, lon: 0 };
+  test('unspecified', function(t) {
+    queryParams.categories = undefined;
+    sanitize(queryParams, function( err, clean ){
+      t.deepEqual(clean.categories, defaultClean.categories, 'default to empty categories array');
+      t.end();
+    });
+  });
+  test('single category', function(t) {
+    queryParams.categories = 'food';
+    sanitize(queryParams, function( err, clean ){
+      t.deepEqual(clean.categories, ['food'], 'category set');
+      t.end();
+    });
+  });
+  test('multiple categories', function(t) {
+    queryParams.categories = 'food,education,nightlife';
+    sanitize(queryParams, function( err, clean ){
+      t.deepEqual(clean.categories, ['food', 'education', 'nightlife'], 'categories set');
+      t.end();
+    });
+  });
+  test('whitespace and empty strings', function(t) {
+    queryParams.categories = 'food, , nightlife ,';
+    sanitize(queryParams, function( err, clean ){
+      t.deepEqual(clean.categories, ['food', 'nightlife'], 'categories set');
+      t.end();
+    });
+  });
+  test('all empty strings', function(t) {
+    queryParams.categories = ', ,  ,';
+    sanitize(queryParams, function( err, clean ){
+      t.deepEqual(clean.categories, defaultClean.categories, 'empty strings filtered out');
       t.end();
     });
   });
