@@ -1,10 +1,6 @@
 # API
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/pelias/api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Code Climate](https://codeclimate.com/github/pelias/api/badges/gpa.svg)](https://codeclimate.com/github/pelias/api)
-
-[![Test Coverage](https://codeclimate.com/github/pelias/api/badges/coverage.svg)](https://codeclimate.com/github/pelias/api)
-
 Pelias RESTful API
 
 ## Documentation
