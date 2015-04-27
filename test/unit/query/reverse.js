@@ -111,6 +111,71 @@ module.exports.tests.query = function(test, common) {
     });
     t.end();
   });
+
+  test('valid query with categories', function(t) {
+    var params = { lat: 29.49136, lon: -82.50622, categories: ['food', 'education', 'entertainment'] };
+    var query = generate(params);
+
+    var expected = {
+      'query': {
+        'filtered': {
+          'query': {
+            'match_all': {}
+          },
+          'filter': {
+            'bool': {
+              'must': [
+                {
+                  'geo_distance': {
+                    'distance': '50km',
+                    'distance_type': 'plane',
+                    'optimize_bbox': 'indexed',
+                    '_cache': true,
+                    'center_point': {
+                      'lat': '29.49',
+                      'lon': '-82.51'
+                    }
+                  }
+                },
+                {
+                  'terms': {
+                    'category': params.categories
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      'sort': [
+        '_score',
+        {
+          '_geo_distance': {
+            'center_point': {
+              'lat': 29.49136,
+              'lon': -82.50622
+            },
+            'order': 'asc',
+            'unit': 'km'
+          }
+        }
+      ].concat(sort.slice(1)),
+      'size': 1,
+      'track_scores': true
+    };
+
+    t.deepEqual(query, expected, 'valid reverse query with categories');
+
+    // test different sizes
+    var sizes = [1,2,10,undefined,null];
+    sizes.forEach( function(size) {
+      params.size = size;
+      query = generate(params);
+      expected.size = size ? size : 1;
+      t.deepEqual(query, expected, 'valid reverse query for size: '+ size);
+    });
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
