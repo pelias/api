@@ -1,14 +1,17 @@
 {
   "USA": {
     "local": ["local_admin", "locality", "neighborhood", "admin2"],
-    "regional": ["admin1_abbr", "admin1", "admin0"]
+    "regional": ["admin1_abbr", "admin1"],
+    "national": ["alpha3", "admin0"]
   },
   "GBR": {
-    "local": ["neighborhood", "admin2", "local_admin", "locality"],
-    "regional": ["admin2","admin0","admin1"]
+    "local": ["neighborhood", "local_admin", "locality"],
+    "regional": ["admin2", "admin1"],
+    "national": ["alpha3", "admin0"]
   },
   "default": {
     "local": ["local_admin", "locality", "neighborhood", "admin2"],
-    "regional": ["admin1_abbr", "admin1", "admin0"]
+    "regional": ["admin1_abbr", "admin1"],
+    "national": ["alpha3", "admin0"]
   }
 }

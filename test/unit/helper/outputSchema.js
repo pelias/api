@@ -13,10 +13,11 @@ module.exports.tests.interface = function(test, common) {
 };
 
 module.exports.tests.valid = function(test, common) {
-  var valid_keys = ['local_admin', 'locality', 'neighborhood', 'admin2', 'admin1_abbr', 'admin1', 'admin0'];
+  var valid_keys = ['local_admin', 'locality', 'neighborhood', 'admin2', 'admin1_abbr', 'admin1', 'admin0', 'alpha3'];
   var default_schema = {
     local: ['local_admin', 'locality', 'neighborhood', 'admin2'],
-    regional: ['admin1_abbr', 'admin1', 'admin0']
+    regional: ['admin1_abbr', 'admin1'],
+    national: ['alpha3', 'admin0']
   };
 
   var isValid = function(keys, schema) {
