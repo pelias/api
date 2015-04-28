@@ -1,8 +1,8 @@
 module.exports = {
   'transport': 10,
-  'transport:air': 10,
-  'transport:air:aerodrome': 10,
-  'transport:air:airport': 10,
+  'transport:air': 20,
+  'transport:air:aerodrome': 20,
+  'transport:air:airport': 20,
   'recreation': 10,
   'religion': 10,
   'education': 10,
