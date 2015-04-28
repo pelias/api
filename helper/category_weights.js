@@ -1,3 +1,8 @@
+/**
+ * These values specify how much a record that matches a certain category
+ * should be boosted in elasticsearch results.
+ */
+
 module.exports = {
   'transport': 10,
   'transport:air': 20,
