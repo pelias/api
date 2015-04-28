@@ -9,7 +9,8 @@ var logger = require('../src/logger'),
         var layers = require('../sanitiser/_layers');
         return layers(req);
       },
-      latlonzoom: require('../sanitiser/_geo')
+      latlonzoom: require('../sanitiser/_geo'),
+      details: require('../sanitiser/_details')
     };
 
 var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); };
