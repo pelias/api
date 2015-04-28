@@ -5,6 +5,7 @@ var logger = require('../src/logger'),
       input: require('../sanitiser/_input'),
       size: require('../sanitiser/_size'),
       layers: require('../sanitiser/_layers'),
+      details: require('../sanitiser/_details'),
       latlonzoom: require('../sanitiser/_geo')
     };
 

@@ -2,7 +2,8 @@
 var logger = require('../src/logger'),
     _sanitize = require('../sanitiser/_sanitize'),
     sanitizers = {
-      id: require('../sanitiser/_id')
+      id: require('../sanitiser/_id'),
+      details: require('../sanitiser/_details')
     };
 
 var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); };

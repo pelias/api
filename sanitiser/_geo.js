@@ -1,3 +1,5 @@
+var isObject = require('is-object');
+
 // validate inputs, convert types and apply defaults
 function sanitize( req, latlon_is_required ){
   
@@ -6,7 +8,7 @@ function sanitize( req, latlon_is_required ){
   latlon_is_required = latlon_is_required || false;
 
   // ensure the input params are a valid object
-  if( Object.prototype.toString.call( params ) !== '[object Object]' ){
+  if( !isObject( params ) ){
     params = {};
   }
 
