@@ -181,10 +181,10 @@ module.exports.tests.sanitize_bbox = function(test, common) {
           return parseInt(i);
         });
         expected.bbox = {
-          top   : Math.max(bboxArray[0], bboxArray[2]),
-          right : Math.max(bboxArray[1], bboxArray[3]),
-          bottom: Math.min(bboxArray[0], bboxArray[2]),
-          left  : Math.min(bboxArray[1], bboxArray[3])
+          right: Math.max(bboxArray[0], bboxArray[2]),
+          top: Math.max(bboxArray[1], bboxArray[3]),
+          left: Math.min(bboxArray[0], bboxArray[2]),
+          bottom: Math.min(bboxArray[1], bboxArray[3])
         };
         t.equal(err, undefined, 'no error');
         t.deepEqual(clean, expected, 'clean set correctly (' + bbox + ')');
