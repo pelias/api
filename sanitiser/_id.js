@@ -1,3 +1,5 @@
+var isObject = require('is-object');
+
 // validate inputs, convert types and apply defaults
 // id generally looks like 'geoname:4163334' (type:id)
 // so, both type and id are required fields.
@@ -10,7 +12,7 @@ function sanitize( req ){
   var delim   = ':';
 
   // ensure params is a valid object
-  if( Object.prototype.toString.call( params ) !== '[object Object]' ){
+  if( !isObject( params ) ){
     params = {};
   }
 

@@ -6,6 +6,7 @@ var _sanitize = require('../sanitiser/_sanitize'),
         return geo(req, true);
       },
       layers: require('../sanitiser/_layers'),
+      details: require('../sanitiser/_details'),
       size: function( req ) {
         var size = require('../sanitiser/_size');
         return size(req, 1);
