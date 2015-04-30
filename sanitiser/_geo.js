@@ -35,7 +35,7 @@ module.exports = function sanitize( req, latlon_is_required ){
 /**
  * Parse and validate bbox parameter
  * bbox = bottom_left lon, bottom_left lat, top_right lon, top_right lat
- * bbox = bottom, left, top, right
+ * bbox = left, bottom, right, top
  * bbox = min Longitude, min Latitude, max Longitude, max Latitude
  *
  * @param {object} clean
