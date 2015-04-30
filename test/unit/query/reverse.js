@@ -3,6 +3,8 @@ var generate = require('../../../query/reverse');
 var admin_boost = 'admin_boost';
 var population = 'population';
 var popularity = 'popularity';
+var category = 'category';
+var category_weights = require('../../../helper/category_weights');
 var weights = require('pelias-suggester-pipeline').weights;
 
 module.exports.tests = {};
@@ -33,6 +35,16 @@ var sort = [
   {
     '_script': {
       'file': popularity,
+      'type': 'number',
+      'order': 'desc'
+    }
+  },
+  {
+    '_script': {
+      'params': {
+        'category_weights': category_weights
+      },
+      'file': category,
       'type': 'number',
       'order': 'desc'
     }
