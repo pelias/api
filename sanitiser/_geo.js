@@ -34,9 +34,9 @@ module.exports = function sanitize( req, latlon_is_required ){
 
 /**
  * Parse and validate bbox parameter
- * bbox = bottom_left lat, bottom_left lon, top_right lat, top_right lon
+ * bbox = bottom_left lon, bottom_left lat, top_right lon, top_right lat
  * bbox = bottom, left, top, right
- * bbox = min Latitude , min Longitude , max Latitude , max Longitude
+ * bbox = min Longitude, min Latitude, max Longitude, max Latitude
  *
  * @param {object} clean
  * @param {string} param
@@ -53,7 +53,7 @@ function sanitize_bbox( clean, param ) {
 
     bbox = bboxArr.filter( function( latlon, index ) {
       latlon = parseFloat( latlon, 10 );
-      return !(lat_lon_checks[(index % 2 === 0 ? 'lat' : 'lon')].is_invalid( latlon ));
+      return !(lat_lon_checks[(index % 2 === 0 ? 'lon' : 'lat')].is_invalid( latlon ));
     });
 
     if( bbox.length === 4 ) {
