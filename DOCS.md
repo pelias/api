@@ -18,7 +18,8 @@ Full text search endpoint which queries the elasticsearch doc store, slightly sl
   * can also be specific to one particular dataset, for example ```geoname```
 * **bbox**: the bounding box from which you want all your results to come
   * can be one of the following comma separated string values
-    * bottom left lat, bottom left lon, top right lat, top right lon
+    * "southwest_lng,southwest_lat,northeast_lng,northeast_lat" ```L.latLngBounds(southwestLatLng, northeastLatLng).toBBoxString()```
+    * bottom left lon, bottom left lat, top right lon, top right lat
     * left, bottom, right, top
     * min longitude, min latitude, max longitude, max latitude
 * **details**: indicates if results should contain detailed, should be `true` or `false`

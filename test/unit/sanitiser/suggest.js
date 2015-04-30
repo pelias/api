@@ -137,9 +137,9 @@ module.exports.tests.sanitize_lon = function(test, common) {
 module.exports.tests.sanitize_bbox = function(test, common) {
   var bboxes = {
     invalid_coordinates: [
-      '90,-181,-180,34', // invalid top_right lon, bottom_left lat
-      '91,-170,45,-181', // invalid top_right lat, bottom_left lon
-      '91,-181,-91,181', // invalid top_right lat/lon, bottom_left lat/lon
+      '-181,90,34,-180', // invalid top_right lon, bottom_left lat
+      '-170,91,-181,45', // invalid top_right lat, bottom_left lon
+      '-181,91,181,-91', // invalid top_right lon/lat, bottom_left lon/lat
       '91, -181,-91,181',// invalid - spaces between coordinates
     ],
     invalid: [
@@ -149,7 +149,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
       ''                 // invalid - empty param
     ],
     valid: [
-      '90,-179,-80,34', // valid top_right lat/lon, bottom_left lat/lon
+      '-179,90,34,-80', // valid top_right lon/lat, bottom_left lon/lat
       '0,0,0,0' // valid top_right lat/lon, bottom_left lat/lon
     ]
     
@@ -181,10 +181,10 @@ module.exports.tests.sanitize_bbox = function(test, common) {
           return parseInt(i);
         });
         expected.bbox = {
-          top   : Math.max(bboxArray[0], bboxArray[2]),
-          right : Math.max(bboxArray[1], bboxArray[3]),
-          bottom: Math.min(bboxArray[0], bboxArray[2]),
-          left  : Math.min(bboxArray[1], bboxArray[3])
+          right: Math.max(bboxArray[0], bboxArray[2]),
+          top: Math.max(bboxArray[1], bboxArray[3]),
+          left: Math.min(bboxArray[0], bboxArray[2]),
+          bottom: Math.min(bboxArray[1], bboxArray[3])
         };
         t.equal(err, undefined, 'no error');
         t.deepEqual(clean, expected, 'clean set correctly (' + bbox + ')');
