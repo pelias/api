@@ -58,6 +58,12 @@ $ npm test
 $ npm run docs
 ```
 
+### Code Coverage
+
+```bash
+$ npm run coverage
+```
+
 ### Continuous Integration
 
 Travis tests every release against node version `0.10`

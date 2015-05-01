@@ -53,7 +53,8 @@ module.exports.tests.middleware_success = function(test, common) {
         size: 10,
         layers: [ 'admin0', 'admin1', 'admin2', 'neighborhood', 'locality', 'local_admin' ],
         lat: 0,
-        lon: 0 
+        lon: 0,
+        details: true
       };
       t.equal(message, undefined, 'no error message set');
       t.deepEqual(req.clean, defaultClean);

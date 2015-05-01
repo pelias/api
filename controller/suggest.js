@@ -27,7 +27,7 @@ function setup( backend, query, query_mixer ){
     function reply( docs ){
       
       // convert docs to geojson
-      var geojson = geojsonify( docs );
+      var geojson = geojsonify( docs, req.clean );
 
       // response envelope
       geojson.date = new Date().getTime();

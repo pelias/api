@@ -7,7 +7,8 @@ var search  = require('../../../sanitiser/search'),
     defaultClean =  { input: 'test', 
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
-                      size: 10
+                      size: 10,
+                      details: true
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
@@ -167,9 +168,9 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
 module.exports.tests.sanitize_bbox = function(test, common) {
   var bboxes = {
     invalid_coordinates: [
-      '90,-181,-180,34', // invalid top_right lon, bottom_left lat
-      '91,-170,45,-181', // invalid top_right lat, bottom_left lon
-      '91,-181,-91,181', // invalid top_right lat/lon, bottom_left lat/lon
+      '-181,90,34,-180', // invalid top_right lon, bottom_left lat
+      '-170,91,-181,45', // invalid top_right lat, bottom_left lon
+      '-181,91,181,-91', // invalid top_right lon/lat, bottom_left lon/lat
       '91, -181,-91,181',// invalid - spaces between coordinates
     ],
     invalid: [
@@ -179,7 +180,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
       ''                 // invalid - empty param
     ],
     valid: [
-      '90,-179,-80,34', // valid top_right lat/lon, bottom_left lat/lon
+      '-179,90,34,-80', // valid top_right lon/lat, bottom_left lon/lat
       '0,0,0,0' // valid top_right lat/lon, bottom_left lat/lon
     ]
     
@@ -211,10 +212,10 @@ module.exports.tests.sanitize_bbox = function(test, common) {
           return parseInt(i);
         });
         expected.bbox = {
-          top   : Math.max(bboxArray[0], bboxArray[2]),
-          right : Math.max(bboxArray[1], bboxArray[3]),
-          bottom: Math.min(bboxArray[0], bboxArray[2]),
-          left  : Math.min(bboxArray[1], bboxArray[3])
+          right: Math.max(bboxArray[0], bboxArray[2]),
+          top: Math.max(bboxArray[1], bboxArray[3]),
+          left: Math.min(bboxArray[0], bboxArray[2]),
+          bottom: Math.min(bboxArray[1], bboxArray[3])
         };
         t.equal(err, undefined, 'no error');
         t.deepEqual(clean, expected, 'clean set correctly (' + bbox + ')');
@@ -266,6 +267,45 @@ module.exports.tests.sanitize_size = function(test, common) {
   });
 };
 
+module.exports.tests.sanitize_details = function(test, common) {
+  var invalid_values = [null, -1, 123, NaN, 'abc'];
+  invalid_values.forEach(function(details) {
+    test('invalid details param ' + details, function(t) {
+      sanitize({ input: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
+        t.equal(clean.details, false, 'default details set (to false)');
+        t.end();
+      });
+    });  
+  });
+
+  var valid_values = ['true', true, 1];
+  valid_values.forEach(function(details) {
+    test('valid details param ' + details, function(t) {
+      sanitize({ input: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
+        t.equal(clean.details, true, 'details set to true');
+        t.end();
+      });
+    });  
+  });
+
+  var valid_false_values = ['false', false, 0];
+  valid_false_values.forEach(function(details) {
+    test('test setting false explicitly ' + details, function(t) {
+      sanitize({ input: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
+        t.equal(clean.details, false, 'details set to false');
+        t.end();
+      });
+    }); 
+  });
+
+  test('test default behavior', function(t) {
+    sanitize({ input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+      t.equal(clean.details, true, 'details set to true');
+      t.end();
+    });
+  });
+};
+
 module.exports.tests.sanitize_layers = function(test, common) {
   test('unspecified', function(t) {
     sanitize({ layers: undefined, input: 'test' }, function( err, clean ){
@@ -275,7 +315,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
   });
   test('invalid layer', function(t) {
     sanitize({ layers: 'test_layer', input: 'test' }, function( err, clean ){
-      var msg = 'invalid param \'layer\': must be one or more of ';
+      var msg = 'invalid param \'layers\': must be one or more of ';
       t.true(err.match(msg), 'invalid layer requested');
       t.true(err.length > msg.length, 'invalid error message');
       t.end();

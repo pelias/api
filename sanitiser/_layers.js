@@ -33,7 +33,7 @@ function sanitize( req ){
     if( -1 === alias_indeces.indexOf( layers[x] ) ){
       return {
         'error': true,
-        'message': 'invalid param \'layer\': must be one or more of ' + alias_indeces.join(',')
+        'message': 'invalid param \'layers\': must be one or more of ' + alias_indeces.join(',')
       };
     }
   }

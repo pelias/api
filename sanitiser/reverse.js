@@ -1,15 +1,19 @@
 
-var logger = require('../src/logger'),
-    _sanitize = require('../sanitiser/_sanitize'),
+var _sanitize = require('../sanitiser/_sanitize'),
     sanitiser = {
       latlonzoom: function( req ) {
         var geo = require('../sanitiser/_geo');
         return geo(req, true);
       },
       layers: require('../sanitiser/_layers'),
+      details: require('../sanitiser/_details'),
       size: function( req ) {
         var size = require('../sanitiser/_size');
         return size(req, 1);
+      },
+      categories: function ( req ) {
+        var categories = require('../sanitiser/_categories');
+        return categories(req);
       }
     };
 
