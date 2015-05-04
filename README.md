@@ -1,71 +1,39 @@
+[![Build Status](https://travis-ci.org/pelias/api.png?branch=master)](https://travis-ci.org/pelias/api)
+
 # API
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/pelias/api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Pelias RESTful API
-
 ## Documentation
 
-[API Documentation](https://github.com/pelias/api/tree/master/docs)
+See our [API Documentation](https://github.com/pelias/api/blob/master/DOCS.md).
 
 ## Install Dependencies
 
-The API uses [scripts](https://github.com/pelias/scripts) for scoring/sorting that needs to be installed.
+The API uses [elasticsearch scripts](https://github.com/pelias/scripts) for additional scoring/sorting logic. You
+**must** install them, as documented [here](https://github.com/pelias/scripts#pelias-scripts). Failure to do so will
+result in the following error:
 
-You **must** install the `pelias scripts` from: https://github.com/pelias/scripts.
-
-Failing to do so will result in the following error: ```ElasticsearchIllegalArgumentException[Unable to find on disk script admin_boost]```
+```
+ElasticsearchIllegalArgumentException[Unable to find on disk script admin_boost]
+```
 
 Once you are done with installing the scripts, Run the following
 
 ```bash
-$ npm install
+npm install
 ```
+
+## scripts
+
+The API ships with several convenience commands (runnable via `npm`):
+
+  * `npm start`: start the server
+  * `npm test`: run unit tests
+  * `npm run ciao`: run functional tests (this requires that the server be running)
+  * `npm run docs`: generate API documentation
+  * `npm run coverage`: generate code coverage reports
 
 ## Contributing
 
-Please fork and pull request against upstream master on a feature branch.
-
-Pretty please; provide unit tests and script fixtures in the `test` directory.
-
-### Start Server
-
-```bash
-$ npm start
-```
-
-### Running Unit Tests
-
-```bash
-$ npm run unit
-```
-
-### Running Functional Tests
-(this requires the server to be running)
-
-```bash
-$ npm run ciao
-```
-
-### Running All Tests
-
-```bash
-$ npm test
-```
-
-### Generate API Documentation
-
-```bash
-$ npm run docs
-```
-
-### Code Coverage
-
-```bash
-$ npm run coverage
-```
-
-### Continuous Integration
-
-Travis tests every release against node version `0.10`
-
-[![Build Status](https://travis-ci.org/pelias/api.png?branch=master)](https://travis-ci.org/pelias/api)
+Please fork and pull request against upstream master on a feature branch. Pretty please; provide unit tests and script
+fixtures in the `test` directory.
