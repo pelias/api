@@ -107,19 +107,8 @@ module.exports.tests.sanitize_lat = function(test, common) {
 
 module.exports.tests.sanitize_lon = function(test, common) {
   var lons = {
-    invalid: [ -360, -181, 181, 360 ],
-    valid: [ -180, -1, -0, 0, 45, 90, '-180', '0', '180' ]
+    valid: [ -381, -181, -180, -1, -0, 0, 45, 90, '-180', '0', '180', 181 ]
   };
-  test('invalid lon', function(t) {  
-    lons.invalid.forEach( function( lon ){
-      sanitize({ input: 'test', lat: 0, lon: lon }, function( err, clean ){
-        t.equal(err, 'invalid param \'lon\': must be >-180 and <180', lon + ' is an invalid longitude');
-        t.equal(clean, undefined, 'clean not set');
-        
-      });
-    });
-    t.end();
-  });
   test('valid lon', function(t) {  
     lons.valid.forEach( function( lon ){
       sanitize({ input: 'test', lat: 0, lon: lon }, function( err, clean ){
@@ -188,7 +177,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
   test('invalid bbox coordinates', function(t) {  
     bboxes.invalid_coordinates.forEach( function( bbox ){
       sanitize({ input: 'test', bbox: bbox }, function( err, clean ){
-        t.equal(err, 'invalid bbox', bbox + ' is invalid');
+        t.ok(err.match(/Invalid (lat|lon)/), bbox + ' is invalid');
         t.equal(clean, undefined, 'clean not set');
       });
     });
