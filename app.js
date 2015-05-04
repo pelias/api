@@ -1,6 +1,8 @@
 
 var app = require('express')();
 
+app.use( require( './middleware/access_log' ) );
+
 /** ----------------------- middleware ----------------------- **/
 
 app.use( require('./middleware/headers') );
