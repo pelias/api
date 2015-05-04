@@ -43,7 +43,11 @@ module.exports.tests.search = function(test, common) {
           '\'round midnight jazz and blues bar'
         ],
         'output': 'osmnode:2208150035'
-      }
+      },
+      'category': [
+        'food',
+        'nightlife'
+      ]
     },
     {
       '_id': 'id2',
@@ -95,7 +99,11 @@ module.exports.tests.search = function(test, common) {
           'empire state building'
         ],
         'output': 'osmway:34633854'
-      }
+      },
+      'category': [
+        'tourism',
+        'transport'
+      ]
     }
   ];
 
@@ -124,7 +132,13 @@ module.exports.tests.search = function(test, common) {
           'admin2': 'Angel',
           'local_admin': 'test1',
           'locality': 'test2',
-          'neighborhood': 'test3'
+          'neighborhood': 'test3',
+          'category': [ 'food', 'nightlife' ],
+          'address': {
+            'number': '13',
+            'street': 'Liverpool Road',
+            'zip': 'N1 0RW'
+          }
         }
       },
       {
@@ -172,7 +186,8 @@ module.exports.tests.search = function(test, common) {
           'admin2': 'New York',
           'local_admin': 'Manhattan',
           'locality': 'New York',
-          'neighborhood': 'Koreatown'
+          'neighborhood': 'Koreatown',
+          'category': [ 'tourism', 'transport' ]
         }
       }
     ]

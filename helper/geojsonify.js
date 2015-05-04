@@ -3,23 +3,33 @@ var GeoJSON = require('geojson'),
     extent = require('geojson-extent'),
     outputGenerator = require('./outputGenerator');
 
-function search( docs, params ){
+// Properties to be copied when details=true
+var DETAILS_PROPS = [
+  'alpha3',
+  'admin0',
+  'admin1',
+  'admin1_abbr',
+  'admin2',
+  'local_admin',
+  'locality',
+  'neighborhood',
+  'category',
+  'address'
+];
 
-  // emit a warning if the doc format is invalid
-  // @note: if you see this error, fix it ASAP!
-  function warning(){
-    console.error( 'error: invalid doc', __filename );
-    return false; // remove offending doc from results
-  }
+
+function search( docs, params ){
 
   var details = params ? params.details : {};
   details = details === true || details === 1;
 
   // flatten & expand data for geojson conversion
-  var geodata = docs.map( function( doc ){
+  var geodata = docs.map( function( doc ) {
 
     // something went very wrong
-    if( !doc ) { return warning(); }
+    if( !doc || !doc.center_point ) {
+      return warning();
+    }
 
     var output = {};
 
@@ -28,7 +38,6 @@ function search( docs, params ){
     output.layer = doc._type;
 
     // map center_point
-    if( !doc.center_point ) { return warning(); }
     output.lat = parseFloat( doc.center_point.lat );
     output.lng = parseFloat( doc.center_point.lon );
 
@@ -37,15 +46,7 @@ function search( docs, params ){
       if( !doc.name || !doc.name.default ) { return warning(); }
       output.name = doc.name.default;
 
-      // map admin values
-      if( doc.alpha3 ){ output.alpha3 = doc.alpha3; }
-      if( doc.admin0 ){ output.admin0 = doc.admin0; }
-      if( doc.admin1 ){ output.admin1 = doc.admin1; }
-      if( doc.admin1_abbr ){ output.admin1_abbr = doc.admin1_abbr; }
-      if( doc.admin2 ){ output.admin2 = doc.admin2; }
-      if( doc.local_admin ){ output.local_admin = doc.local_admin; }
-      if( doc.locality ){ output.locality = doc.locality; }
-      if( doc.neighborhood ){ output.neighborhood = doc.neighborhood; }
+      copyProperties( doc, DETAILS_PROPS, output );
     }
 
     // generate region-specific text string
@@ -66,5 +67,35 @@ function search( docs, params ){
 
   return geojson;
 }
+
+/**
+ * Copy specified properties from source to dest.
+ * Ignore missing properties.
+ *
+ * @param {object} source
+ * @param {[]} props
+ * @param {object} dest
+ */
+function copyProperties( source, props, dest ) {
+  var count = props.length;
+  for ( var i = 0; i < count; i++ ) {
+    var prop = props[i];
+    if ( source.hasOwnProperty( prop ) ) {
+      dest[prop] = source[prop];
+    }
+  }
+}
+
+
+/**
+ * emit a warning if the doc format is invalid
+ *
+ * @note: if you see this error, fix it ASAP!
+ */
+function warning( doc ) {
+  console.error( 'error: invalid doc', __filename, doc );
+  return false; // remove offending doc from results
+}
+
 
 module.exports.search = search;
