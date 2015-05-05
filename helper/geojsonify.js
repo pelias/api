@@ -62,7 +62,12 @@ function search( docs, params ){
   var geojson = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
 
   // add bbox
-  geojson.bbox = extent( geojson ) || undefined;
+  try {
+    geojson.bbox = extent( geojson ) || undefined;
+  } catch( e ){
+    console.error( 'bbox error', e.message, e.stack );
+    console.error( 'geojson', JSON.stringify( geojson, null, 2 ) );
+  }
 
   return geojson;
 }
