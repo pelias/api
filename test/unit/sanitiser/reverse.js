@@ -8,7 +8,7 @@ var suggest  = require('../../../sanitiser/reverse'),
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
                       lon: 0,
-                      size: 1,
+                      size: 10,
                       details: true,
                       categories: []
                     },
@@ -108,7 +108,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
 module.exports.tests.sanitize_size = function(test, common) {
   test('invalid size value', function(t) {
     sanitize({ size: 'a', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.size, 1, 'default size set');
+      t.equal(clean.size, 10, 'default size set');
       t.end();
     });
   });
