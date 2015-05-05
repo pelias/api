@@ -77,13 +77,11 @@ function search( docs, params ){
  * @param {object} dest
  */
 function copyProperties( source, props, dest ) {
-  var count = props.length;
-  for ( var i = 0; i < count; i++ ) {
-    var prop = props[i];
+  props.forEach( function ( prop ) {
     if ( source.hasOwnProperty( prop ) ) {
       dest[prop] = source[prop];
     }
-  }
+  });
 }
 
 
