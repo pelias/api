@@ -3,32 +3,31 @@
 The full text search endpoint that matches the name of a place to points on the planet.
 
 #### Required Parameters
-* **input**: the string to search for (eg `new york city` or `london`)
+* `input`: the string to search for (eg `new york city` or `london`)
 
 #### Optional Parameters
-* **lat**, **lon**: the latitude/longitude coordinates to bias search results towards (may increase relevancy)
-* **zoom**: zoom level from which you wish to view the world
-* **size**: number of results requested (defaults to 10)
-* **layers**: the datasets you wish to query (defaults to `poi,admin,address`). Valid values are:
+* `lat`, `lon`: the latitude/longitude coordinates to bias search results towards (may increase relevancy)
+* `zoom`: zoom level from which you wish to view the world
+* `size` (default: `10`): the number of results to return
+* `layers` (default: `poi,admin,address`): the comma-separated names of datasets you wish to query. Valid values are:
   * aliases for multiple datasets like `poi`, `admin` or `address`
     * `poi` expands internally to `geoname`, `osmnode`, `osmway`
     * `admin` expands to `admin0`, `admin1`, `admin2`, `neighborhood`, `locality`, `local_admin`
     * `address` expands to `osmaddress`, `openaddresses`
   * the name of one particular dataset, like `geoname` or `osmaddress`
-* **bbox**: the bounding box from which you want all your results to come
+* `bbox`: the bounding box from which you want all your results to come
   * can be one of the following comma separated string values
     * "southwest_lng,southwest_lat,northeast_lng,northeast_lat" `L.latLngBounds(southwestLatLng, northeastLatLng).toBBoxString()`
     * bottom left lon, bottom left lat, top right lon, top right lat
     * left, bottom, right, top
     * min longitude, min latitude, max longitude, max latitude
-* **details**: indicates if results should contain detailed, should be `true` or `false`
-  * when false results will only contain `id`, `layer`, and `text` properties
-  * when true, all available properties will be included in results
+* `details` (default: `true`): indicates if results should contain detailed. Valid values:
+  * `false`: results will only contain `id`, `layer`, and `text` properties
+  * `true`: all available properties will be included in results
 
 
 ## /search/coarse
 
-This is a coarse forward geocoder endpoint which only searches admin dataset layers.
 Like the `/search` endpoint, but performs a "coarse" search, meaning that it only searches administrative regions
 (countries, states, counties, neighborhoods, etc.).
 
@@ -44,15 +43,15 @@ The autocompletion endpoint that offers very fast response times; ideal for comp
 results from around the provided lat/lon coordinates and also from precision level 1 and 3.
 
 #### Required Parameters
-* **input**: query string
-* **lat**, **lon**: The latitude/longitude coordinates to bias results towards.
-  * lat/lon are currently **required** because of this [open issue](https://github.com/elasticsearch/elasticsearch/issues/6444)
+* `input`: query string
+* `lat`, `lon`: The latitude/longitude coordinates to bias results towards.
+  * `lat`/`lon` are currently **required** because of this [open issue](https://github.com/elasticsearch/elasticsearch/issues/6444)
 
 #### Optional Parameters
-* **zoom**: zoom level from which you wish to view the world
-* **size**: number of results requested (defaults to 10)
-* **layers**: datasets you wish to query (defaults to `poi,admin,address`)
-* **details**: (defaults to `true`)
+* `zoom`: zoom level from which you wish to view the world
+* `size` (default: `10`): number of results requested
+* `layers` (default: `poi,admin,address`): datasets you wish to query
+* `details` (default: `true`)
 
 ## /suggest/coarse
 
@@ -82,13 +81,13 @@ Same as `/suggest`.
 The reverse geocoding endpoint; matches a point on the planet to the name of that place.
 
 #### Required Parameters
-* **lat**, **lon**: The coordinates of the point.
+* `lat`, `lon`: The coordinates of the point.
 
 #### Optional Parameters
-* **zoom**: zoom level from which you wish to view the world
-* **bbox**: bounding box
-* **layers**: (defaults to `poi,admin,address`)
-* **details**: (defaults to `true`)
+* `zoom`: zoom level from which you wish to view the world
+* `bbox`: bounding box
+* `layers` (default: `poi,admin,address`)
+* `details` (default: `true`)
 
 
 ## /doc
@@ -96,9 +95,9 @@ The reverse geocoding endpoint; matches a point on the planet to the name of tha
 The endpoint for retrieving one or more elasticsearch documents with specific ids.
 
 #### Required Parameters
-* one of **id** or **ids**
-  * **id**:
+* one of `id` or `ids`
+  * `id`:
     * unique id of the document to be retrieved
     * should be in the form of type:id, for example: `geoname:4163334`
-  * **ids**:
+  * `ids`:
     * if multiple docs are to be fetched in bulk, an array of ids
