@@ -1,6 +1,5 @@
 
-var logger = require('../src/logger'),
-    get_layers = require('../helper/layers');
+var get_layers = require('../helper/layers');
 
 // Build pelias suggest query
 function generate( params, query_mixer, fuzziness ){
@@ -69,7 +68,6 @@ function generate( params, query_mixer, fuzziness ){
   }
   
   
-  // logger.log( 'cmd', JSON.stringify( cmd.cmd, null, 2 ) );
   return cmd.cmd;
 
 }

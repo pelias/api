@@ -1,10 +1,8 @@
 
-var logger = require('../src/logger'),
-    queries = require('geopipes-elasticsearch-backend').queries,
+var queries = require('geopipes-elasticsearch-backend').queries,
     sort = require('../query/sort');
 
 function generate( params ){
-
   var centroid = null;
 
   if ( params.lat && params.lon ){
