@@ -7,10 +7,7 @@ var _sanitize = require('../sanitiser/_sanitize'),
       },
       layers: require('../sanitiser/_layers'),
       details: require('../sanitiser/_details'),
-      size: function( req ) {
-        var size = require('../sanitiser/_size');
-        return size(req, 1);
-      },
+      size: require('../sanitiser/_size'),
       categories: function ( req ) {
         var categories = require('../sanitiser/_categories');
         return categories(req);
