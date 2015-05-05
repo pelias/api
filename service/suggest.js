@@ -4,10 +4,15 @@
   cmd can be any valid ES suggest command
 
 **/
+var peliasLogger = require( 'pelias-logger' ).get( 'service/suggest' );
+
+var microtime = require( 'microtime' );
 
 function service( backend, cmd, cb ){
   // query new backend
+  var startTime = microtime.nowDouble();
   backend().client.suggest( cmd, function( err, data ){
+    peliasLogger.verbose( 'time elasticsearch query took:', microtime.nowDouble() - startTime );
     // handle backend errors
     if( err ){ return cb( err ); }
     
