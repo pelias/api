@@ -51,14 +51,17 @@ function sanitize_bbox( clean, param ) {
 
   if( Array.isArray( bboxArr ) && bboxArr.length === 4 ) {
 
-    var bbox = bboxArr.map( function ( latlon ){
-      return parseFloat( latlon, 10 );
-    });
-    bboxArr.forEach( function( latlon, index ) {
-      if( index % 2 === 1 && check_lat.is_invalid( latlon ) ){
-        throw new Error( 'Invalid lat: ' + latlon );
+    var bbox = [];
+    for( var ind = 0; ind < bboxArr.length; ind++ ){
+      var num = parseFloat( bboxArr[ ind ] );
+      if( isNaN( num ) ){
+        return;
       }
-    });
+      if( ind % 2 === 1 && check_lat.is_invalid( num ) ){
+        throw new Error( 'Invalid lat: ' + num );
+      }
+      bbox.push( num );
+    }
 
     clean.bbox = {
       right: Math.max( bbox[0], bbox[2] ),
