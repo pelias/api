@@ -85,7 +85,6 @@ The reverse geocoding endpoint; matches a point on the planet to the name of tha
 
 #### Optional Parameters
 * `zoom`: zoom level from which you wish to view the world
-* `bbox`: bounding box
 * `layers` (default: `poi,admin,address`)
 * `details` (default: `true`)
 
