@@ -53,13 +53,13 @@ module.exports = function( params ){
 
   if( isObject( params ) && params.hasOwnProperty( 'input' ) ){
     scriptsConfig.push({
-      _script: {
-        params: {
-          input: params.input
+      '_script': {
+        'params': {
+          'input': params.input
         },
-        file: 'exact_match',
-        type: 'number',
-        order: 'desc'
+        'file': 'exact_match',
+        'type': 'number',
+        'order': 'desc'
       }
     });
   }

@@ -60,13 +60,13 @@ var sort = [
     }
   },
   {
-    _script: {
-      params: {
-        input: 'test'
+    '_script': {
+      'params': {
+        'input': 'test'
       },
-      file: 'exact_match',
-      type: 'number',
-      order: 'desc'
+      'file': 'exact_match',
+      'type': 'number',
+      'order': 'desc'
     }
   }
 ];
