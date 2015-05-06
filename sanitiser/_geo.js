@@ -81,7 +81,7 @@ function sanitize_bbox( clean, param ) {
  * @param {bool} latlon_is_required
  */
 function sanitize_coord( coord, clean, param, latlon_is_required ) {
-  var value = parseFloat( param, 10 );
+  var value = parseFloat( param );
   if ( !isNaN( value ) ) {
     if( coord === 'lat' && check_lat.is_invalid( value ) ){
       throw new Error( 'invalid ' + check_lat.error_msg );
