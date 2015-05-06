@@ -61,8 +61,18 @@ function search( docs, params ){
   // convert to geojson
   var geojson = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
 
-  // add bbox
-  geojson.bbox = extent( geojson ) || undefined;
+  // bounding box calculations
+  // @note: extent() sometimes throws Errors for unusual data
+  // eg: https://github.com/pelias/pelias/issues/84
+  try {
+    var bbox = extent( geojson );
+    if( !!bbox ){
+      geojson.bbox = bbox;
+    }
+  } catch( e ){
+    console.error( 'bbox error', e.message, e.stack );
+    console.error( 'geojson', JSON.stringify( geojson, null, 2 ) );
+  }
 
   return geojson;
 }

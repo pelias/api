@@ -11,6 +11,30 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
+// ref: https://github.com/pelias/pelias/issues/84
+module.exports.tests.earth = function(test, common) {
+
+  var earth = [{
+    '_type': 'geoname',
+    '_id': '6295630',
+    'name': {
+      'default': 'Earth'
+    },
+    'center_point': {
+      'lon': 0,
+      'lat': 0
+    }
+  }];
+
+  test('earth', function(t) {
+    t.doesNotThrow(function(){
+      geojsonify.search( earth, { details: true } );
+    });
+    t.end();
+  });
+
+};
+
 module.exports.tests.search = function(test, common) {
 
   var input = [
