@@ -157,20 +157,30 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
 module.exports.tests.sanitize_bbox = function(test, common) {
   var bboxes = {
     invalid_coordinates: [
-      '-181,90,34,-180', // invalid top_right lon, bottom_left lat
-      '-170,91,-181,45', // invalid top_right lat, bottom_left lon
-      '-181,91,181,-91', // invalid top_right lon/lat, bottom_left lon/lat
-      '91, -181,-91,181',// invalid - spaces between coordinates
+      // invalid latitude coordinates
+      '-181,90,34,-180',
+      '-170,91,-181,45',
+      '-181,91,181,-91',
+      '91, -181,-91,11',
+      '91, -11,-91,181'
     ],
     invalid: [
       '91;-181,-91,181', // invalid - semicolon between coordinates
+      'these,are,not,numbers',
+      '0,0,0,notANumber',
+      ',,,',
       '91, -181, -91',   // invalid - missing a coordinate
       '123,12',          // invalid - missing coordinates
       ''                 // invalid - empty param
     ],
     valid: [
       '-179,90,34,-80', // valid top_right lon/lat, bottom_left lon/lat
-      '0,0,0,0' // valid top_right lat/lon, bottom_left lat/lon
+      '0,0,0,0',
+      '10,20,30,40',
+      '-40,-20,10,30',
+      '-40,-20,10,30',
+      '-1200,20,1000,20',
+      '-1400,90,1400,-90'
     ]
     
   };
