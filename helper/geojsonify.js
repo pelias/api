@@ -27,7 +27,7 @@ function search( docs, params ){
   var geodata = docs.map( function( doc ) {
 
     // something went very wrong
-    if( !doc || !doc.center_point ) {
+    if( !doc || !doc.hasOwnProperty( 'center_point' ) ) {
       return warning();
     }
 
