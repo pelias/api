@@ -5,10 +5,15 @@
 
 **/
 
+var peliasLogger = require( 'pelias-logger' ).get( 'service/search' );
+var microtime = require( 'microtime' );
+
 function service( backend, cmd, cb ){
   
+  var startTime = microtime.nowDouble();
   // query new backend
   backend().client.search( cmd, function( err, data ){
+    peliasLogger.verbose( 'time elasticsearch query took:', microtime.nowDouble() - startTime );
 
     // handle backend errors
     if( err ){ return cb( err ); }

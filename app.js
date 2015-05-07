@@ -1,5 +1,10 @@
 
 var app = require('express')();
+var peliasConfig = require( 'pelias-config' ).generate().api;
+
+if( peliasConfig.accessLog ){
+  app.use( require( './middleware/access_log' )( peliasConfig.accessLog ) );
+}
 
 /** ----------------------- middleware ----------------------- **/
 

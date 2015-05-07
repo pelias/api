@@ -33,6 +33,13 @@ The API ships with several convenience commands (runnable via `npm`):
   * `npm run docs`: generate API documentation
   * `npm run coverage`: generate code coverage reports
 
+## pelias-config
+The API recognizes the following properties under the top-level `api` key in your `pelias.json` config file:
+
+  * `accessLog`: (*optional*) The name of the format to use for access logs; may be any one of the
+  [predefined values](https://github.com/expressjs/morgan#predefined-formats) in the `morgan` package. Defaults to
+  `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.
+
 ## Contributing
 
 Please fork and pull request against upstream master on a feature branch. Pretty please; provide unit tests and script

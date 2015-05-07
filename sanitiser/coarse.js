@@ -1,6 +1,5 @@
 
-var logger = require('../src/logger'),
-    _sanitize = require('../sanitiser/_sanitize'),
+var _sanitize = require('../sanitiser/_sanitize'),
     sanitizers = {
       input: require('../sanitiser/_input'),
       size: require('../sanitiser/_size'),
