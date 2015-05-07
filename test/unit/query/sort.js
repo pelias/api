@@ -11,7 +11,8 @@ module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
   test('valid interface', function(t) {
-    t.equal(typeof generate, 'object', 'valid object');
+    t.equal(typeof generate(), 'object', 'valid object');
+    t.equal(typeof generate({input: 'foobar'}), 'object', 'valid object');
     t.end();
   });
 };
@@ -62,8 +63,26 @@ var expected = [
 
 module.exports.tests.query = function(test, common) {
   test('valid part of query', function(t) {
-    var sort = generate;
-    t.deepEqual(sort, expected, 'valid sort part of the query');
+    t.deepEqual(generate(), expected, 'valid sort part of the query');
+    t.deepEqual(generate( {} ), expected, 'valid sort part of the query');
+    t.end();
+  });
+};
+
+module.exports.tests.queryWithInput = function ( test, common ){
+  test( 'Valid sort query component when input is present.', function ( t ){
+    var expectedWithInput = expected.slice();
+    expectedWithInput.push({
+      _script: {
+        params: {
+          input: 'foobar'
+        },
+        file: 'exact_match',
+        type: 'number',
+        order: 'desc'
+      }
+    });
+    t.deepEqual(generate({ input: 'foobar' }), expectedWithInput, 'valid sort part of the query');
     t.end();
   });
 };

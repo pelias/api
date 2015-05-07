@@ -45,7 +45,7 @@ function generate( params ){
     });
   }
 
-  query.sort = query.sort.concat(sort);
+  query.sort = query.sort.concat( sort( params ) );
 
   return query;
 }

@@ -10,7 +10,7 @@ function generate( params ){
   };
 
   var query  =  queries.distance( centroid, { size: params.size || 1 } );
-  query.sort = query.sort.concat(sort);
+  query.sort = query.sort.concat( sort( params ) );
 
   if ( params.categories && params.categories.length > 0 ) {
     addCategoriesFilter( query, params.categories );
