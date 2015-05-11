@@ -1,5 +1,6 @@
 
 var queries = require('geopipes-elasticsearch-backend').queries,
+    categoryFilter = require('./category_filter'),
     sort = require('../query/sort');
 
 function generate( params ){
@@ -44,7 +45,7 @@ function generate( params ){
   }
 
   query.sort = query.sort.concat( sort( params ) );
-
+  categoryFilter( query, params );
   return query;
 }
 

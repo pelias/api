@@ -8,6 +8,7 @@ var search  = require('../../../sanitiser/search'),
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
                       size: 10,
+                      categories: [],
                       details: true
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
