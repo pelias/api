@@ -110,6 +110,7 @@ function createExpectedQuery(){
     'track_scores': true
   };
 }
+
 module.exports.tests.query = function(test, common) {
   test('valid query', function(t) {
     var query = generate({
@@ -150,31 +151,8 @@ module.exports.tests.query = function(test, common) {
       layers: ['test']
     });
 
-    var expected = {
-      'query': {
-        'filtered': {
-          'query': {
-            'bool': {
-              'must': [{ 
-                  'match': {
-                    'name.default': 'test'
-                  }
-                }
-              ]   
-            }
-          },
-          'filter': {
-            'bool': {
-              'must': []
-            }
-          }
-        }
-      },
-      'size': 10,
-      'sort': sort,
-      'track_scores': true
-    };
-    
+    var expected = createExpectedQuery();
+    expected.query.filtered.filter.bool.must = [];
     t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
@@ -186,55 +164,33 @@ module.exports.tests.query = function(test, common) {
       layers: ['test']
     });
 
-    var expected = {
-      'query': {
-        'filtered': {
-          'query': {
-            'bool': {
-              'must': [{ 
-                  'match': {
-                    'name.default': 'test'
-                  }
-                }
-              ]   
-            }
+    var expected = createExpectedQuery();
+    expected.query.filtered.filter.bool.must = [{
+      'geo_distance': {
+        'distance': '50km',
+        'distance_type': 'plane',
+        'optimize_bbox': 'indexed',
+        '_cache': true,
+        'center_point': {
+          'lat': '29.49',
+          'lon': '-82.51'
+        }
+      }
+    }];
+    expected.sort.shift();
+    expected.sort.unshift(
+      '_score',
+      {
+        '_geo_distance': {
+          'center_point': {
+            'lat': 29.49136,
+            'lon': -82.50622
           },
-          'filter': {
-            'bool': {
-              'must': [
-                {
-                  'geo_distance': {
-                    'distance': '50km',
-                    'distance_type': 'plane',
-                    'optimize_bbox': 'indexed',
-                    '_cache': true,
-                    'center_point': {
-                      'lat': '29.49',
-                      'lon': '-82.51'
-                    }
-                  }
-                }
-              ]
-            }
-           }
+          'order': 'asc',
+          'unit': 'km'
         }
-      },
-      'sort': [
-        '_score',
-        {
-          '_geo_distance': {
-            'center_point': {
-              'lat': 29.49136,
-              'lon': -82.50622
-            },
-            'order': 'asc',
-            'unit': 'km'
-          }
-        }
-      ].concat(sort.slice(1)),
-      'size': 10,
-      'track_scores': true
-    };
+      }
+    );
 
     t.deepEqual(query, expected, 'valid search query');
     t.end();
