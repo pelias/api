@@ -22,8 +22,9 @@ function generate( params ){
   query.query.filtered.query = {
     'bool': {
       'must': [{ 
-          'match': {
-            'name.default': params.input
+          'multi_match': {
+            'query': params.input,
+            'fields': [ 'name.*' ]
           }
         }
       ]   
