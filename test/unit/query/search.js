@@ -71,44 +71,45 @@ var sort = [
   }
 ];
 
-var expected = {
-  'query': {
-    'filtered': {
-      'query': {
-        'bool': {
-          'must': [{ 
-              'match': {
-                'name.default': 'test'
+function createExpectedQuery(){
+  return {
+    'query': {
+      'filtered': {
+        'query': {
+          'bool': {
+            'must': [{ 
+                'match': {
+                  'name.default': 'test'
+                }
               }
-            }
-          ]   
-        }
-      },
-      'filter': {
-        'bool': {
-          'must': [
-            {
-              'geo_bounding_box': {
-                'center_point': {
-                  'top': '47.47',
-                  'right': '-61.84',
-                  'bottom':'11.51',
-                  'left': '-103.16'
-                },
-                '_cache': true,
-                'type': 'indexed'
+            ]   
+          }
+        },
+        'filter': {
+          'bool': {
+            'must': [
+              {
+                'geo_bounding_box': {
+                  'center_point': {
+                    'top': '47.47',
+                    'right': '-61.84',
+                    'bottom':'11.51',
+                    'left': '-103.16'
+                  },
+                  '_cache': true,
+                  'type': 'indexed'
+                }
               }
-            }
-          ]
+            ]
+          }
         }
       }
-    }
-  },
-  'sort': sort,
-  'size': 10,
-  'track_scores': true
-};
-
+    },
+    'sort': sort,
+    'size': 10,
+    'track_scores': true
+  };
+}
 module.exports.tests.query = function(test, common) {
   test('valid query', function(t) {
     var query = generate({
@@ -123,7 +124,7 @@ module.exports.tests.query = function(test, common) {
       layers: ['test']
     });
 
-    t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(query, createExpectedQuery(), 'valid search query');
     t.end();
   });
 
@@ -139,7 +140,7 @@ module.exports.tests.query = function(test, common) {
       layers: ['test']
     });
     
-    t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(query, createExpectedQuery(), 'valid search query');
     t.end();
   });
 
