@@ -16,62 +16,62 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-var sort = [
-  '_score',
-  {
-    '_script': {
-      'file': admin_boost,
-      'type': 'number',
-      'order': 'desc'
-    }
-  },
-  {
-    '_script': {
-      'file': population,
-      'type': 'number',
-      'order': 'desc'
-    }
-  },
-  {
-    '_script': {
-      'file': popularity,
-      'type': 'number',
-      'order': 'desc'
-    }
-  },
-  {
-    '_script': {
-      'params': {
-        'category_weights': category_weights
-      },
-      'file': category,
-      'type': 'number',
-      'order': 'desc'
-    }
-  },
-  {
-    '_script': {
-      'params': {
-        'weights': weights
-      },
-      'file': 'weights',
-      'type': 'number',
-      'order': 'desc'
-    }
-  },
-  {
-    '_script': {
-      'params': {
-        'input': 'test'
-      },
-      'file': 'exact_match',
-      'type': 'number',
-      'order': 'desc'
-    }
-  }
-];
-
 function createExpectedQuery(){
+  var sort = [
+    '_score',
+    {
+      '_script': {
+        'file': admin_boost,
+        'type': 'number',
+        'order': 'desc'
+      }
+    },
+    {
+      '_script': {
+        'file': population,
+        'type': 'number',
+        'order': 'desc'
+      }
+    },
+    {
+      '_script': {
+        'file': popularity,
+        'type': 'number',
+        'order': 'desc'
+      }
+    },
+    {
+      '_script': {
+        'params': {
+          'category_weights': category_weights
+        },
+        'file': category,
+        'type': 'number',
+        'order': 'desc'
+      }
+    },
+    {
+      '_script': {
+        'params': {
+          'weights': weights
+        },
+        'file': 'weights',
+        'type': 'number',
+        'order': 'desc'
+      }
+    },
+    {
+      '_script': {
+        'params': {
+          'input': 'test'
+        },
+        'file': 'exact_match',
+        'type': 'number',
+        'order': 'desc'
+      }
+    }
+  ];
+
   return {
     'query': {
       'filtered': {
