@@ -195,6 +195,32 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
+
+  test('valid query with categories', function(t) {
+    var query = generate({
+      input: 'test',
+      size: 10,
+      lat: 29.49136,
+      lon: -82.50622,
+      bbox: {
+        top: 47.47,
+        right: -61.84,
+        bottom: 11.51,
+        left: -103.16
+      },
+      layers: ['test'],
+      categories: ['narwhal', 'foobar']
+    });
+
+    var expected = createExpectedQuery();
+    expected.query.filtered.filter.bool.must.push({
+      terms: {
+        category: ['narwhal', 'foobar']
+      }
+    });
+    t.deepEqual(query, expected, 'valid search query');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
