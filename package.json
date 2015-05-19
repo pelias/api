@@ -46,7 +46,10 @@
     "morgan": "1.5.2",
     "pelias-config": "^0.1.4",
     "microtime": "1.4.0",
-    "pelias-suggester-pipeline": "2.0.2"
+    "pelias-suggester-pipeline": "2.0.2",
+    "extend": "2.0.1",
+    "parse-address": "0.0.4",
+    "addressit": "1.2.1"
   },
   "devDependencies": {
     "ciao": "^0.3.4",
