@@ -76,9 +76,11 @@ var expected = {
     'filtered': {
       'query': {
         'bool': {
-          'must': [{ 
-              'match': {
-                'name.default': 'test'
+          'must': [
+            {
+              'multi_match': {
+                'query': 'test',
+                'fields': [ 'name.*' ]
               }
             }
           ]   
@@ -154,9 +156,11 @@ module.exports.tests.query = function(test, common) {
         'filtered': {
           'query': {
             'bool': {
-              'must': [{ 
-                  'match': {
-                    'name.default': 'test'
+              'must': [
+                {
+                  'multi_match': {
+                    'query': 'test',
+                    'fields': [ 'name.*' ]
                   }
                 }
               ]   
@@ -190,9 +194,11 @@ module.exports.tests.query = function(test, common) {
         'filtered': {
           'query': {
             'bool': {
-              'must': [{ 
-                  'match': {
-                    'name.default': 'test'
+              'must': [
+                {
+                  'multi_match': {
+                    'query': 'test',
+                    'fields': [ 'name.*' ]
                   }
                 }
               ]   
