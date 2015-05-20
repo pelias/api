@@ -18,6 +18,9 @@ function service( backend, cmd, cb ){
     // handle backend errors
     if( err ){ return cb( err ); }
 
+    // log total ms elasticsearch reported the query took to execute
+    peliasLogger.verbose( 'time elasticsearch reported:', data.took / 1000 );
+
     // map returned documents
     var docs = [];
     if( data && data.hits && data.hits.total && Array.isArray(data.hits.hits)){
