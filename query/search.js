@@ -22,9 +22,8 @@ function generate( params ){
   query.query.filtered.query = {
     'bool': {
       'must': [{ 
-        'multi_match': {
-          'query': params.input,
-          'fields': [ 'name.*' ]
+        'match': {
+          'name.default': params.input
         }
       }]
     }
@@ -36,9 +35,8 @@ function generate( params ){
   // add shingles should query
   // note: this is required for partial phrase matching
   query.query.filtered.query.bool.should.push({
-    'multi_match': {
-      'query': params.input,
-      'fields': [ 'shingle.*' ]
+    'match': {
+      'shingle.default': params.input
     }
   });
 

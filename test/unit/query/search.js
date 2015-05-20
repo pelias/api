@@ -78,17 +78,15 @@ var expected = {
         'bool': {
           'must': [
             {
-              'multi_match': {
-                'query': 'test',
-                'fields': [ 'name.*' ]
+              'match': {
+                'name.default': 'test'
               }
             }
           ],
           'should': [
             {
-              'multi_match': {
-                'query': 'test',
-                'fields': [ 'shingle.*' ]
+              'match': {
+                'shingle.default': 'test'
               }
             }
           ]
@@ -166,17 +164,15 @@ module.exports.tests.query = function(test, common) {
             'bool': {
               'must': [
                 {
-                  'multi_match': {
-                    'query': 'test',
-                    'fields': [ 'name.*' ]
+                  'match': {
+                    'name.default': 'test'
                   }
                 }
               ],
               'should': [
                 {
-                  'multi_match': {
-                    'query': 'test',
-                    'fields': [ 'shingle.*' ]
+                  'match': {
+                    'shingle.default': 'test'
                   }
                 }
               ]
@@ -212,17 +208,15 @@ module.exports.tests.query = function(test, common) {
             'bool': {
               'must': [
                 {
-                  'multi_match': {
-                    'query': 'test',
-                    'fields': [ 'name.*' ]
+                  'match': {
+                    'name.default': 'test'
                   }
                 }
               ],
               'should': [
                 {
-                  'multi_match': {
-                    'query': 'test',
-                    'fields': [ 'shingle.*' ]
+                  'match': {
+                    'shingle.default': 'test'
                   }
                 }
               ]
