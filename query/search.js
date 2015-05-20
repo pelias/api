@@ -30,9 +30,20 @@ function generate( params ){
     }
   };
 
+  // should query contitions
+  query.query.filtered.query.bool.should = [];
+
+  // add shingles should query
+  // note: this is required for partial phrase matching
+  query.query.filtered.query.bool.should.push({
+    'multi_match': {
+      'query': params.input,
+      'fields': [ 'shingle.*' ]
+    }
+  });
+
   if (params.input_admin) {
     var admin_fields = ['admin0', 'admin1', 'admin1_abbr', 'admin2', 'alpha3'];
-    query.query.filtered.query.bool.should = [];
 
     admin_fields.forEach(function(admin_field) {
       var match = {};

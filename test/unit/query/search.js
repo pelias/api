@@ -83,7 +83,15 @@ var expected = {
                 'fields': [ 'name.*' ]
               }
             }
-          ]   
+          ],
+          'should': [
+            {
+              'multi_match': {
+                'query': 'test',
+                'fields': [ 'shingle.*' ]
+              }
+            }
+          ]
         }
       },
       'filter': {
@@ -163,7 +171,15 @@ module.exports.tests.query = function(test, common) {
                     'fields': [ 'name.*' ]
                   }
                 }
-              ]   
+              ],
+              'should': [
+                {
+                  'multi_match': {
+                    'query': 'test',
+                    'fields': [ 'shingle.*' ]
+                  }
+                }
+              ]
             }
           },
           'filter': {
@@ -201,7 +217,15 @@ module.exports.tests.query = function(test, common) {
                     'fields': [ 'name.*' ]
                   }
                 }
-              ]   
+              ],
+              'should': [
+                {
+                  'multi_match': {
+                    'query': 'test',
+                    'fields': [ 'shingle.*' ]
+                  }
+                }
+              ]
             }
           },
           'filter': {
