@@ -18,19 +18,18 @@ function generate( params ){
     query = queries.bbox ( centroid, { size: params.size, bbox: params.bbox } );
   }
 
-  // add search condition to distance query
+  // add search condition to filtered query
   query.query.filtered.query = {
     'bool': {
       'must': [{ 
-          'multi_match': {
-            'query': params.input,
-            'fields': [ 'name.*' ]
-          }
+        'multi_match': {
+          'query': params.input,
+          'fields': [ 'name.*' ]
         }
-      ]   
+      }]
     }
   };
-  
+
   if (params.input_admin) {
     var admin_fields = ['admin0', 'admin1', 'admin1_abbr', 'admin2', 'alpha3'];
     query.query.filtered.query.bool.should = [];
@@ -39,7 +38,7 @@ function generate( params ){
       var match = {};
       match[admin_field] = params.input_admin;
       query.query.filtered.query.bool.should.push({
-         'match': match
+        'match': match
       });
     });
   }
