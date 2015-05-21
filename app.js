@@ -38,22 +38,27 @@ app.get( '/', controllers.index() );
 app.get( '/doc', sanitisers.doc.middleware, controllers.doc() );
 
 // suggest API
-app.get( '/suggest', sanitisers.suggest.middleware, controllers.suggest() );
-app.get( '/suggest/nearby', 
-		sanitisers.suggest.middleware, 
-		controllers.suggest(undefined, undefined, require('./helper/queryMixer').suggest_nearby) );
-app.get( '/suggest/coarse', 
-		sanitisers.coarse.middleware, 
-		controllers.suggest(undefined, undefined, require('./helper/queryMixer').coarse) );
+// app.get( '/suggest', sanitisers.suggest.middleware, controllers.suggest() );
+// app.get( '/suggest/nearby', 
+// 		sanitisers.suggest.middleware, 
+// 		controllers.suggest(undefined, undefined, require('./helper/queryMixer').suggest_nearby) );
+// app.get( '/suggest/coarse', 
+// 		sanitisers.coarse.middleware, 
+// 		controllers.suggest(undefined, undefined, require('./helper/queryMixer').coarse) );
 
 // search API
 app.get( '/search', sanitisers.search.middleware, controllers.search() );
+app.get( '/suggest', sanitisers.search.middleware, controllers.search() );
+app.get( '/suggest/nearby', sanitisers.search.middleware, controllers.search() );
+// @todo: /suggest/nearby should enforce lat/lon required, check other endpoints for validation
 
 // reverse API
 app.get( '/reverse', sanitisers.reverse.middleware, controllers.search(undefined, require('./query/reverse')) );
 
 // coarse API
 app.get( '/search/coarse', sanitisers.coarse.middleware, controllers.search() );
+app.get( '/suggest/coarse', sanitisers.coarse.middleware, controllers.search() );
+
 
 /** ----------------------- error middleware ----------------------- **/
 
