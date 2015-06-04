@@ -21,12 +21,12 @@ function generate( params ){
   // add search condition to filtered query
   query.query.filtered.query = {
     'bool': {
-      'must': [{ 
-        'multi_match': {
-          'query': params.input,
-          'fields': [ 'name.*' ]
+      'must': [{
+          'match': {
+            'name.default': params.input
+          }
         }
-      }]
+      ]
     }
   };
 
