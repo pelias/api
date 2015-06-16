@@ -19,12 +19,15 @@ function sanitize( req, default_value ){
 
   if (params.details !== undefined) {
     var details = params.details;
-    
+
     if (typeof params.details === 'string') {
-      details = params.details === 'true';
+      details = params.details === 'true' ||
+                params.details === '1' ||
+                params.details === 'yes' ||
+                params.details === 'y';
     }
 
-    clean.details = details === true || details === 1;  
+    clean.details = details === true || details === 1;
   } else {
     clean.details = default_value;
   }

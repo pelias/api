@@ -278,7 +278,7 @@ module.exports.tests.sanitize_details = function(test, common) {
     });  
   });
 
-  var valid_values = ['true', true, 1];
+  var valid_values = ['true', true, 1, '1', 'yes', 'y'];
   valid_values.forEach(function(details) {
     test('valid details param ' + details, function(t) {
       sanitize({ input: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
@@ -288,7 +288,7 @@ module.exports.tests.sanitize_details = function(test, common) {
     });  
   });
 
-  var valid_false_values = ['false', false, 0];
+  var valid_false_values = ['false', false, 0, '0', 'no', 'n'];
   valid_false_values.forEach(function(details) {
     test('test setting false explicitly ' + details, function(t) {
       sanitize({ input: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
