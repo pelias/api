@@ -1,5 +1,5 @@
 var isObject = require('is-object');
-var parser1  = require('parse-address'); // works well with US addresses
+// var parser1  = require('parse-address'); // works well with US addresses
 var parser2  = require('addressit'); // freeform address parser (backup)
 var extend   = require('extend');
 
@@ -36,10 +36,11 @@ function sanitize( req ){
   }
 
   // address parsing
-  var parsedAddress1 = parser1.parseAddress(params.input);
+  // var parsedAddress1 = parser1.parseAddress(params.input);
   var parsedAddress2 = parser2(params.input);
 
-  var parsedAddress  = extend(parsedAddress0, parsedAddress1, parsedAddress2);
+  // var parsedAddress  = extend(parsedAddress0, parsedAddress1, parsedAddress2);
+  var parsedAddress  = extend(parsedAddress0, parsedAddress2);
 
   var address_parts  =  [ 'name',
                           'number',
