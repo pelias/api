@@ -1,7 +1,4 @@
 language: node_js
-install:
-  - sudo apt-get update -q
-  - bundle install
 script: sudo sh configure_vagrant.sh
 node_js:
   - "0.10"

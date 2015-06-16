@@ -2,6 +2,7 @@
 
 set -ex
 
+sudo apt-get update -q
 sudo apt-get install ruby-full
 wget https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chefdk_0.6.2-1_amd64.deb
 sudo dpkg -i chefdk_0.6.2-1_amd64.deb
@@ -10,6 +11,7 @@ wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.2_x86_64.deb
 sudo dpkg -i vagrant_1.7.2_x86_64.deb
 git clone https://github.com/pelias/vagrant.git
 git clone https://github.com/pelias/acceptance-tests.git
+bundle install
 
 npm run unit
 export PELIAS_VAGRANT_CFG=${PWD}/ci/pelias_settings.rb
