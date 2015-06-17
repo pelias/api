@@ -15,7 +15,6 @@ git clone https://github.com/pelias/acceptance-tests.git
 ls
 echo ${PWD}
 
-npm run unit
 export PELIAS_VAGRANT_CFG=${PWD}/ci/pelias_settings.rb
 cd ./vagrant
 vagrant up

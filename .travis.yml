@@ -1,4 +1,6 @@
 language: node_js
-script: sudo sh ci/configure_vagrant.sh
+script:
+ - "npm run unit"
+ - "sudo sh ci/configure_vagrant.sh"
 node_js:
   - "0.10"
