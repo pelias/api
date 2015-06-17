@@ -12,6 +12,9 @@ sudo dpkg -i vagrant_1.7.2_x86_64.deb
 git clone https://github.com/pelias/vagrant.git
 git clone https://github.com/pelias/acceptance-tests.git
 
+ls
+echo ${PWD}
+
 npm run unit
 export PELIAS_VAGRANT_CFG=${PWD}/ci/pelias_settings.rb
 cd ./vagrant
