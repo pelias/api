@@ -15,9 +15,10 @@ sudo vagrant plugin install vagrant-omnibus
 git clone https://github.com/pelias/vagrant.git
 git clone https://github.com/pelias/acceptance-tests.git
 
-cd ./vagrant
 export PELIAS_VAGRANT_CFG=${PWD}/ci/pelias_settings.rb
 export PELIAS_VAGRANTFILE=${PWD}/ci/pelias_settings.rb
+
+cd ./vagrant
 vagrant up
 
 cd ../acceptance-tests
