@@ -47,7 +47,7 @@ Vagrant.configure('2') do |config|
         'osm' => {
           'index_data' => true,
           'extracts' => {
-            'london' => 'https://s3.amazonaws.com/metro-extracts.mapzen.com/london_england.osm.pbf'
+            'london' => 'https://s3.amazonaws.com/metro-extracts.mapzen.com/london_england.osm.pbf',
             'nyc' => 'https://s3.amazonaws.com/metro-extracts.mapzen.com/new-york_new-york.osm.pbf'
           }
         }
