@@ -4,13 +4,20 @@ set -ex
 
 sudo apt-get update -q
 sudo apt-get install ruby-full
+
 wget https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chefdk_0.6.2-1_amd64.deb
 sudo dpkg -i chefdk_0.6.2-1_amd64.deb
+
 sudo apt-get install -q virtualbox --fix-missing
+
 wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.2_x86_64.deb
 sudo dpkg -i vagrant_1.7.2_x86_64.deb
+
 sudo vagrant plugin install vagrant-berkshelf
 sudo vagrant plugin install vagrant-omnibus
+
+eval "$(rbenv init -)"
+export PATH=/opt/chefdk/bin:$PATH
 
 git clone https://github.com/pelias/vagrant.git
 git clone https://github.com/pelias/acceptance-tests.git
