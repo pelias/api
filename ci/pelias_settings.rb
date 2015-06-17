@@ -39,7 +39,7 @@ Vagrant.configure('2') do |config|
         },
         'openaddresses' => {
           'index_data' => true,
-          'data_files': [
+          'data_files' => [
             'us-ny-nyc.csv',
             'us-ca-san_francisco.csv'
           ]
