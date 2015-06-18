@@ -18,16 +18,7 @@ function sanitize( req, default_value ){
   }
 
   if (params.details !== undefined) {
-    var details = params.details;
-
-    if (typeof params.details === 'string') {
-      details = params.details === 'true' ||
-                params.details === '1' ||
-                params.details === 'yes' ||
-                params.details === 'y';
-    }
-
-    clean.details = details === true || details === 1;
+    clean.details = isTruthy(params.details);
   } else {
     clean.details = default_value;
   }
@@ -36,6 +27,14 @@ function sanitize( req, default_value ){
   
   return {'error':false};
 
+}
+
+function isTruthy(val) {
+  if (typeof val === 'string') {
+    return ['true', '1', 'yes', 'y'].indexOf(val) !== -1;
+  }
+
+  return val === 1 || val === true;
 }
 
 // export function
