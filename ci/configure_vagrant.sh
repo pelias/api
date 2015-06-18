@@ -16,7 +16,6 @@ sudo dpkg -i vagrant_1.7.2_x86_64.deb
 sudo vagrant plugin install vagrant-berkshelf
 sudo vagrant plugin install vagrant-omnibus
 
-eval "$(rbenv init -)"
 export PATH=/opt/chefdk/bin:$PATH
 
 git clone https://github.com/pelias/vagrant.git
