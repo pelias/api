@@ -13,7 +13,9 @@
     "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao",
     "coverage": "node_modules/.bin/istanbul cover test/unit/run.js",
     "audit": "npm shrinkwrap; node node_modules/nsp/bin/nspCLI.js audit-shrinkwrap; rm npm-shrinkwrap.json;",
-    "docs": "rm -r docs; cd test/ciao; node ../../node_modules/ciao/bin/ciao -c ../ciao.json . -d ../../docs"
+    "docs": "rm -r docs; cd test/ciao; node ../../node_modules/ciao/bin/ciao -c ../ciao.json . -d ../../docs",
+    "acceptance-prod": "sh test/acceptance/remote.sh production",
+    "acceptance-stage": "sh test/acceptance/remote.sh master"
   },
   "repository": {
     "type": "git",

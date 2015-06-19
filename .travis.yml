@@ -1,4 +1,7 @@
 language: node_js
-script: "npm run unit"
+script:
+  - npm run unit
+  - if [ "${TRAVIS_BRANCH}" == "production" ]; then npm run acceptance-prod fi;
+  - if [ "${TRAVIS_BRANCH}" == "master" ] && [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then npm run acceptance-stage fi;
 node_js:
   - "0.10"
