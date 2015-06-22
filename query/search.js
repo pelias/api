@@ -49,37 +49,37 @@ function generate( params ){
     }
 
     // address
-    // number, street, zip
+    // number, street, postalcode
     if (params.parsed_input.number) {
       qb(['address.number'], params.parsed_input.number);
     } 
     if (params.parsed_input.street) {
       qb(['address.street'], params.parsed_input.street);
     } 
-    if (params.parsed_input.zip) {
-      qb(['address.zip'], params.parsed_input.zip);
+    if (params.parsed_input.postalcode) {
+      qb(['address.zip'], params.parsed_input.postalcode);
     } 
 
     // city
     // admin2, locality, local_admin, neighborhood
-    if (params.parsed_input.admin2) {
-      qb(['admin2'], params.parsed_input.admin2);
-    } else {
-      admin_fields.push('admin2');
-    }
+    // if (params.parsed_input.admin2) {
+    //   qb(['admin2'], params.parsed_input.admin2);
+    // } else {
+    //   admin_fields.push('admin2');
+    // }
 
     // state
     // admin1, admin1_abbr
-    if (params.parsed_input.admin1) {
-      qb(['admin1', 'admin1_abbr'], params.parsed_input.admin1);
+    if (params.parsed_input.state) {
+      qb(['admin1_abbr'], params.parsed_input.state);
     } else {
       admin_fields.push('admin1', 'admin1_abbr');
     }
 
     // country
     // admin0, alpha3
-    if (params.parsed_input.admin0) {
-      qb(['admin0', 'alpha3'], params.parsed_input.admin0);
+    if (params.parsed_input.country) {
+      qb(['alpha3'], params.parsed_input.country);
     } else {
       admin_fields.push('admin0', 'alpha3');
     }

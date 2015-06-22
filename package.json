@@ -48,8 +48,7 @@
     "microtime": "1.4.0",
     "pelias-suggester-pipeline": "2.0.2",
     "extend": "2.0.1",
-    "parse-address": "0.0.4",
-    "addressit": "1.2.1"
+    "addressit": "git://github.com/hkrishna/addressit.git#locale"
   },
   "devDependencies": {
     "ciao": "^0.3.4",
