@@ -76,20 +76,16 @@ var expected = {
     'filtered': {
       'query': {
         'bool': {
-          'must': [
-            {
-              'match': {
-                'name.default': 'test'
-              }
+          'must': [{
+            'match': {
+              'name.default': 'test'
             }
-          ],
-          'should': [
-            {
-              'match': {
-                'shingle.default': 'test'
-              }
+          }],
+          'should': [{
+            'match': {
+              'phrase.default': 'test'
             }
-          ]
+          }]
         }
       },
       'filter': {
@@ -162,20 +158,16 @@ module.exports.tests.query = function(test, common) {
         'filtered': {
           'query': {
             'bool': {
-              'must': [
-                {
-                  'match': {
-                    'name.default': 'test'
-                  }
+              'must': [{
+                'match': {
+                  'name.default': 'test'
                 }
-              ],
-              'should': [
-                {
-                  'match': {
-                    'shingle.default': 'test'
-                  }
+              }],
+              'should': [{
+                'match': {
+                  'phrase.default': 'test'
                 }
-              ]
+              }]
             }
           },
           'filter': {
@@ -206,20 +198,16 @@ module.exports.tests.query = function(test, common) {
         'filtered': {
           'query': {
             'bool': {
-              'must': [
-                {
-                  'match': {
-                    'name.default': 'test'
-                  }
+              'must': [{
+                'match': {
+                  'name.default': 'test'
                 }
-              ],
-              'should': [
-                {
-                  'match': {
-                    'shingle.default': 'test'
-                  }
+              }],
+              'should': [{
+                'match': {
+                  'phrase.default': 'test'
                 }
-              ]
+              }]
             }
           },
           'filter': {
@@ -239,7 +227,7 @@ module.exports.tests.query = function(test, common) {
                 }
               ]
             }
-           }
+          }
         }
       },
       'sort': [
