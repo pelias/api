@@ -46,7 +46,9 @@
     "morgan": "1.5.2",
     "pelias-config": "^0.1.4",
     "microtime": "1.4.0",
-    "pelias-suggester-pipeline": "2.0.2"
+    "pelias-suggester-pipeline": "2.0.2",
+    "extend": "2.0.1",
+    "addressit": "git://github.com/hkrishna/addressit.git#locale"
   },
   "devDependencies": {
     "ciao": "^0.3.4",
