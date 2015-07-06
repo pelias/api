@@ -105,7 +105,7 @@ function generate( params ){
   // note: this is required for shingle/phrase matching
   query.query.filtered.query.bool.should.push({
     'match': {
-      'phrase.default': input
+      'phrase.default': params.input
     }
   });
 
