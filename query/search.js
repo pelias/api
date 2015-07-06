@@ -21,18 +21,19 @@ function generate( params ){
   // add search condition to filtered query
   query.query.filtered.query = {
     'bool': {
-      'must': [{
-          'match': {
-            'name.default': params.input
-          }
+      'must': [{ 
+        'match': {
+          'name.default': params.input
         }
-      ]
+      }]
     }
   };
 
+  // should query contitions
+  query.query.filtered.query.bool.should = [];
+
   if (params.input_admin) {
     var admin_fields = ['admin0', 'admin1', 'admin1_abbr', 'admin2', 'alpha3'];
-    query.query.filtered.query.bool.should = [];
 
     admin_fields.forEach(function(admin_field) {
       var match = {};
@@ -42,6 +43,14 @@ function generate( params ){
       });
     });
   }
+
+  // add phrase matching query
+  // note: this is required for shingle/phrase matching
+  query.query.filtered.query.bool.should.push({
+    'match': {
+      'phrase.default': params.input
+    }
+  });
 
   query.sort = query.sort.concat( sort( params ) );
 
