@@ -58,16 +58,6 @@ var sort = [
       'type': 'number',
       'order': 'desc'
     }
-  },
-  {
-    '_script': {
-      'params': {
-        'input': 'test'
-      },
-      'file': 'exact_match',
-      'type': 'number',
-      'order': 'desc'
-    }
   }
 ];
 

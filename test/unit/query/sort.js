@@ -69,24 +69,6 @@ module.exports.tests.query = function(test, common) {
   });
 };
 
-module.exports.tests.queryWithInput = function ( test, common ){
-  test( 'Valid sort query component when input is present.', function ( t ){
-    var expectedWithInput = expected.slice();
-    expectedWithInput.push({
-      _script: {
-        params: {
-          input: 'foobar'
-        },
-        file: 'exact_match',
-        type: 'number',
-        order: 'desc'
-      }
-    });
-    t.deepEqual(generate({ input: 'foobar' }), expectedWithInput, 'valid sort part of the query');
-    t.end();
-  });
-};
-
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
