@@ -52,6 +52,7 @@ app.get( '/reverse', sanitisers.reverse.middleware, controllers.search(undefined
 /** ----------------------- error middleware ----------------------- **/
 
 app.use( require('./middleware/404') );
+app.use( require('./middleware/408') );
 app.use( require('./middleware/500') );
 
 module.exports = app;
