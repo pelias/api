@@ -9,7 +9,12 @@ function generate( params ){
     lon: params.lon
   };
 
-  var query = queries.distance( centroid, { size: params.size || 1, sort: true } );
+  var query = queries.distance( centroid, {
+    size: params.size || 1,
+    sort: true,
+    distance: '500km'
+  });
+
   query.sort = query.sort.concat( sort( params ) );
 
   if ( params.categories && params.categories.length > 0 ) {
