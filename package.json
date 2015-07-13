@@ -1,7 +1,7 @@
 {
   "name": "pelias-api",
   "author": "mapzen",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Pelias API",
   "homepage": "https://github.com/pelias/api",
   "license": "MIT",
