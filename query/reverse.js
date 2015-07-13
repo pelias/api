@@ -9,7 +9,7 @@ function generate( params ){
     lon: params.lon
   };
 
-  var query  =  queries.distance( centroid, { size: params.size || 1 } );
+  var query = queries.distance( centroid, { size: params.size || 1, sort: true } );
   query.sort = query.sort.concat( sort( params ) );
 
   if ( params.categories && params.categories.length > 0 ) {
