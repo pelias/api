@@ -21,6 +21,11 @@ function setup( backend, query ){
       cmd.type = req.clean.layers;
     }
 
+    // set type if input suggests targeting a layer(s)
+    if (req.clean.parsed_input) {
+      cmd.type = req.clean.parsed_input.target_layer;
+    }
+
     // query backend
     service.search( backend, cmd, function( err, docs ){
 

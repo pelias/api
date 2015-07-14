@@ -1,7 +1,7 @@
-var isObject = require('is-object');
-// var parser1  = require('parse-address'); // works well with US addresses
-var parser2  = require('addressit'); // freeform address parser (backup)
-var extend   = require('extend');
+var isObject   = require('is-object');
+var parser     = require('addressit');
+var extend     = require('extend');
+var get_layers = require('../helper/layers');
 
 // validate inputs, convert types and apply defaults
 function sanitize( req ){
@@ -36,30 +36,20 @@ function sanitize( req ){
   }
 
   // address parsing
-  // var parsedAddress1 = parser1.parseAddress(params.input);
+  var parsedAddress1 = parser( params.input );
 
-  // postcodes (should be its own file. Contribute back to addressIt)
-  // {
-  //   "US":/^\d{5}([\-]?\d{4})?$/,
-  //   "UK":/^(GIR|[A-Z]\d[A-Z\d]??|[A-Z]{2}\d[A-Z\d]??)[ ]??(\d[A-Z]{2})$/,
-  //   "DE":/\b((?:0[1-46-9]\d{3})|(?:[1-357-9]\d{4})|(?:[4][0-24-9]\d{3})|(?:[6][013-9]\d{3}))\b/,
-  //   "CA":/^([ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ])\ {0,1}(\d[ABCEGHJKLMNPRSTVWXYZ]\d)$/,
-  //   "FR":/^(F-)?((2[A|B])|[0-9]{2})[0-9]{3}$/,
-  //   "IT":/^(V-|I-)?[0-9]{5}$/,
-  //   "AU":/^(0[289][0-9]{2})|([1345689][0-9]{3})|(2[0-8][0-9]{2})|(290[0-9])|(291[0-4])|(7[0-4][0-9]{2})|(7[8-9][0-9]{2})$/,
-  //   "NL":/^[1-9][0-9]{3}\s?([a-zA-Z]{2})?$/,
-  //   "ES":/^([1-9]{2}|[0-9][1-9]|[1-9][0-9])[0-9]{3}$/,
-  //   "DK":/^([D-d][K-k])?( |-)?[1-9]{1}[0-9]{3}$/,
-  //   "SE":/^(s-|S-){0,1}[0-9]{3}\s?[0-9]{2}$/,
-  //   "BE":/^[1-9]{1}[0-9]{3}$/,
-  //   "IN":/^\d{6}$/
-  // }
+  // input parsing
+  var parsedAddress2 = {};
+  // set target_layer if input length < 3 characters
+  if (params.input.length <= 3) {
+    parsedAddress2.target_layer = get_layers(['admin']);
+  }
+  // set target_layer if input suggests no address
+  if (parsedAddress1.text === parsedAddress1.regions.join(' ')) {
+    parsedAddress2.target_layer = get_layers(['admin', 'poi']);
+  }
 
-  // using US PostCode for now 
-  var parsedAddress2 = parser2(params.input, { rePostalCode: /^\d{5}([\-]?\d{4})?$/ });
-
-  // var parsedAddress  = extend(parsedAddress0, parsedAddress1, parsedAddress2);
-  var parsedAddress  = extend(parsedAddress0, parsedAddress2);
+  var parsedAddress  = extend(parsedAddress0, parsedAddress1, parsedAddress2);
 
   var address_parts  =  [ 'name',
                           'number',
@@ -69,7 +59,8 @@ function sanitize( req ){
                           'country',
                           'postalcode',
                           'regions',
-                          'admin_parts'
+                          'admin_parts',
+                          'target_layer'
                         ];
   
   req.clean.parsed_input = {};
@@ -84,12 +75,13 @@ function sanitize( req ){
   //   name   : parsedAddress.name,
   //   number : parsedAddress.number,
   //   street : parsedAddress.street,
-  //   admin2 : parsedAddress.city,
-  //   admin1 : parsedAddress.state,
-  //   admin0 : parsedAddress.country,
-  //   zip    : parsedAddress.zip,
+  //   city   : parsedAddress.city,
+  //   state  : parsedAddress.state,
+  //   country: parsedAddress.country,
+  //   postalcode : parsedAddress.postalcode,
   //   regions: parsedAddress.regions,
-  //   admin_parts: parsedAddress.admin_parts
+  //   admin_parts: parsedAddress.admin_parts,
+  //   target_layer: parsedAddress.target_layer
   // }
 
 
