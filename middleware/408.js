@@ -2,7 +2,7 @@
 // handle time out errors
 function middleware(err, req, res, next) {
   res.header('Cache-Control','no-cache');
-  if( res.statusCode === 408 ){ 
+  if( res.statusCode === 408 || (err.message.toLowerCase().indexOf('request timeout') !== -1) ){ 
   	res.status(408); 
   	res.json({ error: err && typeof err.message === 'string' ? err.message : 'request time out' });
   } else {
