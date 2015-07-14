@@ -25,28 +25,30 @@ function sanitize( req ){
   
   req.clean.input = params.input;
 
+  var parsedAddress0 = {};
+  var parsedAddress1 = {};
+  var parsedAddress2 = {};
+
   // naive approach
   // for admin matching during query time
   // split 'flatiron, new york, ny' into 'flatiron' and 'new york, ny'
   var delimIndex = params.input.indexOf(delim);
-  var parsedAddress0 = {};
   if ( delimIndex !== -1 ) {
     parsedAddress0.name = params.input.substring(0, delimIndex);
     parsedAddress0.admin_parts = params.input.substring(delimIndex + 1).trim();
   }
 
-  // address parsing
-  var parsedAddress1 = parser( params.input );
-
-  // input parsing
-  var parsedAddress2 = {};
   // set target_layer if input length < 3 characters
   if (params.input.length <= 3) {
+    // no address parsing required
     parsedAddress2.target_layer = get_layers(['admin']);
-  }
-  // set target_layer if input suggests no address
-  if (parsedAddress1.text === parsedAddress1.regions.join(' ')) {
-    parsedAddress2.target_layer = get_layers(['admin', 'poi']);
+  } else {
+    // address parsing
+    parsedAddress1 = parser( params.input );
+    // set target_layer if input suggests no address
+    if (parsedAddress1.text === parsedAddress1.regions.join(' ')) {
+      parsedAddress2.target_layer = get_layers(['admin', 'poi']);
+    }
   }
 
   var parsedAddress  = extend(parsedAddress0, parsedAddress1, parsedAddress2);
