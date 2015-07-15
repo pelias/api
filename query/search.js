@@ -62,11 +62,11 @@ function generate( params ){
 
     // city
     // admin2, locality, local_admin, neighborhood
-    // if (params.parsed_input.admin2) {
-    //   qb(['admin2'], params.parsed_input.admin2);
-    // } else {
-    //   admin_fields.push('admin2');
-    // }
+    if (params.parsed_input.city) {
+      qb(['admin2'], params.parsed_input.admin2);
+    } else {
+      admin_fields.push('admin2');
+    }
 
     // state
     // admin1, admin1_abbr
