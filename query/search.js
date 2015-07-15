@@ -86,7 +86,7 @@ function generate( params ){
 
     if (params.parsed_input.regions) {
       var input_regions = params.parsed_input.regions.join(' ');
-      if (admin_fields.length === 4 &&  input_regions !== params.input) {
+      if (admin_fields.length === 5 &&  input_regions !== params.input) {
         if (params.parsed_input.admin_parts) {
           qb(admin_fields, params.parsed_input.admin_parts);
         } else {
