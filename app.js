@@ -26,7 +26,6 @@ sanitisers.reverse  = require('./sanitiser/reverse');
 var controllers     = {};
 controllers.index   = require('./controller/index');
 controllers.doc     = require('./controller/doc');
-controllers.suggest = require('./controller/suggest');
 controllers.search  = require('./controller/search');
 
 /** ----------------------- routes ----------------------- **/
