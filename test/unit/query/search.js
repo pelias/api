@@ -220,17 +220,7 @@ module.exports.tests.query = function(test, common) {
           }
         }
       },
-      'sort': ['_score',
-        { 
-          '_geo_distance': { 
-            'center_point': { 
-              'lat': 29.49136, 
-              'lon': -82.50622 
-            }, 
-            'order': 'asc', 
-            'unit': 'km' 
-          } 
-        }].concat(sort.slice(1)),
+      'sort': ['_score'].concat(sort.slice(1)),
       'size': 10,
       'track_scores': true
     };
