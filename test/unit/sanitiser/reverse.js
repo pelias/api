@@ -10,6 +10,7 @@ var suggest  = require('../../../sanitiser/reverse'),
                       lon: 0,
                       size: 10,
                       details: true,
+                      default_layers_set: true,
                       categories: []
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };

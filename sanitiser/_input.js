@@ -48,6 +48,10 @@ function sanitize( req ){
     // set target_layer if input suggests no address
     if (parsedAddress1.text === parsedAddress1.regions.join(' ')) {
       parsedAddress2.target_layer = get_layers(['admin', 'poi']);
+    } else {
+      // this might be an overkill - you'd want to search for poi and admin
+      // even if an address is being queried. TBD
+      parsedAddress2.target_layer = get_layers(['address']);
     }
   }
 
