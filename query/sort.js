@@ -17,14 +17,14 @@ module.exports = function( params ){
     },
     {
       '_script': {
-        'file': population,
+        'file': popularity,
         'type': 'number',
         'order': 'desc'
       }
     },
     {
       '_script': {
-        'file': popularity,
+        'file': population,
         'type': 'number',
         'order': 'desc'
       }
