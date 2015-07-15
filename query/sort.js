@@ -3,6 +3,7 @@ var population = 'population';
 var popularity = 'popularity';
 var category = 'category';
 var category_weights = require('../helper/category_weights');
+var admin_weights = require('../helper/admin_weights');
 var weights = require('pelias-suggester-pipeline').weights;
 var isObject = require( 'is-object' );
 
@@ -10,7 +11,10 @@ module.exports = function( params ){
   var scriptsConfig = [
     {
       '_script': {
-        'file': admin_boost,
+        'params': {
+          'weights': admin_weights
+        },
+        'file': 'weights',
         'type': 'number',
         'order': 'desc'
       }
