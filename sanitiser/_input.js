@@ -38,10 +38,15 @@ function sanitize( req ){
     parsedAddress0.admin_parts = params.input.substring(delimIndex + 1).trim();
   }
 
-  // set target_layer if input length < 3 characters
-  if (params.input.length <= 3) {
+  var splitOnSpace = params.input.split(' ');
+  var splitOnDelim = params.input.split(delim);
+  // set target_layer if input length <= 3 characters
+  if (params.input.length <= 3 ) {
     // no address parsing required
     parsedAddress2.target_layer = get_layers(['admin']);
+  } else if (splitOnDelim.length < 3 || splitOnSpace.length < 3) {
+    // no need to hit address layers if there's only two tokens
+    parsedAddress2.target_layer = get_layers(['admin', 'poi']);
   } else {
     // address parsing
     parsedAddress1 = parser( params.input );
