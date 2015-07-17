@@ -39,7 +39,7 @@ function sanitize( req ){
   }
 
   var tokenized = params.input.split(/[ ,]+/);
-  var hasNumber = /\d$/.test(params.input);
+  var hasNumber = /\d/.test(params.input);
 
   // set target_layer if input length <= 3 characters
   if (params.input.length <= 3 ) {
