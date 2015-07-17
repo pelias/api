@@ -84,16 +84,15 @@ function generate( params ){
       admin_fields.push('admin0', 'alpha3');
     }
 
-    if (params.parsed_input.regions) {
-      var input_regions = params.parsed_input.regions.join(' ');
-      if (admin_fields.length === 5 &&  input_regions !== params.input) {
-        if (params.parsed_input.admin_parts) {
-          qb(admin_fields, params.parsed_input.admin_parts);
-        } else {
-          qb(admin_fields, input_regions);
-        }
+    var input_regions = params.parsed_input.regions ? params.parsed_input.regions.join(' ') : '';
+    if (admin_fields.length === 5 &&  input_regions !== params.input) {
+      if (params.parsed_input.admin_parts) {
+        qb(admin_fields, params.parsed_input.admin_parts);
+      } else {
+        qb(admin_fields, input_regions);
       }
     }
+  
   }
 
   // add search condition to distance query
