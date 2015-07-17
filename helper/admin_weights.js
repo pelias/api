@@ -6,7 +6,7 @@
 module.exports = {
   'admin0': 4,
   'admin1': 3,
-  'admin2': 2,
+  'admin2': 1,
   'local_admin': 1,
   'locality':1,
   'neighborhood':1
