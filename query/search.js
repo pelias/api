@@ -32,13 +32,15 @@ function generate( params ){
 
     var admin_fields = [];
     var qb = function(admin_fields, value) {
-      admin_fields.forEach(function(admin_field) {
-        var match = {};
-        match[admin_field] = value;
-        query.query.filtered.query.bool.should.push({
-           'match': match
-        });
-      });  
+      if (value) {
+        admin_fields.forEach(function(admin_field) {
+          var match = {};
+          match[admin_field] = value;
+          query.query.filtered.query.bool.should.push({
+             'match': match
+          });
+        });  
+      }
     };
 
     // update input
@@ -84,7 +86,7 @@ function generate( params ){
       admin_fields.push('admin0', 'alpha3');
     }
 
-    var input_regions = params.parsed_input.regions ? params.parsed_input.regions.join(' ') : '';
+    var input_regions = params.parsed_input.regions ? params.parsed_input.regions.join(' ') : undefined;
     if (admin_fields.length === 5 &&  input_regions !== params.input) {
       if (params.parsed_input.admin_parts) {
         qb(admin_fields, params.parsed_input.admin_parts);
@@ -111,6 +113,8 @@ function generate( params ){
   });
 
   query.sort = query.sort.concat( sort( params ) );
+  
+  console.log(JSON.stringify(query, null, 2));
 
   return query;
 }
