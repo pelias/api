@@ -113,8 +113,6 @@ function generate( params ){
   });
 
   query.sort = query.sort.concat( sort( params ) );
-  
-  console.log(JSON.stringify(query, null, 2));
 
   return query;
 }
