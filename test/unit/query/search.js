@@ -19,16 +19,6 @@ module.exports.tests.interface = function(test, common) {
 
 var sort = [
   '_score',
-    {
-    '_script': {
-      'params': {
-        'weights': admin_weights
-      },
-      'file': 'weights',
-      'type': 'number',
-      'order': 'desc'
-    }
-  },
   {
     '_script': {
       'file': popularity,
@@ -39,6 +29,16 @@ var sort = [
   {
     '_script': {
       'file': population,
+      'type': 'number',
+      'order': 'desc'
+    }
+  },
+  {
+    '_script': {
+      'params': {
+        'weights': admin_weights
+      },
+      'file': 'weights',
       'type': 'number',
       'order': 'desc'
     }

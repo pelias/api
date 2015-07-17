@@ -19,16 +19,6 @@ module.exports.tests.interface = function(test, common) {
 };
 
 var expected = [
-    {
-    '_script': {
-      'params': {
-        'weights': admin_weights
-      },
-      'file': 'weights',
-      'type': 'number',
-      'order': 'desc'
-    }
-  },
   {
     '_script': {
       'file': popularity,
@@ -43,7 +33,17 @@ var expected = [
       'order': 'desc'
     }
   },
-   {
+  {
+    '_script': {
+      'params': {
+        'weights': admin_weights
+      },
+      'file': 'weights',
+      'type': 'number',
+      'order': 'desc'
+    }
+  },
+  {
     '_script': {
       'params': {
         'category_weights': category_weights

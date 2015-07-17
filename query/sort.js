@@ -11,16 +11,6 @@ module.exports = function( params ){
   var scriptsConfig = [
     {
       '_script': {
-        'params': {
-          'weights': admin_weights
-        },
-        'file': 'weights',
-        'type': 'number',
-        'order': 'desc'
-      }
-    },
-    {
-      '_script': {
         'file': popularity,
         'type': 'number',
         'order': 'desc'
@@ -29,6 +19,16 @@ module.exports = function( params ){
     {
       '_script': {
         'file': population,
+        'type': 'number',
+        'order': 'desc'
+      }
+    },
+    {
+      '_script': {
+        'params': {
+          'weights': admin_weights
+        },
+        'file': 'weights',
         'type': 'number',
         'order': 'desc'
       }

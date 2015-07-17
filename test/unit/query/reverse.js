@@ -21,16 +21,6 @@ var sort = [
   '_score',
   {
     '_script': {
-      'params': {
-        'weights': admin_weights
-      },
-      'file': 'weights',
-      'type': 'number',
-      'order': 'desc'
-    }
-  },
-  {
-    '_script': {
       'file': popularity,
       'type': 'number',
       'order': 'desc'
@@ -39,6 +29,16 @@ var sort = [
   {
     '_script': {
       'file': population,
+      'type': 'number',
+      'order': 'desc'
+    }
+  },
+  {
+    '_script': {
+      'params': {
+        'weights': admin_weights
+      },
+      'file': 'weights',
       'type': 'number',
       'order': 'desc'
     }
