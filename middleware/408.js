@@ -6,7 +6,7 @@ function middleware(err, req, res, next) {
   
   if( res.statusCode === 408 || (error.toLowerCase().indexOf('request timeout') !== -1) ){ 
   	res.status(408); 
-  	res.json({ error: error === 'string' ? error : 'request time out' });
+  	res.json({ error: typeof error === 'string' ? error : 'request time out' });
   } else {
   	next(err);
   }
