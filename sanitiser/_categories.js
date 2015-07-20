@@ -27,6 +27,10 @@ function sanitize( req ){
       });
   }
 
+  if (clean.categories.length === 0) {
+    delete clean.categories;
+  }
+  
   // pass validated params to next middleware
   req.clean = clean;
 
