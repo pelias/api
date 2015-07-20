@@ -89,7 +89,7 @@ module.exports.tests.query = function(test, common) {
               'must': [
                 {
                   'geo_distance': {
-                    'distance': '50km',
+                    'distance': '500km',
                     'distance_type': 'plane',
                     'optimize_bbox': 'indexed',
                     '_cache': true,
@@ -150,7 +150,7 @@ module.exports.tests.query = function(test, common) {
               'must': [
                 {
                   'geo_distance': {
-                    'distance': '50km',
+                    'distance': '500km',
                     'distance_type': 'plane',
                     'optimize_bbox': 'indexed',
                     '_cache': true,
