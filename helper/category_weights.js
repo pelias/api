@@ -6,6 +6,5 @@
 module.exports = {
   'transport:air': 2,
   'transport:air:aerodrome': 2,
-  'transport:air:airport': 2,
-  'landmark': 2
+  'transport:air:airport': 2
 };
