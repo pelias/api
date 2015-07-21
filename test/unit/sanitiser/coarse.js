@@ -3,6 +3,7 @@ var coarse  = require('../../../sanitiser/coarse'),
     _sanitize    = coarse.sanitize,
     middleware   = coarse.middleware,
     valid_layers = [ 'admin0', 'admin1', 'admin2', 'neighborhood', 'locality', 'local_admin' ],
+    defaultClean = require('../sanitiser/_input').defaultClean,    
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
 module.exports.tests = {};
@@ -47,17 +48,12 @@ module.exports.tests.middleware_failure = function(test, common) {
 module.exports.tests.middleware_success = function(test, common) {
   test('middleware success', function(t) {
     var req = { query: { input: 'test', lat: 0, lon: 0 }};
+    var clean = defaultClean;
+    clean.layers = valid_layers;
+
     var next = function( message ){
-      var defaultClean = { 
-        input: 'test',
-        size: 10,
-        layers: [ 'admin0', 'admin1', 'admin2', 'neighborhood', 'locality', 'local_admin' ],
-        lat: 0,
-        lon: 0,
-        details: true
-      };
       t.equal(message, undefined, 'no error message set');
-      // t.deepEqual(req.clean, defaultClean);
+      t.deepEqual(req.clean, clean);
       t.end();
     };
     middleware( req, undefined, next );

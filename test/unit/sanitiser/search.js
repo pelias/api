@@ -1,6 +1,7 @@
 
 var search  = require('../../../sanitiser/search'),
-    defaultParsed = require('../sanitiser/_input').defaultParsed,
+    _input  = require('../sanitiser/_input'),
+    defaultParsed = _input.defaultParsed,
     _sanitize = search.sanitize,
     middleware = search.middleware,
     delim = ',',
@@ -10,7 +11,8 @@ var search  = require('../../../sanitiser/search'),
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
                       size: 10,
                       details: true,
-                      parsed_input: defaultParsed
+                      parsed_input: defaultParsed,
+                      default_layers_set: true
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
@@ -48,8 +50,10 @@ module.exports.tests.sanitize_input = function(test, common) {
       sanitize({ input: input }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.input = input;
+        expected.parsed_input.target_layer = _input.getTargetLayers(input);
+
         t.equal(err, undefined, 'no error');
-        // t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
+        t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
       });
     });
     t.end();

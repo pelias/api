@@ -17,6 +17,7 @@ var tests = [
   require('./query/sort'),
   require('./query/search'),
   require('./query/reverse'),
+  require('./helper/query_parser'),
   require('./helper/geojsonify'),
   require('./helper/outputSchema')
 ];

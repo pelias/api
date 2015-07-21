@@ -30,10 +30,11 @@ function generate( params ){
 
     query.query.filtered.query.bool.should = [];
 
-    var admin_fields = [];
-    var qb = function(admin_fields, value) {
+    var unmatched_admin_fields = [];
+    // qb stands for query builder
+    var qb = function(unmatched_admin_fields, value) {
       if (value) {
-        admin_fields.forEach(function(admin_field) {
+        unmatched_admin_fields.forEach(function(admin_field) {
           var match = {};
           match[admin_field] = value;
           query.query.filtered.query.bool.should.push({
@@ -67,7 +68,7 @@ function generate( params ){
     if (params.parsed_input.city) {
       qb(['admin2'], params.parsed_input.admin2);
     } else {
-      admin_fields.push('admin2');
+      unmatched_admin_fields.push('admin2');
     }
 
     // state
@@ -75,7 +76,7 @@ function generate( params ){
     if (params.parsed_input.state) {
       qb(['admin1_abbr'], params.parsed_input.state);
     } else {
-      admin_fields.push('admin1', 'admin1_abbr');
+      unmatched_admin_fields.push('admin1', 'admin1_abbr');
     }
 
     // country
@@ -83,15 +84,16 @@ function generate( params ){
     if (params.parsed_input.country) {
       qb(['alpha3'], params.parsed_input.country);
     } else {
-      admin_fields.push('admin0', 'alpha3');
+      unmatched_admin_fields.push('admin0', 'alpha3');
     }
 
     var input_regions = params.parsed_input.regions ? params.parsed_input.regions.join(' ') : undefined;
-    if (admin_fields.length === 5 &&  input_regions !== params.input) {
+    // if no address was identified and input suggests some admin info in it
+    if (unmatched_admin_fields.length === 5 &&  input_regions !== params.input) {
       if (params.parsed_input.admin_parts) {
-        qb(admin_fields, params.parsed_input.admin_parts);
+        qb(unmatched_admin_fields, params.parsed_input.admin_parts);
       } else {
-        qb(admin_fields, input_regions);
+        qb(unmatched_admin_fields, input_regions);
       }
     }
   
