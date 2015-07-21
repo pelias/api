@@ -9,8 +9,7 @@ var suggest  = require('../../../sanitiser/reverse'),
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
                       lon: 0,
                       size: 10,
-                      details: true,
-                      categories: []
+                      details: true
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 

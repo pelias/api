@@ -44,6 +44,13 @@ function generate( params ){
     });
   }
 
+  // add category mapping
+  if (params.categories) {
+    query.query.filtered.filter.bool.must.push({
+      terms: { category: params.categories }
+    });
+  }
+
   // add phrase matching query
   // note: this is required for shingle/phrase matching
   query.query.filtered.query.bool.should.push({
