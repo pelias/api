@@ -2,15 +2,20 @@
 var suggest  = require('../../../sanitiser/suggest'),
     _sanitize = suggest.sanitize,
     middleware = suggest.middleware,
+    _input  = require('../sanitiser/_input'),
+    parser = require('../../../helper/query_parser'),
+    defaultParsed = _input.defaultParsed,
     delim = ',',
     defaultError = 'invalid param \'input\': text length, must be >0',
     defaultClean =  { input: 'test', 
-                      lat:0,
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
-                      lon: 0,
                       size: 10,
-                      details: true
+                      details: true,
+                      lat:0,
+                      lon:0,
+                      parsed_input: defaultParsed,
+                      default_layers_set: true
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
@@ -38,7 +43,7 @@ module.exports.tests.sanitize_input = function(test, common) {
     inputs.invalid.forEach( function( input ){
       sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
         t.equal(err, 'invalid param \'input\': text length, must be >0', input + ' is an invalid input');
-        // t.equal(clean, undefined, 'clean not set');
+        t.equal(clean, undefined, 'clean not set');
       });
     });
     t.end();
@@ -49,7 +54,8 @@ module.exports.tests.sanitize_input = function(test, common) {
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.input = input;
         t.equal(err, undefined, 'no error');
-        // t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
+        expected.parsed_input = parser(input);
+        t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
       });
     });
     t.end();
@@ -64,15 +70,10 @@ module.exports.tests.sanitize_input_with_delim = function(test, common) {
       sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.input = input;
-
-        var delim_index = input.indexOf(delim);
-        if (delim_index!==-1) {
-          expected.input = input.substring(0, input.indexOf(delim));
-          expected.input_admin = input.substring(delim_index + 1).trim();
-        }
-
+        expected.parsed_input = parser(input);
+        
         t.equal(err, undefined, 'no error');
-        // t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
+        t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
       });
     });
     t.end();
@@ -99,7 +100,8 @@ module.exports.tests.sanitize_lat = function(test, common) {
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lat = parseFloat( lat );
         t.equal(err, undefined, 'no error');
-        // t.deepEqual(clean, expected, 'clean set correctly (' + lat + ')');
+        expected.parsed_input = parser('test');
+        t.deepEqual(clean, expected, 'clean set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -127,7 +129,8 @@ module.exports.tests.sanitize_lon = function(test, common) {
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lon = parseFloat( lon );
         t.equal(err, undefined, 'no error');
-        // t.deepEqual(clean, expected, 'clean set correctly (' + lon + ')');
+        expected.parsed_input = parser('test');
+        t.deepEqual(clean, expected, 'clean set correctly (' + lon + ')');
       });
     });
     t.end();
@@ -168,7 +171,8 @@ module.exports.tests.sanitize_bbox = function(test, common) {
       sanitize({ input: 'test', lat: 0, lon: 0, bbox: bbox }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         t.equal(err, undefined, 'no error');
-        // t.deepEqual(clean, expected, 'falling back on 50km distance from centroid');
+        expected.parsed_input = parser('test');
+        t.deepEqual(clean, expected, 'falling back on 50km distance from centroid');
       });
     });
     t.end();
@@ -187,7 +191,8 @@ module.exports.tests.sanitize_bbox = function(test, common) {
           bottom: Math.min(bboxArray[1], bboxArray[3])
         };
         t.equal(err, undefined, 'no error');
-        // t.deepEqual(clean, expected, 'clean set correctly (' + bbox + ')');
+        expected.parsed_input = parser('test');
+        t.deepEqual(clean, expected, 'clean set correctly (' + bbox + ')');
       });
     });
     t.end();
@@ -378,7 +383,8 @@ module.exports.tests.middleware_success = function(test, common) {
     var req = { query: { input: 'test', lat: 0, lon: 0 }};
     var next = function( message ){
       t.equal(message, undefined, 'no error message set');
-      // t.deepEqual(req.clean, defaultClean);
+      req.clean.parsed_input = parser('test');
+      t.deepEqual(req.clean, defaultClean);
       t.end();
     };
     middleware( req, undefined, next );
