@@ -4,6 +4,7 @@ var admin_boost = 'admin_boost';
 var population = 'population';
 var popularity = 'popularity';
 var category = 'category';
+var parser = require('../../../helper/query_parser');
 var category_weights = require('../../../helper/category_weights');
 var admin_weights = require('../../../helper/admin_weights');
 var weights = require('pelias-suggester-pipeline').weights;
@@ -236,6 +237,309 @@ module.exports.tests.query = function(test, common) {
       'track_scores': true
     };
 
+    t.deepEqual(query, expected, 'valid search query');
+    t.end();
+  });
+
+  test('valid query with a full valid address', function(t) {
+    var address = '123 main st new york ny 10010 US';
+    var query = generate({ input: address, 
+      layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
+                'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
+      size: 10,
+      details: true,
+      parsed_input: parser(address),
+      default_layers_set: true
+    });
+
+    var expected = {
+     'query': {
+       'filtered': {
+         'query': {
+           'bool': {
+             'must': [
+               {
+                 'match': {
+                   'name.default': '123 main st'
+                 }
+               }
+             ],
+             'should': [
+               {
+                 'match': {
+                   'address.number': 123
+                 }
+               },
+               {
+                 'match': {
+                   'address.street': 'main st'
+                 }
+               },
+               {
+                 'match': {
+                   'address.zip': 10010
+                 }
+               },
+               {
+                 'match': {
+                   'admin1_abbr': 'NY'
+                 }
+               },
+               {
+                 'match': {
+                   'alpha3': 'USA'
+                 }
+               },
+               {
+                 'match': {
+                   'admin2': 'new york'
+                 }
+               },
+               {
+                 'match': {
+                   'phrase.default': '123 main st'
+                 }
+               }
+             ]
+           }
+         },
+         'filter': {
+           'bool': {
+             'must': []
+           }
+         }
+       }
+     },
+     'size': 10,
+     'sort': [
+       '_score',
+       {
+         '_script': {
+           'file': 'admin_boost',
+           'type': 'number',
+           'order': 'desc'
+         }
+       },
+       {
+         '_script': {
+           'file': 'popularity',
+           'type': 'number',
+           'order': 'desc'
+         }
+       },
+       {
+         '_script': {
+           'file': 'population',
+           'type': 'number',
+           'order': 'desc'
+         }
+       },
+       {
+         '_script': {
+           'params': {
+             'weights': {
+               'admin0': 4,
+               'admin1': 3,
+               'admin2': 2,
+               'local_admin': 1,
+               'locality': 1,
+               'neighborhood': 1
+             }
+           },
+           'file': 'weights',
+           'type': 'number',
+           'order': 'desc'
+         }
+       },
+       {
+         '_script': {
+           'params': {
+             'category_weights': {
+               'transport:air': 2,
+               'transport:air:aerodrome': 2,
+               'transport:air:airport': 2
+             }
+           },
+           'file': 'category',
+           'type': 'number',
+           'order': 'desc'
+         }
+       },
+       {
+         '_script': {
+           'params': {
+             'weights': {
+               'geoname': 0,
+               'address': 4,
+               'osmnode': 6,
+               'osmway': 6,
+               'poi-address': 8,
+               'neighborhood': 10,
+               'local_admin': 12,
+               'locality': 12,
+               'admin2': 12,
+               'admin1': 14,
+               'admin0': 2
+             }
+           },
+           'file': 'weights',
+           'type': 'number',
+           'order': 'desc'
+         }
+       }
+     ],
+     'track_scores': true
+    };
+    
+    t.deepEqual(query, expected, 'valid search query');
+    t.end();
+  });
+  
+  test('valid query with partial address', function(t) {
+    var partial_address = 'soho grand, new york';
+    var query = generate({ input: partial_address, 
+      layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
+                'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
+      size: 10,
+      details: true,
+      parsed_input: parser(partial_address),
+      default_layers_set: true
+    });
+
+    var expected = {
+     'query': {
+       'filtered': {
+         'query': {
+           'bool': {
+             'must': [
+               {
+                 'match': {
+                   'name.default': 'soho grand'
+                 }
+               }
+             ],
+             'should': [
+               {
+                 'match': {
+                   'admin2': 'new york'
+                 }
+               },
+               {
+                 'match': {
+                   'admin1': 'new york'
+                 }
+               },
+               {
+                 'match': {
+                   'admin1_abbr': 'new york'
+                 }
+               },
+               {
+                 'match': {
+                   'admin0': 'new york'
+                 }
+               },
+               {
+                 'match': {
+                   'alpha3': 'new york'
+                 }
+               },
+               {
+                 'match': {
+                   'phrase.default': 'soho grand'
+                 }
+               }
+             ]
+           }
+         },
+         'filter': {
+           'bool': {
+             'must': []
+           }
+         }
+       }
+     },
+     'size': 10,
+     'sort': [
+       '_score',
+       {
+         '_script': {
+           'file': 'admin_boost',
+           'type': 'number',
+           'order': 'desc'
+         }
+       },
+       {
+         '_script': {
+           'file': 'popularity',
+           'type': 'number',
+           'order': 'desc'
+         }
+       },
+       {
+         '_script': {
+           'file': 'population',
+           'type': 'number',
+           'order': 'desc'
+         }
+       },
+       {
+         '_script': {
+           'params': {
+             'weights': {
+               'admin0': 4,
+               'admin1': 3,
+               'admin2': 2,
+               'local_admin': 1,
+               'locality': 1,
+               'neighborhood': 1
+             }
+           },
+           'file': 'weights',
+           'type': 'number',
+           'order': 'desc'
+         }
+       },
+       {
+         '_script': {
+           'params': {
+             'category_weights': {
+               'transport:air': 2,
+               'transport:air:aerodrome': 2,
+               'transport:air:airport': 2
+             }
+           },
+           'file': 'category',
+           'type': 'number',
+           'order': 'desc'
+         }
+       },
+       {
+         '_script': {
+           'params': {
+             'weights': {
+               'geoname': 0,
+               'address': 4,
+               'osmnode': 6,
+               'osmway': 6,
+               'poi-address': 8,
+               'neighborhood': 10,
+               'local_admin': 12,
+               'locality': 12,
+               'admin2': 12,
+               'admin1': 14,
+               'admin0': 2
+             }
+           },
+           'file': 'weights',
+           'type': 'number',
+           'order': 'desc'
+         }
+       }
+     ],
+     'track_scores': true
+    };
+    
     t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
