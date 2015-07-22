@@ -89,14 +89,11 @@ function generate( params ){
 
     var input_regions = params.parsed_input.regions ? params.parsed_input.regions.join(' ') : undefined;
     // if no address was identified and input suggests some admin info in it
-    if (unmatched_admin_fields.length === 5 &&  input_regions !== params.input) {
-      if (params.parsed_input.admin_parts) {
-        qb(unmatched_admin_fields, params.parsed_input.admin_parts);
-      } else {
-        qb(unmatched_admin_fields, input_regions);
-      }
+    if (unmatched_admin_fields.length === 5 && params.parsed_input.admin_parts) {
+      qb(unmatched_admin_fields, params.parsed_input.admin_parts);
+    } else if (input_regions !== params.input) {
+      qb(unmatched_admin_fields, input_regions);
     }
-  
   }
 
   // add search condition to distance query
