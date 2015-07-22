@@ -292,7 +292,7 @@ module.exports.tests.query = function(test, common) {
                },
                {
                  'match': {
-                   'phrase.default': '123 main st'
+                   'phrase.default': address
                  }
                }
              ]
@@ -441,7 +441,7 @@ module.exports.tests.query = function(test, common) {
                },
                {
                  'match': {
-                   'phrase.default': 'soho grand'
+                   'phrase.default': partial_address
                  }
                }
              ]
