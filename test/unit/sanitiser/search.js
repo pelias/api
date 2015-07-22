@@ -1,6 +1,7 @@
 
 var search  = require('../../../sanitiser/search'),
     _input  = require('../sanitiser/_input'),
+    parser = require('../../../helper/query_parser'),
     defaultParsed = _input.defaultParsed,
     _sanitize = search.sanitize,
     middleware = search.middleware,
@@ -69,14 +70,12 @@ module.exports.tests.sanitize_input_with_delim = function(test, common) {
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.input = input;
 
-        var delim_index = input.indexOf(delim);
-        if (delim_index!==-1) {
-          expected.input = input.substring(0, input.indexOf(delim));
-          expected.input_admin = input.substring(delim_index + 1).trim();
-        }
-
+        expected.parsed_input = parser(input);
         t.equal(err, undefined, 'no error');
-        // t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
+        t.equal(clean.parsed_input.name, expected.parsed_input.name, 'clean name set correctly');
+        t.equal(clean.parsed_input.admin_parts, expected.parsed_input.admin_parts, 'clean admin_parts set correctly');
+        t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
+
       });
     });
     t.end();
@@ -104,7 +103,8 @@ module.exports.tests.sanitize_lat = function(test, common) {
         expected.lat = parseFloat( lat );
         expected.lon = 0;
         t.equal(err, undefined, 'no error');
-        // t.deepEqual(clean, expected, 'clean set correctly (' + lat + ')');
+        expected.parsed_input = parser('test');
+        t.deepEqual(clean, expected, 'clean set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -133,7 +133,8 @@ module.exports.tests.sanitize_lon = function(test, common) {
         expected.lon = parseFloat( lon );
         expected.lat = 0;
         t.equal(err, undefined, 'no error');
-        // t.deepEqual(clean, expected, 'clean set correctly (' + lon + ')');
+        expected.parsed_input = parser('test');
+        t.deepEqual(clean, expected, 'clean set correctly (' + lon + ')');
       });
     });
     t.end();
@@ -147,7 +148,8 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
       t.equal(err, undefined, 'no error');
       t.equal(clean.lat, undefined, 'clean set without lat');
       t.equal(clean.lon, undefined, 'clean set without lon');
-      // t.deepEqual(clean, expected, 'clean set without lat/lon');
+      expected.parsed_input = parser('test');
+      t.deepEqual(clean, expected, 'clean set without lat/lon');
     });
     t.end();
   });
@@ -156,7 +158,8 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
       var expected = JSON.parse(JSON.stringify( defaultClean ));
       expected.lon = 0;
       t.equal(err, undefined, 'no error');
-      // t.deepEqual(clean, expected, 'clean set correctly (without any lat)');
+      expected.parsed_input = parser('test');
+      t.deepEqual(clean, expected, 'clean set correctly (without any lat)');
     });
     t.end();
   });
@@ -165,7 +168,8 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
       var expected = JSON.parse(JSON.stringify( defaultClean ));
       expected.lat = 0;
       t.equal(err, undefined, 'no error');
-      // t.deepEqual(clean, expected, 'clean set correctly (without any lon)');
+      expected.parsed_input = parser('test');
+      t.deepEqual(clean, expected, 'clean set correctly (without any lon)');
     });
     t.end();
   });
@@ -205,7 +209,8 @@ module.exports.tests.sanitize_bbox = function(test, common) {
       sanitize({ input: 'test', bbox: bbox }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         t.equal(err, undefined, 'no error');
-        // t.deepEqual(clean, expected, 'falling back on 50km distance from centroid');
+        expected.parsed_input = parser('test');
+        t.deepEqual(clean, expected, 'falling back on 50km distance from centroid');
       });
     });
     t.end();
@@ -224,7 +229,8 @@ module.exports.tests.sanitize_bbox = function(test, common) {
           bottom: Math.min(bboxArray[1], bboxArray[3])
         };
         t.equal(err, undefined, 'no error');
-        // t.deepEqual(clean, expected, 'clean set correctly (' + bbox + ')');
+        expected.parsed_input = parser('test');
+        t.deepEqual(clean, expected, 'clean set correctly (' + bbox + ')');
       });
     });
     t.end();
@@ -415,7 +421,8 @@ module.exports.tests.middleware_success = function(test, common) {
     var req = { query: { input: 'test' }};
     var next = function( message ){
       t.equal(message, undefined, 'no error message set');
-      // t.deepEqual(req.clean, defaultClean);
+      req.clean.parsed_input = parser('test');
+      t.deepEqual(req.clean, defaultClean);
       t.end();
     };
     middleware( req, undefined, next );
