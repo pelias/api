@@ -128,7 +128,7 @@ module.exports.tests.query = function(test, common) {
       layers: ['test']
     });
 
-    // t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
 
@@ -144,7 +144,7 @@ module.exports.tests.query = function(test, common) {
       layers: ['test']
     });
     
-    // t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
 
@@ -183,7 +183,7 @@ module.exports.tests.query = function(test, common) {
       'track_scores': true
     };
     
-    // t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
 
@@ -236,7 +236,7 @@ module.exports.tests.query = function(test, common) {
       'track_scores': true
     };
 
-    // t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
 };
