@@ -292,11 +292,6 @@ module.exports.tests.query = function(test, common) {
                },
                {
                  'match': {
-                   'admin2': 'new york'
-                 }
-               },
-               {
-                 'match': {
                    'phrase.default': '123 main st'
                  }
                }
