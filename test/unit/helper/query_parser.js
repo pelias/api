@@ -29,8 +29,8 @@ module.exports.tests.split_on_comma = function(test, common) {
     });
   };
 
-  for (var keys in queries) {
-    testParse( queries[keys] );
+  for (var key in queries) {
+    testParse( queries[key] );
   }
 };
 
@@ -51,8 +51,8 @@ module.exports.tests.parse_three_chars_or_less = function(test, common) {
   };
 
   var queries = chars_queries.concat(num_queries).concat(alphanum_q);
-  for (var keys in queries) {
-    testParse( queries[keys] );
+  for (var key in queries) {
+    testParse( queries[key] );
   }
 };
 
@@ -79,11 +79,11 @@ module.exports.tests.parse_one_or_more_tokens = function(test, common) {
   };
 
   var queries = one_token_queries.concat(two_tokens_nonum);
-  for (var keys in queries) {
-    testParse( queries[keys] );
+  for (var key in queries) {
+    testParse( queries[key] );
   }
-  for (keys in two_tokens_withnum) {
-    testParse( two_tokens_withnum[keys], true );
+  for (key in two_tokens_withnum) {
+    testParse( two_tokens_withnum[key], true );
   }
 };
 
@@ -145,14 +145,14 @@ module.exports.tests.parse_address = function(test, common) {
     });
   };
 
-  for (var keys in addresses_nonum) {
-    testParse( addresses_nonum[keys] );
+  for (var key in addresses_nonum) {
+    testParse( addresses_nonum[key] );
   }
-  for (keys in address_with_num) {
-    testParse( address_with_num[keys], true );
+  for (key in address_with_num) {
+    testParse( address_with_num[key], true );
   }
-  for (keys in address_with_zip) {
-    testParse( address_with_zip[keys], true, true );
+  for (key in address_with_zip) {
+    testParse( address_with_zip[key], true, true );
   }
 };
 
