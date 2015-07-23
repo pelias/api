@@ -82,8 +82,8 @@ module.exports.tests.sanitize_input_with_delim = function(test, common) {
 
 module.exports.tests.sanitize_lat = function(test, common) {
   var lats = {
-    invalid: [ -181, -120, -91, 91, 120, 181 ],
-    valid: [ 0, 45, 90, -0, '0', '45', '90' ]
+    invalid: [],
+    valid: [ 0, 45, 90, -0, '0', '45', '90', -181, -120, -91, 91, 120, 181 ]
   };
   test('invalid lat', function(t) {  
     lats.invalid.forEach( function( lat ){

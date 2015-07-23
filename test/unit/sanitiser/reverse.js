@@ -32,8 +32,8 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitize_lat = function(test, common) {
   var lats = {
-    invalid: [ -181, -120, -91, 91, 120, 181 ],
-    valid: [ 0, 45, 90, -0, '0', '45', '90' ],
+    invalid: [],
+    valid: [ 0, 45, 90, -0, '0', '45', '90', -181, -120, -91, 91, 120, 181 ],
     missing: ['', undefined, null]
   };
   test('invalid lat', function(t) {  

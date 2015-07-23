@@ -76,9 +76,6 @@ function sanitize_bbox( clean, param ) {
 function sanitize_coord( coord, clean, param, latlon_is_required ) {
   var value = parseFloat( param );
   if ( !isNaN( value ) ) {
-    if( coord === 'lat' && check_lat.is_invalid( value ) ){
-      throw new Error( 'invalid ' + check_lat.error_msg );
-    }
     clean[coord] = value;
   }
   else if (latlon_is_required) {
@@ -92,10 +89,3 @@ function sanitize_zoom_level( clean, param ) {
     clean.zoom = Math.min( Math.max( zoom, 1 ), 18 ); // max
   }
 }
-
-var check_lat = {
-  is_invalid: function is_invalid_lat( lat ){
-    return isNaN( lat ) || lat < -90 || lat > 90;
-  },
-  error_msg: 'param \'lat\': must be >-90 and <90'
-};
