@@ -50,14 +50,10 @@ function sanitize_bbox( clean, param ) {
   var bboxArr = param.split( ',' );
 
   if( Array.isArray( bboxArr ) && bboxArr.length === 4 ) {
+    var bbox = bboxArr.map(parseFloat);
 
-    var bbox = [];
-    for( var ind = 0; ind < bboxArr.length; ind++ ){
-      var num = parseFloat( bboxArr[ ind ] );
-      if( isNaN( num ) ){
-        return;
-      }
-      bbox.push( num );
+    if (bbox.some(isNaN)) {
+      return;
     }
 
     clean.bbox = {
