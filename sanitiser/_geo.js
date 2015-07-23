@@ -57,9 +57,6 @@ function sanitize_bbox( clean, param ) {
       if( isNaN( num ) ){
         return;
       }
-      if( ind % 2 === 1 && check_lat.is_invalid( num ) ){
-        throw new Error( 'Invalid lat: ' + num );
-      }
       bbox.push( num );
     }
 
