@@ -129,10 +129,6 @@ module.exports.tests.sanitize_lon = function(test, common) {
 module.exports.tests.sanitize_bbox = function(test, common) {
   var bboxes = {
     invalid_coordinates: [
-      '-181,90,34,-180', // invalid top_right lon, bottom_left lat
-      '-170,91,-181,45', // invalid top_right lat, bottom_left lon
-      '-181,91,181,-91', // invalid top_right lon/lat, bottom_left lon/lat
-      '91, -181,-91,181',// invalid - spaces between coordinates
     ],
     invalid: [
       '91;-181,-91,181', // invalid - semicolon between coordinates
@@ -142,7 +138,11 @@ module.exports.tests.sanitize_bbox = function(test, common) {
     ],
     valid: [
       '-179,90,34,-80', // valid top_right lon/lat, bottom_left lon/lat
-      '0,0,0,0' // valid top_right lat/lon, bottom_left lat/lon
+      '0,0,0,0', // valid top_right lat/lon, bottom_left lat/lon
+      '-181,90,34,-180', // wrapped top_right lon, bottom_left lat
+      '-170,91,-181,45', // wrapped top_right lat, bottom_left lon
+      '-181,91,181,-91', // wrapped top_right lon/lat, bottom_left lon/lat
+      '91, -181,-91,181',// valid - spaces between coordinates
     ]
     
   };

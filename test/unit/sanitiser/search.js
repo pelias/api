@@ -167,12 +167,6 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
 module.exports.tests.sanitize_bbox = function(test, common) {
   var bboxes = {
     invalid_coordinates: [
-      // invalid latitude coordinates
-      '-181,90,34,-180',
-      '-170,91,-181,45',
-      '-181,91,181,-91',
-      '91, -181,-91,11',
-      '91, -11,-91,181'
     ],
     invalid: [
       '91;-181,-91,181', // invalid - semicolon between coordinates
@@ -190,7 +184,13 @@ module.exports.tests.sanitize_bbox = function(test, common) {
       '-40,-20,10,30',
       '-40,-20,10,30',
       '-1200,20,1000,20',
-      '-1400,90,1400,-90'
+      '-1400,90,1400,-90',
+      // wrapped latitude coordinates
+      '-181,90,34,-180',
+      '-170,91,-181,45',
+      '-181,91,181,-91',
+      '91, -181,-91,11',
+      '91, -11,-91,181'
     ]
     
   };
