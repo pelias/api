@@ -102,7 +102,10 @@ function generate( params ){
   // add search condition to distance query
   query.query.filtered.query.bool.must.push({ 
     'match': {
-      'name.default': input
+      'name.default': {
+        'query': input,
+        'analyzer': 'peliasOneEdgeGram'
+      }
     }
   });
 
@@ -110,7 +113,12 @@ function generate( params ){
   // note: this is required for shingle/phrase matching
   query.query.filtered.query.bool.should.push({
     'match': {
-      'phrase.default': input
+      'phrase.default': {
+        'query': input,
+        'analyzer': 'peliasPhrase',
+        'type': 'phrase',
+        'slop': 2
+      }
     }
   });
 

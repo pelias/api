@@ -80,12 +80,20 @@ var expected = {
         'bool': {
           'must': [{
             'match': {
-              'name.default': 'test'
+              'name.default': {
+                'query': 'test',
+                'analyzer': 'peliasOneEdgeGram'
+              }
             }
           }],
           'should': [{
             'match': {
-              'phrase.default': 'test'
+              'phrase.default': {
+                'query': 'test',
+                'analyzer': 'peliasPhrase',
+                'type': 'phrase',
+                'slop': 2
+              }
             }
           }]
         }
@@ -162,12 +170,20 @@ module.exports.tests.query = function(test, common) {
             'bool': {
               'must': [{
                 'match': {
-                  'name.default': 'test'
+                  'name.default': {
+                    'query': 'test',
+                    'analyzer': 'peliasOneEdgeGram'
+                  }
                 }
               }],
               'should': [{
                 'match': {
-                  'phrase.default': 'test'
+                  'phrase.default': {
+                    'query': 'test',
+                    'analyzer': 'peliasPhrase',
+                    'type': 'phrase',
+                    'slop': 2
+                  }
                 }
               }]
             }
@@ -202,12 +218,20 @@ module.exports.tests.query = function(test, common) {
             'bool': {
               'must': [{
                 'match': {
-                  'name.default': 'test'
+                  'name.default': {
+                    'query': 'test',
+                    'analyzer': 'peliasOneEdgeGram'
+                  }
                 }
               }],
               'should': [{
                 'match': {
-                  'phrase.default': 'test'
+                  'phrase.default': {
+                    'query': 'test',
+                    'analyzer': 'peliasPhrase',
+                    'type': 'phrase',
+                    'slop': 2
+                  }
                 }
               }]
             }
@@ -260,7 +284,10 @@ module.exports.tests.query = function(test, common) {
              'must': [
                {
                  'match': {
-                   'name.default': '123 main st'
+                   'name.default': {
+                     'query': '123 main st',
+                     'analyzer': 'peliasOneEdgeGram'
+                   }
                  }
                }
              ],
@@ -292,7 +319,12 @@ module.exports.tests.query = function(test, common) {
                },
                {
                  'match': {
-                   'phrase.default': '123 main st'
+                   'phrase.default': {
+                     'query': '123 main st',
+                     'analyzer': 'peliasPhrase',
+                     'type': 'phrase',
+                     'slop': 2
+                   }
                  }
                }
              ]
@@ -409,7 +441,10 @@ module.exports.tests.query = function(test, common) {
              'must': [
                {
                  'match': {
-                   'name.default': 'soho grand'
+                   'name.default': {
+                     'query': 'soho grand',
+                     'analyzer': 'peliasOneEdgeGram'
+                   }
                  }
                }
              ],
@@ -441,7 +476,12 @@ module.exports.tests.query = function(test, common) {
                },
                {
                  'match': {
-                   'phrase.default': 'soho grand'
+                   'phrase.default': {
+                     'query': 'soho grand',
+                     'analyzer': 'peliasPhrase',
+                     'type': 'phrase',
+                     'slop': 2
+                   }
                  }
                }
              ]
