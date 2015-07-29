@@ -92,7 +92,8 @@ var expected = {
                 'query': 'test',
                 'analyzer': 'peliasPhrase',
                 'type': 'phrase',
-                'slop': 2
+                'slop': 2,
+                'boost': 2
               }
             }
           }]
@@ -182,7 +183,8 @@ module.exports.tests.query = function(test, common) {
                     'query': 'test',
                     'analyzer': 'peliasPhrase',
                     'type': 'phrase',
-                    'slop': 2
+                    'slop': 2,
+                    'boost': 2
                   }
                 }
               }]
@@ -230,7 +232,8 @@ module.exports.tests.query = function(test, common) {
                     'query': 'test',
                     'analyzer': 'peliasPhrase',
                     'type': 'phrase',
-                    'slop': 2
+                    'slop': 2,
+                    'boost': 2
                   }
                 }
               }]
@@ -323,7 +326,8 @@ module.exports.tests.query = function(test, common) {
                      'query': '123 main st',
                      'analyzer': 'peliasPhrase',
                      'type': 'phrase',
-                     'slop': 2
+                     'slop': 2,
+                     'boost': 2
                    }
                  }
                }
@@ -480,7 +484,8 @@ module.exports.tests.query = function(test, common) {
                      'query': 'soho grand',
                      'analyzer': 'peliasPhrase',
                      'type': 'phrase',
-                     'slop': 2
+                     'slop': 2,
+                     'boost': 2
                    }
                  }
                }

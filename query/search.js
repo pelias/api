@@ -100,7 +100,7 @@ function generate( params ){
   }
 
   // add search condition to distance query
-  query.query.filtered.query.bool.must.push({ 
+  query.query.filtered.query.bool.must.push({
     'match': {
       'name.default': {
         'query': input,
@@ -117,7 +117,8 @@ function generate( params ){
         'query': input,
         'analyzer': 'peliasPhrase',
         'type': 'phrase',
-        'slop': 2
+        'slop': 2,
+        'boost': 2
       }
     }
   });
