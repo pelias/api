@@ -13,7 +13,8 @@ function generate( params ){
   } 
   
   var query = queries.distance( centroid, { size: params.size } );
-  var input = params.input;
+  var text = params.text;
+  var parsed_text = params.parsed_text;
 
   if (params.bbox) {
     query = queries.bbox ( centroid, { size: params.size, bbox: params.bbox } );
@@ -26,7 +27,7 @@ function generate( params ){
     }
   };
 
-  if (params.parsed_input) {
+  if (parsed_text) {
 
     query.query.filtered.query.bool.should = [];
 
@@ -44,54 +45,54 @@ function generate( params ){
       }
     };
 
-    // update input
-    if (params.parsed_input.number && params.parsed_input.street) {
-      input = params.parsed_input.number + ' ' + params.parsed_input.street;
-    } else if (params.parsed_input.admin_parts) {
-      input = params.parsed_input.name;
+    // update input text
+    if (parsed_text.number && parsed_text.street) {
+      text = parsed_text.number + ' ' + parsed_text.street;
+    } else if (parsed_text.admin_parts) {
+      text = parsed_text.name;
     }
 
     // address
     // number, street, postalcode
-    if (params.parsed_input.number) {
-      qb(['address.number'], params.parsed_input.number);
+    if (parsed_text.number) {
+      qb(['address.number'], parsed_text.number);
     } 
-    if (params.parsed_input.street) {
-      qb(['address.street'], params.parsed_input.street);
+    if (parsed_text.street) {
+      qb(['address.street'], parsed_text.street);
     } 
-    if (params.parsed_input.postalcode) {
-      qb(['address.zip'], params.parsed_input.postalcode);
+    if (parsed_text.postalcode) {
+      qb(['address.zip'], parsed_text.postalcode);
     } 
 
     // city
     // admin2, locality, local_admin, neighborhood
-    if (params.parsed_input.city) {
-      qb(['admin2'], params.parsed_input.admin2);
+    if (parsed_text.city) {
+      qb(['admin2'], parsed_text.admin2);
     } else {
       unmatched_admin_fields.push('admin2');
     }
 
     // state
     // admin1, admin1_abbr
-    if (params.parsed_input.state) {
-      qb(['admin1_abbr'], params.parsed_input.state);
+    if (parsed_text.state) {
+      qb(['admin1_abbr'], parsed_text.state);
     } else {
       unmatched_admin_fields.push('admin1', 'admin1_abbr');
     }
 
     // country
     // admin0, alpha3
-    if (params.parsed_input.country) {
-      qb(['alpha3'], params.parsed_input.country);
+    if (parsed_text.country) {
+      qb(['alpha3'], parsed_text.country);
     } else {
       unmatched_admin_fields.push('admin0', 'alpha3');
     }
 
-    var input_regions = params.parsed_input.regions ? params.parsed_input.regions.join(' ') : undefined;
-    // if no address was identified and input suggests some admin info in it
-    if (unmatched_admin_fields.length === 5 &&  input_regions !== params.input) {
-      if (params.parsed_input.admin_parts) {
-        qb(unmatched_admin_fields, params.parsed_input.admin_parts);
+    var input_regions = parsed_text.regions ? parsed_text.regions.join(' ') : undefined;
+    // if no address was identified and input text suggests some admin info in it
+    if (unmatched_admin_fields.length === 5 &&  input_regions !== params.text) {
+      if (parsed_text.admin_parts) {
+        qb(unmatched_admin_fields, parsed_text.admin_parts);
       } else {
         qb(unmatched_admin_fields, input_regions);
       }
@@ -102,7 +103,7 @@ function generate( params ){
   // add search condition to distance query
   query.query.filtered.query.bool.must.push({ 
     'match': {
-      'name.default': input
+      'name.default': text
     }
   });
 
@@ -110,7 +111,7 @@ function generate( params ){
   // note: this is required for shingle/phrase matching
   query.query.filtered.query.bool.should.push({
     'match': {
-      'phrase.default': input
+      'phrase.default': text
     }
   });
 
