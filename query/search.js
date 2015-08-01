@@ -16,7 +16,7 @@ function generate( params ){
   } 
   
   var query = queries.distance( centroid, { size: params.size } );
-  var input = params.input;
+  var text = params.text;
 
   if (params.bbox) {
     query = queries.bbox ( centroid, { size: params.size, bbox: params.bbox } );
@@ -29,22 +29,22 @@ function generate( params ){
     }
   };
 
-  if (params.parsed_input) {
-    // update input
-    if (params.parsed_input.number && params.parsed_input.street) {
-      input = params.parsed_input.number + ' ' + params.parsed_input.street;
-    } else if (params.parsed_input.admin_parts) {
-      input = params.parsed_input.name;
+  if (params.parsed_text) {
+    // update text
+    if (params.parsed_text.number && params.parsed_text.street) {
+      text = params.parsed_text.number + ' ' + params.parsed_text.street;
+    } else if (params.parsed_text.admin_parts) {
+      text = params.parsed_text.name;
     }
 
-    addParsedMatch(query, input, params.parsed_input);
+    addParsedMatch(query, text, params.parsed_text);
   }
 
   // add search condition to distance query
   query.query.filtered.query.bool.must.push({ 
     'match': {
       'name.default': {
-        'query': input,
+        'query': text,
         'analyzer': 'peliasOneEdgeGram'
       }
     }
@@ -55,7 +55,7 @@ function generate( params ){
   query.query.filtered.query.bool.should.push({
     'match': {
       'phrase.default': {
-        'query': input,
+        'query': text,
         'analyzer': 'peliasPhrase',
         'type': 'phrase',
         'slop': 2
@@ -69,14 +69,14 @@ function generate( params ){
 }
 
 /**
- * Traverse the parsed input object, containing all the address parts detected in query string.
+ * Traverse the parsed text object, containing all the address parts detected in query string.
  * Add matches to query for each identifiable component.
  *
  * @param {Object} query
- * @param {string} defaultInput
- * @param {Object} parsedInput
+ * @param {string} defaultText
+ * @param {Object} parsedText
  */
-function addParsedMatch(query, defaultInput, parsedInput) {
+function addParsedMatch(query, defaultText, parsedText) {
   query.query.filtered.query.bool.should = query.query.filtered.query.bool.should || [];
 
   // copy expected admin fields so we can remove them as we parse the address
@@ -84,23 +84,23 @@ function addParsedMatch(query, defaultInput, parsedInput) {
 
   // address
   // number, street, postalcode
-  addMatch(query, unmatchedAdminFields, 'address.number', parsedInput.number, addressWeights.number);
-  addMatch(query, unmatchedAdminFields, 'address.street', parsedInput.street, addressWeights.street);
-  addMatch(query, unmatchedAdminFields, 'address.zip', parsedInput.postalcode, addressWeights.zip);
+  addMatch(query, unmatchedAdminFields, 'address.number', parsedText.number, addressWeights.number);
+  addMatch(query, unmatchedAdminFields, 'address.street', parsedText.street, addressWeights.street);
+  addMatch(query, unmatchedAdminFields, 'address.zip', parsedText.postalcode, addressWeights.zip);
 
   // city
   // admin2, locality, local_admin, neighborhood
-  addMatch(query, unmatchedAdminFields, 'admin2', parsedInput.city, addressWeights.admin2);
+  addMatch(query, unmatchedAdminFields, 'admin2', parsedText.city, addressWeights.admin2);
 
   // state
   // admin1, admin1_abbr
-  addMatch(query, unmatchedAdminFields, 'admin1_abbr', parsedInput.state, addressWeights.admin1_abbr);
+  addMatch(query, unmatchedAdminFields, 'admin1_abbr', parsedText.state, addressWeights.admin1_abbr);
 
   // country
   // admin0, alpha3
-  addMatch(query, unmatchedAdminFields, 'alpha3', parsedInput.country, addressWeights.alpha3);
+  addMatch(query, unmatchedAdminFields, 'alpha3', parsedText.country, addressWeights.alpha3);
 
-  addUnmatchedAdminFieldsToQuery(query, unmatchedAdminFields, parsedInput, defaultInput);
+  addUnmatchedAdminFieldsToQuery(query, unmatchedAdminFields, parsedText, defaultText);
 }
 
 /**

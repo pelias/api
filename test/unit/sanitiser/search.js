@@ -1,18 +1,18 @@
 
 var search  = require('../../../sanitiser/search'),
-    _input  = require('../sanitiser/_input'),
+    _text  = require('../sanitiser/_text'),
     parser = require('../../../helper/query_parser'),
-    defaultParsed = _input.defaultParsed,
+    defaultParsed = _text.defaultParsed,
     _sanitize = search.sanitize,
     middleware = search.middleware,
     delim = ',',
-    defaultError = 'invalid param \'input\': text length, must be >0',
-    defaultClean =  { input: 'test', 
+    defaultError = 'invalid param \'text\': text length, must be >0',
+    defaultClean =  { text: 'test', 
                       types: {
                       },
                       size: 10,
                       details: true,
-                      parsed_input: defaultParsed,
+                      parsed_text: defaultParsed
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
@@ -31,12 +31,12 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-module.exports.tests.sanitize_invalid_input = function(test, common) {
-  test('invalid input', function(t) {  
+module.exports.tests.sanitize_invalid_text = function(test, common) {
+  test('invalid text', function(t) {  
     var invalid = [ '', 100, null, undefined, new Date() ];
-    invalid.forEach( function( input ){
-      sanitize({ input: input }, function( err, clean ){
-        t.equal(err, 'invalid param \'input\': text length, must be >0', input + ' is an invalid input');
+    invalid.forEach( function( text ){
+      sanitize({ text: text }, function( err, clean ){
+        t.equal(err, 'invalid param \'text\': text length, must be >0', text + ' is an invalid text');
         t.equal(clean, undefined, 'clean not set');
       });
     });
@@ -44,41 +44,41 @@ module.exports.tests.sanitize_invalid_input = function(test, common) {
   });
 };
 
-module.exports.tests.sanitise_valid_input = function(test, common) {
-  test('valid short input', function(t) {
-    sanitize({ input: 'a' }, function( err, clean ){
+module.exports.tests.sanitise_valid_text = function(test, common) {
+  test('valid short text', function(t) {
+    sanitize({ text: 'a' }, function( err, clean ){
       t.equal(err, undefined, 'no error');
     });
     t.end();
   });
 
-  test('valid not-quite-as-short input', function(t) {
-    sanitize({ input: 'aa' }, function( err, clean ){
+  test('valid not-quite-as-short text', function(t) {
+    sanitize({ text: 'aa' }, function( err, clean ){
       t.equal(err, undefined, 'no error');
     });
     t.end();
   });
 
-  test('valid longer input', function(t) {
-    sanitize({ input: 'aaaaaaaa' }, function( err, clean ){
+  test('valid longer text', function(t) {
+    sanitize({ text: 'aaaaaaaa' }, function( err, clean ){
       t.equal(err, undefined, 'no error');
     });
     t.end();
   });
 };
 
-module.exports.tests.sanitize_input_with_delim = function(test, common) {
-  var inputs = [ 'a,bcd', '123 main st, admin1', ',,,', ' ' ];
+module.exports.tests.sanitize_text_with_delim = function(test, common) {
+  var texts = [ 'a,bcd', '123 main st, admin1', ',,,', ' ' ];
 
-  test('valid inputs with a comma', function(t) {  
-    inputs.forEach( function( input ){
-      sanitize({ input: input }, function( err, clean ){
+  test('valid texts with a comma', function(t) {
+    texts.forEach( function( text ){
+      sanitize({ text: text }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
-        expected.input = input;
+        expected.text = text;
 
-        expected.parsed_input = parser.get_parsed_address(input);
+        expected.parsed_text = parser.get_parsed_address(text);
         t.equal(err, undefined, 'no error');
-        t.equal(clean.parsed_input.name, expected.parsed_input.name, 'clean name set correctly');
+        t.equal(clean.parsed_text.name, expected.parsed_text.name, 'clean name set correctly');
 
       });
     });
@@ -93,7 +93,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
   };
   test('invalid lat', function(t) {  
     lats.invalid.forEach( function( lat ){
-      sanitize({ input: 'test', lat: lat, lon: 0 }, function( err, clean ){
+      sanitize({ text: 'test', lat: lat, lon: 0 }, function( err, clean ){
         t.equal(err, 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
         t.equal(clean, undefined, 'clean not set');
       });
@@ -102,7 +102,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
   });
   test('valid lat', function(t) {  
     lats.valid.forEach( function( lat ){
-      sanitize({ input: 'test', lat: lat, lon: 0 }, function( err, clean ){
+      sanitize({ text: 'test', lat: lat, lon: 0 }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lat = parseFloat( lat );
         t.equal(err, undefined, 'no error');
@@ -119,7 +119,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
   };
   test('valid lon', function(t) {  
     lons.valid.forEach( function( lon ){
-      sanitize({ input: 'test', lat: 0, lon: lon }, function( err, clean ){
+      sanitize({ text: 'test', lat: 0, lon: lon }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lon = parseFloat( lon );
         t.equal(err, undefined, 'no error');
@@ -132,7 +132,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
 
 module.exports.tests.sanitize_optional_geo = function(test, common) {
   test('no lat/lon', function(t) {
-    sanitize({ input: 'test' }, function( err, clean ){
+    sanitize({ text: 'test' }, function( err, clean ){
       t.equal(err, undefined, 'no error');
       t.equal(clean.lat, undefined, 'clean set without lat');
       t.equal(clean.lon, undefined, 'clean set without lon');
@@ -140,7 +140,7 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     t.end();
   });
   test('no lat', function(t) {
-    sanitize({ input: 'test', lon: 0 }, function( err, clean ){
+    sanitize({ text: 'test', lon: 0 }, function( err, clean ){
       var expected_lon = 0;
       t.equal(err, undefined, 'no error');
       t.deepEqual(clean.lon, expected_lon, 'clean set correctly (without any lat)');
@@ -148,7 +148,7 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     t.end();
   });
   test('no lon', function(t) {
-    sanitize({ input: 'test', lat: 0 }, function( err, clean ){
+    sanitize({ text: 'test', lat: 0 }, function( err, clean ){
       var expected_lat = 0;
       t.equal(err, undefined, 'no error');
       t.deepEqual(clean.lat, expected_lat, 'clean set correctly (without any lon)');
@@ -187,7 +187,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
   };
   test('invalid bbox', function(t) {  
     bboxes.invalid.forEach( function( bbox ){
-      sanitize({ input: 'test', bbox: bbox }, function( err, clean ){
+      sanitize({ text: 'test', bbox: bbox }, function( err, clean ){
         t.equal(err, undefined, 'no error');
         t.equal(clean.bbox, undefined, 'falling back on 50km distance from centroid');
       });
@@ -196,7 +196,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
   });
   test('valid bbox', function(t) {  
     bboxes.valid.forEach( function( bbox ){
-      sanitize({ input: 'test', bbox: bbox }, function( err, clean ){
+      sanitize({ text: 'test', bbox: bbox }, function( err, clean ){
         var bboxArray = bbox.split(',').map(function(i) {
           return parseInt(i);
         });
@@ -216,19 +216,19 @@ module.exports.tests.sanitize_bbox = function(test, common) {
 
 module.exports.tests.sanitize_zoom = function(test, common) {
   test('invalid zoom value', function(t) {
-    sanitize({ zoom: 'a', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ zoom: 'a', text: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.equal(clean.zoom, undefined, 'zoom not set');
       t.end();
     });
   });
   test('below min zoom value', function(t) {
-    sanitize({ zoom: -100, input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ zoom: -100, text: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.equal(clean.zoom, 1, 'min zoom set');
       t.end();
     });
   });
   test('above max zoom value', function(t) {
-    sanitize({ zoom: 9999, input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ zoom: 9999, text: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.equal(clean.zoom, 18, 'max zoom set');
       t.end();
     });
@@ -237,19 +237,19 @@ module.exports.tests.sanitize_zoom = function(test, common) {
 
 module.exports.tests.sanitize_size = function(test, common) {
   test('invalid size value', function(t) {
-    sanitize({ size: 'a', input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ size: 'a', text: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.equal(clean.size, 10, 'default size set');
       t.end();
     });
   });
   test('below min size value', function(t) {
-    sanitize({ size: -100, input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ size: -100, text: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.equal(clean.size, 1, 'min size set');
       t.end();
     });
   });
   test('above max size value', function(t) {
-    sanitize({ size: 9999, input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ size: 9999, text: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.equal(clean.size, 40, 'max size set');
       t.end();
     });
@@ -260,7 +260,7 @@ module.exports.tests.sanitize_details = function(test, common) {
   var invalid_values = [null, -1, 123, NaN, 'abc'];
   invalid_values.forEach(function(details) {
     test('invalid details param ' + details, function(t) {
-      sanitize({ input: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
+      sanitize({ text: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
         t.equal(clean.details, false, 'default details set (to false)');
         t.end();
       });
@@ -270,7 +270,7 @@ module.exports.tests.sanitize_details = function(test, common) {
   var valid_values = ['true', true, 1, '1', 'yes', 'y'];
   valid_values.forEach(function(details) {
     test('valid details param ' + details, function(t) {
-      sanitize({ input: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
+      sanitize({ text: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
         t.equal(clean.details, true, 'details set to true');
         t.end();
       });
@@ -280,7 +280,7 @@ module.exports.tests.sanitize_details = function(test, common) {
   var valid_false_values = ['false', false, 0, '0', 'no', 'n'];
   valid_false_values.forEach(function(details) {
     test('test setting false explicitly ' + details, function(t) {
-      sanitize({ input: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
+      sanitize({ text: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
         t.equal(clean.details, false, 'details set to false');
         t.end();
       });
@@ -288,7 +288,7 @@ module.exports.tests.sanitize_details = function(test, common) {
   });
 
   test('test default behavior', function(t) {
-    sanitize({ input: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ text: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.equal(clean.details, true, 'details set to true');
       t.end();
     });
@@ -297,13 +297,13 @@ module.exports.tests.sanitize_details = function(test, common) {
 
 module.exports.tests.sanitize_layers = function(test, common) {
   test('unspecified', function(t) {
-    sanitize({ layers: undefined, input: 'test' }, function( err, clean ){
+    sanitize({ layers: undefined, text: 'test' }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, defaultClean.types.from_layers, 'default layers set');
       t.end();
     });
   });
   test('invalid layer', function(t) {
-    sanitize({ layers: 'test_layer', input: 'test' }, function( err, clean ){
+    sanitize({ layers: 'test_layer', text: 'test' }, function( err, clean ){
       var msg = 'invalid param \'layers\': must be one or more of ';
       t.true(err.match(msg), 'invalid layer requested');
       t.true(err.length > msg.length, 'invalid error message');
@@ -312,30 +312,30 @@ module.exports.tests.sanitize_layers = function(test, common) {
   });
   test('poi (alias) layer', function(t) {
     var poi_layers = ['geoname','osmnode','osmway'];
-    sanitize({ layers: 'poi', input: 'test' }, function( err, clean ){
+    sanitize({ layers: 'poi', text: 'test' }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, poi_layers, 'poi layers set');
       t.end();
     });
   });
   test('admin (alias) layer', function(t) {
     var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
-    sanitize({ layers: 'admin', input: 'test' }, function( err, clean ){
+    sanitize({ layers: 'admin', text: 'test' }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, admin_layers, 'admin layers set');
       t.end();
     });
   });
   test('address (alias) layer', function(t) {
     var address_layers = ['osmaddress','openaddresses'];
-    sanitize({ layers: 'address', input: 'test' }, function( err, clean ){
+    sanitize({ layers: 'address', text: 'test' }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, address_layers, 'types from layers set');
-      t.deepEqual(clean.types.from_address_parser, _input.allLayers, 'address parser uses default layers');
+      t.deepEqual(clean.types.from_address_parser, _text.allLayers, 'address parser uses default layers');
       t.end();
     });
   });
   test('poi alias layer plus regular layers', function(t) {
     var poi_layers = ['geoname','osmnode','osmway'];
     var reg_layers = ['admin0', 'admin1'];
-    sanitize({ layers: 'poi,admin0,admin1', input: 'test' }, function( err, clean ){
+    sanitize({ layers: 'poi,admin0,admin1', text: 'test' }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, reg_layers.concat(poi_layers), 'poi + regular layers');
       t.end();
     });
@@ -343,7 +343,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
   test('admin alias layer plus regular layers', function(t) {
     var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
     var reg_layers   = ['geoname', 'osmway'];
-    sanitize({ layers: 'admin,geoname,osmway', input: 'test' }, function( err, clean ){
+    sanitize({ layers: 'admin,geoname,osmway', text: 'test' }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, reg_layers.concat(admin_layers), 'admin + regular layers set');
       t.end();
     });
@@ -351,21 +351,21 @@ module.exports.tests.sanitize_layers = function(test, common) {
   test('address alias layer plus regular layers', function(t) {
     var address_layers = ['osmaddress','openaddresses'];
     var reg_layers   = ['geoname', 'osmway'];
-    sanitize({ layers: 'address,geoname,osmway', input: 'test' }, function( err, clean ){
+    sanitize({ layers: 'address,geoname,osmway', text: 'test' }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, reg_layers.concat(address_layers), 'address + regular layers set');
       t.end();
     });
   });
   test('alias layer plus regular layers (no duplicates)', function(t) {
     var poi_layers = ['geoname','osmnode','osmway'];
-    sanitize({ layers: 'poi,geoname,osmnode', input: 'test' }, function( err, clean ){
+    sanitize({ layers: 'poi,geoname,osmnode', text: 'test' }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, poi_layers, 'poi layers found (no duplicates)');
       t.end();
     });
   });
   test('multiple alias layers (no duplicates)', function(t) {
     var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood','locality','local_admin'];
-    sanitize({ layers: 'poi,admin', input: 'test' }, function( err, clean ){
+    sanitize({ layers: 'poi,admin', text: 'test' }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, alias_layers, 'all layers found (no duplicates)');
       t.end();
     });
@@ -373,7 +373,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
 };
 
 module.exports.tests.invalid_params = function(test, common) {
-  test('invalid input params', function(t) {
+  test('invalid text params', function(t) {
     sanitize( undefined, function( err, clean ){
       t.equal(err, defaultError, 'handle invalid params gracefully');
       t.end();
@@ -396,7 +396,7 @@ module.exports.tests.middleware_failure = function(test, common) {
 
 module.exports.tests.middleware_success = function(test, common) {
   test('middleware success', function(t) {
-    var req = { query: { input: 'test' }};
+    var req = { query: { text: 'test' }};
     var next = function( message ){
       t.equal(message, undefined, 'no error message set');
       t.end();
