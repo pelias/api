@@ -26,7 +26,6 @@ sanitisers.reverse  = require('./sanitiser/reverse');
 var controllers     = {};
 controllers.index   = require('./controller/index');
 controllers.doc     = require('./controller/doc');
-controllers.suggest = require('./controller/suggest');
 controllers.search  = require('./controller/search');
 
 /** ----------------------- routes ----------------------- **/
@@ -52,6 +51,7 @@ app.get( '/reverse', sanitisers.reverse.middleware, controllers.search(undefined
 /** ----------------------- error middleware ----------------------- **/
 
 app.use( require('./middleware/404') );
+app.use( require('./middleware/408') );
 app.use( require('./middleware/500') );
 
 module.exports = app;

@@ -1,7 +1,7 @@
 {
   "name": "pelias-api",
   "author": "mapzen",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Pelias API",
   "homepage": "https://github.com/pelias/api",
   "license": "MIT",
@@ -44,6 +44,8 @@
     "microtime": "1.4.0",
     "morgan": "1.5.2",
     "pelias-config": "^0.1.4",
+    "extend": "2.0.1",
+    "addressit": "1.3.0",
     "pelias-esclient": "0.0.25",
     "pelias-logger": "^0.0.8",
     "pelias-suggester-pipeline": "2.0.2",

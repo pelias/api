@@ -1,12 +1,12 @@
-var isObject = require('is-object');
+var isObject   = require('is-object');
+var query_parse= require('../helper/query_parser');
 
 // validate inputs, convert types and apply defaults
 function sanitize( req ){
   
   req.clean = req.clean || {};
   var params= req.query;
-  var delim = ',';
-
+  
   // ensure the input params are a valid object
   if( !isObject( params ) ){
     params = {};
@@ -22,13 +22,8 @@ function sanitize( req ){
   
   req.clean.input = params.input;
 
-  // for admin matching during query time
-  // split 'flatiron, new york, ny' into 'flatiron' and 'new york, ny'
-  var delim_index = params.input.indexOf(delim);
-  if ( delim_index !== -1 ) {
-    req.clean.input = params.input.substring(0, delim_index);
-    req.clean.input_admin = params.input.substring(delim_index + 1).trim();
-  }
+  req.clean.parsed_input = query_parse(params.input);
+
 
   return { 'error': false };
 

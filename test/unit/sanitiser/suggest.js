@@ -2,15 +2,20 @@
 var suggest  = require('../../../sanitiser/suggest'),
     _sanitize = suggest.sanitize,
     middleware = suggest.middleware,
+    _input  = require('../sanitiser/_input'),
+    parser = require('../../../helper/query_parser'),
+    defaultParsed = _input.defaultParsed,
     delim = ',',
     defaultError = 'invalid param \'input\': text length, must be >0',
     defaultClean =  { input: 'test', 
-                      lat:0,
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
-                      lon: 0,
                       size: 10,
-                      details: true
+                      details: true,
+                      lat:0,
+                      lon:0,
+                      parsed_input: defaultParsed,
+                      default_layers_set: true
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
@@ -49,6 +54,7 @@ module.exports.tests.sanitize_input = function(test, common) {
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.input = input;
         t.equal(err, undefined, 'no error');
+        expected.parsed_input = parser(input);
         t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
       });
     });
@@ -64,13 +70,8 @@ module.exports.tests.sanitize_input_with_delim = function(test, common) {
       sanitize({ input: input, lat: 0, lon: 0 }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.input = input;
-
-        var delim_index = input.indexOf(delim);
-        if (delim_index!==-1) {
-          expected.input = input.substring(0, input.indexOf(delim));
-          expected.input_admin = input.substring(delim_index + 1).trim();
-        }
-
+        expected.parsed_input = parser(input);
+        
         t.equal(err, undefined, 'no error');
         t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
       });
@@ -99,6 +100,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lat = parseFloat( lat );
         t.equal(err, undefined, 'no error');
+        expected.parsed_input = parser('test');
         t.deepEqual(clean, expected, 'clean set correctly (' + lat + ')');
       });
     });
@@ -127,6 +129,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lon = parseFloat( lon );
         t.equal(err, undefined, 'no error');
+        expected.parsed_input = parser('test');
         t.deepEqual(clean, expected, 'clean set correctly (' + lon + ')');
       });
     });
@@ -168,6 +171,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
       sanitize({ input: 'test', lat: 0, lon: 0, bbox: bbox }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         t.equal(err, undefined, 'no error');
+        expected.parsed_input = parser('test');
         t.deepEqual(clean, expected, 'falling back on 50km distance from centroid');
       });
     });
@@ -187,6 +191,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
           bottom: Math.min(bboxArray[1], bboxArray[3])
         };
         t.equal(err, undefined, 'no error');
+        expected.parsed_input = parser('test');
         t.deepEqual(clean, expected, 'clean set correctly (' + bbox + ')');
       });
     });
@@ -378,6 +383,7 @@ module.exports.tests.middleware_success = function(test, common) {
     var req = { query: { input: 'test', lat: 0, lon: 0 }};
     var next = function( message ){
       t.equal(message, undefined, 'no error message set');
+      req.clean.parsed_input = parser('test');
       t.deepEqual(req.clean, defaultClean);
       t.end();
     };
