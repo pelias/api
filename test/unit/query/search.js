@@ -118,7 +118,7 @@ var expected = {
 module.exports.tests.query = function(test, common) {
   test('valid query', function(t) {
     var query = generate({
-      input: 'test', size: 10,
+      text: 'test', size: 10,
       lat: 29.49136, lon: -82.50622,
       bbox: {
         top: 47.47, 
@@ -135,7 +135,7 @@ module.exports.tests.query = function(test, common) {
 
   test('valid query without lat/lon', function(t) {
     var query = generate({
-      input: 'test', size: 10,
+      text: 'test', size: 10,
       bbox: {
         top: 47.47, 
         right: -61.84, 
@@ -151,7 +151,7 @@ module.exports.tests.query = function(test, common) {
 
   test('valid query with no lat/lon and no bbox', function(t) {
     var query = generate({
-      input: 'test', size: 10,
+      text: 'test', size: 10,
       layers: ['test']
     });
 
@@ -190,7 +190,7 @@ module.exports.tests.query = function(test, common) {
 
   test('valid query without bbox', function(t) {
     var query = generate({
-      input: 'test', size: 10,
+      text: 'test', size: 10,
       lat: 29.49136, lon: -82.50622,
       layers: ['test']
     });
@@ -243,12 +243,12 @@ module.exports.tests.query = function(test, common) {
 
   test('valid query with a full valid address', function(t) {
     var address = '123 main st new york ny 10010 US';
-    var query = generate({ input: address, 
+    var query = generate({ text: address, 
       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
       size: 10,
       details: true,
-      parsed_input: parser(address),
+      parsed_text: parser(address),
       default_layers_set: true
     });
 
@@ -392,12 +392,12 @@ module.exports.tests.query = function(test, common) {
   
   test('valid query with partial address', function(t) {
     var partial_address = 'soho grand, new york';
-    var query = generate({ input: partial_address, 
+    var query = generate({ text: partial_address, 
       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
       size: 10,
       details: true,
-      parsed_input: parser(partial_address),
+      parsed_text: parser(partial_address),
       default_layers_set: true
     });
 

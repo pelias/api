@@ -13,16 +13,16 @@ function sanitize( req ){
   }
 
   // input text
-  if('string' !== typeof params.input || !params.input.length){
+  if('string' !== typeof params.text || !params.text.length){
     return { 
       'error': true,
-      'message': 'invalid param \'input\': text length, must be >0'
+      'message': 'invalid param \'text\': text length, must be >0'
     };
   }
   
-  req.clean.input = params.input;
+  req.clean.text = params.text;
 
-  req.clean.parsed_input = query_parse(params.input);
+  req.clean.parsed_text = query_parse(params.text);
 
 
   return { 'error': false };
