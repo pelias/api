@@ -2,4 +2,5 @@ language: node_js
 script: "npm run unit"
 node_js:
   - "0.10"
+  - "0.12"
 sudo: false
