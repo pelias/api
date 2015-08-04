@@ -11,6 +11,7 @@ var search  = require('../../../sanitiser/search'),
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
                       size: 10,
+                      categories: [],
                       details: true,
                       parsed_input: defaultParsed,
                       default_layers_set: true
@@ -389,6 +390,15 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood','locality','local_admin'];
     sanitize({ layers: 'poi,admin', input: 'test' }, function( err, clean ){
       t.deepEqual(clean.layers, alias_layers, 'all layers found (no duplicates)');
+      t.end();
+    });
+  });
+};
+
+module.exports.tests.sanitise_categories = function(test, common) {
+  test('sanitise category input', function(t) {
+    sanitize({ categories: 'food:pizza,Bars', input: 'a place'}, function( err, clean ){
+      t.deepEqual(clean.categories, ['food:pizza', 'bars'], 'categories cleaned');
       t.end();
     });
   });

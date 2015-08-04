@@ -5,7 +5,8 @@ var _sanitize = require('../sanitiser/_sanitize'),
       size: require('../sanitiser/_size'),
       layers: require('../sanitiser/_layers'),
       details: require('../sanitiser/_details'),
-      latlonzoom: require('../sanitiser/_geo')
+      latlonzoom: require('../sanitiser/_geo'),
+      categories: require('../sanitiser/_categories')
     };
 
 var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); };
