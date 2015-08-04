@@ -13,6 +13,7 @@ var tests = [
   require('./sanitiser/reverse'),
   require('./sanitiser/doc'),
   require('./sanitiser/coarse'),
+  require('./sanitiser/_categories'),
   require('./query/indeces'),
   require('./query/sort'),
   require('./query/search'),
