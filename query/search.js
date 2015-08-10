@@ -1,6 +1,9 @@
 
 var queries = require('geopipes-elasticsearch-backend').queries,
-    sort = require('../query/sort');
+    sort = require('../query/sort'),
+    adminFields = require('../helper/adminFields').availableFields,
+    addressWeights = require('../helper/address_weights');
+
 
 function generate( params ){
   var centroid = null;
@@ -27,22 +30,7 @@ function generate( params ){
   };
 
   if (params.parsed_input) {
-
-    query.query.filtered.query.bool.should = [];
-
-    var unmatched_admin_fields = [];
-    // qb stands for query builder
-    var qb = function(unmatched_admin_fields, value) {
-      if (value) {
-        unmatched_admin_fields.forEach(function(admin_field) {
-          var match = {};
-          match[admin_field] = value;
-          query.query.filtered.query.bool.should.push({
-             'match': match
-          });
-        });  
-      }
-    };
+    addParsedMatch(query, input, params.parsed_input);
 
     // update input
     if (params.parsed_input.number && params.parsed_input.street) {
@@ -50,53 +38,6 @@ function generate( params ){
     } else if (params.parsed_input.admin_parts) {
       input = params.parsed_input.name;
     }
-
-    // address
-    // number, street, postalcode
-    if (params.parsed_input.number) {
-      qb(['address.number'], params.parsed_input.number);
-    } 
-    if (params.parsed_input.street) {
-      qb(['address.street'], params.parsed_input.street);
-    } 
-    if (params.parsed_input.postalcode) {
-      qb(['address.zip'], params.parsed_input.postalcode);
-    } 
-
-    // city
-    // admin2, locality, local_admin, neighborhood
-    if (params.parsed_input.city) {
-      qb(['admin2'], params.parsed_input.admin2);
-    } else {
-      unmatched_admin_fields.push('admin2');
-    }
-
-    // state
-    // admin1, admin1_abbr
-    if (params.parsed_input.state) {
-      qb(['admin1_abbr'], params.parsed_input.state);
-    } else {
-      unmatched_admin_fields.push('admin1', 'admin1_abbr');
-    }
-
-    // country
-    // admin0, alpha3
-    if (params.parsed_input.country) {
-      qb(['alpha3'], params.parsed_input.country);
-    } else {
-      unmatched_admin_fields.push('admin0', 'alpha3');
-    }
-
-    var input_regions = params.parsed_input.regions ? params.parsed_input.regions.join(' ') : undefined;
-    // if no address was identified and input suggests some admin info in it
-    if (unmatched_admin_fields.length === 5 &&  input_regions !== params.input) {
-      if (params.parsed_input.admin_parts) {
-        qb(unmatched_admin_fields, params.parsed_input.admin_parts);
-      } else {
-        qb(unmatched_admin_fields, input_regions);
-      }
-    }
-  
   }
 
   // add search condition to distance query
@@ -117,6 +58,69 @@ function generate( params ){
   query.sort = query.sort.concat( sort( params ) );
 
   return query;
+}
+
+function addParsedMatch(query, defaultInput, parsedInput) {
+  query.query.filtered.query.bool.should = [];
+
+  // copy expected admin fields so we can remove them as we parse the address
+  var unmatchedAdminFields = adminFields.slice();
+
+  // address
+  // number, street, postalcode
+  addMatch(query, unmatchedAdminFields, 'address.number', parsedInput.number, addressWeights.number);
+  addMatch(query, unmatchedAdminFields, 'address.street', parsedInput.street, addressWeights.street);
+  addMatch(query, unmatchedAdminFields, 'address.zip', parsedInput.postalcode, addressWeights.zip);
+
+  // city
+  // admin2, locality, local_admin, neighborhood
+  addMatch(query, unmatchedAdminFields, 'admin2', parsedInput.admin2, addressWeights.admin2);
+
+  // state
+  // admin1, admin1_abbr
+  addMatch(query, unmatchedAdminFields, 'admin1_abbr', parsedInput.state, addressWeights.admin1_abbr);
+
+  // country
+  // admin0, alpha3
+  addMatch(query, unmatchedAdminFields, 'alpha3', parsedInput.country, addressWeights.alpha3);
+
+  var inputRegions = parsedInput.regions ? parsedInput.regions.join(' ') : undefined;
+  // if no address was identified and input suggests some admin info in it
+  if (unmatchedAdminFields.length > 0 &&  inputRegions !== defaultInput) {
+    unmatchedAdminFields.forEach(function (key) {
+      if (parsedInput.admin_parts) {
+        addMatch(query, [], key, parsedInput.admin_parts);
+      }
+      else {
+        addMatch(query, [], key, inputRegions);
+      }
+    });
+  }
+}
+
+function addMatch(query, unmatched, key, value, boost) { // jshint ignore:line
+  if (typeof value === 'undefined') {
+    return;
+  }
+
+  var match = {};
+
+  if (boost) {
+    match[key] = {
+      query: value,
+      boost: boost
+    };
+  }
+  else {
+    match[key] = value;
+  }
+
+  query.query.filtered.query.bool.should.push({ 'match': match });
+
+  var index = unmatched.indexOf(key);
+  if (index !== -1) {
+    unmatched.splice(index, 1);
+  }
 }
 
 module.exports = generate;

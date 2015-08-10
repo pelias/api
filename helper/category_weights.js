@@ -3,7 +3,14 @@
  * should be boosted in elasticsearch results.
  */
 
-module.exports = {
+module.exports.default = {
+  'transport:air': 2,
+  'transport:air:aerodrome': 2,
+  'transport:air:airport': 2,
+  'admin': 2
+};
+
+module.exports.address = {
   'transport:air': 2,
   'transport:air:aerodrome': 2,
   'transport:air:airport': 2

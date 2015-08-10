@@ -43,7 +43,7 @@ module.exports = function( params ){
     {
       '_script': {
         'params': {
-          'category_weights': category_weights
+          'category_weights': getCategoryWeights(params)
         },
         'file': category,
         'type': 'number',
@@ -64,3 +64,12 @@ module.exports = function( params ){
 
   return scriptsConfig;
 };
+
+function getCategoryWeights(params) {
+  if (params && params.hasOwnProperty('parsed_input') &&
+        (params.parsed_input.hasOwnProperty('number') ||
+         params.parsed_input.hasOwnProperty('street'))) {
+    return category_weights.address;
+  }
+  return category_weights.default;
+}
