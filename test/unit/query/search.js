@@ -7,7 +7,9 @@ var category = 'category';
 var parser = require('../../../helper/query_parser');
 var category_weights = require('../../../helper/category_weights');
 var admin_weights = require('../../../helper/admin_weights');
+var address_weights = require('../../../helper/address_weights');
 var weights = require('pelias-suggester-pipeline').weights;
+
 
 module.exports.tests = {};
 
@@ -269,7 +271,7 @@ module.exports.tests.query = function(test, common) {
                  'match': {
                    'address.number': {
                      'query': 123,
-                     'boost': 1
+                     'boost': address_weights.number
                    }
                  }
                },
@@ -277,7 +279,7 @@ module.exports.tests.query = function(test, common) {
                  'match': {
                    'address.street': {
                      'query': 'main st',
-                     'boost': 3
+                     'boost': address_weights.street
                    }
                  }
                },
@@ -285,7 +287,7 @@ module.exports.tests.query = function(test, common) {
                  'match': {
                    'address.zip': {
                      'query': 10010,
-                     'boost': 3
+                     'boost': address_weights.zip
                    }
                  }
                },
@@ -293,7 +295,7 @@ module.exports.tests.query = function(test, common) {
                  'match': {
                    'admin1_abbr': {
                      'query': 'NY',
-                     'boost': 3
+                     'boost': address_weights.admin1_abbr
                    }
                  }
                },
@@ -301,7 +303,7 @@ module.exports.tests.query = function(test, common) {
                  'match': {
                    'alpha3': {
                      'query': 'USA',
-                     'boost': 5
+                     'boost': address_weights.alpha3
                    }
                  }
                },
@@ -623,7 +625,7 @@ module.exports.tests.query = function(test, common) {
                   match: {
                     'address.number': {
                       'query': 1,
-                      'boost': 1
+                      'boost': address_weights.number
                     }
                   }
                 },
@@ -631,7 +633,7 @@ module.exports.tests.query = function(test, common) {
                   match: {
                     'address.street': {
                       'query': 'water st',
-                      'boost': 3
+                      'boost': address_weights.street
                     }
                   }
                 },
@@ -639,7 +641,7 @@ module.exports.tests.query = function(test, common) {
                   'match': {
                     'admin1_abbr': {
                       'query': 'NY',
-                      'boost': 3
+                      'boost': address_weights.admin1_abbr
                     }
                   }
                 },
