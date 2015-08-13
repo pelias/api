@@ -3,7 +3,7 @@ var suggest  = require('../../../sanitiser/reverse'),
     _sanitize = suggest.sanitize,
     middleware = suggest.middleware,
     delim = ',',
-    defaultError = 'missing param \'lat\': must be >-90 and <90',
+    defaultError = 'missing param \'lat\'',
     defaultClean =  { lat:0,
                       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
@@ -59,7 +59,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
   test('missing lat', function(t) {  
     lats.missing.forEach( function( lat ){
       sanitize({ lat: lat, lon: 0 }, function( err, clean ){
-        t.equal(err, 'missing param \'lat\': must be >-90 and <90', 'latitude is a required field');
+        t.equal(err, 'missing param \'lat\'', 'latitude is a required field');
         t.equal(clean, undefined, 'clean not set');
       });
     });
@@ -69,20 +69,9 @@ module.exports.tests.sanitize_lat = function(test, common) {
 
 module.exports.tests.sanitize_lon = function(test, common) {
   var lons = {
-    invalid: [ -360, -181, 181, 360 ],
-    valid: [ -180, -1, -0, 0, 45, 90, '-180', '0', '180' ],
+    valid: [ -360, -181, 181, -180, -1, -0, 0, 45, 90, '-180', '0', '180' ],
     missing: ['', undefined, null]
   };
-  test('invalid lon', function(t) {  
-    lons.invalid.forEach( function( lon ){
-      sanitize({ input: 'test', lat: 0, lon: lon }, function( err, clean ){
-        t.equal(err, 'invalid param \'lon\': must be >-180 and <180', lon + ' is an invalid longitude');
-        t.equal(clean, undefined, 'clean not set');
-        
-      });
-    });
-    t.end();
-  });
   test('valid lon', function(t) {  
     lons.valid.forEach( function( lon ){
       sanitize({ input: 'test', lat: 0, lon: lon }, function( err, clean ){
@@ -97,7 +86,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
   test('missing lon', function(t) {  
     lons.missing.forEach( function( lon ){
       sanitize({ lat: 0, lon: lon }, function( err, clean ){
-        t.equal(err, 'missing param \'lon\': must be >-180 and <180', 'longitude is a required field');
+        t.equal(err, 'missing param \'lon\'', 'longitude is a required field');
         t.equal(clean, undefined, 'clean not set');
       });
     });
@@ -287,7 +276,7 @@ module.exports.tests.middleware_failure = function(test, common) {
       t.equal(code, 400, 'status set');
     }};
     var next = function( message ){
-      t.equal(message, defaultError);
+      t.equals(message, defaultError);
       t.end();
     };
     middleware( {}, res, next );
