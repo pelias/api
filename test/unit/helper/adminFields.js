@@ -1,18 +1,12 @@
-var proxyquire = require('proxyquire');
+var adminFields = require('../../../helper/adminFields');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
   test('validate fields', function(t) {
-    var adminFields = require('../../../helper/adminFields').availableFields;
-    t.assert(adminFields instanceof Array, 'adminFields is an array');
-    t.assert(adminFields.length > 0, 'adminFields array is not empty');
-    t.end();
-  });
-  test('validate fields', function(t) {
-    var adminFields = require('../../../helper/adminFields').expectedFields;
-    t.assert(adminFields instanceof Array, 'adminFields is an array');
-    t.assert(adminFields.length > 0, 'adminFields array is not empty');
+    t.assert(adminFields instanceof Function, 'adminFields is a function');
+    t.assert(adminFields() instanceof Array, 'adminFields() returns an array');
+    t.assert(adminFields().length > 0, 'adminFields array is not empty');
     t.end();
   });
 };
@@ -20,54 +14,60 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.lookupExistance = function(test, common) {
   test('all expected fields in schema', function(t) {
 
-    var expectedFields = require('../../../helper/adminFields').expectedFields;
-    var schemaMock = { mappings: { _default_: { properties: {} } } };
+    var expectedFields = [
+      'one',
+      'two',
+      'three',
+      'four'
+    ];
+    var schema = { mappings: { _default_: { properties: {} } } };
 
     // inject all expected fields into schema mock
     expectedFields.forEach(function (field) {
-      schemaMock.mappings._default_.properties[field] = {};
+      schema.mappings._default_.properties[field] = {};
     });
 
-    var adminFields = proxyquire('../../../helper/adminFields', {'pelias-schema': schemaMock});
+    var res = adminFields(schema, expectedFields);
 
-    t.deepEquals(adminFields.availableFields, adminFields.expectedFields, 'all expected fields are returned');
+    t.deepEquals(res, expectedFields, 'all expected fields are returned');
     t.end();
   });
 
   test('some expected fields in schema', function(t) {
 
-    var expectedFields = require('../../../helper/adminFields').expectedFields.slice(0, 3);
-    var schemaMock = { mappings: { _default_: { properties: {} } } };
+    var expectedFields = [
+      'one',
+      'two',
+      'three',
+      'four'
+    ];
+    var schema = { mappings: { _default_: { properties: {} } } };
 
-    // inject all expected fields into schema mock
-    expectedFields.forEach(function (field) {
-      schemaMock.mappings._default_.properties[field] = {};
+    // inject only some of the expected fields into schema mock
+    expectedFields.slice(0, 3).forEach(function (field) {
+      schema.mappings._default_.properties[field] = {};
     });
 
-    var adminFields = proxyquire('../../../helper/adminFields', {'pelias-schema': schemaMock});
+    var res = adminFields(schema, expectedFields);
 
-    t.deepEquals(adminFields.availableFields, expectedFields, 'only matching expected fields are returned');
+    t.deepEquals(res, expectedFields.slice(0, 3), 'only matching expected fields are returned');
     t.end();
   });
 
   test('no expected fields in schema', function(t) {
 
-    var schemaMock = { mappings: { _default_: { properties: { foo: {} } } } };
+    var schema = { mappings: { _default_: { properties: { foo: {} } } } };
 
-    var loggerMock = { get: function (name) {
-      t.equal(name, 'api');
-      return {
-        error: function () {}
-      };
-    }};
+    var logErrorCalled = false;
+    var logger = {
+      error: function () {
+        logErrorCalled = true;
+      }};
 
-    var adminFields = proxyquire('../../../helper/adminFields',
-      {
-        'pelias-schema': schemaMock,
-        'pelias-logger': loggerMock
-      });
+    var res = adminFields(schema, undefined, logger);
 
-    t.deepEquals([], adminFields.availableFields, 'no admin fields found');
+    t.deepEquals(res, [], 'no admin fields found');
+    t.assert(logErrorCalled, 'log error called');
     t.end();
   });
 };

@@ -1,7 +1,7 @@
 
 var queries = require('geopipes-elasticsearch-backend').queries,
     sort = require('../query/sort'),
-    adminFields = require('../helper/adminFields').availableFields,
+    adminFields = require('../helper/adminFields')(),
     addressWeights = require('../helper/address_weights');
 
 
@@ -60,8 +60,16 @@ function generate( params ){
   return query;
 }
 
+/**
+ * Traverse the parsed input object, containing all the address parts detected in query string.
+ * Add matches to query for each identifiable component.
+ *
+ * @param {Object} query
+ * @param {string} defaultInput
+ * @param {Object} parsedInput
+ */
 function addParsedMatch(query, defaultInput, parsedInput) {
-  query.query.filtered.query.bool.should = [];
+  query.query.filtered.query.bool.should = query.query.filtered.query.bool.should || [];
 
   // copy expected admin fields so we can remove them as we parse the address
   var unmatchedAdminFields = adminFields.slice();
@@ -74,7 +82,7 @@ function addParsedMatch(query, defaultInput, parsedInput) {
 
   // city
   // admin2, locality, local_admin, neighborhood
-  addMatch(query, unmatchedAdminFields, 'admin2', parsedInput.admin2, addressWeights.admin2);
+  addMatch(query, unmatchedAdminFields, 'admin2', parsedInput.city, addressWeights.admin2);
 
   // state
   // admin1, admin1_abbr
@@ -84,20 +92,54 @@ function addParsedMatch(query, defaultInput, parsedInput) {
   // admin0, alpha3
   addMatch(query, unmatchedAdminFields, 'alpha3', parsedInput.country, addressWeights.alpha3);
 
-  var inputRegions = parsedInput.regions ? parsedInput.regions.join(' ') : undefined;
-  // if no address was identified and input suggests some admin info in it
-  if (unmatchedAdminFields.length > 0 &&  inputRegions !== defaultInput) {
+  addUnmatchedAdminFieldsToQuery(query, unmatchedAdminFields, parsedInput, defaultInput);
+}
+
+/**
+ * Check for additional admin fields in the parsed input, and if any was found
+ * combine into single string and match against all unmatched admin fields.
+ *
+ * @param {Object} query
+ * @param {Array} unmatchedAdminFields
+ * @param {Object} parsedInput
+ * @param {string} defaultInput
+ */
+function addUnmatchedAdminFieldsToQuery(query, unmatchedAdminFields, parsedInput, defaultInput) {
+  if (unmatchedAdminFields.length === 0 ) {
+    return;
+  }
+
+  var leftovers = [];
+
+  if (parsedInput.admin_parts) {
+    leftovers.push(parsedInput.admin_parts);
+  }
+  else if (parsedInput.regions) {
+    leftovers.push(parsedInput.regions);
+  }
+
+  if (leftovers.length === 0) {
+    return;
+  }
+
+  // if there are additional regions/admin_parts found
+  if (leftovers !== defaultInput) {
     unmatchedAdminFields.forEach(function (key) {
-      if (parsedInput.admin_parts) {
-        addMatch(query, [], key, parsedInput.admin_parts);
-      }
-      else {
-        addMatch(query, [], key, inputRegions);
-      }
+      // combine all the leftover parts into one string
+      addMatch(query, [], key, leftovers.join(' '));
     });
   }
 }
 
+/**
+ * Add key:value match to query. Apply boost if specified.
+ *
+ * @param {Object} query
+ * @param {Array} unmatched
+ * @param {string} key
+ * @param {string|number|undefined} value
+ * @param {number|undefined} [boost] optional
+ */
 function addMatch(query, unmatched, key, value, boost) { // jshint ignore:line
   if (typeof value === 'undefined') {
     return;
@@ -117,6 +159,16 @@ function addMatch(query, unmatched, key, value, boost) { // jshint ignore:line
 
   query.query.filtered.query.bool.should.push({ 'match': match });
 
+  removeFromUnmatched(unmatched, key);
+}
+
+/**
+ * If key is found in unmatched list, remove it from the array
+ *
+ * @param {Array} unmatched
+ * @param {string} key
+ */
+function removeFromUnmatched(unmatched, key) {
   var index = unmatched.indexOf(key);
   if (index !== -1) {
     unmatched.splice(index, 1);
