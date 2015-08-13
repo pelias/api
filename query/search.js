@@ -30,14 +30,14 @@ function generate( params ){
   };
 
   if (params.parsed_input) {
-    addParsedMatch(query, input, params.parsed_input);
-
     // update input
     if (params.parsed_input.number && params.parsed_input.street) {
       input = params.parsed_input.number + ' ' + params.parsed_input.street;
     } else if (params.parsed_input.admin_parts) {
       input = params.parsed_input.name;
     }
+
+    addParsedMatch(query, input, params.parsed_input);
   }
 
   // add search condition to distance query
@@ -122,11 +122,13 @@ function addUnmatchedAdminFieldsToQuery(query, unmatchedAdminFields, parsedInput
     return;
   }
 
+  leftovers = leftovers.join(' ');
+
   // if there are additional regions/admin_parts found
   if (leftovers !== defaultInput) {
     unmatchedAdminFields.forEach(function (key) {
       // combine all the leftover parts into one string
-      addMatch(query, [], key, leftovers.join(' '));
+      addMatch(query, [], key, leftovers);
     });
   }
 }
