@@ -1,7 +1,7 @@
 
-var doc  = require('../../../sanitiser/doc'),
-    _sanitize = doc.sanitize,
-    middleware = doc.middleware,
+var place  = require('../../../sanitiser/place'),
+    _sanitize = place.sanitize,
+    middleware = place.middleware,
     indeces = require('../../../query/indeces'),
     delimiter = ':',
     defaultLengthError = function(input) { return 'invalid param \''+ input + '\': text length, must be >0'; },
@@ -190,7 +190,7 @@ module.exports.tests.middleware_success = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /doc ' + name, testFunction);
+    return tape('SANTIZE /place ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

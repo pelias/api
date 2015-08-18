@@ -1,4 +1,4 @@
-var setup = require('../../../controller/doc'),
+var setup = require('../../../controller/place'),
     mockBackend = require('../mock/backend');
 
 module.exports.tests = {};
@@ -14,7 +14,7 @@ module.exports.tests.interface = function(test, common) {
 // functionally test controller (backend success)
 module.exports.tests.functional_success = function(test, common) {
 
-  // expected geojson features for 'client/doc/ok/1' fixture
+  // expected geojson features for 'client/place/ok/1' fixture
   var expected = [{
     type: 'Feature',
     geometry: {
