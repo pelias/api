@@ -1,6 +1,7 @@
 
 var _sanitize = require('../sanitiser/_sanitize'),
     sanitizers = {
+      alpha3: require('../sanitiser/_alpha3'),
       input: require('../sanitiser/_input'),
       size: require('../sanitiser/_size'),
       layers: require('../sanitiser/_layers'),
