@@ -99,6 +99,15 @@ function generate( params ){
   
   }
 
+  // strictly filter out any documents not matching a specified alpha3
+  if (params.alpha3) {
+    query.query.filtered.query.bool.must.push({
+      'match': {
+        'alpha3': params.alpha3
+      }
+    });
+  }
+
   // add search condition to distance query
   query.query.filtered.query.bool.must.push({ 
     'match': {
