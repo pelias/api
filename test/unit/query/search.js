@@ -538,6 +538,16 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
+
+  test('valid query with categories', function(t) {
+    var query = generate({
+      input: 'test', size: 10,
+      categories: ['abc', 'def']
+    });
+
+    t.deepEqual(['abc', 'def'], query.query.filtered.filter.bool.must[0].terms.category, 'query contains categories');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {

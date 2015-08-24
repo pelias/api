@@ -6,6 +6,9 @@ The full text search endpoint that matches the name of a place to points on the 
 * `input`: the string to search for (eg `new york city` or `london`)
 
 #### Optional Parameters
+* `categories`: filter results to only those belonging to the given categories(a comma delimited
+  list is accepted). The list of possible categories can be found at
+  https://github.com/pelias/openstreetmap/blob/master/config/category_map.js
 * `lat`, `lon`: the latitude/longitude coordinates to bias search results towards (may increase relevancy)
 * `zoom`: zoom level from which you wish to view the world
 * `size` (default: `10`): the number of results to return

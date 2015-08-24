@@ -1,5 +1,6 @@
 
 var queries = require('geopipes-elasticsearch-backend').queries,
+    category_filter = require('./category_filter'),
     sort = require('../query/sort');
 
 function generate( params ){
@@ -105,6 +106,8 @@ function generate( params ){
       'name.default': input
     }
   });
+
+  category_filter(query, params);
 
   // add phrase matching query
   // note: this is required for shingle/phrase matching
