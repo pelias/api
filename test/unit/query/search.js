@@ -7,7 +7,9 @@ var category = 'category';
 var parser = require('../../../helper/query_parser');
 var category_weights = require('../../../helper/category_weights');
 var admin_weights = require('../../../helper/admin_weights');
+var address_weights = require('../../../helper/address_weights');
 var weights = require('pelias-suggester-pipeline').weights;
+
 
 module.exports.tests = {};
 
@@ -54,7 +56,7 @@ var sort = [
   {
     '_script': {
       'params': {
-        'category_weights': category_weights
+        'category_weights': category_weights.default
       },
       'file': category,
       'type': 'number',
@@ -267,27 +269,72 @@ module.exports.tests.query = function(test, common) {
              'should': [
                {
                  'match': {
-                   'address.number': 123
+                   'address.number': {
+                     'query': 123,
+                     'boost': address_weights.number
+                   }
                  }
                },
                {
                  'match': {
-                   'address.street': 'main st'
+                   'address.street': {
+                     'query': 'main st',
+                     'boost': address_weights.street
+                   }
                  }
                },
                {
                  'match': {
-                   'address.zip': 10010
+                   'address.zip': {
+                     'query': 10010,
+                     'boost': address_weights.zip
+                   }
                  }
                },
                {
                  'match': {
-                   'admin1_abbr': 'NY'
+                   'admin1_abbr': {
+                     'query': 'NY',
+                     'boost': address_weights.admin1_abbr
+                   }
                  }
                },
                {
                  'match': {
-                   'alpha3': 'USA'
+                   'alpha3': {
+                     'query': 'USA',
+                     'boost': address_weights.alpha3
+                   }
+                 }
+               },
+               {
+                 match: {
+                   admin0: 'new york'
+                 }
+               },
+               {
+                 match: {
+                   admin1: 'new york'
+                 }
+               },
+               {
+                 match: {
+                   admin2: 'new york'
+                 }
+               },
+               {
+                 match: {
+                   local_admin: 'new york'
+                 }
+               },
+               {
+                 match: {
+                   locality: 'new york'
+                 }
+               },
+               {
+                 match: {
+                   neighborhood: 'new york'
                  }
                },
                {
@@ -416,7 +463,7 @@ module.exports.tests.query = function(test, common) {
              'should': [
                {
                  'match': {
-                   'admin2': 'new york'
+                   'admin0': 'new york'
                  }
                },
                {
@@ -431,12 +478,22 @@ module.exports.tests.query = function(test, common) {
                },
                {
                  'match': {
-                   'admin0': 'new york'
+                   'admin2': 'new york'
                  }
                },
                {
                  'match': {
-                   'alpha3': 'new york'
+                   'local_admin': 'new york'
+                 }
+               },
+               {
+                 'match': {
+                   'locality': 'new york'
+                 }
+               },
+               {
+                 'match': {
+                   'neighborhood': 'new york'
                  }
                },
                {
@@ -501,7 +558,8 @@ module.exports.tests.query = function(test, common) {
              'category_weights': {
                'transport:air': 2,
                'transport:air:aerodrome': 2,
-               'transport:air:airport': 2
+               'transport:air:airport': 2,
+               'admin': 2
              }
            },
            'file': 'category',
@@ -534,10 +592,189 @@ module.exports.tests.query = function(test, common) {
      ],
      'track_scores': true
     };
-    
+
     t.deepEqual(query, expected, 'valid search query');
     t.end();
   });
+
+  test('valid query with regions in address', function(t) {
+    var partial_address = '1 water st manhattan ny';
+    var query = generate({ input: partial_address,
+      layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
+        'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
+      size: 10,
+      details: true,
+      parsed_input: parser(partial_address),
+      default_layers_set: true
+    });
+
+    var expected = {
+      'query': {
+        'filtered': {
+          'query': {
+            'bool': {
+              'must': [
+                {
+                  'match': {
+                    'name.default': '1 water st'
+                  }
+                }
+              ],
+              'should': [
+                {
+                  match: {
+                    'address.number': {
+                      'query': 1,
+                      'boost': address_weights.number
+                    }
+                  }
+                },
+                {
+                  match: {
+                    'address.street': {
+                      'query': 'water st',
+                      'boost': address_weights.street
+                    }
+                  }
+                },
+                {
+                  'match': {
+                    'admin1_abbr': {
+                      'query': 'NY',
+                      'boost': address_weights.admin1_abbr
+                    }
+                  }
+                },
+                {
+                  'match': {
+                    'admin0': 'manhattan'
+                  }
+                },
+                {
+                  'match': {
+                    'admin1': 'manhattan'
+                  }
+                },
+                {
+                  'match': {
+                    'admin2': 'manhattan'
+                  }
+                },
+                {
+                  match: {
+                    local_admin: 'manhattan'
+                  }
+                },
+                {
+                  match: {
+                    locality: 'manhattan'
+                  }
+                },
+                {
+                  match: {
+                    neighborhood: 'manhattan'
+                  }
+                },
+                {
+                  'match': {
+                    'phrase.default': '1 water st'
+                  }
+                }
+              ]
+            }
+          },
+          'filter': {
+            'bool': {
+              'must': []
+            }
+          }
+        }
+      },
+      'size': 10,
+      'sort': [
+        '_score',
+        {
+          '_script': {
+            'file': 'admin_boost',
+            'type': 'number',
+            'order': 'desc'
+          }
+        },
+        {
+          '_script': {
+            'file': 'popularity',
+            'type': 'number',
+            'order': 'desc'
+          }
+        },
+        {
+          '_script': {
+            'file': 'population',
+            'type': 'number',
+            'order': 'desc'
+          }
+        },
+        {
+          '_script': {
+            'params': {
+              'weights': {
+                'admin0': 4,
+                'admin1': 3,
+                'admin2': 2,
+                'local_admin': 1,
+                'locality': 1,
+                'neighborhood': 1
+              }
+            },
+            'file': 'weights',
+            'type': 'number',
+            'order': 'desc'
+          }
+        },
+        {
+          '_script': {
+            'params': {
+              'category_weights': {
+                'transport:air': 2,
+                'transport:air:aerodrome': 2,
+                'transport:air:airport': 2
+              }
+            },
+            'file': 'category',
+            'type': 'number',
+            'order': 'desc'
+          }
+        },
+        {
+          '_script': {
+            'params': {
+              'weights': {
+                'geoname': 0,
+                'address': 4,
+                'osmnode': 6,
+                'osmway': 6,
+                'poi-address': 8,
+                'neighborhood': 10,
+                'local_admin': 12,
+                'locality': 12,
+                'admin2': 12,
+                'admin1': 14,
+                'admin0': 2
+              }
+            },
+            'file': 'weights',
+            'type': 'number',
+            'order': 'desc'
+          }
+        }
+      ],
+      'track_scores': true
+    };
+
+    t.deepEqual(query, expected, 'valid search query');
+    t.end();
+  });
+
 };
 
 module.exports.all = function (tape, common) {

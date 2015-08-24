@@ -1,6 +1,9 @@
 
 var queries = require('geopipes-elasticsearch-backend').queries,
-    sort = require('../query/sort');
+    sort = require('../query/sort'),
+    adminFields = require('../helper/adminFields')(),
+    addressWeights = require('../helper/address_weights');
+
 
 function generate( params ){
   var centroid = null;
@@ -27,23 +30,6 @@ function generate( params ){
   };
 
   if (params.parsed_input) {
-
-    query.query.filtered.query.bool.should = [];
-
-    var unmatched_admin_fields = [];
-    // qb stands for query builder
-    var qb = function(unmatched_admin_fields, value) {
-      if (value) {
-        unmatched_admin_fields.forEach(function(admin_field) {
-          var match = {};
-          match[admin_field] = value;
-          query.query.filtered.query.bool.should.push({
-             'match': match
-          });
-        });  
-      }
-    };
-
     // update input
     if (params.parsed_input.number && params.parsed_input.street) {
       input = params.parsed_input.number + ' ' + params.parsed_input.street;
@@ -51,52 +37,7 @@ function generate( params ){
       input = params.parsed_input.name;
     }
 
-    // address
-    // number, street, postalcode
-    if (params.parsed_input.number) {
-      qb(['address.number'], params.parsed_input.number);
-    } 
-    if (params.parsed_input.street) {
-      qb(['address.street'], params.parsed_input.street);
-    } 
-    if (params.parsed_input.postalcode) {
-      qb(['address.zip'], params.parsed_input.postalcode);
-    } 
-
-    // city
-    // admin2, locality, local_admin, neighborhood
-    if (params.parsed_input.city) {
-      qb(['admin2'], params.parsed_input.admin2);
-    } else {
-      unmatched_admin_fields.push('admin2');
-    }
-
-    // state
-    // admin1, admin1_abbr
-    if (params.parsed_input.state) {
-      qb(['admin1_abbr'], params.parsed_input.state);
-    } else {
-      unmatched_admin_fields.push('admin1', 'admin1_abbr');
-    }
-
-    // country
-    // admin0, alpha3
-    if (params.parsed_input.country) {
-      qb(['alpha3'], params.parsed_input.country);
-    } else {
-      unmatched_admin_fields.push('admin0', 'alpha3');
-    }
-
-    var input_regions = params.parsed_input.regions ? params.parsed_input.regions.join(' ') : undefined;
-    // if no address was identified and input suggests some admin info in it
-    if (unmatched_admin_fields.length === 5 &&  input_regions !== params.input) {
-      if (params.parsed_input.admin_parts) {
-        qb(unmatched_admin_fields, params.parsed_input.admin_parts);
-      } else {
-        qb(unmatched_admin_fields, input_regions);
-      }
-    }
-  
+    addParsedMatch(query, input, params.parsed_input);
   }
 
   // add search condition to distance query
@@ -117,6 +58,123 @@ function generate( params ){
   query.sort = query.sort.concat( sort( params ) );
 
   return query;
+}
+
+/**
+ * Traverse the parsed input object, containing all the address parts detected in query string.
+ * Add matches to query for each identifiable component.
+ *
+ * @param {Object} query
+ * @param {string} defaultInput
+ * @param {Object} parsedInput
+ */
+function addParsedMatch(query, defaultInput, parsedInput) {
+  query.query.filtered.query.bool.should = query.query.filtered.query.bool.should || [];
+
+  // copy expected admin fields so we can remove them as we parse the address
+  var unmatchedAdminFields = adminFields.slice();
+
+  // address
+  // number, street, postalcode
+  addMatch(query, unmatchedAdminFields, 'address.number', parsedInput.number, addressWeights.number);
+  addMatch(query, unmatchedAdminFields, 'address.street', parsedInput.street, addressWeights.street);
+  addMatch(query, unmatchedAdminFields, 'address.zip', parsedInput.postalcode, addressWeights.zip);
+
+  // city
+  // admin2, locality, local_admin, neighborhood
+  addMatch(query, unmatchedAdminFields, 'admin2', parsedInput.city, addressWeights.admin2);
+
+  // state
+  // admin1, admin1_abbr
+  addMatch(query, unmatchedAdminFields, 'admin1_abbr', parsedInput.state, addressWeights.admin1_abbr);
+
+  // country
+  // admin0, alpha3
+  addMatch(query, unmatchedAdminFields, 'alpha3', parsedInput.country, addressWeights.alpha3);
+
+  addUnmatchedAdminFieldsToQuery(query, unmatchedAdminFields, parsedInput, defaultInput);
+}
+
+/**
+ * Check for additional admin fields in the parsed input, and if any was found
+ * combine into single string and match against all unmatched admin fields.
+ *
+ * @param {Object} query
+ * @param {Array} unmatchedAdminFields
+ * @param {Object} parsedInput
+ * @param {string} defaultInput
+ */
+function addUnmatchedAdminFieldsToQuery(query, unmatchedAdminFields, parsedInput, defaultInput) {
+  if (unmatchedAdminFields.length === 0 ) {
+    return;
+  }
+
+  var leftovers = [];
+
+  if (parsedInput.admin_parts) {
+    leftovers.push(parsedInput.admin_parts);
+  }
+  else if (parsedInput.regions) {
+    leftovers.push(parsedInput.regions);
+  }
+
+  if (leftovers.length === 0) {
+    return;
+  }
+
+  leftovers = leftovers.join(' ');
+
+  // if there are additional regions/admin_parts found
+  if (leftovers !== defaultInput) {
+    unmatchedAdminFields.forEach(function (key) {
+      // combine all the leftover parts into one string
+      addMatch(query, [], key, leftovers);
+    });
+  }
+}
+
+/**
+ * Add key:value match to query. Apply boost if specified.
+ *
+ * @param {Object} query
+ * @param {Array} unmatched
+ * @param {string} key
+ * @param {string|number|undefined} value
+ * @param {number|undefined} [boost] optional
+ */
+function addMatch(query, unmatched, key, value, boost) { // jshint ignore:line
+  if (typeof value === 'undefined') {
+    return;
+  }
+
+  var match = {};
+
+  if (boost) {
+    match[key] = {
+      query: value,
+      boost: boost
+    };
+  }
+  else {
+    match[key] = value;
+  }
+
+  query.query.filtered.query.bool.should.push({ 'match': match });
+
+  removeFromUnmatched(unmatched, key);
+}
+
+/**
+ * If key is found in unmatched list, remove it from the array
+ *
+ * @param {Array} unmatched
+ * @param {string} key
+ */
+function removeFromUnmatched(unmatched, key) {
+  var index = unmatched.indexOf(key);
+  if (index !== -1) {
+    unmatched.splice(index, 1);
+  }
 }
 
 module.exports = generate;

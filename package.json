@@ -33,9 +33,11 @@
     "elasticsearch": ">=1.2.1"
   },
   "dependencies": {
+    "addressit": "1.3.0",
     "async": "^0.9.0",
     "cluster2": "git://github.com/missinglink/cluster2.git#node_zero_twelve",
     "express": "^4.8.8",
+    "extend": "2.0.1",
     "geojson": "^0.2.1",
     "geojson-extent": "^0.3.1",
     "geopipes-elasticsearch-backend": "^0.2.0",
@@ -44,10 +46,9 @@
     "microtime": "1.4.0",
     "morgan": "1.5.2",
     "pelias-config": "^0.1.4",
-    "extend": "2.0.1",
-    "addressit": "1.3.0",
     "pelias-esclient": "0.0.25",
     "pelias-logger": "^0.0.8",
+    "pelias-schema": "1.0.0",
     "pelias-suggester-pipeline": "2.0.2",
     "through2": "0.6.5"
   },
