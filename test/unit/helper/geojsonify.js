@@ -1,4 +1,5 @@
 
+var extend = require('extend');
 var geojsonify = require('../../../helper/geojsonify');
 
 module.exports.tests = {};
@@ -36,6 +37,20 @@ module.exports.tests.earth = function(test, common) {
 };
 
 module.exports.tests.search = function(test, common) {
+
+  var geocoding = {
+    'geocoding': {
+      'version': 'BETA',
+      'messages': {
+        'warn': [
+          'Pelias v1.0 will be released in September 2015!!!',
+          'Starting September 1st, all users must obtain FREE developer keys in order to continue using this service.',
+          'There will be breaking changes to the API, so action must be taken to upgrade client code.',
+          'Backwards compatibility will be maintained through November, followed by deprecation and shut-off of previous version.'
+        ]
+      }
+    }
+  };
 
   var input = [
     {
@@ -217,6 +232,9 @@ module.exports.tests.search = function(test, common) {
     ]
   };
 
+  // merge in geocoding block
+  extend(expected, geocoding);
+
   var truthy_params = [true, 1];
 
   test('geojsonify.search(doc, true) with details', function(t) {
@@ -284,6 +302,9 @@ module.exports.tests.search = function(test, common) {
       }
     ]
   };
+
+  // merge in geocoding block
+  extend(no_details_expected, geocoding);
 
   test('geojsonify.search(doc) with no details (default)', function(t) {
     var json = geojsonify.search( input );
