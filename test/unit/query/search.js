@@ -656,13 +656,16 @@ module.exports.tests.query = function(test, common) {
               'must': [
                 {
                   'match': {
-                    'name.default': '1 water st'
+                    'name.default': {
+                      'query': '1 water st',
+                      'analyzer': 'peliasOneEdgeGram'
+                    }
                   }
                 }
               ],
               'should': [
                 {
-                  match: {
+                  'match': {
                     'address.number': {
                       'query': 1,
                       'boost': address_weights.number
@@ -670,7 +673,7 @@ module.exports.tests.query = function(test, common) {
                   }
                 },
                 {
-                  match: {
+                  'match': {
                     'address.street': {
                       'query': 'water st',
                       'boost': address_weights.street
@@ -701,23 +704,28 @@ module.exports.tests.query = function(test, common) {
                   }
                 },
                 {
-                  match: {
-                    local_admin: 'manhattan'
-                  }
-                },
-                {
-                  match: {
-                    locality: 'manhattan'
-                  }
-                },
-                {
-                  match: {
-                    neighborhood: 'manhattan'
+                  'match': {
+                    'local_admin': 'manhattan'
                   }
                 },
                 {
                   'match': {
-                    'phrase.default': '1 water st'
+                    'locality': 'manhattan'
+                  }
+                },
+                {
+                  'match': {
+                    'neighborhood': 'manhattan'
+                  }
+                },
+                {
+                  'match': {
+                    'phrase.default': {
+                      'query': '1 water st',
+                      'analyzer': 'peliasPhrase',
+                      'type': 'phrase',
+                      'slop': 2
+                    }
                   }
                 }
               ]
