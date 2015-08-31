@@ -17,6 +17,9 @@ app.use( require('./middleware/jsonp') );
 var legacy = require('./routes/legacy');
 legacy.addRoutes(app, peliasConfig);
 
+var v1 = require('./routes/v1');
+v1.addRoutes(app, peliasConfig);
+
 /** ----------------------- error middleware ----------------------- **/
 
 app.use( require('./middleware/404') );
