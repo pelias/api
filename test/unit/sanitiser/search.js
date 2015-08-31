@@ -84,8 +84,8 @@ module.exports.tests.sanitize_input_with_delim = function(test, common) {
 
 module.exports.tests.sanitize_lat = function(test, common) {
   var lats = {
-    invalid: [ -181, -120, -91, 91, 120, 181 ],
-    valid: [ 0, 45, 90, -0, '0', '45', '90' ]
+    invalid: [],
+    valid: [ 0, 45, 90, -0, '0', '45', '90', -181, -120, -91, 91, 120, 181  ]
   };
   test('invalid lat', function(t) {  
     lats.invalid.forEach( function( lat ){
@@ -113,19 +113,8 @@ module.exports.tests.sanitize_lat = function(test, common) {
 
 module.exports.tests.sanitize_lon = function(test, common) {
   var lons = {
-    invalid: [ -360, -181, 181, 360 ],
-    valid: [ -180, -1, -0, 0, 45, 90, '-180', '0', '180' ]
+    valid: [ -381, -181, -180, -1, -0, 0, 45, 90, '-180', '0', '180', 181 ]
   };
-  test('invalid lon', function(t) {  
-    lons.invalid.forEach( function( lon ){
-      sanitize({ input: 'test', lat: 0, lon: lon }, function( err, clean ){
-        t.equal(err, 'invalid param \'lon\': must be >-180 and <180', lon + ' is an invalid longitude');
-        t.equal(clean, undefined, 'clean not set');
-        
-      });
-    });
-    t.end();
-  });
   test('valid lon', function(t) {  
     lons.valid.forEach( function( lon ){
       sanitize({ input: 'test', lat: 0, lon: lon }, function( err, clean ){
@@ -178,27 +167,37 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
 module.exports.tests.sanitize_bbox = function(test, common) {
   var bboxes = {
     invalid_coordinates: [
-      '-181,90,34,-180', // invalid top_right lon, bottom_left lat
-      '-170,91,-181,45', // invalid top_right lat, bottom_left lon
-      '-181,91,181,-91', // invalid top_right lon/lat, bottom_left lon/lat
-      '91, -181,-91,181',// invalid - spaces between coordinates
     ],
     invalid: [
       '91;-181,-91,181', // invalid - semicolon between coordinates
+      'these,are,not,numbers',
+      '0,0,0,notANumber',
+      ',,,',
       '91, -181, -91',   // invalid - missing a coordinate
       '123,12',          // invalid - missing coordinates
       ''                 // invalid - empty param
     ],
     valid: [
       '-179,90,34,-80', // valid top_right lon/lat, bottom_left lon/lat
-      '0,0,0,0' // valid top_right lat/lon, bottom_left lat/lon
+      '0,0,0,0',
+      '10,20,30,40',
+      '-40,-20,10,30',
+      '-40,-20,10,30',
+      '-1200,20,1000,20',
+      '-1400,90,1400,-90',
+      // wrapped latitude coordinates
+      '-181,90,34,-180',
+      '-170,91,-181,45',
+      '-181,91,181,-91',
+      '91, -181,-91,11',
+      '91, -11,-91,181'
     ]
     
   };
   test('invalid bbox coordinates', function(t) {  
     bboxes.invalid_coordinates.forEach( function( bbox ){
       sanitize({ input: 'test', bbox: bbox }, function( err, clean ){
-        t.equal(err, 'invalid bbox', bbox + ' is invalid');
+        t.ok(err.match(/Invalid (lat|lon)/), bbox + ' is invalid');
         t.equal(clean, undefined, 'clean not set');
       });
     });
