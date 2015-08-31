@@ -15,7 +15,7 @@ app.use( require('./middleware/jsonp') );
 /** ----------------------- sanitisers ----------------------- **/
 
 var sanitisers = {};
-sanitisers.doc      = require('./sanitiser/doc');
+sanitisers.place      = require('./sanitiser/place');
 sanitisers.suggest  = require('./sanitiser/suggest');
 sanitisers.search   = require('./sanitiser/search');
 sanitisers.coarse   = require('./sanitiser/coarse');
@@ -25,7 +25,7 @@ sanitisers.reverse  = require('./sanitiser/reverse');
 
 var controllers     = {};
 controllers.index   = require('./controller/index');
-controllers.doc     = require('./controller/doc');
+controllers.place     = require('./controller/place');
 controllers.search  = require('./controller/search');
 
 /** ----------------------- routes ----------------------- **/
@@ -33,8 +33,8 @@ controllers.search  = require('./controller/search');
 // api root
 app.get( '/', controllers.index() );
 
-// doc API
-app.get( '/doc', sanitisers.doc.middleware, controllers.doc() );
+// place API
+app.get( '/place', sanitisers.place.middleware, controllers.place() );
 
 // suggest APIs
 app.get( '/suggest', sanitisers.search.middleware, controllers.search() );

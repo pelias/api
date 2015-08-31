@@ -89,14 +89,15 @@ The reverse geocoding endpoint; matches a point on the planet to the name of tha
 * `details` (default: `true`)
 
 
-## /doc
+## /place
 
-The endpoint for retrieving one or more elasticsearch documents with specific ids.
+The endpoint for retrieving one or more places with specific ids. These correspond
+directly with Elasticsearch documents.
 
 #### Required Parameters
 * one of `id` or `ids`
   * `id`:
-    * unique id of the document to be retrieved
+    * unique id of the places to be retrieved
     * should be in the form of type:id, for example: `geoname:4163334`
   * `ids`:
-    * if multiple docs are to be fetched in bulk, an array of ids
+    * if multiple places are to be fetched in bulk, an array of ids
