@@ -14,7 +14,13 @@ var DETAILS_PROPS = [
   'locality',
   'neighborhood',
   'category',
-  'address'
+  'address',
+  'country_a',
+  'country',
+  'region',
+  'region_a',
+  'county',
+  'neighbourhood'
 ];
 
 

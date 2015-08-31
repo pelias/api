@@ -68,6 +68,7 @@ app.get( '/reverse', routers.reverse );
 /** -------------------- post-processing-middleware ------------------**/
 
 // TODO: name mapping for admin values (admin0 => country, etc)
+app.use(require('./middleware/renamePlacenames')());
 app.use(require('./middleware/geocodeJSON')());
 app.use(require('./middleware/sendJSON'));
 
