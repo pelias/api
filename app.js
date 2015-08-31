@@ -1,52 +1,76 @@
 
+var Router = require('express').Router;
+
 var app = require('express')();
+
 var peliasConfig = require( 'pelias-config' ).generate().api;
+
 
 if( peliasConfig.accessLog ){
   app.use( require( './middleware/access_log' )( peliasConfig.accessLog ) );
 }
 
-/** ----------------------- middleware ----------------------- **/
+/** ----------------------- pre-processing-middleware ----------------------- **/
 
 app.use( require('./middleware/headers') );
 app.use( require('./middleware/cors') );
 app.use( require('./middleware/jsonp') );
 
-/** ----------------------- sanitisers ----------------------- **/
+/**
+ * Helper function for creating routers
+ *
+ * @param {[{function}]} functions
+ * @returns {express.Router}
+ */
+function createRouter(functions) {
+  var router = Router(); // jshint ignore:line
+  functions.forEach(function (f) {
+    router.use(f);
+  });
+  return router;
+}
 
-var sanitisers = {};
-sanitisers.place      = require('./sanitiser/place');
-sanitisers.suggest  = require('./sanitiser/suggest');
-sanitisers.search   = require('./sanitiser/search');
-sanitisers.coarse   = require('./sanitiser/coarse');
-sanitisers.reverse  = require('./sanitiser/reverse');
+var routers = {};
 
-/** ----------------------- controllers ----------------------- **/
+routers.search = createRouter([
+  require('./sanitiser/search').middleware,
+  require('./controller/search')()
+]);
 
-var controllers     = {};
-controllers.index   = require('./controller/index');
-controllers.place     = require('./controller/place');
-controllers.search  = require('./controller/search');
+routers.reverse = createRouter([
+  require('./sanitiser/reverse').middleware,
+  require('./controller/search')(undefined, require('./query/reverse'))
+]);
 
-/** ----------------------- routes ----------------------- **/
+routers.place = createRouter([
+  require('./sanitiser/place').middleware,
+  require('./controller/place')()
+]);
+
+routers.index = createRouter([
+  require('./controller/index')()
+]);
+
 
 // api root
-app.get( '/', controllers.index() );
+app.get( '/', routers.index );
 
-// place API
-app.get( '/place', sanitisers.place.middleware, controllers.place() );
+app.get( '/place', routers.place );
 
-// suggest APIs
-app.get( '/suggest', sanitisers.search.middleware, controllers.search() );
-app.get( '/suggest/nearby', sanitisers.suggest.middleware, controllers.search() );
-app.get( '/suggest/coarse', sanitisers.coarse.middleware, controllers.search() );
+app.get( '/autocomplete', routers.search );
 
-// search APIs
-app.get( '/search', sanitisers.search.middleware, controllers.search() );
-app.get( '/search/coarse', sanitisers.coarse.middleware, controllers.search() );
+app.get( '/search', routers.search);
+app.post( '/search', routers.search);
 
-// reverse API
-app.get( '/reverse', sanitisers.reverse.middleware, controllers.search(undefined, require('./query/reverse')) );
+app.get( '/reverse', routers.reverse );
+
+
+/** -------------------- post-processing-middleware ------------------**/
+
+// TODO: name mapping for admin values (admin0 => country, etc)
+app.use(require('./middleware/geocodeJSON')());
+app.use(require('./middleware/sendJSON'));
+
 
 /** ----------------------- error middleware ----------------------- **/
 
