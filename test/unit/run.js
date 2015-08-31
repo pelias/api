@@ -19,7 +19,8 @@ var tests = [
   require('./query/reverse'),
   require('./helper/query_parser'),
   require('./helper/geojsonify'),
-  require('./helper/outputSchema')
+  require('./helper/outputSchema'),
+  require('./helper/adminFields'),
 ];
 
 tests.map(function(t) {

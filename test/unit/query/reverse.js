@@ -53,7 +53,7 @@ var sort = [
   {
     '_script': {
       'params': {
-        'category_weights': category_weights
+        'category_weights': category_weights.default
       },
       'file': category,
       'type': 'number',
