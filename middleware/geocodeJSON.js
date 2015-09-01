@@ -14,6 +14,11 @@ function setup(peliasConfig) {
 
 function convertToGeocodeJSON(peliasConfig, req, next) {
 
+  // do nothing if no result data set
+  if (!req.results || !req.results.data) {
+    return next();
+  }
+
   req.results.geojson = { geocoding: {} };
 
   // REQUIRED. A semver.org compliant version number. Describes the version of

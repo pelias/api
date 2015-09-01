@@ -32,7 +32,7 @@ function setup() {
 function renamePlacenames(req, res, next) {
 
   // do nothing if no result data set
-  if (!req.results.data) {
+  if (!req.results || !req.results.data) {
     return next();
   }
 
