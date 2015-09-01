@@ -119,7 +119,7 @@ function buildGeocodingBlock() {
   geocoding.version = 'BETA';
   geocoding.messages = {
     warn: [
-      'Pelias v1.0 will be released in September 2015!!!',
+      'Pelias v1.0 will be released in September 2015!',
       'Starting September 1st, all users must obtain FREE developer keys in order to continue using this service.',
       'There will be breaking changes to the API, so action must be taken to upgrade client code.',
       'Backwards compatibility will be maintained through November, followed by deprecation and shut-off of previous version.'
