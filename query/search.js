@@ -15,7 +15,7 @@ function generate( params ){
     };
   } 
   
-  var query = queries.distance( centroid, { size: params.size } );
+  var query = queries.distance( null, { size: params.size } );
   var input = params.input;
 
   if (params.bbox) {
@@ -62,6 +62,35 @@ function generate( params ){
       }
     }
   });
+
+  // @experimental
+  // add soft focus
+  if( centroid ){
+    query.query.filtered.query.bool.should.push({
+      'function_score': {
+        'query': {
+          'match': {
+            'phrase.default': {
+              'query': input,
+              'analyzer': 'peliasPhrase',
+              'type': 'phrase',
+              'slop': 2
+            }
+          }
+        },
+        'functions': [{
+          'linear': {
+            'center_point': {
+              'origin': centroid,
+              'offset': '50km',
+              'scale': '100km',
+              'decay': 0.01
+            }
+          }
+        }]
+      }
+    });
+  }
 
   query.sort = query.sort.concat( sort( params ) );
 
