@@ -7,8 +7,8 @@ module.exports = function( record ){
 
   var schema = schemas.default;
   
-  if (record.alpha3 && record.alpha3.length && schemas[record.alpha3]) {
-    schema = schemas[record.alpha3];
+  if (record.country_a && record.country_a.length && schemas[record.country_a]) {
+    schema = schemas[record.country_a];
   }
   
   var buildOutput = function(parts, schemaArr, record) {

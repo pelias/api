@@ -48,20 +48,17 @@ module.exports.tests.search = function(test, common) {
       'name': {
         'default': '\'Round Midnight Jazz and Blues Bar'
       },
-      'type': 'node',
-      'address': {
-        'number': '13',
-        'street': 'Liverpool Road',
-        'zip': 'N1 0RW'
-      },
-      'alpha3': 'GBR',
-      'admin0': 'United Kingdom',
-      'admin1': 'Islington',
-      'admin1_abbr': 'ISL',
-      'admin2': 'Angel',
-      'local_admin': 'test1',
+      'housenumber': '13',
+      'street': 'Liverpool Road',
+      'postalcode': 'N1 0RW',
+      'country_a': 'GBR',
+      'country': 'United Kingdom',
+      'region': 'Islington',
+      'region_a': 'ISL',
+      'county': 'Angel',
+      'localadmin': 'test1',
       'locality': 'test2',
-      'neighborhood': 'test3',
+      'neighbourhood': 'test3',
       'suggest': {
         'input': [
           '\'round midnight jazz and blues bar'
@@ -76,7 +73,6 @@ module.exports.tests.search = function(test, common) {
     {
       '_id': 'id2',
       '_type': 'type2',
-      'type': 'way',
       'name': {
         'default': 'Blues Cafe'
       },
@@ -84,14 +80,14 @@ module.exports.tests.search = function(test, common) {
         'lat': '51.517806',
         'lon': '-0.101795'
       },
-      'alpha3': 'GBR',
-      'admin0': 'United Kingdom',
-      'admin1': 'City And County Of The City Of London',
-      'admin1_abbr': 'COL',
-      'admin2': 'Smithfield',
-      'local_admin': 'test1',
+      'country_a': 'GBR',
+      'country': 'United Kingdom',
+      'region': 'City And County Of The City Of London',
+      'region_a': 'COL',
+      'county': 'Smithfield',
+      'localadmin': 'test1',
       'locality': 'test2',
-      'neighborhood': 'test3',
+      'neighbourhood': 'test3',
       'suggest': {
         'input': [
           'blues cafe'
@@ -102,7 +98,6 @@ module.exports.tests.search = function(test, common) {
     {
       '_id': '34633854',
       '_type': 'osmway',
-      'type': 'osmway',
       'name': {
         'default': 'Empire State Building'
       },
@@ -110,14 +105,14 @@ module.exports.tests.search = function(test, common) {
         'lat': '40.748432',
         'lon': '-73.985656'
       },
-      'alpha3': 'USA',
-      'admin0': 'United States',
-      'admin1': 'New York',
-      'admin1_abbr': 'NY',
-      'admin2': 'New York',
-      'local_admin': 'Manhattan',
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'New York',
+      'region_a': 'NY',
+      'county': 'New York',
+      'localadmin': 'Manhattan',
       'locality': 'New York',
-      'neighborhood': 'Koreatown',
+      'neighbourhood': 'Koreatown',
       'suggest': {
         'input': [
           'empire state building'
@@ -145,23 +140,24 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         'properties': {
-          'id': 'id1',
-          'layer': 'type1',
-          'text': '\'Round Midnight Jazz and Blues Bar, test3, Angel',
-          'name': '\'Round Midnight Jazz and Blues Bar',
-          'alpha3': 'GBR',
-          'admin0': 'United Kingdom',
-          'admin1': 'Islington',
-          'admin1_abbr': 'ISL',
-          'admin2': 'Angel',
-          'local_admin': 'test1',
-          'locality': 'test2',
-          'neighborhood': 'test3',
-          'category': [ 'food', 'nightlife' ],
-          'address': {
-            'number': '13',
+          'geocoding': {
+            'id': 'id1',
+            'type': 'type1',
+            'source': 'type1',
+            'label': '\'Round Midnight Jazz and Blues Bar, test3, Angel',
+            'name': '\'Round Midnight Jazz and Blues Bar',
+            'country_a': 'GBR',
+            'country': 'United Kingdom',
+            'region': 'Islington',
+            'region_a': 'ISL',
+            'county': 'Angel',
+            'localadmin': 'test1',
+            'locality': 'test2',
+            'neighbourhood': 'test3',
+            'category': ['food', 'nightlife'],
+            'housenumber': '13',
             'street': 'Liverpool Road',
-            'zip': 'N1 0RW'
+            'postalcode': 'N1 0RW'
           }
         }
       },
@@ -175,18 +171,21 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         'properties': {
-          'id': 'id2',
-          'layer': 'type2',
-          'text': 'Blues Cafe, test3, Smithfield',
-          'name': 'Blues Cafe',
-          'alpha3': 'GBR',
-          'admin0': 'United Kingdom',
-          'admin1': 'City And County Of The City Of London',
-          'admin1_abbr': 'COL',
-          'admin2': 'Smithfield',
-          'local_admin': 'test1',
-          'locality': 'test2',
-          'neighborhood': 'test3'
+          'geocoding': {
+            'id': 'id2',
+            'type': 'type2',
+            'source': 'type2',
+            'label': 'Blues Cafe, test3, Smithfield',
+            'name': 'Blues Cafe',
+            'country_a': 'GBR',
+            'country': 'United Kingdom',
+            'region': 'City And County Of The City Of London',
+            'region_a': 'COL',
+            'county': 'Smithfield',
+            'localadmin': 'test1',
+            'locality': 'test2',
+            'neighbourhood': 'test3'
+          }
         }
       },
       {
@@ -199,19 +198,22 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         'properties': {
-          'id': '34633854',
-          'layer': 'osmway',
-          'text': 'Empire State Building, Manhattan, NY',
-          'name': 'Empire State Building',
-          'alpha3': 'USA',
-          'admin0': 'United States',
-          'admin1': 'New York',
-          'admin1_abbr': 'NY',
-          'admin2': 'New York',
-          'local_admin': 'Manhattan',
-          'locality': 'New York',
-          'neighborhood': 'Koreatown',
-          'category': [ 'tourism', 'transport' ]
+          'geocoding': {
+            'id': '34633854',
+            'type': 'venue',
+            'source': 'osm',
+            'label': 'Empire State Building, Manhattan, NY',
+            'name': 'Empire State Building',
+            'country_a': 'USA',
+            'country': 'United States',
+            'region': 'New York',
+            'region_a': 'NY',
+            'county': 'New York',
+            'localadmin': 'Manhattan',
+            'locality': 'New York',
+            'neighbourhood': 'Koreatown',
+            'category': ['tourism', 'transport']
+          }
         }
       }
     ]
@@ -247,9 +249,12 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         'properties': {
-          'id': 'id1',
-          'layer': 'type1',
-          'text': '\'Round Midnight Jazz and Blues Bar, test3, Angel'
+          'geocoding': {
+            'id': 'id1',
+            'type': 'type1',
+            'source': 'type1',
+            'label': '\'Round Midnight Jazz and Blues Bar, test3, Angel'
+          }
         }
       },
       {
@@ -262,9 +267,12 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         'properties': {
-          'id': 'id2',
-          'layer': 'type2',
-          'text': 'Blues Cafe, test3, Smithfield'
+          'geocoding': {
+            'id': 'id2',
+            'type': 'type2',
+            'source': 'type2',
+            'label': 'Blues Cafe, test3, Smithfield'
+          }
         }
       },
       {
@@ -277,9 +285,12 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         'properties': {
-          'id': '34633854',
-          'layer': 'osmway',
-          'text': 'Empire State Building, Manhattan, NY'
+          'geocoding': {
+            'id': '34633854',
+            'type': 'venue',
+            'source': 'osm',
+            'label': 'Empire State Building, Manhattan, NY'
+          }
         }
       }
     ]

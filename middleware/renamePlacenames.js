@@ -1,3 +1,5 @@
+var extend = require('extend');
+
 /**
  - P is a preferred English name
  - Q is a preferred name (in other languages)
@@ -11,21 +13,23 @@
  */
 // config mapping of old names to new ones
 var NAME_MAP = {
+  'number': 'housenumber',
+  'zip': 'postalcode',
   'alpha3': 'country_a',
   'admin0': 'country',
   'admin1': 'region',
   'admin1_abbr': 'region_a',
   'admin2': 'county',
-  // TODO: what does "local_admin" map to in WOF???
+  'local_admin': 'localadmin',
   'neighborhood': 'neighbourhood'
 };
 
 function setup() {
 
-  return mapPlacenames;
+  return renamePlacenames;
 }
 
-function mapPlacenames(req, res, next) {
+function renamePlacenames(req, res, next) {
 
   // do nothing if no result data set
   if (!req.results.data) {
@@ -41,7 +45,12 @@ function mapPlacenames(req, res, next) {
 function renameProperties(place) {
   var newPlace = {};
   Object.keys(place).forEach(function (property) {
-    renameProperty(place, newPlace, property);
+    if (property === 'address') {
+      extend(newPlace, renameProperties(place[property]));
+    }
+    else {
+      renameProperty(place, newPlace, property);
+    }
   });
   return newPlace;
 }
@@ -51,7 +60,7 @@ function renameProperty(oldObj, newObj, property) {
     return;
   }
 
-  newObj[ (NAME_MAP[property] || property) ] = oldObj[property];
+  newObj[(NAME_MAP[property] || property)] = oldObj[property];
 }
 
 module.exports = setup;
