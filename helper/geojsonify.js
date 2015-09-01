@@ -1,5 +1,6 @@
 
 var GeoJSON = require('geojson'),
+    extend = require('extend'),
     extent = require('geojson-extent'),
     outputGenerator = require('./outputGenerator');
 
@@ -59,8 +60,10 @@ function search( docs, params ){
     return doc;
   });
 
-  // convert to geojson
-  var geojson = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
+  var geojson = buildGeocodingBlock();
+  // convert to geojson and merge with geocoding block
+  // (geocoding block is first so it shows up on top)
+  extend(geojson, GeoJSON.parse( geodata, { Point: ['lat', 'lng'] }));
 
   // bounding box calculations
   // @note: extent() sometimes throws Errors for unusual data
@@ -105,5 +108,25 @@ function warning( doc ) {
   return false; // remove offending doc from results
 }
 
+/**
+ * Build geocoding block with version info and deprecation warning
+ *
+ * @return {object}
+ */
+function buildGeocodingBlock() {
+  var geocoding = {};
+
+  geocoding.version = 'BETA';
+  geocoding.messages = {
+    warn: [
+      'Pelias v1.0 will be released in September 2015!',
+      'Starting September 1st, all users must obtain FREE developer keys in order to continue using this service.',
+      'There will be breaking changes to the API, so action must be taken to upgrade client code.',
+      'Backwards compatibility will be maintained through November, followed by deprecation and shut-off of previous version.'
+    ]
+  };
+
+  return { geocoding: geocoding };
+}
 
 module.exports.search = search;
