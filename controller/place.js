@@ -1,14 +1,11 @@
-
 var service = { mget: require('../service/mget') };
 var geojsonify = require('../helper/geojsonify').search;
 
 function setup( backend ){
-
   // allow overriding of dependencies
   backend = backend || require('../src/backend');
-  
+
   function controller( req, res, next ){
-    
     var query = req.clean.ids.map( function(id) {
       return {
         _index: 'pelias',
@@ -18,7 +15,6 @@ function setup( backend ){
     });
 
     service.mget( backend, query, function( err, docs ){
-
       // error handler
       if( err ){ return next( err ); }
 
@@ -30,9 +26,7 @@ function setup( backend ){
 
       // respond
       return res.status(200).json( geojson );
-
     });
-
   }
 
   return controller;

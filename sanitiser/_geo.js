@@ -1,3 +1,4 @@
+var util = require( 'util' );
 var isObject = require('is-object');
 
 
@@ -46,26 +47,21 @@ function sanitize_bbox( clean, param ) {
     return;
   }
 
-  var bbox = [];
   var bboxArr = param.split( ',' );
 
   if( Array.isArray( bboxArr ) && bboxArr.length === 4 ) {
+    var bbox = bboxArr.map(parseFloat);
 
-    bbox = bboxArr.filter( function( latlon, index ) {
-      latlon = parseFloat( latlon, 10 );
-      return !(lat_lon_checks[(index % 2 === 0 ? 'lon' : 'lat')].is_invalid( latlon ));
-    });
-
-    if( bbox.length === 4 ) {
-      clean.bbox = {
-        right: Math.max( bbox[0], bbox[2] ),
-        top: Math.max( bbox[1], bbox[3] ),
-        left: Math.min( bbox[0], bbox[2] ),
-        bottom: Math.min( bbox[1], bbox[3] )
-      };
-    } else {
-      throw new Error('invalid bbox');
+    if (bbox.some(isNaN)) {
+      return;
     }
+
+    clean.bbox = {
+      right: Math.max( bbox[0], bbox[2] ),
+      top: Math.max( bbox[1], bbox[3] ),
+      left: Math.min( bbox[0], bbox[2] ),
+      bottom: Math.min( bbox[1], bbox[3] )
+    };
   }
 }
 
@@ -78,15 +74,12 @@ function sanitize_bbox( clean, param ) {
  * @param {bool} latlon_is_required
  */
 function sanitize_coord( coord, clean, param, latlon_is_required ) {
-  var value = parseFloat( param, 10 );
+  var value = parseFloat( param );
   if ( !isNaN( value ) ) {
-    if( lat_lon_checks[coord].is_invalid( value ) ){
-      throw new Error( 'invalid ' + lat_lon_checks[coord].error_msg );
-    }
     clean[coord] = value;
   }
   else if (latlon_is_required) {
-    throw new Error('missing ' + lat_lon_checks[coord].error_msg);
+    throw new Error( util.format( 'missing param \'%s\'', coord ) );
   }
 }
 
@@ -96,19 +89,3 @@ function sanitize_zoom_level( clean, param ) {
     clean.zoom = Math.min( Math.max( zoom, 1 ), 18 ); // max
   }
 }
-
-var lat_lon_checks = {
-  lat: {
-    is_invalid: function is_invalid_lat(lat) {
-      return isNaN( lat ) || lat < -90 || lat > 90;
-    },
-    error_msg: 'param \'lat\': must be >-90 and <90'
-  },
-  lon: {
-    is_invalid: function is_invalid_lon(lon) {
-      return isNaN(lon) || lon < -180 || lon > 180;
-    },
-    error_msg: 'param \'lon\': must be >-180 and <180'
-  }
-};
-
