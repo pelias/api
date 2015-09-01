@@ -1,36 +1,29 @@
-/** ----------------------- sanitisers ----------------------- **/
-var sanitisers = {};
-sanitisers.place      = require('../sanitiser/place');
-sanitisers.suggest  = require('../sanitiser/suggest');
-sanitisers.search   = require('../sanitiser/search');
-sanitisers.coarse   = require('../sanitiser/coarse');
-sanitisers.reverse  = require('../sanitiser/reverse');
+var proxy = require('express-http-proxy');
 
-/** ----------------------- controllers ----------------------- **/
-
-var controllers     = {};
-controllers.index   = require('../controller/index');
-controllers.place     = require('../controller/place');
-controllers.search  = require('../controller/search');
+var sendToLegacy = proxy('pelias.mapzen.com', {
+  forwardPath: function(req, res) {
+    return require('url').parse(req.url).path;
+  }
+});
 
 function addRoutes(app) {
   // api root
-  app.get( '/', controllers.index() );
+  app.get( '/', sendToLegacy );
 
   // place API
-  app.get( '/place', sanitisers.place.middleware, controllers.place() );
+  app.get( '/place', sendToLegacy);
 
   // suggest APIs
-  app.get( '/suggest', sanitisers.search.middleware, controllers.search() );
-  app.get( '/suggest/nearby', sanitisers.suggest.middleware, controllers.search() );
-  app.get( '/suggest/coarse', sanitisers.coarse.middleware, controllers.search() );
+  app.get( '/suggest', sendToLegacy );
+  app.get( '/suggest/nearby', sendToLegacy );
+  app.get( '/suggest/coarse',sendToLegacy );
 
   // search APIs
-  app.get( '/search', sanitisers.search.middleware, controllers.search() );
-  app.get( '/search/coarse', sanitisers.coarse.middleware, controllers.search() );
+  app.get( '/search', sendToLegacy);
+  app.get( '/search/coarse', sendToLegacy);
 
   // reverse API
-  app.get( '/reverse', sanitisers.reverse.middleware, controllers.search(undefined, require('../query/reverse')) );
+  app.get( '/reverse', sendToLegacy );
 }
 
 module.exports.addRoutes = addRoutes;
