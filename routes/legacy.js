@@ -1,12 +1,12 @@
 var proxy = require('express-http-proxy');
 
-var sendToLegacy = proxy('pelias.mapzen.com', {
-  forwardPath: function(req, res) {
-    return require('url').parse(req.url).path;
-  }
-});
+function addRoutes(app, peliasConfig) {
+  var sendToLegacy = proxy(peliasConfig.legacyUrl, {
+    forwardPath: function(req, res) {
+      return require('url').parse(req.url).path;
+    }
+  });
 
-function addRoutes(app) {
   // api root
   app.get( '/', sendToLegacy );
 
