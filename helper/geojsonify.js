@@ -152,7 +152,7 @@ function addMetaData(src, dst) {
   var meta = META_MAP[src._type] || { type: src._type, source: src._type };
 
   dst.id = src._id;
-  dst.type = meta.type;
+  dst.layer = meta.type;
   dst.source = meta.source;
 }
 

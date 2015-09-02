@@ -69,7 +69,7 @@ app.get( '/reverse', routers.reverse );
 
 // TODO: name mapping for admin values (admin0 => country, etc)
 app.use(require('./middleware/renamePlacenames')());
-app.use(require('./middleware/geocodeJSON')());
+app.use(require('./middleware/geocodeJSON')(peliasConfig));
 app.use(require('./middleware/sendJSON'));
 
 

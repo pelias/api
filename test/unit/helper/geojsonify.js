@@ -142,7 +142,7 @@ module.exports.tests.search = function(test, common) {
         'properties': {
           'geocoding': {
             'id': 'id1',
-            'type': 'type1',
+            'layer': 'type1',
             'source': 'type1',
             'label': '\'Round Midnight Jazz and Blues Bar, test3, Angel',
             'name': '\'Round Midnight Jazz and Blues Bar',
@@ -173,7 +173,7 @@ module.exports.tests.search = function(test, common) {
         'properties': {
           'geocoding': {
             'id': 'id2',
-            'type': 'type2',
+            'layer': 'type2',
             'source': 'type2',
             'label': 'Blues Cafe, test3, Smithfield',
             'name': 'Blues Cafe',
@@ -200,7 +200,7 @@ module.exports.tests.search = function(test, common) {
         'properties': {
           'geocoding': {
             'id': '34633854',
-            'type': 'venue',
+            'layer': 'venue',
             'source': 'osm',
             'label': 'Empire State Building, Manhattan, NY',
             'name': 'Empire State Building',
@@ -251,7 +251,7 @@ module.exports.tests.search = function(test, common) {
         'properties': {
           'geocoding': {
             'id': 'id1',
-            'type': 'type1',
+            'layer': 'type1',
             'source': 'type1',
             'label': '\'Round Midnight Jazz and Blues Bar, test3, Angel'
           }
@@ -269,7 +269,7 @@ module.exports.tests.search = function(test, common) {
         'properties': {
           'geocoding': {
             'id': 'id2',
-            'type': 'type2',
+            'layer': 'type2',
             'source': 'type2',
             'label': 'Blues Cafe, test3, Smithfield'
           }
@@ -287,7 +287,7 @@ module.exports.tests.search = function(test, common) {
         'properties': {
           'geocoding': {
             'id': '34633854',
-            'type': 'venue',
+            'layer': 'venue',
             'source': 'osm',
             'label': 'Empire State Building, Manhattan, NY'
           }

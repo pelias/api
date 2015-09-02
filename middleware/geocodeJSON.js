@@ -29,12 +29,12 @@ function convertToGeocodeJSON(peliasConfig, req, next) {
   // and then multiple licences, can be an object with one key by source.
   // Can be a freeform text property describing the licensing details.
   // Can be a URI on the server, which outlines licensing details.
-  req.results.geojson.geocoding.license = peliasConfig.host + '/license'; // TODO: add to config
+  req.results.geojson.geocoding.license = peliasConfig.host + '/license';
 
   // OPTIONAL. Default: null. The attribution of the data. In case of multiple sources,
   // and then multiple attributions, can be an object with one key by source.
   // Can be a URI on the server, which outlines attribution details.
-  req.results.geojson.geocoding.attribution = peliasConfig.host + '/attribution'; // TODO: add to config
+  req.results.geojson.geocoding.attribution = peliasConfig.host + '/attribution';
 
   // OPTIONAL. Default: null. The query that has been issued to trigger the
   // search.
@@ -71,7 +71,7 @@ function addEngine(peliasConfig, geocoding) {
   geocoding.engine = {
     name: 'Pelias',
     author: 'Mapzen',
-    version: peliasConfig.version // TODO: add to config
+    version: peliasConfig.version
   };
 }
 
