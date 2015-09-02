@@ -5,11 +5,7 @@ function addRoutes(app, peliasConfig) {
     return;
   }
 
-  var sendToLegacy = proxy(peliasConfig.legacyUrl, {
-    forwardPath: function(req, res) {
-      return require('url').parse(req.url).path;
-    }
-  });
+  var sendToLegacy = proxy(peliasConfig.legacyUrl);
 
   // api root
   app.get( '/', sendToLegacy );
