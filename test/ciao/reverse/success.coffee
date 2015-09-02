@@ -1,5 +1,5 @@
 #> valid reverse query
-path: '/reverse?lat=29.49136&lon=-82.50622'
+path: '/v1/reverse?lat=29.49136&lon=-82.50622'
 
 #? 200 ok
 response.statusCode.should.equal 200
