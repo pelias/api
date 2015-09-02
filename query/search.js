@@ -82,9 +82,9 @@ function generate( params ){
           'linear': {
             'center_point': {
               'origin': centroid,
-              'offset': '50km',
-              'scale': '100km',
-              'decay': 0.01
+              'offset': '1km',
+              'scale': '50km',
+              'decay': 0.5
             }
           }
         }]
