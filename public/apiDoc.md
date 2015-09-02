@@ -3,7 +3,7 @@
 The full text search endpoint that matches the name of a place to points on the planet.
 
 #### Required Parameters
-* `input`: the string to search for (eg `new york city` or `london`)
+* `text`: the string to search for (eg `new york city` or `london`)
 
 #### Optional Parameters
 * `lat`, `lon`: the latitude/longitude coordinates to bias search results towards (may increase relevancy)
@@ -43,7 +43,7 @@ The autocompletion endpoint that offers very fast response times; ideal for comp
 results from around the provided lat/lon coordinates and also from precision level 1 and 3.
 
 #### Required Parameters
-* `input`: query string
+* `text`: query string
 * `lat`, `lon`: The latitude/longitude coordinates to bias results towards.
   * `lat`/`lon` are currently **required** because of this [open issue](https://github.com/elasticsearch/elasticsearch/issues/6444)
 
