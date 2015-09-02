@@ -8,7 +8,7 @@
   "host": "localhost",
   "method": "GET",
   "port": 3100,
-  "path": "/search?input=lake&lat=29.49136&lon=-82.50622"
+  "path": "/search?text=lake&lat=29.49136&lon=-82.50622"
 }
 ```
 
