@@ -15,6 +15,7 @@ app.use( require('./middleware/cors') );
 app.use( require('./middleware/jsonp') );
 
 /** ----------------------- routes ----------------------- **/
+
 var legacy = require('./routes/legacy');
 legacy.addRoutes(app, peliasConfig);
 

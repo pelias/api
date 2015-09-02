@@ -1,4 +1,5 @@
-var reverseQuery = require('./query/reverse');
+var Router = require('express').Router;
+var reverseQuery = require('../query/reverse');
 
 /** ----------------------- sanitisers ----------------------- **/
 var sanitisers = {
@@ -18,9 +19,9 @@ var controllers     = {
 /** ----------------------- controllers ----------------------- **/
 
 var postProc = {
-  renamePlacenames: require('./middleware/renamePlacenames'),
-  geocodeJSON: require('./middleware/geocodeJSON'),
-  sendJSON: require('./middleware/sendJSON')
+  renamePlacenames: require('../middleware/renamePlacenames'),
+  geocodeJSON: require('../middleware/geocodeJSON'),
+  sendJSON: require('../middleware/sendJSON')
 };
 
 /**
