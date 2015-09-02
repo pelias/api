@@ -37,6 +37,7 @@
     "async": "^0.9.0",
     "cluster2": "git://github.com/missinglink/cluster2.git#node_zero_twelve",
     "express": "^4.8.8",
+    "express-http-proxy": "^0.6.0",
     "extend": "2.0.1",
     "geojson": "^0.2.1",
     "geojson-extent": "^0.3.1",

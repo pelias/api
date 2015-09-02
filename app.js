@@ -12,41 +12,13 @@ app.use( require('./middleware/headers') );
 app.use( require('./middleware/cors') );
 app.use( require('./middleware/jsonp') );
 
-/** ----------------------- sanitisers ----------------------- **/
-
-var sanitisers = {};
-sanitisers.place      = require('./sanitiser/place');
-sanitisers.suggest  = require('./sanitiser/suggest');
-sanitisers.search   = require('./sanitiser/search');
-sanitisers.coarse   = require('./sanitiser/coarse');
-sanitisers.reverse  = require('./sanitiser/reverse');
-
-/** ----------------------- controllers ----------------------- **/
-
-var controllers     = {};
-controllers.index   = require('./controller/index');
-controllers.place     = require('./controller/place');
-controllers.search  = require('./controller/search');
 
 /** ----------------------- routes ----------------------- **/
+var legacy = require('./routes/legacy');
+legacy.addRoutes(app, peliasConfig);
 
-// api root
-app.get( '/', controllers.index() );
-
-// place API
-app.get( '/place', sanitisers.place.middleware, controllers.place() );
-
-// suggest APIs
-app.get( '/suggest', sanitisers.search.middleware, controllers.search() );
-app.get( '/suggest/nearby', sanitisers.suggest.middleware, controllers.search() );
-app.get( '/suggest/coarse', sanitisers.coarse.middleware, controllers.search() );
-
-// search APIs
-app.get( '/search', sanitisers.search.middleware, controllers.search() );
-app.get( '/search/coarse', sanitisers.coarse.middleware, controllers.search() );
-
-// reverse API
-app.get( '/reverse', sanitisers.reverse.middleware, controllers.search(undefined, require('./query/reverse')) );
+var v1 = require('./routes/v1');
+v1.addRoutes(app, peliasConfig);
 
 /** ----------------------- error middleware ----------------------- **/
 
