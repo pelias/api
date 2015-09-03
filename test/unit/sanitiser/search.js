@@ -9,15 +9,10 @@ var search  = require('../../../sanitiser/search'),
     defaultError = 'invalid param \'input\': text length, must be >0',
     defaultClean =  { input: 'test', 
                       types: {
-                        from_layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
-                        'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
-                        from_address_parsing: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
-                        'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
                       },
                       size: 10,
                       details: true,
                       parsed_input: defaultParsed,
-                      default_layers_set: true
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 

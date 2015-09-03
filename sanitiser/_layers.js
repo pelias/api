@@ -16,9 +16,9 @@ function sanitize( req ){
   }
 
   // default case (no layers specified in GET params)
+  // don't even set the from_layers key in this case
   if('string' !== typeof params.layers || !params.layers.length){
-    params.layers = 'poi,admin,address'; // default layers
-    clean.default_layers_set = true;
+    return { 'error': false };
   }
 
   // decide which layers can be queried

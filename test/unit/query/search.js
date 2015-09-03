@@ -275,7 +275,6 @@ module.exports.tests.query = function(test, common) {
       size: 10,
       details: true,
       parsed_input: parser.get_parsed_address(address),
-      default_layers_set: true
     });
 
     var expected = {
@@ -477,7 +476,6 @@ module.exports.tests.query = function(test, common) {
       size: 10,
       details: true,
       parsed_input: parser.get_parsed_address(partial_address),
-      default_layers_set: true
     });
 
     var expected = {
@@ -645,7 +643,6 @@ module.exports.tests.query = function(test, common) {
       size: 10,
       details: true,
       parsed_input: parser.get_parsed_address(partial_address),
-      default_layers_set: true
     });
 
     var expected = {
