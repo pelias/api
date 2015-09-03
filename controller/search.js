@@ -1,4 +1,3 @@
-
 var service = { search: require('../service/search') };
 
 function setup( backend, query ){

@@ -1,6 +1,6 @@
 module.exports = function(alias_layers) {
   // make a copy of the array so, you are not modifying original ref
-  var layers = alias_layers.slice(0); 
+  var layers = alias_layers.slice(0);
 
   // expand aliases
   var expand_aliases = function(alias, layers, layer_indeces) {

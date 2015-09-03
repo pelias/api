@@ -67,13 +67,13 @@ module.exports.tests.parse_one_or_more_tokens = function(test, common) {
       var target_layer = get_layers(['admin', 'poi']);
 
       t.equal(typeof address, 'object', 'valid object');
-      
+
       if (parse_address) {
         t.deepEqual(address.regions.join(''), query, 'since query contained a number, it went through address parsing');
       } else {
-        t.deepEqual(address.target_layer, target_layer, 'admin_parts set correctly to ' + target_layer.join(', '));  
+        t.deepEqual(address.target_layer, target_layer, 'admin_parts set correctly to ' + target_layer.join(', '));
       }
-      
+
       t.end();
     });
   };
@@ -88,32 +88,32 @@ module.exports.tests.parse_one_or_more_tokens = function(test, common) {
 };
 
 module.exports.tests.parse_address = function(test, common) {
-  var addresses_nonum  = [{ non_street: 'main particle', city: 'new york'}, 
-                          { non_street: 'biggg city block' }, 
+  var addresses_nonum  = [{ non_street: 'main particle', city: 'new york'},
+                          { non_street: 'biggg city block' },
                           { non_street: 'the empire state building' }
                          ];
-  var address_with_num = [{ number: 123, street: 'main st', city: 'new york', state: 'ny'}, 
-                          { number: 456, street: 'pine ave', city: 'san francisco', state: 'CA'}, 
+  var address_with_num = [{ number: 123, street: 'main st', city: 'new york', state: 'ny'},
+                          { number: 456, street: 'pine ave', city: 'san francisco', state: 'CA'},
                           { number: 1980, street: 'house st', city: 'hoboken', state: 'NY'}
                          ];
-  var address_with_zip = [{ number: 1, street: 'main st', city: 'new york', state: 'ny', zip: 10010}, 
-                          { number: 4, street: 'ape ave', city: 'san diego', state: 'CA', zip: 98970}, 
+  var address_with_zip = [{ number: 1, street: 'main st', city: 'new york', state: 'ny', zip: 10010},
+                          { number: 4, street: 'ape ave', city: 'san diego', state: 'CA', zip: 98970},
                           { number: 19, street: 'house dr', city: 'houston', state: 'TX', zip: 79089}
                          ];
 
   var testParse = function(query, hasNumber, hasZip) {
-    var testcase = 'parse query with ' + (hasNumber ? 'a house number ': 'no house number '); 
+    var testcase = 'parse query with ' + (hasNumber ? 'a house number ': 'no house number ');
     testcase += 'and ' + (hasZip ? 'a zip ' : 'no zip ');
 
     test(testcase, function(t) {
       var query_string = '';
-      for (var k in query) { 
+      for (var k in query) {
         query_string += ' ' + query[k];
       }
 
       // remove leading whitespace
       query_string = query_string.substring(1);
-      
+
       var address = parser(query_string);
       var non_address_layer = get_layers(['admin', 'poi']);
 
@@ -126,14 +126,14 @@ module.exports.tests.parse_address = function(test, common) {
       }
 
       if ((hasNumber || hasZip) && query.street) {
-        t.equal(typeof address.number, 'number', 'valid house number format (' + address.number + ')');  
+        t.equal(typeof address.number, 'number', 'valid house number format (' + address.number + ')');
         t.equal(address.number, query.number, 'correct house number (' + query.number + ')');
-        t.equal(typeof address.street, 'string', 'valid street name format (' + address.street + ')');  
+        t.equal(typeof address.street, 'string', 'valid street name format (' + address.street + ')');
         t.equal(address.street, query.street, 'correct street name (' + query.street + ')');
       }
-      
+
       if (hasZip) {
-        t.equal(typeof address.postalcode, 'number', 'valid zip (' + address.postalcode + ')');  
+        t.equal(typeof address.postalcode, 'number', 'valid zip (' + address.postalcode + ')');
         t.equal(address.postalcode, query.zip, 'correct postal code (' + query.zip + ')');
       }
       
