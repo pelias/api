@@ -1,13 +1,13 @@
 
-var place  = require('../../../sanitiser/place'),
-    _sanitize = place.sanitize,
-    middleware = place.middleware,
+var doc  = require('../../../sanitiser/doc'),
+    _sanitize = doc.sanitize,
+    middleware = doc.middleware,
     indeces = require('../../../query/indeces'),
     delimiter = ':',
     defaultLengthError = function(input) { return 'invalid param \''+ input + '\': text length, must be >0'; },
     defaultFormatError = 'invalid: must be of the format type:id for ex: \'geoname:4163334\'',
     defaultError = 'invalid param \'id\': text length, must be >0',
-    defaultMissingTypeError = function(input) {
+    defaultMissingTypeError = function(input) { 
       var type = input.split(delimiter)[0];
       return type + ' is invalid. It must be one of these values - [' + indeces.join(', ') + ']'; },
     defaultClean = { ids: [ { id: '123', type: 'geoname' } ], details: true },
@@ -111,7 +111,7 @@ module.exports.tests.sanitize_details = function(test, common) {
         t.equal(clean.details, false, 'default details set (to false)');
         t.end();
       });
-    });
+    });  
   });
 
   var valid_values = ['true', true, 1];
@@ -121,7 +121,7 @@ module.exports.tests.sanitize_details = function(test, common) {
         t.equal(clean.details, true, 'details set to true');
         t.end();
       });
-    });
+    });  
   });
 
   var valid_false_values = ['false', false, 0];
@@ -131,7 +131,7 @@ module.exports.tests.sanitize_details = function(test, common) {
         t.equal(clean.details, false, 'details set to false');
         t.end();
       });
-    });
+    }); 
   });
 
   test('test default behavior', function(t) {
@@ -190,7 +190,7 @@ module.exports.tests.middleware_success = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /place ' + name, testFunction);
+    return tape('SANTIZE /doc ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

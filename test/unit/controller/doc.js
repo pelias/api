@@ -1,4 +1,5 @@
-var setup = require('../../../controller/place'),
+
+var setup = require('../../../controller/doc'),
     mockBackend = require('../mock/backend');
 
 module.exports.tests = {};
@@ -14,7 +15,7 @@ module.exports.tests.interface = function(test, common) {
 // functionally test controller (backend success)
 module.exports.tests.functional_success = function(test, common) {
 
-  // expected geojson features for 'client/place/ok/1' fixture
+  // expected geojson features for 'client/doc/ok/1' fixture
   var expected = [{
     type: 'Feature',
     geometry: {
@@ -92,7 +93,7 @@ module.exports.tests.functional_success = function(test, common) {
       text: 'test name2, city2, state2'
     }
   }];
-
+  
   test('functional success (with details)', function(t) {
     var backend = mockBackend( 'client/mget/ok/1', function( cmd ){
       t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'a' } ] } }, 'correct backend command');
