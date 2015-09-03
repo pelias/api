@@ -37,14 +37,9 @@ module.exports = function(query) {
   };
 
   var getAddressParts = function(query) {
-    // address parsing
-    var address = parser( query );
-    // set target_layer if input suggests no address
-    if (address.text === address.regions.join(' ') && !hasNumber) {
-      address.target_layer = get_layers(['admin', 'poi']);
-    }
-
-    return address;
+    // perform full address parsing
+    // except on queries so short they obviously can't contain an address
+    return parser( query );
   };
 
   var addressWithAdminParts  = getAdminPartsBySplittingOnDelim(query);

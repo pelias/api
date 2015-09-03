@@ -136,11 +136,7 @@ module.exports.tests.parse_address = function(test, common) {
         t.equal(typeof address.postalcode, 'number', 'valid zip (' + address.postalcode + ')');
         t.equal(address.postalcode, query.zip, 'correct postal code (' + query.zip + ')');
       }
-      
-      if (address.text === address.regions.join(' ')) {
-        t.deepEqual(address.target_layer, query.target_layer, 'admin_parts set correctly to ' + query.target_layer.join(', '));  
-      }
-      
+
       t.end();
     });
   };
