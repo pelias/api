@@ -21,7 +21,10 @@ function sanitize( req ){
 
   req.clean.input = params.input;
 
-  req.clean.parsed_input = query_parser(params.input);
+  req.clean.parsed_input = query_parser.get_parsed_address(params.input);
+
+  req.clean.types = req.clean.layers || {};
+  req.clean.types.from_address_parsing = query_parser.get_layers(params.input);
 
   return { 'error': false };
 }

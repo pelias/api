@@ -274,7 +274,7 @@ module.exports.tests.query = function(test, common) {
                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
       size: 10,
       details: true,
-      parsed_input: parser(address),
+      parsed_input: parser.get_parsed_address(address),
       default_layers_set: true
     });
 
@@ -476,7 +476,7 @@ module.exports.tests.query = function(test, common) {
                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
       size: 10,
       details: true,
-      parsed_input: parser(partial_address),
+      parsed_input: parser.get_parsed_address(partial_address),
       default_layers_set: true
     });
 
@@ -644,7 +644,7 @@ module.exports.tests.query = function(test, common) {
         'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
       size: 10,
       details: true,
-      parsed_input: parser(partial_address),
+      parsed_input: parser.get_parsed_address(partial_address),
       default_layers_set: true
     });
 
