@@ -1,5 +1,5 @@
-var isObject   = require('is-object');
-var query_parse= require('../helper/query_parser');
+var isObject     = require('is-object');
+var query_parser = require('../helper/query_parser');
 
 // validate inputs, convert types and apply defaults
 function sanitize( req ){
@@ -21,7 +21,7 @@ function sanitize( req ){
 
   req.clean.input = params.input;
 
-  req.clean.parsed_input = query_parse(params.input);
+  req.clean.parsed_input = query_parser(params.input);
 
   return { 'error': false };
 }
