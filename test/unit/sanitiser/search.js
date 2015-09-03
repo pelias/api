@@ -8,8 +8,10 @@ var search  = require('../../../sanitiser/search'),
     delim = ',',
     defaultError = 'invalid param \'input\': text length, must be >0',
     defaultClean =  { input: 'test', 
-                      layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
-                                'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
+                      types: {
+                        from_layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
+                        'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
+                      },
                       size: 10,
                       details: true,
                       parsed_input: defaultParsed,
@@ -320,7 +322,7 @@ module.exports.tests.sanitize_details = function(test, common) {
 module.exports.tests.sanitize_layers = function(test, common) {
   test('unspecified', function(t) {
     sanitize({ layers: undefined, input: 'test' }, function( err, clean ){
-      t.deepEqual(clean.layers, defaultClean.layers, 'default layers set');
+      t.deepEqual(clean.types.from_layers, defaultClean.types.from_layers, 'default layers set');
       t.end();
     });
   });
@@ -335,21 +337,21 @@ module.exports.tests.sanitize_layers = function(test, common) {
   test('poi (alias) layer', function(t) {
     var poi_layers = ['geoname','osmnode','osmway'];
     sanitize({ layers: 'poi', input: 'test' }, function( err, clean ){
-      t.deepEqual(clean.layers, poi_layers, 'poi layers set');
+      t.deepEqual(clean.types.from_layers, poi_layers, 'poi layers set');
       t.end();
     });
   });
   test('admin (alias) layer', function(t) {
     var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
     sanitize({ layers: 'admin', input: 'test' }, function( err, clean ){
-      t.deepEqual(clean.layers, admin_layers, 'admin layers set');
+      t.deepEqual(clean.types.from_layers, admin_layers, 'admin layers set');
       t.end();
     });
   });
   test('address (alias) layer', function(t) {
     var address_layers = ['osmaddress','openaddresses'];
     sanitize({ layers: 'address', input: 'test' }, function( err, clean ){
-      t.deepEqual(clean.layers, address_layers, 'address layers set');
+      t.deepEqual(clean.types.from_layers, address_layers, 'address layers set');
       t.end();
     });
   });
@@ -357,7 +359,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var poi_layers = ['geoname','osmnode','osmway'];
     var reg_layers = ['admin0', 'admin1'];
     sanitize({ layers: 'poi,admin0,admin1', input: 'test' }, function( err, clean ){
-      t.deepEqual(clean.layers, reg_layers.concat(poi_layers), 'poi + regular layers');
+      t.deepEqual(clean.types.from_layers, reg_layers.concat(poi_layers), 'poi + regular layers');
       t.end();
     });
   });
@@ -365,7 +367,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
     var reg_layers   = ['geoname', 'osmway'];
     sanitize({ layers: 'admin,geoname,osmway', input: 'test' }, function( err, clean ){
-      t.deepEqual(clean.layers, reg_layers.concat(admin_layers), 'admin + regular layers set');
+      t.deepEqual(clean.types.from_layers, reg_layers.concat(admin_layers), 'admin + regular layers set');
       t.end();
     });
   });
@@ -373,21 +375,21 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var address_layers = ['osmaddress','openaddresses'];
     var reg_layers   = ['geoname', 'osmway'];
     sanitize({ layers: 'address,geoname,osmway', input: 'test' }, function( err, clean ){
-      t.deepEqual(clean.layers, reg_layers.concat(address_layers), 'address + regular layers set');
+      t.deepEqual(clean.types.from_layers, reg_layers.concat(address_layers), 'address + regular layers set');
       t.end();
     });
   });
   test('alias layer plus regular layers (no duplicates)', function(t) {
     var poi_layers = ['geoname','osmnode','osmway'];
     sanitize({ layers: 'poi,geoname,osmnode', input: 'test' }, function( err, clean ){
-      t.deepEqual(clean.layers, poi_layers, 'poi layers found (no duplicates)');
+      t.deepEqual(clean.types.from_layers, poi_layers, 'poi layers found (no duplicates)');
       t.end();
     });
   });
   test('multiple alias layers (no duplicates)', function(t) {
     var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood','locality','local_admin'];
     sanitize({ layers: 'poi,admin', input: 'test' }, function( err, clean ){
-      t.deepEqual(clean.layers, alias_layers, 'all layers found (no duplicates)');
+      t.deepEqual(clean.types.from_layers, alias_layers, 'all layers found (no duplicates)');
       t.end();
     });
   });
