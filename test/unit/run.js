@@ -19,6 +19,7 @@ var tests = [
   require('./helper/geojsonify'),
   require('./helper/outputSchema'),
   require('./helper/adminFields'),
+  require('./helper/types'),
 ];
 
 tests.map(function(t) {
