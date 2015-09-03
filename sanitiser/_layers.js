@@ -5,7 +5,6 @@ var isObject = require('is-object'),
 
 // validate inputs, convert types and apply defaults
 function sanitize( req ){
-  
   var clean = req.clean || {};
   var params= req.query;
 
@@ -42,7 +41,7 @@ function sanitize( req ){
   // pass validated params to next middleware
   clean.layers = get_layers(layers);
   req.clean = clean;
-  
+
   return { 'error': false };
 
 }
