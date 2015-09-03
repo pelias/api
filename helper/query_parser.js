@@ -72,17 +72,3 @@ module.exports = function(query) {
 
   return parsed_input;
 };
-
-
-// parsed_input = {
-//   name   : parsedAddress.name,
-//   number : parsedAddress.number,
-//   street : parsedAddress.street,
-//   city   : parsedAddress.city,
-//   state  : parsedAddress.state,
-//   country: parsedAddress.country,
-//   postalcode : parsedAddress.postalcode,
-//   regions: parsedAddress.regions,
-//   admin_parts: parsedAddress.admin_parts,
-//   target_layer: parsedAddress.target_layer
-// }
