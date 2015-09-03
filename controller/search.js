@@ -1,4 +1,5 @@
 var service = { search: require('../service/search') };
+var types = require ( '../helper/types' );
 
 function setup( backend, query ){
 
@@ -15,13 +16,11 @@ function setup( backend, query ){
       body: query( req.clean )
     };
 
-    if (req.clean.types && req.clean.types.from_layers) {
-      cmd.type = req.clean.types.from_layers;
-    }
-
-    // set type if input suggests targeting a layer(s)
-    if (req.clean.default_layers_set && req.clean.parsed_input) {
-      cmd.type = req.clean.parsed_input.target_layer || cmd.type;
+    // don't directly set cmd.type from types helper to avoid sometimes
+    // setting cmd.type to undefined (having the key not set is cleaner)
+    var type = types(req.clean.types);
+    if (type !== undefined) {
+      cmd.type = type;
     }
 
     // query backend
