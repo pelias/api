@@ -6,16 +6,14 @@ var suggest  = require('../../../sanitiser/reverse'),
     defaultError = 'missing param \'lat\'',
     defaultClean =  { lat:0,
                       types: {
-                        from_layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
-                        'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
                       },
                       lon: 0,
                       size: 10,
                       details: true,
-                      default_layers_set: true,
                       categories: []
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
+var all_layers = ( '../../query/indeces' );
 
 module.exports.tests = {};
 

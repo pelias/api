@@ -15,7 +15,6 @@ var suggest  = require('../../../sanitiser/suggest'),
                       lat:0,
                       lon:0,
                       parsed_input: defaultParsed,
-                      default_layers_set: true
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
