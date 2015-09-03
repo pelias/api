@@ -272,7 +272,7 @@ module.exports.tests.sanitize_details = function(test, common) {
 module.exports.tests.sanitize_layers = function(test, common) {
   test('unspecified', function(t) {
     sanitize({ layers: undefined, input: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.deepEqual(clean.layers, defaultClean.layers, 'default layers set');
+      t.deepEqual(clean.types.from_layers, defaultClean.types.from_layers, 'default layers set');
       t.end();
     });
   });

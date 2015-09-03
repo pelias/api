@@ -8,6 +8,8 @@ function sanitize( req ){
   var clean = req.clean || {};
   var params= req.query;
 
+  clean.types = clean.types || {};
+
   // ensure the input params are a valid object
   if( !isObject( params ) ){
     params = {};
@@ -39,7 +41,7 @@ function sanitize( req ){
   }
 
   // pass validated params to next middleware
-  clean.layers = get_layers(layers);
+  clean.types.from_layers = get_layers(layers);
   req.clean = clean;
 
   return { 'error': false };

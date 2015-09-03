@@ -15,8 +15,8 @@ function setup( backend, query ){
       body: query( req.clean )
     };
 
-    if (req.clean.layers) {
-      cmd.type = req.clean.layers;
+    if (req.clean.types && req.clean.types.from_layers) {
+      cmd.type = req.clean.types.from_layers;
     }
 
     // set type if input suggests targeting a layer(s)
