@@ -6,7 +6,8 @@ module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
   test('interface', function(t) {
-    t.equal(typeof parser, 'function', 'valid function');
+    t.equal(typeof parser.get_parsed_address, 'function', 'valid function');
+    t.equal(typeof parser.get_layers, 'function', 'valid function');
     t.end();
   });
 };
@@ -17,7 +18,7 @@ module.exports.tests.split_on_comma = function(test, common) {
 
   var testParse = function(query) {
     test('naive parsing ' + query, function(t) {
-      var address = parser(query);
+      var address = parser.get_parsed_address(query);
       var delimIndex = query.indexOf(delim);
       var name = query.substring(0, delimIndex);
       var admin_parts = query.substring(delimIndex + 1).trim();
@@ -41,11 +42,12 @@ module.exports.tests.parse_three_chars_or_less = function(test, common) {
 
   var testParse = function(query) {
     test('query length < 3 (' + query + ')', function(t) {
-      var address = parser(query);
+      var address = parser.get_parsed_address(query);
       var target_layer = get_layers(['admin']);
+      var layers = parser.get_layers(query);
 
       t.equal(typeof address, 'object', 'valid object');
-      t.deepEqual(address.target_layer, target_layer, 'admin_parts set correctly to ' + target_layer.join(', '));
+      t.deepEqual(layers, target_layer, 'admin_parts set correctly to ' + target_layer.join(', '));
       t.end();
     });
   };
@@ -63,15 +65,16 @@ module.exports.tests.parse_one_or_more_tokens = function(test, common) {
 
   var testParse = function(query, parse_address) {
     test('query with one or more tokens (' + query + ')', function(t) {
-      var address = parser(query);
+      var address = parser.get_parsed_address(query);
       var target_layer = get_layers(['admin', 'poi']);
+      var layers = parser.get_layers(query);
 
       t.equal(typeof address, 'object', 'valid object');
 
       if (parse_address) {
         t.deepEqual(address.regions.join(''), query, 'since query contained a number, it went through address parsing');
       } else {
-        t.deepEqual(address.target_layer, target_layer, 'admin_parts set correctly to ' + target_layer.join(', '));
+        t.deepEqual(layers, target_layer, 'admin_parts set correctly to ' + target_layer.join(', '));
       }
 
       t.end();
@@ -114,7 +117,7 @@ module.exports.tests.parse_address = function(test, common) {
       // remove leading whitespace
       query_string = query_string.substring(1);
 
-      var address = parser(query_string);
+      var address = parser.get_parsed_address(query_string);
       var non_address_layer = get_layers(['admin', 'poi']);
 
       t.equal(typeof address, 'object', 'valid object for the address ('+query_string+')');

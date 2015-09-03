@@ -17,7 +17,7 @@ var input  = require('../../../sanitiser/_input'),
                       lon:0
                     },
     getTargetLayers = function(query) {
-      var address = parser(query);
+      var address = parser.get_parsed_address(query);
       return address.target_layer;
     };
 

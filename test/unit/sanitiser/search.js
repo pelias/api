@@ -11,6 +11,8 @@ var search  = require('../../../sanitiser/search'),
                       types: {
                         from_layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
                         'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
+                        from_address_parsing: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
+                        'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
                       },
                       size: 10,
                       details: true,
@@ -79,7 +81,7 @@ module.exports.tests.sanitize_input_with_delim = function(test, common) {
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.input = input;
 
-        expected.parsed_input = parser(input);
+        expected.parsed_input = parser.get_parsed_address(input);
         t.equal(err, undefined, 'no error');
         t.equal(clean.parsed_input.name, expected.parsed_input.name, 'clean name set correctly');
 
@@ -330,7 +332,8 @@ module.exports.tests.sanitize_layers = function(test, common) {
   test('address (alias) layer', function(t) {
     var address_layers = ['osmaddress','openaddresses'];
     sanitize({ layers: 'address', input: 'test' }, function( err, clean ){
-      t.deepEqual(clean.types.from_layers, address_layers, 'address layers set');
+      t.deepEqual(clean.types.from_layers, address_layers, 'types from layers set');
+      t.deepEqual(clean.types.from_address_parser, _input.allLayers, 'address parser uses default layers');
       t.end();
     });
   });
