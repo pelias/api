@@ -1,36 +1,7 @@
+/**
+ * helper sanitiser methods for geo parameters
+ */
 var util = require( 'util' );
-var isObject = require('is-object');
-
-
-// validate inputs, convert types and apply defaults
-module.exports = function sanitize( req, latlon_is_required ){
-
-  var clean = req.clean || {};
-  var params = req.query;
-  latlon_is_required = latlon_is_required || false;
-
-  // ensure the input params are a valid object
-  if( !isObject( params ) ){
-    params = {};
-  }
-
-  try {
-    sanitize_coord( 'lat', clean, params.lat, latlon_is_required );
-    sanitize_coord( 'lon', clean, params.lon, latlon_is_required );
-    sanitize_bbox(clean, params.bbox);
-  }
-  catch (err) {
-    return {
-      'error': true,
-      'message': err.message
-    };
-  }
-
-  req.clean = clean;
-
-  return { 'error': false };
-};
-
 
 /**
  * Parse and validate bbox parameter
@@ -81,3 +52,8 @@ function sanitize_coord( coord, clean, param, latlon_is_required ) {
     throw new Error( util.format( 'missing param \'%s\'', coord ) );
   }
 }
+
+module.exports = {
+  sanitize_bbox: sanitize_bbox,
+  sanitize_coord: sanitize_coord
+};
