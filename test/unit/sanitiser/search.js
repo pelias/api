@@ -93,7 +93,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
   };
   test('invalid lat', function(t) {
     lats.invalid.forEach( function( lat ){
-      sanitize({ text: 'test', lat: lat, lon: 0 }, function( err, clean ){
+      sanitize({ text: 'test', focus: { point: { lat: lat, lon: 0 } } }, function( err, clean ){
         t.equal(err, 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
         t.equal(clean, undefined, 'clean not set');
       });
@@ -102,7 +102,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
   });
   test('valid lat', function(t) {
     lats.valid.forEach( function( lat ){
-      sanitize({ text: 'test', lat: lat, lon: 0 }, function( err, clean ){
+      sanitize({ text: 'test', focus: { point: {  lat: lat, lon: 0 } } }, function( err, clean ){
         var expected_lat = parseFloat( lat );
         t.equal(err, undefined, 'no error');
         t.deepEqual(clean.lat, expected_lat, 'clean lat set correctly (' + lat + ')');
@@ -118,7 +118,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
   };
   test('valid lon', function(t) {
     lons.valid.forEach( function( lon ){
-      sanitize({ text: 'test', lat: 0, lon: lon }, function( err, clean ){
+      sanitize({ text: 'test', focus: { point: { lat: 0, lon: lon } } }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lon = parseFloat( lon );
         t.equal(err, undefined, 'no error');
@@ -139,7 +139,7 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     t.end();
   });
   test('no lat', function(t) {
-    sanitize({ text: 'test', lon: 0 }, function( err, clean ){
+    sanitize({ text: 'test', focus: { point: { lon: 0 } } }, function( err, clean ){
       var expected_lon = 0;
       t.equal(err, undefined, 'no error');
       t.deepEqual(clean.lon, expected_lon, 'clean set correctly (without any lat)');
@@ -147,7 +147,7 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     t.end();
   });
   test('no lon', function(t) {
-    sanitize({ text: 'test', lat: 0 }, function( err, clean ){
+    sanitize({ text: 'test', focus: { point: { lat: 0 } } }, function( err, clean ){
       var expected_lat = 0;
       t.equal(err, undefined, 'no error');
       t.deepEqual(clean.lat, expected_lat, 'clean set correctly (without any lon)');

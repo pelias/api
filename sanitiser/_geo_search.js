@@ -12,9 +12,17 @@ module.exports = function sanitize( req ){
     params = {};
   }
 
+  if( !isObject( params.focus ) ){
+    params.focus = {};
+  }
+
+  if( !isObject( params.focus.point ) ){
+    params.focus.point = {};
+  }
+
   try {
-    geo_common.sanitize_coord( 'lat', clean, params.lat, latlon_is_required );
-    geo_common.sanitize_coord( 'lon', clean, params.lon, latlon_is_required );
+    geo_common.sanitize_coord( 'lat', clean, params.focus.point.lat, latlon_is_required );
+    geo_common.sanitize_coord( 'lon', clean, params.focus.point.lon, latlon_is_required );
     geo_common.sanitize_bbox(clean, params.bbox);
   }
   catch (err) {
