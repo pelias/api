@@ -1,4 +1,3 @@
-
 var _sanitize = require('../sanitiser/_sanitize'),
     sanitiser = {
       latlonzoom: function( req ) {

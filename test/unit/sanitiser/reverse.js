@@ -35,7 +35,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
     valid: [ 0, 45, 90, -0, '0', '45', '90', -181, -120, -91, 91, 120, 181 ],
     missing: ['', undefined, null]
   };
-  test('invalid lat', function(t) {  
+  test('invalid lat', function(t) {
     lats.invalid.forEach( function( lat ){
       sanitize({ lat: lat, lon: 0 }, function( err, clean ){
         t.equal(err, 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
@@ -44,7 +44,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
     });
     t.end();
   });
-  test('valid lat', function(t) {  
+  test('valid lat', function(t) {
     lats.valid.forEach( function( lat ){
       sanitize({ lat: lat, lon: 0 }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
@@ -55,7 +55,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
     });
     t.end();
   });
-  test('missing lat', function(t) {  
+  test('missing lat', function(t) {
     lats.missing.forEach( function( lat ){
       sanitize({ lat: lat, lon: 0 }, function( err, clean ){
         t.equal(err, 'missing param \'lat\'', 'latitude is a required field');
@@ -71,7 +71,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
     valid: [ -360, -181, 181, -180, -1, -0, 0, 45, 90, '-180', '0', '180' ],
     missing: ['', undefined, null]
   };
-  test('valid lon', function(t) {  
+  test('valid lon', function(t) {
     lons.valid.forEach( function( lon ){
       sanitize({ lat: 0, lon: lon }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
@@ -82,7 +82,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
     });
     t.end();
   });
-  test('missing lon', function(t) {  
+  test('missing lon', function(t) {
     lons.missing.forEach( function( lon ){
       sanitize({ lat: 0, lon: lon }, function( err, clean ){
         t.equal(err, 'missing param \'lon\'', 'longitude is a required field');
@@ -123,7 +123,7 @@ module.exports.tests.sanitize_details = function(test, common) {
         t.equal(clean.details, false, 'details set to false');
         t.end();
       });
-    });  
+    });
   });
 
   var valid_values = [true, 'true', 1, '1', 'yes', 'y'];
@@ -133,7 +133,7 @@ module.exports.tests.sanitize_details = function(test, common) {
         t.equal(clean.details, true, 'details set to true');
         t.end();
       });
-    });  
+    });
   });
 
   test('test default behavior', function(t) {
@@ -150,7 +150,7 @@ module.exports.tests.sanitize_details = function(test, common) {
         t.equal(clean.details, false, 'details set to false');
         t.end();
       });
-    }); 
+    });
   });
 };
 

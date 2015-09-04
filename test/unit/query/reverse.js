@@ -1,4 +1,3 @@
-
 var generate = require('../../../query/reverse');
 
 module.exports.tests = {};
@@ -15,7 +14,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate({
       lat: 29.49136, lon: -82.50622
     });
-    
+
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/reverse_standard');
 
@@ -38,7 +37,6 @@ module.exports.tests.query = function(test, common) {
 };
 
 module.exports.all = function (tape, common) {
-
   function test(name, testFunction) {
     return tape('reverse query ' + name, testFunction);
   }
