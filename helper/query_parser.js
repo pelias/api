@@ -13,9 +13,6 @@ module.exports.get_layers = function get_layers(query) {
   if (query.length <= 3 ) {
     // no address parsing required
     return get_layers_helper(['admin']);
-  } else if (tokenized.length === 1 || (tokenized.length < 3 && !hasNumber)) {
-    // no need to hit address layers if there's only one (or two) token(s)
-    return get_layers_helper(['admin', 'poi']);
   }
 };
 
