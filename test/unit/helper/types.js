@@ -55,6 +55,35 @@ module.exports.tests.layers_parameter_and_address_parser = function(test, common
   });
 };
 
+module.exports.tests.source_parameter = function(test, common) {
+  test('source parameter specified', function(t) {
+    var cleaned_types = {
+      from_source: ['openaddresses']
+    };
+
+    var actual = types(cleaned_types);
+
+    var expected = ['openaddresses'];
+    t.deepEqual(actual, expected, 'type parameter set to types specified by source');
+    t.end();
+  });
+};
+
+module.exports.tests.source_and_layers_parameters = function(test, common) {
+  test('source and layers parameter both specified', function(t) {
+    var cleaned_types = {
+      from_source: ['openaddresses'],
+      from_layers: ['osmaddress', 'openaddresses']
+    };
+
+    var actual = types(cleaned_types);
+
+    var expected = ['openaddresses'];
+    t.deepEqual(actual, expected, 'type set to intersection of source and layer types');
+    t.end();
+  });
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
