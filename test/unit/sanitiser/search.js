@@ -214,27 +214,6 @@ module.exports.tests.sanitize_bbox = function(test, common) {
   });
 };
 
-module.exports.tests.sanitize_zoom = function(test, common) {
-  test('invalid zoom value', function(t) {
-    sanitize({ zoom: 'a', text: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.zoom, undefined, 'zoom not set');
-      t.end();
-    });
-  });
-  test('below min zoom value', function(t) {
-    sanitize({ zoom: -100, text: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.zoom, 1, 'min zoom set');
-      t.end();
-    });
-  });
-  test('above max zoom value', function(t) {
-    sanitize({ zoom: 9999, text: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.zoom, 18, 'max zoom set');
-      t.end();
-    });
-  });
-};
-
 module.exports.tests.sanitize_size = function(test, common) {
   test('invalid size value', function(t) {
     sanitize({ size: 'a', text: 'test', lat: 0, lon: 0 }, function( err, clean ){

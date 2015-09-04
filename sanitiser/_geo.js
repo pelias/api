@@ -17,7 +17,6 @@ module.exports = function sanitize( req, latlon_is_required ){
   try {
     sanitize_coord( 'lat', clean, params.lat, latlon_is_required );
     sanitize_coord( 'lon', clean, params.lon, latlon_is_required );
-    sanitize_zoom_level(clean, params.zoom);
     sanitize_bbox(clean, params.bbox);
   }
   catch (err) {
@@ -80,12 +79,5 @@ function sanitize_coord( coord, clean, param, latlon_is_required ) {
   }
   else if (latlon_is_required) {
     throw new Error( util.format( 'missing param \'%s\'', coord ) );
-  }
-}
-
-function sanitize_zoom_level( clean, param ) {
-  var zoom = parseInt( param, 10 );
-  if( !isNaN( zoom ) ){
-    clean.zoom = Math.min( Math.max( zoom, 1 ), 18 ); // max
   }
 }
