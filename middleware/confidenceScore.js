@@ -17,7 +17,7 @@ var logger = require('pelias-logger').get('api');
 var RELATIVE_SCORES = true;
 
 function setup(peliasConfig) {
-  RELATIVE_SCORES = peliasConfig.relativeScores || true;
+  RELATIVE_SCORES = peliasConfig.hasOwnProperty('relativeScores') ? peliasConfig.relativeScores : true;
   return computeScores;
 }
 
