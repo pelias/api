@@ -56,7 +56,7 @@ function lookupLayer(src) {
     case 'locality':
       return 'locality';
     case 'local_admin':
-      return 'local_admin';
+      return 'localadmin';
     case 'osmaddress':
     case 'openaddresses':
       return 'address';
