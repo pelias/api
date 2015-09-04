@@ -1,6 +1,6 @@
 
 #> valid suggest query
-path: '/suggest?input=a&lat=0&lon=0'
+path: '/v1/suggest?input=a&lat=0&lon=0'
 
 #? 200 ok
 response.statusCode.should.equal 200

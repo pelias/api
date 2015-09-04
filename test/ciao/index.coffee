@@ -1,6 +1,6 @@
 
 #> api root
-path: '/'
+path: '/v1/'
 
 #? endpoint available
 response.statusCode.should.equal 200

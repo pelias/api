@@ -1,6 +1,6 @@
 
 #> valid place query
-path: '/place?id=geoname:4221195'
+path: '/v1/place?id=geoname:4221195'
 
 #? 200 ok
 response.statusCode.should.equal 200
