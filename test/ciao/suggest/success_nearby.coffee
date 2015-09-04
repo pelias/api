@@ -1,6 +1,6 @@
 
 #> valid suggest query
-path: '/suggest/nearby?input=a&lat=29.49136&lon=-82.50622'
+path: '/v1/suggest/nearby?input=a&lat=29.49136&lon=-82.50622'
 
 #? 200 ok
 response.statusCode.should.equal 200

@@ -26,13 +26,14 @@ function setup( backend, query ){
     }
 
     // query backend
-    service.search( backend, cmd, function( err, docs ){
+    service.search( backend, cmd, function( err, docs, meta ){
 
       // error handler
       if( err ){ return next( err ); }
 
       req.results = {
-        data: docs
+        data: docs,
+        meta: meta
       };
 
       next();

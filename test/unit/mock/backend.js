@@ -10,6 +10,7 @@ responses['client/search/ok/1'] = function( cmd, cb ){
   return cb( undefined, searchEnvelope([{
     _id: 'myid1',
     _type: 'mytype1',
+    _score: 10,
     _source: {
       value: 1,
       center_point: { lat: 100.1, lon: -50.5 },
@@ -19,6 +20,7 @@ responses['client/search/ok/1'] = function( cmd, cb ){
   }, {
     _id: 'myid2',
     _type: 'mytype2',
+    _score: 20,
     _source: {
       value: 2,
       center_point: { lat: 100.2, lon: -51.5 },
@@ -35,6 +37,7 @@ responses['client/mget/ok/1'] = function( cmd, cb ){
   return cb( undefined, mgetEnvelope([{
     _id: 'myid1',
     _type: 'mytype1',
+    _score: 10,
     found: true,
     _source: {
       value: 1,
@@ -45,6 +48,7 @@ responses['client/mget/ok/1'] = function( cmd, cb ){
   }, {
     _id: 'myid2',
     _type: 'mytype2',
+    _score: 20,
     found: true,
     _source: {
       value: 2,
