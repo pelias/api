@@ -1,4 +1,4 @@
-var valid_types = require( '../query/indeces' );
+var valid_types = require( '../query/types' );
 
 module.exports = function calculate_types(clean_types) {
   if (!clean_types) {

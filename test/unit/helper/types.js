@@ -1,6 +1,6 @@
 var types = require('../../../helper/types');
 
-var valid_types = require( '../../../query/indeces' );
+var valid_types = require( '../../../query/types' );
 module.exports.tests = {};
 
 module.exports.tests.no_cleaned_types = function(test, common) {

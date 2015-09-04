@@ -11,7 +11,7 @@ var tests = [
   require('./sanitiser/search'),
   require('./sanitiser/reverse'),
   require('./sanitiser/place'),
-  require('./query/indeces'),
+  require('./query/types'),
   require('./query/sort'),
   require('./query/search'),
   require('./query/reverse'),

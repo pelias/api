@@ -1,5 +1,5 @@
 
-// querable indeces
+// querable types
 
 module.exports = [
   'geoname',
