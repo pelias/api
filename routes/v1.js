@@ -1,36 +1,91 @@
+var Router = require('express').Router;
+var reverseQuery = require('../query/reverse');
+
 /** ----------------------- sanitisers ----------------------- **/
-var sanitisers = {};
-sanitisers.place      = require('../sanitiser/place');
-sanitisers.suggest  = require('../sanitiser/suggest');
-sanitisers.search   = require('../sanitiser/search');
-sanitisers.coarse   = require('../sanitiser/coarse');
-sanitisers.reverse  = require('../sanitiser/reverse');
+var sanitisers = {
+  place: require('../sanitiser/place'),
+  search: require('../sanitiser/search'),
+  reverse: require('../sanitiser/reverse')
+};
 
 /** ----------------------- controllers ----------------------- **/
 
-var controllers     = {};
-controllers.index   = require('../controller/index');
-controllers.place     = require('../controller/place');
-controllers.search  = require('../controller/search');
+var controllers     = {
+  index: require('../controller/index'),
+  place: require('../controller/place'),
+  search: require('../controller/search')
+};
 
+/** ----------------------- controllers ----------------------- **/
+
+var postProc = {
+  renamePlacenames: require('../middleware/renamePlacenames'),
+  geocodeJSON: require('../middleware/geocodeJSON'),
+  sendJSON: require('../middleware/sendJSON')
+};
+
+/**
+ * Append routes to app
+ *
+ * @param {object} app
+ * @param {object} peliasConfig
+ */
 function addRoutes(app, peliasConfig) {
+
+  /** ------------------------- routers ------------------------- **/
+
+  var routers = {
+    index: createRouter([
+      controllers.index()
+    ]),
+    search: createRouter([
+      sanitisers.search.middleware,
+      controllers.search(),
+      postProc.renamePlacenames(),
+      postProc.geocodeJSON(peliasConfig),
+      postProc.sendJSON
+    ]),
+    reverse: createRouter([
+      sanitisers.reverse.middleware,
+      controllers.search(undefined, reverseQuery),
+      postProc.renamePlacenames(),
+      postProc.geocodeJSON(peliasConfig),
+      postProc.sendJSON
+    ]),
+    place: createRouter([
+      sanitisers.place.middleware,
+      controllers.place(),
+      postProc.renamePlacenames(),
+      postProc.geocodeJSON(peliasConfig),
+      postProc.sendJSON
+    ])
+  };
+
+
+  var base = '/v1/';
+
   // api root
-  app.get( '/v1/', controllers.index() );
-
-  // place API
-  app.get( '/v1/place', sanitisers.place.middleware, controllers.place() );
-
-  // suggest APIs
-  app.get( '/v1/suggest', sanitisers.search.middleware, controllers.search() );
-  app.get( '/v1/suggest/nearby', sanitisers.suggest.middleware, controllers.search() );
-  app.get( '/v1/suggest/coarse', sanitisers.coarse.middleware, controllers.search() );
-
-  // search APIs
-  app.get( '/v1/search', sanitisers.search.middleware, controllers.search() );
-  app.get( '/v1/search/coarse', sanitisers.coarse.middleware, controllers.search() );
-
-  // reverse API
-  app.get( '/v1/reverse', sanitisers.reverse.middleware, controllers.search(undefined, require('../query/reverse')) );
+  app.get ( base,                  routers.index );
+  app.get ( base + 'place',        routers.place );
+  app.get ( base + 'autocomplete', routers.search );
+  app.get ( base + 'search',       routers.search );
+  app.post( base + 'search',       routers.search );
+  app.get ( base + 'reverse',      routers.reverse );
 }
+
+/**
+ * Helper function for creating routers
+ *
+ * @param {[{function}]} functions
+ * @returns {express.Router}
+ */
+function createRouter(functions) {
+  var router = Router(); // jshint ignore:line
+  functions.forEach(function (f) {
+    router.use(f);
+  });
+  return router;
+}
+
 
 module.exports.addRoutes = addRoutes;

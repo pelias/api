@@ -1,11 +1,16 @@
 var proxy = require('express-http-proxy');
 
 function addRoutes(app, peliasConfig) {
-  if (!peliasConfig.hasOwnProperty('legacyUrl')) {
-    return;
-  }
+  var sendToLegacy;
 
-  var sendToLegacy = proxy(peliasConfig.legacyUrl);
+  if (!peliasConfig.hasOwnProperty('legacyUrl')) {
+    sendToLegacy = function doNothing(req, res, next) {
+      next(new Error('Invalid path, no legacy proxy specified'));
+    };
+  }
+  else {
+    sendToLegacy = proxy(peliasConfig.legacyUrl);
+  }
 
   // api root
   app.get( '/', sendToLegacy );

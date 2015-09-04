@@ -1,5 +1,4 @@
 var service = { mget: require('../service/mget') };
-var geojsonify = require('../helper/geojsonify').search;
 
 function setup( backend ){
   // allow overriding of dependencies
@@ -14,18 +13,15 @@ function setup( backend ){
       };
     });
 
-    service.mget( backend, query, function( err, docs ){
+    service.mget( backend, query, function( err, docs ) {
       // error handler
       if( err ){ return next( err ); }
 
-      // convert docs to geojson
-      var geojson = geojsonify( docs, req.clean );
+      req.results = {
+        data: docs
+      };
 
-      // response envelope
-      geojson.date = new Date().getTime();
-
-      // respond
-      return res.status(200).json( geojson );
+      next();
     });
   }
 

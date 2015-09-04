@@ -55,10 +55,13 @@ module.exports.tests.functional_success = function(test, common) {
         t.equal(json.type, 'FeatureCollection', 'valid geojson');
         t.true(Array.isArray(json.features), 'features is array');
         t.deepEqual(json.features, expected, 'values correctly mapped');
-        t.end();
       }
     };
-    controller( { clean: { ids: [ {'id' : 123, 'type': 'a' } ] } }, res );
+    var next = function next() {
+      t.equal(arguments.length, 0, 'next was called without error');
+      t.end();
+    };
+    controller( { clean: { ids: [ {'id' : 123, 'type': 'a' } ] } }, res, next );
   });
 
   var detailed_expectation = [{
@@ -109,10 +112,13 @@ module.exports.tests.functional_success = function(test, common) {
         t.equal(json.type, 'FeatureCollection', 'valid geojson');
         t.true(Array.isArray(json.features), 'features is array');
         t.deepEqual(json.features, detailed_expectation, 'values correctly mapped along with details');
-        t.end();
       }
     };
-    controller( { clean: { ids: [ {'id' : 123, 'type': 'a' } ], details: true } }, res );
+    var next = function next() {
+      t.equal(arguments.length, 0, 'next was called without error');
+      t.end();
+    };
+    controller( { clean: { ids: [ {'id' : 123, 'type': 'a' } ], details: true } }, res, next );
   });
 };
 

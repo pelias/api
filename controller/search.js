@@ -1,6 +1,5 @@
 
 var service = { search: require('../service/search') };
-var geojsonify = require('../helper/geojsonify').search;
 
 function setup( backend, query ){
 
@@ -32,14 +31,11 @@ function setup( backend, query ){
       // error handler
       if( err ){ return next( err ); }
 
-      // convert docs to geojson
-      var geojson = geojsonify( docs, req.clean );
+      req.results = {
+        data: docs
+      };
 
-      // response envelope
-      geojson.date = new Date().getTime();
-
-      // respond
-      return res.status(200).json( geojson );
+      next();
     });
 
   }
