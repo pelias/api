@@ -33,10 +33,10 @@ module.exports.tests.address_parser = function(test, common) {
 module.exports.tests.layers_parameter = function(test, common) {
   test('layers parameter specifies only some layers', function(t) {
     var cleaned_types = {
-      from_layers: ['geonames']
+      from_layers: ['geoname']
     };
     var actual = types(cleaned_types);
-    var expected = ['geonames'];
+    var expected = ['geoname'];
     t.deepEqual(actual, expected, 'only types specified by layers parameter returned');
     t.end();
   });
@@ -45,11 +45,11 @@ module.exports.tests.layers_parameter = function(test, common) {
 module.exports.tests.layers_parameter_and_address_parser = function(test, common) {
   test('layers parameter and address parser present', function(t) {
     var cleaned_types = {
-      from_layers: ['geonames'],
+      from_layers: ['geoname'],
       from_address_parser: ['admin0'] // simplified return value from address parse
     };
     var actual = types(cleaned_types);
-    var expected = ['geonames'];
+    var expected = ['geoname'];
     t.deepEqual(actual, expected, 'layers parameter overrides address parser completely');
     t.end();
   });
