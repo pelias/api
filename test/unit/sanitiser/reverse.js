@@ -13,7 +13,6 @@ var suggest  = require('../../../sanitiser/reverse'),
                       categories: []
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
-var all_layers = ( '../../query/indeces' );
 
 module.exports.tests = {};
 

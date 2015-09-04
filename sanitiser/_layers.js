@@ -1,6 +1,6 @@
 
 var isObject = require('is-object'),
-    indeces = require('../query/indeces'),
+    types = require('../query/types'),
     get_layers = require('../helper/layers');
 
 // validate inputs, convert types and apply defaults
@@ -23,7 +23,7 @@ function sanitize( req ){
 
   // decide which layers can be queried
   var alias_layers  = ['poi', 'admin', 'address'];
-  var alias_indeces = indeces.concat(alias_layers);
+  var alias_types = types.concat(alias_layers);
 
   // parse GET params
   var layers = params.layers.split(',').map( function( layer ){
@@ -32,10 +32,10 @@ function sanitize( req ){
 
   // validate layer names
   for( var x=0; x<layers.length; x++ ){
-    if( -1 === alias_indeces.indexOf( layers[x] ) ){
+    if( -1 === alias_types.indexOf( layers[x] ) ){
       return {
         'error': true,
-        'message': 'invalid param \'layers\': must be one or more of ' + alias_indeces.join(',')
+        'message': 'invalid param \'layers\': must be one or more of ' + alias_types.join(',')
       };
     }
   }

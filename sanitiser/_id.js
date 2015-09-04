@@ -7,7 +7,7 @@ var isObject = require('is-object');
 function sanitize( req ){
   req.clean   = req.clean || {};
   var params  = req.query;
-  var indeces = require('../query/indeces');
+  var types = require('../query/types');
   var delim   = ':';
 
   // ensure params is a valid object
@@ -55,9 +55,9 @@ function sanitize( req ){
       if('string' !== typeof type || !type.length){
         return errormessage(thisparam);
       }
-      // type text must be one of the indeces
-      if(indeces.indexOf(type) === -1){
-        return errormessage('type', type + ' is invalid. It must be one of these values - [' + indeces.join(', ') + ']');
+      // type text must be one of the types
+      if(types.indexOf(type) === -1){
+        return errormessage('type', type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']');
       }
       req.clean.ids.push({
         id: id,
