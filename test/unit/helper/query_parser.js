@@ -63,6 +63,7 @@ module.exports.tests.parse_one_or_more_tokens = function(test, common) {
   var two_tokens_nonum  = ['small town', 'biggg city', 'another empire'];
   var two_tokens_withnum= ['123 main', 'sixty 1', '123-980 house'];
 
+  // parse address is now always true to fix pelias/api#194
   var testParse = function(query, parse_address) {
     test('query with one or more tokens (' + query + ')', function(t) {
       var address = parser.get_parsed_address(query);
@@ -83,7 +84,7 @@ module.exports.tests.parse_one_or_more_tokens = function(test, common) {
 
   var queries = one_token_queries.concat(two_tokens_nonum);
   for (var key in queries) {
-    testParse( queries[key] );
+    testParse( queries[key], true );
   }
   for (key in two_tokens_withnum) {
     testParse( two_tokens_withnum[key], true );
