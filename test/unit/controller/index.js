@@ -45,7 +45,7 @@ module.exports.tests.info_html = function(test, common) {
     };
 
     var proxyquire = require('proxyquire');
-    var setup = proxyquire('../../../controller/markdownToHTML', { 'fs': fsMock });
+    var setup = proxyquire('../../../controller/markdownToHtml', { 'fs': fsMock });
 
     var config = { version: '1.1.1' };
 
