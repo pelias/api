@@ -8,7 +8,7 @@
   "host": "localhost",
   "method": "GET",
   "port": 3100,
-  "path": "/suggest?input=a&lat=0&lon=0"
+  "path": "/suggest?text=a&lat=0&lon=0"
 }
 ```
 

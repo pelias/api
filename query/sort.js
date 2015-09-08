@@ -66,9 +66,9 @@ module.exports = function( params ){
 };
 
 function getCategoryWeights(params) {
-  if (params && params.hasOwnProperty('parsed_input') &&
-        (params.parsed_input.hasOwnProperty('number') ||
-         params.parsed_input.hasOwnProperty('street'))) {
+  if (params && params.hasOwnProperty('parsed_text') &&
+        (params.parsed_text.hasOwnProperty('number') ||
+         params.parsed_text.hasOwnProperty('street'))) {
     return category_weights.address;
   }
   return category_weights.default;

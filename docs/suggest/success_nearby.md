@@ -8,7 +8,7 @@
   "host": "localhost",
   "method": "GET",
   "port": 3100,
-  "path": "/suggest/nearby?input=a&lat=29.49136&lon=-82.50622"
+  "path": "/suggest/nearby?text=a&lat=29.49136&lon=-82.50622"
 }
 ```
 

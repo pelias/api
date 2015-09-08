@@ -11,20 +11,19 @@ function sanitize( req ){
     params = {};
   }
 
-  // input text
-  if('string' !== typeof params.input || !params.input.length){
+  if('string' !== typeof params.text || !params.text.length){
     return {
       'error': true,
-      'message': 'invalid param \'input\': text length, must be >0'
+      'message': 'invalid param \'text\': text length, must be >0'
     };
   }
 
-  req.clean.input = params.input;
+  req.clean.text = params.text;
 
-  req.clean.parsed_input = query_parser.get_parsed_address(params.input);
+  req.clean.parsed_text = query_parser.get_parsed_address(params.text);
 
   req.clean.types = req.clean.layers || {};
-  req.clean.types.from_address_parsing = query_parser.get_layers(params.input);
+  req.clean.types.from_address_parsing = query_parser.get_layers(params.text);
 
   return { 'error': false };
 }
