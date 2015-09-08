@@ -1,3 +1,4 @@
+var express = require('express');
 var Router = require('express').Router;
 var reverseQuery = require('../query/reverse');
 
@@ -11,7 +12,7 @@ var sanitisers = {
 /** ----------------------- controllers ----------------------- **/
 
 var controllers     = {
-  index: require('../controller/index'),
+  mdToHTML: require('../controller/markdownToHtml'),
   place: require('../controller/place'),
   search: require('../controller/search')
 };
@@ -36,7 +37,10 @@ function addRoutes(app, peliasConfig) {
 
   var routers = {
     index: createRouter([
-      controllers.index()
+      controllers.mdToHTML(peliasConfig, './public/apiDoc.md')
+    ]),
+    attribution: createRouter([
+      controllers.mdToHTML(peliasConfig, './public/attribution.md')
     ]),
     search: createRouter([
       sanitisers.search.middleware,
@@ -66,6 +70,7 @@ function addRoutes(app, peliasConfig) {
 
   // api root
   app.get ( base,                  routers.index );
+  app.get ( base + 'attribution',  routers.attribution );
   app.get ( base + 'place',        routers.place );
   app.get ( base + 'autocomplete', routers.search );
   app.get ( base + 'search',       routers.search );
