@@ -52,7 +52,7 @@ function computeScores(req, res, next) {
 function computeConfidenceScore(req, mean, stdev, hit) {
   var dealBreakers = checkForDealBreakers(req, hit);
   if (dealBreakers) {
-    hit.confidence = 0;
+    hit.confidence = 0.5;
     return hit;
   }
 
