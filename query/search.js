@@ -6,7 +6,6 @@ var peliasQuery = require('pelias-query'),
 //------------------------------
 // general-purpose search query
 //------------------------------
-
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
@@ -127,18 +126,17 @@ function generate( clean ){
     // @todo: clean up this code
 
     // a concept called 'leftovers' which is just 'admin_parts' plus 'regions'.
-    var leftovers = [];
+    var leftoversString = '';
     if( clean.parsed_input.hasOwnProperty('admin_parts') ){
-      leftovers.push( clean.parsed_input.admin_parts );
+      leftoversString = clean.parsed_input.admin_parts;
     }
     else if( clean.parsed_input.hasOwnProperty('regions') ){
-      leftovers.push( clean.parsed_input.regions );
+      leftoversString = clean.parsed_input.regions.join(' ');
     }
 
     // if we have 'leftovers' then assign them to any fields which
     // currently don't have a value assigned.
-    if( leftovers.length ){
-      var leftoversString = leftovers.join(' ');
+    if( leftoversString.length ){
       var unmatchedAdminFields = adminFields.slice();
       
       // cycle through fields and set fields which
