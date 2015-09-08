@@ -1,188 +1,161 @@
 
-var queries = require('geopipes-elasticsearch-backend').queries,
+var peliasQuery = require('pelias-query'),
     sort = require('../query/sort'),
-    adminFields = require('../helper/adminFields')(),
-    addressWeights = require('../helper/address_weights');
+    adminFields = require('../helper/adminFields')();
 
+//------------------------------
+// general-purpose search query
+//------------------------------
 
-function generate( params ){
-  var centroid = null;
+var query = new peliasQuery.layout.FilteredBooleanQuery();
 
-  if ( params.lat && params.lon ){
-    centroid = {
-      lat: params.lat,
-      lon: params.lon
-    };
-  } 
-  
-  var query = queries.distance( centroid, { size: params.size } );
-  var input = params.input;
+// mandatory matches
+query.score( peliasQuery.view.boundary_country, 'must' );
+query.score( peliasQuery.view.ngrams, 'must' );
 
-  if (params.bbox) {
-    query = queries.bbox ( centroid, { size: params.size, bbox: params.bbox } );
+// scoring boost
+query.score( peliasQuery.view.phrase );
+query.score( peliasQuery.view.focus );
+
+// address components
+query.score( peliasQuery.view.address('housenumber') );
+query.score( peliasQuery.view.address('street') );
+query.score( peliasQuery.view.address('postcode') );
+
+// admin components
+query.score( peliasQuery.view.admin('alpha3') );
+query.score( peliasQuery.view.admin('admin0') );
+query.score( peliasQuery.view.admin('admin1') );
+query.score( peliasQuery.view.admin('admin1_abbr') );
+query.score( peliasQuery.view.admin('admin2') );
+query.score( peliasQuery.view.admin('local_admin') );
+query.score( peliasQuery.view.admin('locality') );
+query.score( peliasQuery.view.admin('neighborhood') );
+
+// non-scoring hard filters
+query.filter( peliasQuery.view.boundary_circle, 'must' );
+query.filter( peliasQuery.view.boundary_rect, 'must' );
+
+// --------------------------------
+
+function generate( clean ){
+
+  var vs = new peliasQuery.Vars( peliasQuery.defaults );
+
+  // set input text
+  vs.var( 'input:name', clean.input );
+
+  // set size
+  if( clean.size ){
+    vs.var( 'size', clean.size );
   }
 
-  query.query.filtered.query = {
-    'bool': {
-      'must': [],
-      'should': []
-    }
-  };
-
-  if (params.parsed_input) {
-    // update input
-    if (params.parsed_input.number && params.parsed_input.street) {
-      input = params.parsed_input.number + ' ' + params.parsed_input.street;
-    } else if (params.parsed_input.admin_parts) {
-      input = params.parsed_input.name;
-    }
-
-    addParsedMatch(query, input, params.parsed_input);
-  }
-
-  // add search condition to distance query
-  query.query.filtered.query.bool.must.push({ 
-    'match': {
-      'name.default': {
-        'query': input,
-        'analyzer': 'peliasOneEdgeGram'
-      }
-    }
-  });
-
-  // add phrase matching query
-  // note: this is required for shingle/phrase matching
-  query.query.filtered.query.bool.should.push({
-    'match': {
-      'phrase.default': {
-        'query': input,
-        'analyzer': 'peliasPhrase',
-        'type': 'phrase',
-        'slop': 2
-      }
-    }
-  });
-
-  query.sort = query.sort.concat( sort( params ) );
-
-  return query;
-}
-
-/**
- * Traverse the parsed input object, containing all the address parts detected in query string.
- * Add matches to query for each identifiable component.
- *
- * @param {Object} query
- * @param {string} defaultInput
- * @param {Object} parsedInput
- */
-function addParsedMatch(query, defaultInput, parsedInput) {
-  query.query.filtered.query.bool.should = query.query.filtered.query.bool.should || [];
-
-  // copy expected admin fields so we can remove them as we parse the address
-  var unmatchedAdminFields = adminFields.slice();
-
-  // address
-  // number, street, postalcode
-  addMatch(query, unmatchedAdminFields, 'address.number', parsedInput.number, addressWeights.number);
-  addMatch(query, unmatchedAdminFields, 'address.street', parsedInput.street, addressWeights.street);
-  addMatch(query, unmatchedAdminFields, 'address.zip', parsedInput.postalcode, addressWeights.zip);
-
-  // city
-  // admin2, locality, local_admin, neighborhood
-  addMatch(query, unmatchedAdminFields, 'admin2', parsedInput.city, addressWeights.admin2);
-
-  // state
-  // admin1, admin1_abbr
-  addMatch(query, unmatchedAdminFields, 'admin1_abbr', parsedInput.state, addressWeights.admin1_abbr);
-
-  // country
-  // admin0, alpha3
-  addMatch(query, unmatchedAdminFields, 'alpha3', parsedInput.country, addressWeights.alpha3);
-
-  addUnmatchedAdminFieldsToQuery(query, unmatchedAdminFields, parsedInput, defaultInput);
-}
-
-/**
- * Check for additional admin fields in the parsed input, and if any was found
- * combine into single string and match against all unmatched admin fields.
- *
- * @param {Object} query
- * @param {Array} unmatchedAdminFields
- * @param {Object} parsedInput
- * @param {string} defaultInput
- */
-function addUnmatchedAdminFieldsToQuery(query, unmatchedAdminFields, parsedInput, defaultInput) {
-  if (unmatchedAdminFields.length === 0 ) {
-    return;
-  }
-
-  var leftovers = [];
-
-  if (parsedInput.admin_parts) {
-    leftovers.push(parsedInput.admin_parts);
-  }
-  else if (parsedInput.regions) {
-    leftovers.push(parsedInput.regions);
-  }
-
-  if (leftovers.length === 0) {
-    return;
-  }
-
-  leftovers = leftovers.join(' ');
-
-  // if there are additional regions/admin_parts found
-  if (leftovers !== defaultInput) {
-    unmatchedAdminFields.forEach(function (key) {
-      // combine all the leftover parts into one string
-      addMatch(query, [], key, leftovers);
+  // focus point
+  if( clean.lat && clean.lon ){
+    vs.set({
+      'focus:point:lat': clean.lat,
+      'focus:point:lon': clean.lon
     });
   }
-}
 
-/**
- * Add key:value match to query. Apply boost if specified.
- *
- * @param {Object} query
- * @param {Array} unmatched
- * @param {string} key
- * @param {string|number|undefined} value
- * @param {number|undefined} [boost] optional
- */
-function addMatch(query, unmatched, key, value, boost) { // jshint ignore:line
-  if (typeof value === 'undefined') {
-    return;
+  // bbox
+  if( clean.bbox ){
+    vs.set({
+      'boundary:rect:top': clean.bbox.top,
+      'boundary:rect:right': clean.bbox.right,
+      'boundary:rect:bottom': clean.bbox.bottom,
+      'boundary:rect:left': clean.bbox.left
+    });
   }
 
-  var match = {};
+  // address parsing
+  if( clean.parsed_input ){
 
-  if (boost) {
-    match[key] = {
-      query: value,
-      boost: boost
-    };
+    // is it a street address?
+    var isStreetAddress = clean.parsed_input.hasOwnProperty('number') && clean.parsed_input.hasOwnProperty('street');
+    if( isStreetAddress ){
+      vs.var( 'input:name', clean.parsed_input.number + ' ' + clean.parsed_input.street );
+    }
+
+    // I don't understand this
+    else if( clean.parsed_input.admin_parts ) {
+      vs.var( 'input:name', clean.parsed_input.name );
+    }
+
+    // or this..
+    else {
+      console.warn( 'chaos monkey asks: what happens now?' );
+      console.log( clean );
+      try{ throw new Error(); } catch(e){ console.error( e.stack ); } // print a stack trace
+    }
+
+    // ==== add parsed matches [address components] ====
+
+    // house number
+    if( clean.parsed_input.hasOwnProperty('number') ){
+      vs.var( 'input:housenumber', clean.parsed_input.number );
+    }
+
+    // street name
+    if( clean.parsed_input.hasOwnProperty('street') ){
+      vs.var( 'input:street', clean.parsed_input.street );
+    }
+
+    // postal code
+    if( clean.parsed_input.hasOwnProperty('postalcode') ){
+      vs.var( 'input:postcode', clean.parsed_input.postalcode );
+    }
+
+    // ==== add parsed matches [admin components] ====
+
+    // city
+    if( clean.parsed_input.hasOwnProperty('city') ){
+      vs.var( 'input:admin2', clean.parsed_input.city );
+    }
+
+    // state
+    if( clean.parsed_input.hasOwnProperty('state') ){
+      vs.var( 'input:admin1_abbr', clean.parsed_input.state );
+    }
+
+    // country
+    if( clean.parsed_input.hasOwnProperty('country') ){
+      vs.var( 'input:alpha3', clean.parsed_input.country );
+    }
+
+    // ==== deal with the 'leftover' components ====
+    // @todo: clean up this code
+
+    // a concept called 'leftovers' which is just 'admin_parts' plus 'regions'.
+    var leftovers = [];
+    if( clean.parsed_input.hasOwnProperty('admin_parts') ){
+      leftovers.push( clean.parsed_input.admin_parts );
+    }
+    else if( clean.parsed_input.hasOwnProperty('regions') ){
+      leftovers.push( clean.parsed_input.regions );
+    }
+
+    // if we have 'leftovers' then assign them to any fields which
+    // currently don't have a value assigned.
+    if( leftovers.length ){
+      var leftoversString = leftovers.join(' ');
+      var unmatchedAdminFields = adminFields.slice();
+      
+      // cycle through fields and set fields which
+      // are still currently unset
+      unmatchedAdminFields.forEach( function( key ){
+        if( !vs.isset( 'input:' + key ) ){
+          vs.var( 'input:' + key, leftoversString );
+        }
+      });
+    }
   }
-  else {
-    match[key] = value;
-  }
 
-  query.query.filtered.query.bool.should.push({ 'match': match });
+  var result = query.render( vs );
+  result.sort = result.sort.concat( sort( clean ) );
 
-  removeFromUnmatched(unmatched, key);
-}
-
-/**
- * If key is found in unmatched list, remove it from the array
- *
- * @param {Array} unmatched
- * @param {string} key
- */
-function removeFromUnmatched(unmatched, key) {
-  var index = unmatched.indexOf(key);
-  if (index !== -1) {
-    unmatched.splice(index, 1);
-  }
+  // @todo: remove this hack
+  return JSON.parse( JSON.stringify( result ) );
 }
 
 module.exports = generate;
