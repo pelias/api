@@ -17,7 +17,6 @@ function setup( backend, query ){
 
     if (req.clean.type !== undefined) {
       cmd.type = req.clean.type;
-      delete req.clean.type; // remove type from clean to avoid clutter
     }
 
     // query backend
