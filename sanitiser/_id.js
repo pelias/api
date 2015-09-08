@@ -5,10 +5,9 @@ var isObject = require('is-object');
 // so, both type and id are required fields.
 
 function sanitize( req ){
-  
   req.clean   = req.clean || {};
   var params  = req.query;
-  var indeces = require('../query/indeces');
+  var types = require('../query/types');
   var delim   = ':';
 
   // ensure params is a valid object
@@ -30,7 +29,7 @@ function sanitize( req ){
   if( params && params.id && params.id.length ){
     req.clean.ids = [];
     params.ids = Array.isArray(params.id) ? params.id : [params.id];
-    
+
     // de-dupe
     params.ids = params.ids.filter(function(item, pos) {
       return params.ids.indexOf(item) === pos;
@@ -38,7 +37,7 @@ function sanitize( req ){
 
     for (var i=0; i<params.ids.length; i++) {
       var thisparam = params.ids[i];
-    
+
       // basic format/ presence of ':'
       if(thisparam.indexOf(delim) === -1) {
         return errormessage(null, 'invalid: must be of the format type:id for ex: \'geoname:4163334\'');
@@ -56,9 +55,9 @@ function sanitize( req ){
       if('string' !== typeof type || !type.length){
         return errormessage(thisparam);
       }
-      // type text must be one of the indeces
-      if(indeces.indexOf(type) === -1){
-        return errormessage('type', type + ' is invalid. It must be one of these values - [' + indeces.join(', ') + ']');
+      // type text must be one of the types
+      if(types.indexOf(type) === -1){
+        return errormessage('type', type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']');
       }
       req.clean.ids.push({
         id: id,
@@ -66,9 +65,8 @@ function sanitize( req ){
       });
     }
   }
-  
-  return { 'error': false };
 
+  return { 'error': false };
 }
 
 // export function

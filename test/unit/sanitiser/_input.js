@@ -7,7 +7,7 @@ var input  = require('../../../sanitiser/_input'),
                    'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
     nonAddressLayers = [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
                    'locality', 'local_admin' ],
-    defaultParsed=  { target_layer: nonAddressLayers },
+    defaultParsed=  { },
     defaultClean =  { input: 'test', 
                       layers: allLayers, 
                       size: 10,
@@ -17,7 +17,7 @@ var input  = require('../../../sanitiser/_input'),
                       lon:0
                     },
     getTargetLayers = function(query) {
-      var address = parser(query);
+      var address = parser.get_parsed_address(query);
       return address.target_layer;
     };
 

@@ -9,6 +9,11 @@ var sanitisers = {
   reverse: require('../sanitiser/reverse')
 };
 
+/** ----------------------- middleware ------------------------ **/
+var middleware = {
+  types: require('../middleware/_types')
+};
+
 /** ----------------------- controllers ----------------------- **/
 
 var controllers     = {
@@ -45,6 +50,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     search: createRouter([
       sanitisers.search.middleware,
+      middleware.types,
       controllers.search(),
       postProc.confidenceScores(peliasConfig),
       postProc.renamePlacenames(),

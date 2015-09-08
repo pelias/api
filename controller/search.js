@@ -1,4 +1,3 @@
-
 var service = { search: require('../service/search') };
 
 function setup( backend, query ){
@@ -16,13 +15,8 @@ function setup( backend, query ){
       body: query( req.clean )
     };
 
-    if (req.clean.layers) {
-      cmd.type = req.clean.layers;
-    }
-
-    // set type if input suggests targeting a layer(s)
-    if (req.clean.default_layers_set && req.clean.parsed_input) {
-      cmd.type = req.clean.parsed_input.target_layer || cmd.type;
+    if ( req.clean.hasOwnProperty('type') ) {
+      cmd.type = req.clean.type;
     }
 
     // query backend

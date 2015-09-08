@@ -6,7 +6,8 @@ module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
   test('interface', function(t) {
-    t.equal(typeof parser, 'function', 'valid function');
+    t.equal(typeof parser.get_parsed_address, 'function', 'valid function');
+    t.equal(typeof parser.get_layers, 'function', 'valid function');
     t.end();
   });
 };
@@ -17,7 +18,7 @@ module.exports.tests.split_on_comma = function(test, common) {
 
   var testParse = function(query) {
     test('naive parsing ' + query, function(t) {
-      var address = parser(query);
+      var address = parser.get_parsed_address(query);
       var delimIndex = query.indexOf(delim);
       var name = query.substring(0, delimIndex);
       var admin_parts = query.substring(delimIndex + 1).trim();
@@ -41,11 +42,12 @@ module.exports.tests.parse_three_chars_or_less = function(test, common) {
 
   var testParse = function(query) {
     test('query length < 3 (' + query + ')', function(t) {
-      var address = parser(query);
+      var address = parser.get_parsed_address(query);
       var target_layer = get_layers(['admin']);
+      var layers = parser.get_layers(query);
 
       t.equal(typeof address, 'object', 'valid object');
-      t.deepEqual(address.target_layer, target_layer, 'admin_parts set correctly to ' + target_layer.join(', '));
+      t.deepEqual(layers, target_layer, 'admin_parts set correctly to ' + target_layer.join(', '));
       t.end();
     });
   };
@@ -63,17 +65,18 @@ module.exports.tests.parse_one_or_more_tokens = function(test, common) {
 
   var testParse = function(query, parse_address) {
     test('query with one or more tokens (' + query + ')', function(t) {
-      var address = parser(query);
+      var address = parser.get_parsed_address(query);
       var target_layer = get_layers(['admin', 'poi']);
+      var layers = parser.get_layers(query);
 
       t.equal(typeof address, 'object', 'valid object');
-      
+
       if (parse_address) {
         t.deepEqual(address.regions.join(''), query, 'since query contained a number, it went through address parsing');
       } else {
-        t.deepEqual(address.target_layer, target_layer, 'admin_parts set correctly to ' + target_layer.join(', '));  
+        t.deepEqual(layers, target_layer, 'admin_parts set correctly to ' + target_layer.join(', '));
       }
-      
+
       t.end();
     });
   };
@@ -88,33 +91,33 @@ module.exports.tests.parse_one_or_more_tokens = function(test, common) {
 };
 
 module.exports.tests.parse_address = function(test, common) {
-  var addresses_nonum  = [{ non_street: 'main particle', city: 'new york'}, 
-                          { non_street: 'biggg city block' }, 
+  var addresses_nonum  = [{ non_street: 'main particle', city: 'new york'},
+                          { non_street: 'biggg city block' },
                           { non_street: 'the empire state building' }
                          ];
-  var address_with_num = [{ number: 123, street: 'main st', city: 'new york', state: 'ny'}, 
-                          { number: 456, street: 'pine ave', city: 'san francisco', state: 'CA'}, 
+  var address_with_num = [{ number: 123, street: 'main st', city: 'new york', state: 'ny'},
+                          { number: 456, street: 'pine ave', city: 'san francisco', state: 'CA'},
                           { number: 1980, street: 'house st', city: 'hoboken', state: 'NY'}
                          ];
-  var address_with_zip = [{ number: 1, street: 'main st', city: 'new york', state: 'ny', zip: 10010}, 
-                          { number: 4, street: 'ape ave', city: 'san diego', state: 'CA', zip: 98970}, 
+  var address_with_zip = [{ number: 1, street: 'main st', city: 'new york', state: 'ny', zip: 10010},
+                          { number: 4, street: 'ape ave', city: 'san diego', state: 'CA', zip: 98970},
                           { number: 19, street: 'house dr', city: 'houston', state: 'TX', zip: 79089}
                          ];
 
   var testParse = function(query, hasNumber, hasZip) {
-    var testcase = 'parse query with ' + (hasNumber ? 'a house number ': 'no house number '); 
+    var testcase = 'parse query with ' + (hasNumber ? 'a house number ': 'no house number ');
     testcase += 'and ' + (hasZip ? 'a zip ' : 'no zip ');
 
     test(testcase, function(t) {
       var query_string = '';
-      for (var k in query) { 
+      for (var k in query) {
         query_string += ' ' + query[k];
       }
 
       // remove leading whitespace
       query_string = query_string.substring(1);
-      
-      var address = parser(query_string);
+
+      var address = parser.get_parsed_address(query_string);
       var non_address_layer = get_layers(['admin', 'poi']);
 
       t.equal(typeof address, 'object', 'valid object for the address ('+query_string+')');
@@ -126,21 +129,17 @@ module.exports.tests.parse_address = function(test, common) {
       }
 
       if ((hasNumber || hasZip) && query.street) {
-        t.equal(typeof address.number, 'number', 'valid house number format (' + address.number + ')');  
+        t.equal(typeof address.number, 'number', 'valid house number format (' + address.number + ')');
         t.equal(address.number, query.number, 'correct house number (' + query.number + ')');
-        t.equal(typeof address.street, 'string', 'valid street name format (' + address.street + ')');  
+        t.equal(typeof address.street, 'string', 'valid street name format (' + address.street + ')');
         t.equal(address.street, query.street, 'correct street name (' + query.street + ')');
       }
-      
+
       if (hasZip) {
-        t.equal(typeof address.postalcode, 'number', 'valid zip (' + address.postalcode + ')');  
+        t.equal(typeof address.postalcode, 'number', 'valid zip (' + address.postalcode + ')');
         t.equal(address.postalcode, query.zip, 'correct postal code (' + query.zip + ')');
       }
-      
-      if (address.text === address.regions.join(' ')) {
-        t.deepEqual(address.target_layer, query.target_layer, 'admin_parts set correctly to ' + query.target_layer.join(', '));  
-      }
-      
+
       t.end();
     });
   };
