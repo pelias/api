@@ -1,7 +1,6 @@
 
 var peliasQuery = require('pelias-query'),
-    defaults = require('./defaults'),
-    sort = require('./sort');
+    defaults = require('./defaults');
 
 //------------------------------
 // reverse geocode query

@@ -13,7 +13,6 @@ var tests = [
   require('./sanitiser/reverse'),
   require('./sanitiser/place'),
   require('./query/types'),
-  require('./query/sort'),
   require('./query/search'),
   require('./query/autocomplete'),
   require('./query/reverse'),

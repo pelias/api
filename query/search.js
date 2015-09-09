@@ -1,7 +1,6 @@
 
 var peliasQuery = require('pelias-query'),
     defaults = require('./defaults'),
-    sort = require('../query/sort'),
     adminFields = require('../helper/adminFields')();
 
 //------------------------------
@@ -35,6 +34,11 @@ query.score( peliasQuery.view.admin('neighborhood') );
 // non-scoring hard filters
 query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.boundary_rect );
+
+// groovy scripts used to handle tie-breaking
+query.sort( peliasQuery.view.sort_numeric_script('admin_boost') );
+query.sort( peliasQuery.view.sort_numeric_script('popularity') );
+query.sort( peliasQuery.view.sort_numeric_script('population') );
 
 // --------------------------------
 
@@ -183,12 +187,7 @@ function generateQuery( clean ){
     }
   }
 
-  var result = query.render( vs );
-
-  // @todo: remove unnessesary sort conditions
-  result.sort = result.sort.concat( sort( clean ) );
-
-  return result;
+  return query.render( vs );
 }
 
 module.exports = generateQuery;
