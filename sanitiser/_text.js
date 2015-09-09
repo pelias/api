@@ -1,16 +1,17 @@
 var isObject     = require('is-object');
 var query_parser = require('../helper/query_parser');
 
-// validate inputs, convert types and apply defaults
+// validate texts, convert types and apply defaults
 function sanitize( req ){
   req.clean = req.clean || {};
   var params= req.query;
 
-  // ensure the input params are a valid object
+  // ensure the text params are a valid object
   if( !isObject( params ) ){
     params = {};
   }
 
+  // text text
   if('string' !== typeof params.text || !params.text.length){
     return {
       'error': true,

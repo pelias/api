@@ -5,7 +5,7 @@ var valid_types = require( '../query/types' );
  */
 var intersection = function intersection(set1, set2) {
   return set2.filter(function(value) {
-      return set1.indexOf(value) !== -1;
+    return set1.indexOf(value) !== -1;
   });
 };
 

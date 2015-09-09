@@ -15,7 +15,8 @@ function setup( backend, query ){
       body: query( req.clean )
     };
 
-    if ( req.clean.hasOwnProperty('type') ) {
+    // ?
+    if( req.clean.hasOwnProperty('type') ){
       cmd.type = req.clean.type;
     }
 

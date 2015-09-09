@@ -1,33 +1,52 @@
 
-var queries = require('geopipes-elasticsearch-backend').queries,
+var peliasQuery = require('pelias-query'),
     sort = require('./sort');
 
-function generate( params ){
+//------------------------------
+// reverse geocode query
+//------------------------------
+var query = new peliasQuery.layout.FilteredBooleanQuery();
 
-  var centroid = {
-    lat: params.lat,
-    lon: params.lon
-  };
+// scoring boost
+query.sort( peliasQuery.view.sort_distance );
 
-  var query = queries.distance( centroid, {
-    size: params.size || 1,
-    sort: true,
-    distance: '500km'
+// non-scoring hard filters
+query.filter( peliasQuery.view.boundary_circle );
+
+// --------------------------------
+
+function generateQuery( clean ){
+
+  var vs = new peliasQuery.Vars( peliasQuery.defaults );
+
+  // set defaults
+  vs.set({
+    'size': 1,
+    'boundary:circle:radius': '500km'
   });
 
-  query.sort = query.sort.concat( sort( params ) );
-
-  if ( params.categories && params.categories.length > 0 ) {
-    addCategoriesFilter( query, params.categories );
+  // set size
+  if( clean.size ){
+    vs.var( 'size', clean.size );
   }
 
-  return query;
+  // focus point centroid
+  if( clean.lat && clean.lon ){
+    vs.set({
+      // focus point to score by distance
+      'focus:point:lat': clean.lat,
+      'focus:point:lon': clean.lon,
+
+      // bounding circle
+      'boundary:circle:lat': clean.lat,
+      'boundary:circle:lon': clean.lon,
+    });
+  }
+
+  var result = query.render( vs );
+
+  // @todo: remove this hack
+  return JSON.parse( JSON.stringify( result ) );
 }
 
-function addCategoriesFilter( query, categories ) {
-  query.query.filtered.filter.bool.must.push({
-    terms: { category: categories }
-  });
-}
-
-module.exports = generate;
+module.exports = generateQuery;
