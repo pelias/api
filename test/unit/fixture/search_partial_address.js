@@ -84,11 +84,6 @@ module.exports = {
             }
           }]
         }
-      },
-      'filter': {
-        'bool': {
-          'must': []
-        }
       }
     }
   },

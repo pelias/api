@@ -15,6 +15,7 @@ var tests = [
   require('./query/types'),
   require('./query/sort'),
   require('./query/search'),
+  require('./query/autocomplete'),
   require('./query/reverse'),
   require('./helper/query_parser'),
   require('./helper/geojsonify'),

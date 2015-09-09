@@ -57,6 +57,15 @@ function addRoutes(app, peliasConfig) {
       postProc.geocodeJSON(peliasConfig),
       postProc.sendJSON
     ]),
+    autocomplete: createRouter([
+      sanitisers.search.middleware,
+      middleware.types,
+      controllers.search(null, require('../query/autocomplete')),
+      postProc.confidenceScores(peliasConfig),
+      postProc.renamePlacenames(),
+      postProc.geocodeJSON(peliasConfig),
+      postProc.sendJSON
+    ]),
     reverse: createRouter([
       sanitisers.reverse.middleware,
       controllers.search(undefined, reverseQuery),
@@ -81,7 +90,7 @@ function addRoutes(app, peliasConfig) {
   app.get ( base,                  routers.index );
   app.get ( base + 'attribution',  routers.attribution );
   app.get ( base + 'place',        routers.place );
-  app.get ( base + 'autocomplete', routers.search );
+  app.get ( base + 'autocomplete', routers.autocomplete );
   app.get ( base + 'search',       routers.search );
   app.post( base + 'search',       routers.search );
   app.get ( base + 'reverse',      routers.reverse );
