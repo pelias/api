@@ -32,12 +32,12 @@ query.score( peliasQuery.view.admin('locality') );
 query.score( peliasQuery.view.admin('neighborhood') );
 
 // non-scoring hard filters
-query.filter( peliasQuery.view.boundary_circle, 'must' );
-query.filter( peliasQuery.view.boundary_rect, 'must' );
+query.filter( peliasQuery.view.boundary_circle );
+query.filter( peliasQuery.view.boundary_rect );
 
 // --------------------------------
 
-function generate( clean ){
+function generateQuery( clean ){
 
   var vs = new peliasQuery.Vars( peliasQuery.defaults );
 
@@ -125,7 +125,7 @@ function generate( clean ){
     // ==== deal with the 'leftover' components ====
     // @todo: clean up this code
 
-    // a concept called 'leftovers' which is just 'admin_parts' plus 'regions'.
+    // a concept called 'leftovers' which is just 'admin_parts' /or 'regions'.
     var leftoversString = '';
     if( clean.parsed_input.hasOwnProperty('admin_parts') ){
       leftoversString = clean.parsed_input.admin_parts;
@@ -150,10 +150,12 @@ function generate( clean ){
   }
 
   var result = query.render( vs );
+
+  // @todo: remove unnessesary sort conditions
   result.sort = result.sort.concat( sort( clean ) );
 
   // @todo: remove this hack
   return JSON.parse( JSON.stringify( result ) );
 }
 
-module.exports = generate;
+module.exports = generateQuery;
