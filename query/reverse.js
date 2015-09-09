@@ -43,10 +43,7 @@ function generateQuery( clean ){
     });
   }
 
-  var result = query.render( vs );
-
-  // @todo: remove this hack
-  return JSON.parse( JSON.stringify( result ) );
+  return query.render( vs );
 }
 
 module.exports = generateQuery;

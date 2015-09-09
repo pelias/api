@@ -3,14 +3,6 @@ var generate = require('../../../query/reverse');
 
 module.exports.tests = {};
 
-function debug( a,b ){
-  console.log( '----------------------' );
-  console.log( JSON.stringify( a, null, 2 ) );
-  console.log( '----------------------' );
-  console.log( JSON.stringify( b, null, 2 ) );
-  console.log( '----------------------' );
-}
-
 module.exports.tests.interface = function(test, common) {
   test('valid interface', function(t) {
     t.equal(typeof generate, 'function', 'valid function');
@@ -24,8 +16,10 @@ module.exports.tests.query = function(test, common) {
       lat: 29.49136, lon: -82.50622
     });
     
+    var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/reverse_standard');
-    t.deepEqual(query, expected, 'valid reverse query');
+
+    t.deepEqual(compiled, expected, 'valid reverse query');
     t.end();
   });
   test('size fuzz test', function(t) {
@@ -36,7 +30,8 @@ module.exports.tests.query = function(test, common) {
         lat: 29.49136, lon: -82.50622, size: size
       });
 
-      t.equal( query.size, size ? size : 1, 'valid reverse query for size: '+ size);      
+      var compiled = JSON.parse( JSON.stringify( query ) );
+      t.equal( compiled.size, size ? size : 1, 'valid reverse query for size: '+ size);
     });
     t.end();
   });

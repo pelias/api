@@ -10,13 +10,6 @@ module.exports.tests.interface = function(test, common) {
     t.end();
   });
 };
-function foo( a, b ){
-  console.log( '----------------' );
-  console.log( JSON.stringify( a, null, 2 ) );
-  console.log( '----------------' );
-  console.log( JSON.stringify( b, null, 2 ) );
-  console.log( '----------------' );
-}
 
 module.exports.tests.query = function(test, common) {
   test('valid lingustic-only autocomplete', function(t) {
@@ -24,9 +17,10 @@ module.exports.tests.query = function(test, common) {
       text: 'test'
     });
 
+    var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/autocomplete_linguistic_only');
 
-    t.deepEqual(query, expected, 'valid autocomplete query');
+    t.deepEqual(compiled, expected, 'valid autocomplete query');
     t.end();
   });
 
@@ -37,9 +31,10 @@ module.exports.tests.query = function(test, common) {
       lon: -82.50622
     });
 
+    var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/autocomplete_linguistic_focus');
 
-    t.deepEqual(query, expected, 'valid autocomplete query');
+    t.deepEqual(compiled, expected, 'valid autocomplete query');
     t.end();
   });
 };

@@ -27,10 +27,11 @@ module.exports.tests.query = function(test, common) {
       layers: ['test']
     });
 
+    var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_bbox');
     expected.sort = sort;
 
-    t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'valid search query');
     t.end();
   });
 
@@ -46,10 +47,11 @@ module.exports.tests.query = function(test, common) {
       layers: ['test']
     });
 
+    var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_bbox');
     expected.sort = sort;
     
-    t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'valid search query');
     t.end();
   });
 
@@ -59,10 +61,11 @@ module.exports.tests.query = function(test, common) {
       layers: ['test']
     });
 
+    var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_only');
     expected.sort = sort;
 
-    t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'valid search query');
     t.end();
   });
 
@@ -73,10 +76,11 @@ module.exports.tests.query = function(test, common) {
       layers: ['test']
     });
 
+    var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus');
     expected.sort = sort;
 
-    t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'valid search query');
     t.end();
   });
 
@@ -90,10 +94,11 @@ module.exports.tests.query = function(test, common) {
       parsed_text: parser.get_parsed_address(address),
     });
 
+    var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_full_address');
     expected.sort = sort;
 
-    t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'valid search query');
     t.end();
   });
   
@@ -107,10 +112,11 @@ module.exports.tests.query = function(test, common) {
       parsed_text: parser.get_parsed_address(partial_address),
     });
 
+    var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_partial_address');
     expected.sort = sort;
 
-    t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'valid search query');
     t.end();
   });
 
@@ -124,10 +130,11 @@ module.exports.tests.query = function(test, common) {
       parsed_text: parser.get_parsed_address(partial_address),
     });
 
+    var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_regions_address');
     expected.sort = sort;
 
-    t.deepEqual(query, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'valid search query');
     t.end();
   });
 

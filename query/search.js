@@ -187,8 +187,7 @@ function generateQuery( clean ){
   // @todo: remove unnessesary sort conditions
   result.sort = result.sort.concat( sort( clean ) );
 
-  // @todo: remove this hack
-  return JSON.parse( JSON.stringify( result ) );
+  return result;
 }
 
 module.exports = generateQuery;
