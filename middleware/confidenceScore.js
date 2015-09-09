@@ -41,7 +41,7 @@ function computeScores(req, res, next) {
 /**
  * Check all types of things to determine how confident we are that this result
  * is correct. Score is based on overall score distribution in the result set
- * as well as how closely the result matches the input parameters.
+ * as well as how closely the result matches the text parameters.
  *
  * @param {object} req
  * @param {number} mean
@@ -64,9 +64,9 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     hit.confidence += checkDistanceFromMean(hit._score, mean, stdev);
     hit.confidence += computeZScore(hit._score, mean, stdev);
   }
-  hit.confidence += checkName(req.clean.input, req.clean.parsed_input, hit);
-  hit.confidence += checkQueryType(req.clean.parsed_input, hit);
-  hit.confidence += checkAddress(req.clean.parsed_input, hit);
+  hit.confidence += checkName(req.clean.text, req.clean.parsed_text, hit);
+  hit.confidence += checkQueryType(req.clean.parsed_text, hit);
+  hit.confidence += checkAddress(req.clean.parsed_text, hit);
 
   // TODO: look at categories and location
 
@@ -78,16 +78,16 @@ function computeConfidenceScore(req, mean, stdev, hit) {
 }
 
 function checkForDealBreakers(req, hit) {
-  if (!req.clean.parsed_input) {
+  if (!req.clean.parsed_text) {
     return false;
   }
 
-  if (req.clean.parsed_input.state && req.clean.parsed_input.state !== hit.admin1_abbr) {
+  if (req.clean.parsed_text.state && req.clean.parsed_text.state !== hit.admin1_abbr) {
     logger.debug('[confidence][deal-breaker]: state !== admin1_abbr');
     return true;
   }
 
-  if (req.clean.parsed_input.postalcode && req.clean.parsed_input.postalcode !== hit.zip) {
+  if (req.clean.parsed_text.postalcode && req.clean.parsed_text.postalcode !== hit.zip) {
     logger.debug('[confidence][deal-breaker]: postalcode !== zip');
     return true;
   }
@@ -107,22 +107,22 @@ function checkDistanceFromMean(score, mean, stdev) {
 }
 
 /**
- * Compare input string or name component of parsed_input against
+ * Compare text string or name component of parsed_text against
  * default name in result
  *
- * @param {string} input
- * @param {object|undefined} parsed_input
+ * @param {string} text
+ * @param {object|undefined} parsed_text
  * @param {object} hit
  * @returns {number}
  */
-function checkName(input, parsed_input, hit) {
-  // parsed_input name should take precedence if available since it's the cleaner name property
-  if (parsed_input && parsed_input.name && hit.name.default.toLowerCase() === parsed_input.name.toLowerCase()) {
+function checkName(text, parsed_text, hit) {
+  // parsed_text name should take precedence if available since it's the cleaner name property
+  if (parsed_text && parsed_text.name && hit.name.default.toLowerCase() === parsed_text.name.toLowerCase()) {
     return 1;
   }
 
-  // if no parsed_input check the input value as provided against result's default name
-  if (hit.name.default.toLowerCase() === input.toLowerCase()) {
+  // if no parsed_text check the text value as provided against result's default name
+  if (hit.name.default.toLowerCase() === text.toLowerCase()) {
     return 1;
   }
 
@@ -131,15 +131,15 @@ function checkName(input, parsed_input, hit) {
 }
 
 /**
- * Input being set indicates the query was for an address
+ * text being set indicates the query was for an address
  * check if house number was specified and found in result
  *
- * @param {object|undefined} input
+ * @param {object|undefined} text
  * @param {object} hit
  * @returns {number}
  */
-function checkQueryType(input, hit) {
-  if (!!input.number && (!hit.address || (hit.address && !hit.address.number))) {
+function checkQueryType(text, hit) {
+  if (!!text.number && (!hit.address || (hit.address && !hit.address.number))) {
     return 0;
   }
   return 1;
@@ -148,45 +148,45 @@ function checkQueryType(input, hit) {
 /**
  * Determine the quality of the property match
  *
- * @param {string|number|undefined|null} inputProp
+ * @param {string|number|undefined|null} textProp
  * @param {string|number|undefined|null} hitProp
  * @param {boolean} expectEnriched
  * @returns {number}
  */
-function propMatch(inputProp, hitProp, expectEnriched) {
+function propMatch(textProp, hitProp, expectEnriched) {
 
   // both missing, but expect to have enriched value in result => BAD
-  if (!inputProp && !hitProp && expectEnriched) { return 0; }
+  if (!textProp && !hitProp && expectEnriched) { return 0; }
 
   // both missing, and no enrichment expected => GOOD
-  if (!inputProp && !hitProp) { return 1; }
+  if (!textProp && !hitProp) { return 1; }
 
-  // input has it, result doesn't => BAD
-  if (inputProp && !hitProp) { return 0; }
+  // text has it, result doesn't => BAD
+  if (textProp && !hitProp) { return 0; }
 
-  // input missing, result has it, and enrichment is expected => GOOD
-  if (!inputProp && hitProp && expectEnriched) { return 1; }
+  // text missing, result has it, and enrichment is expected => GOOD
+  if (!textProp && hitProp && expectEnriched) { return 1; }
 
-  // input missing, result has it, enrichment not desired => 50/50
-  if (!inputProp && hitProp) { return 0.5; }
+  // text missing, result has it, enrichment not desired => 50/50
+  if (!textProp && hitProp) { return 0.5; }
 
   // both present, values match => GREAT
-  if (inputProp && hitProp && inputProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) { return 1; }
+  if (textProp && hitProp && textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) { return 1; }
 
   // ¯\_(ツ)_/¯
   return 0.7;
 }
 
 /**
- * Check various parts of the parsed input address
+ * Check various parts of the parsed text address
  * against the results
  *
- * @param {object} input
- * @param {string|number} [input.number]
- * @param {string} [input.street]
- * @param {string} [input.postalcode]
- * @param {string} [input.state]
- * @param {string} [input.country]
+ * @param {object} text
+ * @param {string|number} [text.number]
+ * @param {string} [text.street]
+ * @param {string} [text.postalcode]
+ * @param {string} [text.state]
+ * @param {string} [text.country]
  * @param {object} hit
  * @param {object} [hit.address]
  * @param {string|number} [hit.address.number]
@@ -196,16 +196,16 @@ function propMatch(inputProp, hitProp, expectEnriched) {
  * @param {string} [hit.alpha3]
  * @returns {number}
  */
-function checkAddress(input, hit) {
+function checkAddress(text, hit) {
   var checkCount = 5;
   var res = 0;
 
-  if (input && input.number && input.street) {
-    res += propMatch(input.number, (hit.address ? hit.address.number : null), false);
-    res += propMatch(input.street, (hit.address ? hit.address.street : null), false);
-    res += propMatch(input.postalcode, (hit.address ? hit.address.zip: null), true);
-    res += propMatch(input.state, hit.admin1_abbr, true);
-    res += propMatch(input.country, hit.alpha3, true);
+  if (text && text.number && text.street) {
+    res += propMatch(text.number, (hit.address ? hit.address.number : null), false);
+    res += propMatch(text.street, (hit.address ? hit.address.street : null), false);
+    res += propMatch(text.postalcode, (hit.address ? hit.address.zip: null), true);
+    res += propMatch(text.state, hit.admin1_abbr, true);
+    res += propMatch(text.country, hit.alpha3, true);
 
     res /= checkCount;
   }
