@@ -37,14 +37,18 @@ query.filter( peliasQuery.view.boundary_rect );
 
 // --------------------------------
 
+/**
+  map request variables to query variables for all inputs
+  provided by this HTTP request.
+**/
 function generateQuery( clean ){
 
   var vs = new peliasQuery.Vars( peliasQuery.defaults );
 
-  // set input text
+  // input text
   vs.var( 'input:name', clean.text );
 
-  // set size
+  // size
   if( clean.size ){
     vs.var( 'size', clean.size );
   }
@@ -57,7 +61,18 @@ function generateQuery( clean ){
     });
   }
 
-  // bbox
+  // focus viewport
+  // @todo: change these to the correct request variable names
+  // @todo: calculate the centroid from the viewport box
+  // if( clean.focus.viewport ){
+  //   var vp = clean.focus.viewport;
+  //   vs.set({
+  //     'focus:point:lat': vp.min_lat + ( vp.max_lat - vp.min_lat ) / 2,
+  //     'focus:point:lon': vp.min_lon + ( vp.max_lon - vp.min_lon ) / 2
+  //   });
+  // }
+
+  // boundary rect
   if( clean.bbox ){
     vs.set({
       'boundary:rect:top': clean.bbox.top,
@@ -66,6 +81,24 @@ function generateQuery( clean ){
       'boundary:rect:left': clean.bbox.left
     });
   }
+
+  // boundary circle
+  // @todo: change these to the correct request variable names
+  // if( clean.boundary.circle ){
+  //   vs.set({
+  //     'boundary:circle:lat': clean.boundary.circle.lat,
+  //     'boundary:circle:lon': clean.boundary.circle.lon,
+  //     'boundary:circle:radius': clean.boundary.circle.radius + 'm'
+  //   });
+  // }
+
+  // boundary country
+  // @todo: change these to the correct request variable names
+  // if( clean.boundary.country ){
+  //   vs.set({
+  //     'boundary:country': clean.boundary.country
+  //   });
+  // }
 
   // address parsing
   if( clean.parsed_text ){
