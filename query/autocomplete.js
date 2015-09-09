@@ -1,5 +1,6 @@
 
-var peliasQuery = require('pelias-query');
+var peliasQuery = require('pelias-query'),
+    defaults = require('./defaults');
 
 //------------------------------
 // autocomplete query
@@ -21,7 +22,7 @@ query.score( peliasQuery.view.focus );
 **/
 function generateQuery( clean ){
 
-  var vs = new peliasQuery.Vars( peliasQuery.defaults );
+  var vs = new peliasQuery.Vars( defaults );
 
   // input text
   vs.var( 'input:name', clean.text );

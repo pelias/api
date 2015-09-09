@@ -1,5 +1,6 @@
 
 var peliasQuery = require('pelias-query'),
+    defaults = require('./defaults'),
     sort = require('./sort');
 
 //------------------------------
@@ -17,7 +18,7 @@ query.filter( peliasQuery.view.boundary_circle );
 
 function generateQuery( clean ){
 
-  var vs = new peliasQuery.Vars( peliasQuery.defaults );
+  var vs = new peliasQuery.Vars( defaults );
 
   // set defaults
   vs.set({

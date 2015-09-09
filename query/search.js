@@ -1,5 +1,6 @@
 
 var peliasQuery = require('pelias-query'),
+    defaults = require('./defaults'),
     sort = require('../query/sort'),
     adminFields = require('../helper/adminFields')();
 
@@ -43,7 +44,7 @@ query.filter( peliasQuery.view.boundary_rect );
 **/
 function generateQuery( clean ){
 
-  var vs = new peliasQuery.Vars( peliasQuery.defaults );
+  var vs = new peliasQuery.Vars( defaults );
 
   // input text
   vs.var( 'input:name', clean.text );
