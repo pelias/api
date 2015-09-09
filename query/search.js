@@ -1,7 +1,7 @@
 
 var peliasQuery = require('pelias-query'),
     defaults = require('./defaults'),
-    adminFields = require('../helper/adminFields')();
+    textParser = require('./text_parser');
 
 //------------------------------
 // general-purpose search query
@@ -69,13 +69,13 @@ function generateQuery( clean ){
   // focus viewport
   // @todo: change these to the correct request variable names
   // @todo: calculate the centroid from the viewport box
-  // if( clean.focus.viewport ){
-  //   var vp = clean.focus.viewport;
-  //   vs.set({
-  //     'focus:point:lat': vp.min_lat + ( vp.max_lat - vp.min_lat ) / 2,
-  //     'focus:point:lon': vp.min_lon + ( vp.max_lon - vp.min_lon ) / 2
-  //   });
-  // }
+  if( clean.focus && clean.focus.viewport ){
+    var vp = clean.focus.viewport;
+    vs.set({
+      'focus:point:lat': vp.min_lat + ( vp.max_lat - vp.min_lat ) / 2,
+      'focus:point:lon': vp.min_lon + ( vp.max_lon - vp.min_lon ) / 2
+    });
+  }
 
   // boundary rect
   if( clean.bbox ){
@@ -89,102 +89,25 @@ function generateQuery( clean ){
 
   // boundary circle
   // @todo: change these to the correct request variable names
-  // if( clean.boundary.circle ){
-  //   vs.set({
-  //     'boundary:circle:lat': clean.boundary.circle.lat,
-  //     'boundary:circle:lon': clean.boundary.circle.lon,
-  //     'boundary:circle:radius': clean.boundary.circle.radius + 'm'
-  //   });
-  // }
+  if( clean.boundary && clean.boundary.circle ){
+    vs.set({
+      'boundary:circle:lat': clean.boundary.circle.lat,
+      'boundary:circle:lon': clean.boundary.circle.lon,
+      'boundary:circle:radius': clean.boundary.circle.radius + 'm'
+    });
+  }
 
   // boundary country
   // @todo: change these to the correct request variable names
-  // if( clean.boundary.country ){
-  //   vs.set({
-  //     'boundary:country': clean.boundary.country
-  //   });
-  // }
+  if( clean.boundary && clean.boundary.country ){
+    vs.set({
+      'boundary:country': clean.boundary.country
+    });
+  }
 
-  // address parsing
+  // run the address parser
   if( clean.parsed_text ){
-
-    // is it a street address?
-    var isStreetAddress = clean.parsed_text.hasOwnProperty('number') && clean.parsed_text.hasOwnProperty('street');
-    if( isStreetAddress ){
-      vs.var( 'input:name', clean.parsed_text.number + ' ' + clean.parsed_text.street );
-    }
-
-    // I don't understand this
-    else if( clean.parsed_text.admin_parts ) {
-      vs.var( 'input:name', clean.parsed_text.name );
-    }
-
-    // or this..
-    else {
-      console.warn( 'chaos monkey asks: what happens now?' );
-      console.log( clean );
-      try{ throw new Error(); } catch(e){ console.error( e.stack ); } // print a stack trace
-    }
-
-    // ==== add parsed matches [address components] ====
-
-    // house number
-    if( clean.parsed_text.hasOwnProperty('number') ){
-      vs.var( 'input:housenumber', clean.parsed_text.number );
-    }
-
-    // street name
-    if( clean.parsed_text.hasOwnProperty('street') ){
-      vs.var( 'input:street', clean.parsed_text.street );
-    }
-
-    // postal code
-    if( clean.parsed_text.hasOwnProperty('postalcode') ){
-      vs.var( 'input:postcode', clean.parsed_text.postalcode );
-    }
-
-    // ==== add parsed matches [admin components] ====
-
-    // city
-    if( clean.parsed_text.hasOwnProperty('city') ){
-      vs.var( 'input:admin2', clean.parsed_text.city );
-    }
-
-    // state
-    if( clean.parsed_text.hasOwnProperty('state') ){
-      vs.var( 'input:admin1_abbr', clean.parsed_text.state );
-    }
-
-    // country
-    if( clean.parsed_text.hasOwnProperty('country') ){
-      vs.var( 'input:alpha3', clean.parsed_text.country );
-    }
-
-    // ==== deal with the 'leftover' components ====
-    // @todo: clean up this code
-
-    // a concept called 'leftovers' which is just 'admin_parts' /or 'regions'.
-    var leftoversString = '';
-    if( clean.parsed_text.hasOwnProperty('admin_parts') ){
-      leftoversString = clean.parsed_text.admin_parts;
-    }
-    else if( clean.parsed_text.hasOwnProperty('regions') ){
-      leftoversString = clean.parsed_text.regions.join(' ');
-    }
-
-    // if we have 'leftovers' then assign them to any fields which
-    // currently don't have a value assigned.
-    if( leftoversString.length ){
-      var unmatchedAdminFields = adminFields.slice();
-      
-      // cycle through fields and set fields which
-      // are still currently unset
-      unmatchedAdminFields.forEach( function( key ){
-        if( !vs.isset( 'input:' + key ) ){
-          vs.var( 'input:' + key, leftoversString );
-        }
-      });
-    }
+    textParser( clean.parsed_text, vs );
   }
 
   return query.render( vs );
