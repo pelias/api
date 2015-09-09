@@ -103,10 +103,9 @@ module.exports.tests.sanitize_lat = function(test, common) {
   test('valid lat', function(t) {
     lats.valid.forEach( function( lat ){
       sanitize({ text: 'test', lat: lat, lon: 0 }, function( err, clean ){
-        var expected = JSON.parse(JSON.stringify( defaultClean ));
-        expected.lat = parseFloat( lat );
+        var expected_lat = parseFloat( lat );
         t.equal(err, undefined, 'no error');
-        t.deepEqual(clean.lat, expected.lat, 'clean lat set correctly (' + lat + ')');
+        t.deepEqual(clean.lat, expected_lat, 'clean lat set correctly (' + lat + ')');
       });
     });
     t.end();
