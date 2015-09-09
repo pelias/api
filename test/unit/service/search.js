@@ -19,6 +19,7 @@ module.exports.tests.functional_success = function(test, common) {
   var expected = [
     {
       _id: 'myid1', _type: 'mytype1',
+      _score: 10,
       value: 1,
       center_point: { lat: 100.1, lon: -50.5 },
       name: { default: 'test name1' },
@@ -26,6 +27,7 @@ module.exports.tests.functional_success = function(test, common) {
     }, 
     {
       _id: 'myid2', _type: 'mytype2',
+      _score: 20,
       value: 2,
       center_point: { lat: 100.2, lon: -51.5 },
       name: { default: 'test name2' },

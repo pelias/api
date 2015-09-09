@@ -18,7 +18,8 @@ var DETAILS_PROPS = [
   'county',
   'localadmin',
   'locality',
-  'neighbourhood'
+  'neighbourhood',
+  'confidence'
 ];
 
 

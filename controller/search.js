@@ -15,19 +15,20 @@ function setup( backend, query ){
       body: query( req.clean )
     };
 
-    if (req.clean.type !== undefined) {
+    // ?
+    if( req.clean.hasOwnProperty('type') ){
       cmd.type = req.clean.type;
-      delete req.clean.type; // remove type from clean to avoid clutter
     }
 
     // query backend
-    service.search( backend, cmd, function( err, docs ){
+    service.search( backend, cmd, function( err, docs, meta ){
 
       // error handler
       if( err ){ return next( err ); }
 
       req.results = {
-        data: docs
+        data: docs,
+        meta: meta
       };
 
       next();

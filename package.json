@@ -52,6 +52,7 @@
     "pelias-query": "^1.1.0",
     "pelias-schema": "1.0.0",
     "pelias-suggester-pipeline": "2.0.2",
+    "stats-lite": "^1.0.3",
     "through2": "0.6.5"
   },
   "devDependencies": {

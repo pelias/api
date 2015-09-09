@@ -1,3 +1,4 @@
+var express = require('express');
 var Router = require('express').Router;
 var reverseQuery = require('../query/reverse');
 
@@ -16,7 +17,7 @@ var middleware = {
 /** ----------------------- controllers ----------------------- **/
 
 var controllers     = {
-  index: require('../controller/index'),
+  mdToHTML: require('../controller/markdownToHtml'),
   place: require('../controller/place'),
   search: require('../controller/search')
 };
@@ -24,6 +25,7 @@ var controllers     = {
 /** ----------------------- controllers ----------------------- **/
 
 var postProc = {
+  confidenceScores: require('../middleware/confidenceScore'),
   renamePlacenames: require('../middleware/renamePlacenames'),
   geocodeJSON: require('../middleware/geocodeJSON'),
   sendJSON: require('../middleware/sendJSON')
@@ -41,12 +43,16 @@ function addRoutes(app, peliasConfig) {
 
   var routers = {
     index: createRouter([
-      controllers.index()
+      controllers.mdToHTML(peliasConfig, './public/apiDoc.md')
+    ]),
+    attribution: createRouter([
+      controllers.mdToHTML(peliasConfig, './public/attribution.md')
     ]),
     search: createRouter([
       sanitisers.search.middleware,
       middleware.types,
       controllers.search(),
+      postProc.confidenceScores(peliasConfig),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig),
       postProc.sendJSON
@@ -54,6 +60,7 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitisers.reverse.middleware,
       controllers.search(undefined, reverseQuery),
+      // TODO: add confidence scores
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig),
       postProc.sendJSON
@@ -72,6 +79,7 @@ function addRoutes(app, peliasConfig) {
 
   // api root
   app.get ( base,                  routers.index );
+  app.get ( base + 'attribution',  routers.attribution );
   app.get ( base + 'place',        routers.place );
   app.get ( base + 'autocomplete', routers.search );
   app.get ( base + 'search',       routers.search );
