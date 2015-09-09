@@ -39,8 +39,6 @@ function generateQuery( clean ){
 
   var result = query.render( vs );
 
-  console.log( JSON.stringify( result, null, 2 ) );
-
   // @todo: remove this hack
   return JSON.parse( JSON.stringify( result ) );
 }
