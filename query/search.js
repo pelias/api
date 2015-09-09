@@ -42,7 +42,7 @@ function generateQuery( clean ){
   var vs = new peliasQuery.Vars( peliasQuery.defaults );
 
   // set input text
-  vs.var( 'input:name', clean.input );
+  vs.var( 'input:name', clean.text );
 
   // set size
   if( clean.size ){
@@ -68,17 +68,17 @@ function generateQuery( clean ){
   }
 
   // address parsing
-  if( clean.parsed_input ){
+  if( clean.parsed_text ){
 
     // is it a street address?
-    var isStreetAddress = clean.parsed_input.hasOwnProperty('number') && clean.parsed_input.hasOwnProperty('street');
+    var isStreetAddress = clean.parsed_text.hasOwnProperty('number') && clean.parsed_text.hasOwnProperty('street');
     if( isStreetAddress ){
-      vs.var( 'input:name', clean.parsed_input.number + ' ' + clean.parsed_input.street );
+      vs.var( 'input:name', clean.parsed_text.number + ' ' + clean.parsed_text.street );
     }
 
     // I don't understand this
-    else if( clean.parsed_input.admin_parts ) {
-      vs.var( 'input:name', clean.parsed_input.name );
+    else if( clean.parsed_text.admin_parts ) {
+      vs.var( 'input:name', clean.parsed_text.name );
     }
 
     // or this..
@@ -91,35 +91,35 @@ function generateQuery( clean ){
     // ==== add parsed matches [address components] ====
 
     // house number
-    if( clean.parsed_input.hasOwnProperty('number') ){
-      vs.var( 'input:housenumber', clean.parsed_input.number );
+    if( clean.parsed_text.hasOwnProperty('number') ){
+      vs.var( 'input:housenumber', clean.parsed_text.number );
     }
 
     // street name
-    if( clean.parsed_input.hasOwnProperty('street') ){
-      vs.var( 'input:street', clean.parsed_input.street );
+    if( clean.parsed_text.hasOwnProperty('street') ){
+      vs.var( 'input:street', clean.parsed_text.street );
     }
 
     // postal code
-    if( clean.parsed_input.hasOwnProperty('postalcode') ){
-      vs.var( 'input:postcode', clean.parsed_input.postalcode );
+    if( clean.parsed_text.hasOwnProperty('postalcode') ){
+      vs.var( 'input:postcode', clean.parsed_text.postalcode );
     }
 
     // ==== add parsed matches [admin components] ====
 
     // city
-    if( clean.parsed_input.hasOwnProperty('city') ){
-      vs.var( 'input:admin2', clean.parsed_input.city );
+    if( clean.parsed_text.hasOwnProperty('city') ){
+      vs.var( 'input:admin2', clean.parsed_text.city );
     }
 
     // state
-    if( clean.parsed_input.hasOwnProperty('state') ){
-      vs.var( 'input:admin1_abbr', clean.parsed_input.state );
+    if( clean.parsed_text.hasOwnProperty('state') ){
+      vs.var( 'input:admin1_abbr', clean.parsed_text.state );
     }
 
     // country
-    if( clean.parsed_input.hasOwnProperty('country') ){
-      vs.var( 'input:alpha3', clean.parsed_input.country );
+    if( clean.parsed_text.hasOwnProperty('country') ){
+      vs.var( 'input:alpha3', clean.parsed_text.country );
     }
 
     // ==== deal with the 'leftover' components ====
@@ -127,11 +127,11 @@ function generateQuery( clean ){
 
     // a concept called 'leftovers' which is just 'admin_parts' /or 'regions'.
     var leftoversString = '';
-    if( clean.parsed_input.hasOwnProperty('admin_parts') ){
-      leftoversString = clean.parsed_input.admin_parts;
+    if( clean.parsed_text.hasOwnProperty('admin_parts') ){
+      leftoversString = clean.parsed_text.admin_parts;
     }
-    else if( clean.parsed_input.hasOwnProperty('regions') ){
-      leftoversString = clean.parsed_input.regions.join(' ');
+    else if( clean.parsed_text.hasOwnProperty('regions') ){
+      leftoversString = clean.parsed_text.regions.join(' ');
     }
 
     // if we have 'leftovers' then assign them to any fields which

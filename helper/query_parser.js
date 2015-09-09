@@ -62,13 +62,13 @@ module.exports.get_parsed_address = function get_parsed_address(query) {
                           'admin_parts'
                         ];
 
-  var parsed_input = {};
+  var parsed_text = {};
 
   address_parts.forEach(function(part){
     if (parsedAddress[part]) {
-      parsed_input[part] = parsedAddress[part];
+      parsed_text[part] = parsedAddress[part];
     }
   });
 
-  return parsed_input;
+  return parsed_text;
 };
