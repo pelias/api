@@ -19,7 +19,6 @@ var tests = [
   require('./helper/query_parser'),
   require('./helper/geojsonify'),
   require('./helper/outputSchema'),
-  require('./helper/adminFields'),
   require('./helper/types'),
 ];
 

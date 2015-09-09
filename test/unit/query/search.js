@@ -1,15 +1,6 @@
 
 var generate = require('../../../query/search');
-var admin_boost = 'admin_boost';
-var population = 'population';
-var popularity = 'popularity';
-var category = 'category';
 var parser = require('../../../helper/query_parser');
-var category_weights = require('../../../helper/category_weights');
-var admin_weights = require('../../../helper/admin_weights');
-var address_weights = require('../../../helper/address_weights');
-var weights = require('pelias-suggester-pipeline').weights;
-
 
 module.exports.tests = {};
 
@@ -100,6 +91,7 @@ module.exports.tests.query = function(test, common) {
     });
 
     var expected = require('../fixture/search_full_address');
+    expected.sort = sort;
 
     t.deepEqual(query, expected, 'valid search query');
     t.end();
@@ -133,6 +125,7 @@ module.exports.tests.query = function(test, common) {
     });
 
     var expected = require('../fixture/search_regions_address');
+    expected.sort = sort;
 
     t.deepEqual(query, expected, 'valid search query');
     t.end();
