@@ -7,7 +7,7 @@ var search  = require('../../../sanitiser/search'),
     middleware = search.middleware,
     delim = ',',
     defaultError = 'invalid param \'text\': text length, must be >0',
-    defaultClean =  { text: 'test', 
+    defaultClean =  { text: 'test',
                       types: {
                       },
                       size: 10,
@@ -32,7 +32,7 @@ module.exports.tests.interface = function(test, common) {
 };
 
 module.exports.tests.sanitize_invalid_text = function(test, common) {
-  test('invalid text', function(t) {  
+  test('invalid text', function(t) {
     var invalid = [ '', 100, null, undefined, new Date() ];
     invalid.forEach( function( text ){
       sanitize({ text: text }, function( err, clean ){
@@ -91,22 +91,21 @@ module.exports.tests.sanitize_lat = function(test, common) {
     invalid: [],
     valid: [ 0, 45, 90, -0, '0', '45', '90', -181, -120, -91, 91, 120, 181  ]
   };
-  test('invalid lat', function(t) {  
+  test('invalid lat', function(t) {
     lats.invalid.forEach( function( lat ){
-      sanitize({ text: 'test', lat: lat, lon: 0 }, function( err, clean ){
+      sanitize({ text: 'test', focus: { point: { lat: lat, lon: 0 } } }, function( err, clean ){
         t.equal(err, 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
         t.equal(clean, undefined, 'clean not set');
       });
     });
     t.end();
   });
-  test('valid lat', function(t) {  
+  test('valid lat', function(t) {
     lats.valid.forEach( function( lat ){
-      sanitize({ text: 'test', lat: lat, lon: 0 }, function( err, clean ){
-        var expected = JSON.parse(JSON.stringify( defaultClean ));
-        expected.lat = parseFloat( lat );
+      sanitize({ text: 'test', focus: { point: {  lat: lat, lon: 0 } } }, function( err, clean ){
+        var expected_lat = parseFloat( lat );
         t.equal(err, undefined, 'no error');
-        t.deepEqual(clean.lat, expected.lat, 'clean lat set correctly (' + lat + ')');
+        t.deepEqual(clean.lat, expected_lat, 'clean lat set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -117,9 +116,9 @@ module.exports.tests.sanitize_lon = function(test, common) {
   var lons = {
     valid: [ -381, -181, -180, -1, -0, 0, 45, 90, '-180', '0', '180', 181 ]
   };
-  test('valid lon', function(t) {  
+  test('valid lon', function(t) {
     lons.valid.forEach( function( lon ){
-      sanitize({ text: 'test', lat: 0, lon: lon }, function( err, clean ){
+      sanitize({ text: 'test', focus: { point: { lat: 0, lon: lon } } }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lon = parseFloat( lon );
         t.equal(err, undefined, 'no error');
@@ -140,7 +139,7 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     t.end();
   });
   test('no lat', function(t) {
-    sanitize({ text: 'test', lon: 0 }, function( err, clean ){
+    sanitize({ text: 'test', focus: { point: { lon: 0 } } }, function( err, clean ){
       var expected_lon = 0;
       t.equal(err, undefined, 'no error');
       t.deepEqual(clean.lon, expected_lon, 'clean set correctly (without any lat)');
@@ -148,7 +147,7 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     t.end();
   });
   test('no lon', function(t) {
-    sanitize({ text: 'test', lat: 0 }, function( err, clean ){
+    sanitize({ text: 'test', focus: { point: { lat: 0 } } }, function( err, clean ){
       var expected_lat = 0;
       t.equal(err, undefined, 'no error');
       t.deepEqual(clean.lat, expected_lat, 'clean set correctly (without any lon)');
@@ -183,9 +182,9 @@ module.exports.tests.sanitize_bbox = function(test, common) {
       '91, -181,-91,11',
       '91, -11,-91,181'
     ]
-    
+
   };
-  test('invalid bbox', function(t) {  
+  test('invalid bbox', function(t) {
     bboxes.invalid.forEach( function( bbox ){
       sanitize({ text: 'test', bbox: bbox }, function( err, clean ){
         t.equal(err, undefined, 'no error');
@@ -194,7 +193,7 @@ module.exports.tests.sanitize_bbox = function(test, common) {
     });
     t.end();
   });
-  test('valid bbox', function(t) {  
+  test('valid bbox', function(t) {
     bboxes.valid.forEach( function( bbox ){
       sanitize({ text: 'test', bbox: bbox }, function( err, clean ){
         var bboxArray = bbox.split(',').map(function(i) {
@@ -211,27 +210,6 @@ module.exports.tests.sanitize_bbox = function(test, common) {
       });
     });
     t.end();
-  });
-};
-
-module.exports.tests.sanitize_zoom = function(test, common) {
-  test('invalid zoom value', function(t) {
-    sanitize({ zoom: 'a', text: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.zoom, undefined, 'zoom not set');
-      t.end();
-    });
-  });
-  test('below min zoom value', function(t) {
-    sanitize({ zoom: -100, text: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.zoom, 1, 'min zoom set');
-      t.end();
-    });
-  });
-  test('above max zoom value', function(t) {
-    sanitize({ zoom: 9999, text: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.zoom, 18, 'max zoom set');
-      t.end();
-    });
   });
 };
 
@@ -264,31 +242,31 @@ module.exports.tests.sanitize_details = function(test, common) {
         t.equal(clean.details, false, 'default details set (to false)');
         t.end();
       });
-    });  
+    });
   });
 
   var valid_values = ['true', true, 1, '1', 'yes', 'y'];
   valid_values.forEach(function(details) {
     test('valid details param ' + details, function(t) {
-      sanitize({ text: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
+      sanitize({ text: 'test', details: details }, function( err, clean ){
         t.equal(clean.details, true, 'details set to true');
         t.end();
       });
-    });  
+    });
   });
 
   var valid_false_values = ['false', false, 0, '0', 'no', 'n'];
   valid_false_values.forEach(function(details) {
     test('test setting false explicitly ' + details, function(t) {
-      sanitize({ text: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
+      sanitize({ text: 'test', details: details }, function( err, clean ){
         t.equal(clean.details, false, 'details set to false');
         t.end();
       });
-    }); 
+    });
   });
 
   test('test default behavior', function(t) {
-    sanitize({ text: 'test', lat: 0, lon: 0 }, function( err, clean ){
+    sanitize({ text: 'test' }, function( err, clean ){
       t.equal(clean.details, true, 'details set to true');
       t.end();
     });

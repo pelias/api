@@ -7,7 +7,6 @@ The full text search endpoint that matches the name of a place to points on the 
 
 #### Optional Parameters
 * `lat`, `lon`: the latitude/longitude coordinates to bias search results towards (may increase relevancy)
-* `zoom`: zoom level from which you wish to view the world
 * `size` (default: `10`): the number of results to return
 * `layers` (default: `poi,admin,address`): the comma-separated names of datasets you wish to query. Valid values are:
   * aliases for multiple datasets like `poi`, `admin` or `address`
@@ -48,7 +47,6 @@ results from around the provided lat/lon coordinates and also from precision lev
   * `lat`/`lon` are currently **required** because of this [open issue](https://github.com/elasticsearch/elasticsearch/issues/6444)
 
 #### Optional Parameters
-* `zoom`: zoom level from which you wish to view the world
 * `size` (default: `10`): number of results requested
 * `layers` (default: `poi,admin,address`): datasets you wish to query
 * `details` (default: `true`)
@@ -84,7 +82,6 @@ The reverse geocoding endpoint; matches a point on the planet to the name of tha
 * `lat`, `lon`: The coordinates of the point.
 
 #### Optional Parameters
-* `zoom`: zoom level from which you wish to view the world
 * `layers` (default: `poi,admin,address`)
 * `details` (default: `true`)
 

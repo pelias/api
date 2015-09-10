@@ -1,4 +1,3 @@
-
 var generate = require('../../../query/search');
 var parser = require('../../../helper/query_parser');
 
@@ -19,9 +18,9 @@ module.exports.tests.query = function(test, common) {
       text: 'test', size: 10,
       lat: 29.49136, lon: -82.50622,
       bbox: {
-        top: 47.47, 
-        right: -61.84, 
-        bottom: 11.51, 
+        top: 47.47,
+        right: -61.84,
+        bottom: 11.51,
         left: -103.16
       },
       layers: ['test']
@@ -39,9 +38,9 @@ module.exports.tests.query = function(test, common) {
     var query = generate({
       text: 'test', size: 10,
       bbox: {
-        top: 47.47, 
-        right: -61.84, 
-        bottom: 11.51, 
+        top: 47.47,
+        right: -61.84,
+        bottom: 11.51,
         left: -103.16
       },
       layers: ['test']
@@ -50,7 +49,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_bbox');
     expected.sort = sort;
-    
+
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
   });
@@ -86,9 +85,9 @@ module.exports.tests.query = function(test, common) {
 
   test('valid query with a full valid address', function(t) {
     var address = '123 main st new york ny 10010 US';
-    var query = generate({ text: address, 
-      layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
-                'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
+    var query = generate({ text: address,
+      layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
+                'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
       size: 10,
       details: true,
       parsed_text: parser.get_parsed_address(address),
@@ -101,12 +100,12 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
   });
-  
+
   test('valid query with partial address', function(t) {
     var partial_address = 'soho grand, new york';
-    var query = generate({ text: partial_address, 
-      layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood', 
-                'locality', 'local_admin', 'osmaddress', 'openaddresses' ], 
+    var query = generate({ text: partial_address,
+      layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
+                'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
       size: 10,
       details: true,
       parsed_text: parser.get_parsed_address(partial_address),
@@ -137,11 +136,9 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
   });
-
 };
 
 module.exports.all = function (tape, common) {
-
   function test(name, testFunction) {
     return tape('search query ' + name, testFunction);
   }
