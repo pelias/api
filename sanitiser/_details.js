@@ -1,4 +1,5 @@
 var isObject = require('is-object');
+var isTruthy = require('./_truthy');
 
 // validate inputs, convert types and apply defaults
 function sanitize( req, default_value ){
@@ -27,13 +28,4 @@ function sanitize( req, default_value ){
 
 }
 
-function isTruthy(val) {
-  if (typeof val === 'string') {
-    return ['true', '1', 'yes', 'y'].indexOf(val) !== -1;
-  }
-
-  return val === 1 || val === true;
-}
-
-// export function
 module.exports = sanitize;

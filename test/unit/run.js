@@ -10,6 +10,7 @@ var tests = [
   require('./service/search'),
   require('./sanitiser/_details'),
   require('./sanitiser/_source'),
+  require('./sanitiser/_truthy'),
   require('./sanitiser/search'),
   require('./sanitiser/reverse'),
   require('./sanitiser/place'),
