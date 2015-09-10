@@ -9,6 +9,7 @@ var tests = [
   require('./service/mget'),
   require('./service/search'),
   require('./sanitiser/_details'),
+  require('./sanitiser/_private'),
   require('./sanitiser/_source'),
   require('./sanitiser/_truthy'),
   require('./sanitiser/search'),
