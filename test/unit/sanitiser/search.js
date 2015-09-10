@@ -70,7 +70,7 @@ module.exports.tests.sanitise_valid_text = function(test, common) {
 module.exports.tests.sanitize_text_with_delim = function(test, common) {
   var texts = [ 'a,bcd', '123 main st, admin1', ',,,', ' ' ];
 
-  test('valid texts with a comma', function(t) {  
+  test('valid texts with a comma', function(t) {
     texts.forEach( function( text ){
       sanitize({ text: text }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
@@ -229,45 +229,6 @@ module.exports.tests.sanitize_size = function(test, common) {
   test('above max size value', function(t) {
     sanitize({ size: 9999, text: 'test', lat: 0, lon: 0 }, function( err, clean ){
       t.equal(clean.size, 40, 'max size set');
-      t.end();
-    });
-  });
-};
-
-module.exports.tests.sanitize_details = function(test, common) {
-  var invalid_values = [null, -1, 123, NaN, 'abc'];
-  invalid_values.forEach(function(details) {
-    test('invalid details param ' + details, function(t) {
-      sanitize({ text: 'test', lat: 0, lon: 0, details: details }, function( err, clean ){
-        t.equal(clean.details, false, 'default details set (to false)');
-        t.end();
-      });
-    });
-  });
-
-  var valid_values = ['true', true, 1, '1', 'yes', 'y'];
-  valid_values.forEach(function(details) {
-    test('valid details param ' + details, function(t) {
-      sanitize({ text: 'test', details: details }, function( err, clean ){
-        t.equal(clean.details, true, 'details set to true');
-        t.end();
-      });
-    });
-  });
-
-  var valid_false_values = ['false', false, 0, '0', 'no', 'n'];
-  valid_false_values.forEach(function(details) {
-    test('test setting false explicitly ' + details, function(t) {
-      sanitize({ text: 'test', details: details }, function( err, clean ){
-        t.equal(clean.details, false, 'details set to false');
-        t.end();
-      });
-    });
-  });
-
-  test('test default behavior', function(t) {
-    sanitize({ text: 'test' }, function( err, clean ){
-      t.equal(clean.details, true, 'details set to true');
       t.end();
     });
   });
