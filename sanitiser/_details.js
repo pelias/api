@@ -3,7 +3,7 @@ var isObject = require('is-object');
 // validate inputs, convert types and apply defaults
 function sanitize( req, default_value ){
 
-  var clean = req.clean || {};
+  req.clean = req.clean || {};
   var params= req.query;
 
   if (default_value === undefined) {
@@ -17,13 +17,11 @@ function sanitize( req, default_value ){
     params = {};
   }
 
-  if (params.details !== undefined) {
-    clean.details = isTruthy(params.details);
+  if (params.details === undefined) {
+    req.clean.details = default_value;
   } else {
-    clean.details = default_value;
+    req.clean.details = isTruthy(params.details);
   }
-
-  req.clean = clean;
 
   return {'error':false};
 
