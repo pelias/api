@@ -53,7 +53,40 @@ function sanitize_coord( coord, clean, param, latlon_is_required ) {
   }
 }
 
+/**
+ * Validate circle geometry values
+ *
+ * @param {object} clean
+ * @param {object} params
+ * @param {bool} is_required
+ * @param {bool} all_required
+ */
+function sanitize_boundary_circle( clean, params, is_required, all_required ) {
+  var props = {
+    lat: 'boundary_circle_lat',
+    lon: 'boundary_circle_lon',
+    rad: 'boundary_circle_radius'
+  };
+
+  // get values for each property
+  sanitize_coord(props.lat, clean, params['boundary.circle.lat'], all_required && is_required);
+  sanitize_coord(props.lon, clean, params['boundary.circle.lon'], all_required && is_required);
+  sanitize_coord(props.rad, clean, params['boundary.circle.radius'], all_required && is_required);
+
+  // if all are required, check if some are set but not all, throw an error if missing
+  if (all_required &&
+     (clean.hasOwnProperty(props.lat) || clean.hasOwnProperty(props.lon) || clean.hasOwnProperty(props.rad)) &&
+    !(clean.hasOwnProperty(props.lat) && clean.hasOwnProperty(props.lon) && clean.hasOwnProperty(props.rad))) {
+    throw new Error('missing part of circle: needs lat,lon,radius');
+  }
+
+  if (is_required && !(clean.hasOwnProperty(props.lat) || clean.hasOwnProperty(props.lon) || clean.hasOwnProperty(props.rad))) {
+    throw new Error('missing param boundary.circle: should be a trio of lat,lon,radius');
+  }
+}
+
 module.exports = {
   sanitize_bbox: sanitize_bbox,
-  sanitize_coord: sanitize_coord
+  sanitize_coord: sanitize_coord,
+  sanitize_boundary_circle: sanitize_boundary_circle
 };

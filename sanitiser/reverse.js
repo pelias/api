@@ -2,6 +2,7 @@ var _sanitize = require('../sanitiser/_sanitize'),
     sanitiser = {
       latlonzoom: require('../sanitiser/_geo_reverse'),
       layers: require('../sanitiser/_layers'),
+      suorce: require('../sanitiser/_source'),
       details: require('../sanitiser/_details'),
       size: require('../sanitiser/_size'),
       categories: function ( req ) {

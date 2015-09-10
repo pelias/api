@@ -37,7 +37,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
   };
   test('invalid lat', function(t) {
     lats.invalid.forEach( function( lat ){
-      sanitize({ point: { lat: lat, lon: 0 } }, function( err, clean ){
+      sanitize({ 'point.lat': lat, 'point.lon': 0 }, function( err, clean ){
         t.equal(err, 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
         t.equal(clean, undefined, 'clean not set');
       });
@@ -46,7 +46,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
   });
   test('valid lat', function(t) {
     lats.valid.forEach( function( lat ){
-      sanitize({ point: { lat: lat, lon: 0 } }, function( err, clean ){
+      sanitize({ 'point.lat': lat, 'point.lon': 0 }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lat = parseFloat( lat );
         t.equal(err, undefined, 'no error');
@@ -57,7 +57,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
   });
   test('missing lat', function(t) {
     lats.missing.forEach( function( lat ){
-      sanitize({ point: { lat: lat, lon: 0 } }, function( err, clean ){
+      sanitize({ 'point.lat': lat, 'point.lon': 0 }, function( err, clean ){
         t.equal(err, 'missing param \'lat\'', 'latitude is a required field');
         t.equal(clean, undefined, 'clean not set');
       });
@@ -73,7 +73,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
   };
   test('valid lon', function(t) {
     lons.valid.forEach( function( lon ){
-      sanitize({ point: { lat: 0, lon: lon } }, function( err, clean ){
+      sanitize({ 'point.lat': 0, 'point.lon': lon }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lon = parseFloat( lon );
         t.equal(err, undefined, 'no error');
@@ -84,7 +84,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
   });
   test('missing lon', function(t) {
     lons.missing.forEach( function( lon ){
-      sanitize({ point: { lat: 0, lon: lon } }, function( err, clean ){
+      sanitize({ 'point.lat': 0, 'point.lon': lon }, function( err, clean ){
         t.equal(err, 'missing param \'lon\'', 'longitude is a required field');
         t.equal(clean, undefined, 'clean not set');
       });
@@ -96,19 +96,19 @@ module.exports.tests.sanitize_lon = function(test, common) {
 
 module.exports.tests.sanitize_size = function(test, common) {
   test('invalid size value', function(t) {
-    sanitize({ size: 'a', point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ size: 'a', 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.equal(clean.size, 10, 'default size set');
       t.end();
     });
   });
   test('below min size value', function(t) {
-    sanitize({ size: -100, point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ size: -100, 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.equal(clean.size, 1, 'min size set');
       t.end();
     });
   });
   test('above max size value', function(t) {
-    sanitize({ size: 9999, point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ size: 9999, 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.equal(clean.size, 40, 'max size set');
       t.end();
     });
@@ -119,7 +119,7 @@ module.exports.tests.sanitize_details = function(test, common) {
   var invalid_values = [null, -1, 123, NaN, 'abc'];
   invalid_values.forEach(function(details) {
     test('invalid details param ' + details, function(t) {
-      sanitize({ point: { lat: 0, lon: 0 }, details: details }, function( err, clean ){
+      sanitize({ 'point.lat': 0, 'point.lon': 0, details: details }, function( err, clean ){
         t.equal(clean.details, false, 'details set to false');
         t.end();
       });
@@ -129,7 +129,7 @@ module.exports.tests.sanitize_details = function(test, common) {
   var valid_values = [true, 'true', 1, '1', 'yes', 'y'];
   valid_values.forEach(function(details) {
     test('valid details param ' + details, function(t) {
-      sanitize({ point: { lat: 0, lon: 0 }, details: details }, function( err, clean ){
+      sanitize({ 'point.lat': 0, 'point.lon': 0, details: details }, function( err, clean ){
         t.equal(clean.details, true, 'details set to true');
         t.end();
       });
@@ -137,7 +137,7 @@ module.exports.tests.sanitize_details = function(test, common) {
   });
 
   test('test default behavior', function(t) {
-    sanitize({ point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.equal(clean.details, true, 'details set to true');
       t.end();
     });
@@ -146,7 +146,7 @@ module.exports.tests.sanitize_details = function(test, common) {
   var valid_false_values = ['false', false, 0, '0', 'no', 'n'];
   valid_false_values.forEach(function(details) {
     test('test setting false explicitly ' + details, function(t) {
-      sanitize({ point: { lat: 0, lon: 0 }, details: details }, function( err, clean ){
+      sanitize({ 'point.lat': 0, 'point.lon': 0, details: details }, function( err, clean ){
         t.equal(clean.details, false, 'details set to false');
         t.end();
       });
@@ -156,13 +156,13 @@ module.exports.tests.sanitize_details = function(test, common) {
 
 module.exports.tests.sanitize_layers = function(test, common) {
   test('unspecified', function(t) {
-    sanitize({ layers: undefined, point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ layers: undefined, 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, defaultClean.types.from_layers, 'default layers set');
       t.end();
     });
   });
   test('invalid layer', function(t) {
-    sanitize({ layers: 'test_layer', point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ layers: 'test_layer', 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       var msg = 'invalid param \'layers\': must be one or more of ';
       t.true(err.match(msg), 'invalid layer requested');
       t.true(err.length > msg.length, 'invalid error message');
@@ -171,21 +171,21 @@ module.exports.tests.sanitize_layers = function(test, common) {
   });
   test('poi (alias) layer', function(t) {
     var poi_layers = ['geoname','osmnode','osmway'];
-    sanitize({ layers: 'poi', point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ layers: 'poi', 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, poi_layers, 'poi layers set');
       t.end();
     });
   });
   test('admin (alias) layer', function(t) {
     var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
-    sanitize({ layers: 'admin', point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ layers: 'admin', 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, admin_layers, 'admin layers set');
       t.end();
     });
   });
   test('address (alias) layer', function(t) {
     var address_layers = ['osmaddress','openaddresses'];
-    sanitize({ layers: 'address', point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ layers: 'address', 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, address_layers, 'address layers set');
       t.end();
     });
@@ -193,7 +193,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
   test('poi alias layer plus regular layers', function(t) {
     var poi_layers = ['geoname','osmnode','osmway'];
     var reg_layers = ['admin0', 'admin1'];
-    sanitize({ layers: 'poi,admin0,admin1', point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ layers: 'poi,admin0,admin1', 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, reg_layers.concat(poi_layers), 'poi + regular layers');
       t.end();
     });
@@ -201,7 +201,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
   test('admin alias layer plus regular layers', function(t) {
     var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
     var reg_layers   = ['geoname', 'osmway'];
-    sanitize({ layers: 'admin,geoname,osmway', point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ layers: 'admin,geoname,osmway', 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, reg_layers.concat(admin_layers), 'admin + regular layers set');
       t.end();
     });
@@ -209,21 +209,21 @@ module.exports.tests.sanitize_layers = function(test, common) {
   test('address alias layer plus regular layers', function(t) {
     var address_layers = ['osmaddress','openaddresses'];
     var reg_layers   = ['geoname', 'osmway'];
-    sanitize({ layers: 'address,geoname,osmway', point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ layers: 'address,geoname,osmway', 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, reg_layers.concat(address_layers), 'address + regular layers set');
       t.end();
     });
   });
   test('alias layer plus regular layers (no duplicates)', function(t) {
     var poi_layers = ['geoname','osmnode','osmway'];
-    sanitize({ layers: 'poi,geoname,osmnode', point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ layers: 'poi,geoname,osmnode', 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, poi_layers, 'poi layers found (no duplicates)');
       t.end();
     });
   });
   test('multiple alias layers (no duplicates)', function(t) {
     var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood','locality','local_admin'];
-    sanitize({ layers: 'poi,admin', point: { lat: 0, lon: 0 } }, function( err, clean ){
+    sanitize({ layers: 'poi,admin', 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
       t.deepEqual(clean.types.from_layers, alias_layers, 'all layers found (no duplicates)');
       t.end();
     });
@@ -231,7 +231,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
 };
 
 module.exports.tests.sanitize_categories = function(test, common) {
-  var queryParams = { point: { lat: 0, lon: 0 } };
+  var queryParams = { 'point.lat': 0, 'point.lon': 0 };
   test('unspecified', function(t) {
     queryParams.categories = undefined;
     sanitize(queryParams, function( err, clean ){
@@ -284,7 +284,7 @@ module.exports.tests.middleware_failure = function(test, common) {
 
 module.exports.tests.middleware_success = function(test, common) {
   test('middleware success', function(t) {
-    var req = { query: { point: { lat: 0, lon: 0 } }};
+    var req = { query: { 'point.lat': 0, 'point.lon': 0 }};
     var next = function( message ){
       t.equal(message, undefined, 'no error message set');
       t.deepEqual(req.clean, defaultClean);

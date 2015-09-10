@@ -21,6 +21,7 @@ var tests = [
   require('./helper/geojsonify'),
   require('./helper/outputSchema'),
   require('./helper/types'),
+  require('./sanitiser/_geo_common'),
 ];
 
 tests.map(function(t) {
