@@ -6,6 +6,7 @@ var _sanitize = require('../sanitiser/_sanitize'),
       layers: require('../sanitiser/_layers'),
       source: require('../sanitiser/_source'),
       details: require('../sanitiser/_details'),
+      private: require('../sanitiser/_private'),
       latlonzoom: require('../sanitiser/_geo_search')
     };
 

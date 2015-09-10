@@ -86,6 +86,33 @@ module.exports.tests.sanitize_text_with_delim = function(test, common) {
   });
 };
 
+module.exports.tests.sanitize_private_no_value = function(test, common) {
+  test('default private should be set to true', function(t) {
+    sanitize({ text: 'test' }, function( err, clean ){
+      t.equal(clean.private, true, 'private set to true');
+    });
+    t.end();
+  });
+};
+
+module.exports.tests.sanitize_private_explicit_true_value = function(test, common) {
+  test('explicit private should be set to true', function(t) {
+    sanitize({ text: 'test', private: true }, function( err, clean ){
+      t.equal(clean.private, true, 'private set to true');
+    });
+    t.end();
+  });
+};
+
+module.exports.tests.sanitize_private_explicit_false_value = function(test, common) {
+  test('explicit private should be set to false', function(t) {
+    sanitize({ text: 'test', private: false }, function( err, clean ){
+      t.equal(clean.private, false, 'private set to false');
+    });
+    t.end();
+  });
+};
+
 module.exports.tests.sanitize_lat = function(test, common) {
   var lats = {
     invalid: [],
