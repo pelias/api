@@ -18,10 +18,10 @@ function sanitize( req, default_value ){
     params = {};
   }
 
-  if (params.details === undefined) {
-    req.clean.details = default_value;
+  if (params.private === undefined) {
+    req.clean.private = default_value;
   } else {
-    req.clean.details = isTruthy(params.details);
+    req.clean.private = isTruthy(params.private);
   }
 
   return {'error':false};
