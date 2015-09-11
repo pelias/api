@@ -22,6 +22,7 @@ var tests = [
   require('./helper/outputSchema'),
   require('./helper/types'),
   require('./sanitiser/_geo_common'),
+  require('./middleware/distance'),
 ];
 
 tests.map(function(t) {
