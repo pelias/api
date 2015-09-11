@@ -7,7 +7,7 @@ function sanitize( req, default_value ){
   req.clean = req.clean || {};
   var params= req.query;
 
-  if (default_value === undefined) {
+  if (typeof default_value === 'undefined') {
     default_value = true;
   }
 
@@ -18,10 +18,11 @@ function sanitize( req, default_value ){
     params = {};
   }
 
-  if (params.details === undefined) {
-    req.clean.details = default_value;
-  } else {
+  if (params.hasOwnProperty('details')) {
     req.clean.details = isTruthy(params.details);
+  }
+  else {
+    req.clean.details = default_value;
   }
 
   return {'error':false};
