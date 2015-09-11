@@ -1,4 +1,4 @@
-var sanitize = require( '../../../sanitiser/_sources' );
+var sanitize = require( '../../../sanitiser/_targets' )('sources', require('../../../query/sources'));
 
 var success_response = { error: false };
 
@@ -26,7 +26,7 @@ module.exports.tests.no_sources = function(test, common) {
 
     var expected_response = {
       error: true,
-      message: '`sources` parameter cannot be an empty string. ' +
+      message: 'sources parameter cannot be an empty string. ' +
                'Valid options: gn, geonames, oa, openaddresses, qs, quattroshapes, osm, openstreetmap'
     };
 
@@ -98,7 +98,7 @@ module.exports.tests.invalid_sources = function(test, common) {
     };
     var expected_response = {
       error: true,
-      message: '`notasource` is an invalid source parameter. ' +
+      message: 'notasource is an invalid sources parameter. ' +
                'Valid options: gn, geonames, oa, openaddresses, qs, quattroshapes, osm, openstreetmap'
     };
 

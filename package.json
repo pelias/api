@@ -44,6 +44,7 @@
     "geolib": "^2.0.18",
     "geopipes-elasticsearch-backend": "^0.2.0",
     "is-object": "^1.0.1",
+    "lodash": "^3.10.1",
     "markdown": "0.5.0",
     "microtime": "1.4.0",
     "morgan": "1.5.2",

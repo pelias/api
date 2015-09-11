@@ -69,6 +69,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     reverse: createRouter([
       sanitisers.reverse.middleware,
+      middleware.types,
       controllers.search(undefined, reverseQuery),
       // TODO: add confidence scores
       postProc.distances(),

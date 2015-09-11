@@ -10,6 +10,7 @@ var tests = [
   require('./service/search'),
   require('./sanitiser/_sources'),
   require('./sanitiser/search'),
+  require('./sanitiser/_layers'),
   require('./sanitiser/reverse'),
   require('./sanitiser/place'),
   require('./query/types'),
