@@ -19,7 +19,8 @@ var DETAILS_PROPS = [
   'localadmin',
   'locality',
   'neighbourhood',
-  'confidence'
+  'confidence',
+  'distance'
 ];
 
 

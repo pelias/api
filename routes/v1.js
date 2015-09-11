@@ -25,6 +25,7 @@ var controllers     = {
 /** ----------------------- controllers ----------------------- **/
 
 var postProc = {
+  distances: require('../middleware/distance'),
   confidenceScores: require('../middleware/confidenceScore'),
   renamePlacenames: require('../middleware/renamePlacenames'),
   geocodeJSON: require('../middleware/geocodeJSON'),
@@ -70,6 +71,7 @@ function addRoutes(app, peliasConfig) {
       sanitisers.reverse.middleware,
       controllers.search(undefined, reverseQuery),
       // TODO: add confidence scores
+      postProc.distances(),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig),
       postProc.sendJSON
