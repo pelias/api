@@ -21,6 +21,32 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled, expected, 'valid reverse query');
     t.end();
   });
+  test('valid query with radius', function(t) {
+    var query = generate({
+      lat: 29.49136, lon: -82.50622, boundary_circle_radius: 123
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query )).query.filtered.filter.bool.must[0].geo_distance.distance;
+    var expected = '123km';
+
+    t.deepEqual(compiled, expected, 'distance set to boundary circle radius');
+    t.end();
+  });
+  test('valid query with boundary.circle lat/lon/radius', function(t) {
+    var clean = {
+      lat: 29.49136,
+      lon: -82.50622,
+      boundary_circle_lat: 111,
+      boundary_circle_long: 333
+    };
+    var query = generate(clean);
+
+    var compiled = JSON.parse( JSON.stringify( query )).query.filtered.filter.bool.must[0].geo_distance.center_point;
+    var expected = { lat: clean.lat, lon: clean.lon };
+
+    t.deepEqual(compiled, expected, 'point.lat/lon overrides boundary.circle.lat/lon');
+    t.end();
+  });
   test('size fuzz test', function(t) {
     // test different sizes
     var sizes = [1,2,10,undefined,null];
