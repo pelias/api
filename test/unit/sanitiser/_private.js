@@ -33,24 +33,10 @@ module.exports.tests.sanitize_private = function(test, common) {
     });
   });
 
-  test('test behavior with no parameter set and default false', function(t) {
-    var req = {query: {}};
-    sanitize(req, 0);
-    t.equal(req.clean.private, false, 'details set to false');
-    t.end();
-  });
-
-  test('test behavior with no parameter set and default true', function(t) {
-    var req = {query: {}};
-    sanitize(req, 1);
-    t.equal(req.clean.private, true, 'details set to true');
-    t.end();
-  });
-
   test('test default behavior', function(t) {
     var req = {query: {}};
     sanitize(req);
-    t.equal(req.clean.private, true, 'private set to true');
+    t.equal(req.clean.private, false, 'private set to false');
     t.end();
   });
 };

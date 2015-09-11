@@ -33,20 +33,6 @@ module.exports.tests.sanitize_details = function(test, common) {
     });
   });
 
-  test('test behavior with no parameter set and default false', function(t) {
-    var req = {query: {}};
-    sanitize(req, 0);
-    t.equal(req.clean.details, false, 'details set to false');
-    t.end();
-  });
-
-  test('test behavior with no parameter set and default true', function(t) {
-    var req = {query: {}};
-    sanitize(req, 1);
-    t.equal(req.clean.details, true, 'details set to true');
-    t.end();
-  });
-
   test('test default behavior', function(t) {
     var req = {query: {}};
     sanitize(req);

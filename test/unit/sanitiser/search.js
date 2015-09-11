@@ -89,7 +89,7 @@ module.exports.tests.sanitize_text_with_delim = function(test, common) {
 module.exports.tests.sanitize_private_no_value = function(test, common) {
   test('default private should be set to true', function(t) {
     sanitize({ text: 'test' }, function( err, clean ){
-      t.equal(clean.private, true, 'private set to true');
+      t.equal(clean.private, false, 'private set to false');
     });
     t.end();
   });
