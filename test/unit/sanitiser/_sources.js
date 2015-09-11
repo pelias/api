@@ -1,11 +1,11 @@
-var sanitize = require( '../../../sanitiser/_source' );
+var sanitize = require( '../../../sanitiser/_sources' );
 
 var success_response = { error: false };
 
 module.exports.tests = {};
 
 module.exports.tests.no_sources = function(test, common) {
-  test('source is not set', function(t) {
+  test('sources is not set', function(t) {
     var req = {
       query: { }
     };
@@ -20,14 +20,20 @@ module.exports.tests.no_sources = function(test, common) {
   test('source is empty string', function(t) {
     var req = {
       query: {
-        source: ''
+        sources: ''
       }
+    };
+
+    var expected_response = {
+      error: true,
+      message: '`sources` parameter cannot be an empty string. ' +
+               'Valid options: gn, geonames, oa, openaddresses, qs, quattroshapes, osm, openstreetmap'
     };
 
     var response = sanitize(req);
 
     t.deepEqual(req.clean.types, {}, 'clean.types should be empty object');
-    t.deepEqual(response, success_response, 'no error returned');
+    t.deepEqual(response, expected_response, 'no error returned');
     t.end();
   });
 };
@@ -36,13 +42,13 @@ module.exports.tests.valid_sources = function(test, common) {
   test('geonames source', function(t) {
     var req = {
       query: {
-        source: 'geonames'
+        sources: 'geonames'
       }
     };
 
     var response = sanitize(req);
 
-    t.deepEqual(req.clean.types, { from_source: ['geoname'] }, 'clean.types should contain from_source entry with geonames');
+    t.deepEqual(req.clean.types, { from_sources: ['geoname'] }, 'clean.types should contain from_source entry with geonames');
     t.deepEqual(response, success_response, 'no error returned');
     t.end();
   });
@@ -50,11 +56,11 @@ module.exports.tests.valid_sources = function(test, common) {
   test('openstreetmap source', function(t) {
     var req = {
       query: {
-        source: 'openstreetmap'
+        sources: 'openstreetmap'
       }
     };
     var expected_types = {
-      from_source: ['osmaddress', 'osmnode', 'osmway']
+      from_sources: ['osmaddress', 'osmnode', 'osmway']
     };
 
     var response = sanitize(req);
@@ -67,11 +73,11 @@ module.exports.tests.valid_sources = function(test, common) {
   test('multiple sources', function(t) {
     var req = {
       query: {
-        source: 'openstreetmap,openaddresses'
+        sources: 'openstreetmap,openaddresses'
       }
     };
     var expected_types = {
-      from_source: ['osmaddress', 'osmnode', 'osmway', 'openaddresses']
+      from_sources: ['osmaddress', 'osmnode', 'osmway', 'openaddresses']
     };
 
     var response = sanitize(req);
@@ -87,12 +93,13 @@ module.exports.tests.invalid_sources = function(test, common) {
   test('geonames source', function(t) {
     var req = {
       query: {
-        source: 'notasource'
+        sources: 'notasource'
       }
     };
     var expected_response = {
       error: true,
-      msg: '`notasource` is an invalid source parameter. Valid options: geonames, openaddresses, quattroshapes, openstreetmap'
+      message: '`notasource` is an invalid source parameter. ' +
+               'Valid options: gn, geonames, oa, openaddresses, qs, quattroshapes, osm, openstreetmap'
     };
 
     var response = sanitize(req);

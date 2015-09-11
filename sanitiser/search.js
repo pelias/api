@@ -4,7 +4,7 @@ var _sanitize = require('../sanitiser/_sanitize'),
       text: require('../sanitiser/_text'),
       size: require('../sanitiser/_size'),
       layers: require('../sanitiser/_layers'),
-      source: require('../sanitiser/_source'),
+      source: require('../sanitiser/_sources'),
       details: require('../sanitiser/_details'),
       latlonzoom: require('../sanitiser/_geo_search')
     };

@@ -1,20 +1,32 @@
 var types = require('../../../helper/types');
 
-var valid_types = require( '../../../query/types' );
 module.exports.tests = {};
 
 module.exports.tests.no_cleaned_types = function(test, common) {
   test('no cleaned types', function(t) {
-    var actual = types(undefined);
-    t.equal(actual, undefined, 'all valid types returned for empty input');
-    t.end();
+    try {
+      types();
+      t.fail('exception should be thrown');
+    }
+    catch (err) {
+      t.equal(err.message, 'clean_types should not be null or undefined', 'no input should result in exception');
+    }
+    finally {
+      t.end();
+    }
   });
 
   test('no cleaned types', function(t) {
-    var cleaned_types = {};
-    var actual = types(cleaned_types);
-    t.equal(actual, undefined, 'all valid types returned for empty input');
-    t.end();
+    try {
+      types({});
+      t.fail('exception should be thrown');
+    }
+    catch (err) {
+      t.equal(err.message, 'clean_types should not be null or undefined', 'no input should result in exception');
+    }
+    finally {
+      t.end();
+    }
   });
 };
 
@@ -58,7 +70,7 @@ module.exports.tests.layers_parameter_and_address_parser = function(test, common
 module.exports.tests.source_parameter = function(test, common) {
   test('source parameter specified', function(t) {
     var cleaned_types = {
-      from_source: ['openaddresses']
+      from_sources: ['openaddresses']
     };
 
     var actual = types(cleaned_types);
@@ -72,7 +84,7 @@ module.exports.tests.source_parameter = function(test, common) {
 module.exports.tests.source_and_layers_parameters = function(test, common) {
   test('source and layers parameter both specified', function(t) {
     var cleaned_types = {
-      from_source: ['openaddresses'],
+      from_sources: ['openaddresses'],
       from_layers: ['osmaddress', 'openaddresses']
     };
 
