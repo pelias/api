@@ -8,17 +8,27 @@ var types_helper = require( '../helper/types' );
  * message instead of searching at all.
  */
 function middleware(req, res, next) {
-  var types = types_helper(req.clean.types);
+  req.clean = req.clean || {};
 
-  if (types !== undefined && types.length !== undefined) {
-   if (types.length === 0) {
-    var err = 'You have specified both the `source` and `layers` ' +
-    'parameters in a combination that will return no results.';
-    res.status(400); // 400 Bad Request
-    return next(err);
-   } else {
-     req.clean.type = types;
-   }
+  if (req.clean.hasOwnProperty('types') === false) {
+    return next();
+  }
+
+  try {
+    var types = types_helper(req.clean.types);
+
+    if ((types instanceof Array) && types.length === 0) {
+      var err = 'You have specified both the `sources` and `layers` ' +
+        'parameters in a combination that will return no results.';
+      res.status(400); // 400 Bad Request
+      return next(err);
+    }
+
+    req.clean.type = types;
+  }
+  catch (err) {
+    // this means there were no types specified
+    delete req.clean.types;
   }
 
   next();

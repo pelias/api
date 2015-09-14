@@ -2,17 +2,19 @@
 var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
       text: require('../sanitiser/_text'),
-      layers: require('../sanitiser/_layers'),
       size: require('../sanitiser/_size'),
-      source: require('../sanitiser/_source'),
+      layers: require('../sanitiser/_targets')('layers', require( '../query/layers' )),
+      sources: require('../sanitiser/_targets')('sources', require( '../query/sources' )),
       details: require('../sanitiser/_details'),
-      geo_search: require('../sanitiser/_geo_search')
+      geo_search: require('../sanitiser/_geo_search'),
+      categories: require('../sanitiser/_categories')
     };
 
 var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
 
 // export sanitize for testing
 module.exports.sanitize = sanitize;
+module.exports.sanitiser_list = sanitizers;
 
 // middleware
 module.exports.middleware = function( req, res, next ){
@@ -21,7 +23,7 @@ module.exports.middleware = function( req, res, next ){
       res.status(400); // 400 Bad Request
       return next(err);
     }
-    req.clean = clean;
     next();
   });
 };
+
