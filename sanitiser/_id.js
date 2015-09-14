@@ -1,72 +1,79 @@
-var isObject = require('is-object');
+
+var check = require('check-types'),
+    types = require('../query/types');
+
+var ID_DELIM = ':';
 
 // validate inputs, convert types and apply defaults
 // id generally looks like 'geoname:4163334' (type:id)
 // so, both type and id are required fields.
 
-function sanitize( req ){
-  req.clean   = req.clean || {};
-  var params  = req.query;
-  var types = require('../query/types');
-  var delim   = ':';
+function errorMessage(fieldname, message) {
+  return message || 'invalid param \''+ fieldname + '\': text length, must be >0';
+}
 
-  // ensure params is a valid object
-  if( !isObject( params ) ){
-    params = {};
-  }
+function sanitize( unclean, clean ){
 
-  var errormessage = function(fieldname, message) {
-    return {
-      'error': true,
-      'message': message || ('invalid param \''+ fieldname + '\': text length, must be >0')
-    };
-  };
+  // error & warning messages
+  var messages = { errors: [], warnings: [] };
 
-  if(('string' === typeof params.id && !params.id.length) || params.id === undefined){
-    return errormessage('id');
-  }
+  // 'unclean.id' can be an array!?
+  var uncleanIds = check.array( unclean.id ) ? unclean.id : [ unclean.id ];
 
-  if( params && params.id && params.id.length ){
-    req.clean.ids = [];
-    params.ids = Array.isArray(params.id) ? params.id : [params.id];
+  // de-dupe ids
+  uncleanIds = uncleanIds.filter(function(item, pos) {
+    return uncleanIds.indexOf( item ) === pos;
+  });
 
-    // de-dupe
-    params.ids = params.ids.filter(function(item, pos) {
-      return params.ids.indexOf(item) === pos;
-    });
-
-    for (var i=0; i<params.ids.length; i++) {
-      var thisparam = params.ids[i];
-
-      // basic format/ presence of ':'
-      if(thisparam.indexOf(delim) === -1) {
-        return errormessage(null, 'invalid: must be of the format type:id for ex: \'geoname:4163334\'');
-      }
-
-      var param_index = thisparam.indexOf(delim);
-      var type = thisparam.substring(0, param_index );
-      var id   = thisparam.substring(param_index + 1);
-
-      // id text
-      if('string' !== typeof id || !id.length){
-        return errormessage(thisparam);
-      }
-      // type text
-      if('string' !== typeof type || !type.length){
-        return errormessage(thisparam);
-      }
-      // type text must be one of the types
-      if(types.indexOf(type) === -1){
-        return errormessage('type', type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']');
-      }
-      req.clean.ids.push({
-        id: id,
-        type: type
-      });
+  // ensure all elements are valid non-empty strings
+  uncleanIds = uncleanIds.filter( function( uc ){
+    if( !check.unemptyString( uc ) ){
+      messages.errors.push( errorMessage('id') );
+      return false;
     }
-  }
+    return true;
+  });
 
-  return { 'error': false };
+  // init 'clean.ids'
+  clean.ids = [];
+
+  // cycle through unclean ids and set those which are valid
+  uncleanIds.forEach( function( uncleanId ){
+
+    var param_index = uncleanId.indexOf(ID_DELIM);
+    var type = uncleanId.substring(0, param_index );
+    var id   = uncleanId.substring(param_index + 1);
+
+    // basic format/ presence of ':'
+    if(param_index === -1) {
+      messages.errors.push(
+        errorMessage(null, 'invalid: must be of the format type:id for ex: \'geoname:4163334\'')
+      );
+    }
+
+    // id text
+    if( !check.unemptyString( id ) ){
+      messages.errors.push( errorMessage( uncleanId ) );
+    }
+    // type text
+    if( !check.unemptyString( type ) ){
+      messages.errors.push( errorMessage( uncleanId ) );
+    }
+    // type text must be one of the types
+    if( types.indexOf( type ) === -1 ){
+      messages.errors.push(
+        errorMessage('type', type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']')
+      );
+    }
+
+    // add valid id to 'clean.ids' array
+    clean.ids.push({
+      id: id,
+      type: type
+    });
+  });
+
+  return messages;
 }
 
 // export function

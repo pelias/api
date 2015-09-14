@@ -1,15 +1,15 @@
 
-var _sanitize = require('../sanitiser/_sanitize'),
+var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
       text: require('../sanitiser/_text'),
-      size: require('../sanitiser/_size'),
       layers: require('../sanitiser/_layers'),
+      size: require('../sanitiser/_size'),
       source: require('../sanitiser/_source'),
       details: require('../sanitiser/_details'),
-      latlonzoom: require('../sanitiser/_geo_search')
+      geo_search: require('../sanitiser/_geo_search')
     };
 
-var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); };
+var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
 
 // export sanitize for testing
 module.exports.sanitize = sanitize;

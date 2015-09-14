@@ -1,39 +1,26 @@
-var isObject = require('is-object');
+
 var geo_common = require ('./_geo_common');
+var LAT_LON_IS_REQUIRED = true,
+    CIRCLE_IS_REQUIRED = false,
+    CIRCLE_MUST_BE_COMPLETE = false;
 
 // validate inputs, convert types and apply defaults
-module.exports = function sanitize( req ){
-  var clean = req.clean || {};
-  var params = req.query;
-  var latlon_is_required = true;
-  var circle_is_required = false;
-  var circle_must_be_complete = false;
+module.exports = function sanitize( unclean, clean ){
 
-  // ensure the input params are a valid object
-  if( !isObject( params ) ){
-    params = {};
-  }
-
-  if( !isObject( params.point ) ){
-    params.point = {};
-  }
+  // error & warning messages
+  var messages = { errors: [], warnings: [] };
 
   try {
-    geo_common.sanitize_coord( 'lat', clean, params['point.lat'], latlon_is_required );
-    geo_common.sanitize_coord( 'lon', clean, params['point.lon'], latlon_is_required );
+    geo_common.sanitize_coord( 'lat', clean, unclean['point.lat'], LAT_LON_IS_REQUIRED );
+    geo_common.sanitize_coord( 'lon', clean, unclean['point.lon'], LAT_LON_IS_REQUIRED );
 
     // boundary.circle.* is not mandatory, and only specifying radius is fine,
     // as point.lat/lon will be used to fill those values by default
-    geo_common.sanitize_boundary_circle( clean, params, circle_is_required, circle_must_be_complete);
+    geo_common.sanitize_boundary_circle( clean, unclean, CIRCLE_IS_REQUIRED, CIRCLE_MUST_BE_COMPLETE);
   }
   catch (err) {
-    return {
-      'error': true,
-      'message': err.message
-    };
+    messages.errors.push( err.message );
   }
 
-  req.clean = clean;
-
-  return { 'error': false };
+  return messages;
 };

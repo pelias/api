@@ -1,36 +1,33 @@
 
-var isObject = require('is-object');
+var check = require('check-types');
 
 // validate inputs, convert types and apply defaults
-function sanitize( req ){
+function sanitize( unclean, clean ){
 
-  var clean = req.clean || {};
-  var params= req.query;
-
-  // ensure the input params are a valid object
-  if( !isObject( params ) ){
-    params = {};
-  }
+  // error & warning messages
+  var messages = { errors: [], warnings: [] };
 
   // default case (no categories specified in GET params)
-  if('string' !== typeof params.categories || !params.categories.length){
-    clean.categories = [];
-  }
-  else {
-    // parse GET params
-    clean.categories = params.categories.split(',')
+  clean.categories = [];
+
+  // if categories string has been set
+  if( check.unemptyString( unclean.categories ) ){
+
+    // map input categories to valid format
+    clean.categories = unclean.categories.split(',')
       .map(function (cat) {
         return cat.toLowerCase().trim(); // lowercase inputs
       })
       .filter( function( cat ) {
         return ( cat.length > 0 );
       });
+
+    if( !clean.categories.length ){
+      messages.warnings.push( 'invalid \'categories\': no valid category strings found');
+    }
   }
 
-  // pass validated params to next middleware
-  req.clean = clean;
-
-  return { 'error': false };
+  return messages;
 
 }
 

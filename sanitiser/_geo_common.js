@@ -12,12 +12,12 @@ var util = require( 'util' );
  * @param {object} clean
  * @param {string} param
  */
-function sanitize_bbox( clean, param ) {
-  if( !param ) {
+function sanitize_bbox( unclean, clean ) {
+  if( !unclean.bbox ) {
     return;
   }
 
-  var bboxArr = param.split( ',' );
+  var bboxArr = unclean.bbox.split( ',' );
 
   if( Array.isArray( bboxArr ) && bboxArr.length === 4 ) {
     var bbox = bboxArr.map(parseFloat);
