@@ -8,8 +8,8 @@ function sanitize(raw, clean) {
   // init clean.boundary (if not already init)
   clean.boundary = clean.boundary || {};
 
-  if (raw.boundary && raw.boundary.country) {
-    var country = raw.boundary.country
+  if (raw['boundary.country']) {
+    var country = raw['boundary.country'];
 
     if (typeof country !== 'string') {
       messages.warnings.push('boundary.country is not a string');

@@ -12,17 +12,8 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.end();
   });
 
-  test('boundary w/o country in raw should leave boundary.country undefined', function(t) {
-    var raw = { boundary: {} };
-    var clean = {};
-    var errorsAndWarnings = sanitize(raw, clean);
-    t.equals(clean.boundary.country, undefined, 'should be undefined');
-    t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] }, 'no warnings or errors');
-    t.end();
-  });
-
   test('boundary.country explicitly undefined in raw should leave boundary.country undefined', function(t) {
-    var raw = { boundary: {country: undefined } };
+    var raw = { 'boundary.country': undefined };
     var clean = {};
     var errorsAndWarnings = sanitize(raw, clean);
     t.equals(clean.boundary.country, undefined, 'should be undefined');
@@ -31,7 +22,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
   });
 
   test('non-string boundary.country should set boundary.country to undefined and return warning', function(t) {
-    var raw = { boundary: {country: ['this isn\'t a string primitive'] } };
+    var raw = { 'boundary.country': ['this isn\'t a string primitive'] };
     var clean = {};
     var errorsAndWarnings = sanitize(raw, clean);
     t.equals(clean.boundary.country, undefined, 'should be undefined');
@@ -40,7 +31,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
   });
 
   test('iso2 boundary.country in raw should set boundary.country to ISO3 uppercased', function(t) {
-    var raw = { boundary: {country: 'aq'} };
+    var raw = { 'boundary.country': 'aq' };
     var clean = {};
     var errorsAndWarnings = sanitize(raw, clean);
     t.equals(clean.boundary.country, 'ATA', 'should be uppercased ISO3');
@@ -49,7 +40,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
   });
 
   test('iso3 boundary.country in raw should set boundary.country to matching ISO3 uppercased', function(t) {
-    var raw = { boundary: {country: 'aTa'} };
+    var raw = { 'boundary.country': 'aTa' };
     var clean = {};
     var errorsAndWarnings = sanitize(raw, clean);
     t.equals(clean.boundary.country, 'ATA', 'should be uppercased ISO3');
@@ -58,7 +49,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
   });
 
   test('unknown 2-character boundary.country should set boundary.country to undefined', function(t) {
-    var raw = { boundary: {country: 'zq'} };
+    var raw = { 'boundary.country': 'zq' };
     var clean = {};
     var errorsAndWarnings = sanitize(raw, clean);
     t.equals(clean.boundary.country, undefined, 'should be undefined');
@@ -67,7 +58,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
   });
 
   test('unknown 3-character boundary.country should set boundary.country to undefined', function(t) {
-    var raw = { boundary: {country: 'zqx'} };
+    var raw = { 'boundary.country': 'zqx' };
     var clean = {};
     var errorsAndWarnings = sanitize(raw, clean);
     t.equals(clean.boundary.country, undefined, 'should be undefined');
