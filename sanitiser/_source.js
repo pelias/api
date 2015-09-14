@@ -5,7 +5,7 @@ var check = require('check-types'),
 var ALL_SOURCES = Object.keys(sources_map),
     ALL_SOURCES_JOINED = ALL_SOURCES.join(',');
 
-function sanitize( unclean, clean ) {
+function sanitize( raw, clean ) {
 
   // error & warning messages
   var messages = { errors: [], warnings: [] };
@@ -15,9 +15,9 @@ function sanitize( unclean, clean ) {
 
   // default case (no layers specified in GET params)
   // don't even set the from_layers key in this case
-  if( check.unemptyString( unclean.source ) ){
+  if( check.unemptyString( raw.source ) ){
 
-    var sources = unclean.source.split(',');
+    var sources = raw.source.split(',');
 
     var invalid_sources = sources.filter(function(source) {
       return ALL_SOURCES.indexOf(source) === -1;

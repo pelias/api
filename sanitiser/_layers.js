@@ -9,7 +9,7 @@ var ALIAS_LAYERS  = ['poi', 'admin', 'address'],
     ALIAS_TYPES_JOINED = ALIAS_TYPES.join(',');
 
 // validate inputs, convert types and apply defaults
-function sanitize( unclean, clean ){
+function sanitize( raw, clean ){
 
   // error & warning messages
   var messages = { errors: [], warnings: [] };
@@ -19,10 +19,10 @@ function sanitize( unclean, clean ){
 
   // default case (no layers specified in GET params)
   // don't even set the from_layers key in this case
-  if( check.unemptyString( unclean.layers ) ){
+  if( check.unemptyString( raw.layers ) ){
 
     // parse GET params
-    var layers = unclean.layers.split(',').map( function( layer ){
+    var layers = raw.layers.split(',').map( function( layer ){
       return layer.toLowerCase(); // lowercase inputs
     });
 

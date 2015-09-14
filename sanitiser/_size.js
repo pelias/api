@@ -4,13 +4,13 @@ var MIN_SIZE = 1,
     DEFAULT_SIZE = 10;
 
 // validate inputs, convert types and apply defaults
-function sanitize( unclean, clean ){
+function sanitize( raw, clean ){
 
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
   // coercions
-  var _size = parseInt( unclean.size, 10 );
+  var _size = parseInt( raw.size, 10 );
 
   // invalid numeric input
   // @todo: this can be removed now as queries have default sizes?

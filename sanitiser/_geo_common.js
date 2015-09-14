@@ -10,15 +10,15 @@ var util = require('util'),
  * bbox = left, bottom, right, top
  * bbox = min Longitude, min Latitude, max Longitude, max Latitude
  *
- * @param {object} unclean
+ * @param {object} raw
  * @param {object} clean
  */
-function sanitize_bbox( unclean, clean ) {
-  if( !check.unemptyString( unclean.bbox ) ) {
+function sanitize_bbox( raw, clean ) {
+  if( !check.unemptyString( raw.bbox ) ) {
     return;
   }
 
-  var bboxArr = unclean.bbox.split( ',' );
+  var bboxArr = raw.bbox.split( ',' );
 
   if( Array.isArray( bboxArr ) && bboxArr.length === 4 ) {
     var bbox = bboxArr.map(parseFloat);

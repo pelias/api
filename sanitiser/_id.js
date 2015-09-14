@@ -12,21 +12,21 @@ function errorMessage(fieldname, message) {
   return message || 'invalid param \''+ fieldname + '\': text length, must be >0';
 }
 
-function sanitize( unclean, clean ){
+function sanitize( raw, clean ){
 
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  // 'unclean.id' can be an array!?
-  var uncleanIds = check.array( unclean.id ) ? unclean.id : [ unclean.id ];
+  // 'raw.id' can be an array!?
+  var rawIds = check.array( raw.id ) ? raw.id : [ raw.id ];
 
   // de-dupe ids
-  uncleanIds = uncleanIds.filter(function(item, pos) {
-    return uncleanIds.indexOf( item ) === pos;
+  rawIds = rawIds.filter(function(item, pos) {
+    return rawIds.indexOf( item ) === pos;
   });
 
   // ensure all elements are valid non-empty strings
-  uncleanIds = uncleanIds.filter( function( uc ){
+  rawIds = rawIds.filter( function( uc ){
     if( !check.unemptyString( uc ) ){
       messages.errors.push( errorMessage('id') );
       return false;
@@ -37,12 +37,12 @@ function sanitize( unclean, clean ){
   // init 'clean.ids'
   clean.ids = [];
 
-  // cycle through unclean ids and set those which are valid
-  uncleanIds.forEach( function( uncleanId ){
+  // cycle through raw ids and set those which are valid
+  rawIds.forEach( function( rawId ){
 
-    var param_index = uncleanId.indexOf(ID_DELIM);
-    var type = uncleanId.substring(0, param_index );
-    var id   = uncleanId.substring(param_index + 1);
+    var param_index = rawId.indexOf(ID_DELIM);
+    var type = rawId.substring(0, param_index );
+    var id   = rawId.substring(param_index + 1);
 
     // basic format/ presence of ':'
     if(param_index === -1) {
@@ -53,11 +53,11 @@ function sanitize( unclean, clean ){
 
     // id text
     if( !check.unemptyString( id ) ){
-      messages.errors.push( errorMessage( uncleanId ) );
+      messages.errors.push( errorMessage( rawId ) );
     }
     // type text
     if( !check.unemptyString( type ) ){
-      messages.errors.push( errorMessage( uncleanId ) );
+      messages.errors.push( errorMessage( rawId ) );
     }
     // type text must be one of the types
     if( types.indexOf( type ) === -1 ){

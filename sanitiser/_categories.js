@@ -2,7 +2,7 @@
 var check = require('check-types');
 
 // validate inputs, convert types and apply defaults
-function sanitize( unclean, clean ){
+function sanitize( raw, clean ){
 
   // error & warning messages
   var messages = { errors: [], warnings: [] };
@@ -11,10 +11,10 @@ function sanitize( unclean, clean ){
   clean.categories = [];
 
   // if categories string has been set
-  if( check.unemptyString( unclean.categories ) ){
+  if( check.unemptyString( raw.categories ) ){
 
     // map input categories to valid format
-    clean.categories = unclean.categories.split(',')
+    clean.categories = raw.categories.split(',')
       .map(function (cat) {
         return cat.toLowerCase().trim(); // lowercase inputs
       })

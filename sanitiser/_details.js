@@ -3,13 +3,13 @@ var check = require('check-types');
 var DEFAULT_DETAILS_BOOL = true;
 
 // validate inputs, convert types and apply defaults
-function sanitize( unclean, clean ){
+function sanitize( raw, clean ){
 
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  if( !check.undefined( unclean.details ) ){
-    clean.details = isTruthy( unclean.details );
+  if( !check.undefined( raw.details ) ){
+    clean.details = isTruthy( raw.details );
   } else {
     clean.details = DEFAULT_DETAILS_BOOL;
   }
