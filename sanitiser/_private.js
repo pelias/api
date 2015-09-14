@@ -12,7 +12,7 @@ function sanitize( req ){
     params = {};
   }
 
-  req.clean.details = truthy.isTruthyWithDefault(params.details, true);
+  req.clean.private = truthy.isTruthyWithDefault(params.private, false);
 
   return {'error':false};
 
