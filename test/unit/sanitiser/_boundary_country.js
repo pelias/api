@@ -39,20 +39,20 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.end();
   });
 
-  test('iso2 boundary.country in raw should set boundary.country to ISO2 uppercased', function(t) {
+  test('iso2 boundary.country in raw should set boundary.country to ISO3 uppercased', function(t) {
     var raw = { boundary: {country: 'aq'} };
     var clean = {};
     var errorsAndWarnings = sanitize(raw, clean);
-    t.equals(clean.boundary.country, 'AQ', 'should be uppercased ISO2');
+    t.equals(clean.boundary.country, 'ATA', 'should be uppercased ISO3');
     t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] }, 'no warnings or errors');
     t.end();
   });
 
-  test('iso3 boundary.country in raw should set boundary.country to matching ISO2 uppercased', function(t) {
+  test('iso3 boundary.country in raw should set boundary.country to matching ISO3 uppercased', function(t) {
     var raw = { boundary: {country: 'aTa'} };
     var clean = {};
     var errorsAndWarnings = sanitize(raw, clean);
-    t.equals(clean.boundary.country, 'AQ', 'should be uppercased ISO2');
+    t.equals(clean.boundary.country, 'ATA', 'should be uppercased ISO3');
     t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] }, 'no warnings or errors');
     t.end();
   });

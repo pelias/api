@@ -20,7 +20,7 @@ function sanitize(raw, clean) {
       clean.boundary.country = undefined;
     }
     else {
-      clean.boundary.country = iso3166.to2(country.toUpperCase());
+      clean.boundary.country = iso3166.to3(country.toUpperCase());
     }
 
   } else {
@@ -32,9 +32,9 @@ function sanitize(raw, clean) {
 }
 
 function containsIsoCode(isoCode) {
-  return iso3166.list().filter(function(row) {
+  return iso3166.list().some(function(row) {
       return row.alpha2 === isoCode || row.alpha3 === isoCode;
-  }).length > 0;
+  });
 }
 
 module.exports = sanitize;

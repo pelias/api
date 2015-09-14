@@ -32,7 +32,7 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
-    var expected = ['text', 'size', 'layers', 'sources', 'details', 'geo_search', 'categories' ];
+    var expected = ['text', 'size', 'layers', 'sources', 'details', 'geo_search', 'categories', 'boundary_country' ];
     t.deepEqual(Object.keys(search.sanitiser_list), expected);
     t.end();
   });
@@ -77,7 +77,7 @@ module.exports.tests.sanitise_valid_text = function(test, common) {
 module.exports.tests.sanitize_text_with_delim = function(test, common) {
   var texts = [ 'a,bcd', '123 main st, admin1', ',,,', ' ' ];
 
-  test('valid texts with a comma', function(t) {  
+  test('valid texts with a comma', function(t) {
     texts.forEach( function( text ){
       sanitize({ text: text }, function( err, clean ){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
