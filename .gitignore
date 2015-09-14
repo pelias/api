@@ -3,3 +3,4 @@ coverage
 .idea
 *.log
 reports
+pids
