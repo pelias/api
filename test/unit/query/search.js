@@ -136,6 +136,22 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
   });
+
+  test('valid boundary.country search', function(t) {
+    var query = generate({
+      text: 'test', size: 10,
+      layers: ['test'],
+      boundary: { country: 'ABC' }
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_boundary_country');
+    expected.sort = sort;
+
+    t.deepEqual(compiled, expected, 'valid boundary.country query');
+    t.end();
+  });
+
 };
 
 module.exports.all = function (tape, common) {
