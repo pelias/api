@@ -1,7 +1,7 @@
 
-var suggest  = require('../../../sanitiser/reverse'),
-    _sanitize = suggest.sanitize,
-    middleware = suggest.middleware,
+var reverse  = require('../../../sanitiser/reverse'),
+    _sanitize = reverse.sanitize,
+    middleware = reverse.middleware,
     defaultError = 'missing param \'lat\'',
     defaultClean =  { lat:0,
                       types: {
@@ -30,8 +30,8 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
-    var expected = ['latlonzoom', 'layers', 'sources', 'details', 'size', 'categories'];
-    t.deepEqual(Object.keys(suggest.sanitiser_list), expected);
+    var expected = ['layers', 'sources', 'size', 'details', 'geo_reverse', 'categories'];
+    t.deepEqual(Object.keys(reverse.sanitiser_list), expected);
     t.end();
   });
 };

@@ -32,7 +32,7 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
-    var expected = ['text', 'size', 'layers', 'sources', 'details', 'latlonzoom', 'categories' ];
+    var expected = ['text', 'size', 'layers', 'sources', 'details', 'geo_search', 'categories' ];
     t.deepEqual(Object.keys(search.sanitiser_list), expected);
     t.end();
   });

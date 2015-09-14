@@ -1,57 +1,81 @@
-var _ = require('lodash');
 
-function setup(paramName, targetMap) {
-  return function (req ) {
-    return sanitize(paramName, targetMap, req);
+var _ = require('lodash'),
+    check = require('check-types');
+
+function setup( paramName, targetMap ) {
+  return function( raw, clean ){
+    return sanitize( raw, clean, {
+      paramName: paramName,
+      targetMap: targetMap,
+      targetMapKeysString: Object.keys(targetMap).join(',')
+    });
   };
 }
 
-function sanitize( paramName, targetMap, req ) {
-  var params = req.query || {};
+function sanitize( raw, clean, opts ) {
 
-  req.clean = req.clean || {};
-  req.clean.types = req.clean.types || {};
+  // error & warning messages
+  var messages = { errors: [], warnings: [] };
 
-  // default case (no sources specified in GET params)
-  // there is a case where the property is present, but set to null or undefined
-  if (params.hasOwnProperty(paramName) === false || typeof params[paramName] === 'undefined') {
-    return { error: false };
+  // init clean.types
+  clean.types = clean.types || {};
+
+  // the string of targets (comma delimeted)
+  var targetsString = raw[opts.paramName];
+
+  // trim whitespace
+  if( check.unemptyString( targetsString ) ){
+    targetsString = targetsString.trim();
+
+    // param must be a valid non-empty string
+    if( !check.unemptyString( targetsString ) ){
+      messages.errors.push(
+        opts.paramName + ' parameter cannot be an empty string. Valid options: ' + opts.targetMapKeysString
+      );
+    }
+    else {
+
+      // split string in to array and lowercase each target string
+      var targets = targetsString.split(',').map( function( target ){
+        return target.toLowerCase(); // lowercase inputs
+      });
+
+      // emit an error for each target *not* present in the targetMap
+      targets.filter( function( target ){
+        return !opts.targetMap.hasOwnProperty(target);
+      }).forEach( function( target ){
+        messages.errors.push(
+          '\'' + target + '\' is an invalid ' + opts.paramName + ' parameter. Valid options: ' + opts.targetMapKeysString
+        );
+      });
+
+      // only set types value when no error occured
+      if( !messages.errors.length ){
+
+        // store the values under a new key as 'clean.types.from_*'
+        var typesKey = 'from_' + opts.paramName;
+
+        // ?
+        clean.types[typesKey] = targets.reduce(function(acc, target) {
+          return acc.concat(opts.targetMap[target]);
+        }, []);
+
+        // dedupe in case aliases expanded to common things or user typed in duplicates
+        clean.types[typesKey] = _.unique(clean.types[typesKey]);
+      }
+
+    }
   }
 
-  params[paramName] = params[paramName].trim();
-
-  if (params[paramName].length === 0) {
-    return {
-      error: true,
-      message: paramName + ' parameter cannot be an empty string. Valid options: ' + Object.keys(targetMap).join(', ')
-    };
+  // string is empty
+  else if( check.string( targetsString ) ){
+    messages.errors.push(
+      opts.paramName + ' parameter cannot be an empty string. Valid options: ' + opts.targetMapKeysString
+    );
   }
 
-  var targets = params[paramName].split(',').map( function( target ){
-    return target.toLowerCase(); // lowercase inputs
-  });
 
-  var invalidTargets = targets.filter(function(target) {
-    return targetMap.hasOwnProperty(target) === false;
-  });
-
-  if (invalidTargets.length > 0) {
-    return {
-      error: true,
-      message: invalidTargets[0] + ' is an invalid ' + paramName + ' parameter. Valid options: ' + Object.keys(targetMap).join(', ')
-    };
-  }
-
-  var cleanPropName = 'from_' + paramName;
-
-  req.clean.types[cleanPropName] = targets.reduce(function(acc, target) {
-    return acc.concat(targetMap[target]);
-  }, []);
-
-  // dedupe in case aliases expanded to common things or user typed in duplicates
-  req.clean.types[cleanPropName] = _.unique(req.clean.types[cleanPropName]);
-
-  return { error: false };
+  return messages;
 }
 
 module.exports = setup;
