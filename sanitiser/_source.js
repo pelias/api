@@ -1,5 +1,6 @@
 
-var check = require('check-types'),
+var _ = require('lodash'),
+    check = require('check-types'),
     sources_map = require( '../query/sources' );
 
 var ALL_SOURCES = Object.keys(sources_map),
@@ -20,7 +21,7 @@ function sanitize( raw, clean ) {
     var sources = raw.source.split(',');
 
     var invalid_sources = sources.filter(function(source) {
-      return ALL_SOURCES.indexOf(source) === -1;
+      return !_.contains( ALL_SOURCES, source );
     });
 
     if( invalid_sources.length > 0 ){
