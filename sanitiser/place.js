@@ -1,10 +1,11 @@
-var _sanitize = require('../sanitiser/_sanitize'),
+
+var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
       id: require('../sanitiser/_id'),
       details: require('../sanitiser/_details')
     };
 
-var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); };
+var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
 
 // export sanitize for testing
 module.exports.sanitize = sanitize;

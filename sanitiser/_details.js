@@ -1,36 +1,25 @@
-var isObject = require('is-object');
+
+var check = require('check-types');
+var DEFAULT_DETAILS_BOOL = true;
 
 // validate inputs, convert types and apply defaults
-function sanitize( req, default_value ){
-  
-  var clean = req.clean || {};
-  var params= req.query;
+function sanitize( raw, clean ){
 
-  if (default_value === undefined) {
-    default_value = true;
-  }
-  
-  default_value = !!default_value;
+  // error & warning messages
+  var messages = { errors: [], warnings: [] };
 
-  // ensure the input params are a valid object
-  if( !isObject( params ) ){
-    params = {};
-  }
-
-  if (params.details !== undefined) {
-    clean.details = isTruthy(params.details);
+  if( !check.undefined( raw.details ) ){
+    clean.details = isTruthy( raw.details );
   } else {
-    clean.details = default_value;
+    clean.details = DEFAULT_DETAILS_BOOL;
   }
 
-  req.clean = clean;
-  
-  return {'error':false};
-
+  return messages;
 }
 
+// be lenient with 'truthy' values
 function isTruthy(val) {
-  if (typeof val === 'string') {
+  if( check.string( val ) ){
     return ['true', '1', 'yes', 'y'].indexOf(val) !== -1;
   }
 

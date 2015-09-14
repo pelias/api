@@ -1,32 +1,33 @@
-var isObject     = require('is-object');
-var query_parser = require('../helper/query_parser');
+
+var check = require('check-types'),
+    query_parser = require('../helper/query_parser');
 
 // validate texts, convert types and apply defaults
-function sanitize( req ){
-  req.clean = req.clean || {};
-  var params= req.query;
+function sanitize( raw, clean ){
 
-  // ensure the text params are a valid object
-  if( !isObject( params ) ){
-    params = {};
+  // error & warning messages
+  var messages = { errors: [], warnings: [] };
+
+  // invalid input 'text'
+  if( !check.unemptyString( raw.text ) ){
+    messages.errors.push('invalid param \'text\': text length, must be >0');
   }
 
-  // text text
-  if('string' !== typeof params.text || !params.text.length){
-    return {
-      'error': true,
-      'message': 'invalid param \'text\': text length, must be >0'
-    };
+  // valid input 'text'
+  else {
+
+    // valid text
+    clean.text = raw.text;
+
+    // parse text with query parser
+    clean.parsed_text = query_parser.get_parsed_address(clean.text);
+
+    // try to set layers from query parser results
+    clean.types = clean.layers || {};
+    clean.types.from_address_parsing = query_parser.get_layers(clean.text);
   }
 
-  req.clean.text = params.text;
-
-  req.clean.parsed_text = query_parser.get_parsed_address(params.text);
-
-  req.clean.types = req.clean.layers || {};
-  req.clean.types.from_address_parsing = query_parser.get_layers(params.text);
-
-  return { 'error': false };
+  return messages;
 }
 
 // export function
