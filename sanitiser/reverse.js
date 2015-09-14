@@ -6,7 +6,8 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       size: require('../sanitiser/_size'),
       details: require('../sanitiser/_details'),
       geo_reverse: require('../sanitiser/_geo_reverse'),
-      categories: require('../sanitiser/_categories')
+      categories: require('../sanitiser/_categories'),
+      boundary_country: require('../sanitiser/_boundary_country'),
     };
 
 var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
@@ -25,4 +26,3 @@ module.exports.middleware = function( req, res, next ){
     next();
   });
 };
-

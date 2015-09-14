@@ -4,7 +4,16 @@ module.exports = {
     'filtered': {
       'query': {
         'bool': {
-          'must': []
+          'must': [
+            {
+              'match': {
+                'alpha3': {
+                  'analyzer': 'standard',
+                  'query': 'ABC'
+                }
+              }
+            }
+          ]
         }
       },
       'filter': {

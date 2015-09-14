@@ -60,6 +60,20 @@ module.exports.tests.query = function(test, common) {
     });
     t.end();
   });
+
+  test('valid boundary.country reverse search', function(t) {
+    var query = generate({
+      lat: 29.49136, lon: -82.50622,
+      boundary: { country: 'ABC' }
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/reverse_with_boundary_country');
+
+    t.deepEqual(compiled, expected, 'valid reverse query with boundary.country');
+    t.end();
+  });
+
 };
 
 module.exports.all = function (tape, common) {

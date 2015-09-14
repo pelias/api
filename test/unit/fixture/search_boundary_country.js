@@ -5,23 +5,24 @@ module.exports = {
       'query': {
         'bool': {
           'must': [
-          {
-            'match': {
-              'alpha3': {
-                'analyzer': 'standard',
-                'query': 'ABC'
+            {
+              'match': {
+                'alpha3': {
+                  'analyzer': 'standard',
+                  'query': 'ABC'
+                }
+              }
+            },
+            {
+              'match': {
+                'name.default': {
+                  'query': 'test',
+                  'boost': 1,
+                  'analyzer': 'peliasOneEdgeGram'
+                }
               }
             }
-          },
-          {
-            'match': {
-              'name.default': {
-                'query': 'test',
-                'boost': 1,
-                'analyzer': 'peliasOneEdgeGram'
-              }
-            }
-          }],
+          ],
           'should': [{
             'match': {
               'phrase.default': {

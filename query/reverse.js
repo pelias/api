@@ -7,6 +7,9 @@ var peliasQuery = require('pelias-query'),
 //------------------------------
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
+// mandatory matches
+query.score( peliasQuery.view.boundary_country, 'must' );
+
 // scoring boost
 query.sort( peliasQuery.view.sort_distance );
 
@@ -46,6 +49,13 @@ function generateQuery( clean ){
       'boundary:circle:lat': clean.lat,
       'boundary:circle:lon': clean.lon,
       'boundary:circle:radius': radius + 'km'
+    });
+  }
+
+  // boundary country
+  if( clean.boundary && clean.boundary.country ){
+    vs.set({
+      'boundary:country': clean.boundary.country
     });
   }
 
