@@ -107,15 +107,13 @@ function geojsonifyPlace(details, place) {
     return warning('No doc or center_point property');
   }
 
-  var geocoding = {};
-
-  addMetaData(place, geocoding);
-  addDetails(details, place, geocoding);
-  addLabel(place, geocoding);
-
   var output = {};
 
-  output.geocoding = geocoding;
+  addMetaData(place, output);
+  addDetails(details, place, output);
+  addLabel(place, output);
+
+
   // map center_point for GeoJSON to work properly
   // these should not show up in the final feature properties
   output.lat = parseFloat(place.center_point.lat);
