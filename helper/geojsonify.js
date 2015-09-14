@@ -1,9 +1,8 @@
 
-var GeoJSON = require('geojson');
-var extent = require('geojson-extent');
-var outputGenerator = require('./outputGenerator');
-var logger = require('pelias-logger').get('api');
-
+var GeoJSON = require('geojson'),
+    extent = require('geojson-extent'),
+    outputGenerator = require('./outputGenerator'),
+    logger = require('pelias-logger').get('api');
 
 // Properties to be copied when details=true
 var DETAILS_PROPS = [

@@ -1,5 +1,6 @@
 
-var check = require('check-types'),
+var _ = require('lodash'),
+    check = require('check-types'),
     types = require('../query/types');
 
 var ID_DELIM = ':';
@@ -18,12 +19,7 @@ function sanitize( raw, clean ){
   var messages = { errors: [], warnings: [] };
 
   // 'raw.id' can be an array!?
-  var rawIds = check.array( raw.id ) ? raw.id : [ raw.id ];
-
-  // de-dupe ids
-  rawIds = rawIds.filter(function(item, pos) {
-    return rawIds.indexOf( item ) === pos;
-  });
+  var rawIds = check.array( raw.id ) ? _.unique( raw.id ) : [ raw.id ];
 
   // ensure all elements are valid non-empty strings
   rawIds = rawIds.filter( function( uc ){
@@ -60,7 +56,7 @@ function sanitize( raw, clean ){
       messages.errors.push( errorMessage( rawId ) );
     }
     // type text must be one of the types
-    if( types.indexOf( type ) === -1 ){
+    if( !_.contains( types, type ) ){
       messages.errors.push(
         errorMessage('type', type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']')
       );
