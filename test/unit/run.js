@@ -9,6 +9,7 @@ var tests = [
   require('./service/mget'),
   require('./service/search'),
   require('./sanitiser/_sources'),
+  require('./sanitiser/_boundary_country'),
   require('./sanitiser/search'),
   require('./sanitiser/_layers'),
   require('./sanitiser/reverse'),
