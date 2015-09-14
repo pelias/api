@@ -1,7 +1,8 @@
 /**
  * helper sanitiser methods for geo parameters
  */
-var util = require( 'util' );
+var util = require('util'),
+    check = require('check-types');
 
 /**
  * Parse and validate bbox parameter
@@ -13,7 +14,7 @@ var util = require( 'util' );
  * @param {object} clean
  */
 function sanitize_bbox( unclean, clean ) {
-  if( !unclean.bbox ) {
+  if( !check.unemptyString( unclean.bbox ) ) {
     return;
   }
 
