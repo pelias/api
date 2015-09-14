@@ -9,8 +9,8 @@ var util = require( 'util' );
  * bbox = left, bottom, right, top
  * bbox = min Longitude, min Latitude, max Longitude, max Latitude
  *
+ * @param {object} unclean
  * @param {object} clean
- * @param {string} param
  */
 function sanitize_bbox( unclean, clean ) {
   if( !unclean.bbox ) {
