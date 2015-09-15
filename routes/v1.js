@@ -4,6 +4,7 @@ var reverseQuery = require('../query/reverse');
 
 /** ----------------------- sanitisers ----------------------- **/
 var sanitisers = {
+  autocomplete: require('../sanitiser/autocomplete'),
   place: require('../sanitiser/place'),
   search: require('../sanitiser/search'),
   reverse: require('../sanitiser/reverse')
@@ -60,7 +61,7 @@ function addRoutes(app, peliasConfig) {
       postProc.sendJSON
     ]),
     autocomplete: createRouter([
-      sanitisers.search.middleware,
+      sanitisers.autocomplete.middleware,
       middleware.types,
       controllers.search(null, require('../query/autocomplete')),
       postProc.confidenceScores(peliasConfig),
