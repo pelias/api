@@ -1,17 +1,8 @@
 var search  = require('../../../sanitiser/search'),
-    _text  = require('../sanitiser/_text'),
     parser = require('../../../helper/query_parser'),
-    defaultParsed = _text.defaultParsed,
     sanitize = search.sanitize,
     middleware = search.middleware,
-    defaultError = 'invalid param \'text\': text length, must be >0',
-    defaultClean =  { text: 'test',
-                      types: {
-                      },
-                      size: 10,
-                      parsed_text: defaultParsed,
-                    };
-
+    defaultError = 'invalid param \'text\': text length, must be >0';
 // these are the default values you would expect when no input params are specified.
 // @todo: why is this different from $defaultClean?
 var emptyClean = { boundary: {}, private: false, size: 10, types: {} };
@@ -85,13 +76,13 @@ module.exports.tests.sanitize_text_with_delim = function(test, common) {
   test('valid texts with a comma', function(t) {
     texts.forEach( function( text ){
       var req = { query: { text: text } };
-      sanitize(req, function(){
-        var expected = JSON.parse(JSON.stringify( defaultClean ));
-        expected.text = text;
+      sanitize( req, function( ){
+        var expected_text = text;
 
-        expected.parsed_text = parser.get_parsed_address(text);
+        var expected_parsed_text = parser.get_parsed_address(text);
         t.equal(req.errors[0], undefined, 'no error');
-        t.equal(req.clean.parsed_text.name, expected.parsed_text.name, 'clean name set correctly');
+        t.equal(req.clean.parsed_text.name, expected_parsed_text.name, 'clean name set correctly');
+        t.equal(req.clean.text, expected_text, 'text should match');
 
       });
     });
@@ -164,11 +155,10 @@ module.exports.tests.sanitize_lon = function(test, common) {
   test('valid lon', function(t) {
     lons.valid.forEach( function( lon ){
       var req = { query: { text: 'test', 'focus.point.lat': 0, 'focus.point.lon': lon } };
-      sanitize(req, function(){
-        var expected = JSON.parse(JSON.stringify( defaultClean ));
-        expected.lon = parseFloat( lon );
+      sanitize( req, function(){
+        var expected_lon = parseFloat( lon );
         t.equal(req.errors[0], undefined, 'no error');
-        t.equal(req.clean.lon, expected.lon, 'clean set correctly (' + lon + ')');
+        t.deepEqual(req.clean.lon, expected_lon, 'clean set correctly (' + lon + ')');
       });
     });
     t.end();
