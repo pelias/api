@@ -1,7 +1,8 @@
 /**
  * helper sanitiser methods for geo parameters
  */
-var util = require( 'util' );
+var util = require('util'),
+    check = require('check-types');
 
 /**
  * Parse and validate bbox parameter
@@ -9,15 +10,15 @@ var util = require( 'util' );
  * bbox = left, bottom, right, top
  * bbox = min Longitude, min Latitude, max Longitude, max Latitude
  *
+ * @param {object} raw
  * @param {object} clean
- * @param {string} param
  */
-function sanitize_bbox( clean, param ) {
-  if( !param ) {
+function sanitize_bbox( raw, clean ) {
+  if( !check.unemptyString( raw.bbox ) ) {
     return;
   }
 
-  var bboxArr = param.split( ',' );
+  var bboxArr = raw.bbox.split( ',' );
 
   if( Array.isArray( bboxArr ) && bboxArr.length === 4 ) {
     var bbox = bboxArr.map(parseFloat);

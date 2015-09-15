@@ -1,13 +1,15 @@
-var _sanitize = require('../sanitiser/_sanitize'),
+
+var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
       id: require('../sanitiser/_id'),
-      details: require('../sanitiser/_details')
+      private: require('../sanitiser/_flag_bool')('private', false)
     };
 
-var sanitize = function(req, cb) { _sanitize(req, sanitizers, cb); };
+var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
 
 // export sanitize for testing
 module.exports.sanitize = sanitize;
+module.exports.sanitiser_list = sanitizers;
 
 // middleware
 module.exports.middleware = function( req, res, next ){
@@ -16,7 +18,6 @@ module.exports.middleware = function( req, res, next ){
       res.status(400); // 400 Bad Request
       return next(err);
     }
-    req.clean = clean;
     next();
   });
 };

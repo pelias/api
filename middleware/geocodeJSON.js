@@ -49,7 +49,7 @@ function convertToGeocodeJSON(peliasConfig, req, next) {
   req.results.geojson.geocoding.timestamp = new Date().getTime();
 
   // convert docs to geojson and merge with geocoding block
-  extend(req.results.geojson, geojsonify(req.results.data, req.clean));
+  extend(req.results.geojson, geojsonify(req.results.data));
 
   next();
 }

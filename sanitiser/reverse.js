@@ -1,20 +1,19 @@
-var _sanitize = require('../sanitiser/_sanitize'),
-    sanitiser = {
-      latlonzoom: require('../sanitiser/_geo_reverse'),
-      layers: require('../sanitiser/_layers'),
-      suorce: require('../sanitiser/_source'),
-      details: require('../sanitiser/_details'),
+
+var sanitizeAll = require('../sanitiser/sanitizeAll'),
+    sanitizers = {
+      layers: require('../sanitiser/_targets')('layers', require('../query/layers')),
+      sources: require('../sanitiser/_targets')('sources', require('../query/sources')),
       size: require('../sanitiser/_size'),
-      categories: function ( req ) {
-        var categories = require('../sanitiser/_categories');
-        return categories(req);
-      }
+      private: require('../sanitiser/_flag_bool')('private', false),
+      geo_reverse: require('../sanitiser/_geo_reverse'),
+      categories: require('../sanitiser/_categories')
     };
 
-var sanitize = function(req, cb) { _sanitize(req, sanitiser, cb); };
+var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
 
 // export sanitize for testing
 module.exports.sanitize = sanitize;
+module.exports.sanitiser_list = sanitizers;
 
 // middleware
 module.exports.middleware = function( req, res, next ){
@@ -23,7 +22,7 @@ module.exports.middleware = function( req, res, next ){
       res.status(400); // 400 Bad Request
       return next(err);
     }
-    req.clean = clean;
     next();
   });
 };
+

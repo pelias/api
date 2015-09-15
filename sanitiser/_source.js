@@ -1,44 +1,45 @@
-var isObject = require('is-object');
-var sources_map = require( '../query/sources' );
-var all_sources = Object.keys(sources_map);
 
-function sanitize( req ) {
-  req.clean = req.clean || {};
-  var params = req.query;
+var check = require('check-types'),
+    sources_map = require( '../query/sources' );
 
-  req.clean.types = req.clean.types || {};
+var ALL_SOURCES = Object.keys(sources_map),
+    ALL_SOURCES_JOINED = ALL_SOURCES.join(',');
 
-  // ensure the input params are a valid object
-  if( !isObject( params ) ){
-    params = {};
-  }
+function sanitize( raw, clean ) {
+
+  // error & warning messages
+  var messages = { errors: [], warnings: [] };
+
+  // init clean.types (if not already init)
+  clean.types = clean.types || {};
 
   // default case (no layers specified in GET params)
   // don't even set the from_layers key in this case
-  if('string' !== typeof params.source || !params.source.length){
-    return { error: false };
+  if( check.unemptyString( raw.source ) ){
+
+    var sources = raw.source.split(',');
+
+    var invalid_sources = sources.filter(function(source) {
+      return ALL_SOURCES.indexOf(source) === -1;
+    });
+
+    if( invalid_sources.length > 0 ){
+      invalid_sources.forEach( function( invalid ){
+        messages.errors.push('\'' + invalid + '\' is an invalid source parameter. Valid options: ' + ALL_SOURCES_JOINED);
+      });
+    }
+
+    else {
+      var types = sources.reduce(function(acc, source) {
+        return acc.concat(sources_map[source]);
+      }, []);
+
+      clean.types.from_source = types;
+    }
+
   }
 
-  var sources = params.source.split(',');
-
-  var invalid_sources = sources.filter(function(source) {
-    return all_sources.indexOf(source) === -1;
-  });
-
-  if (invalid_sources.length > 0) {
-    return {
-      error: true,
-      msg: '`' + invalid_sources[0] + '` is an invalid source parameter. Valid options: ' + all_sources.join(', ')
-    };
-  }
-
-  var types = sources.reduce(function(acc, source) {
-    return acc.concat(sources_map[source]);
-  }, []);
-
-  req.clean.types.from_source = types;
-
-  return { error: false };
+  return messages;
 }
 
 module.exports = sanitize;

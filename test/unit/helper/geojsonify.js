@@ -6,7 +6,7 @@ module.exports.tests = {};
 module.exports.tests.interface = function(test, common) {
   test('valid interface .search()', function(t) {
     t.equal(typeof geojsonify.search, 'function', 'search is a function');
-    t.equal(geojsonify.search.length, 2, 'accepts x arguments');
+    t.equal(geojsonify.search.length, 1, 'accepts x arguments');
     t.end();
   });
 };
@@ -28,7 +28,7 @@ module.exports.tests.earth = function(test, common) {
 
   test('earth', function(t) {
     t.doesNotThrow(function(){
-      geojsonify.search( earth, { details: true } );
+      geojsonify.search( earth );
     });
     t.end();
   });
@@ -219,97 +219,10 @@ module.exports.tests.search = function(test, common) {
     ]
   };
 
-  var truthy_params = [true, 1];
-
-  test('geojsonify.search(doc, true) with details', function(t) {
-    var json = geojsonify.search( input, { details: true } );
-    t.deepEqual(json, expected, 'all docs (with details) mapped');
-    t.end();
-  });
-
-  truthy_params.forEach(function(details) {
-    test('geojsonify.search(doc, '+ details +') with details', function(t) {
-      var json = geojsonify.search( input, { details: details } );
-      t.deepEqual(json, expected, 'all docs (with details) mapped');
-      t.end();
-    });
-  });
-
-  var no_details_expected = {
-    'type': 'FeatureCollection',
-    'bbox': [ -73.985656, 40.748432, -0.101795, 51.5337144 ],
-    'features': [
-      {
-        'type': 'Feature',
-        'geometry': {
-          'type': 'Point',
-          'coordinates': [
-            -0.1069716,
-            51.5337144
-          ]
-        },
-        'properties': {
-          'geocoding': {
-            'id': 'id1',
-            'layer': 'type1',
-            'source': 'type1',
-            'label': '\'Round Midnight Jazz and Blues Bar, test3, Angel'
-          }
-        }
-      },
-      {
-        'type': 'Feature',
-        'geometry': {
-          'type': 'Point',
-          'coordinates': [
-            -0.101795,
-            51.517806
-          ]
-        },
-        'properties': {
-          'geocoding': {
-            'id': 'id2',
-            'layer': 'type2',
-            'source': 'type2',
-            'label': 'Blues Cafe, test3, Smithfield'
-          }
-        }
-      },
-      {
-        'type': 'Feature',
-        'geometry': {
-          'type': 'Point',
-          'coordinates': [
-            -73.985656,
-            40.748432
-          ]
-        },
-        'properties': {
-          'geocoding': {
-            'id': '34633854',
-            'layer': 'venue',
-            'source': 'osm',
-            'label': 'Empire State Building, Manhattan, NY'
-          }
-        }
-      }
-    ]
-  };
-
-  test('geojsonify.search(doc) with no details (default)', function(t) {
+  test('geojsonify.search(doc)', function(t) {
     var json = geojsonify.search( input );
-    t.deepEqual(json, no_details_expected, 'all docs (with no details) mapped');
+    t.deepEqual(json, expected, 'all docs mapped');
     t.end();
-  });
-
-  var falsy_params = [false, undefined, null, 0, -1, 123, 'abc'];
-
-  falsy_params.forEach(function(details) {
-    test('geojsonify.search(doc, '+ details +') with no details', function(t) {
-      var json = geojsonify.search( input, { details: details } );
-      t.deepEqual(json, no_details_expected, 'all docs (with no details) mapped');
-      t.end();
-    });
   });
 };
 

@@ -5,7 +5,7 @@ var outputGenerator = require('./outputGenerator');
 var logger = require('pelias-logger').get('api');
 
 
-// Properties to be copied when details=true
+// Properties to be copied
 var DETAILS_PROPS = [
   'housenumber',
   'street',
@@ -79,14 +79,11 @@ function lookupLayer(src) {
   return src._type;
 }
 
-function geojsonifyPlaces( docs, params ){
-
-  var details = params ? params.details : {};
-  details = details === true || details === 1;
+function geojsonifyPlaces( docs ){
 
   // flatten & expand data for geojson conversion
   var geodata = docs
-    .map(geojsonifyPlace.bind(null, details))
+    .map(geojsonifyPlace)
     .filter( function( doc ){
       return !!doc;
     });
@@ -100,7 +97,7 @@ function geojsonifyPlaces( docs, params ){
   return geojson;
 }
 
-function geojsonifyPlace(details, place) {
+function geojsonifyPlace(place) {
 
   // something went very wrong
   if( !place || !place.hasOwnProperty( 'center_point' ) ) {
@@ -110,7 +107,7 @@ function geojsonifyPlace(details, place) {
   var geocoding = {};
 
   addMetaData(place, geocoding);
-  addDetails(details, place, geocoding);
+  addDetails(place, geocoding);
   addLabel(place, geocoding);
 
   var output = {};
@@ -125,20 +122,17 @@ function geojsonifyPlace(details, place) {
 }
 
 /**
- * Add details properties when needed
+ * Add details properties
  *
- * @param {boolean} details
  * @param {object} src
  * @param {object} dst
  */
-function addDetails(details, src, dst) {
-  if (details) {
-    // map name
-    if( !src.name || !src.name.default ) { return warning(src); }
-    dst.name = src.name.default;
+function addDetails(src, dst) {
+  // map name
+  if( !src.name || !src.name.default ) { return warning(src); }
+  dst.name = src.name.default;
 
-    copyProperties(src, DETAILS_PROPS, dst);
-  }
+  copyProperties(src, DETAILS_PROPS, dst);
 }
 
 /**

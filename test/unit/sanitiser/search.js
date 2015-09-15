@@ -5,13 +5,11 @@ var search  = require('../../../sanitiser/search'),
     defaultParsed = _text.defaultParsed,
     _sanitize = search.sanitize,
     middleware = search.middleware,
-    delim = ',',
     defaultError = 'invalid param \'text\': text length, must be >0',
     defaultClean =  { text: 'test',
                       types: {
                       },
                       size: 10,
-                      details: true,
                       parsed_text: defaultParsed,
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
@@ -26,7 +24,15 @@ module.exports.tests.interface = function(test, common) {
   });
   test('middleware interface', function(t) {
     t.equal(typeof middleware, 'function', 'middleware is a function');
-    t.equal(middleware.length, 3, 'sanitizee has a valid middleware');
+    t.equal(middleware.length, 3, 'sanitize has a valid middleware');
+    t.end();
+  });
+};
+
+module.exports.tests.sanitisers = function(test, common) {
+  test('check sanitiser list', function (t) {
+    var expected = ['text', 'size', 'layers', 'sources', 'private', 'geo_search', 'categories' ];
+    t.deepEqual(Object.keys(search.sanitiser_list), expected);
     t.end();
   });
 };
@@ -89,7 +95,7 @@ module.exports.tests.sanitize_text_with_delim = function(test, common) {
 module.exports.tests.sanitize_private_no_value = function(test, common) {
   test('default private should be set to true', function(t) {
     sanitize({ text: 'test' }, function( err, clean ){
-      t.equal(clean.private, true, 'private set to true');
+      t.equal(clean.private, false, 'private set to false');
     });
     t.end();
   });
@@ -261,78 +267,40 @@ module.exports.tests.sanitize_size = function(test, common) {
   });
 };
 
-module.exports.tests.sanitize_layers = function(test, common) {
-  test('unspecified', function(t) {
-    sanitize({ layers: undefined, text: 'test' }, function( err, clean ){
-      t.deepEqual(clean.types.from_layers, defaultClean.types.from_layers, 'default layers set');
-      t.end();
+module.exports.tests.sanitize_private = function(test, common) {
+  var invalid_values = [null, -1, 123, NaN, 'abc'];
+  invalid_values.forEach(function(value) {
+    test('invalid private param ' + value, function(t) {
+      sanitize({ text: 'test', lat: 0, lon: 0, 'private': value }, function( err, clean ){
+        t.equal(clean.private, false, 'default private set (to false)');
+        t.end();
+      });
     });
   });
-  test('invalid layer', function(t) {
-    sanitize({ layers: 'test_layer', text: 'test' }, function( err, clean ){
-      var msg = 'invalid param \'layers\': must be one or more of ';
-      t.true(err.match(msg), 'invalid layer requested');
-      t.true(err.length > msg.length, 'invalid error message');
-      t.end();
+
+  var valid_values = ['true', true, 1, '1'];
+  valid_values.forEach(function(value) {
+    test('valid private ' + value, function(t) {
+      sanitize({ text: 'test', 'private': value}, function( err, clean ){
+        t.equal(clean.private, true, 'private set to true');
+        t.end();
+      });
     });
   });
-  test('poi (alias) layer', function(t) {
-    var poi_layers = ['geoname','osmnode','osmway'];
-    sanitize({ layers: 'poi', text: 'test' }, function( err, clean ){
-      t.deepEqual(clean.types.from_layers, poi_layers, 'poi layers set');
-      t.end();
+
+  var valid_false_values = ['false', false, 0, '0'];
+  valid_false_values.forEach(function(value) {
+    test('test setting false explicitly ' + value, function(t) {
+      sanitize({ text: 'test', 'private': value }, function( err, clean ){
+        t.equal(clean.private, false, 'private set to false');
+        t.end();
+      });
     });
   });
-  test('admin (alias) layer', function(t) {
-    var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
-    sanitize({ layers: 'admin', text: 'test' }, function( err, clean ){
-      t.deepEqual(clean.types.from_layers, admin_layers, 'admin layers set');
-      t.end();
-    });
-  });
-  test('address (alias) layer', function(t) {
-    var address_layers = ['osmaddress','openaddresses'];
-    sanitize({ layers: 'address', text: 'test' }, function( err, clean ){
-      t.deepEqual(clean.types.from_layers, address_layers, 'types from layers set');
-      t.deepEqual(clean.types.from_address_parser, _text.allLayers, 'address parser uses default layers');
-      t.end();
-    });
-  });
-  test('poi alias layer plus regular layers', function(t) {
-    var poi_layers = ['geoname','osmnode','osmway'];
-    var reg_layers = ['admin0', 'admin1'];
-    sanitize({ layers: 'poi,admin0,admin1', text: 'test' }, function( err, clean ){
-      t.deepEqual(clean.types.from_layers, reg_layers.concat(poi_layers), 'poi + regular layers');
-      t.end();
-    });
-  });
-  test('admin alias layer plus regular layers', function(t) {
-    var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
-    var reg_layers   = ['geoname', 'osmway'];
-    sanitize({ layers: 'admin,geoname,osmway', text: 'test' }, function( err, clean ){
-      t.deepEqual(clean.types.from_layers, reg_layers.concat(admin_layers), 'admin + regular layers set');
-      t.end();
-    });
-  });
-  test('address alias layer plus regular layers', function(t) {
-    var address_layers = ['osmaddress','openaddresses'];
-    var reg_layers   = ['geoname', 'osmway'];
-    sanitize({ layers: 'address,geoname,osmway', text: 'test' }, function( err, clean ){
-      t.deepEqual(clean.types.from_layers, reg_layers.concat(address_layers), 'address + regular layers set');
-      t.end();
-    });
-  });
-  test('alias layer plus regular layers (no duplicates)', function(t) {
-    var poi_layers = ['geoname','osmnode','osmway'];
-    sanitize({ layers: 'poi,geoname,osmnode', text: 'test' }, function( err, clean ){
-      t.deepEqual(clean.types.from_layers, poi_layers, 'poi layers found (no duplicates)');
-      t.end();
-    });
-  });
-  test('multiple alias layers (no duplicates)', function(t) {
-    var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood','locality','local_admin'];
-    sanitize({ layers: 'poi,admin', text: 'test' }, function( err, clean ){
-      t.deepEqual(clean.types.from_layers, alias_layers, 'all layers found (no duplicates)');
+
+  test('test default behavior', function(t) {
+    sanitize({ text: 'test' }, function( err, clean ){
+      t.equal(clean.private, false, 'private set to false');
       t.end();
     });
   });

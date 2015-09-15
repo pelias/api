@@ -19,7 +19,8 @@ var middleware = {
 var controllers     = {
   mdToHTML: require('../controller/markdownToHtml'),
   place: require('../controller/place'),
-  search: require('../controller/search')
+  search: require('../controller/search'),
+  status: require('../controller/status')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -69,6 +70,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     reverse: createRouter([
       sanitisers.reverse.middleware,
+      middleware.types,
       controllers.search(undefined, reverseQuery),
       // TODO: add confidence scores
       postProc.distances(),
@@ -82,6 +84,9 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig),
       postProc.sendJSON
+    ]),
+    status: createRouter([
+      controllers.status
     ])
   };
 
@@ -96,6 +101,8 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'search',       routers.search );
   app.post( base + 'search',       routers.search );
   app.get ( base + 'reverse',      routers.reverse );
+
+  app.get (        '/status',      routers.status );
 }
 
 /**

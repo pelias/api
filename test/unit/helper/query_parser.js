@@ -1,6 +1,6 @@
 
 var parser = require('../../../helper/query_parser');
-var get_layers = require('../../../helper/layers');
+var layers_map = require('../../../query/layers');
 
 module.exports.tests = {};
 
@@ -43,7 +43,7 @@ module.exports.tests.parse_three_chars_or_less = function(test, common) {
   var testParse = function(query) {
     test('query length < 3 (' + query + ')', function(t) {
       var address = parser.get_parsed_address(query);
-      var target_layer = get_layers(['admin']);
+      var target_layer = layers_map.coarse;
       var layers = parser.get_layers(query);
 
       t.equal(typeof address, 'object', 'valid object');
@@ -67,7 +67,7 @@ module.exports.tests.parse_one_or_more_tokens = function(test, common) {
   var testParse = function(query, parse_address) {
     test('query with one or more tokens (' + query + ')', function(t) {
       var address = parser.get_parsed_address(query);
-      var target_layer = get_layers(['admin', 'poi']);
+      var target_layer = layers_map.coarse.concat(layers_map.venue);
       var layers = parser.get_layers(query);
 
       t.equal(typeof address, 'object', 'valid object');
@@ -119,7 +119,6 @@ module.exports.tests.parse_address = function(test, common) {
       query_string = query_string.substring(1);
 
       var address = parser.get_parsed_address(query_string);
-      var non_address_layer = get_layers(['admin', 'poi']);
 
       t.equal(typeof address, 'object', 'valid object for the address ('+query_string+')');
 

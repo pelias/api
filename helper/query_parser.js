@@ -1,25 +1,19 @@
 
 var parser     = require('addressit');
 var extend     = require('extend');
-var get_layers_helper = require('../helper/layers');
+var layers_map = require('../query/layers');
 var delim      = ',';
 
 module.exports = {};
 
 module.exports.get_layers = function get_layers(query) {
-  var tokenized = query.split(/[ ,]+/);
-  var hasNumber = /\d/.test(query);
-
   if (query.length <= 3 ) {
     // no address parsing required
-    return get_layers_helper(['admin']);
+    return layers_map.coarse;
   }
 };
 
 module.exports.get_parsed_address = function get_parsed_address(query) {
-
-  var tokenized = query.split(/[ ,]+/);
-  var hasNumber = /\d/.test(query);
 
   var getAdminPartsBySplittingOnDelim = function(query) {
     // naive approach - for admin matching during query time
