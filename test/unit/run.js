@@ -11,6 +11,7 @@ var tests = [
   require('./sanitiser/_flag_bool'),
   require('./sanitiser/autocomplete'),
   require('./sanitiser/_sources'),
+  require('./sanitiser/_boundary_country'),
   require('./sanitiser/search'),
   require('./sanitiser/_layers'),
   require('./sanitiser/reverse'),

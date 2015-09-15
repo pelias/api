@@ -9,7 +9,8 @@ var reverse  = require('../../../sanitiser/reverse'),
                       lon: 0,
                       size: 10,
                       private: false,
-                      categories: []
+                      categories: [],
+                      boundary: { }
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
@@ -30,7 +31,7 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
-    var expected = ['layers', 'sources', 'size', 'private', 'geo_reverse', 'categories'];
+    var expected = ['layers', 'sources', 'size', 'private', 'geo_reverse', 'categories', 'boundary_country'];
     t.deepEqual(Object.keys(reverse.sanitiser_list), expected);
     t.end();
   });
@@ -57,7 +58,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lat = parseFloat( lat );
         t.equal(err, undefined, 'no error');
-        t.deepEqual(clean, expected, 'clean set correctly (' + lat + ')');
+        t.equal(clean.lat, parseFloat(lat), 'clean set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -84,7 +85,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lon = parseFloat( lon );
         t.equal(err, undefined, 'no error');
-        t.deepEqual(clean, expected, 'clean set correctly (' + lon + ')');
+        t.equal(clean.lon, parseFloat(lon), 'clean set correctly (' + lon + ')');
       });
     });
     t.end();

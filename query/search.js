@@ -98,7 +98,6 @@ function generateQuery( clean ){
   }
 
   // boundary country
-  // @todo: change these to the correct request variable names
   if( clean.boundary && clean.boundary.country ){
     vs.set({
       'boundary:country': clean.boundary.country
