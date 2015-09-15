@@ -10,7 +10,7 @@ var place  = require('../../../sanitiser/place'),
     defaultMissingTypeError = function(input) {
       var type = input.split(delimiter)[0];
       return type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']'; },
-    defaultClean = { ids: [ { id: '123', type: 'geoname' } ], details: true },
+    defaultClean = { ids: [ { id: '123', type: 'geoname' } ], private: false },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); },
     inputs = {
       valid: [ 'geoname:1', 'osmnode:2', 'admin0:53', 'osmway:44', 'geoname:5' ],
@@ -56,7 +56,7 @@ module.exports.tests.sanitize_id = function(test, common) {
   test('valid input', function(t) {
     inputs.valid.forEach( function( input ){
       var input_parts = input.split(delimiter);
-      var expected = { ids: [ { id: input_parts[1], type: input_parts[0] } ], details: true };
+      var expected = { ids: [ { id: input_parts[1], type: input_parts[0] } ], private: false };
       sanitize({ id: input }, function( err, clean ){
         t.equal(err, undefined, 'no error (' + input + ')' );
         t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
@@ -94,7 +94,7 @@ module.exports.tests.sanitize_ids = function(test, common) {
       var input_parts = input.split(delimiter);
       expected.ids.push({ id: input_parts[1], type: input_parts[0] });
     });
-    expected.details = true;
+    expected.private = false;
     sanitize({ id: inputs.valid }, function( err, clean ){
       t.equal(err, undefined, 'no error' );
       t.deepEqual(clean, expected, 'clean set correctly');
@@ -103,32 +103,32 @@ module.exports.tests.sanitize_ids = function(test, common) {
   });
 };
 
-module.exports.tests.sanitize_details = function(test, common) {
+module.exports.tests.sanitize_private = function(test, common) {
   var invalid_values = [null, -1, 123, NaN, 'abc'];
-  invalid_values.forEach(function(details) {
-    test('invalid details param ' + details, function(t) {
-      sanitize({ id:'geoname:123', details: details }, function( err, clean ){
-        t.equal(clean.details, false, 'default details set (to false)');
+  invalid_values.forEach(function(value) {
+    test('invalid private param ' + value, function(t) {
+      sanitize({ id:'geoname:123', 'private': value}, function( err, clean ){
+        t.equal(clean.private, false, 'default private set (to false)');
         t.end();
       });
     });
   });
 
   var valid_values = ['true', true, 1];
-  valid_values.forEach(function(details) {
-    test('valid details param ' + details, function(t) {
-      sanitize({ id:'geoname:123', details: details }, function( err, clean ){
-        t.equal(clean.details, true, 'details set to true');
+  valid_values.forEach(function(value) {
+    test('valid private param ' + value, function(t) {
+      sanitize({ id:'geoname:123', 'private': value }, function( err, clean ){
+        t.equal(clean.private, true, 'private set to true');
         t.end();
       });
     });
   });
 
   var valid_false_values = ['false', false, 0];
-  valid_false_values.forEach(function(details) {
-    test('test setting false explicitly ' + details, function(t) {
-      sanitize({ id:'geoname:123', details: details }, function( err, clean ){
-        t.equal(clean.details, false, 'details set to false');
+  valid_false_values.forEach(function(value) {
+    test('test setting false explicitly ' + value, function(t) {
+      sanitize({ id:'geoname:123', 'private': value }, function( err, clean ){
+        t.equal(clean.private, false, 'private set to false');
         t.end();
       });
     });
@@ -136,14 +136,14 @@ module.exports.tests.sanitize_details = function(test, common) {
 
   test('test default behavior', function(t) {
     sanitize({ id:'geoname:123' }, function( err, clean ){
-      t.equal(clean.details, true, 'details set to true');
+      t.equal(clean.private, false, 'private set to false');
       t.end();
     });
   });
 };
 
 module.exports.tests.de_dupe = function(test, common) {
-  var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], details: true };
+  var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], private: false };
   test('duplicate ids', function(t) {
     sanitize( { id: ['geoname:1', 'osmnode:2', 'geoname:1'] }, function( err, clean ){
       t.equal(err, undefined, 'no error' );

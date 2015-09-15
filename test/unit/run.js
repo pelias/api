@@ -8,6 +8,7 @@ var tests = [
   require('./controller/search'),
   require('./service/mget'),
   require('./service/search'),
+  require('./sanitiser/_flag_bool'),
   require('./sanitiser/_sources'),
   require('./sanitiser/search'),
   require('./sanitiser/_layers'),

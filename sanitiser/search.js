@@ -5,7 +5,7 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       size: require('../sanitiser/_size'),
       layers: require('../sanitiser/_targets')('layers', require( '../query/layers' )),
       sources: require('../sanitiser/_targets')('sources', require( '../query/sources' )),
-      details: require('../sanitiser/_details'),
+      private: require('../sanitiser/_flag_bool')('private', false),
       geo_search: require('../sanitiser/_geo_search'),
       categories: require('../sanitiser/_categories')
     };

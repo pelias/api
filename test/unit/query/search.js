@@ -89,7 +89,6 @@ module.exports.tests.query = function(test, common) {
       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
       size: 10,
-      details: true,
       parsed_text: parser.get_parsed_address(address),
     });
 
@@ -107,7 +106,6 @@ module.exports.tests.query = function(test, common) {
       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
       size: 10,
-      details: true,
       parsed_text: parser.get_parsed_address(partial_address),
     });
 
@@ -125,7 +123,6 @@ module.exports.tests.query = function(test, common) {
       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
         'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
       size: 10,
-      details: true,
       parsed_text: parser.get_parsed_address(partial_address),
     });
 

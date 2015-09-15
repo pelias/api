@@ -8,7 +8,7 @@ var reverse  = require('../../../sanitiser/reverse'),
                       },
                       lon: 0,
                       size: 10,
-                      details: true,
+                      private: false,
                       categories: []
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
@@ -30,7 +30,7 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
-    var expected = ['layers', 'sources', 'size', 'details', 'geo_reverse', 'categories'];
+    var expected = ['layers', 'sources', 'size', 'private', 'geo_reverse', 'categories'];
     t.deepEqual(Object.keys(reverse.sanitiser_list), expected);
     t.end();
   });
@@ -122,22 +122,32 @@ module.exports.tests.sanitize_size = function(test, common) {
   });
 };
 
-module.exports.tests.sanitize_details = function(test, common) {
+module.exports.tests.sanitize_private = function(test, common) {
   var invalid_values = [null, -1, 123, NaN, 'abc'];
-  invalid_values.forEach(function(details) {
-    test('invalid details param ' + details, function(t) {
-      sanitize({ 'point.lat': 0, 'point.lon': 0, details: details }, function( err, clean ){
-        t.equal(clean.details, false, 'details set to false');
+  invalid_values.forEach(function(value) {
+    test('invalid private param ' + value, function(t) {
+      sanitize({ 'point.lat': 0, 'point.lon': 0, 'private': value}, function( err, clean ){
+        t.equal(clean.private, false, 'default private set (to false)');
         t.end();
       });
     });
   });
 
-  var valid_values = [true, 'true', 1, '1'];
-  valid_values.forEach(function(details) {
-    test('valid details param ' + details, function(t) {
-      sanitize({ 'point.lat': 0, 'point.lon': 0, details: details }, function( err, clean ){
-        t.equal(clean.details, true, 'details set to true');
+  var valid_values = ['true', true, 1, '1'];
+  valid_values.forEach(function(value) {
+    test('valid private param ' + value, function(t) {
+      sanitize({ 'point.lat': 0, 'point.lon': 0, 'private': value }, function( err, clean ){
+        t.equal(clean.private, true, 'private set to true');
+        t.end();
+      });
+    });
+  });
+
+  var valid_false_values = ['false', false, 0];
+  valid_false_values.forEach(function(value) {
+    test('test setting false explicitly ' + value, function(t) {
+      sanitize({ 'point.lat': 0, 'point.lon': 0, 'private': value }, function( err, clean ){
+        t.equal(clean.private, false, 'private set to false');
         t.end();
       });
     });
@@ -145,18 +155,8 @@ module.exports.tests.sanitize_details = function(test, common) {
 
   test('test default behavior', function(t) {
     sanitize({ 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
-      t.equal(clean.details, true, 'details set to true');
+      t.equal(clean.private, false, 'private set to false');
       t.end();
-    });
-  });
-
-  var valid_false_values = ['false', false, 0, '0'];
-  valid_false_values.forEach(function(details) {
-    test('test setting false explicitly ' + details, function(t) {
-      sanitize({ 'point.lat': 0, 'point.lon': 0, details: details }, function( err, clean ){
-        t.equal(clean.details, false, 'details set to false');
-        t.end();
-      });
     });
   });
 };

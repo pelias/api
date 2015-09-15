@@ -2,7 +2,7 @@
 var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
       id: require('../sanitiser/_id'),
-      details: require('../sanitiser/_details')
+      private: require('../sanitiser/_flag_bool')('private', false)
     };
 
 var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
