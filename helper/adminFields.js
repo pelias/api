@@ -1,5 +1,7 @@
-var peliasSchema = require('pelias-schema');
-var peliasLogger = require( 'pelias-logger' ).get( 'api' );
+
+var _ = require('lodash'),
+    peliasSchema = require('pelias-schema'),
+    peliasLogger = require( 'pelias-logger' ).get( 'api' );
 
 var ADMIN_FIELDS = [
   'admin0',
@@ -29,7 +31,7 @@ function getAvailableAdminFields(schema, expectedFields, logger) {
 
   // check if expected fields are actually in current schema
   var available = expectedFields.filter(function (field) {
-    return (actualFields.indexOf(field) !== -1);
+    return _.contains( actualFields, field );
   });
 
   if (available.length === 0) {

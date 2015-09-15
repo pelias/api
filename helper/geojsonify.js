@@ -1,9 +1,8 @@
 
-var GeoJSON = require('geojson');
-var extent = require('geojson-extent');
-var outputGenerator = require('./outputGenerator');
-var logger = require('pelias-logger').get('api');
-
+var GeoJSON = require('geojson'),
+    extent = require('geojson-extent'),
+    outputGenerator = require('./outputGenerator'),
+    logger = require('pelias-logger').get('api');
 
 // Properties to be copied
 var DETAILS_PROPS = [
@@ -104,15 +103,13 @@ function geojsonifyPlace(place) {
     return warning('No doc or center_point property');
   }
 
-  var geocoding = {};
-
-  addMetaData(place, geocoding);
-  addDetails(place, geocoding);
-  addLabel(place, geocoding);
-
   var output = {};
 
-  output.geocoding = geocoding;
+  addMetaData(place, output);
+  addDetails(place, output);
+  addLabel(place, output);
+
+
   // map center_point for GeoJSON to work properly
   // these should not show up in the final feature properties
   output.lat = parseFloat(place.center_point.lat);

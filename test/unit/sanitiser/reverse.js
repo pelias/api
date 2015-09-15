@@ -133,7 +133,7 @@ module.exports.tests.sanitize_private = function(test, common) {
     });
   });
 
-  var valid_values = ['true', true, 1];
+  var valid_values = ['true', true, 1, '1'];
   valid_values.forEach(function(value) {
     test('valid private param ' + value, function(t) {
       sanitize({ 'point.lat': 0, 'point.lon': 0, 'private': value }, function( err, clean ){
