@@ -12,6 +12,7 @@ if( peliasConfig.accessLog ){
 
 app.use( require('./middleware/headers') );
 app.use( require('./middleware/cors') );
+app.use( require('./middleware/options') );
 app.use( require('./middleware/jsonp') );
 
 /** ----------------------- routes ----------------------- **/
