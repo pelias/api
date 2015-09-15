@@ -10,7 +10,7 @@ var reverse  = require('../../../sanitiser/reverse'),
                       size: 10,
                       details: true,
                       categories: [],
-                      boundary: { country: undefined }
+                      boundary: { }
                     },
     sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
 
