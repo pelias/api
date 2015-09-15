@@ -21,7 +21,7 @@ module.exports.tests.sanitize = function(test, common) {
     };
     var is_required = true;
     var all_required = true;
-    
+
     sanitize.sanitize_boundary_circle(clean, params, is_required, all_required);
     t.equal(clean.boundary_circle_lat, params['boundary.circle.lat'], 'lat approved');
     t.equal(clean.boundary_circle_lon, params['boundary.circle.lon'], 'lon approved');

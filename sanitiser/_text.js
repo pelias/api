@@ -1,4 +1,3 @@
-
 var check = require('check-types'),
     query_parser = require('../helper/query_parser');
 

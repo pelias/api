@@ -1,4 +1,3 @@
-
 var search  = require('../../../sanitiser/search'),
     _text  = require('../sanitiser/_text'),
     parser = require('../../../helper/query_parser'),

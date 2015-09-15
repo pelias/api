@@ -1,4 +1,3 @@
-
 var geo_common = require ('./_geo_common');
 var LAT_LON_IS_REQUIRED = false;
 

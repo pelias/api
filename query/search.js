@@ -1,4 +1,3 @@
-
 var peliasQuery = require('pelias-query'),
     defaults = require('./defaults'),
     textParser = require('./text_parser');
