@@ -12,11 +12,11 @@ function sanitize(raw, clean) {
     var country = raw['boundary.country'];
 
     if (!check.string(country)) {
-      messages.warnings.push('boundary.country is not a string');
+      messages.errors.push('boundary.country is not a string');
       delete clean.boundary.country;
     }
     else if (!containsIsoCode(country.toUpperCase())) {
-      messages.warnings.push(country + ' is not a valid ISO2/ISO3 country code');
+      messages.errors.push(country + ' is not a valid ISO2/ISO3 country code');
       delete clean.boundary.country;
     }
     else {

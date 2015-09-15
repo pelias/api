@@ -26,7 +26,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     var clean = {};
     var errorsAndWarnings = sanitize(raw, clean);
     t.equals(clean.boundary.country, undefined, 'should be undefined');
-    t.deepEquals(errorsAndWarnings, { errors: [], warnings: ['boundary.country is not a string'] }, 'non-string country warning');
+    t.deepEquals(errorsAndWarnings, { errors: ['boundary.country is not a string'], warnings: [] }, 'non-string country warning');
     t.end();
   });
 
@@ -53,7 +53,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     var clean = {};
     var errorsAndWarnings = sanitize(raw, clean);
     t.equals(clean.boundary.country, undefined, 'should be undefined');
-    t.deepEquals(errorsAndWarnings, { errors: [], warnings: ['zq is not a valid ISO2/ISO3 country code'] }, 'country not found warning`');
+    t.deepEquals(errorsAndWarnings, { errors: ['zq is not a valid ISO2/ISO3 country code'], warnings: [] }, 'country not found warning`');
     t.end();
   });
 
@@ -62,7 +62,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     var clean = {};
     var errorsAndWarnings = sanitize(raw, clean);
     t.equals(clean.boundary.country, undefined, 'should be undefined');
-    t.deepEquals(errorsAndWarnings, { errors: [], warnings: ['zqx is not a valid ISO2/ISO3 country code'] }, 'country not found warning`');
+    t.deepEquals(errorsAndWarnings, { errors: ['zqx is not a valid ISO2/ISO3 country code'], warnings: [] }, 'country not found warning`');
     t.end();
   });
 
