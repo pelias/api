@@ -58,10 +58,10 @@ function generateQuery( clean ){
   }
 
   // focus point
-  if( clean.lat && clean.lon ){
+  if( clean['focus.point.lat'] && clean['focus.point.lon'] ){
     vs.set({
-      'focus:point:lat': clean.lat,
-      'focus:point:lon': clean.lon
+      'focus:point:lat': clean['focus.point.lat'],
+      'focus:point:lon': clean['focus.point.lon']
     });
   }
 

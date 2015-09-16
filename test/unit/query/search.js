@@ -16,7 +16,7 @@ module.exports.tests.query = function(test, common) {
   test('valid search + focus + bbox', function(t) {
     var query = generate({
       text: 'test', size: 10,
-      lat: 29.49136, lon: -82.50622,
+      'focus.point.lat': 29.49136, 'focus.point.lon': -82.50622,
       bbox: {
         top: 47.47,
         right: -61.84,
@@ -71,7 +71,7 @@ module.exports.tests.query = function(test, common) {
   test('search search + focus', function(t) {
     var query = generate({
       text: 'test', size: 10,
-      lat: 29.49136, lon: -82.50622,
+      'focus.point.lat': 29.49136, 'focus.point.lon': -82.50622,
       layers: ['test']
     });
 
