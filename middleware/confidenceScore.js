@@ -23,17 +23,17 @@ function setup(peliasConfig) {
 
 function computeScores(req, res, next) {
   // do nothing if no result data set
-  if (!req.results || !req.results.data || !req.results.meta) {
+  if (!res || !res.data || !res.meta) {
     return next();
   }
 
   // compute standard deviation and mean from all scores
-  var scores = req.results.meta.scores;
+  var scores = res.meta.scores;
   var stdev = computeStandardDeviation(scores);
   var mean = stats.mean(scores);
 
   // loop through data items and determine confidence scores
-  req.results.data = req.results.data.map(computeConfidenceScore.bind(null, req, mean, stdev));
+  res.data = res.data.map(computeConfidenceScore.bind(null, req, mean, stdev));
 
   next();
 }

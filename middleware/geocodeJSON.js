@@ -6,50 +6,50 @@ function setup(peliasConfig) {
   peliasConfig = peliasConfig || require( 'pelias-config' ).generate().api;
   
   function middleware(req, res, next) {
-    return convertToGeocodeJSON(peliasConfig, req, next);
+    return convertToGeocodeJSON(peliasConfig, req, res, next);
   }
 
   return middleware;
 }
 
-function convertToGeocodeJSON(peliasConfig, req, next) {
+function convertToGeocodeJSON(peliasConfig, req, res, next) {
 
   // do nothing if no result data set
-  if (!req.results || !req.results.data) {
+  if (!res || !res.data) {
     return next();
   }
 
-  req.results.geojson = { geocoding: {} };
+  res.body = { geocoding: {} };
 
   // REQUIRED. A semver.org compliant version number. Describes the version of
   // the GeocodeJSON spec that is implemented by this instance.
-  req.results.geojson.geocoding.version = '0.1';
+  res.body.geocoding.version = '0.1';
 
   // OPTIONAL. Default: null. The attribution of the data. In case of multiple sources,
   // and then multiple attributions, can be an object with one key by source.
   // Can be a URI on the server, which outlines attribution details.
-  req.results.geojson.geocoding.attribution = peliasConfig.host + 'attribution';
+  res.body.geocoding.attribution = peliasConfig.host + 'attribution';
 
   // OPTIONAL. Default: null. The query that has been issued to trigger the
   // search.
   // Freeform object.
   // This is the equivalent of how the engine interpreted the incoming request.
   // Helpful for debugging and understanding how the input impacts results.
-  req.results.geojson.geocoding.query = req.clean;
+  res.body.geocoding.query = req.clean;
 
   // OPTIONAL. Warnings and errors.
-  addMessages(req.results, 'warnings', req.results.geojson.geocoding);
-  addMessages(req.results, 'errors', req.results.geojson.geocoding);
+  addMessages(res, 'warnings', res.body.geocoding);
+  addMessages(res, 'errors', res.body.geocoding);
 
   // OPTIONAL
   // Freeform
-  addEngine(peliasConfig, req.results.geojson.geocoding);
+  addEngine(peliasConfig, res.body.geocoding);
 
   // response envelope
-  req.results.geojson.geocoding.timestamp = new Date().getTime();
+  res.body.geocoding.timestamp = new Date().getTime();
 
   // convert docs to geojson and merge with geocoding block
-  extend(req.results.geojson, geojsonify(req.results.data));
+  extend(res.body, geojsonify(res.data));
 
   next();
 }
