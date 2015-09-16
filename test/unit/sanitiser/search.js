@@ -3,7 +3,7 @@ var search  = require('../../../sanitiser/search'),
     _text  = require('../sanitiser/_text'),
     parser = require('../../../helper/query_parser'),
     defaultParsed = _text.defaultParsed,
-    _sanitize = search.sanitize,
+    sanitize = search.sanitize,
     middleware = search.middleware,
     defaultError = 'invalid param \'text\': text length, must be >0',
     defaultClean =  { text: 'test',
@@ -11,8 +11,11 @@ var search  = require('../../../sanitiser/search'),
                       },
                       size: 10,
                       parsed_text: defaultParsed,
-                    },
-    sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
+                    };
+
+// these are the default values you would expect when no input params are specified.
+// @todo: why is this different from $defaultClean?
+var emptyClean = { boundary: {}, categories: [], private: false, size: 10, types: {} };
 
 module.exports.tests = {};
 
@@ -41,9 +44,10 @@ module.exports.tests.sanitize_invalid_text = function(test, common) {
   test('invalid text', function(t) {
     var invalid = [ '', 100, null, undefined, new Date() ];
     invalid.forEach( function( text ){
-      sanitize({ text: text }, function( err, clean ){
-        t.equal(err, 'invalid param \'text\': text length, must be >0', text + ' is an invalid text');
-        t.equal(clean, undefined, 'clean not set');
+      var req = { query: { text: text } };
+      sanitize(req, function(){
+        t.equal(req.errors[0], 'invalid param \'text\': text length, must be >0', text + ' is an invalid text');
+        t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
       });
     });
     t.end();
@@ -52,22 +56,25 @@ module.exports.tests.sanitize_invalid_text = function(test, common) {
 
 module.exports.tests.sanitise_valid_text = function(test, common) {
   test('valid short text', function(t) {
-    sanitize({ text: 'a' }, function( err, clean ){
-      t.equal(err, undefined, 'no error');
+    var req = { query: { text: 'a' } };
+    sanitize(req, function(){
+      t.equal(req.errors[0], undefined, 'no error');
     });
     t.end();
   });
 
   test('valid not-quite-as-short text', function(t) {
-    sanitize({ text: 'aa' }, function( err, clean ){
-      t.equal(err, undefined, 'no error');
+    var req = { query: { text: 'aa' } };
+    sanitize(req, function(){
+      t.equal(req.errors[0], undefined, 'no error');
     });
     t.end();
   });
 
   test('valid longer text', function(t) {
-    sanitize({ text: 'aaaaaaaa' }, function( err, clean ){
-      t.equal(err, undefined, 'no error');
+    var req = { query: { text: 'aaaaaaaa' } };
+    sanitize(req, function(){
+      t.equal(req.errors[0], undefined, 'no error');
     });
     t.end();
   });
@@ -78,13 +85,14 @@ module.exports.tests.sanitize_text_with_delim = function(test, common) {
 
   test('valid texts with a comma', function(t) {
     texts.forEach( function( text ){
-      sanitize({ text: text }, function( err, clean ){
+      var req = { query: { text: text } };
+      sanitize(req, function(){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.text = text;
 
         expected.parsed_text = parser.get_parsed_address(text);
-        t.equal(err, undefined, 'no error');
-        t.equal(clean.parsed_text.name, expected.parsed_text.name, 'clean name set correctly');
+        t.equal(req.errors[0], undefined, 'no error');
+        t.equal(req.clean.parsed_text.name, expected.parsed_text.name, 'clean name set correctly');
 
       });
     });
@@ -94,8 +102,9 @@ module.exports.tests.sanitize_text_with_delim = function(test, common) {
 
 module.exports.tests.sanitize_private_no_value = function(test, common) {
   test('default private should be set to true', function(t) {
-    sanitize({ text: 'test' }, function( err, clean ){
-      t.equal(clean.private, false, 'private set to false');
+    var req = { query: { text: 'test' } };
+    sanitize(req, function(){
+      t.equal(req.clean.private, false, 'private set to false');
     });
     t.end();
   });
@@ -103,8 +112,9 @@ module.exports.tests.sanitize_private_no_value = function(test, common) {
 
 module.exports.tests.sanitize_private_explicit_true_value = function(test, common) {
   test('explicit private should be set to true', function(t) {
-    sanitize({ text: 'test', private: true }, function( err, clean ){
-      t.equal(clean.private, true, 'private set to true');
+    var req = { query: { text: 'test', private: true } };
+    sanitize(req, function(){
+      t.equal(req.clean.private, true, 'private set to true');
     });
     t.end();
   });
@@ -112,8 +122,9 @@ module.exports.tests.sanitize_private_explicit_true_value = function(test, commo
 
 module.exports.tests.sanitize_private_explicit_false_value = function(test, common) {
   test('explicit private should be set to false', function(t) {
-    sanitize({ text: 'test', private: false }, function( err, clean ){
-      t.equal(clean.private, false, 'private set to false');
+    var req = { query: { text: 'test', private: false } };
+    sanitize(req, function(){
+      t.equal(req.clean.private, false, 'private set to false');
     });
     t.end();
   });
@@ -126,19 +137,21 @@ module.exports.tests.sanitize_lat = function(test, common) {
   };
   test('invalid lat', function(t) {
     lats.invalid.forEach( function( lat ){
-      sanitize({ text: 'test', 'focus.point.lat': lat, 'focus.point.lon': 0 }, function( err, clean ){
-        t.equal(err, 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
-        t.equal(clean, undefined, 'clean not set');
+      var req = { query: { text: 'test', 'focus.point.lat': lat, 'focus.point.lon': 0 } };
+      sanitize(req, function(){
+        t.equal(req.errors[0], 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
+        t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
       });
     });
     t.end();
   });
   test('valid lat', function(t) {
     lats.valid.forEach( function( lat ){
-      sanitize({ text: 'test', 'focus.point.lat': lat, 'focus.point.lon': 0 }, function( err, clean ){
+      var req = { query: { text: 'test', 'focus.point.lat': lat, 'focus.point.lon': 0 } };
+      sanitize(req, function(){
         var expected_lat = parseFloat( lat );
-        t.equal(err, undefined, 'no error');
-        t.deepEqual(clean.lat, expected_lat, 'clean lat set correctly (' + lat + ')');
+        t.equal(req.errors[0], undefined, 'no error');
+        t.equal(req.clean.lat, expected_lat, 'clean lat set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -151,11 +164,12 @@ module.exports.tests.sanitize_lon = function(test, common) {
   };
   test('valid lon', function(t) {
     lons.valid.forEach( function( lon ){
-      sanitize({ text: 'test', 'focus.point.lat': 0, 'focus.point.lon': lon }, function( err, clean ){
+      var req = { query: { text: 'test', 'focus.point.lat': 0, 'focus.point.lon': lon } };
+      sanitize(req, function(){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lon = parseFloat( lon );
-        t.equal(err, undefined, 'no error');
-        t.deepEqual(clean.lon, expected.lon, 'clean set correctly (' + lon + ')');
+        t.equal(req.errors[0], undefined, 'no error');
+        t.equal(req.clean.lon, expected.lon, 'clean set correctly (' + lon + ')');
       });
     });
     t.end();
@@ -164,26 +178,29 @@ module.exports.tests.sanitize_lon = function(test, common) {
 
 module.exports.tests.sanitize_optional_geo = function(test, common) {
   test('no lat/lon', function(t) {
-    sanitize({ text: 'test' }, function( err, clean ){
-      t.equal(err, undefined, 'no error');
-      t.equal(clean.lat, undefined, 'clean set without lat');
-      t.equal(clean.lon, undefined, 'clean set without lon');
+    var req = { query: { text: 'test' } };
+    sanitize(req, function(){
+      t.equal(req.errors[0], undefined, 'no error');
+      t.equal(req.clean.lat, undefined, 'clean set without lat');
+      t.equal(req.clean.lon, undefined, 'clean set without lon');
     });
     t.end();
   });
   test('no lat', function(t) {
-    sanitize({ text: 'test', 'focus.point.lon': 0 }, function( err, clean ){
+    var req = { query: { text: 'test', 'focus.point.lon': 0 } };
+    sanitize(req, function(){
       var expected_lon = 0;
-      t.equal(err, undefined, 'no error');
-      t.deepEqual(clean.lon, expected_lon, 'clean set correctly (without any lat)');
+      t.equal(req.errors[0], undefined, 'no error');
+      t.deepEqual(req.clean.lon, expected_lon, 'clean set correctly (without any lat)');
     });
     t.end();
   });
   test('no lon', function(t) {
-    sanitize({ text: 'test', 'focus.point.lat': 0 }, function( err, clean ){
+    var req = { query: { text: 'test', 'focus.point.lat': 0 } };
+    sanitize(req, function(){
       var expected_lat = 0;
-      t.equal(err, undefined, 'no error');
-      t.deepEqual(clean.lat, expected_lat, 'clean set correctly (without any lon)');
+      t.equal(req.errors[0], undefined, 'no error');
+      t.deepEqual(req.clean.lat, expected_lat, 'clean set correctly (without any lon)');
     });
     t.end();
   });
@@ -219,18 +236,20 @@ module.exports.tests.sanitize_bbox = function(test, common) {
   };
   test('invalid bbox', function(t) {
     bboxes.invalid.forEach( function( bbox ){
-      sanitize({ text: 'test', bbox: bbox }, function( err, clean ){
-        t.equal(err, undefined, 'no error');
-        t.equal(clean.bbox, undefined, 'falling back on 50km distance from centroid');
+      var req = { query: { text: 'test', bbox: bbox } };
+      sanitize(req, function(){
+        t.equal(req.errors[0], undefined, 'no error');
+        t.equal(req.clean.bbox, undefined, 'falling back on 50km distance from centroid');
       });
     });
     t.end();
   });
   test('valid bbox', function(t) {
     bboxes.valid.forEach( function( bbox ){
-      sanitize({ text: 'test', bbox: bbox }, function( err, clean ){
+      var req = { query: { text: 'test', bbox: bbox } };
+      sanitize(req, function(){
         var bboxArray = bbox.split(',').map(function(i) {
-          return parseInt(i);
+          return parseInt(i, 10);
         });
         var expected_bbox = {
           right: Math.max(bboxArray[0], bboxArray[2]),
@@ -238,8 +257,8 @@ module.exports.tests.sanitize_bbox = function(test, common) {
           left: Math.min(bboxArray[0], bboxArray[2]),
           bottom: Math.min(bboxArray[1], bboxArray[3])
         };
-        t.equal(err, undefined, 'no error');
-        t.deepEqual(clean.bbox, expected_bbox, 'clean set correctly (' + bbox + ')');
+        t.equal(req.errors[0], undefined, 'no error');
+        t.deepEqual(req.clean.bbox, expected_bbox, 'clean set correctly (' + bbox + ')');
       });
     });
     t.end();
@@ -248,20 +267,23 @@ module.exports.tests.sanitize_bbox = function(test, common) {
 
 module.exports.tests.sanitize_size = function(test, common) {
   test('invalid size value', function(t) {
-    sanitize({ size: 'a', text: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.size, 10, 'default size set');
+    var req = { query: { size: 'a', text: 'test', lat: 0, lon: 0 } };
+    sanitize(req, function(){
+      t.equal(req.clean.size, 10, 'default size set');
       t.end();
     });
   });
   test('below min size value', function(t) {
-    sanitize({ size: -100, text: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.size, 1, 'min size set');
+    var req = { query: { size: -100, text: 'test', lat: 0, lon: 0 } };
+    sanitize(req, function(){
+      t.equal(req.clean.size, 1, 'min size set');
       t.end();
     });
   });
   test('above max size value', function(t) {
-    sanitize({ size: 9999, text: 'test', lat: 0, lon: 0 }, function( err, clean ){
-      t.equal(clean.size, 40, 'max size set');
+    var req = { query: { size: 9999, text: 'test', lat: 0, lon: 0 } };
+    sanitize(req, function(){
+      t.equal(req.clean.size, 40, 'max size set');
       t.end();
     });
   });
@@ -271,8 +293,9 @@ module.exports.tests.sanitize_private = function(test, common) {
   var invalid_values = [null, -1, 123, NaN, 'abc'];
   invalid_values.forEach(function(value) {
     test('invalid private param ' + value, function(t) {
-      sanitize({ text: 'test', lat: 0, lon: 0, 'private': value }, function( err, clean ){
-        t.equal(clean.private, false, 'default private set (to false)');
+      var req = { query: { text: 'test', lat: 0, lon: 0, 'private': value } };
+      sanitize(req, function(){
+        t.equal(req.clean.private, false, 'default private set (to false)');
         t.end();
       });
     });
@@ -281,8 +304,9 @@ module.exports.tests.sanitize_private = function(test, common) {
   var valid_values = ['true', true, 1, '1'];
   valid_values.forEach(function(value) {
     test('valid private ' + value, function(t) {
-      sanitize({ text: 'test', 'private': value}, function( err, clean ){
-        t.equal(clean.private, true, 'private set to true');
+      var req = { query: { text: 'test', 'private': value } };
+      sanitize(req, function(){
+        t.equal(req.clean.private, true, 'private set to true');
         t.end();
       });
     });
@@ -291,16 +315,18 @@ module.exports.tests.sanitize_private = function(test, common) {
   var valid_false_values = ['false', false, 0, '0'];
   valid_false_values.forEach(function(value) {
     test('test setting false explicitly ' + value, function(t) {
-      sanitize({ text: 'test', 'private': value }, function( err, clean ){
-        t.equal(clean.private, false, 'private set to false');
+      var req = { query: { text: 'test', 'private': value } };
+      sanitize(req, function(){
+        t.equal(req.clean.private, false, 'private set to false');
         t.end();
       });
     });
   });
 
   test('test default behavior', function(t) {
-    sanitize({ text: 'test' }, function( err, clean ){
-      t.equal(clean.private, false, 'private set to false');
+    var req = { query: { text: 'test' } };
+    sanitize(req, function(){
+      t.equal(req.clean.private, false, 'private set to false');
       t.end();
     });
   });
@@ -308,23 +334,11 @@ module.exports.tests.sanitize_private = function(test, common) {
 
 module.exports.tests.invalid_params = function(test, common) {
   test('invalid text params', function(t) {
-    sanitize( undefined, function( err, clean ){
-      t.equal(err, defaultError, 'handle invalid params gracefully');
+    var req = { query: {} };
+    sanitize( req, function(){
+      t.equal(req.errors[0], defaultError, 'handle invalid params gracefully');
       t.end();
     });
-  });
-};
-
-module.exports.tests.middleware_failure = function(test, common) {
-  test('middleware failure', function(t) {
-    var res = { status: function( code ){
-      t.equal(code, 400, 'status set');
-    }};
-    var next = function( message ){
-      t.equal(message, defaultError);
-      t.end();
-    };
-    middleware( {}, res, next );
   });
 };
 
@@ -332,7 +346,7 @@ module.exports.tests.middleware_success = function(test, common) {
   test('middleware success', function(t) {
     var req = { query: { text: 'test' }};
     var next = function( message ){
-      t.equal(message, undefined, 'no error message set');
+      t.deepEqual(req.errors, [], 'no error messages set');
       t.end();
     };
     middleware( req, undefined, next );

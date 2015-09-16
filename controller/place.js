@@ -1,10 +1,18 @@
 var service = { mget: require('../service/mget') };
 
 function setup( backend ){
+
   // allow overriding of dependencies
   backend = backend || require('../src/backend');
 
   function controller( req, res, next ){
+
+    // do not run controller when a request
+    // validation error has occurred.
+    if( req.errors && req.errors.length ){
+      return next();
+    }
+
     var query = req.clean.ids.map( function(id) {
       return {
         _index: 'pelias',

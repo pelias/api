@@ -1,6 +1,8 @@
 
+// @todo: refactor this test, it's pretty messy, brittle and hard to follow
+
 var place  = require('../../../sanitiser/place'),
-    _sanitize = place.sanitize,
+    sanitize = place.sanitize,
     middleware = place.middleware,
     types = require('../../../query/types'),
     delimiter = ':',
@@ -11,11 +13,13 @@ var place  = require('../../../sanitiser/place'),
       var type = input.split(delimiter)[0];
       return type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']'; },
     defaultClean = { ids: [ { id: '123', type: 'geoname' } ], private: false },
-    sanitize = function(query, cb) { _sanitize({'query':query}, cb); },
     inputs = {
       valid: [ 'geoname:1', 'osmnode:2', 'admin0:53', 'osmway:44', 'geoname:5' ],
       invalid: [ ':', '', '::', 'geoname:', ':234', 'gibberish:23' ]
     };
+
+// these are the default values you would expect when no input params are specified.
+var emptyClean = { ids: [], private: false };
 
 module.exports.tests = {};
 
@@ -33,33 +37,35 @@ module.exports.tests.interface = function(test, common) {
 };
 
 module.exports.tests.sanitize_id = function(test, common) {
-  test('invalid input', function(t) {
+  test('id: invalid input', function(t) {
     inputs.invalid.forEach( function( input ){
-      sanitize({ id: input }, function( err, clean ){
-        switch (err) {
+      var req = { query: { id: input } };
+      sanitize(req, function( ){
+        switch (req.errors[0]) {
           case defaultError:
-            t.equal(err, defaultError, input + ' is invalid input'); break;
+            t.equal(req.errors[0], defaultError, input + ' is invalid input'); break;
           case defaultLengthError(input):
-            t.equal(err, defaultLengthError(input), input + ' is invalid (missing id/type)'); break;
+            t.equal(req.errors[0], defaultLengthError(input), input + ' is invalid (missing id/type)'); break;
           case defaultFormatError:
-            t.equal(err, defaultFormatError, input + ' is invalid (invalid format)'); break;
+            t.equal(req.errors[0], defaultFormatError, input + ' is invalid (invalid format)'); break;
           case defaultMissingTypeError(input):
-            t.equal(err, defaultMissingTypeError(input), input + ' is an unknown type'); break;
+            t.equal(req.errors[0], defaultMissingTypeError(input), input + ' is an unknown type'); break;
           default: break;
         }
-        t.equal(clean, undefined, 'clean not set');
+        t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
       });
     });
     t.end();
   });
 
-  test('valid input', function(t) {
+  test('id: valid input', function(t) {
     inputs.valid.forEach( function( input ){
       var input_parts = input.split(delimiter);
       var expected = { ids: [ { id: input_parts[1], type: input_parts[0] } ], private: false };
-      sanitize({ id: input }, function( err, clean ){
-        t.equal(err, undefined, 'no error (' + input + ')' );
-        t.deepEqual(clean, expected, 'clean set correctly (' + input + ')');
+      var req = { query: { id: input } };
+      sanitize(req, function(){
+        t.deepEqual( req.errors, [], 'no error (' + input + ')' );
+        t.deepEqual( req.clean, expected, 'clean set correctly (' + input + ')');
       });
     });
     t.end();
@@ -68,26 +74,26 @@ module.exports.tests.sanitize_id = function(test, common) {
 
 
 module.exports.tests.sanitize_ids = function(test, common) {
-  test('invalid input', function(t) {
-    sanitize({ id: inputs.invalid }, function( err, clean ){
-      var input = inputs.invalid[0]; // since it breaks on the first invalid element
-      switch (err) {
-        case defaultError:
-          t.equal(err, defaultError, input + ' is invalid input'); break;
-        case defaultLengthError(input):
-          t.equal(err, defaultLengthError(input), input + ' is invalid (missing id/type)'); break;
-        case defaultFormatError:
-          t.equal(err, defaultFormatError, input + ' is invalid (invalid format)'); break;
-        case defaultMissingTypeError(input):
-          t.equal(err, defaultMissingTypeError(input), input + ' is an unknown type'); break;
-        default: break;
-      }
-      t.equal(clean, undefined, 'clean not set');
+  test('ids: invalid input', function(t) {
+    var req = { query: { id: inputs.invalid } };
+    var expected = [
+      'invalid param \'id\': text length, must be >0',
+      'invalid param \':\': text length, must be >0',
+      'invalid param \'::\': text length, must be >0',
+      'invalid param \'geoname:\': text length, must be >0',
+      'invalid param \':234\': text length, must be >0',
+      'gibberish is invalid. It must be one of these values - ' +
+      '[geoname, osmnode, osmway, admin0, admin1, admin2, neighborhood, ' +
+      'locality, local_admin, osmaddress, openaddresses]'
+    ];
+    sanitize(req, function(){
+      t.deepEqual(req.errors, expected);
+      t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
     });
     t.end();
   });
 
-  test('valid input', function(t) {
+  test('ids: valid input', function(t) {
     var expected={};
     expected.ids = [];
     inputs.valid.forEach( function( input ){
@@ -95,9 +101,10 @@ module.exports.tests.sanitize_ids = function(test, common) {
       expected.ids.push({ id: input_parts[1], type: input_parts[0] });
     });
     expected.private = false;
-    sanitize({ id: inputs.valid }, function( err, clean ){
-      t.equal(err, undefined, 'no error' );
-      t.deepEqual(clean, expected, 'clean set correctly');
+    var req = { query: { id: inputs.valid } };
+    sanitize(req, function(){
+      t.deepEqual( req.errors, [], 'no errors' );
+      t.deepEqual( req.clean, expected, 'clean set correctly' );
     });
     t.end();
   });
@@ -107,8 +114,11 @@ module.exports.tests.sanitize_private = function(test, common) {
   var invalid_values = [null, -1, 123, NaN, 'abc'];
   invalid_values.forEach(function(value) {
     test('invalid private param ' + value, function(t) {
-      sanitize({ id:'geoname:123', 'private': value}, function( err, clean ){
-        t.equal(clean.private, false, 'default private set (to false)');
+      var req = { query: { id:'geoname:123', 'private': value } };
+      sanitize(req, function(){
+        t.deepEqual( req.errors, [], 'no errors' );
+        t.deepEqual( req.warnings, [], 'no warnings' );
+        t.equal(req.clean.private, false, 'default private set (to false)');
         t.end();
       });
     });
@@ -117,8 +127,11 @@ module.exports.tests.sanitize_private = function(test, common) {
   var valid_values = ['true', true, 1];
   valid_values.forEach(function(value) {
     test('valid private param ' + value, function(t) {
-      sanitize({ id:'geoname:123', 'private': value }, function( err, clean ){
-        t.equal(clean.private, true, 'private set to true');
+      var req = { query: { id:'geoname:123', 'private': value } };
+      sanitize(req, function(){
+        t.deepEqual( req.errors, [], 'no errors' );
+        t.deepEqual( req.warnings, [], 'no warnings' );
+        t.equal(req.clean.private, true, 'private set to true');
         t.end();
       });
     });
@@ -127,16 +140,22 @@ module.exports.tests.sanitize_private = function(test, common) {
   var valid_false_values = ['false', false, 0];
   valid_false_values.forEach(function(value) {
     test('test setting false explicitly ' + value, function(t) {
-      sanitize({ id:'geoname:123', 'private': value }, function( err, clean ){
-        t.equal(clean.private, false, 'private set to false');
+      var req = { query: { id:'geoname:123', 'private': value } };
+      sanitize(req, function(){
+        t.deepEqual( req.errors, [], 'no errors' );
+        t.deepEqual( req.warnings, [], 'no warnings' );
+        t.equal(req.clean.private, false, 'private set to false');
         t.end();
       });
     });
   });
 
   test('test default behavior', function(t) {
-    sanitize({ id:'geoname:123' }, function( err, clean ){
-      t.equal(clean.private, false, 'private set to false');
+    var req = { query: { id:'geoname:123' } };
+    sanitize(req, function(){
+      t.deepEqual( req.errors, [], 'no errors' );
+      t.deepEqual( req.warnings, [], 'no warnings' );
+      t.equal(req.clean.private, false, 'private set to false');
       t.end();
     });
   });
@@ -144,10 +163,12 @@ module.exports.tests.sanitize_private = function(test, common) {
 
 module.exports.tests.de_dupe = function(test, common) {
   var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], private: false };
+  var req = { query: { id: ['geoname:1', 'osmnode:2', 'geoname:1'] } };
   test('duplicate ids', function(t) {
-    sanitize( { id: ['geoname:1', 'osmnode:2', 'geoname:1'] }, function( err, clean ){
-      t.equal(err, undefined, 'no error' );
-      t.deepEqual(clean, expected, 'clean set correctly');
+    sanitize( req, function(){
+      t.deepEqual( req.errors, [], 'no errors' );
+      t.deepEqual( req.warnings, [], 'no warnings' );
+      t.deepEqual(req.clean, expected, 'clean set correctly');
       t.end();
     });
   });
@@ -155,31 +176,21 @@ module.exports.tests.de_dupe = function(test, common) {
 
 module.exports.tests.invalid_params = function(test, common) {
   test('invalid params', function(t) {
-    sanitize( undefined, function( err, clean ){
-      t.equal(err, defaultError, 'handle invalid params gracefully');
+    var req = { query: {} };
+    sanitize( req, function(){
+      t.equal( req.errors[0], defaultError, 'handle invalid params gracefully');
+      t.deepEqual( req.warnings, [], 'no warnings' );
       t.end();
     });
   });
 };
 
-module.exports.tests.middleware_failure = function(test, common) {
-  test('middleware failure', function(t) {
-    var res = { status: function( code ){
-      t.equal(code, 400, 'status set');
-    }};
-    var next = function( message ){
-      t.equal(message, defaultError);
-      t.end();
-    };
-    middleware( {}, res, next );
-  });
-};
-
 module.exports.tests.middleware_success = function(test, common) {
   test('middleware success', function(t) {
-    var req = { query: { id: 'geoname' + delimiter + '123' }};
-    var next = function( message ){
-      t.equal(message, undefined, 'no error message set');
+    var req = { query: { id: 'geoname:123' }};
+    var next = function(){
+      t.deepEqual( req.errors, [], 'no errors' );
+      t.deepEqual( req.warnings, [], 'no warnings' );
       t.deepEqual(req.clean, defaultClean);
       t.end();
     };
