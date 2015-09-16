@@ -138,7 +138,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate({
       text: 'test', size: 10,
       layers: ['test'],
-      boundary: { country: 'ABC' }
+      'boundary.country': 'ABC'
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );

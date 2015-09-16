@@ -33,8 +33,8 @@ function generateQuery( clean ){
 
   // set radius, default to 500km if not specified in request
   var radius = 500;
-  if (clean.hasOwnProperty('boundary_circle_radius')) {
-    radius = clean.boundary_circle_radius;
+  if (clean.hasOwnProperty('boundary.circle.radius')) {
+    radius = clean['boundary.circle.radius'];
   }
 
   // focus point centroid

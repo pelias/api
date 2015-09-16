@@ -24,7 +24,7 @@ module.exports.tests.query = function(test, common) {
 
   test('valid query with radius', function(t) {
     var query = generate({
-      lat: 29.49136, lon: -82.50622, boundary_circle_radius: 123
+      lat: 29.49136, lon: -82.50622, 'boundary.circle.radius': 123
     });
 
     var compiled = JSON.parse( JSON.stringify( query )).query.filtered.filter.bool.must[0].geo_distance.distance;
@@ -38,8 +38,8 @@ module.exports.tests.query = function(test, common) {
     var clean = {
       lat: 29.49136,
       lon: -82.50622,
-      boundary_circle_lat: 111,
-      boundary_circle_long: 333
+      'boundary.circle.lat': 111,
+      'boundary.circle.long': 333
     };
     var query = generate(clean);
 

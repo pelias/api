@@ -97,9 +97,9 @@ function generateQuery( clean ){
   }
 
   // boundary country
-  if( clean.boundary && clean.boundary.country ){
+  if( clean['boundary.country'] ){
     vs.set({
-      'boundary:country': clean.boundary.country
+      'boundary:country': clean['boundary.country']
     });
   }
 
