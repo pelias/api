@@ -3,16 +3,21 @@ var _ = require('lodash');
 
 // these are subjective terms, but wanted to add shortcuts to denote something
 //  about importance
-var confidence = {
-  exact: 1.0,
-  excellent: 0.9,
-  good: 0.8,
-  okay: 0.7,
-  poor: 0.6,
-  none: 0.5
-};
+var EXACT = 1.0;
+var EXCELLENT = 0.9;
+var GOOD = 0.8;
+var OKAY = 0.7;
+var POOR = 0.6;
+var NONE = 0.5;
+var INVALID = 0.0;
 
-function setup(peliasConfig) {
+var _1_METER = 1;
+var _10_METERS = 10;
+var _100_METERS = 100;
+var _250_METERS = 250;
+var _1_KILOMETER = 1000;
+
+function setup() {
   return computeScores;
 }
 
@@ -31,26 +36,26 @@ function computeScores(req, res, next) {
 function computeConfidenceScore(req, hit) {
   // non-number or invalid distance should be given confidence 0.0
   if (typeof hit.distance !== 'number' || hit.distance < 0) {
-    hit.confidence = 0.0;
+    hit.confidence = INVALID;
     return hit;
   }
 
-  var meters = hit.distance * 1000;
+  var distance = hit.distance * 1000.0;
 
   // figure out which range the distance lies in and assign confidence accordingly
   // TODO: this could probably be made more node-y with a map of function->number
-  if (meters < 1.0) {
-    hit.confidence = confidence.exact;
-  } else if (_.inRange(meters, 1, 10)) {
-    hit.confidence = confidence.excellent;
-  } else if (_.inRange(meters, 10, 100)) {
-    hit.confidence = confidence.good;
-  } else if (_.inRange(meters, 100, 250)) {
-    hit.confidence = confidence.okay;
-  } else if (_.inRange(meters, 250, 1000)) {
-    hit.confidence = confidence.poor;
+  if (distance < _1_METER) {
+    hit.confidence = EXACT;
+  } else if (_.inRange(distance, _1_METER, _10_METERS)) {
+    hit.confidence = EXCELLENT;
+  } else if (_.inRange(distance, _10_METERS, _100_METERS)) {
+    hit.confidence = GOOD;
+  } else if (_.inRange(distance, _100_METERS, _250_METERS)) {
+    hit.confidence = OKAY;
+  } else if (_.inRange(distance, _250_METERS, _1_KILOMETER)) {
+    hit.confidence = POOR;
   } else {
-    hit.confidence = confidence.none;
+    hit.confidence = NONE;
   }
 
   return hit;

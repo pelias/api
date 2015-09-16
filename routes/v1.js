@@ -77,7 +77,7 @@ function addRoutes(app, peliasConfig) {
       postProc.distances(),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
-      postProc.confidenceScoresReverse(peliasConfig),
+      postProc.confidenceScoresReverse(),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig),
       postProc.sendJSON
