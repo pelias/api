@@ -5,10 +5,10 @@ var reverse  = require('../../../sanitiser/reverse'),
     sanitize = reverse.sanitize,
     middleware = reverse.middleware,
     defaultError = 'missing param \'lat\'',
-    defaultClean =  { lat:0,
+    defaultClean =  { 'point.lat': 0,
                       types: {
                       },
-                      lon: 0,
+                      'point.lon': 0,
                       size: 10,
                       private: false,
                       boundary: { }
@@ -51,7 +51,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
     lats.invalid.forEach( function( lat ){
       var req = { query: { 'point.lat': lat, 'point.lon': 0 } };
       sanitize(req, function(){
-        t.equal(req.errors[0], 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
+        t.equal(req.errors[0], 'invalid param \'point.lat\': must be >-90 and <90', lat + ' is an invalid latitude');
         t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
       });
     });
@@ -63,7 +63,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
       sanitize(req, function(){
         var expected_lat = parseFloat( lat );
         t.deepEqual(req.errors, [], 'no errors');
-        t.equal(req.clean.lat, expected_lat, 'clean set correctly (' + lat + ')');
+        t.equal(req.clean['point.lat'], expected_lat, 'clean set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -72,7 +72,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
     lats.missing.forEach( function( lat ){
       var req = { query: { 'point.lat': lat, 'point.lon': 0 } };
       sanitize(req, function(){
-        t.equal(req.errors[0], 'missing param \'lat\'', 'latitude is a required field');
+        t.equal(req.errors[0], 'missing param \'point.lat\'', 'latitude is a required field');
         t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
       });
     });
@@ -91,7 +91,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
       sanitize(req, function(){
         var expected_lon = parseFloat( lon );
         t.deepEqual(req.errors, [], 'no errors');
-        t.equal(req.clean.lon, expected_lon, 'clean set correctly (' + lon + ')');
+        t.equal(req.clean['point.lon'], expected_lon, 'clean set correctly (' + lon + ')');
       });
     });
     t.end();
@@ -101,9 +101,9 @@ module.exports.tests.sanitize_lon = function(test, common) {
       var req = { query: { 'point.lat': 0, 'point.lon': lon } };
 
       // @todo: why is lat set?
-      var expected = { boundary: {}, lat: 0, private: false, size: 10, types: {} };
+      var expected = { boundary: {}, 'point.lat': 0, private: false, size: 10, types: {} };
       sanitize(req, function(){
-        t.equal(req.errors[0], 'missing param \'lon\'', 'longitude is a required field');
+        t.equal(req.errors[0], 'missing param \'point.lon\'', 'longitude is a required field');
         t.deepEqual(req.clean, expected, 'clean only has default values set');
       });
     });
