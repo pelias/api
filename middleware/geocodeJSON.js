@@ -1,18 +1,42 @@
+var url = require('url');
 var extend = require('extend');
 var geojsonify = require('../helper/geojsonify').search;
 
-function setup(peliasConfig) {
+/**
+ * Returns a middleware function that converts elasticsearch
+ * results into geocodeJSON format.
+ *
+ * @param {object} [peliasConfig] api portion of pelias config
+ * @param {string} [basePath]
+ * @returns {middleware}
+ */
+function setup(peliasConfig, basePath) {
 
-  peliasConfig = peliasConfig || require( 'pelias-config' ).generate().api;
+  var opts = {
+    config: peliasConfig || require('pelias-config').generate().api,
+    basePath: basePath || '/'
+  };
   
   function middleware(req, res, next) {
-    return convertToGeocodeJSON(peliasConfig, req, res, next);
+    return convertToGeocodeJSON(req, res, next, opts);
   }
 
   return middleware;
 }
 
-function convertToGeocodeJSON(peliasConfig, req, res, next) {
+/**
+ * Converts elasticsearch results into geocodeJSON format
+ *
+ * @param {object} req
+ * @param {object} res
+ * @param {object} next
+ * @param {object} opts
+ * @param {string} opts.basePath e.g. '/v1/'
+ * @param {string} opts.config.host e.g. 'pelias.mapzen.com'
+ * @param {string} opts.config.version e.g. 1.0
+ * @returns {*}
+ */
+function convertToGeocodeJSON(req, res, next, opts) {
 
   res.body = { geocoding: {} };
 
@@ -23,7 +47,7 @@ function convertToGeocodeJSON(peliasConfig, req, res, next) {
   // OPTIONAL. Default: null. The attribution of the data. In case of multiple sources,
   // and then multiple attributions, can be an object with one key by source.
   // Can be a URI on the server, which outlines attribution details.
-  res.body.geocoding.attribution = peliasConfig.host + 'attribution';
+  res.body.geocoding.attribution = url.resolve(opts.config.host, opts.basePath + 'attribution');
 
   // OPTIONAL. Default: null. The query that has been issued to trigger the
   // search.
@@ -38,7 +62,7 @@ function convertToGeocodeJSON(peliasConfig, req, res, next) {
 
   // OPTIONAL
   // Freeform
-  addEngine(peliasConfig, res.body.geocoding);
+  addEngine(opts.config.version, res.body.geocoding);
 
   // response envelope
   res.body.geocoding.timestamp = new Date().getTime();
@@ -55,11 +79,11 @@ function addMessages(req, msgType, geocoding) {
   }
 }
 
-function addEngine(peliasConfig, geocoding) {
+function addEngine(version, geocoding) {
   geocoding.engine = {
     name: 'Pelias',
     author: 'Mapzen',
-    version: peliasConfig.version
+    version: version
   };
 }
 
