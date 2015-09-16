@@ -121,22 +121,9 @@ module.exports.tests.sanitize_private_explicit_false_value = function(test, comm
 };
 
 module.exports.tests.sanitize_lat = function(test, common) {
-  var lats = {
-    invalid: [],
-    valid: [ 0, 45, 90, -0, '0', '45', '90', -181, -120, -91, 91, 120, 181  ]
-  };
-  test('invalid lat', function(t) {
-    lats.invalid.forEach( function( lat ){
-      var req = { query: { text: 'test', 'focus.point.lat': lat, 'focus.point.lon': 0 } };
-      sanitize(req, function(){
-        t.equal(req.errors[0], 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
-        t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
-      });
-    });
-    t.end();
-  });
+  var valid_lats = [ 0, 45, 90, -0, '0', '45', '90', -181, -120, -91, 91, 120, 181  ];
   test('valid lat', function(t) {
-    lats.valid.forEach( function( lat ){
+    valid_lats.forEach( function( lat ){
       var req = { query: { text: 'test', 'focus.point.lat': lat, 'focus.point.lon': 0 } };
       sanitize(req, function(){
         var expected_lat = parseFloat( lat );
