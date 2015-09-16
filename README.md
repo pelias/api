@@ -5,7 +5,7 @@
 
 ## Documentation
 
-See our [API Documentation](https://github.com/pelias/api/blob/master/DOCS.md).
+See our [API Documentation](https://github.com/pelias/api/blob/master/public/apiDoc.md).
 
 ## Install Dependencies
 
