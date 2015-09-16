@@ -38,15 +38,15 @@ function generateQuery( clean ){
   }
 
   // focus point centroid
-  if( clean.lat && clean.lon ){
+  if( clean['point.lat'] && clean['point.lon'] ){
     vs.set({
       // focus point to score by distance
-      'focus:point:lat': clean.lat,
-      'focus:point:lon': clean.lon,
+      'focus:point:lat': clean['point.lat'],
+      'focus:point:lon': clean['point.lon'],
 
       // bounding circle
-      'boundary:circle:lat': clean.lat,
-      'boundary:circle:lon': clean.lon,
+      'boundary:circle:lat': clean['point.lat'],
+      'boundary:circle:lon': clean['point.lon'],
       'boundary:circle:radius': radius + 'km'
     });
   }
