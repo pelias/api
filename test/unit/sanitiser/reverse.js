@@ -11,13 +11,12 @@ var reverse  = require('../../../sanitiser/reverse'),
                       lon: 0,
                       size: 10,
                       private: false,
-                      categories: [],
                       boundary: { }
                     };
 
 // these are the default values you would expect when no input params are specified.
 // @todo: why is this different from $defaultClean?
-var emptyClean = { boundary: {}, categories: [], private: false, size: 10, types: {} };
+var emptyClean = { boundary: {}, private: false, size: 10, types: {} };
 
 module.exports.tests = {};
 
@@ -36,7 +35,7 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
-    var expected = ['layers', 'sources', 'size', 'private', 'geo_reverse', 'categories', 'boundary_country'];
+    var expected = ['layers', 'sources', 'size', 'private', 'geo_reverse', 'boundary_country'];
     t.deepEqual(Object.keys(reverse.sanitiser_list), expected);
     t.end();
   });
@@ -104,7 +103,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
       var req = { query: { 'point.lat': 0, 'point.lon': lon } };
 
       // @todo: why is lat set?
-      var expected = { boundary: {}, categories: [], lat: 0, private: false, size: 10, types: {} };
+      var expected = { boundary: {}, lat: 0, private: false, size: 10, types: {} };
       sanitize(req, function(){
         t.equal(req.errors[0], 'missing param \'lon\'', 'longitude is a required field');
         t.deepEqual(req.clean, expected, 'clean only has default values set');
@@ -176,45 +175,6 @@ module.exports.tests.sanitize_private = function(test, common) {
     var req = { query: { 'point.lat': 0, 'point.lon': 0 } };
     sanitize(req, function(){
       t.equal(req.clean.private, false, 'private set to false');
-      t.end();
-    });
-  });
-};
-
-module.exports.tests.sanitize_categories = function(test, common) {
-  var req = { query: { 'point.lat': 0, 'point.lon': 0 } };
-  test('unspecified', function(t) {
-    req.query.categories = undefined;
-    sanitize(req, function(){
-      t.deepEqual(req.clean.categories, defaultClean.categories, 'default to empty categories array');
-      t.end();
-    });
-  });
-  test('single category', function(t) {
-    req.query.categories = 'food';
-    sanitize(req, function(){
-      t.deepEqual(req.clean.categories, ['food'], 'category set');
-      t.end();
-    });
-  });
-  test('multiple categories', function(t) {
-    req.query.categories = 'food,education,nightlife';
-    sanitize(req, function(){
-      t.deepEqual(req.clean.categories, ['food', 'education', 'nightlife'], 'categories set');
-      t.end();
-    });
-  });
-  test('whitespace and empty strings', function(t) {
-    req.query.categories = 'food, , nightlife ,';
-    sanitize(req, function(){
-      t.deepEqual(req.clean.categories, ['food', 'nightlife'], 'categories set');
-      t.end();
-    });
-  });
-  test('all empty strings', function(t) {
-    req.query.categories = ', ,  ,';
-    sanitize(req, function(){
-      t.deepEqual(req.clean.categories, defaultClean.categories, 'empty strings filtered out');
       t.end();
     });
   });

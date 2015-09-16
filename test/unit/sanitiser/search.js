@@ -15,7 +15,7 @@ var search  = require('../../../sanitiser/search'),
 
 // these are the default values you would expect when no input params are specified.
 // @todo: why is this different from $defaultClean?
-var emptyClean = { boundary: {}, categories: [], private: false, size: 10, types: {} };
+var emptyClean = { boundary: {}, private: false, size: 10, types: {} };
 
 module.exports.tests = {};
 
@@ -34,7 +34,7 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
-    var expected = ['text', 'size', 'layers', 'sources', 'private', 'geo_search', 'categories', 'boundary_country' ];
+    var expected = ['text', 'size', 'layers', 'sources', 'private', 'geo_search', 'boundary_country' ];
     t.deepEqual(Object.keys(search.sanitiser_list), expected);
     t.end();
   });

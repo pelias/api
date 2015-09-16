@@ -153,7 +153,6 @@ module.exports.tests.search = function(test, common) {
           'localadmin': 'test1',
           'locality': 'test2',
           'neighbourhood': 'test3',
-          'category': ['food', 'nightlife'],
           'housenumber': '13',
           'street': 'Liverpool Road',
           'postalcode': 'N1 0RW'
@@ -206,8 +205,7 @@ module.exports.tests.search = function(test, common) {
           'county': 'New York',
           'localadmin': 'Manhattan',
           'locality': 'New York',
-          'neighbourhood': 'Koreatown',
-          'category': ['tourism', 'transport']
+          'neighbourhood': 'Koreatown'
         }
       }
     ]
