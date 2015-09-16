@@ -27,8 +27,8 @@ module.exports.tests.query = function(test, common) {
   test('autocomplete + focus', function(t) {
     var query = generate({
       text: 'test',
-      lat: 29.49136,
-      lon: -82.50622
+      'focus.point.lat': 29.49136,
+      'focus.point.lon': -82.50622
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
