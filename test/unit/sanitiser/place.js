@@ -73,7 +73,7 @@ module.exports.tests.sanitize_id = function(test, common) {
 
 module.exports.tests.sanitize_ids = function(test, common) {
   test('ids: invalid input with multiple values', function(t) {
-    var req = { query: { id: inputs.invalid } };
+    var req = { query: { id: inputs.invalid.join(',') } };
     var expected = [
       'invalid param \'id\': text length, must be >0',
       'invalid param \':\': text length, must be >0',
@@ -99,12 +99,24 @@ module.exports.tests.sanitize_ids = function(test, common) {
       expected.ids.push({ id: input_parts[1], type: input_parts[0] });
     });
     expected.private = false;
-    var req = { query: { id: inputs.valid } };
+    var req = { query: { id: inputs.valid.join(',') } };
     sanitize(req, function(){
       t.deepEqual( req.errors, [], 'no errors' );
       t.deepEqual( req.clean, expected, 'clean set correctly' );
     });
     t.end();
+  });
+};
+
+module.exports.tests.array_of_ids = function(test, common) {
+  // see https://github.com/pelias/api/issues/272
+  test('array of ids sent by queryparser', function(t) {
+    var req = { query: { id: ['geoname:2', 'oswmay:4'] } };
+    sanitize(req, function() {
+      t.deepEqual( req.warnings, ['`id` parameter specified multiple times. Using first value.'], 'warning sent' );
+      t.deepEqual( req.clean.ids, [{ id: '2', type: 'geoname' }], 'only first value used in clean' );
+      t.end();
+    });
   });
 };
 
@@ -161,7 +173,7 @@ module.exports.tests.sanitize_private = function(test, common) {
 
 module.exports.tests.multiple_ids = function(test, common) {
   var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], private: false };
-  var req = { query: { id: ['geoname:1', 'osmnode:2'] } };
+  var req = { query: { id: 'geoname:1,osmnode:2' } };
   test('duplicate ids', function(t) {
     sanitize( req, function(){
       t.deepEqual( req.errors, [], 'no errors' );
@@ -174,7 +186,7 @@ module.exports.tests.multiple_ids = function(test, common) {
 
 module.exports.tests.de_dupe = function(test, common) {
   var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], private: false };
-  var req = { query: { id: ['geoname:1', 'osmnode:2', 'geoname:1'] } };
+  var req = { query: { id: 'geoname:1,osmnode:2,geoname:1' } };
   test('duplicate ids', function(t) {
     sanitize( req, function(){
       t.deepEqual( req.errors, [], 'no errors' );
