@@ -159,6 +159,19 @@ module.exports.tests.sanitize_private = function(test, common) {
   });
 };
 
+module.exports.tests.multiple_ids = function(test, common) {
+  var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], private: false };
+  var req = { query: { id: ['geoname:1', 'osmnode:2'] } };
+  test('duplicate ids', function(t) {
+    sanitize( req, function(){
+      t.deepEqual( req.errors, [], 'no errors' );
+      t.deepEqual( req.warnings, [], 'no warnings' );
+      t.deepEqual(req.clean, expected, 'clean set correctly');
+      t.end();
+    });
+  });
+};
+
 module.exports.tests.de_dupe = function(test, common) {
   var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], private: false };
   var req = { query: { id: ['geoname:1', 'osmnode:2', 'geoname:1'] } };
