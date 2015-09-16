@@ -39,9 +39,9 @@ function computeConfidenceScore(req, hit) {
 
   // figure out which range the distance lies in and assign confidence accordingly
   // TODO: this could probably be made more node-y with a map of function->number
-  if (meters === 0) {
+  if (meters < 1.0) {
     hit.confidence = confidence.exact;
-  } else if (_.inRange(meters, 0, 10)) {
+  } else if (_.inRange(meters, 1, 10)) {
     hit.confidence = confidence.excellent;
   } else if (_.inRange(meters, 10, 100)) {
     hit.confidence = confidence.good;

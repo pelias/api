@@ -3,34 +3,30 @@ var confidenceScoreReverse = require('../../../middleware/confidenceScoreReverse
 module.exports.tests = {};
 
 module.exports.tests.confidenceScoreReverse = function(test, common) {
-  test('distance == 0m should be given score 1.0', function(t) {
+  test('0m <= distance < 1m should be given score 1.0', function(t) {
     var req = {
       results: {
         data: [
-          {
-            distance: 0
-          }
+          { distance: 0.0000 / 1000.0 },
+          { distance: 0.9999 / 1000.0 }
         ]
       }
     };
 
     confidenceScoreReverse(req, null, function() {
       t.equal(req.results.data[0].confidence, 1.0, 'score should be exact confidence');
+      t.equal(req.results.data[1].confidence, 1.0, 'score should be exact confidence');
       t.end();
     });
 
   });
 
-  test('0m < distance < 10m should be given score 0.9', function(t) {
+  test('1m <= distance < 10m should be given score 0.9', function(t) {
     var req = {
       results: {
         data: [
-          {
-            distance: 0.0001
-          },
-          {
-            distance: 0.0099
-          }
+          { distance: 1.0000 / 1000.0 },
+          { distance: 9.9999 / 1000.0 }
         ]
       }
     };
@@ -47,12 +43,8 @@ module.exports.tests.confidenceScoreReverse = function(test, common) {
     var req = {
       results: {
         data: [
-          {
-            distance: 0.010
-          },
-          {
-            distance: 0.099
-          }
+          { distance: 10.0000 / 1000.0 },
+          { distance: 99.9999 / 1000.0 }
         ]
       }
     };
@@ -69,12 +61,8 @@ module.exports.tests.confidenceScoreReverse = function(test, common) {
     var req = {
       results: {
         data: [
-          {
-            distance: 0.100
-          },
-          {
-            distance: 0.249
-          }
+          { distance: 100.0000 / 1000.0 },
+          { distance: 249.9999 / 1000.0 }
         ]
       }
     };
@@ -91,12 +79,8 @@ module.exports.tests.confidenceScoreReverse = function(test, common) {
     var req = {
       results: {
         data: [
-          {
-            distance: 0.250
-          },
-          {
-            distance: 0.999
-          }
+          { distance: 250.0000 / 1000.0 },
+          { distance: 999.9999 / 1000.0 }
         ]
       }
     };
@@ -113,12 +97,8 @@ module.exports.tests.confidenceScoreReverse = function(test, common) {
     var req = {
       results: {
         data: [
-          {
-            distance: 1
-          },
-          {
-            distance: 2
-          }
+          { distance: 1000.0 / 1000.0 },
+          { distance: 2000.0 / 1000.0 }
         ]
       }
     };
@@ -135,9 +115,7 @@ module.exports.tests.confidenceScoreReverse = function(test, common) {
     var req = {
       results: {
         data: [
-          {
-            distance: -0.0001
-          }
+          { distance: -1.0000 / 1000.0 }
         ]
       }
     };
@@ -174,7 +152,6 @@ module.exports.tests.confidenceScoreReverse = function(test, common) {
 };
 
 module.exports.all = function (tape, common) {
-
   function test(name, testFunction) {
     return tape('[middleware] confidenceScoreReverse: ' + name, testFunction);
   }
