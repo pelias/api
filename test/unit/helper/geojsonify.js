@@ -140,7 +140,7 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         'properties': {
-          'id': 'id1',
+          'gid': 'type1:id1',
           'layer': 'type1',
           'source': 'type1',
           'label': '\'Round Midnight Jazz and Blues Bar, test3, Angel',
@@ -169,7 +169,7 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         'properties': {
-          'id': 'id2',
+          'gid': 'type2:id2',
           'layer': 'type2',
           'source': 'type2',
           'label': 'Blues Cafe, test3, Smithfield',
@@ -194,7 +194,7 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         'properties': {
-          'id': '34633854',
+          'gid': 'osmway:34633854',
           'layer': 'venue',
           'source': 'osm',
           'label': 'Empire State Building, Manhattan, NY',
