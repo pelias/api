@@ -27,6 +27,7 @@ var tests = [
   require('./helper/types'),
   require('./sanitiser/_geo_common'),
   require('./middleware/distance'),
+  require('./sanitiser/_size'),
 ];
 
 tests.map(function(t) {

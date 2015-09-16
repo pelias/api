@@ -1,3 +1,4 @@
+var check = require('check-types');
 
 var MIN_SIZE = 1,
     MAX_SIZE = 40,
@@ -10,35 +11,22 @@ function sanitize( raw, clean ){
   var messages = { errors: [], warnings: [] };
 
   // coercions
-  var _size = parseInt( raw.size, 10 );
+  clean.size = parseInt( raw.size, 10 );
 
   // invalid numeric input
-  // @todo: this can be removed now as queries have default sizes?
-  if( isNaN( _size ) ){
-
-    // set the default size
-    messages.warnings.push('invalid integer \'size\', using DEFAULT_SIZE');
+  if( isNaN( clean.size ) ){
     clean.size = DEFAULT_SIZE;
   }
-  // valid numeric input
-  else {
-
-    // ensure size falls within defined range
-    if( _size > MAX_SIZE ){
-      // set the max size
-      messages.warnings.push('out-of-range integer \'size\', using MAX_SIZE');
-      clean.size = MAX_SIZE;
-    }
-    else if( _size < MIN_SIZE ){
-      // set the min size
-      messages.warnings.push('out-of-range integer \'size\', using MIN_SIZE');
-      clean.size = MIN_SIZE;
-    }
-    else {
-      // set the input size
-      clean.size = _size;
-    }
-
+  // ensure size falls within defined range
+  else if( clean.size > MAX_SIZE ){
+    // set the max size
+    messages.warnings.push('out-of-range integer \'size\', using MAX_SIZE');
+    clean.size = MAX_SIZE;
+  }
+  else if( clean.size < MIN_SIZE ){
+    // set the min size
+    messages.warnings.push('out-of-range integer \'size\', using MIN_SIZE');
+    clean.size = MIN_SIZE;
   }
 
   return messages;
