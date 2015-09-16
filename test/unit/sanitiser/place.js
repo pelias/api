@@ -72,7 +72,7 @@ module.exports.tests.sanitize_id = function(test, common) {
 };
 
 module.exports.tests.sanitize_ids = function(test, common) {
-  test('ids: invalid input', function(t) {
+  test('ids: invalid input with multiple values', function(t) {
     var req = { query: { id: inputs.invalid } };
     var expected = [
       'invalid param \'id\': text length, must be >0',
@@ -91,7 +91,7 @@ module.exports.tests.sanitize_ids = function(test, common) {
     t.end();
   });
 
-  test('ids: valid input', function(t) {
+  test('ids: valid input with multiple of values' , function(t) {
     var expected={};
     expected.ids = [];
     inputs.valid.forEach( function( input ){
