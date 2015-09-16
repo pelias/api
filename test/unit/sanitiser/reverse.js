@@ -61,10 +61,9 @@ module.exports.tests.sanitize_lat = function(test, common) {
     lats.valid.forEach( function( lat ){
       var req = { query: { 'point.lat': lat, 'point.lon': 0 } };
       sanitize(req, function(){
-        var expected = JSON.parse(JSON.stringify( defaultClean ));
-        expected.lat = parseFloat( lat );
+        var expected_lat = parseFloat( lat );
         t.deepEqual(req.errors, [], 'no errors');
-        t.equal(req.clean.lat, parseFloat(lat), 'clean set correctly (' + lat + ')');
+        t.equal(req.clean.lat, expected_lat, 'clean set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -90,10 +89,9 @@ module.exports.tests.sanitize_lon = function(test, common) {
     lons.valid.forEach( function( lon ){
       var req = { query: { 'point.lat': 0, 'point.lon': lon } };
       sanitize(req, function(){
-        var expected = JSON.parse(JSON.stringify( defaultClean ));
-        expected.lon = parseFloat( lon );
+        var expected_lon = parseFloat( lon );
         t.deepEqual(req.errors, [], 'no errors');
-        t.equal(req.clean.lon, parseFloat(lon), 'clean set correctly (' + lon + ')');
+        t.equal(req.clean.lon, expected_lon, 'clean set correctly (' + lon + ')');
       });
     });
     t.end();
