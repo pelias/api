@@ -7,7 +7,7 @@ var place  = require('../../../sanitiser/place'),
     delimiter = ':',
     defaultLengthError = function(input) { return 'invalid param \''+ input + '\': text length, must be >0'; },
     defaultFormatError = 'invalid: must be of the format type:id for ex: \'geoname:4163334\'',
-    defaultError = 'invalid param \'id\': text length, must be >0',
+    defaultError = 'invalid param \'ids\': text length, must be >0',
     defaultMissingTypeError = function(input) {
       var type = input.split(delimiter)[0];
       return type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']'; },
@@ -36,9 +36,9 @@ module.exports.tests.interface = function(test, common) {
 };
 
 module.exports.tests.sanitize_id = function(test, common) {
-  test('id: invalid input', function(t) {
+  test('ids: invalid input', function(t) {
     inputs.invalid.forEach( function( input ){
-      var req = { query: { id: input } };
+      var req = { query: { ids: input } };
       sanitize(req, function( ){
         switch (req.errors[0]) {
           case defaultError:
@@ -57,11 +57,11 @@ module.exports.tests.sanitize_id = function(test, common) {
     t.end();
   });
 
-  test('id: valid input', function(t) {
+  test('ids: valid input', function(t) {
     inputs.valid.forEach( function( input ){
       var input_parts = input.split(delimiter);
       var expected = { ids: [ { id: input_parts[1], type: input_parts[0] } ], private: false };
-      var req = { query: { id: input } };
+      var req = { query: { ids: input } };
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no error (' + input + ')' );
         t.deepEqual( req.clean, expected, 'clean set correctly (' + input + ')');
@@ -73,9 +73,9 @@ module.exports.tests.sanitize_id = function(test, common) {
 
 module.exports.tests.sanitize_ids = function(test, common) {
   test('ids: invalid input with multiple values', function(t) {
-    var req = { query: { id: inputs.invalid.join(',') } };
+    var req = { query: { ids: inputs.invalid.join(',') } };
     var expected = [
-      'invalid param \'id\': text length, must be >0',
+      'invalid param \'ids\': text length, must be >0',
       'invalid param \':\': text length, must be >0',
       'invalid param \'::\': text length, must be >0',
       'invalid param \'geoname:\': text length, must be >0',
@@ -99,7 +99,7 @@ module.exports.tests.sanitize_ids = function(test, common) {
       expected.ids.push({ id: input_parts[1], type: input_parts[0] });
     });
     expected.private = false;
-    var req = { query: { id: inputs.valid.join(',') } };
+    var req = { query: { ids: inputs.valid.join(',') } };
     sanitize(req, function(){
       t.deepEqual( req.errors, [], 'no errors' );
       t.deepEqual( req.clean, expected, 'clean set correctly' );
@@ -111,9 +111,9 @@ module.exports.tests.sanitize_ids = function(test, common) {
 module.exports.tests.array_of_ids = function(test, common) {
   // see https://github.com/pelias/api/issues/272
   test('array of ids sent by queryparser', function(t) {
-    var req = { query: { id: ['geoname:2', 'oswmay:4'] } };
+    var req = { query: { ids: ['geoname:2', 'oswmay:4'] } };
     sanitize(req, function() {
-      t.deepEqual( req.warnings, ['`id` parameter specified multiple times. Using first value.'], 'warning sent' );
+      t.deepEqual( req.warnings, ['`ids` parameter specified multiple times. Using first value.'], 'warning sent' );
       t.deepEqual( req.clean.ids, [{ id: '2', type: 'geoname' }], 'only first value used in clean' );
       t.end();
     });
@@ -124,7 +124,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   var invalid_values = [null, -1, 123, NaN, 'abc'];
   invalid_values.forEach(function(value) {
     test('invalid private param ' + value, function(t) {
-      var req = { query: { id:'geoname:123', 'private': value } };
+      var req = { query: { ids:'geoname:123', 'private': value } };
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
@@ -137,7 +137,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   var valid_values = ['true', true, 1];
   valid_values.forEach(function(value) {
     test('valid private param ' + value, function(t) {
-      var req = { query: { id:'geoname:123', 'private': value } };
+      var req = { query: { ids:'geoname:123', 'private': value } };
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
@@ -150,7 +150,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   var valid_false_values = ['false', false, 0];
   valid_false_values.forEach(function(value) {
     test('test setting false explicitly ' + value, function(t) {
-      var req = { query: { id:'geoname:123', 'private': value } };
+      var req = { query: { ids:'geoname:123', 'private': value } };
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
@@ -161,7 +161,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   });
 
   test('test default behavior', function(t) {
-    var req = { query: { id:'geoname:123' } };
+    var req = { query: { ids:'geoname:123' } };
     sanitize(req, function(){
       t.deepEqual( req.errors, [], 'no errors' );
       t.deepEqual( req.warnings, [], 'no warnings' );
@@ -173,7 +173,7 @@ module.exports.tests.sanitize_private = function(test, common) {
 
 module.exports.tests.multiple_ids = function(test, common) {
   var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], private: false };
-  var req = { query: { id: 'geoname:1,osmnode:2' } };
+  var req = { query: { ids: 'geoname:1,osmnode:2' } };
   test('duplicate ids', function(t) {
     sanitize( req, function(){
       t.deepEqual( req.errors, [], 'no errors' );
@@ -186,7 +186,7 @@ module.exports.tests.multiple_ids = function(test, common) {
 
 module.exports.tests.de_dupe = function(test, common) {
   var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], private: false };
-  var req = { query: { id: 'geoname:1,osmnode:2,geoname:1' } };
+  var req = { query: { ids: 'geoname:1,osmnode:2,geoname:1' } };
   test('duplicate ids', function(t) {
     sanitize( req, function(){
       t.deepEqual( req.errors, [], 'no errors' );
@@ -210,7 +210,7 @@ module.exports.tests.invalid_params = function(test, common) {
 
 module.exports.tests.middleware_success = function(test, common) {
   test('middleware success', function(t) {
-    var req = { query: { id: 'geoname:123' }};
+    var req = { query: { ids: 'geoname:123' }};
     var next = function(){
       t.deepEqual( req.errors, [], 'no errors' );
       t.deepEqual( req.warnings, [], 'no warnings' );

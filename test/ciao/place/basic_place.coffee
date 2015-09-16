@@ -1,6 +1,6 @@
 
 #> basic place
-path: '/v1/place?id=geoname:1'
+path: '/v1/place?ids=geoname:1'
 
 #? 200 ok
 response.statusCode.should.be.equal 200

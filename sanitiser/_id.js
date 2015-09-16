@@ -16,24 +16,24 @@ function sanitize( raw, clean ){
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  // 'raw.id' can be an array if id is specified multiple times
+  // 'raw.ids' can be an array if ids is specified multiple times
   // see https://github.com/pelias/api/issues/272
-  var rawIdString;
-  if (check.array( raw.id )) {
-    rawIdString = raw.id[0];
-    messages.warnings.push( '`id` parameter specified multiple times. Using first value.' );
-  } else if (check.unemptyString( raw.id )) {
-    rawIdString = raw.id;
+  var rawIdsString;
+  if (check.array( raw.ids )) {
+    rawIdsString = raw.ids[0];
+    messages.warnings.push( '`ids` parameter specified multiple times. Using first value.' );
+  } else if (check.unemptyString( raw.ids )) {
+    rawIdsString = raw.ids;
   } else {
-    rawIdString = '';
+    rawIdsString = '';
   }
 
   // split string into array of values
-  var rawIds = rawIdString.split(',');
+  var rawIds = rawIdsString.split(',');
 
   // no ids provided
   if( !rawIds.length ){
-    messages.errors.push( errorMessage('id') );
+    messages.errors.push( errorMessage('ids') );
   }
 
   // deduplicate
@@ -42,7 +42,7 @@ function sanitize( raw, clean ){
   // ensure all elements are valid non-empty strings
   rawIds = rawIds.filter( function( uc ){
     if( !check.unemptyString( uc ) ){
-      messages.errors.push( errorMessage('id') );
+      messages.errors.push( errorMessage('ids') );
       return false;
     }
     return true;
