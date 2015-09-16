@@ -26,10 +26,9 @@ function setup( backend, query ){
       // error handler
       if( err ){ return next( err ); }
 
-      req.results = {
-        data: docs,
-        meta: meta
-      };
+      // set response data
+      res.data = docs;
+      res.meta = meta;
 
       next();
     });

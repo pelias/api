@@ -17,9 +17,8 @@ function setup( backend ){
       // error handler
       if( err ){ return next( err ); }
 
-      req.results = {
-        data: docs
-      };
+      // set response data
+      res.data = docs;
 
       next();
     });

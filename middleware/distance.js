@@ -9,7 +9,7 @@ function setup() {
 function computeDistances(req, res, next) {
 
   // do nothing if no result data set
-  if (!req.results || !req.results.data) {
+  if (!res || !res.data) {
     return next();
   }
 
@@ -17,7 +17,7 @@ function computeDistances(req, res, next) {
     return next();
   }
 
-  req.results.data.forEach(function (place) {
+  res.data.forEach(function (place) {
     // the result of getDistance is in meters, so convert to kilometers
     place.distance = geolib.getDistance(
       { latitude: req.clean.lat, longitude: req.clean.lon },

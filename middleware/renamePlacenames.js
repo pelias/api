@@ -32,12 +32,12 @@ function setup() {
 function renamePlacenames(req, res, next) {
 
   // do nothing if no result data set
-  if (!req.results || !req.results.data) {
+  if (!res || !res.data) {
     return next();
   }
 
   // loop through data items and remap placenames
-  req.results.data = req.results.data.map(renameProperties);
+  res.data = res.data.map(renameProperties);
 
   next();
 }
