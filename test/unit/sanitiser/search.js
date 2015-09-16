@@ -128,7 +128,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
       sanitize(req, function(){
         var expected_lat = parseFloat( lat );
         t.equal(req.errors[0], undefined, 'no error');
-        t.equal(req.clean.lat, expected_lat, 'clean lat set correctly (' + lat + ')');
+        t.equal(req.clean['focus.point.lat'], expected_lat, 'clean lat set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -145,7 +145,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
       sanitize( req, function(){
         var expected_lon = parseFloat( lon );
         t.equal(req.errors[0], undefined, 'no error');
-        t.deepEqual(req.clean.lon, expected_lon, 'clean set correctly (' + lon + ')');
+        t.deepEqual(req.clean['focus.point.lon'], expected_lon, 'clean set correctly (' + lon + ')');
       });
     });
     t.end();
@@ -157,8 +157,8 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     var req = { query: { text: 'test' } };
     sanitize(req, function(){
       t.equal(req.errors[0], undefined, 'no error');
-      t.equal(req.clean.lat, undefined, 'clean set without lat');
-      t.equal(req.clean.lon, undefined, 'clean set without lon');
+      t.equal(req.clean['focus.point.lat'], undefined, 'clean set without lat');
+      t.equal(req.clean['focus.point.lon'], undefined, 'clean set without lon');
     });
     t.end();
   });
@@ -167,7 +167,7 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     sanitize(req, function(){
       var expected_lon = 0;
       t.equal(req.errors[0], undefined, 'no error');
-      t.deepEqual(req.clean.lon, expected_lon, 'clean set correctly (without any lat)');
+      t.deepEqual(req.clean['focus.point.lon'], expected_lon, 'clean set correctly (without any lat)');
     });
     t.end();
   });
@@ -176,7 +176,7 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     sanitize(req, function(){
       var expected_lat = 0;
       t.equal(req.errors[0], undefined, 'no error');
-      t.deepEqual(req.clean.lat, expected_lat, 'clean set correctly (without any lon)');
+      t.deepEqual(req.clean['focus.point.lat'], expected_lat, 'clean set correctly (without any lon)');
     });
     t.end();
   });
