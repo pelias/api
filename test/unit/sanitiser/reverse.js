@@ -1,6 +1,8 @@
 
+// @todo: refactor this test, it's pretty messy, brittle and hard to follow
+
 var reverse  = require('../../../sanitiser/reverse'),
-    _sanitize = reverse.sanitize,
+    sanitize = reverse.sanitize,
     middleware = reverse.middleware,
     defaultError = 'missing param \'lat\'',
     defaultClean =  { lat:0,
@@ -11,8 +13,11 @@ var reverse  = require('../../../sanitiser/reverse'),
                       private: false,
                       categories: [],
                       boundary: { }
-                    },
-    sanitize = function(query, cb) { _sanitize({'query':query}, cb); };
+                    };
+
+// these are the default values you would expect when no input params are specified.
+// @todo: why is this different from $defaultClean?
+var emptyClean = { boundary: {}, categories: [], private: false, size: 10, types: {} };
 
 module.exports.tests = {};
 
@@ -45,29 +50,32 @@ module.exports.tests.sanitize_lat = function(test, common) {
   };
   test('invalid lat', function(t) {
     lats.invalid.forEach( function( lat ){
-      sanitize({ 'point.lat': lat, 'point.lon': 0 }, function( err, clean ){
-        t.equal(err, 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
-        t.equal(clean, undefined, 'clean not set');
+      var req = { query: { 'point.lat': lat, 'point.lon': 0 } };
+      sanitize(req, function(){
+        t.equal(req.errors[0], 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
+        t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
       });
     });
     t.end();
   });
   test('valid lat', function(t) {
     lats.valid.forEach( function( lat ){
-      sanitize({ 'point.lat': lat, 'point.lon': 0 }, function( err, clean ){
+      var req = { query: { 'point.lat': lat, 'point.lon': 0 } };
+      sanitize(req, function(){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lat = parseFloat( lat );
-        t.equal(err, undefined, 'no error');
-        t.equal(clean.lat, parseFloat(lat), 'clean set correctly (' + lat + ')');
+        t.deepEqual(req.errors, [], 'no errors');
+        t.equal(req.clean.lat, parseFloat(lat), 'clean set correctly (' + lat + ')');
       });
     });
     t.end();
   });
   test('missing lat', function(t) {
     lats.missing.forEach( function( lat ){
-      sanitize({ 'point.lat': lat, 'point.lon': 0 }, function( err, clean ){
-        t.equal(err, 'missing param \'lat\'', 'latitude is a required field');
-        t.equal(clean, undefined, 'clean not set');
+      var req = { query: { 'point.lat': lat, 'point.lon': 0 } };
+      sanitize(req, function(){
+        t.equal(req.errors[0], 'missing param \'lat\'', 'latitude is a required field');
+        t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
       });
     });
     t.end();
@@ -81,43 +89,50 @@ module.exports.tests.sanitize_lon = function(test, common) {
   };
   test('valid lon', function(t) {
     lons.valid.forEach( function( lon ){
-      sanitize({ 'point.lat': 0, 'point.lon': lon }, function( err, clean ){
+      var req = { query: { 'point.lat': 0, 'point.lon': lon } };
+      sanitize(req, function(){
         var expected = JSON.parse(JSON.stringify( defaultClean ));
         expected.lon = parseFloat( lon );
-        t.equal(err, undefined, 'no error');
-        t.equal(clean.lon, parseFloat(lon), 'clean set correctly (' + lon + ')');
+        t.deepEqual(req.errors, [], 'no errors');
+        t.equal(req.clean.lon, parseFloat(lon), 'clean set correctly (' + lon + ')');
       });
     });
     t.end();
   });
   test('missing lon', function(t) {
     lons.missing.forEach( function( lon ){
-      sanitize({ 'point.lat': 0, 'point.lon': lon }, function( err, clean ){
-        t.equal(err, 'missing param \'lon\'', 'longitude is a required field');
-        t.equal(clean, undefined, 'clean not set');
+      var req = { query: { 'point.lat': 0, 'point.lon': lon } };
+
+      // @todo: why is lat set?
+      var expected = { boundary: {}, categories: [], lat: 0, private: false, size: 10, types: {} };
+      sanitize(req, function(){
+        t.equal(req.errors[0], 'missing param \'lon\'', 'longitude is a required field');
+        t.deepEqual(req.clean, expected, 'clean only has default values set');
       });
     });
     t.end();
   });
 };
 
-
 module.exports.tests.sanitize_size = function(test, common) {
   test('invalid size value', function(t) {
-    sanitize({ size: 'a', 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
-      t.equal(clean.size, 10, 'default size set');
+    var req = { query: { size: 'a', 'point.lat': 0, 'point.lon': 0 } };
+    sanitize(req, function(){
+      t.equal(req.clean.size, 10, 'default size set');
       t.end();
     });
   });
   test('below min size value', function(t) {
-    sanitize({ size: -100, 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
-      t.equal(clean.size, 1, 'min size set');
+    var req = { query: { size: -100, 'point.lat': 0, 'point.lon': 0 } };
+    sanitize(req, function(){
+      t.equal(req.clean.size, 1, 'min size set');
       t.end();
     });
   });
   test('above max size value', function(t) {
-    sanitize({ size: 9999, 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
-      t.equal(clean.size, 40, 'max size set');
+    var req = { query: { size: 9999, 'point.lat': 0, 'point.lon': 0 } };
+    sanitize(req, function(){
+      t.equal(req.clean.size, 40, 'max size set');
       t.end();
     });
   });
@@ -127,8 +142,9 @@ module.exports.tests.sanitize_private = function(test, common) {
   var invalid_values = [null, -1, 123, NaN, 'abc'];
   invalid_values.forEach(function(value) {
     test('invalid private param ' + value, function(t) {
-      sanitize({ 'point.lat': 0, 'point.lon': 0, 'private': value}, function( err, clean ){
-        t.equal(clean.private, false, 'default private set (to false)');
+      var req = { query: { 'point.lat': 0, 'point.lon': 0, 'private': value } };
+      sanitize(req, function(){
+        t.equal(req.clean.private, false, 'default private set (to false)');
         t.end();
       });
     });
@@ -137,8 +153,9 @@ module.exports.tests.sanitize_private = function(test, common) {
   var valid_values = ['true', true, 1, '1'];
   valid_values.forEach(function(value) {
     test('valid private param ' + value, function(t) {
-      sanitize({ 'point.lat': 0, 'point.lon': 0, 'private': value }, function( err, clean ){
-        t.equal(clean.private, true, 'private set to true');
+      var req = { query: { 'point.lat': 0, 'point.lon': 0, 'private': value } };
+      sanitize(req, function(){
+        t.equal(req.clean.private, true, 'private set to true');
         t.end();
       });
     });
@@ -147,78 +164,67 @@ module.exports.tests.sanitize_private = function(test, common) {
   var valid_false_values = ['false', false, 0];
   valid_false_values.forEach(function(value) {
     test('test setting false explicitly ' + value, function(t) {
-      sanitize({ 'point.lat': 0, 'point.lon': 0, 'private': value }, function( err, clean ){
-        t.equal(clean.private, false, 'private set to false');
+      var req = { query: { 'point.lat': 0, 'point.lon': 0, 'private': value } };
+      sanitize(req, function(){
+        t.equal(req.clean.private, false, 'private set to false');
         t.end();
       });
     });
   });
 
   test('test default behavior', function(t) {
-    sanitize({ 'point.lat': 0, 'point.lon': 0 }, function( err, clean ){
-      t.equal(clean.private, false, 'private set to false');
+    var req = { query: { 'point.lat': 0, 'point.lon': 0 } };
+    sanitize(req, function(){
+      t.equal(req.clean.private, false, 'private set to false');
       t.end();
     });
   });
 };
 
 module.exports.tests.sanitize_categories = function(test, common) {
-  var queryParams = { 'point.lat': 0, 'point.lon': 0 };
+  var req = { query: { 'point.lat': 0, 'point.lon': 0 } };
   test('unspecified', function(t) {
-    queryParams.categories = undefined;
-    sanitize(queryParams, function( err, clean ){
-      t.deepEqual(clean.categories, defaultClean.categories, 'default to empty categories array');
+    req.query.categories = undefined;
+    sanitize(req, function(){
+      t.deepEqual(req.clean.categories, defaultClean.categories, 'default to empty categories array');
       t.end();
     });
   });
   test('single category', function(t) {
-    queryParams.categories = 'food';
-    sanitize(queryParams, function( err, clean ){
-      t.deepEqual(clean.categories, ['food'], 'category set');
+    req.query.categories = 'food';
+    sanitize(req, function(){
+      t.deepEqual(req.clean.categories, ['food'], 'category set');
       t.end();
     });
   });
   test('multiple categories', function(t) {
-    queryParams.categories = 'food,education,nightlife';
-    sanitize(queryParams, function( err, clean ){
-      t.deepEqual(clean.categories, ['food', 'education', 'nightlife'], 'categories set');
+    req.query.categories = 'food,education,nightlife';
+    sanitize(req, function(){
+      t.deepEqual(req.clean.categories, ['food', 'education', 'nightlife'], 'categories set');
       t.end();
     });
   });
   test('whitespace and empty strings', function(t) {
-    queryParams.categories = 'food, , nightlife ,';
-    sanitize(queryParams, function( err, clean ){
-      t.deepEqual(clean.categories, ['food', 'nightlife'], 'categories set');
+    req.query.categories = 'food, , nightlife ,';
+    sanitize(req, function(){
+      t.deepEqual(req.clean.categories, ['food', 'nightlife'], 'categories set');
       t.end();
     });
   });
   test('all empty strings', function(t) {
-    queryParams.categories = ', ,  ,';
-    sanitize(queryParams, function( err, clean ){
-      t.deepEqual(clean.categories, defaultClean.categories, 'empty strings filtered out');
+    req.query.categories = ', ,  ,';
+    sanitize(req, function(){
+      t.deepEqual(req.clean.categories, defaultClean.categories, 'empty strings filtered out');
       t.end();
     });
-  });
-};
-
-module.exports.tests.middleware_failure = function(test, common) {
-  test('middleware failure', function(t) {
-    var res = { status: function( code ){
-      t.equal(code, 400, 'status set');
-    }};
-    var next = function( message ){
-      t.equals(message, defaultError);
-      t.end();
-    };
-    middleware( {}, res, next );
   });
 };
 
 module.exports.tests.middleware_success = function(test, common) {
   test('middleware success', function(t) {
     var req = { query: { 'point.lat': 0, 'point.lon': 0 }};
-    var next = function( message ){
-      t.equal(message, undefined, 'no error message set');
+    var next = function(){
+      t.deepEqual(req.errors, [], 'no error message set');
       t.deepEqual(req.clean, defaultClean);
       t.end();
     };

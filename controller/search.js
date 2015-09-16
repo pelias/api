@@ -8,6 +8,12 @@ function setup( backend, query ){
 
   function controller( req, res, next ){
 
+    // do not run controller when a request
+    // validation error has occurred.
+    if( req.errors && req.errors.length ){
+      return next();
+    }
+
     // backend command
     var cmd = {
       index: 'pelias',

@@ -14,11 +14,6 @@ function setup(peliasConfig) {
 
 function convertToGeocodeJSON(peliasConfig, req, res, next) {
 
-  // do nothing if no result data set
-  if (!res || !res.data) {
-    return next();
-  }
-
   res.body = { geocoding: {} };
 
   // REQUIRED. A semver.org compliant version number. Describes the version of
@@ -38,8 +33,8 @@ function convertToGeocodeJSON(peliasConfig, req, res, next) {
   res.body.geocoding.query = req.clean;
 
   // OPTIONAL. Warnings and errors.
-  addMessages(res, 'warnings', res.body.geocoding);
-  addMessages(res, 'errors', res.body.geocoding);
+  addMessages(req, 'warnings', res.body.geocoding);
+  addMessages(req, 'errors', res.body.geocoding);
 
   // OPTIONAL
   // Freeform
@@ -49,15 +44,14 @@ function convertToGeocodeJSON(peliasConfig, req, res, next) {
   res.body.geocoding.timestamp = new Date().getTime();
 
   // convert docs to geojson and merge with geocoding block
-  extend(res.body, geojsonify(res.data));
+  extend(res.body, geojsonify(res.data || []));
 
   next();
 }
 
-function addMessages(results, msgType, geocoding) {
-  if (results.hasOwnProperty(msgType)) {
-    geocoding.messages = geocoding.messages || {};
-    geocoding.messages[msgType] = results[msgType];
+function addMessages(req, msgType, geocoding) {
+  if (req.hasOwnProperty(msgType) && req[msgType].length) {
+    geocoding[msgType] = req[msgType];
   }
 }
 

@@ -18,8 +18,18 @@ function sanitize( raw, clean ){
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  // 'raw.id' can be an array!?
-  var rawIds = check.array( raw.id ) ? _.unique( raw.id ) : [ raw.id ];
+  // 'raw.id' can be an array
+  var rawIds = check.array( raw.id ) ? _.unique( raw.id ) : [];
+
+  // 'raw.id' can be a string
+  if( check.unemptyString( raw.id ) ){
+    rawIds.push( raw.id );
+  }
+
+  // no ids provided
+  if( !rawIds.length ){
+    messages.errors.push( errorMessage('id') );
+  }
 
   // ensure all elements are valid non-empty strings
   rawIds = rawIds.filter( function( uc ){
@@ -48,25 +58,27 @@ function sanitize( raw, clean ){
     }
 
     // id text
-    if( !check.unemptyString( id ) ){
+    else if( !check.unemptyString( id ) ){
       messages.errors.push( errorMessage( rawId ) );
     }
     // type text
-    if( !check.unemptyString( type ) ){
+    else if( !check.unemptyString( type ) ){
       messages.errors.push( errorMessage( rawId ) );
     }
     // type text must be one of the types
-    if( !_.contains( types, type ) ){
+    else if( !_.contains( types, type ) ){
       messages.errors.push(
         errorMessage('type', type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']')
       );
     }
-
     // add valid id to 'clean.ids' array
-    clean.ids.push({
-      id: id,
-      type: type
-    });
+    else {
+      clean.ids.push({
+        id: id,
+        type: type
+      });
+    }
+
   });
 
   return messages;
