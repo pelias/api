@@ -3,19 +3,7 @@
 var place  = require('../../../sanitiser/place'),
     sanitize = place.sanitize,
     middleware = place.middleware,
-    types = require('../../../query/types'),
-    delimiter = ':',
-    defaultLengthError = function(input) { return 'invalid param \''+ input + '\': text length, must be >0'; },
-    defaultFormatError = 'invalid: must be of the format type:id for ex: \'geoname:4163334\'',
-    defaultError = 'invalid param \'ids\': text length, must be >0',
-    defaultMissingTypeError = function(input) {
-      var type = input.split(delimiter)[0];
-      return type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']'; },
-    defaultClean = { ids: [ { id: '123', type: 'geoname' } ], private: false },
-    inputs = {
-      valid: [ 'geoname:1', 'osmnode:2', 'admin0:53', 'osmway:44', 'geoname:5' ],
-      invalid: [ ':', '', '::', 'geoname:', ':234', 'gibberish:23' ]
-    };
+    defaultClean = { ids: [ { id: '123', type: 'geoname' } ], private: false };
 
 // these are the default values you would expect when no input params are specified.
 module.exports.tests = {};
@@ -30,91 +18,6 @@ module.exports.tests.interface = function(test, common) {
     t.equal(typeof middleware, 'function', 'middleware is a function');
     t.equal(middleware.length, 3, 'sanitize has a valid middleware');
     t.end();
-  });
-};
-
-module.exports.tests.sanitize_id = function(test, common) {
-  test('ids: invalid input', function(t) {
-    inputs.invalid.forEach( function( input ){
-      var req = { query: { ids: input } };
-      sanitize(req, function( ){
-        switch (req.errors[0]) {
-          case defaultError:
-            t.equal(req.errors[0], defaultError, input + ' is invalid input'); break;
-          case defaultLengthError(input):
-            t.equal(req.errors[0], defaultLengthError(input), input + ' is invalid (missing id/type)'); break;
-          case defaultFormatError:
-            t.equal(req.errors[0], defaultFormatError, input + ' is invalid (invalid format)'); break;
-          case defaultMissingTypeError(input):
-            t.equal(req.errors[0], defaultMissingTypeError(input), input + ' is an unknown type'); break;
-          default: break;
-        }
-        t.equal(req.clean.ids, undefined, 'clean has no ids value set');
-      });
-    });
-    t.end();
-  });
-
-  test('ids: valid input', function(t) {
-    inputs.valid.forEach( function( input ){
-      var input_parts = input.split(delimiter);
-      var expected = { ids: [ { id: input_parts[1], type: input_parts[0] } ], private: false };
-      var req = { query: { ids: input } };
-      sanitize(req, function(){
-        t.deepEqual( req.errors, [], 'no error (' + input + ')' );
-        t.deepEqual( req.clean, expected, 'clean set correctly (' + input + ')');
-      });
-    });
-    t.end();
-  });
-};
-
-module.exports.tests.sanitize_ids = function(test, common) {
-  test('ids: invalid input with multiple values', function(t) {
-    var req = { query: { ids: inputs.invalid.join(',') } };
-    var expected = [
-      'invalid param \'ids\': text length, must be >0',
-      'invalid param \':\': text length, must be >0',
-      'invalid param \'::\': text length, must be >0',
-      'invalid param \'geoname:\': text length, must be >0',
-      'invalid param \':234\': text length, must be >0',
-      'gibberish is invalid. It must be one of these values - ' +
-      '[geoname, osmnode, osmway, admin0, admin1, admin2, neighborhood, ' +
-      'locality, local_admin, osmaddress, openaddresses]'
-    ];
-    sanitize(req, function(){
-      t.deepEqual(req.errors, expected);
-      t.equal(req.clean.ids, undefined, 'clean has no ids value set');
-    });
-    t.end();
-  });
-
-  test('ids: valid input with multiple of values' , function(t) {
-    var expected={};
-    expected.ids = [];
-    inputs.valid.forEach( function( input ){
-      var input_parts = input.split(delimiter);
-      expected.ids.push({ id: input_parts[1], type: input_parts[0] });
-    });
-    expected.private = false;
-    var req = { query: { ids: inputs.valid.join(',') } };
-    sanitize(req, function(){
-      t.deepEqual( req.errors, [], 'no errors' );
-      t.deepEqual( req.clean, expected, 'clean set correctly' );
-    });
-    t.end();
-  });
-};
-
-module.exports.tests.array_of_ids = function(test, common) {
-  // see https://github.com/pelias/api/issues/272
-  test('array of ids sent by queryparser', function(t) {
-    var req = { query: { ids: ['geoname:2', 'oswmay:4'] } };
-    sanitize(req, function() {
-      t.deepEqual( req.errors, ['`ids` parameter specified multiple times.'], 'error sent' );
-      t.deepEqual( req.clean.ids, undefined, 'response is empty due to error' );
-      t.end();
-    });
   });
 };
 
@@ -164,32 +67,6 @@ module.exports.tests.sanitize_private = function(test, common) {
       t.deepEqual( req.errors, [], 'no errors' );
       t.deepEqual( req.warnings, [], 'no warnings' );
       t.equal(req.clean.private, false, 'private set to false');
-      t.end();
-    });
-  });
-};
-
-module.exports.tests.multiple_ids = function(test, common) {
-  var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], private: false };
-  var req = { query: { ids: 'geoname:1,osmnode:2' } };
-  test('duplicate ids', function(t) {
-    sanitize( req, function(){
-      t.deepEqual( req.errors, [], 'no errors' );
-      t.deepEqual( req.warnings, [], 'no warnings' );
-      t.deepEqual(req.clean, expected, 'clean set correctly');
-      t.end();
-    });
-  });
-};
-
-module.exports.tests.de_dupe = function(test, common) {
-  var expected = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ], private: false };
-  var req = { query: { ids: 'geoname:1,osmnode:2,geoname:1' } };
-  test('duplicate ids', function(t) {
-    sanitize( req, function(){
-      t.deepEqual( req.errors, [], 'no errors' );
-      t.deepEqual( req.warnings, [], 'no warnings' );
-      t.deepEqual(req.clean, expected, 'clean set correctly');
       t.end();
     });
   });
