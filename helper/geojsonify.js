@@ -178,13 +178,13 @@ function copyProperties( source, props, dst ) {
 }
 
 /**
- * Determine and set place id, type, and source
+ * Determine and set place gid, type, and source
  *
  * @param {object} src
  * @param {object} dst
  */
 function addMetaData(src, dst) {
-  dst.id = src._id;
+  dst.gid = src._type + ':' + src._id;
   dst.layer = lookupLayer(src);
   dst.source = lookupSource(src);
 }
