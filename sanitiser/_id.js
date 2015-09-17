@@ -1,4 +1,3 @@
-
 var _ = require('lodash'),
     check = require('check-types'),
     types = require('../query/types');
@@ -14,7 +13,6 @@ function errorMessage(fieldname, message) {
 }
 
 function sanitize( raw, clean ){
-
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 

@@ -1,4 +1,3 @@
-
 // @todo: refactor this test, it's pretty messy, brittle and hard to follow
 
 var place  = require('../../../sanitiser/place'),
@@ -71,7 +70,6 @@ module.exports.tests.sanitize_id = function(test, common) {
     t.end();
   });
 };
-
 
 module.exports.tests.sanitize_ids = function(test, common) {
   test('ids: invalid input', function(t) {
