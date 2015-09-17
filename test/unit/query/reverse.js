@@ -22,6 +22,18 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  test('valid query', function(t) {
+    var query = generate({
+      'point.lat': 0, 'point.lon': 0
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/reverse_null_island');
+
+    t.deepEqual(compiled, expected, 'valid reverse query');
+    t.end();
+  });
+
   test('valid query with radius', function(t) {
     var query = generate({
       'point.lat': 29.49136, 'point.lon': -82.50622, 'boundary.circle.radius': 123

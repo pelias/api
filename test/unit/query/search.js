@@ -83,6 +83,21 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  test('search search + focus on null island', function(t) {
+    var query = generate({
+      text: 'test', size: 10,
+      'focus.point.lat': 0, 'focus.point.lon': 0,
+      layers: ['test']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_linguistic_focus_null_island');
+    expected.sort = sort;
+
+    t.deepEqual(compiled, expected, 'valid search query');
+    t.end();
+  });
+
   test('valid query with a full valid address', function(t) {
     var address = '123 main st new york ny 10010 US';
     var query = generate({ text: address,

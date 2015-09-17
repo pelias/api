@@ -1,5 +1,6 @@
 var peliasQuery = require('pelias-query'),
-    defaults = require('./defaults');
+    defaults = require('./defaults'),
+    check = require('check-types');
 
 //------------------------------
 // reverse geocode query
@@ -38,7 +39,7 @@ function generateQuery( clean ){
   }
 
   // focus point centroid
-  if( clean['point.lat'] && clean['point.lon'] ){
+  if( check.number(clean['point.lat']) && check.number(clean['point.lon']) ){
     vs.set({
       // focus point to score by distance
       'focus:point:lat': clean['point.lat'],

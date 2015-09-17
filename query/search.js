@@ -1,6 +1,7 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./defaults'),
-    textParser = require('./text_parser');
+    textParser = require('./text_parser'),
+    check = require('check-types');
 
 //------------------------------
 // general-purpose search query
@@ -58,7 +59,7 @@ function generateQuery( clean ){
   }
 
   // focus point
-  if( clean['focus.point.lat'] && clean['focus.point.lon'] ){
+  if( check.number(clean['focus.point.lat']) && check.number(clean['focus.point.lon']) ){
     vs.set({
       'focus:point:lat': clean['focus.point.lat'],
       'focus:point:lon': clean['focus.point.lon']
