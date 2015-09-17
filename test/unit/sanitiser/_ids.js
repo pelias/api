@@ -100,16 +100,17 @@ module.exports.tests.valid_ids = function(test, common) {
     t.end();
   });
 
-  test('ids: valid input with multiple of values' , function(t) {
+  test('ids: valid input with multiple values' , function(t) {
+    var raw = { ids: inputs.valid.join(',') };
+    var clean = {};
     var expected_clean={
       ids: [],
     };
+    // construct the expected id and type for each valid input
     inputs.valid.forEach( function( input ){
       var input_parts = input.split(delimiter);
       expected_clean.ids.push({ id: input_parts[1], type: input_parts[0] });
     });
-    var raw = { ids: inputs.valid.join(',') };
-    var clean = {};
 
     var messages = sanitize( raw, clean );
 
