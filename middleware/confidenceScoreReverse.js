@@ -35,7 +35,7 @@ function computeScores(req, res, next) {
 
 function computeConfidenceScore(req, hit) {
   // non-number or invalid distance should be given confidence 0.0
-  if (typeof hit.distance !== 'number' || hit.distance < 0) {
+  if (!_.isFinite(hit.distance) || hit.distance < 0) {
     hit.confidence = INVALID;
     return hit;
   }
@@ -43,16 +43,15 @@ function computeConfidenceScore(req, hit) {
   var distance = hit.distance * 1000.0;
 
   // figure out which range the distance lies in and assign confidence accordingly
-  // TODO: this could probably be made more node-y with a map of function->number
   if (distance < _1_METER) {
     hit.confidence = EXACT;
-  } else if (_.inRange(distance, _1_METER, _10_METERS)) {
+  } else if (distance < _10_METERS) {
     hit.confidence = EXCELLENT;
-  } else if (_.inRange(distance, _10_METERS, _100_METERS)) {
+  } else if (distance < _100_METERS) {
     hit.confidence = GOOD;
-  } else if (_.inRange(distance, _100_METERS, _250_METERS)) {
+  } else if (distance < _250_METERS) {
     hit.confidence = OKAY;
-  } else if (_.inRange(distance, _250_METERS, _1_KILOMETER)) {
+  } else if (distance < _1_KILOMETER) {
     hit.confidence = POOR;
   } else {
     hit.confidence = NONE;
