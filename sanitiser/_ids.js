@@ -46,7 +46,7 @@ function sanitize( raw, clean ){
   });
 
   // init 'clean.ids'
-  clean.ids = [];
+  var validIds = [];
 
   // cycle through raw ids and set those which are valid
   rawIds.forEach( function( rawId ){
@@ -74,13 +74,17 @@ function sanitize( raw, clean ){
     }
     // add valid id to 'clean.ids' array
     else {
-      clean.ids.push({
+      validIds.push({
         id: id,
         type: type
       });
     }
 
   });
+
+  if (validIds.length > 0) {
+    clean.ids = validIds;
+  }
 
   return messages;
 }

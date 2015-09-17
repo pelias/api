@@ -18,8 +18,6 @@ var place  = require('../../../sanitiser/place'),
     };
 
 // these are the default values you would expect when no input params are specified.
-var emptyClean = { ids: [], private: false };
-
 module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
@@ -51,7 +49,7 @@ module.exports.tests.sanitize_id = function(test, common) {
             t.equal(req.errors[0], defaultMissingTypeError(input), input + ' is an unknown type'); break;
           default: break;
         }
-        t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
+        t.equal(req.clean.ids, undefined, 'clean has no ids value set');
       });
     });
     t.end();
@@ -86,7 +84,7 @@ module.exports.tests.sanitize_ids = function(test, common) {
     ];
     sanitize(req, function(){
       t.deepEqual(req.errors, expected);
-      t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
+      t.equal(req.clean.ids, undefined, 'clean has no ids value set');
     });
     t.end();
   });

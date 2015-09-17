@@ -30,5 +30,5 @@ json.geocoding.errors.should.eql [ 'invalid param \'ids\': text length, must be 
 should.not.exist json.geocoding.warnings
 
 #? inputs
-json.geocoding.query['ids'].should.eql []
+should.not.exist json.geocoding.query['ids']
 should.not.exist json.geocoding.query['size']
