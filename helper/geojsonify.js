@@ -178,6 +178,16 @@ function copyProperties( source, props, dst ) {
 }
 
 /**
+ * Create a gid from a document
+ * @TODO modify all importers to create separate source and layer fields to remove mapping
+ *
+ * @param {object} src
+ */
+function makeGid(src) {
+  return lookupSource(src) + ':' + lookupLayer(src) + ':' + src._id;
+}
+
+/**
  * Determine and set place id, type, and source
  *
  * @param {object} src
@@ -185,6 +195,7 @@ function copyProperties( source, props, dst ) {
  */
 function addMetaData(src, dst) {
   dst.id = src._id;
+  dst.gid = makeGid(src);
   dst.layer = lookupLayer(src);
   dst.source = lookupSource(src);
 }
