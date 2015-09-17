@@ -16,32 +16,75 @@ var defaultLengthError = function(input) { return 'invalid param \''+ input + '\
 
 module.exports.tests = {};
 
-module.exports.tests.sanitize_id = function(test, common) {
-  test('ids: invalid input', function(t) {
-    inputs.invalid.forEach( function( input ){
-      var raw = { ids: input };
-      var clean = {};
+module.exports.tests.invalid_ids = function(test, common) {
+  test('invalid id: empty string', function(t) {
+    var raw = { ids: '' };
+    var clean = {};
 
-      var messages = sanitize(raw, clean);
+    var messages = sanitize(raw, clean);
 
-      switch (messages.errors[0]) {
-        case defaultError:
-          t.equal(messages.errors[0], defaultError, input + ' is invalid input'); break;
-        case defaultLengthError(input):
-          t.equal(messages.errors[0], defaultLengthError(input), input + ' is invalid (missing id/type)'); break;
-        case defaultFormatError:
-          t.equal(messages.errors[0], defaultFormatError, input + ' is invalid (invalid format)'); break;
-        case defaultMissingTypeError(input):
-          t.equal(messages.errors[0], defaultMissingTypeError(input), input + ' is an unknown type'); break;
-        default:
-          t.fail('error didn\'t match');
-        break;
-      }
-      t.equal(clean.ids, undefined, 'clean has no ids value set');
-    });
+    t.equal(messages.errors[0], defaultError, 'ids length error returned');
+    t.equal(clean.ids, undefined, 'ids unset in clean object');
     t.end();
   });
 
+  test('invalid id: single colon', function(t) {
+    var raw = { ids: ':' };
+    var clean = {};
+
+    var messages = sanitize(raw, clean);
+
+    t.equal(messages.errors[0], defaultLengthError(':'), 'format error returned');
+    t.equal(clean.ids, undefined, 'ids unset in clean object');
+    t.end();
+  });
+
+  test('invalid id: double colon', function(t) {
+    var raw = { ids: '::' };
+    var clean = {};
+
+    var messages = sanitize(raw, clean);
+
+    t.equal(messages.errors[0], defaultLengthError('::'), 'format error returned');
+    t.equal(clean.ids, undefined, 'ids unset in clean object');
+    t.end();
+  });
+
+  test('invalid id: only type section present', function(t) {
+    var raw = { ids: 'geoname:' };
+    var clean = {};
+
+    var messages = sanitize(raw, clean);
+
+    t.equal(messages.errors[0], defaultLengthError('geoname:'), 'format error returned');
+    t.equal(clean.ids, undefined, 'ids unset in clean object');
+    t.end();
+  });
+
+  test('invalid id: only type id section present', function(t) {
+    var raw = { ids: ':234' };
+    var clean = {};
+
+    var messages = sanitize(raw, clean);
+
+    t.equal(messages.errors[0], defaultLengthError(':234'), 'format error returned');
+    t.equal(clean.ids, undefined, 'ids unset in clean object');
+    t.end();
+  });
+
+  test('invalid id: type name invalid', function(t) {
+    var raw = { ids: 'gibberish:23' };
+    var clean = {};
+
+    var messages = sanitize(raw, clean);
+
+    t.equal(messages.errors[0], defaultMissingTypeError('gibberish:23'), 'format error returned');
+    t.equal(clean.ids, undefined, 'ids unset in clean object');
+    t.end();
+  });
+};
+
+module.exports.tests.valid_ids = function(test, common) {
   test('ids: valid input', function(t) {
     inputs.valid.forEach( function( input ){
       var input_parts = input.split(delimiter);
