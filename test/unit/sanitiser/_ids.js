@@ -6,9 +6,12 @@ var inputs = {
   valid: [ 'geoname:1', 'osmnode:2', 'admin0:53', 'osmway:44', 'geoname:5' ],
   invalid: [ ':', '', '::', 'geoname:', ':234', 'gibberish:23' ]
 };
-var defaultLengthError = function(input) { return 'invalid param \''+ input + '\': text length, must be >0'; },
-  defaultFormatError = 'invalid: must be of the format type:id for ex: \'geoname:4163334\'',
-  defaultError = 'invalid param \'ids\': text length, must be >0',
+
+var formatError = function(input) {
+  return 'id `' + input + 'is invalid: must be of the format type:id for ex: \'geoname:4163334\'';
+};
+
+var defaultError = 'invalid param \'ids\': text length, must be >0',
   defaultMissingTypeError = function(input) {
     var type = input.split(delimiter)[0];
     return type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']';
@@ -34,7 +37,7 @@ module.exports.tests.invalid_ids = function(test, common) {
 
     var messages = sanitize(raw, clean);
 
-    t.equal(messages.errors[0], defaultLengthError(':'), 'format error returned');
+    t.equal(messages.errors[0], formatError(':'), 'format error returned');
     t.equal(clean.ids, undefined, 'ids unset in clean object');
     t.end();
   });
@@ -45,7 +48,7 @@ module.exports.tests.invalid_ids = function(test, common) {
 
     var messages = sanitize(raw, clean);
 
-    t.equal(messages.errors[0], defaultLengthError('::'), 'format error returned');
+    t.equal(messages.errors[0], formatError('::'), 'format error returned');
     t.equal(clean.ids, undefined, 'ids unset in clean object');
     t.end();
   });
@@ -56,7 +59,7 @@ module.exports.tests.invalid_ids = function(test, common) {
 
     var messages = sanitize(raw, clean);
 
-    t.equal(messages.errors[0], defaultLengthError('geoname:'), 'format error returned');
+    t.equal(messages.errors[0], formatError('geoname:'), 'format error returned');
     t.equal(clean.ids, undefined, 'ids unset in clean object');
     t.end();
   });
@@ -67,7 +70,7 @@ module.exports.tests.invalid_ids = function(test, common) {
 
     var messages = sanitize(raw, clean);
 
-    t.equal(messages.errors[0], defaultLengthError(':234'), 'format error returned');
+    t.equal(messages.errors[0], formatError(':234'), 'format error returned');
     t.equal(clean.ids, undefined, 'ids unset in clean object');
     t.end();
   });

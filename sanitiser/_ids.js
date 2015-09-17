@@ -12,6 +12,10 @@ function errorMessage(fieldname, message) {
   return message || 'invalid param \''+ fieldname + '\': text length, must be >0';
 }
 
+var formatError = function(input) {
+  return 'id `' + input + 'is invalid: must be of the format type:id for ex: \'geoname:4163334\'';
+};
+
 function sanitize( raw, clean ){
   // error & warning messages
   var messages = { errors: [], warnings: [] };
@@ -45,23 +49,14 @@ function sanitize( raw, clean ){
     var type = rawId.substring(0, param_index );
     var id   = rawId.substring(param_index + 1);
 
-    // basic format/ presence of ':'
-    if(param_index === -1) {
-      messages.errors.push( 'invalid: must be of the format type:id for ex: \'geoname:4163334\'' );
-    }
-    // id text
-    else if( !check.unemptyString( id ) ){
-      messages.errors.push( errorMessage( rawId ) );
-    }
-    // type text
-    else if( !check.unemptyString( type ) ){
-      messages.errors.push( errorMessage( rawId ) );
+    // check id format
+    if(param_index === -1 || !check.unemptyString( id ) || !check.unemptyString( type )) {
+      messages.errors.push( formatError(rawId) );
     }
     // type text must be one of the types
     else if( !_.contains( types, type ) ){
       messages.errors.push( type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']' );
     }
-    // add valid id to 'clean.ids' array
     else {
       return {
         id: id,
