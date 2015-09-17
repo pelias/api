@@ -196,10 +196,10 @@ module.exports.tests.de_dupe = function(test, common) {
 };
 
 module.exports.tests.invalid_params = function(test, common) {
-  test('invalid params', function(t) {
+  test('no params', function(t) {
     var req = { query: {} };
     sanitize( req, function(){
-      t.equal( req.errors[0], defaultError, 'handle invalid params gracefully');
+      t.equal( req.errors[0], 'invalid param \'ids\': text length, must be >0', 'error for missing `ids` param');
       t.deepEqual( req.warnings, [], 'no warnings' );
       t.end();
     });
