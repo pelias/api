@@ -62,9 +62,7 @@ function sanitize( raw, clean ){
 
     // basic format/ presence of ':'
     if(param_index === -1) {
-      messages.errors.push(
-        errorMessage(null, 'invalid: must be of the format type:id for ex: \'geoname:4163334\'')
-      );
+      messages.errors.push( 'invalid: must be of the format type:id for ex: \'geoname:4163334\'' );
     }
 
     // id text
@@ -77,9 +75,7 @@ function sanitize( raw, clean ){
     }
     // type text must be one of the types
     else if( !_.contains( types, type ) ){
-      messages.errors.push(
-        errorMessage('type', type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']')
-      );
+      messages.errors.push( type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']' );
     }
     // add valid id to 'clean.ids' array
     else {
