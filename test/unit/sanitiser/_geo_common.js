@@ -21,13 +21,14 @@ module.exports.tests.sanitize = function(test, common) {
     };
     var is_required = true;
     var all_required = true;
-    
+
     sanitize.sanitize_boundary_circle(clean, params, is_required, all_required);
-    t.equal(clean.boundary_circle_lat, params['boundary.circle.lat'], 'lat approved');
-    t.equal(clean.boundary_circle_lon, params['boundary.circle.lon'], 'lon approved');
-    t.equal(clean.boundary_circle_radius, params['boundary.circle.radius'], 'radius approved');
+    t.equal(clean['boundary.circle.lat'], params['boundary.circle.lat'], 'lat approved');
+    t.equal(clean['boundary.circle.lon'], params['boundary.circle.lon'], 'lon approved');
+    t.equal(clean['boundary.circle.radius'], params['boundary.circle.radius'], 'radius approved');
     t.end();
   });
+
   test('valid circle, radius only, all not required', function (t) {
     var clean = {};
     var params = {
@@ -37,7 +38,7 @@ module.exports.tests.sanitize = function(test, common) {
     var all_required = false;
 
     sanitize.sanitize_boundary_circle(clean, params, is_required, all_required);
-    t.equal(clean.boundary_circle_radius, params['boundary.circle.radius'], 'radius approved');
+    t.equal(clean['boundary.circle.radius'], params['boundary.circle.radius'], 'radius approved');
     t.end();
   });
 };

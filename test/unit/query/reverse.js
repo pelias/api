@@ -12,7 +12,7 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.query = function(test, common) {
   test('valid query', function(t) {
     var query = generate({
-      lat: 29.49136, lon: -82.50622
+      'point.lat': 29.49136, 'point.lon': -82.50622
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -21,9 +21,22 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled, expected, 'valid reverse query');
     t.end();
   });
+
+  test('valid query', function(t) {
+    var query = generate({
+      'point.lat': 0, 'point.lon': 0
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/reverse_null_island');
+
+    t.deepEqual(compiled, expected, 'valid reverse query');
+    t.end();
+  });
+
   test('valid query with radius', function(t) {
     var query = generate({
-      lat: 29.49136, lon: -82.50622, boundary_circle_radius: 123
+      'point.lat': 29.49136, 'point.lon': -82.50622, 'boundary.circle.radius': 123
     });
 
     var compiled = JSON.parse( JSON.stringify( query )).query.filtered.filter.bool.must[0].geo_distance.distance;
@@ -32,27 +45,29 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled, expected, 'distance set to boundary circle radius');
     t.end();
   });
+
   test('valid query with boundary.circle lat/lon/radius', function(t) {
     var clean = {
-      lat: 29.49136,
-      lon: -82.50622,
-      boundary_circle_lat: 111,
-      boundary_circle_long: 333
+      'point.lat': 29.49136,
+      'point.lon': -82.50622,
+      'boundary.circle.lat': 111,
+      'boundary.circle.long': 333
     };
     var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query )).query.filtered.filter.bool.must[0].geo_distance.center_point;
-    var expected = { lat: clean.lat, lon: clean.lon };
+    var expected = { lat: clean['point.lat'], lon: clean['point.lon'] };
 
     t.deepEqual(compiled, expected, 'point.lat/lon overrides boundary.circle.lat/lon');
     t.end();
   });
+
   test('size fuzz test', function(t) {
     // test different sizes
     var sizes = [1,2,10,undefined,null];
     sizes.forEach( function( size ){
       var query = generate({
-        lat: 29.49136, lon: -82.50622, size: size
+        'point.lat': 29.49136, 'point.lon': -82.50622, size: size
       });
 
       var compiled = JSON.parse( JSON.stringify( query ) );
@@ -63,7 +78,7 @@ module.exports.tests.query = function(test, common) {
 
   test('valid boundary.country reverse search', function(t) {
     var query = generate({
-      lat: 29.49136, lon: -82.50622,
+      'point.lat': 29.49136, 'point.lon': -82.50622,
       boundary: { country: 'ABC' }
     });
 
@@ -73,7 +88,6 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled, expected, 'valid reverse query with boundary.country');
     t.end();
   });
-
 };
 
 module.exports.all = function (tape, common) {

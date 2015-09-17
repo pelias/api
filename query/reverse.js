@@ -1,6 +1,6 @@
-
 var peliasQuery = require('pelias-query'),
-    defaults = require('./defaults');
+    defaults = require('./defaults'),
+    check = require('check-types');
 
 //------------------------------
 // reverse geocode query
@@ -34,20 +34,20 @@ function generateQuery( clean ){
 
   // set radius, default to 500km if not specified in request
   var radius = 500;
-  if (clean.hasOwnProperty('boundary_circle_radius')) {
-    radius = clean.boundary_circle_radius;
+  if (clean.hasOwnProperty('boundary.circle.radius')) {
+    radius = clean['boundary.circle.radius'];
   }
 
   // focus point centroid
-  if( clean.lat && clean.lon ){
+  if( check.number(clean['point.lat']) && check.number(clean['point.lon']) ){
     vs.set({
       // focus point to score by distance
-      'focus:point:lat': clean.lat,
-      'focus:point:lon': clean.lon,
+      'focus:point:lat': clean['point.lat'],
+      'focus:point:lon': clean['point.lon'],
 
       // bounding circle
-      'boundary:circle:lat': clean.lat,
-      'boundary:circle:lon': clean.lon,
+      'boundary:circle:lat': clean['point.lat'],
+      'boundary:circle:lon': clean['point.lon'],
       'boundary:circle:radius': radius + 'km'
     });
   }

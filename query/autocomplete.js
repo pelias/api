@@ -1,6 +1,7 @@
 
 var peliasQuery = require('pelias-query'),
-    defaults = require('./defaults');
+    defaults = require('./defaults'),
+    check = require('check-types');
 
 //------------------------------
 // autocomplete query
@@ -31,10 +32,10 @@ function generateQuery( clean ){
   vs.var( 'size', 10 );
 
   // focus point
-  if( clean.lat && clean.lon ){
+  if( check.number(clean['focus.point.lat']) && check.number(clean['focus.point.lon']) ){
     vs.set({
-      'focus:point:lat': clean.lat,
-      'focus:point:lon': clean.lon
+      'focus:point:lat': clean['focus.point.lat'],
+      'focus:point:lon': clean['focus.point.lon']
     });
   }
 

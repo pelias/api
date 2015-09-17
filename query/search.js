@@ -1,7 +1,7 @@
-
 var peliasQuery = require('pelias-query'),
     defaults = require('./defaults'),
-    textParser = require('./text_parser');
+    textParser = require('./text_parser'),
+    check = require('check-types');
 
 //------------------------------
 // general-purpose search query
@@ -59,10 +59,10 @@ function generateQuery( clean ){
   }
 
   // focus point
-  if( clean.lat && clean.lon ){
+  if( check.number(clean['focus.point.lat']) && check.number(clean['focus.point.lon']) ){
     vs.set({
-      'focus:point:lat': clean.lat,
-      'focus:point:lon': clean.lon
+      'focus:point:lat': clean['focus.point.lat'],
+      'focus:point:lon': clean['focus.point.lon']
     });
   }
 
@@ -98,9 +98,9 @@ function generateQuery( clean ){
   }
 
   // boundary country
-  if( clean.boundary && clean.boundary.country ){
+  if( clean['boundary.country'] ){
     vs.set({
-      'boundary:country': clean.boundary.country
+      'boundary:country': clean['boundary.country']
     });
   }
 

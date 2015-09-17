@@ -1,4 +1,3 @@
-
 var geo_common = require ('./_geo_common');
 var LAT_LON_IS_REQUIRED = false;
 
@@ -9,8 +8,8 @@ module.exports = function sanitize( raw, clean ){
   var messages = { errors: [], warnings: [] };
 
   try {
-    geo_common.sanitize_coord( 'lat', clean, raw['focus.point.lat'], LAT_LON_IS_REQUIRED );
-    geo_common.sanitize_coord( 'lon', clean, raw['focus.point.lon'], LAT_LON_IS_REQUIRED );
+    geo_common.sanitize_coord( 'focus.point.lat', clean, raw['focus.point.lat'], LAT_LON_IS_REQUIRED );
+    geo_common.sanitize_coord( 'focus.point.lon', clean, raw['focus.point.lon'], LAT_LON_IS_REQUIRED );
     geo_common.sanitize_bbox(raw, clean);
   }
   catch (err) {
