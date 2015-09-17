@@ -43,6 +43,8 @@ var postProc = {
  */
 function addRoutes(app, peliasConfig) {
 
+  var base = '/v1/';
+
   /** ------------------------- routers ------------------------- **/
 
   var routers = {
@@ -58,7 +60,7 @@ function addRoutes(app, peliasConfig) {
       controllers.search(),
       postProc.confidenceScores(peliasConfig),
       postProc.renamePlacenames(),
-      postProc.geocodeJSON(peliasConfig),
+      postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     autocomplete: createRouter([
@@ -67,7 +69,7 @@ function addRoutes(app, peliasConfig) {
       controllers.search(null, require('../query/autocomplete')),
       postProc.confidenceScores(peliasConfig),
       postProc.renamePlacenames(),
-      postProc.geocodeJSON(peliasConfig),
+      postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     reverse: createRouter([
@@ -79,14 +81,14 @@ function addRoutes(app, peliasConfig) {
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),
       postProc.renamePlacenames(),
-      postProc.geocodeJSON(peliasConfig),
+      postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     place: createRouter([
       sanitisers.place.middleware,
       controllers.place(),
       postProc.renamePlacenames(),
-      postProc.geocodeJSON(peliasConfig),
+      postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     status: createRouter([
@@ -95,18 +97,19 @@ function addRoutes(app, peliasConfig) {
   };
 
 
-  var base = '/v1/';
-
-  // api root
+  // static data endpoints
   app.get ( base,                  routers.index );
   app.get ( base + 'attribution',  routers.attribution );
+  app.get (        '/attribution', routers.attribution );
+  app.get (        '/status',      routers.status );
+
+  // backend dependent endpoints
   app.get ( base + 'place',        routers.place );
   app.get ( base + 'autocomplete', routers.autocomplete );
   app.get ( base + 'search',       routers.search );
   app.post( base + 'search',       routers.search );
   app.get ( base + 'reverse',      routers.reverse );
 
-  app.get (        '/status',      routers.status );
 }
 
 /**

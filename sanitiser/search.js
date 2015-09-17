@@ -7,7 +7,6 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       sources: require('../sanitiser/_targets')('sources', require( '../query/sources' )),
       private: require('../sanitiser/_flag_bool')('private', false),
       geo_search: require('../sanitiser/_geo_search'),
-      categories: require('../sanitiser/_categories'),
       boundary_country: require('../sanitiser/_boundary_country'),
     };
 
@@ -20,10 +19,6 @@ module.exports.sanitiser_list = sanitizers;
 // middleware
 module.exports.middleware = function( req, res, next ){
   sanitize( req, function( err, clean ){
-    if( err ){
-      res.status(400); // 400 Bad Request
-      return next(err);
-    }
     next();
   });
 };

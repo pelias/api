@@ -8,6 +8,12 @@ function setup( backend, query ){
 
   function controller( req, res, next ){
 
+    // do not run controller when a request
+    // validation error has occurred.
+    if( req.errors && req.errors.length ){
+      return next();
+    }
+
     // backend command
     var cmd = {
       index: 'pelias',
@@ -26,10 +32,9 @@ function setup( backend, query ){
       // error handler
       if( err ){ return next( err ); }
 
-      req.results = {
-        data: docs,
-        meta: meta
-      };
+      // set response data
+      res.data = docs;
+      res.meta = meta;
 
       next();
     });

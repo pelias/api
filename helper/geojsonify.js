@@ -8,7 +8,6 @@ var GeoJSON = require('geojson'),
 var DETAILS_PROPS = [
   'housenumber',
   'street',
-  'category',
   'postalcode',
   'country_a',
   'country',
