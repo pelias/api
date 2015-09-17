@@ -23,34 +23,24 @@ function sanitize( raw, clean ){
     return messages;
   }
 
-  var rawIdsString;
-  if (check.unemptyString( raw.ids )) {
-    rawIdsString = raw.ids;
-  } else {
-    rawIdsString = '';
+  if (!check.unemptyString( raw.ids )) {
+    messages.errors.push( errorMessage( 'ids' ));
+    return messages;
   }
 
   // split string into array of values
-  var rawIds = rawIdsString.split(',');
+  var rawIds = raw.ids.split(',');
 
   // deduplicate
   rawIds = _.unique(rawIds);
 
   // ensure all elements are valid non-empty strings
-  rawIds = rawIds.filter( function( uc ){
-    if( !check.unemptyString( uc ) ){
+  if (!rawIds.every(check.unemptyString)) {
       messages.errors.push( errorMessage('ids') );
-      return false;
-    }
-    return true;
-  });
-
-  // init 'clean.ids'
-  var validIds = [];
+  }
 
   // cycle through raw ids and set those which are valid
-  rawIds.forEach( function( rawId ){
-
+  var validIds = rawIds.map( function( rawId ){
     var param_index = rawId.indexOf(ID_DELIM);
     var type = rawId.substring(0, param_index );
     var id   = rawId.substring(param_index + 1);
@@ -59,7 +49,6 @@ function sanitize( raw, clean ){
     if(param_index === -1) {
       messages.errors.push( 'invalid: must be of the format type:id for ex: \'geoname:4163334\'' );
     }
-
     // id text
     else if( !check.unemptyString( id ) ){
       messages.errors.push( errorMessage( rawId ) );
@@ -74,15 +63,14 @@ function sanitize( raw, clean ){
     }
     // add valid id to 'clean.ids' array
     else {
-      validIds.push({
+      return {
         id: id,
         type: type
-      });
+      };
     }
-
   });
 
-  if (validIds.length > 0) {
+  if (validIds.every(check.object)) {
     clean.ids = validIds;
   }
 
