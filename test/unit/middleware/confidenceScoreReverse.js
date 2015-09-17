@@ -3,11 +3,11 @@ var confidenceScoreReverse = require('../../../middleware/confidenceScoreReverse
 module.exports.tests = {};
 
 module.exports.tests.confidenceScoreReverse = function(test, common) {
-  test('req without results should not throw exception', function(t) {
-    var req = {};
+  test('res without results should not throw exception', function(t) {
+    var res = {};
 
     try {
-      confidenceScoreReverse(req, null, function() {});
+      confidenceScoreReverse(null, res, function() {});
     }
     catch (e) {
       t.fail('an exception should not have been thrown');
@@ -18,13 +18,13 @@ module.exports.tests.confidenceScoreReverse = function(test, common) {
 
   });
 
-  test('req.results without data should not throw exception', function(t) {
-    var req = {
+  test('res.results without data should not throw exception', function(t) {
+    var res = {
       results: {}
     };
 
     try {
-      confidenceScoreReverse(req, null, function() {});
+      confidenceScoreReverse(null, res, function() {});
     }
     catch (e) {
       t.fail('an exception should not have been thrown');
@@ -36,146 +36,130 @@ module.exports.tests.confidenceScoreReverse = function(test, common) {
   });
 
   test('0m <= distance < 1m should be given score 1.0', function(t) {
-    var req = {
-      results: {
-        data: [
-          { distance: 0.0000 / 1000.0 },
-          { distance: 0.9999 / 1000.0 }
-        ]
-      }
+    var res = {
+      data: [
+        { distance: 0.0000 / 1000.0 },
+        { distance: 0.9999 / 1000.0 }
+      ]
     };
 
-    confidenceScoreReverse(req, null, function() {
-      t.equal(req.results.data[0].confidence, 1.0, 'score should be exact confidence');
-      t.equal(req.results.data[1].confidence, 1.0, 'score should be exact confidence');
+    confidenceScoreReverse(null, res, function() {
+      t.equal(res.data[0].confidence, 1.0, 'score should be exact confidence');
+      t.equal(res.data[1].confidence, 1.0, 'score should be exact confidence');
       t.end();
     });
 
   });
 
   test('1m <= distance < 10m should be given score 0.9', function(t) {
-    var req = {
-      results: {
-        data: [
-          { distance: 1.0000 / 1000.0 },
-          { distance: 9.9999 / 1000.0 }
-        ]
-      }
+    var res = {
+      data: [
+        { distance: 1.0000 / 1000.0 },
+        { distance: 9.9999 / 1000.0 }
+      ]
     };
 
-    confidenceScoreReverse(req, null, function() {
-      t.equal(req.results.data[0].confidence, 0.9, 'score should be excellent confidence');
-      t.equal(req.results.data[1].confidence, 0.9, 'score should be excellent confidence');
+    confidenceScoreReverse(null, res, function() {
+      t.equal(res.data[0].confidence, 0.9, 'score should be excellent confidence');
+      t.equal(res.data[1].confidence, 0.9, 'score should be excellent confidence');
       t.end();
     });
 
   });
 
   test('10m <= distance < 100m should be given score 0.8', function(t) {
-    var req = {
-      results: {
-        data: [
-          { distance: 10.0000 / 1000.0 },
-          { distance: 99.9999 / 1000.0 }
-        ]
-      }
+    var res = {
+      data: [
+        { distance: 10.0000 / 1000.0 },
+        { distance: 99.9999 / 1000.0 }
+      ]
     };
 
-    confidenceScoreReverse(req, null, function() {
-      t.equal(req.results.data[0].confidence, 0.8, 'score should be good confidence');
-      t.equal(req.results.data[1].confidence, 0.8, 'score should be good confidence');
+    confidenceScoreReverse(null, res, function() {
+      t.equal(res.data[0].confidence, 0.8, 'score should be good confidence');
+      t.equal(res.data[1].confidence, 0.8, 'score should be good confidence');
       t.end();
     });
 
   });
 
   test('100m <= distance < 250m should be given score 0.7', function(t) {
-    var req = {
-      results: {
-        data: [
-          { distance: 100.0000 / 1000.0 },
-          { distance: 249.9999 / 1000.0 }
-        ]
-      }
+    var res = {
+      data: [
+        { distance: 100.0000 / 1000.0 },
+        { distance: 249.9999 / 1000.0 }
+      ]
     };
 
-    confidenceScoreReverse(req, null, function() {
-      t.equal(req.results.data[0].confidence, 0.7, 'score should be okay confidence');
-      t.equal(req.results.data[1].confidence, 0.7, 'score should be okay confidence');
+    confidenceScoreReverse(null, res, function() {
+      t.equal(res.data[0].confidence, 0.7, 'score should be okay confidence');
+      t.equal(res.data[1].confidence, 0.7, 'score should be okay confidence');
       t.end();
     });
 
   });
 
   test('250m <= distance < 1000m should be given score 0.6', function(t) {
-    var req = {
-      results: {
-        data: [
-          { distance: 250.0000 / 1000.0 },
-          { distance: 999.9999 / 1000.0 }
-        ]
-      }
+    var res = {
+      data: [
+        {distance: 250.0000 / 1000.0},
+        {distance: 999.9999 / 1000.0}
+      ]
     };
 
-    confidenceScoreReverse(req, null, function() {
-      t.equal(req.results.data[0].confidence, 0.6, 'score should be poor confidence');
-      t.equal(req.results.data[1].confidence, 0.6, 'score should be poor confidence');
+    confidenceScoreReverse(null, res, function() {
+      t.equal(res.data[0].confidence, 0.6, 'score should be poor confidence');
+      t.equal(res.data[1].confidence, 0.6, 'score should be poor confidence');
       t.end();
     });
 
   });
 
   test('distance >= 1000m should be given score 0.5', function(t) {
-    var req = {
-      results: {
-        data: [
-          { distance: 1000.0 / 1000.0 },
-          { distance: 2000.0 / 1000.0 }
-        ]
-      }
+    var res = {
+      data: [
+        {distance: 1000.0 / 1000.0},
+        {distance: 2000.0 / 1000.0}
+      ]
     };
 
-    confidenceScoreReverse(req, null, function() {
-      t.equal(req.results.data[0].confidence, 0.5, 'score should be least confidence');
-      t.equal(req.results.data[1].confidence, 0.5, 'score should be least confidence');
+    confidenceScoreReverse(null, res, function() {
+      t.equal(res.data[0].confidence, 0.5, 'score should be least confidence');
+      t.equal(res.data[1].confidence, 0.5, 'score should be least confidence');
       t.end();
     });
 
   });
 
   test('distance < 0 (invalid) should be given score 0.0', function(t) {
-    var req = {
-      results: {
-        data: [
-          { distance: -1.0000 / 1000.0 }
-        ]
-      }
+    var res = {
+      data: [
+        { distance: -1.0000 / 1000.0 }
+      ]
     };
 
-    confidenceScoreReverse(req, null, function() {
-      t.equal(req.results.data[0].confidence, 0.0, 'score should be 0.0 confidence');
+    confidenceScoreReverse(null, res, function() {
+      t.equal(res.data[0].confidence, 0.0, 'score should be 0.0 confidence');
       t.end();
     });
 
   });
 
   test('non-number-type (invalid) distance should be given score 0.0', function(t) {
-    var req = {
-      results: {
-        data: [
-          {},
-          { distance: [] },
-          { distance: {} },
-          { distance: 'this is not a number' }
-        ]
-      }
+    var res = {
+      data: [
+        {},
+        {distance: []},
+        {distance: {}},
+        {distance: 'this is not a number'}
+      ]
     };
 
-    confidenceScoreReverse(req, null, function() {
-      t.equal(req.results.data[0].confidence, 0.0, 'score should be 0.0 confidence');
-      t.equal(req.results.data[1].confidence, 0.0, 'score should be 0.0 confidence');
-      t.equal(req.results.data[2].confidence, 0.0, 'score should be 0.0 confidence');
-      t.equal(req.results.data[3].confidence, 0.0, 'score should be 0.0 confidence');
+    confidenceScoreReverse(null, res, function() {
+      t.equal(res.data[0].confidence, 0.0, 'score should be 0.0 confidence');
+      t.equal(res.data[1].confidence, 0.0, 'score should be 0.0 confidence');
+      t.equal(res.data[2].confidence, 0.0, 'score should be 0.0 confidence');
+      t.equal(res.data[3].confidence, 0.0, 'score should be 0.0 confidence');
       t.end();
     });
 
