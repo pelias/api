@@ -10,9 +10,8 @@ var inputs = {
 var formatError = function(input) {
   return 'id `' + input + 'is invalid: must be of the format type:id for ex: \'geoname:4163334\'';
 };
-
-var defaultError = 'invalid param \'ids\': text length, must be >0',
-  defaultMissingTypeError = function(input) {
+var lengthError = 'invalid param \'ids\': length must be >0';
+var defaultMissingTypeError = function(input) {
     var type = input.split(delimiter)[0];
     return type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']';
   };
@@ -26,7 +25,7 @@ module.exports.tests.invalid_ids = function(test, common) {
 
     var messages = sanitize(raw, clean);
 
-    t.equal(messages.errors[0], defaultError, 'ids length error returned');
+    t.equal(messages.errors[0], lengthError, 'ids length error returned');
     t.equal(clean.ids, undefined, 'ids unset in clean object');
     t.end();
   });

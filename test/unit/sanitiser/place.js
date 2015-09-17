@@ -74,7 +74,7 @@ module.exports.tests.invalid_params = function(test, common) {
   test('no params', function(t) {
     var req = { query: {} };
     sanitize( req, function(){
-      t.equal( req.errors[0], 'invalid param \'ids\': text length, must be >0', 'error for missing `ids` param');
+      t.equal( req.errors[0], 'invalid param \'ids\': length must be >0', 'error for missing `ids` param');
       t.deepEqual( req.warnings, [], 'no warnings' );
       t.end();
     });

@@ -8,9 +8,7 @@ var ID_DELIM = ':';
 // id generally looks like 'geoname:4163334' (type:id)
 // so, both type and id are required fields.
 
-function errorMessage(fieldname, message) {
-  return message || 'invalid param \''+ fieldname + '\': text length, must be >0';
-}
+var lengthError = 'invalid param \'ids\': length must be >0';
 
 var formatError = function(input) {
   return 'id `' + input + 'is invalid: must be of the format type:id for ex: \'geoname:4163334\'';
@@ -28,7 +26,7 @@ function sanitize( raw, clean ){
   }
 
   if (!check.unemptyString( raw.ids )) {
-    messages.errors.push( errorMessage( 'ids' ));
+    messages.errors.push( lengthError);
     return messages;
   }
 
@@ -40,7 +38,7 @@ function sanitize( raw, clean ){
 
   // ensure all elements are valid non-empty strings
   if (!rawIds.every(check.unemptyString)) {
-      messages.errors.push( errorMessage('ids') );
+      messages.errors.push( lengthError );
   }
 
   // cycle through raw ids and set those which are valid
