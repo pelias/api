@@ -18,11 +18,13 @@ function sanitize( raw, clean ){
 
   // 'raw.ids' can be an array if ids is specified multiple times
   // see https://github.com/pelias/api/issues/272
-  var rawIdsString;
   if (check.array( raw.ids )) {
-    rawIdsString = raw.ids[0];
-    messages.warnings.push( '`ids` parameter specified multiple times. Using first value.' );
-  } else if (check.unemptyString( raw.ids )) {
+    messages.errors.push( '`ids` parameter specified multiple times.' );
+    return messages;
+  }
+
+  var rawIdsString;
+  if (check.unemptyString( raw.ids )) {
     rawIdsString = raw.ids;
   } else {
     rawIdsString = '';

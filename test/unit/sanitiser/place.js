@@ -113,8 +113,8 @@ module.exports.tests.array_of_ids = function(test, common) {
   test('array of ids sent by queryparser', function(t) {
     var req = { query: { ids: ['geoname:2', 'oswmay:4'] } };
     sanitize(req, function() {
-      t.deepEqual( req.warnings, ['`ids` parameter specified multiple times. Using first value.'], 'warning sent' );
-      t.deepEqual( req.clean.ids, [{ id: '2', type: 'geoname' }], 'only first value used in clean' );
+      t.deepEqual( req.errors, ['`ids` parameter specified multiple times.'], 'error sent' );
+      t.deepEqual( req.clean.ids, undefined, 'response is empty due to error' );
       t.end();
     });
   });
