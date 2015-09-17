@@ -33,11 +33,6 @@ function sanitize( raw, clean ){
   // split string into array of values
   var rawIds = rawIdsString.split(',');
 
-  // no ids provided
-  if( !rawIds.length ){
-    messages.errors.push( errorMessage('ids') );
-  }
-
   // deduplicate
   rawIds = _.unique(rawIds);
 
