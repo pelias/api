@@ -6,7 +6,6 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       size: require('../sanitiser/_size'),
       private: require('../sanitiser/_flag_bool')('private', false),
       geo_reverse: require('../sanitiser/_geo_reverse'),
-      categories: require('../sanitiser/_categories'),
       boundary_country: require('../sanitiser/_boundary_country'),
     };
 

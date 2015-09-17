@@ -7,7 +7,6 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       sources: require('../sanitiser/_targets')('sources', require( '../query/sources' )),
       private: require('../sanitiser/_flag_bool')('private', false),
       geo_search: require('../sanitiser/_geo_search'),
-      categories: require('../sanitiser/_categories'),
       boundary_country: require('../sanitiser/_boundary_country'),
     };
 
