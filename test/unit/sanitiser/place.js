@@ -30,7 +30,7 @@ module.exports.tests.interface = function(test, common) {
   });
   test('middleware interface', function(t) {
     t.equal(typeof middleware, 'function', 'middleware is a function');
-    t.equal(middleware.length, 3, 'sanitizee has a valid middleware');
+    t.equal(middleware.length, 3, 'sanitize has a valid middleware');
     t.end();
   });
 };
