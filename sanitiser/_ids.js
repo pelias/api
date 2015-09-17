@@ -48,7 +48,7 @@ function sanitize( raw, clean ){
     var id   = rawId.substring(param_index + 1);
 
     // check id format
-    if(param_index === -1 || !check.unemptyString( id ) || !check.unemptyString( type )) {
+    if(!check.contains(rawId, ID_DELIM) || !check.unemptyString( id ) || !check.unemptyString( type )) {
       messages.errors.push( formatError(rawId) );
     }
     // type text must be one of the types
