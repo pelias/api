@@ -6,8 +6,8 @@ module.exports.tests.computeDistance = function(test, common) {
   test('valid lat/lon and results', function(t) {
     var req = {
       clean: {
-        lat: 45,
-        lon: -77
+        'point.lat': 45,
+        'point.lon': -77
       }
     };
     var res = {
