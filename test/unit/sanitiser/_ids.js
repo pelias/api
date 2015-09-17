@@ -99,29 +99,6 @@ module.exports.tests.valid_ids = function(test, common) {
     });
     t.end();
   });
-};
-
-module.exports.tests.sanitize_ids = function(test, common) {
-  test('ids: invalid input with multiple values', function(t) {
-    var raw = { ids: inputs.invalid.join(',') };
-    var expected_errors = [
-      'invalid param \'ids\': text length, must be >0',
-      'invalid param \':\': text length, must be >0',
-      'invalid param \'::\': text length, must be >0',
-      'invalid param \'geoname:\': text length, must be >0',
-      'invalid param \':234\': text length, must be >0',
-      'gibberish is invalid. It must be one of these values - ' +
-      '[geoname, osmnode, osmway, admin0, admin1, admin2, neighborhood, ' +
-      'locality, local_admin, osmaddress, openaddresses]'
-    ];
-    var clean = {};
-
-    var messages = sanitize( raw, clean );
-
-    t.deepEqual(messages.errors, expected_errors);
-    t.equal(clean.ids, undefined, 'clean has no ids value set');
-    t.end();
-  });
 
   test('ids: valid input with multiple of values' , function(t) {
     var expected_clean={
