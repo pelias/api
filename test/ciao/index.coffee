@@ -3,7 +3,7 @@
 path: '/v1/'
 
 #? endpoint available
-response.statusCode.should.equal 200
+response.statusCode.should.be.equal 200
 
 #? content-type header correctly set
 response.should.have.header 'Content-Type','text/html; charset=utf-8'

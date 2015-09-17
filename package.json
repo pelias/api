@@ -59,7 +59,7 @@
     "through2": "0.6.5"
   },
   "devDependencies": {
-    "ciao": "^0.3.4",
+    "ciao": "^0.6.0",
     "istanbul": "^0.3.13",
     "jshint": "^2.5.6",
     "nsp": "^0.3.0",
