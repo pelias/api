@@ -1,18 +1,8 @@
-
 var search  = require('../../../sanitiser/search'),
-    _text  = require('../sanitiser/_text'),
     parser = require('../../../helper/query_parser'),
-    defaultParsed = _text.defaultParsed,
     sanitize = search.sanitize,
     middleware = search.middleware,
-    defaultError = 'invalid param \'text\': text length, must be >0',
-    defaultClean =  { text: 'test',
-                      types: {
-                      },
-                      size: 10,
-                      parsed_text: defaultParsed,
-                    };
-
+    defaultError = 'invalid param \'text\': text length, must be >0';
 // these are the default values you would expect when no input params are specified.
 // @todo: why is this different from $defaultClean?
 var emptyClean = { boundary: {}, private: false, size: 10, types: {} };
@@ -86,13 +76,13 @@ module.exports.tests.sanitize_text_with_delim = function(test, common) {
   test('valid texts with a comma', function(t) {
     texts.forEach( function( text ){
       var req = { query: { text: text } };
-      sanitize(req, function(){
-        var expected = JSON.parse(JSON.stringify( defaultClean ));
-        expected.text = text;
+      sanitize( req, function( ){
+        var expected_text = text;
 
-        expected.parsed_text = parser.get_parsed_address(text);
+        var expected_parsed_text = parser.get_parsed_address(text);
         t.equal(req.errors[0], undefined, 'no error');
-        t.equal(req.clean.parsed_text.name, expected.parsed_text.name, 'clean name set correctly');
+        t.equal(req.clean.parsed_text.name, expected_parsed_text.name, 'clean name set correctly');
+        t.equal(req.clean.text, expected_text, 'text should match');
 
       });
     });
@@ -131,27 +121,14 @@ module.exports.tests.sanitize_private_explicit_false_value = function(test, comm
 };
 
 module.exports.tests.sanitize_lat = function(test, common) {
-  var lats = {
-    invalid: [],
-    valid: [ 0, 45, 90, -0, '0', '45', '90', -181, -120, -91, 91, 120, 181  ]
-  };
-  test('invalid lat', function(t) {
-    lats.invalid.forEach( function( lat ){
-      var req = { query: { text: 'test', 'focus.point.lat': lat, 'focus.point.lon': 0 } };
-      sanitize(req, function(){
-        t.equal(req.errors[0], 'invalid param \'lat\': must be >-90 and <90', lat + ' is an invalid latitude');
-        t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
-      });
-    });
-    t.end();
-  });
+  var valid_lats = [ 0, 45, 90, -0, '0', '45', '90', -181, -120, -91, 91, 120, 181  ];
   test('valid lat', function(t) {
-    lats.valid.forEach( function( lat ){
+    valid_lats.forEach( function( lat ){
       var req = { query: { text: 'test', 'focus.point.lat': lat, 'focus.point.lon': 0 } };
       sanitize(req, function(){
         var expected_lat = parseFloat( lat );
         t.equal(req.errors[0], undefined, 'no error');
-        t.equal(req.clean.lat, expected_lat, 'clean lat set correctly (' + lat + ')');
+        t.equal(req.clean['focus.point.lat'], expected_lat, 'clean lat set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -165,11 +142,10 @@ module.exports.tests.sanitize_lon = function(test, common) {
   test('valid lon', function(t) {
     lons.valid.forEach( function( lon ){
       var req = { query: { text: 'test', 'focus.point.lat': 0, 'focus.point.lon': lon } };
-      sanitize(req, function(){
-        var expected = JSON.parse(JSON.stringify( defaultClean ));
-        expected.lon = parseFloat( lon );
+      sanitize( req, function(){
+        var expected_lon = parseFloat( lon );
         t.equal(req.errors[0], undefined, 'no error');
-        t.equal(req.clean.lon, expected.lon, 'clean set correctly (' + lon + ')');
+        t.deepEqual(req.clean['focus.point.lon'], expected_lon, 'clean set correctly (' + lon + ')');
       });
     });
     t.end();
@@ -181,8 +157,8 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     var req = { query: { text: 'test' } };
     sanitize(req, function(){
       t.equal(req.errors[0], undefined, 'no error');
-      t.equal(req.clean.lat, undefined, 'clean set without lat');
-      t.equal(req.clean.lon, undefined, 'clean set without lon');
+      t.equal(req.clean['focus.point.lat'], undefined, 'clean set without lat');
+      t.equal(req.clean['focus.point.lon'], undefined, 'clean set without lon');
     });
     t.end();
   });
@@ -191,7 +167,7 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     sanitize(req, function(){
       var expected_lon = 0;
       t.equal(req.errors[0], undefined, 'no error');
-      t.deepEqual(req.clean.lon, expected_lon, 'clean set correctly (without any lat)');
+      t.deepEqual(req.clean['focus.point.lon'], expected_lon, 'clean set correctly (without any lat)');
     });
     t.end();
   });
@@ -200,7 +176,7 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     sanitize(req, function(){
       var expected_lat = 0;
       t.equal(req.errors[0], undefined, 'no error');
-      t.deepEqual(req.clean.lat, expected_lat, 'clean set correctly (without any lon)');
+      t.deepEqual(req.clean['focus.point.lat'], expected_lat, 'clean set correctly (without any lon)');
     });
     t.end();
   });

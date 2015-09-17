@@ -27,12 +27,26 @@ module.exports.tests.query = function(test, common) {
   test('autocomplete + focus', function(t) {
     var query = generate({
       text: 'test',
-      lat: 29.49136,
-      lon: -82.50622
+      'focus.point.lat': 29.49136,
+      'focus.point.lon': -82.50622
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/autocomplete_linguistic_focus');
+
+    t.deepEqual(compiled, expected, 'valid autocomplete query');
+    t.end();
+  });
+
+  test('autocomplete + focus on null island', function(t) {
+    var query = generate({
+      text: 'test',
+      'focus.point.lat': 0,
+      'focus.point.lon': 0
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_linguistic_focus_null_island');
 
     t.deepEqual(compiled, expected, 'valid autocomplete query');
     t.end();

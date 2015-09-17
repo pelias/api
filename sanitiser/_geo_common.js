@@ -64,9 +64,9 @@ function sanitize_coord( coord, clean, param, latlon_is_required ) {
  */
 function sanitize_boundary_circle( clean, params, is_required, all_required ) {
   var props = {
-    lat: 'boundary_circle_lat',
-    lon: 'boundary_circle_lon',
-    rad: 'boundary_circle_radius'
+    lat: 'boundary.circle.lat',
+    lon: 'boundary.circle.lon',
+    rad: 'boundary.circle.radius'
   };
 
   // get values for each property

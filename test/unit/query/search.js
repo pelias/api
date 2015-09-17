@@ -16,7 +16,7 @@ module.exports.tests.query = function(test, common) {
   test('valid search + focus + bbox', function(t) {
     var query = generate({
       text: 'test', size: 10,
-      lat: 29.49136, lon: -82.50622,
+      'focus.point.lat': 29.49136, 'focus.point.lon': -82.50622,
       bbox: {
         top: 47.47,
         right: -61.84,
@@ -71,12 +71,27 @@ module.exports.tests.query = function(test, common) {
   test('search search + focus', function(t) {
     var query = generate({
       text: 'test', size: 10,
-      lat: 29.49136, lon: -82.50622,
+      'focus.point.lat': 29.49136, 'focus.point.lon': -82.50622,
       layers: ['test']
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus');
+    expected.sort = sort;
+
+    t.deepEqual(compiled, expected, 'valid search query');
+    t.end();
+  });
+
+  test('search search + focus on null island', function(t) {
+    var query = generate({
+      text: 'test', size: 10,
+      'focus.point.lat': 0, 'focus.point.lon': 0,
+      layers: ['test']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_linguistic_focus_null_island');
     expected.sort = sort;
 
     t.deepEqual(compiled, expected, 'valid search query');
@@ -138,7 +153,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate({
       text: 'test', size: 10,
       layers: ['test'],
-      boundary: { country: 'ABC' }
+      'boundary.country': 'ABC'
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
