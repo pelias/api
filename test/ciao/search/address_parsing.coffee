@@ -1,6 +1,6 @@
 
-#> basic search
-path: '/v1/search?text=a'
+#> address parsing
+path: '/v1/search?text=30%20w%2026th%20st%2C%20ny'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -29,5 +29,13 @@ should.not.exist json.geocoding.errors
 should.not.exist json.geocoding.warnings
 
 #? inputs
-json.geocoding.query['text'].should.eql 'a'
+json.geocoding.query['text'].should.eql '30 w 26th st, ny'
 json.geocoding.query['size'].should.eql 10
+
+#? address parsing
+json.geocoding.query.parsed_text['name'].should.eql '30 w 26th st'
+json.geocoding.query.parsed_text['number'].should.eql 30
+json.geocoding.query.parsed_text['street'].should.eql 'w 26th st'
+json.geocoding.query.parsed_text['state'].should.eql 'NY'
+json.geocoding.query.parsed_text['regions'].should.eql []
+json.geocoding.query.parsed_text['admin_parts'].should.eql "ny"

@@ -1,6 +1,6 @@
 
-#> basic search
-path: '/v1/search?text=a'
+#> no params specified
+path: '/v1/search'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -23,11 +23,11 @@ json.type.should.be.equal 'FeatureCollection'
 json.features.should.be.instanceof Array
 
 #? expected errors
-should.not.exist json.geocoding.errors
+should.exist json.geocoding.errors
+json.geocoding.errors.should.eql [ 'invalid param \'text\': text length, must be >0' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
 
 #? inputs
-json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10

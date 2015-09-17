@@ -3,7 +3,7 @@
 path: '/v1/place?id=geoname:1'
 
 #? 200 ok
-response.statusCode.should.equal 200
+response.statusCode.should.be.equal 200
 response.should.have.header 'charset', 'utf8'
 response.should.have.header 'content-type', 'application/json; charset=utf-8'
 
@@ -19,7 +19,7 @@ should.exist json.geocoding.engine.version
 should.exist json.geocoding.timestamp
 
 #? valid geojson
-json.type.should.equal 'FeatureCollection'
+json.type.should.be.equal 'FeatureCollection'
 json.features.should.be.instanceof Array
 
 #? expected errors
@@ -27,3 +27,7 @@ should.not.exist json.geocoding.errors
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
+
+#? inputs
+json.geocoding.query['ids'].should.eql [{ id: '1', type: 'geoname' }]
+should.not.exist json.geocoding.query['size']

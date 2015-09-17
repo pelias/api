@@ -3,7 +3,7 @@
 path: '/notexist'
 
 #? not found
-response.statusCode.should.equal 404
+response.statusCode.should.be.equal 404
 
 #? content-type header correctly set
 response.should.have.header 'Content-Type','application/json; charset=utf-8'
@@ -14,4 +14,4 @@ response.should.have.header 'Cache-Control','public,max-age=300'
 #? should respond in json with server info
 should.exist json
 should.exist json.error
-json.error.should.equal 'not found: invalid path'
+json.error.should.be.equal 'not found: invalid path'
