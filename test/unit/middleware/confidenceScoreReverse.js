@@ -3,6 +3,38 @@ var confidenceScoreReverse = require('../../../middleware/confidenceScoreReverse
 module.exports.tests = {};
 
 module.exports.tests.confidenceScoreReverse = function(test, common) {
+  test('req without results should not throw exception', function(t) {
+    var req = {};
+
+    try {
+      confidenceScoreReverse(req, null, function() {});
+    }
+    catch (e) {
+      t.fail('an exception should not have been thrown');
+    }
+    finally {
+      t.end();
+    }
+
+  });
+
+  test('req.results without data should not throw exception', function(t) {
+    var req = {
+      results: {}
+    };
+
+    try {
+      confidenceScoreReverse(req, null, function() {});
+    }
+    catch (e) {
+      t.fail('an exception should not have been thrown');
+    }
+    finally {
+      t.end();
+    }
+
+  });
+
   test('0m <= distance < 1m should be given score 1.0', function(t) {
     var req = {
       results: {
