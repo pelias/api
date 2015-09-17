@@ -1,5 +1,3 @@
-// @todo: refactor this test, it's pretty messy, brittle and hard to follow
-
 var place  = require('../../../sanitiser/place'),
     sanitize = place.sanitize,
     middleware = place.middleware,
