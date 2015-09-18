@@ -1,4 +1,5 @@
 var geolib = require('geolib');
+var check = require('check-types');
 
 
 function setup() {
@@ -13,14 +14,20 @@ function computeDistances(req, res, next) {
     return next();
   }
 
-  if ( !(req.clean.hasOwnProperty('lat') && req.clean.hasOwnProperty('lon')) ) {
+  if (!(check.number(req.clean['point.lat']) &&
+        check.number(req.clean['point.lon']))) {
     return next();
   }
+
+  var point = {
+    latitude: req.clean['point.lat'],
+    longitude: req.clean['point.lon']
+  };
 
   res.data.forEach(function (place) {
     // the result of getDistance is in meters, so convert to kilometers
     place.distance = geolib.getDistance(
-      { latitude: req.clean.lat, longitude: req.clean.lon },
+      point,
       { latitude: place.center_point.lat, longitude: place.center_point.lon }
     ) / 1000;
   });

@@ -29,6 +29,7 @@ var controllers     = {
 var postProc = {
   distances: require('../middleware/distance'),
   confidenceScores: require('../middleware/confidenceScore'),
+  confidenceScoresReverse: require('../middleware/confidenceScoreReverse'),
   renamePlacenames: require('../middleware/renamePlacenames'),
   geocodeJSON: require('../middleware/geocodeJSON'),
   sendJSON: require('../middleware/sendJSON')
@@ -75,8 +76,10 @@ function addRoutes(app, peliasConfig) {
       sanitisers.reverse.middleware,
       middleware.types,
       controllers.search(undefined, reverseQuery),
-      // TODO: add confidence scores
       postProc.distances(),
+      // reverse confidence scoring depends on distance from origin
+      //  so it must be calculated first
+      postProc.confidenceScoresReverse(),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
