@@ -24,11 +24,11 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ 'invalid param \'id\': text length, must be >0' ]
+json.geocoding.errors.should.eql [ 'invalid param \'ids\': length must be >0' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
 
 #? inputs
-json.geocoding.query['ids'].should.eql []
+should.not.exist json.geocoding.query['ids']
 should.not.exist json.geocoding.query['size']
