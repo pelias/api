@@ -59,7 +59,8 @@ function generateQuery( clean ){
   }
 
   // focus point
-  if( check.number(clean['focus.point.lat']) && check.number(clean['focus.point.lon']) ){
+  if( check.number(clean['focus.point.lat']) &&
+      check.number(clean['focus.point.lon']) ){
     vs.set({
       'focus:point:lat': clean['focus.point.lat'],
       'focus:point:lon': clean['focus.point.lon']
@@ -78,27 +79,36 @@ function generateQuery( clean ){
   }
 
   // boundary rect
-  if( clean.bbox ){
+  if( check.number(clean['boundary.rect.min_lat']) &&
+      check.number(clean['boundary.rect.max_lat']) &&
+      check.number(clean['boundary.rect.min_lon']) &&
+      check.number(clean['boundary.rect.max_lon']) ){
     vs.set({
-      'boundary:rect:top': clean.bbox.top,
-      'boundary:rect:right': clean.bbox.right,
-      'boundary:rect:bottom': clean.bbox.bottom,
-      'boundary:rect:left': clean.bbox.left
+      'boundary:rect:top': clean['boundary.rect.min_lat'],
+      'boundary:rect:right': clean['boundary.rect.max_lon'],
+      'boundary:rect:bottom': clean['boundary.rect.max_lat'],
+      'boundary:rect:left': clean['boundary.rect.min_lon']
     });
   }
 
   // boundary circle
   // @todo: change these to the correct request variable names
-  if( clean.boundary && clean.boundary.circle ){
+  if( check.number(clean['boundary.circle.lat']) &&
+      check.number(clean['boundary.circle.lon']) ){
     vs.set({
-      'boundary:circle:lat': clean.boundary.circle.lat,
-      'boundary:circle:lon': clean.boundary.circle.lon,
-      'boundary:circle:radius': clean.boundary.circle.radius + 'm'
+      'boundary:circle:lat': clean['boundary.circle.lat'],
+      'boundary:circle:lon': clean['boundary.circle.lon']
     });
+
+    if( check.number(clean['boundary.circle.radius']) ){
+      vs.set({
+        'boundary:circle:radius': Math.round( clean['boundary.circle.radius'] ) + 'km'
+      });
+    }
   }
 
   // boundary country
-  if( clean['boundary.country'] ){
+  if( check.string(clean['boundary.country']) ){
     vs.set({
       'boundary:country': clean['boundary.country']
     });

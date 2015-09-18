@@ -1,6 +1,6 @@
 
-#> null island
-path: '/v1/autocomplete?text=a&focus.point.lat=0&focus.point.lon=0'
+#> sources and layers specified (invalid combo)
+path: '/v1/search?text=a&sources=quattroshapes&layers=address'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -23,13 +23,15 @@ json.type.should.be.equal 'FeatureCollection'
 json.features.should.be.instanceof Array
 
 #? expected errors
-should.not.exist json.geocoding.errors
+should.exist json.geocoding.errors
+json.geocoding.errors.should.eql [ 'You have specified both the `sources` and `layers` parameters in a combination that will return no results.' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
 
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
-json.geocoding.query['focus.point.lat'].should.eql 0
-json.geocoding.query['focus.point.lon'].should.eql 0
 json.geocoding.query['size'].should.eql 10
+json.geocoding.query.types['from_layers'].should.eql ["osmaddress","openaddresses"]
+json.geocoding.query.types['from_sources'].should.eql ["admin0","admin1","admin2","neighborhood","locality","local_admin"]
+should.not.exist json.geocoding.query['type']

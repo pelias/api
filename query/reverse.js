@@ -24,7 +24,8 @@ function generateQuery( clean ){
 
   // set defaults
   vs.set({
-    'size': 1
+    'size': 1,
+    'boundary:circle:radius': '500km'
   });
 
   // set size
@@ -32,30 +33,33 @@ function generateQuery( clean ){
     vs.var( 'size', clean.size );
   }
 
-  // set radius, default to 500km if not specified in request
-  var radius = 500;
-  if (clean.hasOwnProperty('boundary.circle.radius')) {
-    radius = clean['boundary.circle.radius'];
+  // focus point to score by distance
+  if( check.number(clean['point.lat']) &&
+      check.number(clean['point.lon']) ){
+    vs.set({
+      'focus:point:lat': clean['point.lat'],
+      'focus:point:lon': clean['point.lon']
+    });
   }
 
-  // focus point centroid
-  if( check.number(clean['point.lat']) && check.number(clean['point.lon']) ){
+  // bounding circle
+  // note: the sanitizers will take care of the case
+  // where point.lan/point.lon are provided in the 
+  // absense of boundary.circle.lat/boundary.circle.lon
+  if( check.number(clean['boundary.circle.lat']) &&
+      check.number(clean['boundary.circle.lon']) &&
+      check.number(clean['boundary.circle.radius']) ){
     vs.set({
-      // focus point to score by distance
-      'focus:point:lat': clean['point.lat'],
-      'focus:point:lon': clean['point.lon'],
-
-      // bounding circle
-      'boundary:circle:lat': clean['point.lat'],
-      'boundary:circle:lon': clean['point.lon'],
-      'boundary:circle:radius': radius + 'km'
+      'boundary:circle:lat': clean['boundary.circle.lat'],
+      'boundary:circle:lon': clean['boundary.circle.lon'],
+      'boundary:circle:radius': clean['boundary.circle.radius'] + 'km'
     });
   }
 
   // boundary country
-  if( clean.boundary && clean.boundary.country ){
+  if( check.string(clean['boundary.country']) ){
     vs.set({
-      'boundary:country': clean.boundary.country
+      'boundary:country': clean['boundary.country']
     });
   }
 

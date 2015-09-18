@@ -11,19 +11,18 @@ module.exports = function sanitize( raw, clean ){
   var messages = { errors: [], warnings: [] };
 
   try {
-    geo_common.sanitize_coord( 'point.lat', clean, raw['point.lat'], LAT_LON_IS_REQUIRED );
-    geo_common.sanitize_coord( 'point.lon', clean, raw['point.lon'], LAT_LON_IS_REQUIRED );
+    geo_common.sanitize_point( 'point', clean, raw, LAT_LON_IS_REQUIRED );
 
-    // remove both if only one is set
-    // @todo: clean this up!
-    if( !clean.hasOwnProperty('point.lat') || !clean.hasOwnProperty('point.lon') ){
-      delete clean['point.lat'];
-      delete clean['point.lon'];
+    // this hack is to allow point.lat/point.lon to be used interchanagbly
+    // with boundary.circle.lat/boundary.circle/lon
+    if( !clean.hasOwnProperty('boundary.circle.lat') && clean.hasOwnProperty('point.lat') ){
+      raw['boundary.circle.lat'] = clean['point.lat'];
+    }
+    if( !clean.hasOwnProperty('boundary.circle.lon') && clean.hasOwnProperty('point.lon') ){
+      raw['boundary.circle.lon'] = clean['point.lon'];
     }
 
-    // boundary.circle.* is not mandatory, and only specifying radius is fine,
-    // as point.lat/lon will be used to fill those values by default
-    geo_common.sanitize_boundary_circle( clean, raw, CIRCLE_IS_REQUIRED, CIRCLE_MUST_BE_COMPLETE);
+    geo_common.sanitize_circle( 'boundary.circle', clean, raw, CIRCLE_IS_REQUIRED );
   }
   catch (err) {
     messages.errors.push( err.message );

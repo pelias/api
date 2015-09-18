@@ -6,17 +6,18 @@ var reverse  = require('../../../sanitiser/reverse'),
     middleware = reverse.middleware,
     defaultError = 'missing param \'lat\'',
     defaultClean =  { 'point.lat': 0,
+                      'point.lon': 0,
+                      'boundary.circle.lat': 0,
+                      'boundary.circle.lon': 0,
                       types: {
                       },
-                      'point.lon': 0,
                       size: 10,
-                      private: false,
-                      boundary: { }
+                      private: false
                     };
 
 // these are the default values you would expect when no input params are specified.
 // @todo: why is this different from $defaultClean?
-var emptyClean = { boundary: {}, private: false, size: 10, types: {} };
+var emptyClean = { private: false, size: 10, types: {} };
 
 module.exports.tests = {};
 
@@ -101,7 +102,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
       var req = { query: { 'point.lat': 0, 'point.lon': lon } };
 
       // @todo: why is lat set?
-      var expected = { boundary: {}, 'point.lat': 0, private: false, size: 10, types: {} };
+      var expected = { 'point.lat': 0, private: false, size: 10, types: {} };
       sanitize(req, function(){
         t.equal(req.errors[0], 'missing param \'point.lon\'', 'longitude is a required field');
         t.deepEqual(req.clean, expected, 'clean only has default values set');

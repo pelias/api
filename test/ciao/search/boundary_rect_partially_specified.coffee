@@ -1,6 +1,6 @@
 
-#> null island
-path: '/v1/autocomplete?text=a&focus.point.lat=0&focus.point.lon=0'
+#> bounding rectangle
+path: '/v1/search?text=a&boundary.rect.min_lat=-40.659'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -23,13 +23,16 @@ json.type.should.be.equal 'FeatureCollection'
 json.features.should.be.instanceof Array
 
 #? expected errors
-should.not.exist json.geocoding.errors
+should.exist json.geocoding.errors
+json.geocoding.errors.should.eql [ 'missing rect param \'boundary.rect\' requires all of: \'min_lat\',\'max_lat\',\'min_lon\',\'max_lon\' to be present' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
 
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
-json.geocoding.query['focus.point.lat'].should.eql 0
-json.geocoding.query['focus.point.lon'].should.eql 0
 json.geocoding.query['size'].should.eql 10
+should.not.exist json.geocoding.query['boundary.rect.min_lat']
+should.not.exist json.geocoding.query['boundary.rect.max_lat']
+should.not.exist json.geocoding.query['boundary.rect.min_lon']
+should.not.exist json.geocoding.query['boundary.rect.max_lon']

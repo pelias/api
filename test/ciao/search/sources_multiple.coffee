@@ -1,6 +1,6 @@
 
-#> null island
-path: '/v1/autocomplete?text=a&focus.point.lat=0&focus.point.lon=0'
+#> sources filter
+path: '/v1/search?text=a&sources=openstreetmap,geonames'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -30,6 +30,6 @@ should.not.exist json.geocoding.warnings
 
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
-json.geocoding.query['focus.point.lat'].should.eql 0
-json.geocoding.query['focus.point.lon'].should.eql 0
 json.geocoding.query['size'].should.eql 10
+json.geocoding.query.types['from_sources'].should.eql ["osmaddress","osmnode","osmway","geoname"]
+json.geocoding.query['type'].should.eql ["osmaddress","osmnode","osmway","geoname"]

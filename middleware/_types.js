@@ -10,25 +10,34 @@ var types_helper = require( '../helper/types' );
 function middleware(req, res, next) {
   req.clean = req.clean || {};
 
-  if (req.clean.hasOwnProperty('types') === false) {
-    return next();
-  }
+  if (req.clean.hasOwnProperty('types')) {
 
-  try {
-    var types = types_helper(req.clean.types);
+    try {
+      var types = types_helper(req.clean.types);
 
-    if ((types instanceof Array) && types.length === 0) {
-      var err = 'You have specified both the `sources` and `layers` ' +
-        'parameters in a combination that will return no results.';
-      res.status(400); // 400 Bad Request
-      return next(err);
+      if ((types instanceof Array) && types.length === 0) {
+        var err = 'You have specified both the `sources` and `layers` ' +
+          'parameters in a combination that will return no results.';
+        req.errors.push( err );
+      }
+
+      else {
+        req.clean.type = types;
+      }
+
     }
 
-    req.clean.type = types;
-  }
-  catch (err) {
-    // this means there were no types specified
-    delete req.clean.types;
+    // @todo: refactor this flow, it is confusing as `types_helper()` can throw
+    // with an error "clean_types should not be null or undefined" which is
+    // not returned to the user yet the return value CAN trigger a user error.
+    // I would have liked to throw for BOTH cases and then handle the users errors
+    // inside the 'catch' but this is not possible.
+    // also: why are we deleting things from $clean?
+    catch (err) {
+      // this means there were no types specified
+      delete req.clean.types;
+    }
+
   }
 
   next();

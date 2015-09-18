@@ -1,6 +1,6 @@
 
-#> null island
-path: '/v1/autocomplete?text=a&focus.point.lat=0&focus.point.lon=0'
+#> layer alias
+path: '/v1/search?text=a&layers=notlayer'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -23,13 +23,14 @@ json.type.should.be.equal 'FeatureCollection'
 json.features.should.be.instanceof Array
 
 #? expected errors
-should.not.exist json.geocoding.errors
+should.exist json.geocoding.errors
+json.geocoding.errors.should.eql [ '\'notlayer\' is an invalid layers parameter. Valid options: venue,address,country,region,county,locality,localadmin,neighbourhood,coarse' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
 
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
-json.geocoding.query['focus.point.lat'].should.eql 0
-json.geocoding.query['focus.point.lon'].should.eql 0
 json.geocoding.query['size'].should.eql 10
+should.not.exist json.geocoding.query['types']
+should.not.exist json.geocoding.query['type']

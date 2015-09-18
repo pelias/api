@@ -1,6 +1,6 @@
 
-#> null island
-path: '/v1/autocomplete?text=a&focus.point.lat=0&focus.point.lon=0'
+#> set size
+path: '/v1/reverse?point.lat=1&point.lon=1&size=0'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -26,10 +26,8 @@ json.features.should.be.instanceof Array
 should.not.exist json.geocoding.errors
 
 #? expected warnings
-should.not.exist json.geocoding.warnings
+should.exist json.geocoding.warnings
+json.geocoding.warnings.should.eql [ 'out-of-range integer \'size\', using MIN_SIZE' ]
 
 #? inputs
-json.geocoding.query['text'].should.eql 'a'
-json.geocoding.query['focus.point.lat'].should.eql 0
-json.geocoding.query['focus.point.lon'].should.eql 0
-json.geocoding.query['size'].should.eql 10
+json.geocoding.query['size'].should.eql 1
