@@ -26,6 +26,7 @@ var tests = [
   require('./helper/geojsonify'),
   require('./helper/outputSchema'),
   require('./helper/types'),
+  require('./helper/type_mapping'),
   require('./sanitiser/_geo_common'),
   require('./middleware/distance'),
   require('./middleware/confidenceScoreReverse'),
