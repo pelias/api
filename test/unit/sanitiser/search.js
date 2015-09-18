@@ -1,11 +1,12 @@
-var search  = require('../../../sanitiser/search'),
+var extend = require('extend'),
+    search  = require('../../../sanitiser/search'),
     parser = require('../../../helper/query_parser'),
     sanitize = search.sanitize,
     middleware = search.middleware,
     defaultError = 'invalid param \'text\': text length, must be >0';
 // these are the default values you would expect when no input params are specified.
 // @todo: why is this different from $defaultClean?
-var emptyClean = { boundary: {}, private: false, size: 10, types: {} };
+var emptyClean = { private: false, size: 10, types: {} };
 
 module.exports.tests = {};
 
@@ -166,8 +167,9 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     var req = { query: { text: 'test', 'focus.point.lon': 0 } };
     sanitize(req, function(){
       var expected_lon = 0;
-      t.equal(req.errors[0], undefined, 'no error');
-      t.deepEqual(req.clean['focus.point.lon'], expected_lon, 'clean set correctly (without any lat)');
+      t.equal(req.errors[0], 'missing point param \'focus.point\' requires all of: \'lat\',\'lon\' to be present');
+      t.equal(req.clean['focus.point.lat'], undefined);
+      t.equal(req.clean['focus.point.lon'], undefined);
     });
     t.end();
   });
@@ -175,14 +177,28 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     var req = { query: { text: 'test', 'focus.point.lat': 0 } };
     sanitize(req, function(){
       var expected_lat = 0;
-      t.equal(req.errors[0], undefined, 'no error');
-      t.deepEqual(req.clean['focus.point.lat'], expected_lat, 'clean set correctly (without any lon)');
+      t.equal(req.errors[0], 'missing point param \'focus.point\' requires all of: \'lat\',\'lon\' to be present');
+      t.equal(req.clean['focus.point.lat'], undefined);
+      t.equal(req.clean['focus.point.lon'], undefined);
     });
     t.end();
   });
 };
 
-module.exports.tests.sanitize_bbox = function(test, common) {
+module.exports.tests.sanitize_bounding_rect = function(test, common) {
+
+  // convernience function to avoid refactoring the succict geojson bbox
+  // fixtures in to the more verbose bounding.rect format.
+  var mapGeoJsonBboxFormatToBoundingRectFormat = function( bbox ){
+    var split = bbox.split(',');
+    return {
+      'boundary.rect.min_lon': split[0],
+      'boundary.rect.max_lat': split[1],
+      'boundary.rect.max_lon': split[2],
+      'boundary.rect.min_lat': split[3]
+    };
+  };
+
   var bboxes = {
     invalid: [
       '91;-181,-91,181', // invalid - semicolon between coordinates
@@ -192,7 +208,8 @@ module.exports.tests.sanitize_bbox = function(test, common) {
       '91, -181, -91',   // invalid - missing a coordinate
       '123,12',          // invalid - missing coordinates
       ''                 // invalid - empty param
-    ],
+    ].map(mapGeoJsonBboxFormatToBoundingRectFormat),
+
     valid: [
       '-179,90,34,-80', // valid top_right lon/lat, bottom_left lon/lat
       '0,0,0,0',
@@ -207,34 +224,33 @@ module.exports.tests.sanitize_bbox = function(test, common) {
       '-181,91,181,-91',
       '91, -181,-91,11',
       '91, -11,-91,181'
-    ]
-
+    ].map(mapGeoJsonBboxFormatToBoundingRectFormat)
   };
-  test('invalid bbox', function(t) {
+
+  test('invalid bounding rect', function(t) {
     bboxes.invalid.forEach( function( bbox ){
-      var req = { query: { text: 'test', bbox: bbox } };
+      var req = { query: { text: 'test' } };
+      extend( req.query, bbox );
       sanitize(req, function(){
-        t.equal(req.errors[0], undefined, 'no error');
-        t.equal(req.clean.bbox, undefined, 'falling back on 50km distance from centroid');
+        t.equal(req.clean['boundary.rect.min_lon'], undefined);
+        t.equal(req.clean['boundary.rect.max_lat'], undefined);
+        t.equal(req.clean['boundary.rect.max_lon'], undefined);
+        t.equal(req.clean['boundary.rect.min_lat'], undefined);
+        t.equal(req.errors.length, 1, 'bounding error');
       });
     });
     t.end();
   });
-  test('valid bbox', function(t) {
+  test('valid bounding rect', function(t) {
     bboxes.valid.forEach( function( bbox ){
-      var req = { query: { text: 'test', bbox: bbox } };
+      var req = { query: { text: 'test' } };
+      extend( req.query, bbox );
       sanitize(req, function(){
-        var bboxArray = bbox.split(',').map(function(i) {
-          return parseInt(i, 10);
-        });
-        var expected_bbox = {
-          right: Math.max(bboxArray[0], bboxArray[2]),
-          top: Math.max(bboxArray[1], bboxArray[3]),
-          left: Math.min(bboxArray[0], bboxArray[2]),
-          bottom: Math.min(bboxArray[1], bboxArray[3])
-        };
         t.equal(req.errors[0], undefined, 'no error');
-        t.deepEqual(req.clean.bbox, expected_bbox, 'clean set correctly (' + bbox + ')');
+        t.equal(req.clean['boundary.rect.min_lon'], parseFloat(bbox['boundary.rect.min_lon']));
+        t.equal(req.clean['boundary.rect.max_lat'], parseFloat(bbox['boundary.rect.max_lat']));
+        t.equal(req.clean['boundary.rect.max_lon'], parseFloat(bbox['boundary.rect.max_lon']));
+        t.equal(req.clean['boundary.rect.min_lat'], parseFloat(bbox['boundary.rect.min_lat']));
       });
     });
     t.end();

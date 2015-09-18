@@ -1,6 +1,6 @@
 
-#> null island
-path: '/v1/autocomplete?text=a&focus.point.lat=0&focus.point.lon=0'
+#> bounding country
+path: '/v1/reverse?point.lat=1&point.lon=1&boundary.country=ZZ'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -23,13 +23,12 @@ json.type.should.be.equal 'FeatureCollection'
 json.features.should.be.instanceof Array
 
 #? expected errors
-should.not.exist json.geocoding.errors
+should.exist json.geocoding.errors
+json.geocoding.errors.should.eql [ 'ZZ is not a valid ISO2/ISO3 country code' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
 
 #? inputs
-json.geocoding.query['text'].should.eql 'a'
-json.geocoding.query['focus.point.lat'].should.eql 0
-json.geocoding.query['focus.point.lon'].should.eql 0
 json.geocoding.query['size'].should.eql 10
+should.not.exist json.geocoding.query['boundary.country']

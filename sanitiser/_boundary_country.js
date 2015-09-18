@@ -5,37 +5,37 @@ function sanitize(raw, clean) {
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  // init clean.boundary (if not already init)
-  clean.boundary = clean.boundary || {};
+  // target input param
+  var country = raw['boundary.country'];
 
-  if (check.assigned(raw['boundary.country'])) {
-    var country = raw['boundary.country'];
+  // param 'boundary.country' is optional and should not
+  // error when simply not set by the user
+  if (check.assigned(country)){
 
-    if (!check.string(country)) {
+    // must be valid string
+    if (!check.unemptyString(country)) {
       messages.errors.push('boundary.country is not a string');
-      delete clean.boundary.country;
     }
+
+    // must be a valid ISO 3166 code
     else if (!containsIsoCode(country.toUpperCase())) {
       messages.errors.push(country + ' is not a valid ISO2/ISO3 country code');
-      delete clean.boundary.country;
     }
+
+    // valid ISO 3166 country code, set alpha3 code on 'clean.boundary.country'
     else {
       // the only way for boundary.country to be assigned is if input is
       //  a string and a known ISO2 or ISO3
-      clean.boundary.country = iso3166.to3(country.toUpperCase());
+      clean['boundary.country'] = iso3166.to3(country.toUpperCase());
     }
-
-  } else {
-    delete clean.boundary.country;
   }
 
   return messages;
-
 }
 
 function containsIsoCode(isoCode) {
   return iso3166.list().some(function(row) {
-      return row.alpha2 === isoCode || row.alpha3 === isoCode;
+    return row.alpha2 === isoCode || row.alpha3 === isoCode;
   });
 }
 

@@ -12,7 +12,11 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.query = function(test, common) {
   test('valid query', function(t) {
     var query = generate({
-      'point.lat': 29.49136, 'point.lon': -82.50622
+      'point.lat': 29.49136,
+      'point.lon': -82.50622,
+      'boundary.circle.lat': 29.49136,
+      'boundary.circle.lon': -82.50622,
+      'boundary.circle.radius': 500
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -22,9 +26,13 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
-  test('valid query', function(t) {
+  test('valid query - null island', function(t) {
     var query = generate({
-      'point.lat': 0, 'point.lon': 0
+      'point.lat': 0,
+      'point.lon': 0,
+      'boundary.circle.lat': 0,
+      'boundary.circle.lon': 0,
+      'boundary.circle.radius': 500
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -36,29 +44,36 @@ module.exports.tests.query = function(test, common) {
 
   test('valid query with radius', function(t) {
     var query = generate({
-      'point.lat': 29.49136, 'point.lon': -82.50622, 'boundary.circle.radius': 123
+      'point.lat': 29.49136,
+      'point.lon': -82.50622,
+      'boundary.circle.lat': 29.49136,
+      'boundary.circle.lon': -82.50622,
+      'boundary.circle.radius': 123
     });
 
-    var compiled = JSON.parse( JSON.stringify( query )).query.filtered.filter.bool.must[0].geo_distance.distance;
+    var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = '123km';
 
-    t.deepEqual(compiled, expected, 'distance set to boundary circle radius');
+    t.deepEqual(compiled.query.filtered.filter.bool.must[0].geo_distance.distance, expected, 'distance set to boundary circle radius');
     t.end();
   });
 
-  test('valid query with boundary.circle lat/lon/radius', function(t) {
+  test('boundary.circle lat/lon/radius - overrides point.lat/lon when set', function(t) {
     var clean = {
       'point.lat': 29.49136,
       'point.lon': -82.50622,
       'boundary.circle.lat': 111,
-      'boundary.circle.long': 333
+      'boundary.circle.lon': 333,
+      'boundary.circle.radius': 500
     };
     var query = generate(clean);
+    var compiled = JSON.parse( JSON.stringify( query ) );
 
-    var compiled = JSON.parse( JSON.stringify( query )).query.filtered.filter.bool.must[0].geo_distance.center_point;
-    var expected = { lat: clean['point.lat'], lon: clean['point.lon'] };
+    // this should not equal `point.lat` and `point.lon` as it was explitely specified
+    var expected = { lat: clean['boundary.circle.lat'], lon: clean['boundary.circle.lon'] };
+    var centroid = compiled.query.filtered.filter.bool.must[0].geo_distance.center_point;
 
-    t.deepEqual(compiled, expected, 'point.lat/lon overrides boundary.circle.lat/lon');
+    t.deepEqual(centroid, expected, 'boundary.circle/lon overrides point.lat/lon');
     t.end();
   });
 
@@ -78,8 +93,12 @@ module.exports.tests.query = function(test, common) {
 
   test('valid boundary.country reverse search', function(t) {
     var query = generate({
-      'point.lat': 29.49136, 'point.lon': -82.50622,
-      boundary: { country: 'ABC' }
+      'point.lat': 29.49136,
+      'point.lon': -82.50622,
+      'boundary.circle.lat': 29.49136,
+      'boundary.circle.lon': -82.50622,
+      'boundary.circle.radius': 500,
+      'boundary.country': 'ABC'
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );

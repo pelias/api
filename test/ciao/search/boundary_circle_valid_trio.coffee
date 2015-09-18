@@ -1,6 +1,6 @@
 
-#> null island
-path: '/v1/autocomplete?text=a&focus.point.lat=0&focus.point.lon=0'
+#> bounding circle
+path: '/v1/search?text=a&boundary.circle.lat=40.744243&boundary.circle.lon=-73.990342&boundary.circle.radius=100'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -30,6 +30,7 @@ should.not.exist json.geocoding.warnings
 
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
-json.geocoding.query['focus.point.lat'].should.eql 0
-json.geocoding.query['focus.point.lon'].should.eql 0
 json.geocoding.query['size'].should.eql 10
+json.geocoding.query['boundary.circle.lat'].should.eql 40.744243
+json.geocoding.query['boundary.circle.lon'].should.eql -73.990342
+json.geocoding.query['boundary.circle.radius'].should.eql 100

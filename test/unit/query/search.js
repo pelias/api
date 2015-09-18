@@ -17,12 +17,10 @@ module.exports.tests.query = function(test, common) {
     var query = generate({
       text: 'test', size: 10,
       'focus.point.lat': 29.49136, 'focus.point.lon': -82.50622,
-      bbox: {
-        top: 47.47,
-        right: -61.84,
-        bottom: 11.51,
-        left: -103.16
-      },
+      'boundary.rect.min_lat': 47.47,
+      'boundary.rect.max_lon': -61.84,
+      'boundary.rect.max_lat': 11.51,
+      'boundary.rect.min_lon': -103.16,
       layers: ['test']
     });
 
@@ -37,12 +35,10 @@ module.exports.tests.query = function(test, common) {
   test('valid search + bbox', function(t) {
     var query = generate({
       text: 'test', size: 10,
-      bbox: {
-        top: 47.47,
-        right: -61.84,
-        bottom: 11.51,
-        left: -103.16
-      },
+      'boundary.rect.min_lat': 47.47,
+      'boundary.rect.max_lon': -61.84,
+      'boundary.rect.max_lat': 11.51,
+      'boundary.rect.min_lon': -103.16,
       layers: ['test']
     });
 

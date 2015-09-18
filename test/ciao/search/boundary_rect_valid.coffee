@@ -1,6 +1,6 @@
 
-#> null island
-path: '/v1/autocomplete?text=a&focus.point.lat=0&focus.point.lon=0'
+#> bounding rectangle
+path: '/v1/search?text=a&boundary.rect.min_lat=-40.659&boundary.rect.max_lat=-41.614&boundary.rect.min_lon=174.612&boundary.rect.max_lon=176.333'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -30,6 +30,8 @@ should.not.exist json.geocoding.warnings
 
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
-json.geocoding.query['focus.point.lat'].should.eql 0
-json.geocoding.query['focus.point.lon'].should.eql 0
 json.geocoding.query['size'].should.eql 10
+json.geocoding.query['boundary.rect.min_lat'].should.eql -40.659
+json.geocoding.query['boundary.rect.max_lat'].should.eql -41.614
+json.geocoding.query['boundary.rect.min_lon'].should.eql 174.612
+json.geocoding.query['boundary.rect.max_lon'].should.eql 176.333

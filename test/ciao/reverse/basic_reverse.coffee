@@ -29,6 +29,6 @@ should.not.exist json.geocoding.errors
 should.not.exist json.geocoding.warnings
 
 #? inputs
-json.geocoding.query['lat'].should.eql 1
-json.geocoding.query['lon'].should.eql 2
+json.geocoding.query['point.lat'].should.eql 1
+json.geocoding.query['point.lon'].should.eql 2
 json.geocoding.query['size'].should.eql 10
