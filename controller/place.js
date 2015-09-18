@@ -22,11 +22,15 @@ function setup( backend ){
     });
 
     service.mget( backend, query, function( err, docs ) {
-      // error handler
-      if( err ){ return next( err ); }
 
+      // error handler
+      if( err ){
+        req.errors.push( err.message ? err.message : err );
+      }
       // set response data
-      res.data = docs;
+      else {
+        res.data = docs;
+      }
 
       next();
     });

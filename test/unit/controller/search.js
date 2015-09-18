@@ -63,11 +63,12 @@ module.exports.tests.functional_success = function(test, common) {
         t.deepEqual(json.features, expected, 'values correctly mapped');
       }
     };
+    var req = { clean: { a: 'b' }, errors: [], warnings: [] };
     var next = function next() {
-      t.equal(arguments.length, 0, 'next was called without error');
+      t.equal(req.errors.length, 0, 'next was called without error');
       t.end();
     };
-    controller({clean: {a: 'b'}}, res, next);
+    controller(req, res, next);
   });
 };
 
@@ -78,11 +79,12 @@ module.exports.tests.functional_failure = function(test, common) {
       t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias', searchType: 'dfs_query_then_fetch' }, 'correct backend command');
     });
     var controller = setup( backend, mockQuery() );
-    var next = function( message ){
-      t.equal(message,'a backend error occurred','error passed to errorHandler');
+    var req = { clean: { a: 'b' }, errors: [], warnings: [] };
+    var next = function(){
+      t.equal(req.errors[0],'a backend error occurred');
       t.end();
     };
-    controller( { clean: { a: 'b' } }, undefined, next );
+    controller(req, undefined, next );
   });
 };
 

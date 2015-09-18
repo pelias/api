@@ -8,8 +8,7 @@ module.exports = function sanitize( raw, clean ){
   var messages = { errors: [], warnings: [] };
 
   try {
-    geo_common.sanitize_coord( 'focus.point.lat', clean, raw['focus.point.lat'], LAT_LON_IS_REQUIRED );
-    geo_common.sanitize_coord( 'focus.point.lon', clean, raw['focus.point.lon'], LAT_LON_IS_REQUIRED );
+    geo_common.sanitize_point( 'focus.point', clean, raw, LAT_LON_IS_REQUIRED );
   }
   catch (err) {
     messages.errors.push( err.message );
