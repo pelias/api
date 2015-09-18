@@ -2,7 +2,8 @@
 var GeoJSON = require('geojson'),
     extent = require('geojson-extent'),
     outputGenerator = require('./outputGenerator'),
-    logger = require('pelias-logger').get('api');
+    logger = require('pelias-logger').get('api'),
+    type_mapping = require('./type_mapping');
 
 // Properties to be copied
 var DETAILS_PROPS = [
@@ -22,22 +23,9 @@ var DETAILS_PROPS = [
 ];
 
 
-var SOURCES = {
-  'geoname': 'gn',
-  'osmnode': 'osm',
-  'osmway': 'osm',
-  'admin0': 'qs',
-  'admin1': 'qs',
-  'admin2': 'qs',
-  'neighborhood': 'qs',
-  'locality': 'qs',
-  'local_admin': 'qs',
-  'osmaddress': 'osm',
-  'openaddresses': 'oa'
-};
-
 function lookupSource(src) {
-  return SOURCES.hasOwnProperty(src._type) ? SOURCES[src._type] : src._type;
+  var sources = type_mapping.type_to_source;
+  return sources.hasOwnProperty(src._type) ? sources[src._type] : src._type;
 }
 
 function lookupLayer(src) {

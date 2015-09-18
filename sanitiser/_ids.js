@@ -1,6 +1,7 @@
 var _ = require('lodash'),
     check = require('check-types'),
-    types = require('../query/types');
+    type_mapping = require('../helper/type_mapping'),
+    types = type_mapping.types_list;
 
 var ID_DELIM = ':';
 

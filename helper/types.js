@@ -1,4 +1,4 @@
-var valid_types = require( '../query/types' );
+var type_mapping = require( '../helper/type_mapping' );
 
 /**
  * Calculate the set-style intersection of two arrays
@@ -24,7 +24,7 @@ module.exports = function calculate_types(clean_types) {
    * perform a set intersection of their specified types
    */
   if (clean_types.from_layers || clean_types.from_sources) {
-    var types = valid_types;
+    var types = type_mapping.types_list;
 
     if (clean_types.from_layers) {
       types = intersection(types, clean_types.from_layers);

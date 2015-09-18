@@ -1,7 +1,7 @@
 var sanitize = require('../../../sanitiser/_ids');
 
 var delimiter = ':';
-var types = require('../../../query/types');
+var type_mapping = require('../../../helper/type_mapping');
 var inputs = {
   valid: [ 'geoname:1', 'osmnode:2', 'admin0:53', 'osmway:44', 'geoname:5' ],
   invalid: [ ':', '', '::', 'geoname:', ':234', 'gibberish:23' ]
@@ -13,7 +13,7 @@ var formatError = function(input) {
 var lengthError = 'invalid param \'ids\': length must be >0';
 var defaultMissingTypeError = function(input) {
     var type = input.split(delimiter)[0];
-    return type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']';
+    return type + ' is invalid. It must be one of these values - [' + type_mapping.types_list.join(', ') + ']';
   };
 
 module.exports.tests = {};

@@ -1,5 +1,6 @@
+var type_mapping = require('../../../helper/type_mapping');
 
-var sanitize = require('../../../sanitiser/_targets')('layers', require('../../../query/layers'));
+var sanitize = require('../../../sanitiser/_targets')('layers', type_mapping.layer_to_type);
 
 module.exports.tests = {};
 

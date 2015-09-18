@@ -17,7 +17,6 @@ var tests = [
   require('./sanitiser/_layers'),
   require('./sanitiser/reverse'),
   require('./sanitiser/place'),
-  require('./query/types'),
   require('./query/search'),
   require('./query/autocomplete'),
   require('./query/reverse'),
