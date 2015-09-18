@@ -30,11 +30,13 @@ function setup( backend, query ){
     service.search( backend, cmd, function( err, docs, meta ){
 
       // error handler
-      if( err ){ return next( err ); }
-
+      if( err ){
+        req.errors.push( err.message ? err.message : err );
+      }
       // set response data
-      res.data = docs;
-      res.meta = meta;
+      else {
+        res.data = docs;
+      }
 
       next();
     });
