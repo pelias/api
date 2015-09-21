@@ -85,7 +85,7 @@ module.exports.tests.functional_failure = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('GET /doc ' + name, testFunction);
+    return tape('GET /place ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
