@@ -61,13 +61,13 @@ var SOURCE_TO_TYPE = {
  */
 var LAYER_TO_TYPE = {
   'venue': ['geoname','osmnode','osmway'],
-  'address': ['osmaddress','openaddresses'],
-  'country': ['admin0'],
-  'region': ['admin1'],
-  'county': ['admin2'],
-  'locality': ['locality'],
+  'address': ['osmaddress','openaddresses', 'geoname'],
+  'country': ['admin0', 'geoname'],
+  'region': ['admin1', 'geoname'],
+  'county': ['admin2', 'geoname'],
+  'locality': ['locality', 'geoname'],
   'localadmin': ['local_admin'],
-  'neighbourhood': ['neighborhood']
+  'neighbourhood': ['neighborhood', 'geoname']
 };
 
 var LAYER_ALIASES = {
