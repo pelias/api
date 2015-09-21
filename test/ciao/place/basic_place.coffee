@@ -1,6 +1,6 @@
 
 #> basic place
-path: '/v1/place?ids=geoname:1'
+path: '/v1/place?ids=geonames:venue:1'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -29,5 +29,5 @@ should.not.exist json.geocoding.errors
 should.not.exist json.geocoding.warnings
 
 #? inputs
-json.geocoding.query['ids'].should.eql [{ id: '1', type: 'geoname' }]
+json.geocoding.query['ids'].should.eql [{ id: '1', types: [ 'geoname' ] }]
 should.not.exist json.geocoding.query['size']

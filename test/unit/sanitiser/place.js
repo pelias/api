@@ -31,7 +31,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   var invalid_values = [null, -1, 123, NaN, 'abc'];
   invalid_values.forEach(function(value) {
     test('invalid private param ' + value, function(t) {
-      var req = { query: { ids:'geoname:123', 'private': value } };
+      var req = { query: { ids:'geonames:venue:123', 'private': value } };
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
@@ -44,7 +44,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   var valid_values = ['true', true, 1];
   valid_values.forEach(function(value) {
     test('valid private param ' + value, function(t) {
-      var req = { query: { ids:'geoname:123', 'private': value } };
+      var req = { query: { ids:'geonames:venue:123', 'private': value } };
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
@@ -57,7 +57,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   var valid_false_values = ['false', false, 0];
   valid_false_values.forEach(function(value) {
     test('test setting false explicitly ' + value, function(t) {
-      var req = { query: { ids:'geoname:123', 'private': value } };
+      var req = { query: { ids:'geonames:venue:123', 'private': value } };
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
@@ -68,7 +68,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   });
 
   test('test default behavior', function(t) {
-    var req = { query: { ids:'geoname:123' } };
+    var req = { query: { ids:'geonames:venue:123' } };
     sanitize(req, function(){
       t.deepEqual( req.errors, [], 'no errors' );
       t.deepEqual( req.warnings, [], 'no warnings' );
@@ -91,7 +91,7 @@ module.exports.tests.invalid_params = function(test, common) {
 
 module.exports.tests.middleware_success = function(test, common) {
   test('middleware success', function(t) {
-    var req = { query: { ids: 'geoname:123' }};
+    var req = { query: { ids: 'geonames:venue:123' }};
     var next = function(){
       t.deepEqual( req.errors, [], 'no errors' );
       t.deepEqual( req.warnings, [], 'no warnings' );
