@@ -31,7 +31,7 @@ function sanitizeId(rawId, messages) {
   else {
     return {
       id: id,
-      type: type
+      types: [type]
     };
   }
 }

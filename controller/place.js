@@ -16,7 +16,7 @@ function setup( backend ){
     var query = req.clean.ids.map( function(id) {
       return {
         _index: 'pelias',
-        _type: id.type,
+        type: id.types,
         _id: id.id
       };
     });

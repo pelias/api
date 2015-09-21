@@ -1,7 +1,7 @@
 var place  = require('../../../sanitiser/place'),
     sanitize = place.sanitize,
     middleware = place.middleware,
-    defaultClean = { ids: [ { id: '123', type: 'geoname' } ], private: false };
+    defaultClean = { ids: [ { id: '123', types: [ 'geoname' ] } ], private: false };
 
 // these are the default values you would expect when no input params are specified.
 module.exports.tests = {};

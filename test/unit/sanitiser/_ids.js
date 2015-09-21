@@ -90,7 +90,7 @@ module.exports.tests.valid_ids = function(test, common) {
   test('ids: valid input', function(t) {
     inputs.valid.forEach( function( input ){
       var input_parts = input.split(delimiter);
-      var expected_clean = { ids: [ { id: input_parts[1], type: input_parts[0] } ]};
+      var expected_clean = { ids: [ { id: input_parts[1], types: [ input_parts[0] ]} ]};
       var raw = {  ids: input };
       var clean = {};
 
@@ -111,7 +111,7 @@ module.exports.tests.valid_ids = function(test, common) {
     // construct the expected id and type for each valid input
     inputs.valid.forEach( function( input ){
       var input_parts = input.split(delimiter);
-      expected_clean.ids.push({ id: input_parts[1], type: input_parts[0] });
+      expected_clean.ids.push({ id: input_parts[1], types: [ input_parts[0] ]});
     });
 
     var messages = sanitize( raw, clean );
@@ -138,7 +138,7 @@ module.exports.tests.array_of_ids = function(test, common) {
 
 module.exports.tests.multiple_ids = function(test, common) {
   test('duplicate ids', function(t) {
-    var expected_clean = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ] };
+    var expected_clean = { ids: [ { id: '1', types: [ 'geoname' ] }, { id: '2', types: [ 'osmnode' ] } ] };
     var raw = { ids: 'geoname:1,osmnode:2' };
     var clean = {};
 
@@ -153,7 +153,7 @@ module.exports.tests.multiple_ids = function(test, common) {
 
 module.exports.tests.de_dupe = function(test, common) {
   test('duplicate ids', function(t) {
-    var expected_clean = { ids: [ { id: '1', type: 'geoname' }, { id: '2', type: 'osmnode' } ]};
+    var expected_clean = { ids: [ { id: '1', types: [ 'geoname' ] }, { id: '2', types: [ 'osmnode' ] } ] };
     var raw = { ids: 'geoname:1,osmnode:2,geoname:1' };
     var clean = {};
 
