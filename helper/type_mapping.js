@@ -1,19 +1,5 @@
 var extend = require('extend');
 
-var ALL_TYPES = [
-  'geoname',
-  'osmnode',
-  'osmway',
-  'admin0',
-  'admin1',
-  'admin2',
-  'neighborhood',
-  'locality',
-  'local_admin',
-  'osmaddress',
-  'openaddresses'
-];
-
 var TYPE_TO_SOURCE = {
   'geoname': 'gn',
   'osmnode': 'osm',
@@ -76,6 +62,13 @@ var LAYER_ALIASES = {
 
 var LAYER_WITH_ALIASES_TO_TYPE = extend({}, LAYER_ALIASES, LAYER_TO_TYPE);
 
+/*
+ * derive the list of types, sources, and layers from above mappings
+ */
+var TYPES   = Object.keys(TYPE_TO_SOURCE);
+var SOURCES = Object.keys(SOURCE_TO_TYPE);
+var LAYERS  = Object.keys(LAYER_TO_TYPE);
+
 /**
  * Calculate the set-style intersection of two arrays
  */
@@ -90,7 +83,9 @@ var sourceAndLayerToType = function sourceAndLayerToType(source, layer) {
 };
 
 module.exports = {
-  types_list: ALL_TYPES,
+  types: TYPES,
+  sources: SOURCES,
+  layers: LAYERS,
   type_to_source: TYPE_TO_SOURCE,
   type_to_layer: TYPE_TO_LAYER,
   source_to_type: SOURCE_TO_TYPE,

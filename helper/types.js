@@ -24,7 +24,7 @@ module.exports = function calculate_types(clean_types) {
    * perform a set intersection of their specified types
    */
   if (clean_types.from_layers || clean_types.from_sources) {
-    var types = type_mapping.types_list;
+    var types = type_mapping.types;
 
     if (clean_types.from_layers) {
       types = intersection(types, clean_types.from_layers);

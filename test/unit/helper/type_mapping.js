@@ -4,9 +4,9 @@ var type_mapping = require('../../../helper/type_mapping');
 module.exports.tests = {};
 
 module.exports.tests.interfaces = function(test, common) {
-  test('types_list', function(t) {
-    t.ok(check.array(type_mapping.types_list), 'is array');
-    t.ok(check.hasLength(type_mapping.types_list, 11), 'has correct number of elements');
+  test('types list', function(t) {
+    t.ok(check.array(type_mapping.types), 'is array');
+    t.ok(check.hasLength(type_mapping.types, 11), 'has correct number of elements');
     t.end();
   });
 

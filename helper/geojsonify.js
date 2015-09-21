@@ -46,7 +46,7 @@ function lookupLayer(src) {
     if (src.address) { return 'address'; }
   }
 
-  if (_.contains(type_mapping.types_list, src._type)) {
+  if (_.contains(type_mapping.types, src._type)) {
     return type_mapping.type_to_layer[src._type];
   }
 
