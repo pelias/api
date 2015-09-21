@@ -30,7 +30,13 @@ module.exports.tests.interfaces = function(test, common) {
 
   test('layer to type mapping', function(t) {
     t.ok(check.object(type_mapping.layer_to_type), 'is object');
-    t.ok(check.hasLength(Object.keys(type_mapping.layer_to_type), 9), 'has correct number of elements');
+    t.equal(Object.keys(type_mapping.layer_to_type).length, 8, 'has correct number of elements');
+    t.end();
+  });
+
+  test('layer to type mapping (with aliases)', function(t) {
+    t.ok(check.object(type_mapping.layer_with_aliases_to_type), 'is object');
+    t.ok(check.hasLength(Object.keys(type_mapping.layer_with_aliases_to_type), 9), 'has correct number of elements');
     t.end();
   });
 };

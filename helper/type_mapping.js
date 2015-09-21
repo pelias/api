@@ -1,3 +1,5 @@
+var extend = require('extend');
+
 var ALL_TYPES = [
   'geoname',
   'osmnode',
@@ -55,7 +57,7 @@ var SOURCE_TO_TYPE = {
 };
 
 /**
- * This includeds alias layers
+ * This does not included alias layers, those are built separately
  */
 var LAYER_TO_TYPE = {
   'venue': ['geoname','osmnode','osmway'],
@@ -65,14 +67,20 @@ var LAYER_TO_TYPE = {
   'county': ['admin2'],
   'locality': ['locality'],
   'localadmin': ['local_admin'],
-  'neighbourhood': ['neighborhood'],
-  'coarse': ['admin0','admin1','admin2','neighborhood','locality','local_admin'],
+  'neighbourhood': ['neighborhood']
 };
+
+var LAYER_ALIASES = {
+  'coarse': ['admin0','admin1','admin2','neighborhood','locality','local_admin']
+};
+
+var LAYER_WITH_ALIASES_TO_TYPE = extend({}, LAYER_ALIASES, LAYER_TO_TYPE);
 
 module.exports = {
   types_list: ALL_TYPES,
   type_to_source: TYPE_TO_SOURCE,
   type_to_layer: TYPE_TO_LAYER,
   source_to_type: SOURCE_TO_TYPE,
-  layer_to_type: LAYER_TO_TYPE
+  layer_to_type: LAYER_TO_TYPE,
+  layer_with_aliases_to_type: LAYER_WITH_ALIASES_TO_TYPE
 };
