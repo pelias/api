@@ -19,6 +19,14 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
+module.exports.tests.sanitisers = function(test, common) {
+  test('check sanitiser list', function (t) {
+    var expected = ['singleScalarParameters', 'ids', 'private' ];
+    t.deepEqual(Object.keys(place.sanitiser_list), expected);
+    t.end();
+  });
+};
+
 module.exports.tests.sanitize_private = function(test, common) {
   var invalid_values = [null, -1, 123, NaN, 'abc'];
   invalid_values.forEach(function(value) {
