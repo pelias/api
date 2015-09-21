@@ -12,7 +12,7 @@ var ID_DELIM = ':';
 var lengthError = 'invalid param \'ids\': length must be >0';
 
 var formatError = function(input) {
-  return 'id `' + input + 'is invalid: must be of the format type:id for ex: \'geoname:4163334\'';
+  return 'id `' + input + ' is invalid: must be of the format type:id for ex: \'geoname:4163334\'';
 };
 
 function sanitizeId(rawId, messages) {

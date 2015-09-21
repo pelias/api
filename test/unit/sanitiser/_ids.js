@@ -8,7 +8,7 @@ var inputs = {
 };
 
 var formatError = function(input) {
-  return 'id `' + input + 'is invalid: must be of the format type:id for ex: \'geoname:4163334\'';
+  return 'id `' + input + ' is invalid: must be of the format type:id for ex: \'geoname:4163334\'';
 };
 var lengthError = 'invalid param \'ids\': length must be >0';
 var defaultMissingTypeError = function(input) {
