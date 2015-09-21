@@ -3,7 +3,8 @@ var GeoJSON = require('geojson'),
     extent = require('geojson-extent'),
     outputGenerator = require('./outputGenerator'),
     logger = require('pelias-logger').get('api'),
-    type_mapping = require('./type_mapping');
+    type_mapping = require('./type_mapping'),
+    _ = require('lodash');
 
 // Properties to be copied
 var DETAILS_PROPS = [
@@ -28,36 +29,25 @@ function lookupSource(src) {
   return sources.hasOwnProperty(src._type) ? sources[src._type] : src._type;
 }
 
+/*
+ * Use the type to layer mapping, except for Geonames, where having a full
+ * Elasticsearch document source allows a more specific layer name to be chosen
+ */
 function lookupLayer(src) {
-  switch(src._type) {
-    case 'osmnode':
-    case 'osmway':
-      return 'venue';
-    case 'admin0':
-      return 'country';
-    case 'admin1':
-      return 'region';
-    case 'admin2':
-      return 'county';
-    case 'neighborhood':
-      return 'neighbourhood';
-    case 'locality':
-      return 'locality';
-    case 'local_admin':
-      return 'localadmin';
-    case 'osmaddress':
-    case 'openaddresses':
-      return 'address';
-    case 'geoname':
-      if (src.category && src.category.indexOf('admin') !== -1) {
-        if (src.category.indexOf('admin:city') !== -1) { return 'locality'; }
-        if (src.category.indexOf('admin:admin1') !== -1) { return 'region'; }
-        if (src.category.indexOf('admin:admin2') !== -1) { return 'county'; }
-        return 'neighbourhood'; // this could also be 'local_admin'
-      }
+  if (src._type === 'geoname') {
+    if (src.category && src.category.indexOf('admin') !== -1) {
+      if (src.category.indexOf('admin:city') !== -1) { return 'locality'; }
+      if (src.category.indexOf('admin:admin1') !== -1) { return 'region'; }
+      if (src.category.indexOf('admin:admin2') !== -1) { return 'county'; }
+      return 'neighbourhood'; // this could also be 'local_admin'
+    }
 
-      if (src.name) { return 'venue'; }
-      if (src.address) { return 'address'; }
+    if (src.name) { return 'venue'; }
+    if (src.address) { return 'address'; }
+  }
+
+  if (_.contains(type_mapping.types_list, src._type)) {
+    return type_mapping.type_to_layer[src._type];
   }
 
   logger.warn('[geojsonify]: could not map _type ', src._type);
