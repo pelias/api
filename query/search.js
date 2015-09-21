@@ -14,7 +14,7 @@ query.score( peliasQuery.view.ngrams, 'must' );
 
 // scoring boost
 query.score( peliasQuery.view.phrase );
-query.score( peliasQuery.view.focus );
+query.score( peliasQuery.view.focus( peliasQuery.view.phrase ) );
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );
