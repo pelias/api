@@ -15,6 +15,27 @@ var formatError = function(input) {
   return 'id `' + input + 'is invalid: must be of the format type:id for ex: \'geoname:4163334\'';
 };
 
+function sanitizeId(rawId, messages) {
+  var param_index = rawId.indexOf(ID_DELIM);
+  var type = rawId.substring(0, param_index );
+  var id   = rawId.substring(param_index + 1);
+
+  // check id format
+  if(!check.contains(rawId, ID_DELIM) || !check.unemptyString( id ) || !check.unemptyString( type )) {
+    messages.errors.push( formatError(rawId) );
+  }
+  // type text must be one of the types
+  else if( !_.contains( types, type ) ){
+    messages.errors.push( type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']' );
+  }
+  else {
+    return {
+      id: id,
+      type: type
+    };
+  }
+}
+
 function sanitize( raw, clean ){
   // error & warning messages
   var messages = { errors: [], warnings: [] };
@@ -43,25 +64,8 @@ function sanitize( raw, clean ){
   }
 
   // cycle through raw ids and set those which are valid
-  var validIds = rawIds.map( function( rawId ){
-    var param_index = rawId.indexOf(ID_DELIM);
-    var type = rawId.substring(0, param_index );
-    var id   = rawId.substring(param_index + 1);
-
-    // check id format
-    if(!check.contains(rawId, ID_DELIM) || !check.unemptyString( id ) || !check.unemptyString( type )) {
-      messages.errors.push( formatError(rawId) );
-    }
-    // type text must be one of the types
-    else if( !_.contains( types, type ) ){
-      messages.errors.push( type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']' );
-    }
-    else {
-      return {
-        id: id,
-        type: type
-      };
-    }
+  var validIds = rawIds.map(function(rawId) {
+    return sanitizeId(rawId, messages);
   });
 
   if (validIds.every(check.object)) {
