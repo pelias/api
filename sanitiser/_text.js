@@ -19,7 +19,10 @@ function sanitize( raw, clean ){
     clean.text = raw.text;
 
     // parse text with query parser
-    clean.parsed_text = query_parser.get_parsed_address(clean.text);
+    var parsed_text = query_parser.get_parsed_address(clean.text);
+    if (check.assigned(parsed_text)) {
+      clean.parsed_text = parsed_text;
+    }
 
     // try to set layers from query parser results
     clean.types = clean.layers || {};
