@@ -26,6 +26,48 @@ module.exports = {
                 'boost': 1
               }
             }
+          },
+          {
+            'function_score': {
+              'query': {
+                'filtered': {
+                  'filter': {
+                    'exists': {
+                      'field': 'popularity'
+                    }
+                  }
+                }
+              },
+              'max_boost': 2,
+              'score_mode': 'first',
+              'boost_mode': 'replace',
+              'filter': {
+                'or': [
+                  {
+                    'type': {
+                      'value': 'admin0'
+                    }
+                  },
+                  {
+                    'type': {
+                      'value': 'admin1'
+                    }
+                  },
+                  {
+                    'type': {
+                      'value': 'admin2'
+                    }
+                  }
+                ]
+              },
+              'functions': [{
+                'field_value_factor': {
+                  'modifier': 'sqrt',
+                  'field': 'popularity'
+                },
+                'weight': 1
+              }]
+            }
           },{
             'match': {
               'address.number': {
