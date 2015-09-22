@@ -1,6 +1,7 @@
 
 var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
+      singleScalarParameters: require('../sanitiser/_single_scalar_parameters'),
       text: require('../sanitiser/_text'),
       size: require('../sanitiser/_size'),
       layers: require('../sanitiser/_targets')('layers', require( '../query/layers' )),

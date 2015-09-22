@@ -36,7 +36,7 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
-    var expected = ['layers', 'sources', 'size', 'private', 'geo_reverse', 'boundary_country'];
+    var expected = ['singleScalarParameters', 'layers', 'sources', 'size', 'private', 'geo_reverse', 'boundary_country'];
     t.deepEqual(Object.keys(reverse.sanitiser_list), expected);
     t.end();
   });

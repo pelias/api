@@ -30,6 +30,7 @@ var tests = [
   require('./middleware/distance'),
   require('./middleware/confidenceScoreReverse'),
   require('./sanitiser/_size'),
+  require('./sanitiser/_single_scalar_parameters'),
 ];
 
 tests.map(function(t) {
