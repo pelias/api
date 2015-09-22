@@ -3,8 +3,7 @@ var geo_common = require ('./_geo_common');
 var check = require('check-types');
 var defaults = require('../query/defaults');
 var LAT_LON_IS_REQUIRED = true,
-    CIRCLE_IS_REQUIRED = false,
-    CIRCLE_MUST_BE_COMPLETE = false;
+    CIRCLE_IS_REQUIRED = false;
 
 // validate inputs, convert types and apply defaults
 module.exports = function sanitize( raw, clean ){
