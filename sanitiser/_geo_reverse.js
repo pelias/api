@@ -1,6 +1,6 @@
 
 var geo_common = require ('./_geo_common');
-var check = require('check-types');
+var _ = require('lodash');
 var defaults = require('../query/defaults');
 var LAT_LON_IS_REQUIRED = true,
     CIRCLE_IS_REQUIRED = false;
@@ -29,7 +29,7 @@ module.exports = function sanitize( raw, clean ){
     raw['boundary.circle.lon'] = clean['point.lon'];
 
     // if no radius was passed, set the default
-    if (!check.assigned(raw['boundary.circle.radius'])) {
+    if ( _.isUndefined( raw['boundary.circle.radius'] ) ) {
       raw['boundary.circle.radius'] = defaults['boundary:circle:radius'];
     }
 
