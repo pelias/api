@@ -1,13 +1,5 @@
-var valid_types = require( '../query/types' );
-
-/**
- * Calculate the set-style intersection of two arrays
- */
-var intersection = function intersection(set1, set2) {
-  return set2.filter(function(value) {
-    return set1.indexOf(value) !== -1;
-  });
-};
+var type_mapping = require( '../helper/type_mapping' );
+var _ = require('lodash');
 
 /**
  * Combine all types and determine the unique subset
@@ -24,14 +16,14 @@ module.exports = function calculate_types(clean_types) {
    * perform a set intersection of their specified types
    */
   if (clean_types.from_layers || clean_types.from_sources) {
-    var types = valid_types;
+    var types = type_mapping.types;
 
     if (clean_types.from_layers) {
-      types = intersection(types, clean_types.from_layers);
+      types = _.intersection(types, clean_types.from_layers);
     }
 
     if (clean_types.from_sources) {
-      types = intersection(types, clean_types.from_sources);
+      types = _.intersection(types, clean_types.from_sources);
     }
 
     return types;

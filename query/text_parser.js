@@ -1,4 +1,5 @@
 
+var logger = require('pelias-logger').get('api');
 var adminFields = require('../helper/adminFields')();
 
 /**
@@ -21,9 +22,9 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
 
   // ?
   else {
-    console.warn( 'chaos monkey asks: what happens now?' );
-    console.log( parsed_text );
-    try{ throw new Error(); } catch(e){ console.error( e.stack ); } // print a stack trace
+    logger.warn( 'chaos monkey asks: what happens now?' );
+    logger.warn( parsed_text );
+    try{ throw new Error(); } catch(e){ logger.warn( e.stack ); } // print a stack trace
   }
 
   // ==== add parsed matches [address components] ====

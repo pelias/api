@@ -1,4 +1,5 @@
-var sanitize = require( '../../../sanitiser/_targets' )('sources', require('../../../query/sources'));
+var type_mapping = require('../../../helper/type_mapping');
+var sanitize = require( '../../../sanitiser/_targets' )('sources', type_mapping.source_to_type);
 
 var success_messages = { error: false };
 

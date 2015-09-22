@@ -1,6 +1,7 @@
-
 var parser = require('../../../helper/query_parser');
-var layers_map = require('../../../query/layers');
+
+var type_mapping = require('../../../helper/type_mapping');
+var layers_map = type_mapping.layer_with_aliases_to_type;
 
 module.exports.tests = {};
 

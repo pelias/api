@@ -17,7 +17,6 @@ var tests = [
   require('./sanitiser/_layers'),
   require('./sanitiser/reverse'),
   require('./sanitiser/place'),
-  require('./query/types'),
   require('./query/search'),
   require('./query/autocomplete'),
   require('./query/reverse'),
@@ -26,10 +25,12 @@ var tests = [
   require('./helper/geojsonify'),
   require('./helper/outputSchema'),
   require('./helper/types'),
+  require('./helper/type_mapping'),
   require('./sanitiser/_geo_common'),
   require('./middleware/distance'),
   require('./middleware/confidenceScoreReverse'),
   require('./sanitiser/_size'),
+  require('./sanitiser/_single_scalar_parameters'),
 ];
 
 tests.map(function(t) {

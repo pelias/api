@@ -1,6 +1,6 @@
 
-#> layer alias
-path: '/v1/search?text=a&layers=address'
+#> set size
+path: '/v1/reverse?point.lat=1&point.lon=1&param=value1&param=value2'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -22,14 +22,9 @@ should.exist json.geocoding.timestamp
 json.type.should.be.equal 'FeatureCollection'
 json.features.should.be.instanceof Array
 
-#? expected errors
-should.not.exist json.geocoding.errors
-
 #? expected warnings
 should.not.exist json.geocoding.warnings
 
-#? inputs
-json.geocoding.query['text'].should.eql 'a'
-json.geocoding.query['size'].should.eql 10
-json.geocoding.query.types['from_layers'].should.eql ["osmaddress","openaddresses","geoname"]
-json.geocoding.query['type'].should.eql ["osmaddress","openaddresses","geoname"]
+#? expected errors
+should.exist json.geocoding.errors
+json.geocoding.errors.should.eql [ '\'param\' parameter can only have one value' ]

@@ -41,7 +41,7 @@ module.exports.tests.functional_success = function(test, common) {
 
   test('functional success', function(t) {
     var backend = mockBackend( 'client/mget/ok/1', function( cmd ){
-      t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'a' } ] } }, 'correct backend command');
+      t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', type: [ 'a' ] } ] } }, 'correct backend command');
     });
     var controller = setup( backend );
     var res = {
@@ -57,7 +57,7 @@ module.exports.tests.functional_success = function(test, common) {
         t.deepEqual(json.features, expected, 'values correctly mapped');
       }
     };
-    var req = { clean: { ids: [ {'id' : 123, 'type': 'a' } ] }, errors: [], warnings: [] };
+    var req = { clean: { ids: [ {'id' : 123, types: [ 'a' ] } ] }, errors: [], warnings: [] };
     var next = function next() {
       t.equal(req.errors.length, 0, 'next was called without error');
       t.end();
@@ -70,10 +70,10 @@ module.exports.tests.functional_success = function(test, common) {
 module.exports.tests.functional_failure = function(test, common) {
   test('functional failure', function(t) {
     var backend = mockBackend( 'client/mget/fail/1', function( cmd ){
-      t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'b' } ] } }, 'correct backend command');
+      t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', type: [ 'b' ] } ] } }, 'correct backend command');
     });
     var controller = setup( backend );
-    var req = { clean: { ids: [ {'id' : 123, 'type': 'b' } ] }, errors: [], warnings: [] };
+    var req = { clean: { ids: [ {'id' : 123, types: [ 'b' ] } ] }, errors: [], warnings: [] };
     var next = function( message ){
       t.equal(req.errors[0],'a backend error occurred','error passed to errorHandler');
       t.end();
@@ -85,7 +85,7 @@ module.exports.tests.functional_failure = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('GET /doc ' + name, testFunction);
+    return tape('GET /place ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

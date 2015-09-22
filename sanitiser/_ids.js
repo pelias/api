@@ -1,18 +1,57 @@
 var _ = require('lodash'),
     check = require('check-types'),
-    types = require('../query/types');
+    type_mapping = require('../helper/type_mapping');
 
 var ID_DELIM = ':';
 
-// validate inputs, convert types and apply defaults
-// id generally looks like 'geoname:4163334' (type:id)
-// so, both type and id are required fields.
+// validate inputs, convert types and apply defaults id generally looks like
+// 'geonames:venue:4163334' (source:layer:id) so, all three are required
 
 var lengthError = 'invalid param \'ids\': length must be >0';
 
 var formatError = function(input) {
-  return 'id `' + input + 'is invalid: must be of the format type:id for ex: \'geoname:4163334\'';
+  return 'id `' + input + ' is invalid: must be of the format source:layer:id for ex: \'geonames:venue:4163334\'';
 };
+
+var targetError = function(target, target_list) {
+  return target + ' is invalid. It must be one of these values - [' + target_list.join(', ') + ']';
+};
+
+function sanitizeId(rawId, messages) {
+  var parts = rawId.split(ID_DELIM);
+
+  if ( parts.length < 3 ) {
+    messages.errors.push( formatError(rawId) );
+    return;
+  }
+
+  var source = parts[0];
+  var layer = parts[1];
+  var id = parts.slice(2).join(ID_DELIM);
+
+  // check if any parts of the gid are empty
+  if (_.contains([source, layer, id], '')) {
+    messages.errors.push( formatError(rawId) );
+    return;
+  }
+
+  if (!_.contains(type_mapping.sources, source)) {
+    messages.errors.push( targetError(source, type_mapping.sources) );
+    return;
+  }
+
+  if (!_.contains(type_mapping.layers, layer)) {
+    messages.errors.push( targetError(layer, type_mapping.layers) );
+    return;
+  }
+
+  var types = type_mapping.source_and_layer_to_type(source, layer);
+
+  return {
+    id: id,
+    types: types
+  };
+}
 
 function sanitize( raw, clean ){
   // error & warning messages
@@ -42,25 +81,8 @@ function sanitize( raw, clean ){
   }
 
   // cycle through raw ids and set those which are valid
-  var validIds = rawIds.map( function( rawId ){
-    var param_index = rawId.indexOf(ID_DELIM);
-    var type = rawId.substring(0, param_index );
-    var id   = rawId.substring(param_index + 1);
-
-    // check id format
-    if(!check.contains(rawId, ID_DELIM) || !check.unemptyString( id ) || !check.unemptyString( type )) {
-      messages.errors.push( formatError(rawId) );
-    }
-    // type text must be one of the types
-    else if( !_.contains( types, type ) ){
-      messages.errors.push( type + ' is invalid. It must be one of these values - [' + types.join(', ') + ']' );
-    }
-    else {
-      return {
-        id: id,
-        type: type
-      };
-    }
+  var validIds = rawIds.map(function(rawId) {
+    return sanitizeId(rawId, messages);
   });
 
   if (validIds.every(check.object)) {

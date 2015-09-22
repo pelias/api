@@ -41,6 +41,35 @@ module.exports.tests.functional_success = function(test, common) {
     }
   }];
 
+  var expectedMeta = {
+    scores: [10, 20]
+  };
+
+  var expectedData = [
+    {
+      _id: 'myid1',
+      _score: 10,
+      _type: 'mytype1',
+      admin0: 'country1',
+      admin1: 'state1',
+      admin2: 'city1',
+      center_point: { lat: 100.1, lon: -50.5 },
+      name: { default: 'test name1' },
+      value: 1
+    },
+    {
+      _id: 'myid2',
+      _score: 20,
+      _type: 'mytype2',
+      admin0: 'country2',
+      admin1: 'state2',
+      admin2: 'city2',
+      center_point: { lat: 100.2, lon: -51.5 },
+      name: { default: 'test name2' },
+      value: 2
+    }
+  ];
+
   test('functional success', function (t) {
     var backend = mockBackend('client/search/ok/1', function (cmd) {
       t.deepEqual(cmd, {
@@ -66,6 +95,8 @@ module.exports.tests.functional_success = function(test, common) {
     var req = { clean: { a: 'b' }, errors: [], warnings: [] };
     var next = function next() {
       t.equal(req.errors.length, 0, 'next was called without error');
+      t.deepEqual(res.meta, expectedMeta, 'meta data was set');
+      t.deepEqual(res.data, expectedData, 'data was set');
       t.end();
     };
     controller(req, res, next);

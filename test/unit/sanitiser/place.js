@@ -1,7 +1,7 @@
 var place  = require('../../../sanitiser/place'),
     sanitize = place.sanitize,
     middleware = place.middleware,
-    defaultClean = { ids: [ { id: '123', type: 'geoname' } ], private: false };
+    defaultClean = { ids: [ { id: '123', types: [ 'geoname' ] } ], private: false };
 
 // these are the default values you would expect when no input params are specified.
 module.exports.tests = {};
@@ -19,11 +19,19 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
+module.exports.tests.sanitisers = function(test, common) {
+  test('check sanitiser list', function (t) {
+    var expected = ['singleScalarParameters', 'ids', 'private' ];
+    t.deepEqual(Object.keys(place.sanitiser_list), expected);
+    t.end();
+  });
+};
+
 module.exports.tests.sanitize_private = function(test, common) {
   var invalid_values = [null, -1, 123, NaN, 'abc'];
   invalid_values.forEach(function(value) {
     test('invalid private param ' + value, function(t) {
-      var req = { query: { ids:'geoname:123', 'private': value } };
+      var req = { query: { ids:'geonames:venue:123', 'private': value } };
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
@@ -36,7 +44,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   var valid_values = ['true', true, 1];
   valid_values.forEach(function(value) {
     test('valid private param ' + value, function(t) {
-      var req = { query: { ids:'geoname:123', 'private': value } };
+      var req = { query: { ids:'geonames:venue:123', 'private': value } };
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
@@ -49,7 +57,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   var valid_false_values = ['false', false, 0];
   valid_false_values.forEach(function(value) {
     test('test setting false explicitly ' + value, function(t) {
-      var req = { query: { ids:'geoname:123', 'private': value } };
+      var req = { query: { ids:'geonames:venue:123', 'private': value } };
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
@@ -60,7 +68,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   });
 
   test('test default behavior', function(t) {
-    var req = { query: { ids:'geoname:123' } };
+    var req = { query: { ids:'geonames:venue:123' } };
     sanitize(req, function(){
       t.deepEqual( req.errors, [], 'no errors' );
       t.deepEqual( req.warnings, [], 'no warnings' );
@@ -83,7 +91,7 @@ module.exports.tests.invalid_params = function(test, common) {
 
 module.exports.tests.middleware_success = function(test, common) {
   test('middleware success', function(t) {
-    var req = { query: { ids: 'geoname:123' }};
+    var req = { query: { ids: 'geonames:venue:123' }};
     var next = function(){
       t.deepEqual( req.errors, [], 'no errors' );
       t.deepEqual( req.warnings, [], 'no warnings' );
