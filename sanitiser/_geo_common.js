@@ -56,8 +56,6 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
  * @param {bool} circle_is_required
  */
 function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
-  // "boundary.circle", clean, raw, true
-
   // the names we use to define the centroid
   var mandatoryProps = [ 'lat', 'lon' ];
 
@@ -142,13 +140,13 @@ function sanitize_point( key_prefix, clean, raw, point_is_required ) {
  *
  * @param {string} key
  * @param {object} clean
- * @param {string} param
+ * @param {string} rawValue
  * @param {bool} latlon_is_required
  */
-function sanitize_coord( key, clean, param, latlon_is_required ) {
-  var value = parseFloat( param );
-  if ( _.isFinite( value ) ) {
-    clean[key] = value;
+function sanitize_coord( key, clean, rawValue, latlon_is_required ) {
+  var parsedValue = parseFloat( rawValue );
+  if ( _.isFinite( parsedValue ) ) {
+    clean[key] = parsedValue;
   }
   else if (latlon_is_required) {
     throw new Error( util.format( 'missing param \'%s\'', key ) );
