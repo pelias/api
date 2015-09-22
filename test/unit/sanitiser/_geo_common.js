@@ -20,7 +20,7 @@ module.exports.tests.coord = function(test, common) {
     };
     var mandatory = false;
 
-    sanitize.sanitize_coord( 'foo', clean, params.foo, mandatory );
+    sanitize.sanitize_coord( 'foo', clean, params, mandatory );
     t.equal(clean.foo, params.foo);
     t.end();
   });
@@ -32,7 +32,7 @@ module.exports.tests.coord = function(test, common) {
     };
     var mandatory = false;
 
-    sanitize.sanitize_coord( 'foo', clean, params.foo, mandatory );
+    sanitize.sanitize_coord( 'foo', clean, params, mandatory );
     t.equal(clean.foo, undefined, 'not set');
     t.end();
   });
@@ -43,7 +43,7 @@ module.exports.tests.coord = function(test, common) {
     var mandatory = false;
 
     t.doesNotThrow( function(){
-      sanitize.sanitize_coord( 'foo', clean, params.foo, mandatory );
+      sanitize.sanitize_coord( 'foo', clean, params, mandatory );
     });
     t.end();
   });
@@ -54,7 +54,7 @@ module.exports.tests.coord = function(test, common) {
     var mandatory = true;
 
     t.throws( function(){
-      sanitize.sanitize_coord( 'foo', clean, params.foo, mandatory );
+      sanitize.sanitize_coord( 'foo', clean, params, mandatory );
     });
     t.end();
   });
