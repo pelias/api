@@ -13,17 +13,21 @@
 
 var stats = require('stats-lite');
 var logger = require('pelias-logger').get('api');
+var check = require('check-types');
 
 var RELATIVE_SCORES = true;
 
 function setup(peliasConfig) {
-  RELATIVE_SCORES = peliasConfig.hasOwnProperty('relativeScores') ? peliasConfig.relativeScores : true;
+  if (check.assigned(peliasConfig)) {
+    RELATIVE_SCORES = peliasConfig.hasOwnProperty('relativeScores') ? peliasConfig.relativeScores : true;
+  }
   return computeScores;
 }
 
 function computeScores(req, res, next) {
   // do nothing if no result data set
-  if (!res || !res.data || !res.meta) {
+  if (check.undefined(req.clean) || check.undefined(res) ||
+      check.undefined(res.data) || check.undefined(res.meta)) {
     return next();
   }
 
@@ -71,6 +75,7 @@ function computeConfidenceScore(req, mean, stdev, hit) {
   // TODO: look at categories and location
 
   hit.confidence /= checkCount;
+  hit.confidence = Number((hit.confidence).toFixed(3));
 
   logger.debug('[confidence]:', hit.confidence, hit.name.default);
 
@@ -78,16 +83,16 @@ function computeConfidenceScore(req, mean, stdev, hit) {
 }
 
 function checkForDealBreakers(req, hit) {
-  if (!req.clean.parsed_text) {
+  if (check.undefined(req.clean.parsed_text)) {
     return false;
   }
 
-  if (req.clean.parsed_text.state && req.clean.parsed_text.state !== hit.admin1_abbr) {
+  if (check.assigned(req.clean.parsed_text.state) && req.clean.parsed_text.state !== hit.admin1_abbr) {
     logger.debug('[confidence][deal-breaker]: state !== admin1_abbr');
     return true;
   }
 
-  if (req.clean.parsed_text.postalcode && req.clean.parsed_text.postalcode !== hit.zip) {
+  if (check.assigned(req.clean.parsed_text.postalcode) && req.clean.parsed_text.postalcode !== hit.zip) {
     logger.debug('[confidence][deal-breaker]: postalcode !== zip');
     return true;
   }
@@ -117,7 +122,8 @@ function checkDistanceFromMean(score, mean, stdev) {
  */
 function checkName(text, parsed_text, hit) {
   // parsed_text name should take precedence if available since it's the cleaner name property
-  if (parsed_text && parsed_text.name && hit.name.default.toLowerCase() === parsed_text.name.toLowerCase()) {
+  if (check.assigned(parsed_text) && check.assigned(parsed_text.name) &&
+    hit.name.default.toLowerCase() === parsed_text.name.toLowerCase()) {
     return 1;
   }
 
@@ -139,7 +145,9 @@ function checkName(text, parsed_text, hit) {
  * @returns {number}
  */
 function checkQueryType(text, hit) {
-  if (!!text.number && (!hit.address || (hit.address && !hit.address.number))) {
+  if (check.assigned(text) && check.assigned(text.number) &&
+      (check.undefined(hit.address) ||
+      (check.assigned(hit.address) && check.undefined(hit.address.number)))) {
     return 0;
   }
   return 1;
@@ -156,22 +164,23 @@ function checkQueryType(text, hit) {
 function propMatch(textProp, hitProp, expectEnriched) {
 
   // both missing, but expect to have enriched value in result => BAD
-  if (!textProp && !hitProp && expectEnriched) { return 0; }
+  if (check.undefined(textProp) && check.undefined(hitProp) && check.assigned(expectEnriched)) { return 0; }
 
   // both missing, and no enrichment expected => GOOD
-  if (!textProp && !hitProp) { return 1; }
+  if (check.undefined(textProp) && check.undefined(hitProp)) { return 1; }
 
   // text has it, result doesn't => BAD
-  if (textProp && !hitProp) { return 0; }
+  if (check.assigned(textProp) && check.undefined(hitProp)) { return 0; }
 
   // text missing, result has it, and enrichment is expected => GOOD
-  if (!textProp && hitProp && expectEnriched) { return 1; }
+  if (check.undefined(textProp) && check.assigned(hitProp) && check.assigned(expectEnriched)) { return 1; }
 
   // text missing, result has it, enrichment not desired => 50/50
-  if (!textProp && hitProp) { return 0.5; }
+  if (check.undefined(textProp) && check.assigned(hitProp)) { return 0.5; }
 
   // both present, values match => GREAT
-  if (textProp && hitProp && textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) { return 1; }
+  if (check.assigned(textProp) && check.assigned(hitProp) &&
+      textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) { return 1; }
 
   // ¯\_(ツ)_/¯
   return 0.7;
@@ -200,7 +209,7 @@ function checkAddress(text, hit) {
   var checkCount = 5;
   var res = 0;
 
-  if (text && text.number && text.street) {
+  if (check.assigned(text) && check.assigned(text.number) && check.assigned(text.street)) {
     res += propMatch(text.number, (hit.address ? hit.address.number : null), false);
     res += propMatch(text.street, (hit.address ? hit.address.street : null), false);
     res += propMatch(text.postalcode, (hit.address ? hit.address.zip: null), true);
