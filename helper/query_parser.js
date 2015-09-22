@@ -3,6 +3,8 @@ var parser     = require('addressit');
 var extend     = require('extend');
 var type_mapping = require('../helper/type_mapping');
 var delim      = ',';
+var check      = require('check-types');
+var logger     = require('pelias-logger').get('api');
 
 module.exports = {};
 
@@ -60,6 +62,13 @@ module.exports.get_parsed_address = function get_parsed_address(query) {
       parsed_text[part] = parsedAddress[part];
     }
   });
+
+  // if all we found was regions, ignore it as it is not enough information to make smarter decisions
+  if (Object.keys(parsed_text).length === 1 && !check.undefined(parsed_text.regions))
+  {
+    logger.info('Ignoring address parser output, regions only');
+    return null;
+  }
 
   return parsed_text;
 };

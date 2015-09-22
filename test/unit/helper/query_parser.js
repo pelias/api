@@ -14,26 +14,22 @@ module.exports.tests.interface = function(test, common) {
 };
 
 module.exports.tests.split_on_comma = function(test, common) {
-  var queries = ['soho, new york', 'chelsea, london', '123 main, new york'];
-  var delim   = ',';
+  var queries = [
+    { name: 'soho', admin_parts: 'new york' },
+    { name: 'chelsea', admin_parts: 'london' },
+    { name: '123 main', admin_parts: 'new york' }
+  ];
 
-  var testParse = function(query) {
+  queries.forEach(function (query) {
     test('naive parsing ' + query, function(t) {
-      var address = parser.get_parsed_address(query);
-      var delimIndex = query.indexOf(delim);
-      var name = query.substring(0, delimIndex);
-      var admin_parts = query.substring(delimIndex + 1).trim();
+      var address = parser.get_parsed_address(query.name + ', ' + query.admin_parts);
 
       t.equal(typeof address, 'object', 'valid object');
-      t.equal(address.name, name, 'name set correctly to ' + address.name);
-      t.equal(address.admin_parts, admin_parts, 'admin_parts set correctly to ' + address.admin_parts);
+      t.equal(address.name, query.name, 'name set correctly to ' + address.name);
+      t.equal(address.admin_parts, query.admin_parts, 'admin_parts set correctly to ' + address.admin_parts);
       t.end();
     });
-  };
-
-  for (var key in queries) {
-    testParse( queries[key] );
-  }
+  });
 };
 
 module.exports.tests.parse_three_chars_or_less = function(test, common) {
@@ -41,7 +37,8 @@ module.exports.tests.parse_three_chars_or_less = function(test, common) {
   var num_queries   = ['1', '12', '123'];
   var alphanum_q    = ['a1', '1a2', '12c'];
 
-  var testParse = function(query) {
+  var queries = chars_queries.concat(num_queries).concat(alphanum_q);
+  queries.forEach(function(query) {
     test('query length < 3 (' + query + ')', function(t) {
       var address = parser.get_parsed_address(query);
       var target_layer = layers_map.coarse;
@@ -51,110 +48,63 @@ module.exports.tests.parse_three_chars_or_less = function(test, common) {
       t.deepEqual(layers, target_layer, 'admin_parts set correctly to ' + target_layer.join(', '));
       t.end();
     });
-  };
-
-  var queries = chars_queries.concat(num_queries).concat(alphanum_q);
-  for (var key in queries) {
-    testParse( queries[key] );
-  }
+  });
 };
 
-module.exports.tests.parse_one_or_more_tokens = function(test, common) {
-  var one_token_queries = ['hyderbad', 'yugoslavia', 'somethingreallybigbutjustonetokenstill'];
-  var two_tokens_nonum  = ['small town', 'biggg city', 'another empire'];
-  var two_tokens_withnum= ['123 main', 'sixty 1', '123-980 house'];
-
-  // parse address is now always true to fix pelias/api#194
-  var testParse = function(query, parse_address) {
-    test('query with one or more tokens (' + query + ')', function(t) {
-      var address = parser.get_parsed_address(query);
-      var target_layer = layers_map.coarse.concat(layers_map.venue);
-      var layers = parser.get_layers(query);
-
-      t.equal(typeof address, 'object', 'valid object');
-
-      if (parse_address) {
-        t.deepEqual(address.regions.join(''), query, 'since query contained a number, it went through address parsing');
-      } else {
-        t.deepEqual(layers, target_layer, 'admin_parts set correctly to ' + target_layer.join(', '));
-      }
-
-      t.end();
-    });
-  };
-
-  var queries = one_token_queries.concat(two_tokens_nonum);
-  for (var key in queries) {
-    testParse( queries[key], true );
-  }
-  for (key in two_tokens_withnum) {
-    testParse( two_tokens_withnum[key], true );
-  }
+module.exports.tests.parse_one_token = function(test, common) {
+  test('query with one token', function (t) {
+    var address = parser.get_parsed_address('yugolsavia');
+    t.equal(address, null, 'nothing address specific detected');
+    t.end();
+  });
+  test('query with two tokens, no numbers', function (t) {
+    var address = parser.get_parsed_address('small town');
+    t.equal(address, null, 'nothing address specific detected');
+    t.end();
+  });
+  test('query with two tokens, number first', function (t) {
+    var address = parser.get_parsed_address('123 main');
+    t.equal(address, null, 'nothing address specific detected');
+    t.end();
+  });
+  test('query with two tokens, number second', function (t) {
+    var address = parser.get_parsed_address('main 123');
+    t.equal(address, null, 'nothing address specific detected');
+    t.end();
+  });
+  test('query with many tokens', function(t) {
+    var address = parser.get_parsed_address('main particle new york');
+    t.equal(address, null, 'nothing address specific detected');
+    t.end();
+  });
 };
 
 module.exports.tests.parse_address = function(test, common) {
-  var addresses_nonum  = [{ non_street: 'main particle', city: 'new york'},
-                          { non_street: 'biggg city block' },
-                          { non_street: 'the empire state building' }
-                         ];
-  var address_with_num = [{ number: 123, street: 'main st', city: 'new york', state: 'ny'},
-                          { number: 456, street: 'pine ave', city: 'san francisco', state: 'CA'},
-                          { number: 1980, street: 'house st', city: 'hoboken', state: 'NY'}
-                         ];
-  var address_with_zip = [{ number: 1, street: 'main st', city: 'new york', state: 'ny', zip: 10010},
-                          { number: 4, street: 'ape ave', city: 'san diego', state: 'CA', zip: 98970},
-                          { number: 19, street: 'house dr', city: 'houston', state: 'TX', zip: 79089}
-                         ];
+  test('valid address, house number', function(t) {
+    var query_string = '123 main st new york ny';
+    var address = parser.get_parsed_address(query_string);
 
-  var testParse = function(query, hasNumber, hasZip) {
-    var testcase = 'parse query with ' + (hasNumber ? 'a house number ': 'no house number ');
-    testcase += 'and ' + (hasZip ? 'a zip ' : 'no zip ');
+    t.equal(typeof address, 'object', 'valid object for the address');
+    t.equal(address.number, 123, 'parsed house number');
+    t.equal(address.street, 'main st', 'parsed street');
+    t.deepEqual(address.regions, ['new york'], 'parsed city');
+    t.equal(address.state , 'NY', 'parsed state');
+    t.end();
+  });
+  test('valid address, zipcode', function(t) {
+    var query_string = '123 main st new york ny 10010';
+    var address = parser.get_parsed_address(query_string);
 
-    test(testcase, function(t) {
-      var query_string = '';
-      for (var k in query) {
-        query_string += ' ' + query[k];
-      }
-
-      // remove leading whitespace
-      query_string = query_string.substring(1);
-
-      var address = parser.get_parsed_address(query_string);
-
-      t.equal(typeof address, 'object', 'valid object for the address ('+query_string+')');
-
-      if (!hasNumber && !hasZip && query.non_street) {
-        t.equal(address.regions.join(''), query_string, 'expected parsing result');
-      } else {
-        t.equal(address.regions.join(''), query.city, 'city in regions (' + query.city +')');
-      }
-
-      if ((hasNumber || hasZip) && query.street) {
-        t.equal(typeof address.number, 'number', 'valid house number format (' + address.number + ')');
-        t.equal(address.number, query.number, 'correct house number (' + query.number + ')');
-        t.equal(typeof address.street, 'string', 'valid street name format (' + address.street + ')');
-        t.equal(address.street, query.street, 'correct street name (' + query.street + ')');
-      }
-
-      if (hasZip) {
-        t.equal(typeof address.postalcode, 'number', 'valid zip (' + address.postalcode + ')');
-        t.equal(address.postalcode, query.zip, 'correct postal code (' + query.zip + ')');
-      }
-
-      t.end();
-    });
-  };
-
-  for (var key in addresses_nonum) {
-    testParse( addresses_nonum[key] );
-  }
-  for (key in address_with_num) {
-    testParse( address_with_num[key], true );
-  }
-  for (key in address_with_zip) {
-    testParse( address_with_zip[key], true, true );
-  }
+    t.equal(typeof address, 'object', 'valid object for the address');
+    t.equal(address.number, 123, 'parsed house number');
+    t.equal(address.street, 'main st', 'parsed street');
+    t.deepEqual(address.regions, ['new york'], 'parsed city');
+    t.equal(address.state , 'NY', 'parsed state');
+    t.equal(address.postalcode, 10010, 'parsed zip');
+    t.end();
+  });
 };
+
 
 module.exports.all = function (tape, common) {
 
