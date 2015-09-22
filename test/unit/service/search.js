@@ -35,16 +35,21 @@ module.exports.tests.functional_success = function(test, common) {
     }
   ];
 
+  var expectedMeta = {
+    scores: [10, 20]
+  };
+
   test('valid ES query', function(t) {
     var backend = mockBackend( 'client/search/ok/1', function( cmd ){
       t.deepEqual(cmd, example_valid_es_query, 'no change to the command');
     });
-    setup( backend, example_valid_es_query, function(err, data) {
+    setup( backend, example_valid_es_query, function(err, data, meta) {
       t.true(Array.isArray(data), 'returns an array');
       data.forEach(function(d) {
         t.true(typeof d === 'object', 'valid object');
       });
       t.deepEqual(data, expected, 'values correctly mapped');
+      t.deepEqual(meta, expectedMeta, 'meta data correctly mapped');
       t.end();
     });
   });
