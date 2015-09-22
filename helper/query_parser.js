@@ -1,7 +1,7 @@
 
 var parser     = require('addressit');
 var extend     = require('extend');
-var layers_map = require('../query/layers');
+var type_mapping = require('../helper/type_mapping');
 var delim      = ',';
 
 module.exports = {};
@@ -9,7 +9,7 @@ module.exports = {};
 module.exports.get_layers = function get_layers(query) {
   if (query.length <= 3 ) {
     // no address parsing required
-    return layers_map.coarse;
+    return type_mapping.layer_with_aliases_to_type.coarse;
   }
 };
 

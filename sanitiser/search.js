@@ -1,11 +1,12 @@
+var type_mapping = require('../helper/type_mapping');
 
 var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
       singleScalarParameters: require('../sanitiser/_single_scalar_parameters'),
       text: require('../sanitiser/_text'),
       size: require('../sanitiser/_size'),
-      layers: require('../sanitiser/_targets')('layers', require( '../query/layers' )),
-      sources: require('../sanitiser/_targets')('sources', require( '../query/sources' )),
+      layers: require('../sanitiser/_targets')('layers', type_mapping.layer_with_aliases_to_type),
+      sources: require('../sanitiser/_targets')('sources', type_mapping.source_to_type),
       private: require('../sanitiser/_flag_bool')('private', false),
       geo_search: require('../sanitiser/_geo_search'),
       boundary_country: require('../sanitiser/_boundary_country'),

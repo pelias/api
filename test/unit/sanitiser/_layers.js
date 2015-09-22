@@ -1,5 +1,6 @@
+var type_mapping = require('../../../helper/type_mapping');
 
-var sanitize = require('../../../sanitiser/_targets')('layers', require('../../../query/layers'));
+var sanitize = require('../../../sanitiser/_targets')('layers', type_mapping.layer_with_aliases_to_type);
 
 module.exports.tests = {};
 
@@ -42,7 +43,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     t.end();
   });
   test('address (alias) layer', function(t) {
-    var address_layers = ['osmaddress','openaddresses'];
+    var address_layers = ['osmaddress','openaddresses','geoname'];
     var raw = { layers: 'address' };
     var clean = {};
 
@@ -75,7 +76,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     t.end();
   });
   test('address alias layer plus regular layers', function(t) {
-    var address_layers = ['osmaddress','openaddresses'];
+    var address_layers = ['osmaddress','openaddresses','geoname'];
     var reg_layers   = ['admin0', 'locality'];
 
     var raw = { layers: 'address,country,locality' };
