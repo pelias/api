@@ -185,74 +185,25 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
 };
 
 module.exports.tests.sanitize_bounding_rect = function(test, common) {
-
-  // convernience function to avoid refactoring the succict geojson bbox
-  // fixtures in to the more verbose bounding.rect format.
-  var mapGeoJsonBboxFormatToBoundingRectFormat = function( bbox ){
-    var split = bbox.split(',');
-    return {
-      'boundary.rect.min_lon': split[0],
-      'boundary.rect.max_lat': split[1],
-      'boundary.rect.max_lon': split[2],
-      'boundary.rect.min_lat': split[3]
-    };
-  };
-
-  var bboxes = {
-    invalid: [
-      '91;-181,-91,181', // invalid - semicolon between coordinates
-      'these,are,not,numbers',
-      '0,0,0,notANumber',
-      ',,,',
-      '91, -181, -91',   // invalid - missing a coordinate
-      '123,12',          // invalid - missing coordinates
-      ''                 // invalid - empty param
-    ].map(mapGeoJsonBboxFormatToBoundingRectFormat),
-
-    valid: [
-      '-179,90,34,-80', // valid top_right lon/lat, bottom_left lon/lat
-      '0,0,0,0',
-      '10,20,30,40',
-      '-40,-20,10,30',
-      '-40,-20,10,30',
-      '-1200,20,1000,20',
-      '-1400,90,1400,-90',
-      // wrapped latitude coordinates
-      '-181,90,34,-180',
-      '-170,91,-181,45',
-      '-181,91,181,-91',
-      '91, -181,-91,11',
-      '91, -11,-91,181'
-    ].map(mapGeoJsonBboxFormatToBoundingRectFormat)
-  };
-
-  test('invalid bounding rect', function(t) {
-    bboxes.invalid.forEach( function( bbox ){
-      var req = { query: { text: 'test' } };
-      extend( req.query, bbox );
-      sanitize(req, function(){
-        t.equal(req.clean['boundary.rect.min_lon'], undefined);
-        t.equal(req.clean['boundary.rect.max_lat'], undefined);
-        t.equal(req.clean['boundary.rect.max_lon'], undefined);
-        t.equal(req.clean['boundary.rect.min_lat'], undefined);
-        t.equal(req.errors.length, 1, 'bounding error');
-      });
-    });
-    t.end();
-  });
   test('valid bounding rect', function(t) {
-    bboxes.valid.forEach( function( bbox ){
-      var req = { query: { text: 'test' } };
-      extend( req.query, bbox );
-      sanitize(req, function(){
-        t.equal(req.errors[0], undefined, 'no error');
-        t.equal(req.clean['boundary.rect.min_lon'], parseFloat(bbox['boundary.rect.min_lon']));
-        t.equal(req.clean['boundary.rect.max_lat'], parseFloat(bbox['boundary.rect.max_lat']));
-        t.equal(req.clean['boundary.rect.max_lon'], parseFloat(bbox['boundary.rect.max_lon']));
-        t.equal(req.clean['boundary.rect.min_lat'], parseFloat(bbox['boundary.rect.min_lat']));
-      });
+    var req = {
+      query: {
+        text: 'test',
+        'boundary.rect.min_lat': -40.659,
+        'boundary.rect.max_lat': -41.614,
+        'boundary.rect.min_lon': 174.612,
+        'boundary.rect.max_lon': 176.333
+      }
+    };
+
+    sanitize(req, function(){
+      t.equal(req.errors[0], undefined, 'no error');
+      t.equal(req.clean['boundary.rect.min_lon'], parseFloat(req.query['boundary.rect.min_lon']));
+      t.equal(req.clean['boundary.rect.max_lat'], parseFloat(req.query['boundary.rect.max_lat']));
+      t.equal(req.clean['boundary.rect.max_lon'], parseFloat(req.query['boundary.rect.max_lon']));
+      t.equal(req.clean['boundary.rect.min_lat'], parseFloat(req.query['boundary.rect.min_lat']));
+      t.end();
     });
-    t.end();
   });
 };
 
