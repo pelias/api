@@ -31,7 +31,7 @@ module.exports = extend( false, peliasQuery.defaults, {
 
   'focus:function': 'linear',
   'focus:offset': '1km',
-  'focus:scale': '100km',
+  'focus:scale': '50km',
   'focus:decay': 0.5,
 
   'function_score:score_mode': 'avg',
