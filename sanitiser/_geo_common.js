@@ -2,7 +2,8 @@
  * helper sanitiser methods for geo parameters
  */
 var util = require('util'),
-    check = require('check-types');
+    check = require('check-types'),
+    _ = require('lodash');
 
 /**
  * Parse and validate rect parameter
@@ -55,6 +56,8 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
  * @param {bool} circle_is_required
  */
 function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
+  // "boundary.circle", clean, raw, true
+
   // the names we use to define the centroid
   var mandatoryProps = [ 'lat', 'lon' ];
 
@@ -144,7 +147,7 @@ function sanitize_point( key_prefix, clean, raw, point_is_required ) {
  */
 function sanitize_coord( key, clean, param, latlon_is_required ) {
   var value = parseFloat( param );
-  if ( !isNaN( value ) ) {
+  if ( _.isFinite( value ) ) {
     clean[key] = value;
   }
   else if (latlon_is_required) {
