@@ -17,7 +17,7 @@ module.exports = function sanitize( raw, clean ){
   };
 
   if (['lat', 'lon', 'radius'].some(hasBoundaryCircleField)) {
-    messages.warnings.push('boundary.circle is currently unsupported and being ignored');
+    messages.warnings.push('boundary.circle is currently unsupported');
   }
 
   try {
