@@ -56,7 +56,6 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
  * @param {bool} circle_is_required
  */
 function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
-  // "boundary.circle", clean, raw, false
 
   // the names we use to define the centroid
   var mandatoryProps = [ 'lat', 'lon' ];
