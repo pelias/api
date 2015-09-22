@@ -31,6 +31,7 @@ var tests = [
   require('./middleware/confidenceScoreReverse'),
   require('./sanitiser/_size'),
   require('./sanitiser/_single_scalar_parameters'),
+  require('./sanitiser/_geo_reverse'),
 ];
 
 tests.map(function(t) {

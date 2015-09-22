@@ -2,7 +2,8 @@
  * helper sanitiser methods for geo parameters
  */
 var util = require('util'),
-    check = require('check-types');
+    check = require('check-types'),
+    _ = require('lodash');
 
 /**
  * Parse and validate rect parameter
@@ -55,6 +56,7 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
  * @param {bool} circle_is_required
  */
 function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
+  // "boundary.circle", clean, raw, false
 
   // the names we use to define the centroid
   var mandatoryProps = [ 'lat', 'lon' ];
@@ -86,7 +88,7 @@ function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
   // radius was specified without lat or lon
   else if( raw.hasOwnProperty( key_prefix + '.radius' ) ){
     var format2 = 'missing circle param \'%s\' requires all of: \'%s\' to be present';
-    throw new Error( util.format( format2, key_prefix, mandatoryProps.join('\',\'') ) ); 
+    throw new Error( util.format( format2, key_prefix, mandatoryProps.join('\',\'') ) );
   }
   // fields required, eg. ( totalFieldsSpecified === 0 && bbox_is_required === true )
   else if( circle_is_required ){
@@ -140,13 +142,13 @@ function sanitize_point( key_prefix, clean, raw, point_is_required ) {
  *
  * @param {string} key
  * @param {object} clean
- * @param {string} param
+ * @param {string} rawValue
  * @param {bool} latlon_is_required
  */
-function sanitize_coord( key, clean, param, latlon_is_required ) {
-  var value = parseFloat( param );
-  if ( !isNaN( value ) ) {
-    clean[key] = value;
+function sanitize_coord( key, clean, rawValue, latlon_is_required ) {
+  var parsedValue = parseFloat( rawValue );
+  if ( _.isFinite( parsedValue ) ) {
+    clean[key] = parsedValue;
   }
   else if (latlon_is_required) {
     throw new Error( util.format( 'missing param \'%s\'', key ) );
