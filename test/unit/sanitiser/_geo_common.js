@@ -172,6 +172,23 @@ module.exports.tests.rect = function(test, common) {
     t.end();
   });
 
+  test('valid rect quad, null island', function (t) {
+    var clean = {};
+    var params = {
+      'boundary.rect.min_lat': 0,
+      'boundary.rect.max_lat': 0,
+      'boundary.rect.min_lon': 0,
+      'boundary.rect.max_lon': 0
+    };
+    var mandatory = false;
+
+    sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
+    t.equal(clean['boundary.rect.min_lat'], params['boundary.rect.min_lat'], 'min_lat approved');
+    t.equal(clean['boundary.rect.max_lat'], params['boundary.rect.max_lat'], 'min_lat approved');
+    t.equal(clean['boundary.rect.min_lon'], params['boundary.rect.min_lon'], 'min_lat approved');
+    t.equal(clean['boundary.rect.max_lon'], params['boundary.rect.max_lon'], 'min_lat approved');
+    t.end();
+  });
   test('invalid rect - partially specified', function (t) {
     var clean = {};
     var params = {
