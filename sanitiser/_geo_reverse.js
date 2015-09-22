@@ -14,7 +14,7 @@ module.exports = function sanitize( raw, clean ){
     geo_common.sanitize_point( 'point', clean, raw, LAT_LON_IS_REQUIRED );
 
     // this hack is to allow point.lat/point.lon to be used interchanagbly
-    // with boundary.circle.lat/boundary.circle/lon
+    // with boundary.circle.lat/boundary.circle.lon
     if( !clean.hasOwnProperty('boundary.circle.lat') && clean.hasOwnProperty('point.lat') ){
       raw['boundary.circle.lat'] = clean['point.lat'];
     }
