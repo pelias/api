@@ -1,4 +1,5 @@
-var extend = require('extend');
+var extend = require('extend'),
+  _ = require('lodash');
 
 var TYPE_TO_SOURCE = {
   'geoname': 'gn',
@@ -69,17 +70,8 @@ var TYPES   = Object.keys(TYPE_TO_SOURCE);
 var SOURCES = Object.keys(SOURCE_TO_TYPE);
 var LAYERS  = Object.keys(LAYER_TO_TYPE);
 
-/**
- * Calculate the set-style intersection of two arrays
- */
-var intersection = function intersection(set1, set2) {
-  return set2.filter(function(value) {
-    return set1.indexOf(value) !== -1;
-  });
-};
-
 var sourceAndLayerToType = function sourceAndLayerToType(source, layer) {
-  return intersection(SOURCE_TO_TYPE[source], LAYER_WITH_ALIASES_TO_TYPE[layer]);
+  return _.intersection(SOURCE_TO_TYPE[source], LAYER_WITH_ALIASES_TO_TYPE[layer]);
 };
 
 module.exports = {
