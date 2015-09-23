@@ -1,5 +1,5 @@
 
-var schemas = require('./outputSchema.json');
+var schemas = require('./labelSchema.json');
 
 module.exports = function( record ){
 

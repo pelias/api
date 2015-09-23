@@ -23,7 +23,7 @@ var tests = [
   require('./query/defaults'),
   require('./helper/query_parser'),
   require('./helper/geojsonify'),
-  require('./helper/outputSchema'),
+  require('./helper/labelSchema'),
   require('./helper/types'),
   require('./helper/type_mapping'),
   require('./sanitiser/_geo_common'),
