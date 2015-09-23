@@ -21,6 +21,7 @@ var tests = [
   require('./query/autocomplete'),
   require('./query/reverse'),
   require('./query/defaults'),
+  require('./query/view/temp_ngrams_strip_housenumbers'),
   require('./helper/query_parser'),
   require('./helper/geojsonify'),
   require('./helper/outputSchema'),

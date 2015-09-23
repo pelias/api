@@ -1,5 +1,6 @@
 
 var peliasQuery = require('pelias-query'),
+    ngramsStripHouseNumbersView = require('./view/temp_ngrams_strip_housenumbers'),
     defaults = require('./defaults'),
     check = require('check-types');
 
@@ -9,7 +10,7 @@ var peliasQuery = require('pelias-query'),
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
-query.score( peliasQuery.view.ngrams, 'must' );
+query.score( ngramsStripHouseNumbersView, 'must' );
 
 // scoring boost
 query.score( peliasQuery.view.phrase );
