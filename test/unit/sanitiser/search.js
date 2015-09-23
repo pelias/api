@@ -207,6 +207,28 @@ module.exports.tests.sanitize_bounding_rect = function(test, common) {
   });
 };
 
+module.exports.tests.sanitize_viewport = function(test, common) {
+  test('valid viewport', function(t) {
+    var req = {
+      query: {
+        text: 'test',
+        'focus.viewport.min_lat': '37',
+        'focus.viewport.max_lat': '38',
+        'focus.viewport.min_lon': '-123',
+        'focus.viewport.max_lon': '-122'
+      }
+    };
+    sanitize(req, function() {
+      t.equal(req.errors[0], undefined, 'no error');
+      t.equal(req.clean['focus.viewport.min_lat'], parseFloat(req.query['focus.viewport.min_lat']), 'correct min_lat in clean');
+      t.equal(req.clean['focus.viewport.max_lat'], parseFloat(req.query['focus.viewport.max_lat']), 'correct max_lat in clean');
+      t.equal(req.clean['focus.viewport.min_lon'], parseFloat(req.query['focus.viewport.min_lon']), 'correct min_lon in clean');
+      t.equal(req.clean['focus.viewport.max_lon'], parseFloat(req.query['focus.viewport.max_lon']), 'correct max_lon in clean');
+      t.end();
+    });
+  });
+};
+
 module.exports.tests.sanitize_size = function(test, common) {
   test('invalid size value', function(t) {
     var req = { query: { size: 'a', text: 'test', lat: 0, lon: 0 } };
