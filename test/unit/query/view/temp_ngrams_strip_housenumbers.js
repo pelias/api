@@ -40,7 +40,7 @@ module.exports.tests.removeHouseNumber = function(test, common) {
   test('removeHouseNumber', function(t) {
 
     t.equal(rm('101 west 26th street'), 'west 26th street', 'house number removed');
-    t.equal(rm('10th avenue'), '10th avenue', 'house number removed');
+    t.equal(rm('10th avenue'), '10th avenue', 'don\'t remove ordinal numbers');
     
     t.equal(rm('123 main st new york ny 10010 US'), 'main st new york ny US', 'also removes postcodes');
 
