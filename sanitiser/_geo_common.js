@@ -49,42 +49,13 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
  */
 function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
 
-  // the names we use to define the centroid
-  var mandatoryProps = [ 'lat', 'lon' ];
+  sanitize_point( key_prefix, clean, raw, circle_is_required);
 
-  // count up how many fields the user actually specified
-  var totalFieldsSpecified = 0;
-  mandatoryProps.forEach( function( prop ){
-    if( raw.hasOwnProperty( key_prefix + '.' + prop ) ){
-      totalFieldsSpecified++;
-    }
-  });
-
-  // all fields specified
-  if( 2 === totalFieldsSpecified ) {
-    // reuse the coord sanitizer and set required:true so we get a fatal error if
-    // any one of the coords is not specified.
-    sanitize_coord( key_prefix + '.lat', clean, raw[ key_prefix + '.lat' ], true );
-    sanitize_coord( key_prefix + '.lon', clean, raw[ key_prefix + '.lon' ], true );
-
-    if( check.assigned( raw[ key_prefix + '.radius' ] ) ){
-      sanitize_coord( key_prefix + '.radius', clean, raw[ key_prefix + '.radius' ], true );
-    }
-  }
-  // fields only partially specified
-  else if( totalFieldsSpecified > 0 ){
-    var format1 = 'missing circle param \'%s\' requires all of: \'%s\' to be present';
-    throw new Error( util.format( format1, key_prefix, mandatoryProps.join('\',\'') ) );
-  }
-  // radius was specified without lat or lon
-  else if( raw.hasOwnProperty( key_prefix + '.radius' ) ){
-    var format2 = 'missing circle param \'%s\' requires all of: \'%s\' to be present';
-    throw new Error( util.format( format2, key_prefix, mandatoryProps.join('\',\'') ) );
-  }
-  // fields required, eg. ( totalFieldsSpecified === 0 && bbox_is_required === true )
-  else if( circle_is_required ){
-    var format3 = 'missing circle param \'%s\' requires all of: \'%s\' to be present';
-    throw new Error( util.format( format3, key_prefix, mandatoryProps.join('\',\'') ) );
+  if( check.assigned( raw[ key_prefix + '.radius' ] ) ){
+    sanitize_coord( key_prefix + '.radius', clean, raw[ key_prefix + '.radius' ], true );
+    sanitize_point( key_prefix, clean, raw, true);
+  } else {
+    sanitize_point( key_prefix, clean, raw, circle_is_required);
   }
 }
 
