@@ -41,8 +41,13 @@ module.exports.tests.removeHouseNumber = function(test, common) {
 
     t.equal(rm('101 west 26th street'), 'west 26th street', 'house number removed');
     t.equal(rm('10th avenue'), '10th avenue', 'don\'t remove ordinal numbers');
-    
     t.equal(rm('123 main st new york ny 10010 US'), 'main st new york ny US', 'also removes postcodes');
+
+    // in this case we need to avoid stripping ALL the numbers and leaving only stop words
+    // because in this case the analyser will return in a blank input string.
+    // eg. the same issue exists for 'avenue street' (not covered here).
+    t.equal(rm('1359 54 street'), '1359 54 street', 'avoid stripping ALL valid tokens');
+    t.equal(rm('310 7 street'), '310 7 street', 'avoid stripping ALL valid tokens');
 
     t.end();
   });

@@ -14,7 +14,9 @@
   service has been fully decomissioned.
 **/
 
-var peliasQuery = require('pelias-query');
+var _ = require('lodash'),
+    peliasQuery = require('pelias-query'),
+    stopWords = require('pelias-schema/street_suffix').terms;
 
 module.exports = function( vs ){
 
@@ -36,7 +38,19 @@ module.exports = function( vs ){
 // remove the housenumber
 // be careful of numeric street names such as '1st street'
 function removeHouseNumber( name ){
-  return name.replace(/(\d+\s)/g, '');
+
+  // most of the time this is sufficient
+  var stripped = name.replace(/(\d+\s)/g, '').trim();
+
+  // in this case we need to avoid stripping ALL the numbers and leaving only stop words
+  // because in this case the analyser will return in a blank input string.
+  // eg. the same issue exists for 'avenue street' (not covered here).
+  // if this happens we simply return the original name
+  if( !stripped || _.contains( stopWords, stripped.toLowerCase() ) ){
+    return name;
+  }
+
+  return stripped;
 }
 
 // export for testing
