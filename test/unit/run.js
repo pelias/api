@@ -23,6 +23,7 @@ var tests = [
   require('./sanitiser/_flag_bool'),
   require('./sanitiser/_geo_common'),
   require('./sanitiser/_geo_reverse'),
+  require('./sanitiser/_groups'),
   require('./sanitiser/_ids'),
   require('./sanitiser/_layers'),
   require('./sanitiser/_single_scalar_parameters'),
