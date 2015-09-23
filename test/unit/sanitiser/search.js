@@ -227,6 +227,53 @@ module.exports.tests.sanitize_viewport = function(test, common) {
       t.end();
     });
   });
+
+  test('error returned if focus.point and focus.viewpoint specified', function(t) {
+    var req = {
+      query: {
+        text: 'test',
+        'focus.point.lat': '10',
+        'focus.point.lon': '15',
+        'focus.viewport.min_lat': '37',
+        'focus.viewport.max_lat': '38',
+        'focus.viewport.min_lon': '-123',
+        'focus.viewport.max_lon': '-122'
+      }
+    };
+
+    sanitize(req, function() {
+      t.equal(req.errors[0], 'focus.point and focus.viewport can\'t both be set', 'no error');
+      t.notOk(req.clean.hasOwnProperty('focus.viewport.min_lat'), 'clean should be empty');
+      t.notOk(req.clean.hasOwnProperty('focus.viewport.max_lat'), 'clean should be empty');
+      t.notOk(req.clean.hasOwnProperty('focus.viewport.min_lon'), 'clean should be empty');
+      t.notOk(req.clean.hasOwnProperty('focus.viewport.max_lon'), 'clean should be empty');
+      t.notOk(req.clean.hasOwnProperty('focus.point.lat'), 'clean should be empty');
+      t.notOk(req.clean.hasOwnProperty('focus.point.lon'), 'clean should be empty');
+      t.end();
+    });
+  });
+
+  test('error returned if focus.point and focus.viewpoint partially specified', function(t) {
+    var req = {
+      query: {
+        text: 'test',
+        'focus.point.lat': '10',
+        'focus.viewport.min_lat': '37',
+        'focus.viewport.max_lon': '-122'
+      }
+    };
+
+    sanitize(req, function() {
+      t.equal(req.errors[0], 'focus.point and focus.viewport can\'t both be set', 'no error');
+      t.notOk(req.clean.hasOwnProperty('focus.viewport.min_lat'), 'clean should be empty');
+      t.notOk(req.clean.hasOwnProperty('focus.viewport.max_lat'), 'clean should be empty');
+      t.notOk(req.clean.hasOwnProperty('focus.viewport.min_lon'), 'clean should be empty');
+      t.notOk(req.clean.hasOwnProperty('focus.viewport.max_lon'), 'clean should be empty');
+      t.notOk(req.clean.hasOwnProperty('focus.point.lat'), 'clean should be empty');
+      t.notOk(req.clean.hasOwnProperty('focus.point.lon'), 'clean should be empty');
+      t.end();
+    });
+  });
 };
 
 module.exports.tests.sanitize_size = function(test, common) {
