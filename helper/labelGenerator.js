@@ -1,9 +1,11 @@
 
-var schemas = require('./labelSchema.json');
+var _ = require('lodash'),
+    check = require('check-types'),
+    schemas = require('./labelSchema.json');
 
 module.exports = function( record ){
 
-  var adminParts = [];
+  var labelParts = [ record.name.default ];
 
   var schema = schemas.default;
   
@@ -13,9 +15,9 @@ module.exports = function( record ){
   
   var buildOutput = function(parts, schemaArr, record) {
     for (var i=0; i<schemaArr.length; i++) {
-      var rec = record[schemaArr[i]];
-      if (rec && rec.length) {
-        parts.push( rec );
+      var fieldValue = record[schemaArr[i]];
+      if (check.unemptyString(fieldValue) && !_.contains(parts, fieldValue)) {
+        parts.push( fieldValue );
         return parts;
       }
     }
@@ -23,15 +25,11 @@ module.exports = function( record ){
   };
 
   for (var key in schema) {
-    adminParts = buildOutput(adminParts, schema[key], record);  
+    labelParts = buildOutput(labelParts, schema[key], record);
   }
 
-  var outputs = [ record.name.default ].concat( adminParts );
-
   // de-dupe outputs
-  outputs = outputs.filter( function( i, pos ) {
-    return outputs.indexOf( i ) === pos;
-  });
+  labelParts = _.unique( labelParts );
 
-  return outputs.join(', ').trim();
+  return labelParts.join(', ').trim();
 };

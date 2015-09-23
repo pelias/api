@@ -24,6 +24,7 @@ var tests = [
   require('./helper/query_parser'),
   require('./helper/geojsonify'),
   require('./helper/labelSchema'),
+  require('./helper/labelGenerator'),
   require('./helper/types'),
   require('./helper/type_mapping'),
   require('./sanitiser/_geo_common'),

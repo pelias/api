@@ -4,7 +4,7 @@
     "regional": ["region_a", "region", "country"]
   },
   "GBR": {
-    "local": ["neighbourhood", "county", "localadmin", "locality"],
+    "local": ["neighbourhood", "county", "localadmin", "locality", "region"],
     "regional": ["county","country","region"]
   },
   "default": {
