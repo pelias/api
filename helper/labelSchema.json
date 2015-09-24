@@ -7,6 +7,10 @@
     "local": ["neighbourhood", "county", "localadmin", "locality", "region"],
     "regional": ["county","country","region"]
   },
+  "SGP": {
+    "local": ["neighbourhood", "region", "county", "localadmin", "locality"],
+    "regional": ["county","country","region"]
+  },
   "default": {
     "local": ["localadmin", "locality", "neighbourhood", "county"],
     "regional": ["region_a", "region", "country"]

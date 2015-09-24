@@ -223,6 +223,21 @@ module.exports.tests.new_zealand = function(test, common) {
   });
 };
 
+// SGP venue
+module.exports.tests.singapore_mcdonalds = function(test, common) {
+  test('singapore_mcdonalds', function(t) {
+    var doc = {
+      'name': { 'default': 'McDonald\'s' },
+      'country_a': 'SGP',
+      'country': 'Singapore',
+      'region': 'Central Singapore',
+      'locality': 'Singapore'
+    };
+    t.equal(generator(doc),'McDonald\'s, Central Singapore, Singapore');
+    t.end();
+  });
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
