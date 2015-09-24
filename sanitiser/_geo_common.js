@@ -15,12 +15,13 @@ var groups = require('./_groups'),
  * @param {bool} bbox_is_required
  */
 function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
-
-  // the names we use to define the corners of the rect
+  // calculate full property names from the key_prefix
   var properties = [ 'min_lat', 'max_lat', 'min_lon', 'max_lon' ].map(function(prop) {
     return key_prefix + '.' + prop;
   });
 
+  // sanitize the rect property group, this throws an exception if
+  // the group is not complete
   var bbox_present;
   if (bbox_is_required) {
     bbox_present = groups.required(raw, properties);
@@ -32,9 +33,9 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
   // and not present
   if (!bbox_present) { return; }
 
+  // check each property individually. now that it is known a bbox is present,
+  // all properties must exist, so pass the true flag for coord_is_required
   properties.forEach(function(prop) {
-    // reuse the coord sanitizer and set required:true so we get a fatal error if
-    // any one of the coords is not specified.
     sanitize_coord(prop, clean, raw[prop], true);
   });
 }
@@ -48,9 +49,8 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
  * @param {bool} circle_is_required
  */
 function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
-
-  sanitize_point( key_prefix, clean, raw, circle_is_required);
-
+  // sanitize both a point and a radius if radius is present
+  // otherwise just sanittize the point
   if( check.assigned( raw[ key_prefix + '.radius' ] ) ){
     sanitize_coord( key_prefix + '.radius', clean, raw[ key_prefix + '.radius' ], true );
     sanitize_point( key_prefix, clean, raw, true);
@@ -68,13 +68,13 @@ function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
  * @param {bool} point_is_required
  */
 function sanitize_point( key_prefix, clean, raw, point_is_required ) {
-
-  // the names we use to define the point
+  // calculate full property names from the key_prefix
   var properties = [ 'lat', 'lon'].map(function(prop) {
     return key_prefix + '.' + prop;
   });
 
-
+  // sanitize the rect property group, this throws an exception if
+  // the group is not complete
   var point_present;
   if (point_is_required) {
     point_present = groups.required(raw, properties);
@@ -86,9 +86,9 @@ function sanitize_point( key_prefix, clean, raw, point_is_required ) {
   // and not present
   if (!point_present) { return; }
 
+  // check each property individually. now that it is known a bbox is present,
+  // all properties must exist, so pass the true flag for coord_is_required
   properties.forEach(function(prop) {
-    // reuse the coord sanitizer and set required:true so we get a fatal error if
-    // any one of the coords is not specified.
     sanitize_coord(prop, clean, raw[prop], true);
   });
 }
