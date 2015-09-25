@@ -25,7 +25,7 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
-    var expected = ['text', 'size', 'layers', 'sources', 'private', 'geo_search', 'boundary_country' ];
+    var expected = ['singleScalarParameters', 'text', 'size', 'layers', 'sources', 'private', 'geo_search', 'boundary_country' ];
     t.deepEqual(Object.keys(search.sanitiser_list), expected);
     t.end();
   });
@@ -33,7 +33,7 @@ module.exports.tests.sanitisers = function(test, common) {
 
 module.exports.tests.sanitize_invalid_text = function(test, common) {
   test('invalid text', function(t) {
-    var invalid = [ '', 100, null, undefined, new Date() ];
+    var invalid = [ '', 100, null, undefined ];
     invalid.forEach( function( text ){
       var req = { query: { text: text } };
       sanitize(req, function(){

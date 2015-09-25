@@ -1,8 +1,10 @@
 
 var GeoJSON = require('geojson'),
     extent = require('geojson-extent'),
-    outputGenerator = require('./outputGenerator'),
-    logger = require('pelias-logger').get('api');
+    labelGenerator = require('./labelGenerator'),
+    logger = require('pelias-logger').get('api'),
+    type_mapping = require('./type_mapping'),
+    _ = require('lodash');
 
 // Properties to be copied
 var DETAILS_PROPS = [
@@ -22,54 +24,30 @@ var DETAILS_PROPS = [
 ];
 
 
-var SOURCES = {
-  'geoname': 'gn',
-  'osmnode': 'osm',
-  'osmway': 'osm',
-  'admin0': 'qs',
-  'admin1': 'qs',
-  'admin2': 'qs',
-  'neighborhood': 'qs',
-  'locality': 'qs',
-  'local_admin': 'qs',
-  'osmaddress': 'osm',
-  'openaddresses': 'oa'
-};
-
 function lookupSource(src) {
-  return SOURCES.hasOwnProperty(src._type) ? SOURCES[src._type] : src._type;
+  var sources = type_mapping.type_to_source;
+  return sources.hasOwnProperty(src._type) ? sources[src._type] : src._type;
 }
 
+/*
+ * Use the type to layer mapping, except for Geonames, where having a full
+ * Elasticsearch document source allows a more specific layer name to be chosen
+ */
 function lookupLayer(src) {
-  switch(src._type) {
-    case 'osmnode':
-    case 'osmway':
-      return 'venue';
-    case 'admin0':
-      return 'country';
-    case 'admin1':
-      return 'region';
-    case 'admin2':
-      return 'county';
-    case 'neighborhood':
-      return 'neighbourhood';
-    case 'locality':
-      return 'locality';
-    case 'local_admin':
-      return 'localadmin';
-    case 'osmaddress':
-    case 'openaddresses':
-      return 'address';
-    case 'geoname':
-      if (src.category && src.category.indexOf('admin') !== -1) {
-        if (src.category.indexOf('admin:city') !== -1) { return 'locality'; }
-        if (src.category.indexOf('admin:admin1') !== -1) { return 'region'; }
-        if (src.category.indexOf('admin:admin2') !== -1) { return 'county'; }
-        return 'neighbourhood'; // this could also be 'local_admin'
-      }
+  if (src._type === 'geoname') {
+    if (_.contains(src.category, 'admin')) {
+      if (_.contains(src.category, 'admin:city')) { return 'locality'; }
+      if (_.contains(src.category, 'admin:admin1')) { return 'region'; }
+      if (_.contains(src.category, 'admin:admin2')) { return 'county'; }
+      return 'neighbourhood'; // this could also be 'local_admin'
+    }
 
-      if (src.name) { return 'venue'; }
-      if (src.address) { return 'address'; }
+    if (src.name) { return 'venue'; }
+    if (src.address) { return 'address'; }
+  }
+
+  if (_.contains(type_mapping.types, src._type)) {
+    return type_mapping.type_to_layer[src._type];
   }
 
   logger.warn('[geojsonify]: could not map _type ', src._type);
@@ -138,7 +116,7 @@ function addDetails(src, dst) {
  * @param {object} dst
  */
 function addLabel(src, dst) {
-  dst.label = outputGenerator(src);
+  dst.label = labelGenerator(src);
 }
 
 /**
@@ -178,6 +156,16 @@ function copyProperties( source, props, dst ) {
 }
 
 /**
+ * Create a gid from a document
+ * @TODO modify all importers to create separate source and layer fields to remove mapping
+ *
+ * @param {object} src
+ */
+function makeGid(src) {
+  return lookupSource(src) + ':' + lookupLayer(src) + ':' + src._id;
+}
+
+/**
  * Determine and set place id, type, and source
  *
  * @param {object} src
@@ -185,6 +173,7 @@ function copyProperties( source, props, dst ) {
  */
 function addMetaData(src, dst) {
   dst.id = src._id;
+  dst.gid = makeGid(src);
   dst.layer = lookupLayer(src);
   dst.source = lookupSource(src);
 }

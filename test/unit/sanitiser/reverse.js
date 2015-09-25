@@ -4,11 +4,13 @@
 var reverse  = require('../../../sanitiser/reverse'),
     sanitize = reverse.sanitize,
     middleware = reverse.middleware,
+    defaults = require('../../../query/defaults'),
     defaultError = 'missing param \'lat\'',
     defaultClean =  { 'point.lat': 0,
                       'point.lon': 0,
                       'boundary.circle.lat': 0,
                       'boundary.circle.lon': 0,
+                      'boundary.circle.radius': parseFloat(defaults['boundary:circle:radius']),
                       types: {
                       },
                       size: 10,
@@ -36,7 +38,7 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
-    var expected = ['layers', 'sources', 'size', 'private', 'geo_reverse', 'boundary_country'];
+    var expected = ['singleScalarParameters', 'layers', 'sources', 'size', 'private', 'geo_reverse', 'boundary_country'];
     t.deepEqual(Object.keys(reverse.sanitiser_list), expected);
     t.end();
   });

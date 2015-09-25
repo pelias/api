@@ -58,6 +58,7 @@ function addRoutes(app, peliasConfig) {
       sanitisers.search.middleware,
       middleware.types,
       controllers.search(),
+      postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig, base),
@@ -67,6 +68,7 @@ function addRoutes(app, peliasConfig) {
       sanitisers.autocomplete.middleware,
       middleware.types,
       controllers.search(null, require('../query/autocomplete')),
+      postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig, base),
@@ -76,7 +78,7 @@ function addRoutes(app, peliasConfig) {
       sanitisers.reverse.middleware,
       middleware.types,
       controllers.search(undefined, reverseQuery),
-      postProc.distances(),
+      postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),

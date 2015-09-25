@@ -2,26 +2,31 @@ var geolib = require('geolib');
 var check = require('check-types');
 
 
-function setup() {
+function setup(prefix) {
 
-  return computeDistances;
+  return function (req, res, next) {
+    var opts = {
+      prefix: prefix || 'point.'
+    };
+    return computeDistances(req, res, next, opts);
+  };
 }
 
-function computeDistances(req, res, next) {
+function computeDistances(req, res, next, opts) {
 
   // do nothing if no result data set
   if (!res || !res.data) {
     return next();
   }
 
-  if (!(check.number(req.clean['point.lat']) &&
-        check.number(req.clean['point.lon']))) {
+  if (!(check.number(req.clean[opts.prefix + 'lat']) &&
+        check.number(req.clean[opts.prefix + 'lon']))) {
     return next();
   }
 
   var point = {
-    latitude: req.clean['point.lat'],
-    longitude: req.clean['point.lon']
+    latitude: req.clean[opts.prefix + 'lat'],
+    longitude: req.clean[opts.prefix + 'lon']
   };
 
   res.data.forEach(function (place) {

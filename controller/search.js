@@ -36,6 +36,7 @@ function setup( backend, query ){
       // set response data
       else {
         res.data = docs;
+        res.meta = meta;
       }
 
       next();

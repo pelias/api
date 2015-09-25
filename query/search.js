@@ -14,7 +14,8 @@ query.score( peliasQuery.view.ngrams, 'must' );
 
 // scoring boost
 query.score( peliasQuery.view.phrase );
-query.score( peliasQuery.view.focus );
+query.score( peliasQuery.view.focus( peliasQuery.view.phrase ) );
+query.score( peliasQuery.view.popularity(['admin0','admin1','admin2']) );
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );
@@ -84,9 +85,9 @@ function generateQuery( clean ){
       check.number(clean['boundary.rect.min_lon']) &&
       check.number(clean['boundary.rect.max_lon']) ){
     vs.set({
-      'boundary:rect:top': clean['boundary.rect.min_lat'],
+      'boundary:rect:top': clean['boundary.rect.max_lat'],
       'boundary:rect:right': clean['boundary.rect.max_lon'],
-      'boundary:rect:bottom': clean['boundary.rect.max_lat'],
+      'boundary:rect:bottom': clean['boundary.rect.min_lat'],
       'boundary:rect:left': clean['boundary.rect.min_lon']
     });
   }

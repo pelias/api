@@ -52,6 +52,48 @@ module.exports = {
               'score_mode': 'avg',
               'boost_mode': 'replace'
             }
+          },
+          {
+            'function_score': {
+              'query': {
+                'filtered': {
+                  'filter': {
+                    'exists': {
+                      'field': 'popularity'
+                    }
+                  }
+                }
+              },
+              'max_boost': 2,
+              'score_mode': 'first',
+              'boost_mode': 'replace',
+              'filter': {
+                'or': [
+                  {
+                    'type': {
+                      'value': 'admin0'
+                    }
+                  },
+                  {
+                    'type': {
+                      'value': 'admin1'
+                    }
+                  },
+                  {
+                    'type': {
+                      'value': 'admin2'
+                    }
+                  }
+                ]
+              },
+              'functions': [{
+                'field_value_factor': {
+                  'modifier': 'sqrt',
+                  'field': 'popularity'
+                },
+                'weight': 1
+              }]
+            }
           }]
         }
       },
@@ -60,9 +102,9 @@ module.exports = {
           'must': [{
             'geo_bounding_box': {
               'center_point': {
-                'top': 47.47,
+                'top': 11.51,
                 'right': -61.84,
-                'bottom': 11.51,
+                'bottom': 47.47,
                 'left': -103.16
               },
               '_cache': true,
