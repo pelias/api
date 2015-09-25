@@ -43,7 +43,7 @@ module.exports = extend( false, peliasQuery.defaults, {
 
   'address:street:analyzer': 'standard',
   'address:street:field': 'address.street',
-  'address:street:boost': 3,
+  'address:street:boost': 2,
 
   'address:postcode:analyzer': 'standard',
   'address:postcode:field': 'address.zip',
