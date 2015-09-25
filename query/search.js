@@ -86,9 +86,9 @@ function generateQuery( clean ){
       check.number(clean['boundary.rect.min_lon']) &&
       check.number(clean['boundary.rect.max_lon']) ){
     vs.set({
-      'boundary:rect:top': clean['boundary.rect.min_lat'],
+      'boundary:rect:top': clean['boundary.rect.max_lat'],
       'boundary:rect:right': clean['boundary.rect.max_lon'],
-      'boundary:rect:bottom': clean['boundary.rect.max_lat'],
+      'boundary:rect:bottom': clean['boundary.rect.min_lat'],
       'boundary:rect:left': clean['boundary.rect.min_lon']
     });
   }

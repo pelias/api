@@ -1,7 +1,7 @@
 
 var GeoJSON = require('geojson'),
     extent = require('geojson-extent'),
-    outputGenerator = require('./outputGenerator'),
+    labelGenerator = require('./labelGenerator'),
     logger = require('pelias-logger').get('api'),
     type_mapping = require('./type_mapping'),
     _ = require('lodash');
@@ -116,7 +116,7 @@ function addDetails(src, dst) {
  * @param {object} dst
  */
 function addLabel(src, dst) {
-  dst.label = outputGenerator(src);
+  dst.label = labelGenerator(src);
 }
 
 /**

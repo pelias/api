@@ -1,5 +1,5 @@
 
-var schemas = require('../../../helper/outputSchema.json');
+var schemas = require('../../../helper/labelSchema.json');
 var alpha3  = require('../mock/alpha3.json');
 
 module.exports.tests = {};

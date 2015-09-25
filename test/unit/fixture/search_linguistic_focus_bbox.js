@@ -102,9 +102,9 @@ module.exports = {
           'must': [{
             'geo_bounding_box': {
               'center_point': {
-                'top': 47.47,
+                'top': 11.51,
                 'right': -61.84,
-                'bottom': 11.51,
+                'bottom': 47.47,
                 'left': -103.16
               },
               '_cache': true,
