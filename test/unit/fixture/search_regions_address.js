@@ -57,6 +57,11 @@ module.exports = {
                     'type': {
                       'value': 'admin2'
                     }
+                  },
+                  {
+                    'type': {
+                      'value': 'locality'
+                    }
                   }
                 ]
               },
