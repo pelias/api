@@ -1,7 +1,8 @@
 /**
  * helper sanitiser methods for geo parameters
  */
-var util = require('util'),
+var groups = require('./_groups'),
+    util = require('util'),
     check = require('check-types'),
     _ = require('lodash');
 
@@ -14,37 +15,29 @@ var util = require('util'),
  * @param {bool} bbox_is_required
  */
 function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
-
-  // the names we use to define the corners of the rect
-  var mandatoryProps = [ 'min_lat', 'max_lat', 'min_lon', 'max_lon' ];
-
-  // count up how many fields the user actually specified
-  var totalFieldsSpecified = 0;
-  mandatoryProps.forEach( function( prop ){
-    if( raw.hasOwnProperty( key_prefix + '.' + prop ) ){
-      totalFieldsSpecified++;
-    }
+  // calculate full property names from the key_prefix
+  var properties = [ 'min_lat', 'max_lat', 'min_lon', 'max_lon' ].map(function(prop) {
+    return key_prefix + '.' + prop;
   });
 
-  // all fields specified
-  if( 4 === totalFieldsSpecified ) {
-    // reuse the coord sanitizer and set required:true so we get a fatal error if
-    // any one of the corners is not specified.
-    sanitize_coord( key_prefix + '.min_lat', clean, raw[ key_prefix + '.min_lat' ], true );
-    sanitize_coord( key_prefix + '.max_lat', clean, raw[ key_prefix + '.max_lat' ], true );
-    sanitize_coord( key_prefix + '.min_lon', clean, raw[ key_prefix + '.min_lon' ], true );
-    sanitize_coord( key_prefix + '.max_lon', clean, raw[ key_prefix + '.max_lon' ], true );
+  // sanitize the rect property group, this throws an exception if
+  // the group is not complete
+  var bbox_present;
+  if (bbox_is_required) {
+    bbox_present = groups.required(raw, properties);
+  } else {
+    bbox_present = groups.optional(raw, properties);
   }
-  // fields only partially specified
-  else if( totalFieldsSpecified > 0 ){
-    var format1 = 'missing rect param \'%s\' requires all of: \'%s\' to be present';
-    throw new Error( util.format( format1, key_prefix, mandatoryProps.join('\',\'') ) );
-  }
-  // fields required, eg. ( totalFieldsSpecified === 0 && bbox_is_required === true )
-  else if( bbox_is_required ){
-    var format2 = 'missing rect param \'%s\' requires all of: \'%s\' to be present';
-    throw new Error( util.format( format2, key_prefix, mandatoryProps.join('\',\'') ) );
-  }
+
+  // don't bother checking individual elements if bbox is not required
+  // and not present
+  if (!bbox_present) { return; }
+
+  // check each property individually. now that it is known a bbox is present,
+  // all properties must exist, so pass the true flag for coord_is_required
+  properties.forEach(function(prop) {
+    sanitize_coord(prop, clean, raw[prop], true);
+  });
 }
 
 /**
@@ -56,43 +49,13 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
  * @param {bool} circle_is_required
  */
 function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
-
-  // the names we use to define the centroid
-  var mandatoryProps = [ 'lat', 'lon' ];
-
-  // count up how many fields the user actually specified
-  var totalFieldsSpecified = 0;
-  mandatoryProps.forEach( function( prop ){
-    if( raw.hasOwnProperty( key_prefix + '.' + prop ) ){
-      totalFieldsSpecified++;
-    }
-  });
-
-  // all fields specified
-  if( 2 === totalFieldsSpecified ) {
-    // reuse the coord sanitizer and set required:true so we get a fatal error if
-    // any one of the coords is not specified.
-    sanitize_coord( key_prefix + '.lat', clean, raw[ key_prefix + '.lat' ], true );
-    sanitize_coord( key_prefix + '.lon', clean, raw[ key_prefix + '.lon' ], true );
-
-    if( check.assigned( raw[ key_prefix + '.radius' ] ) ){
-      sanitize_coord( key_prefix + '.radius', clean, raw[ key_prefix + '.radius' ], true );
-    }
-  }
-  // fields only partially specified
-  else if( totalFieldsSpecified > 0 ){
-    var format1 = 'missing circle param \'%s\' requires all of: \'%s\' to be present';
-    throw new Error( util.format( format1, key_prefix, mandatoryProps.join('\',\'') ) );
-  }
-  // radius was specified without lat or lon
-  else if( raw.hasOwnProperty( key_prefix + '.radius' ) ){
-    var format2 = 'missing circle param \'%s\' requires all of: \'%s\' to be present';
-    throw new Error( util.format( format2, key_prefix, mandatoryProps.join('\',\'') ) );
-  }
-  // fields required, eg. ( totalFieldsSpecified === 0 && bbox_is_required === true )
-  else if( circle_is_required ){
-    var format3 = 'missing circle param \'%s\' requires all of: \'%s\' to be present';
-    throw new Error( util.format( format3, key_prefix, mandatoryProps.join('\',\'') ) );
+  // sanitize both a point and a radius if radius is present
+  // otherwise just sanittize the point
+  if( check.assigned( raw[ key_prefix + '.radius' ] ) ){
+    sanitize_coord( key_prefix + '.radius', clean, raw[ key_prefix + '.radius' ], true );
+    sanitize_point( key_prefix, clean, raw, true);
+  } else {
+    sanitize_point( key_prefix, clean, raw, circle_is_required);
   }
 }
 
@@ -105,35 +68,29 @@ function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
  * @param {bool} point_is_required
  */
 function sanitize_point( key_prefix, clean, raw, point_is_required ) {
-
-  // the names we use to define the point
-  var mandatoryProps = [ 'lat', 'lon' ];
-
-  // count up how many fields the user actually specified
-  var totalFieldsSpecified = 0;
-  mandatoryProps.forEach( function( prop ){
-    if( raw.hasOwnProperty( key_prefix + '.' + prop ) ){
-      totalFieldsSpecified++;
-    }
+  // calculate full property names from the key_prefix
+  var properties = [ 'lat', 'lon'].map(function(prop) {
+    return key_prefix + '.' + prop;
   });
 
-  // all fields specified
-  if( 2 === totalFieldsSpecified ) {
-    // reuse the coord sanitizer and set required:true so we get a fatal error if
-    // any one of the coords is not specified.
-    sanitize_coord( key_prefix + '.lat', clean, raw[ key_prefix + '.lat' ], true );
-    sanitize_coord( key_prefix + '.lon', clean, raw[ key_prefix + '.lon' ], true );
+  // sanitize the rect property group, this throws an exception if
+  // the group is not complete
+  var point_present;
+  if (point_is_required) {
+    point_present = groups.required(raw, properties);
+  } else {
+    point_present = groups.optional(raw, properties);
   }
-  // fields only partially specified
-  else if( totalFieldsSpecified > 0 ){
-    var format1 = 'missing point param \'%s\' requires all of: \'%s\' to be present';
-    throw new Error( util.format( format1, key_prefix, mandatoryProps.join('\',\'') ) );
-  }
-  // fields required, eg. ( totalFieldsSpecified === 0 && bbox_is_required === true )
-  else if( point_is_required ){
-    var format2 = 'missing point param \'%s\' requires all of: \'%s\' to be present';
-    throw new Error( util.format( format2, key_prefix, mandatoryProps.join('\',\'') ) );
-  }
+
+  // don't bother checking individual elements if point is not required
+  // and not present
+  if (!point_present) { return; }
+
+  // check each property individually. now that it is known a bbox is present,
+  // all properties must exist, so pass the true flag for coord_is_required
+  properties.forEach(function(prop) {
+    sanitize_coord(prop, clean, raw[prop], true);
+  });
 }
 
 /**
