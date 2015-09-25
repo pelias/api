@@ -49,28 +49,6 @@ module.exports.tests.nyc_office = function(test, common) {
   });
 };
 
-// USA venue
-module.exports.tests.nyc_office = function(test, common) {
-  test('30 West 26th Street', function(t) {
-    var doc = {
-      'name': { 'default': '30 West 26th Street' },
-      'housenumber': '30',
-      'street': 'West 26th Street',
-      'postalcode': '10010',
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'New York',
-      'region_a': 'NY',
-      'county': 'New York County',
-      'localadmin': 'Manhattan',
-      'locality': 'New York',
-      'neighbourhood': 'Flatiron District'
-    };
-    t.equal(generator(doc),'30 West 26th Street, Manhattan, NY');
-    t.end();
-  });
-};
-
 // AUS state
 module.exports.tests.new_south_wales = function(test, common) {
   test('new south wales', function(t) {
