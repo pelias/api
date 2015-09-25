@@ -39,11 +39,11 @@ module.exports = extend( false, peliasQuery.defaults, {
 
   'address:housenumber:analyzer': 'standard',
   'address:housenumber:field': 'address.number',
-  'address:housenumber:boost': 3,
+  'address:housenumber:boost': 2,
 
   'address:street:analyzer': 'standard',
   'address:street:field': 'address.street',
-  'address:street:boost': 2,
+  'address:street:boost': 5,
 
   'address:postcode:analyzer': 'standard',
   'address:postcode:field': 'address.zip',
