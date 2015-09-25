@@ -10,7 +10,7 @@ module.exports = {
           'must': [{
             'match': {
               'name.default': {
-                'query': '1 water st',
+                'query': 'water st',
                 'analyzer': 'peliasOneEdgeGram',
                 'boost': 1
               }

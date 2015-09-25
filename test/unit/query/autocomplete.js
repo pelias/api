@@ -51,6 +51,17 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled, expected, 'valid autocomplete query');
     t.end();
   });
+
+  test('valid autocomplete with a full valid address', function(t) {
+    var address = '123 main st new york ny 10010 US';
+    var query = generate({ text: address });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_full_address');
+
+    t.deepEqual(compiled, expected, 'valid autocomplete query');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
