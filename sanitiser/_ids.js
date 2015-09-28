@@ -57,13 +57,6 @@ function sanitize( raw, clean ){
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  // 'raw.ids' can be an array if ids is specified multiple times
-  // see https://github.com/pelias/api/issues/272
-  if (check.array( raw.ids )) {
-    messages.errors.push( '`ids` parameter specified multiple times.' );
-    return messages;
-  }
-
   if (!check.unemptyString( raw.ids )) {
     messages.errors.push( lengthError);
     return messages;
