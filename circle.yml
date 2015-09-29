@@ -5,7 +5,7 @@ test:
   override:
     - npm test
     - git clone git@github.com:pelias/acceptance-tests
-    - echo "{\"mapzen\":{\"api_key\":{\"pelias.mapzen.com\":\"$PELIAS_API_KEY\"}}}" >~/pelias.json
+    - echo "{\"mapzen\":{\"api_key\":{\"pelias.mapzen.com\":\"$SEARCH_API_KEY\",\"pelias.mapzen.com\":\"PELIAS_API_KEY\"}}}" >~/pelias.json
     - cd acceptance-tests && npm install && npm test -- -e prod
 deployment:
   prod_build:
