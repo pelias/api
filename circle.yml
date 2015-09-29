@@ -20,5 +20,4 @@ deployment:
   test_clone:
     branch: circle-deploy
     commands:
-      - cd acceptance-tests && npm test -- -e prod
       - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
