@@ -134,11 +134,7 @@ function calculateDiagonalDistance(clean) {
     1000
   ) / 1000;
 
-  if (diagonalDistance === 0) {
-    return 1;
-  }
-
-  return diagonalDistance;
+  return Math.max(diagonalDistance, 1);
 
 }
 
