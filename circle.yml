@@ -22,4 +22,6 @@ deployment:
   test_clone:
     branch: circle-deploy
     commands:
+      - echo $PELIAS_DEPLOY_PRIVATE_KEY >~/.ssh/id_rsa
+      - echo $PELIAS_DEPLOY_PUBLIC_KEY >~/.ssh/id_rsa.pub
       - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
