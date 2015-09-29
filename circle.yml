@@ -17,3 +17,8 @@ deployment:
       - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
       - cd pelias-deploy && bundle exec rake deploy:api[prod]
       - cd pelias-deploy && bundle exec rake deploy:api[prod_build]
+  test_clone:
+    branch: circle-deploy
+    commands:
+      - cd acceptance-tests && npm test -- -e prod
+      - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
