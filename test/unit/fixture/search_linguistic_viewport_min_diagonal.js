@@ -40,11 +40,11 @@ module.exports = {
                 'linear': {
                   'center_point': {
                     'origin': {
-                      'lat': 29.49136,
-                      'lon': -82.50622
+                      'lat': 28.49136,
+                      'lon': -87.50623
                     },
                     'offset': '1km',
-                    'scale': '994km',
+                    'scale': '1km',
                     'decay': 0.5
                   }
                 }
