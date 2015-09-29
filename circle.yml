@@ -1,6 +1,16 @@
 machine:
   ruby:
     version: 2.1.2
+  node:
+    version: 0.12.2
+test:
+  override:
+    - npm test
+    - git clone git@github.com:pelias/acceptance-tests
+    - echo '{"mapzen":{"api_key":{"pelias.mapzen.com":"pelias-XEVhZaE"}}}' >~/pelias.json
+    - cd acceptance-tests
+    - npm install
+    - npm test -- -e prod
 deployment:
   prod_build:
     branch: production
