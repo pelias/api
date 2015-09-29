@@ -9,7 +9,7 @@ response.statusCode.should.be.equal 404
 response.should.have.header 'Content-Type','application/json; charset=utf-8'
 
 #? cache-control header correctly set
-response.should.have.header 'Cache-Control','public,max-age=300'
+response.should.have.header 'Cache-Control','public'
 
 #? should respond in json with server info
 should.exist json

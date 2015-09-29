@@ -126,20 +126,6 @@ module.exports.tests.valid_ids = function(test, common) {
   });
 };
 
-module.exports.tests.array_of_ids = function(test, common) {
-  // see https://github.com/pelias/api/issues/272
-  test('array of ids sent by queryparser', function(t) {
-    var raw = { ids: ['geoname:2', 'oswmay:4'] };
-    var clean = {};
-
-    var messages = sanitize( raw, clean);
-
-    t.deepEqual( messages.errors, ['`ids` parameter specified multiple times.'], 'error sent' );
-    t.deepEqual( clean.ids, undefined, 'response is empty due to error' );
-    t.end();
-  });
-};
-
 module.exports.tests.multiple_ids = function(test, common) {
   test('multiple ids', function(t) {
     var raw = { ids: 'geonames:venue:1,osm:venue:2' };

@@ -12,7 +12,6 @@
 **/
 
 var peliasLogger = require( 'pelias-logger' ).get( 'service/mget' );
-var microtime = require( 'microtime' );
 
 function service( backend, query, cb ){
 
@@ -22,11 +21,9 @@ function service( backend, query, cb ){
       docs: query
     }
   };
-  
-  var startTime = microtime.nowDouble();
+
   // query new backend
   backend().client.mget( cmd, function( err, data ){
-    peliasLogger.verbose( 'time elasticsearch query took:', microtime.nowDouble() - startTime );
 
     // handle backend errors
     if( err ){ return cb( err ); }
@@ -39,7 +36,7 @@ function service( backend, query, cb ){
 
         // remove docs not actually found
         return doc.found;
-      
+
       }).map( function( doc ){
 
         // map metadata in to _source so we

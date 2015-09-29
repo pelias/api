@@ -167,7 +167,7 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     var req = { query: { text: 'test', 'focus.point.lon': 0 } };
     sanitize(req, function(){
       var expected_lon = 0;
-      t.equal(req.errors[0], 'missing point param \'focus.point\' requires all of: \'lat\',\'lon\' to be present');
+      t.equal(req.errors[0], 'parameters focus.point.lat and focus.point.lon must both be specified');
       t.equal(req.clean['focus.point.lat'], undefined);
       t.equal(req.clean['focus.point.lon'], undefined);
     });
@@ -177,7 +177,7 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     var req = { query: { text: 'test', 'focus.point.lat': 0 } };
     sanitize(req, function(){
       var expected_lat = 0;
-      t.equal(req.errors[0], 'missing point param \'focus.point\' requires all of: \'lat\',\'lon\' to be present');
+      t.equal(req.errors[0], 'parameters focus.point.lat and focus.point.lon must both be specified');
       t.equal(req.clean['focus.point.lat'], undefined);
       t.equal(req.clean['focus.point.lon'], undefined);
     });
