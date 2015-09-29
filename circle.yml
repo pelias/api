@@ -14,16 +14,16 @@ deployment:
     commands:
       - git clone git@github.com:pelias/acceptance-tests && cd acceptance-tests && npm install
       - cd acceptance-tests && npm test -- -e prod
-      - echo $PELIAS_DEPLOY_PRIVATE_KEY >~/.ssh/id_rsa_pelias_deploy
-      - echo $PELIAS_DEPLOY_PUBLIC_KEY >~/.ssh/id_rsa_pelias_deploy.pub
-      - chmod 0600 ~/.ssh/id_rsa_pelias_deploy && chmod 0600 ~/.ssh/id_rsa_pelias_deploy.pub
+      - echo $PELIAS_DEPLOY_PRIVATE_KEY >~/.ssh/id_rsa
+      - echo $PELIAS_DEPLOY_PUBLIC_KEY >~/.ssh/id_rsa.pub
+      - chmod 0600 ~/.ssh/id_rsa && chmod 0644 ~/.ssh/id_rsa.pub
       - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
       - cd pelias-deploy && bundle exec rake deploy:api[prod]
       - cd pelias-deploy && bundle exec rake deploy:api[prod_build]
   test_clone:
     branch: circle-deploy
     commands:
-      - echo $PELIAS_DEPLOY_PRIVATE_KEY >~/.ssh/id_rsa_pelias_deploy
-      - echo $PELIAS_DEPLOY_PUBLIC_KEY >~/.ssh/id_rsa_pelias_deploy.pub
-      - chmod 0600 ~/.ssh/id_rsa_pelias_deploy && chmod 0600 ~/.ssh/id_rsa_pelias_deploy.pub
-      - GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa_pelias_deploy" git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
+      - echo $PELIAS_DEPLOY_PRIVATE_KEY >~/.ssh/id_rsa
+      - echo $PELIAS_DEPLOY_PUBLIC_KEY >~/.ssh/id_rsa.pub
+      - chmod 0600 ~/.ssh/id_rsa && chmod 0644 ~/.ssh/id_rsa.pub
+      - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
