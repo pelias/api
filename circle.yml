@@ -8,12 +8,12 @@ dependencies:
   pre:
     - echo "{\"mapzen\":{\"api_key\":{\"pelias.mapzen.com\":\"$SEARCH_API_KEY\",\"pelias.mapzen.com\":\"$PELIAS_API_KEY\"}}}" >~/pelias.json
     - git clone git@github.com:pelias/acceptance-tests && cd acceptance-tests && npm install
-    - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
 
 deployment:
   prod:
     branch: production
     commands:
       - cd acceptance-tests && npm test -- -e prod
+      - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
       - cd pelias-deploy && bundle exec rake deploy:api[prod]
       - cd pelias-deploy && bundle exec rake deploy:api[prod_build]
