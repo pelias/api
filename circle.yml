@@ -14,6 +14,6 @@ deployment:
     branch: production
     commands:
       - cd acceptance-tests && npm install && npm test -- -e prod
-      - git clone git@github.com:mapzen/pelias-deploy.git
-      - cd pelias-deploy && bundle install && bundle exec rake deploy:api[prod]
-      - cd pelias-deploy && bundle install && bundle exec rake deploy:api[prod_build]
+      - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
+      - cd pelias-deploy && bundle exec rake deploy:api[prod]
+      - cd pelias-deploy && bundle exec rake deploy:api[prod_build]
