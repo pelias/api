@@ -1,6 +1,4 @@
 machine:
-  node:
-    version: 0.12.2
   ruby:
     version: 2.1.2
 deployment:
