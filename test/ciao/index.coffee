@@ -12,7 +12,7 @@ response.should.have.header 'Content-Type','text/html; charset=utf-8'
 response.should.have.header 'Charset','utf8'
 
 #? cache-control header correctly set
-response.should.have.header 'Cache-Control','public,max-age=60'
+response.should.have.header 'Cache-Control','public'
 
 #? server header correctly set
 response.should.have.header 'Server'
