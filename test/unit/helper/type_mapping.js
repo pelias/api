@@ -62,24 +62,24 @@ module.exports.tests.interfaces = function(test, common) {
     t.end();
   });
 
-  test('\'gn\' and \'geonames\' sources should only successfully map to a subset of layers', function(t) {
+  test('\'gn\' and \'geonames\' sources should only successfully map to \'venue\' layers', function(t) {
     t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'venue'), ['geoname']);
-    t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'address'), ['geoname']);
-    t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'country'), ['geoname']);
-    t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'region'), ['geoname']);
-    t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'county'), ['geoname']);
-    t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'locality'), ['geoname']);
+    t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'address'), []);
+    t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'country'), []);
+    t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'region'), []);
+    t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'county'), []);
+    t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'locality'), []);
     t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'localadmin'), []);
-    t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'neighbourhood'), ['geoname']);
+    t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'neighbourhood'), []);
     t.deepEquals(type_mapping.source_and_layer_to_type('gn', 'coarse'), []);
     t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'venue'), ['geoname']);
-    t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'address'), ['geoname']);
-    t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'country'), ['geoname']);
-    t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'region'), ['geoname']);
-    t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'county'), ['geoname']);
-    t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'locality'), ['geoname']);
+    t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'address'), []);
+    t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'country'), []);
+    t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'region'), []);
+    t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'county'), []);
+    t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'locality'), []);
     t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'localadmin'), []);
-    t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'neighbourhood'), ['geoname']);
+    t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'neighbourhood'), []);
     t.deepEquals(type_mapping.source_and_layer_to_type('geonames', 'coarse'), []);
     t.end();
   });
