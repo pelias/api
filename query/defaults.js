@@ -39,35 +39,35 @@ module.exports = extend( false, peliasQuery.defaults, {
 
   'address:housenumber:analyzer': 'standard',
   'address:housenumber:field': 'address.number',
-  'address:housenumber:boost': 1,
+  'address:housenumber:boost': 2,
 
   'address:street:analyzer': 'standard',
   'address:street:field': 'address.street',
-  'address:street:boost': 1,
+  'address:street:boost': 5,
 
   'address:postcode:analyzer': 'standard',
   'address:postcode:field': 'address.zip',
-  'address:postcode:boost': 1,
+  'address:postcode:boost': 3,
 
   'admin:alpha3:analyzer': 'standard',
   'admin:alpha3:field': 'alpha3',
-  'admin:alpha3:boost': 1,
+  'admin:alpha3:boost': 5,
 
   'admin:admin0:analyzer': 'peliasAdmin',
   'admin:admin0:field': 'admin0',
-  'admin:admin0:boost': 1,
+  'admin:admin0:boost': 4,
 
   'admin:admin1:analyzer': 'peliasAdmin',
   'admin:admin1:field': 'admin1',
-  'admin:admin1:boost': 1,
+  'admin:admin1:boost': 3,
 
   'admin:admin1_abbr:analyzer': 'peliasAdmin',
   'admin:admin1_abbr:field': 'admin1_abbr',
-  'admin:admin1_abbr:boost': 1,
+  'admin:admin1_abbr:boost': 3,
 
   'admin:admin2:analyzer': 'peliasAdmin',
   'admin:admin2:field': 'admin2',
-  'admin:admin2:boost': 1,
+  'admin:admin2:boost': 2,
 
   'admin:local_admin:analyzer': 'peliasAdmin',
   'admin:local_admin:field': 'local_admin',
