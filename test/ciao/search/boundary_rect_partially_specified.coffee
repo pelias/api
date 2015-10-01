@@ -24,7 +24,7 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ 'missing rect param \'boundary.rect\' requires all of: \'min_lat\',\'max_lat\',\'min_lon\',\'max_lon\' to be present' ]
+json.geocoding.errors.should.eql [ 'parameters boundary.rect.min_lat, boundary.rect.max_lat, boundary.rect.min_lon and boundary.rect.max_lon must all be specified' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
