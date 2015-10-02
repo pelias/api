@@ -24,7 +24,7 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ 'missing circle param \'boundary.circle\' requires all of: \'lat\',\'lon\' to be present' ]
+json.geocoding.errors.should.eql [ 'parameters boundary.circle.lat and boundary.circle.lon must both be specified' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings

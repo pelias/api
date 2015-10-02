@@ -24,7 +24,7 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ 'missing point param \'point\' requires all of: \'lat\',\'lon\' to be present' ]
+json.geocoding.errors.should.eql [ 'parameters point.lat and point.lon must both be specified' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
