@@ -1,10 +1,10 @@
 
 #> sources filter
-path: '/v1/search?text=a&sources=openstreetmap,geonames'
+path: "/v1/search?text=a&sources=openstreetmap,geonames"
 
 #? 200 ok
 response.statusCode.should.be.equal 200
-response.should.have.header 'charset', 'utf8'
+response.should.have.header "charset", 'utf8'
 response.should.have.header 'content-type', 'application/json; charset=utf-8'
 
 #? valid geocoding block

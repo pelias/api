@@ -32,6 +32,6 @@ should.not.exist json.geocoding.warnings
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10
+json.geocoding.query['boundary.circle.radius'].should.eql 100
 should.not.exist json.geocoding.query['boundary.circle.lat']
 should.not.exist json.geocoding.query['boundary.circle.lon']
-should.not.exist json.geocoding.query['boundary.circle.radius']
