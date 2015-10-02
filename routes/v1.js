@@ -17,7 +17,7 @@ var middleware = {
 
 /** ----------------------- controllers ----------------------- **/
 
-var controllers     = {
+var controllers = {
   mdToHTML: require('../controller/markdownToHtml'),
   place: require('../controller/place'),
   search: require('../controller/search'),

@@ -3,7 +3,7 @@
 path: '/v1/search?text=a&layers=country,notlayer'
 
 #? 200 ok
-response.statusCode.should.be.equal 200
+response.statusCode.should.be.equal 400
 response.should.have.header 'charset', 'utf8'
 response.should.have.header 'content-type', 'application/json; charset=utf-8'
 
