@@ -3,7 +3,7 @@
 path: '/v1/reverse?point.lat=40.744243'
 
 #? 200 ok
-response.statusCode.should.be.equal 200
+response.statusCode.should.be.equal 400
 response.should.have.header 'charset', 'utf8'
 response.should.have.header 'content-type', 'application/json; charset=utf-8'
 
