@@ -89,6 +89,6 @@ module.exports = extend( false, peliasQuery.defaults, {
   'population:field': 'population',
   'population:modifier': 'sqrt',
   'population:max_boost': 2000,
-  'population:weight': 1
+  'population:weight': 2
 
 });

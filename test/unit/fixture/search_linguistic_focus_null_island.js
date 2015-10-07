@@ -107,7 +107,7 @@ module.exports = {
                   'modifier': 'sqrt',
                   'field': 'population'
                 },
-                'weight': 1
+                'weight': 2
               }]
             }
           }]
