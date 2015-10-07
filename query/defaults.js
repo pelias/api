@@ -8,7 +8,7 @@ module.exports = extend( false, peliasQuery.defaults, {
   'track_scores': true,
 
   'centroid:field': 'center_point',
-  
+
   'sort:distance:order': 'asc',
   'sort:distance:distance_type': 'plane',
 
@@ -79,6 +79,16 @@ module.exports = extend( false, peliasQuery.defaults, {
 
   'admin:neighborhood:analyzer': 'peliasAdmin',
   'admin:neighborhood:field': 'neighborhood',
-  'admin:neighborhood:boost': 1
+  'admin:neighborhood:boost': 1,
+
+  'popularity:field': 'popularity',
+  'popularity:modifier': 'sqrt',
+  'popularity:max_boost': 10000,
+  'popularity:weight': 1,
+
+  'population:field': 'population',
+  'population:modifier': 'sqrt',
+  'population:max_boost': 2000,
+  'population:weight': 1
 
 });
