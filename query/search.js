@@ -15,7 +15,7 @@ query.score( peliasQuery.view.ngrams, 'must' );
 // scoring boost
 query.score( peliasQuery.view.phrase );
 query.score( peliasQuery.view.focus( peliasQuery.view.phrase ) );
-query.score( peliasQuery.view.popularity(['admin0','admin1','admin2']) );
+query.score( peliasQuery.view.popularity(['admin0','admin1','admin2','locality']) );
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );
