@@ -366,6 +366,53 @@ module.exports.tests.koh_lanta = function(test, common) {
   });
 };
 
+// NZD cafe
+module.exports.tests.black_dog_cafe = function(test, common) {
+  test('Black Dog Cafe', function(t) {
+    var doc = {
+      'name': { 'default': 'Black Dog Cafe' },
+      'country_a': 'NZL',
+      'country': 'New Zealand',
+      'region': 'Auckland Region',
+      'county': 'Auckland'
+    };
+    t.equal(generator(doc),'Black Dog Cafe, Auckland, New Zealand');
+    t.end();
+  });
+};
+
+// NZD cafe 2
+module.exports.tests.beach_bablyon = function(test, common) {
+  test('Beach Bablyon', function(t) {
+    var doc = {
+      'name': { 'default': 'Beach Bablyon' },
+      'country_a': 'NZL',
+      'country': 'New Zealand',
+      'region': 'Wellington Region',
+      'county': 'Wellington City',
+      'locality': 'Wellington',
+      'neighbourhood': 'Oriental Bay'
+    };
+    t.equal(generator(doc),'Beach Bablyon, Wellington, New Zealand');
+    t.end();
+  });
+};
+
+// NZD tourism
+module.exports.tests.waiotapu = function(test, common) {
+  test('Waiotapu', function(t) {
+    var doc = {
+      'name': { 'default': 'Waiotapu' },
+      'country_a': 'NZL',
+      'country': 'New Zealand',
+      'region': 'Bay of Plenty',
+      'county': 'Rotorua District'
+    };
+    t.equal(generator(doc),'Waiotapu, Rotorua District, New Zealand');
+    t.end();
+  });
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
