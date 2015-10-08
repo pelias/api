@@ -31,7 +31,7 @@ function setup( backend, query ){
 
       // error handler
       if( err ){
-        req.errors.push( err.message ? err.message : err );
+        req.errors.push( err );
       }
       // set response data
       else {

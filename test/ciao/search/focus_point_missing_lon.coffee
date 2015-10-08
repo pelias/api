@@ -3,7 +3,7 @@
 path: '/v1/search?text=a&focus.point.lat=40.744243'
 
 #? 200 ok
-response.statusCode.should.be.equal 200
+response.statusCode.should.be.equal 400
 response.should.have.header 'charset', 'utf8'
 response.should.have.header 'content-type', 'application/json; charset=utf-8'
 
@@ -24,7 +24,7 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ 'missing point param \'focus.point\' requires all of: \'lat\',\'lon\' to be present' ]
+json.geocoding.errors.should.eql [ 'parameters focus.point.lat and focus.point.lon must both be specified' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings

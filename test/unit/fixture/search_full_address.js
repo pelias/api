@@ -30,42 +30,59 @@ module.exports = {
           {
             'function_score': {
               'query': {
-                'filtered': {
-                  'filter': {
-                    'exists': {
-                      'field': 'popularity'
-                    }
+                'match': {
+                  'phrase.default': {
+                    'query': '123 main st',
+                    'analyzer': 'peliasPhrase',
+                    'type': 'phrase',
+                    'slop': 2,
+                    'boost': 1
                   }
                 }
               },
-              'max_boost': 2,
+              'max_boost': 20,
               'score_mode': 'first',
               'boost_mode': 'replace',
               'filter': {
-                'or': [
-                  {
-                    'type': {
-                      'value': 'admin0'
-                    }
-                  },
-                  {
-                    'type': {
-                      'value': 'admin1'
-                    }
-                  },
-                  {
-                    'type': {
-                      'value': 'admin2'
-                    }
-                  }
-                ]
+                'exists': {
+                  'field': 'popularity'
+                }
               },
               'functions': [{
                 'field_value_factor': {
-                  'modifier': 'sqrt',
+                  'modifier': 'log1p',
                   'field': 'popularity'
                 },
                 'weight': 1
+              }]
+            }
+          },{
+            'function_score': {
+              'query': {
+                'match': {
+                  'phrase.default': {
+                    'query': '123 main st',
+                    'analyzer': 'peliasPhrase',
+                    'type': 'phrase',
+                    'slop': 2,
+                    'boost': 1
+                  }
+                }
+              },
+              'max_boost': 20,
+              'score_mode': 'first',
+              'boost_mode': 'replace',
+              'filter': {
+                'exists': {
+                  'field': 'population'
+                }
+              },
+              'functions': [{
+                'field_value_factor': {
+                  'modifier': 'log1p',
+                  'field': 'population'
+                },
+                'weight': 2
               }]
             }
           },{

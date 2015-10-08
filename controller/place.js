@@ -29,7 +29,7 @@ function setup( backend ){
 
       // error handler
       if( err ){
-        req.errors.push( err.message ? err.message : err );
+        req.errors.push( err );
       }
       // set response data
       else {

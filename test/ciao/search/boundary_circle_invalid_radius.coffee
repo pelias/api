@@ -3,7 +3,7 @@
 path: '/v1/search?text=a&boundary.circle.lat=40.744243&boundary.circle.lon=-73.990342&boundary.circle.radius=foo'
 
 #? 200 ok
-response.statusCode.should.be.equal 200
+response.statusCode.should.be.equal 400
 response.should.have.header 'charset', 'utf8'
 response.should.have.header 'content-type', 'application/json; charset=utf-8'
 
@@ -32,6 +32,6 @@ should.not.exist json.geocoding.warnings
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10
-json.geocoding.query['boundary.circle.lat'].should.eql 40.744243
-json.geocoding.query['boundary.circle.lon'].should.eql -73.990342
+should.not.exist json.geocoding.query['boundary.circle.lat']
+should.not.exist json.geocoding.query['boundary.circle.lon']
 should.not.exist json.geocoding.query['boundary.circle.radius']

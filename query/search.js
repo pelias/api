@@ -15,7 +15,8 @@ query.score( peliasQuery.view.ngrams, 'must' );
 // scoring boost
 query.score( peliasQuery.view.phrase );
 query.score( peliasQuery.view.focus( peliasQuery.view.phrase ) );
-query.score( peliasQuery.view.popularity(['admin0','admin1','admin2']) );
+query.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
+query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );
@@ -35,11 +36,6 @@ query.score( peliasQuery.view.admin('neighborhood') );
 // non-scoring hard filters
 query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.boundary_rect );
-
-// groovy scripts used to handle tie-breaking
-query.sort( peliasQuery.view.sort_numeric_script('admin_boost') );
-query.sort( peliasQuery.view.sort_numeric_script('popularity') );
-query.sort( peliasQuery.view.sort_numeric_script('population') );
 
 // --------------------------------
 

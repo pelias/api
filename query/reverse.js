@@ -44,7 +44,7 @@ function generateQuery( clean ){
 
   // bounding circle
   // note: the sanitizers will take care of the case
-  // where point.lan/point.lon are provided in the 
+  // where point.lan/point.lon are provided in the
   // absense of boundary.circle.lat/boundary.circle.lon
   if( check.number(clean['boundary.circle.lat']) &&
       check.number(clean['boundary.circle.lon']) &&

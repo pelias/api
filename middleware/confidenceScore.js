@@ -82,6 +82,14 @@ function computeConfidenceScore(req, mean, stdev, hit) {
   return hit;
 }
 
+/*
+ * Check for clearly mismatching properties in a result
+ * zip code and state (admin1) are currently checked if present
+ *
+ * @param {object|undefined} text
+ * @param {object} hit
+ * @returns {bool}
+ */
 function checkForDealBreakers(req, hit) {
   if (check.undefined(req.clean.parsed_text)) {
     return false;

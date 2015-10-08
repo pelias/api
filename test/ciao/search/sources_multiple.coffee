@@ -1,10 +1,10 @@
 
 #> sources filter
-path: '/v1/search?text=a&sources=openstreetmap,geonames'
+path: "/v1/search?text=a&sources=openstreetmap,geonames"
 
 #? 200 ok
 response.statusCode.should.be.equal 200
-response.should.have.header 'charset', 'utf8'
+response.should.have.header "charset", 'utf8'
 response.should.have.header 'content-type', 'application/json; charset=utf-8'
 
 #? valid geocoding block
@@ -32,4 +32,4 @@ should.not.exist json.geocoding.warnings
 json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10
 json.geocoding.query.types['from_sources'].should.eql ["osmaddress","osmnode","osmway","geoname"]
-json.geocoding.query['type'].should.eql ["osmaddress","osmnode","osmway","geoname"]
+json.geocoding.query['type'].should.eql ["geoname","osmnode","osmway","osmaddress"]

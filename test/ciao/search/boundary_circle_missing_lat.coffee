@@ -3,7 +3,7 @@
 path: '/v1/search?text=a&boundary.circle.lon=-73.990342&boundary.circle.radius=100'
 
 #? 200 ok
-response.statusCode.should.be.equal 200
+response.statusCode.should.be.equal 400
 response.should.have.header 'charset', 'utf8'
 response.should.have.header 'content-type', 'application/json; charset=utf-8'
 
@@ -24,7 +24,7 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ 'missing circle param \'boundary.circle\' requires all of: \'lat\',\'lon\' to be present' ]
+json.geocoding.errors.should.eql [ 'parameters boundary.circle.lat and boundary.circle.lon must both be specified' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
@@ -32,6 +32,6 @@ should.not.exist json.geocoding.warnings
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10
+json.geocoding.query['boundary.circle.radius'].should.eql 100
 should.not.exist json.geocoding.query['boundary.circle.lat']
 should.not.exist json.geocoding.query['boundary.circle.lon']
-should.not.exist json.geocoding.query['boundary.circle.radius']
