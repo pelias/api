@@ -15,16 +15,16 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.valid = function(test, common) {
   var valid_keys = ['localadmin', 'locality', 'neighbourhood', 'county', 'region_a', 'region', 'country'];
   var default_schema = {
-    local: ['localadmin', 'locality', 'neighbourhood', 'county'],
-    regional: ['region_a', 'region', 'country']
+    local: ['localadmin', 'locality', 'neighbourhood', 'county', 'region'],
+    regional: ['country']
   };
 
   var isValid = function(keys, schema) {
     test('valid key/object (' + keys + ')' , function(t) {
-      if (keys === 'default') { 
+      if (keys === 'default') {
         t.deepEqual(schema, default_schema, 'valid default schema');
       } else {
-        t.equal(alpha3.hasOwnProperty(keys), true, 'valid key');  
+        t.equal(alpha3.hasOwnProperty(keys), true, 'valid key');
       }
       t.equal(typeof schema, 'object', 'valid object');
       t.notEqual(Object.getOwnPropertyNames(schema).length, 0,  'object not empty');
@@ -39,7 +39,7 @@ module.exports.tests.valid = function(test, common) {
     });
   };
 
-  for (var keys in schemas) { 
+  for (var keys in schemas) {
     isValid(keys, schemas[keys]);
   }
 };

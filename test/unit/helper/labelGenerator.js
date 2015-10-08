@@ -92,6 +92,22 @@ module.exports.tests.west_bengal = function(test, common) {
   });
 };
 
+// IND city
+module.exports.tests.bangalore = function(test, common) {
+  test('bangalore', function(t) {
+    var doc = {
+      'name': { 'default': 'Bangalore' },
+      'country_a': 'IND',
+      'country': 'India',
+      'region': 'Karnataka',
+      'county': 'Bangalore',
+      'locality': 'Bangalore'
+    };
+    t.equal(generator(doc),'Bangalore, Karnataka, India');
+    t.end();
+  });
+};
+
 // SGP region
 module.exports.tests.north_west_singapore = function(test, common) {
   test('north west singapore', function(t) {
@@ -130,6 +146,37 @@ module.exports.tests.madrid = function(test, common) {
       'region': 'Madrid'
     };
     t.equal(generator(doc),'Madrid, Spain');
+    t.end();
+  });
+};
+
+// SWE city
+module.exports.tests.skane1 = function(test, common) {
+  test('skåne 1', function(t) {
+    var doc = {
+      'name': { 'default': 'Malmö' },
+      'country_a': 'SWE',
+      'country': 'Sweden',
+      'region': 'Skåne',
+      'county': 'Malmö'
+    };
+    t.equal(generator(doc),'Malmö, Skåne, Sweden');
+    t.end();
+  });
+};
+
+// SWE city
+module.exports.tests.skane2 = function(test, common) {
+  test('skåne 2', function(t) {
+    var doc = {
+      'name': { 'default': 'Malmö' },
+      'country_a': 'SWE',
+      'country': 'Sweden',
+      'region': 'Skåne',
+      'county': 'Malmö',
+      'locality': 'MalmÃ¶'
+    };
+    t.equal(generator(doc),'Malmö, Skåne, Sweden');
     t.end();
   });
 };
@@ -197,6 +244,34 @@ module.exports.tests.new_zealand = function(test, common) {
       'country': 'New Zealand'
     };
     t.equal(generator(doc),'New Zealand');
+    t.end();
+  });
+};
+
+// GBR country
+module.exports.tests.wales = function(test, common) {
+  test('wales', function(t) {
+    var doc = {
+      'name': { 'default': 'Wales' },
+      'country_a': 'GBR',
+      'country': 'United Kingdom',
+      'region': 'Wales'
+    };
+    t.equal(generator(doc),'Wales, United Kingdom');
+    t.end();
+  });
+};
+
+// IRL country
+module.exports.tests.republic_of_ireland = function(test, common) {
+  test('northern ireland', function(t) {
+    var doc = {
+      'name': { 'default': 'Ireland' },
+      'country_a': 'IRL',
+      'country': 'Ireland'
+    };
+    // !! this is not part of the UK !!
+    t.equal(generator(doc),'Ireland');
     t.end();
   });
 };
