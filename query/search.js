@@ -37,11 +37,6 @@ query.score( peliasQuery.view.admin('neighborhood') );
 query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.boundary_rect );
 
-// groovy scripts used to handle tie-breaking
-query.sort( peliasQuery.view.sort_numeric_script('admin_boost') );
-query.sort( peliasQuery.view.sort_numeric_script('popularity') );
-query.sort( peliasQuery.view.sort_numeric_script('population') );
-
 // --------------------------------
 
 /**

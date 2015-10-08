@@ -10,8 +10,6 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-var sort = require('../fixture/sort_default');
-
 module.exports.tests.query = function(test, common) {
   test('valid search + focus + bbox', function(t) {
     var query = generate({
@@ -26,7 +24,6 @@ module.exports.tests.query = function(test, common) {
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_bbox');
-    expected.sort = sort;
 
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
@@ -44,7 +41,6 @@ module.exports.tests.query = function(test, common) {
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_bbox');
-    expected.sort = sort;
 
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
@@ -58,7 +54,6 @@ module.exports.tests.query = function(test, common) {
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_only');
-    expected.sort = sort;
 
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
@@ -73,7 +68,6 @@ module.exports.tests.query = function(test, common) {
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus');
-    expected.sort = sort;
 
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
@@ -88,7 +82,6 @@ module.exports.tests.query = function(test, common) {
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_null_island');
-    expected.sort = sort;
 
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
@@ -105,7 +98,6 @@ module.exports.tests.query = function(test, common) {
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_full_address');
-    expected.sort = sort;
 
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
@@ -122,7 +114,6 @@ module.exports.tests.query = function(test, common) {
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_partial_address');
-    expected.sort = sort;
 
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
@@ -139,7 +130,6 @@ module.exports.tests.query = function(test, common) {
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_regions_address');
-    expected.sort = sort;
 
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
@@ -154,7 +144,6 @@ module.exports.tests.query = function(test, common) {
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_boundary_country');
-    expected.sort = sort;
 
     t.deepEqual(compiled, expected, 'valid boundary.country query');
     t.end();

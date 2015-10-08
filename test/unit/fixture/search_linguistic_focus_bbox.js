@@ -132,7 +132,7 @@ module.exports = {
       }
     }
   },
-  'sort': [ '_sort' ],
+  'sort': [ '_score' ],
   'size': 10,
   'track_scores': true
 };
