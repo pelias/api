@@ -49,6 +49,45 @@ module.exports.tests.nyc_office = function(test, common) {
   });
 };
 
+// USA NYC eatery
+module.exports.tests.nyc_bakery = function(test, common) {
+  test('New York Bakery', function(t) {
+    var doc = {
+      'name': { 'default': 'New York Bakery' },
+      'housenumber': '51 W',
+      'street': '29th',
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'New York',
+      'region_a': 'NY',
+      'county': 'New York County',
+      'localadmin': 'Manhattan',
+      'locality': 'New York',
+      'neighbourhood': 'Koreatown'
+    };
+    t.equal(generator(doc),'New York Bakery, Manhattan, NY');
+    t.end();
+  });
+};
+
+// USA SFC building
+module.exports.tests.ferry_building = function(test, common) {
+  test('Ferry Building', function(t) {
+    var doc = {
+      'name': { 'default': 'Ferry Building' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'California',
+      'region_a': 'CA',
+      'county': 'San Francisco County',
+      'locality': 'San Francisco',
+      'neighbourhood': 'Financial District'
+    };
+    t.equal(generator(doc),'Ferry Building, San Francisco, CA');
+    t.end();
+  });
+};
+
 // AUS state
 module.exports.tests.new_south_wales = function(test, common) {
   test('new south wales', function(t) {
