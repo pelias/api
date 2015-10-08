@@ -45,7 +45,8 @@ module.exports = {
                     'scale': '50km',
                     'decay': 0.5
                   }
-                }
+                },
+                'weight': 2
               }],
               'score_mode': 'avg',
               'boost_mode': 'replace'
