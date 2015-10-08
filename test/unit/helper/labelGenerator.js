@@ -49,6 +49,45 @@ module.exports.tests.nyc_office = function(test, common) {
   });
 };
 
+// USA NYC eatery
+module.exports.tests.nyc_bakery = function(test, common) {
+  test('New York Bakery', function(t) {
+    var doc = {
+      'name': { 'default': 'New York Bakery' },
+      'housenumber': '51 W',
+      'street': '29th',
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'New York',
+      'region_a': 'NY',
+      'county': 'New York County',
+      'localadmin': 'Manhattan',
+      'locality': 'New York',
+      'neighbourhood': 'Koreatown'
+    };
+    t.equal(generator(doc),'New York Bakery, Manhattan, NY');
+    t.end();
+  });
+};
+
+// USA SFC building
+module.exports.tests.ferry_building = function(test, common) {
+  test('Ferry Building', function(t) {
+    var doc = {
+      'name': { 'default': 'Ferry Building' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'California',
+      'region_a': 'CA',
+      'county': 'San Francisco County',
+      'locality': 'San Francisco',
+      'neighbourhood': 'Financial District'
+    };
+    t.equal(generator(doc),'Ferry Building, San Francisco, CA');
+    t.end();
+  });
+};
+
 // AUS state
 module.exports.tests.new_south_wales = function(test, common) {
   test('new south wales', function(t) {
@@ -92,6 +131,69 @@ module.exports.tests.west_bengal = function(test, common) {
   });
 };
 
+// IND city
+module.exports.tests.bangalore = function(test, common) {
+  test('bangalore', function(t) {
+    var doc = {
+      'name': { 'default': 'Bangalore' },
+      'country_a': 'IND',
+      'country': 'India',
+      'region': 'Karnataka',
+      'county': 'Bangalore',
+      'locality': 'Bangalore'
+    };
+    t.equal(generator(doc),'Bangalore, Karnataka, India');
+    t.end();
+  });
+};
+
+// IND region of city
+module.exports.tests.sarjapur = function(test, common) {
+  test('Sarjapur', function(t) {
+    var doc = {
+      'name': { 'default': 'Sarjapur' },
+      'country_a': 'IND',
+      'country': 'India',
+      'region': 'Karnataka'
+    };
+    t.equal(generator(doc),'Sarjapur, Karnataka, India');
+    t.end();
+  });
+};
+
+// IND region of city 2
+module.exports.tests.bengaluru_east = function(test, common) {
+  test('Bengaluru East', function(t) {
+    var doc = {
+      'name': { 'default': 'Bengaluru East' },
+      'country_a': 'IND',
+      'country': 'India',
+      'region': 'Karnataka',
+      'county': 'Bangalore',
+      'locality': 'Bangalore',
+      'neighbourhood': 'Fraser Town'
+    };
+    t.equal(generator(doc),'Bengaluru East, Bangalore, India');
+    t.end();
+  });
+};
+
+// AUS area
+// https://en.wikipedia.org/wiki/Shire_of_Wellington
+module.exports.tests.wellington_victoria = function(test, common) {
+  test('Wellington, Victoria, Australia', function(t) {
+    var doc = {
+      'name': { 'default': 'Wellington' },
+      'country_a': 'AUS',
+      'country': 'Australia',
+      'region': 'Victoria',
+      'county': 'Wellington'
+    };
+    t.equal(generator(doc),'Wellington, Victoria, Australia');
+    t.end();
+  });
+};
+
 // SGP region
 module.exports.tests.north_west_singapore = function(test, common) {
   test('north west singapore', function(t) {
@@ -130,6 +232,37 @@ module.exports.tests.madrid = function(test, common) {
       'region': 'Madrid'
     };
     t.equal(generator(doc),'Madrid, Spain');
+    t.end();
+  });
+};
+
+// SWE city
+module.exports.tests.skane1 = function(test, common) {
+  test('skåne 1', function(t) {
+    var doc = {
+      'name': { 'default': 'Malmö' },
+      'country_a': 'SWE',
+      'country': 'Sweden',
+      'region': 'Skåne',
+      'county': 'Malmö'
+    };
+    t.equal(generator(doc),'Malmö, Skåne, Sweden');
+    t.end();
+  });
+};
+
+// SWE city
+module.exports.tests.skane2 = function(test, common) {
+  test('skåne 2', function(t) {
+    var doc = {
+      'name': { 'default': 'Malmö' },
+      'country_a': 'SWE',
+      'country': 'Sweden',
+      'region': 'Skåne',
+      'county': 'Malmö',
+      'locality': 'MalmÃ¶'
+    };
+    t.equal(generator(doc),'Malmö, Skåne, Sweden');
     t.end();
   });
 };
@@ -201,6 +334,34 @@ module.exports.tests.new_zealand = function(test, common) {
   });
 };
 
+// GBR country
+module.exports.tests.wales = function(test, common) {
+  test('wales', function(t) {
+    var doc = {
+      'name': { 'default': 'Wales' },
+      'country_a': 'GBR',
+      'country': 'United Kingdom',
+      'region': 'Wales'
+    };
+    t.equal(generator(doc),'Wales, United Kingdom');
+    t.end();
+  });
+};
+
+// IRL country
+module.exports.tests.republic_of_ireland = function(test, common) {
+  test('northern ireland', function(t) {
+    var doc = {
+      'name': { 'default': 'Ireland' },
+      'country_a': 'IRL',
+      'country': 'Ireland'
+    };
+    // !! this is not part of the UK !!
+    t.equal(generator(doc),'Ireland');
+    t.end();
+  });
+};
+
 // SGP venue
 module.exports.tests.singapore_mcdonalds = function(test, common) {
   test('singapore_mcdonalds', function(t) {
@@ -212,6 +373,81 @@ module.exports.tests.singapore_mcdonalds = function(test, common) {
       'locality': 'Singapore'
     };
     t.equal(generator(doc),'McDonald\'s, Central Singapore, Singapore');
+    t.end();
+  });
+};
+
+// THA province
+module.exports.tests.krabi_province = function(test, common) {
+  test('Krabi Provence', function(t) {
+    var doc = {
+      'name': { 'default': 'Krabi' },
+      'country_a': 'THA',
+      'country': 'Thailand',
+      'region': 'Krabi'
+    };
+    t.equal(generator(doc),'Krabi, Thailand');
+    t.end();
+  });
+};
+
+// THA island
+module.exports.tests.koh_lanta = function(test, common) {
+  test('Koh Lanta', function(t) {
+    var doc = {
+      'name': { 'default': 'Ko Lanta' },
+      'country_a': 'THA',
+      'country': 'Thailand',
+      'region': 'Krabi'
+    };
+    t.equal(generator(doc),'Ko Lanta, Krabi, Thailand');
+    t.end();
+  });
+};
+
+// NZD cafe
+module.exports.tests.black_dog_cafe = function(test, common) {
+  test('Black Dog Cafe', function(t) {
+    var doc = {
+      'name': { 'default': 'Black Dog Cafe' },
+      'country_a': 'NZL',
+      'country': 'New Zealand',
+      'region': 'Auckland Region',
+      'county': 'Auckland'
+    };
+    t.equal(generator(doc),'Black Dog Cafe, Auckland, New Zealand');
+    t.end();
+  });
+};
+
+// NZD cafe 2
+module.exports.tests.beach_bablyon = function(test, common) {
+  test('Beach Bablyon', function(t) {
+    var doc = {
+      'name': { 'default': 'Beach Bablyon' },
+      'country_a': 'NZL',
+      'country': 'New Zealand',
+      'region': 'Wellington Region',
+      'county': 'Wellington City',
+      'locality': 'Wellington',
+      'neighbourhood': 'Oriental Bay'
+    };
+    t.equal(generator(doc),'Beach Bablyon, Wellington, New Zealand');
+    t.end();
+  });
+};
+
+// NZD tourism
+module.exports.tests.waiotapu = function(test, common) {
+  test('Waiotapu', function(t) {
+    var doc = {
+      'name': { 'default': 'Waiotapu' },
+      'country_a': 'NZL',
+      'country': 'New Zealand',
+      'region': 'Bay of Plenty',
+      'county': 'Rotorua District'
+    };
+    t.equal(generator(doc),'Waiotapu, Rotorua District, New Zealand');
     t.end();
   });
 };
