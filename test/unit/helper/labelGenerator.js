@@ -108,6 +108,37 @@ module.exports.tests.bangalore = function(test, common) {
   });
 };
 
+// IND region of city
+module.exports.tests.sarjapur = function(test, common) {
+  test('Sarjapur', function(t) {
+    var doc = {
+      'name': { 'default': 'Sarjapur' },
+      'country_a': 'IND',
+      'country': 'India',
+      'region': 'Karnataka'
+    };
+    t.equal(generator(doc),'Sarjapur, Karnataka, India');
+    t.end();
+  });
+};
+
+// IND region of city 2
+module.exports.tests.bengaluru_east = function(test, common) {
+  test('Bengaluru East', function(t) {
+    var doc = {
+      'name': { 'default': 'Bengaluru East' },
+      'country_a': 'IND',
+      'country': 'India',
+      'region': 'Karnataka',
+      'county': 'Bangalore',
+      'locality': 'Bangalore',
+      'neighbourhood': 'Fraser Town'
+    };
+    t.equal(generator(doc),'Bengaluru East, Bangalore, India');
+    t.end();
+  });
+};
+
 // SGP region
 module.exports.tests.north_west_singapore = function(test, common) {
   test('north west singapore', function(t) {
