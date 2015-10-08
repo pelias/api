@@ -139,6 +139,22 @@ module.exports.tests.bengaluru_east = function(test, common) {
   });
 };
 
+// AUS area
+// https://en.wikipedia.org/wiki/Shire_of_Wellington
+module.exports.tests.wellington_victoria = function(test, common) {
+  test('Wellington, Victoria, Australia', function(t) {
+    var doc = {
+      'name': { 'default': 'Wellington' },
+      'country_a': 'AUS',
+      'country': 'Australia',
+      'region': 'Victoria',
+      'county': 'Wellington'
+    };
+    t.equal(generator(doc),'Wellington, Victoria, Australia');
+    t.end();
+  });
+};
+
 // SGP region
 module.exports.tests.north_west_singapore = function(test, common) {
   test('north west singapore', function(t) {
@@ -318,6 +334,34 @@ module.exports.tests.singapore_mcdonalds = function(test, common) {
       'locality': 'Singapore'
     };
     t.equal(generator(doc),'McDonald\'s, Central Singapore, Singapore');
+    t.end();
+  });
+};
+
+// THA province
+module.exports.tests.krabi_province = function(test, common) {
+  test('Krabi Provence', function(t) {
+    var doc = {
+      'name': { 'default': 'Krabi' },
+      'country_a': 'THA',
+      'country': 'Thailand',
+      'region': 'Krabi'
+    };
+    t.equal(generator(doc),'Krabi, Thailand');
+    t.end();
+  });
+};
+
+// THA island
+module.exports.tests.koh_lanta = function(test, common) {
+  test('Koh Lanta', function(t) {
+    var doc = {
+      'name': { 'default': 'Ko Lanta' },
+      'country_a': 'THA',
+      'country': 'Thailand',
+      'region': 'Krabi'
+    };
+    t.equal(generator(doc),'Ko Lanta, Krabi, Thailand');
     t.end();
   });
 };
