@@ -64,7 +64,7 @@ module.exports = {
                   }
                 }
               },
-              'max_boost': 10000,
+              'max_boost': 20,
               'score_mode': 'first',
               'boost_mode': 'replace',
               'filter': {
@@ -74,7 +74,7 @@ module.exports = {
               },
               'functions': [{
                 'field_value_factor': {
-                  'modifier': 'sqrt',
+                  'modifier': 'log1p',
                   'field': 'popularity'
                 },
                 'weight': 1
@@ -93,7 +93,7 @@ module.exports = {
                   }
                 }
               },
-              'max_boost': 2000,
+              'max_boost': 20,
               'score_mode': 'first',
               'boost_mode': 'replace',
               'filter': {
@@ -103,7 +103,7 @@ module.exports = {
               },
               'functions': [{
                 'field_value_factor': {
-                  'modifier': 'sqrt',
+                  'modifier': 'log1p',
                   'field': 'population'
                 },
                 'weight': 2

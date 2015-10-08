@@ -83,13 +83,13 @@ module.exports = extend( false, peliasQuery.defaults, {
   'admin:neighborhood:boost': 1,
 
   'popularity:field': 'popularity',
-  'popularity:modifier': 'sqrt',
-  'popularity:max_boost': 10000,
+  'popularity:modifier': 'log1p',
+  'popularity:max_boost': 20,
   'popularity:weight': 1,
 
   'population:field': 'population',
-  'population:modifier': 'sqrt',
-  'population:max_boost': 2000,
+  'population:modifier': 'log1p',
+  'population:max_boost': 20,
   'population:weight': 2
 
 });
