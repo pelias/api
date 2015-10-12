@@ -64,7 +64,7 @@
     "nsp": "^0.3.0",
     "precommit-hook": "^1.0.7",
     "proxyquire": "^1.4.0",
-    "tap-spec": "^0.2.0",
+    "tap-dot": "^1.0.0",
     "tape": "^2.13.4"
   }
 }
