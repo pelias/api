@@ -10,7 +10,7 @@ var _ = require('lodash');
  */
 module.exports = function calculate_types(clean_types) {
   //Check that at least one preference of types is defined
-  if (!clean_types || !(clean_types.from_layers || clean_types.from_sources || clean_types.from_address_parser)) {
+  if (!clean_types || !(clean_types.from_layers || clean_types.from_sources || clean_types.from_text_parser)) {
     throw new Error('clean_types should not be null or undefined');
   }
 
@@ -35,8 +35,8 @@ module.exports = function calculate_types(clean_types) {
    * Type restrictions requested by the address parser should only be used
    * if both the source and layers parameters are empty, so do this last
    */
-  if (clean_types.from_address_parser) {
-    return clean_types.from_address_parser;
+  if (clean_types.from_text_parser) {
+    return clean_types.from_text_parser;
   }
 
   throw new Error('no types specified');

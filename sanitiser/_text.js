@@ -26,7 +26,7 @@ function sanitize( raw, clean ){
 
     // try to set layers from query parser results
     clean.types = clean.layers || {};
-    clean.types.from_address_parser = text_parser.get_layers(clean.text);
+    clean.types.from_text_parser = text_parser.get_layers(clean.text);
   }
 
   return messages;
