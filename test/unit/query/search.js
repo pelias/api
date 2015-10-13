@@ -85,7 +85,6 @@ module.exports.tests.query = function(test, common) {
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_viewport');
-    expected.sort = sort;
 
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
@@ -103,7 +102,6 @@ module.exports.tests.query = function(test, common) {
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_viewport_min_diagonal');
-    expected.sort = sort;
 
     t.deepEqual(compiled, expected, 'valid search query');
     t.end();
