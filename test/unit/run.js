@@ -9,7 +9,7 @@ var tests = [
   require('./helper/geojsonify'),
   require('./helper/labelGenerator'),
   require('./helper/labelSchema'),
-  require('./helper/query_parser'),
+  require('./helper/text_parser'),
   require('./helper/type_mapping'),
   require('./helper/types'),
   require('./middleware/confidenceScore'),

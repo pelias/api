@@ -1,5 +1,5 @@
 var generate = require('../../../query/search');
-var parser = require('../../../helper/query_parser');
+var parser = require('../../../helper/text_parser');
 
 module.exports.tests = {};
 

@@ -1,5 +1,5 @@
 var check = require('check-types'),
-    query_parser = require('../helper/query_parser');
+    text_parser = require('../helper/text_parser');
 
 // validate texts, convert types and apply defaults
 function sanitize( raw, clean ){
@@ -19,14 +19,14 @@ function sanitize( raw, clean ){
     clean.text = raw.text;
 
     // parse text with query parser
-    var parsed_text = query_parser.get_parsed_address(clean.text);
+    var parsed_text = text_parser.get_parsed_address(clean.text);
     if (check.assigned(parsed_text)) {
       clean.parsed_text = parsed_text;
     }
 
     // try to set layers from query parser results
     clean.types = clean.layers || {};
-    clean.types.from_address_parsing = query_parser.get_layers(clean.text);
+    clean.types.from_address_parsing = text_parser.get_layers(clean.text);
   }
 
   return messages;
