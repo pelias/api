@@ -2,12 +2,14 @@ var type_mapping = require( '../helper/type_mapping' );
 var _ = require('lodash');
 
 /**
- * Combine all types and determine the unique subset
+ * Different parts of the code express "preferences" for which Elasticsearch types are going to be searched
+ * This method decides how to combine all the preferences.
  *
  * @param {Array} clean_types
  * @returns {Array}
  */
 module.exports = function calculate_types(clean_types) {
+  //Check that at least one preference of types is defined
   if (!clean_types || !(clean_types.from_layers || clean_types.from_sources || clean_types.from_address_parser)) {
     throw new Error('clean_types should not be null or undefined');
   }

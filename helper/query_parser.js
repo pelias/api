@@ -8,6 +8,10 @@ var logger     = require('pelias-logger').get('api');
 
 module.exports = {};
 
+/*
+ * For performance, and to prefer POI and admin records, express a preference
+ * to only search coarse layers on very short text inputs.
+ */
 module.exports.get_layers = function get_layers(query) {
   if (query.length <= 3 ) {
     // no address parsing required
