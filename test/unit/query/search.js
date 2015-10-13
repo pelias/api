@@ -73,6 +73,42 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  test('search search + viewport', function(t) {
+    var query = generate({
+      text: 'test', size: 10,
+      'focus.viewport.min_lat': 28.49136,
+      'focus.viewport.max_lat': 30.49136,
+      'focus.viewport.min_lon': -87.50622,
+      'focus.viewport.max_lon': -77.50622,
+      layers: ['test']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_linguistic_viewport');
+    expected.sort = sort;
+
+    t.deepEqual(compiled, expected, 'valid search query');
+    t.end();
+  });
+
+  test('search with viewport diagonal < 1km should set scale to 1km', function(t) {
+    var query = generate({
+      text: 'test', size: 10,
+      'focus.viewport.min_lat': 28.49135,
+      'focus.viewport.max_lat': 28.49137,
+      'focus.viewport.min_lon': -87.50622,
+      'focus.viewport.max_lon': -87.50624,
+      layers: ['test']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_linguistic_viewport_min_diagonal');
+    expected.sort = sort;
+
+    t.deepEqual(compiled, expected, 'valid search query');
+    t.end();
+  });
+
   test('search search + focus on null island', function(t) {
     var query = generate({
       text: 'test', size: 10,
