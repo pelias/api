@@ -9,16 +9,6 @@ See our [API Documentation](https://github.com/pelias/api/blob/master/public/api
 
 ## Install Dependencies
 
-The API uses [elasticsearch scripts](https://github.com/pelias/scripts) for additional scoring/sorting logic. You
-**must** install them, as documented [here](https://github.com/pelias/scripts#pelias-scripts). Failure to do so will
-result in the following error:
-
-```
-ElasticsearchIllegalArgumentException[Unable to find on disk script admin_boost]
-```
-
-Once you are done with installing the scripts, Run the following
-
 ```bash
 npm install
 ```

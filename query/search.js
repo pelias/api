@@ -1,7 +1,8 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./defaults'),
     textParser = require('./text_parser'),
-    check = require('check-types');
+    check = require('check-types'),
+    geolib = require('geolib');
 
 //------------------------------
 // general-purpose search query
@@ -65,13 +66,15 @@ function generateQuery( clean ){
   }
 
   // focus viewport
-  // @todo: change these to the correct request variable names
-  // @todo: calculate the centroid from the viewport box
-  if( clean.focus && clean.focus.viewport ){
-    var vp = clean.focus.viewport;
+  if( check.number(clean['focus.viewport.min_lat']) &&
+      check.number(clean['focus.viewport.max_lat']) &&
+      check.number(clean['focus.viewport.min_lon']) &&
+      check.number(clean['focus.viewport.max_lon']) ) {
+    // calculate the centroid from the viewport box
     vs.set({
-      'focus:point:lat': vp.min_lat + ( vp.max_lat - vp.min_lat ) / 2,
-      'focus:point:lon': vp.min_lon + ( vp.max_lon - vp.min_lon ) / 2
+      'focus:point:lat': clean['focus.viewport.min_lat'] + ( clean['focus.viewport.max_lat'] - clean['focus.viewport.min_lat'] ) / 2,
+      'focus:point:lon': clean['focus.viewport.min_lon'] + ( clean['focus.viewport.max_lon'] - clean['focus.viewport.min_lon'] ) / 2,
+      'focus:scale': calculateDiagonalDistance(clean) + 'km'
     });
   }
 
@@ -117,6 +120,18 @@ function generateQuery( clean ){
   }
 
   return query.render( vs );
+}
+
+// return diagonal distance in km, with min=1
+function calculateDiagonalDistance(clean) {
+  var diagonalDistance = geolib.getDistance(
+    { latitude: clean['focus.viewport.min_lat'], longitude: clean['focus.viewport.min_lon'] },
+    { latitude: clean['focus.viewport.max_lat'], longitude: clean['focus.viewport.max_lon'] },
+    1000
+  ) / 1000;
+
+  return Math.max(diagonalDistance, 1);
+
 }
 
 module.exports = generateQuery;

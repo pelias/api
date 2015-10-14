@@ -1,0 +1,136 @@
+module.exports = {
+  'query': {
+    'filtered': {
+      'query': {
+        'bool': {
+          'must': [
+            {
+              'match': {
+                'name.default': {
+                  'analyzer': 'peliasOneEdgeGram',
+                  'boost': 1,
+                  'query': 'test'
+                }
+              }
+            }
+          ],
+          'should': [
+            {
+              'match': {
+                'phrase.default': {
+                  'analyzer': 'peliasPhrase',
+                  'type': 'phrase',
+                  'boost': 1,
+                  'slop': 2,
+                  'query': 'test'
+                }
+              }
+            },
+            {
+              'function_score': {
+                'query': {
+                  'match': {
+                    'phrase.default': {
+                      'analyzer': 'peliasPhrase',
+                      'type': 'phrase',
+                      'boost': 1,
+                      'slop': 2,
+                      'query': 'test'
+                    }
+                  }
+                },
+                'functions': [
+                  {
+                    'weight': 2,
+                    'linear': {
+                      'center_point': {
+                        'origin': {
+                          'lat': 29.49136,
+                          'lon': -82.50622
+                        },
+                        'offset': '1km',
+                        'scale': '994km',
+                        'decay': 0.5
+                      }
+                    }
+                  }
+                ],
+                'score_mode': 'avg',
+                'boost_mode': 'replace'
+              }
+            },
+            {
+              'function_score': {
+                'query': {
+                  'match': {
+                    'phrase.default': {
+                      'analyzer': 'peliasPhrase',
+                      'type': 'phrase',
+                      'boost': 1,
+                      'slop': 2,
+                      'query': 'test'
+                    }
+                  }
+                },
+                'max_boost': 20,
+                'functions': [
+                  {
+                    'field_value_factor': {
+                      'modifier': 'log1p',
+                      'field': 'popularity'
+                    },
+                    'weight': 1
+                  }
+                ],
+                'score_mode': 'first',
+                'boost_mode': 'replace',
+                'filter': {
+                  'exists': {
+                    'field': 'popularity'
+                  }
+                }
+              }
+            },
+            {
+              'function_score': {
+                'query': {
+                  'match': {
+                    'phrase.default': {
+                      'analyzer': 'peliasPhrase',
+                      'type': 'phrase',
+                      'boost': 1,
+                      'slop': 2,
+                      'query': 'test'
+                    }
+                  }
+                },
+                'max_boost': 20,
+                'functions': [
+                  {
+                    'field_value_factor': {
+                      'modifier': 'log1p',
+                      'field': 'population'
+                    },
+                    'weight': 2
+                  }
+                ],
+                'score_mode': 'first',
+                'boost_mode': 'replace',
+                'filter': {
+                  'exists': {
+                    'field': 'population'
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  'size': 10,
+  'track_scores': true,
+  'sort': [
+    '_score'
+  ]
+};

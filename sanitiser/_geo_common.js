@@ -36,7 +36,7 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
   // check each property individually. now that it is known a bbox is present,
   // all properties must exist, so pass the true flag for coord_is_required
   properties.forEach(function(prop) {
-    sanitize_coord(prop, clean, raw[prop], true);
+    sanitize_coord(prop, clean, raw, true);
   });
 }
 
@@ -52,7 +52,7 @@ function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
   // sanitize both a point and a radius if radius is present
   // otherwise just sanittize the point
   if( check.assigned( raw[ key_prefix + '.radius' ] ) ){
-    sanitize_coord( key_prefix + '.radius', clean, raw[ key_prefix + '.radius' ], true );
+    sanitize_coord( key_prefix + '.radius', clean, raw, true );
     sanitize_point( key_prefix, clean, raw, true);
   } else {
     sanitize_point( key_prefix, clean, raw, circle_is_required);
@@ -89,20 +89,20 @@ function sanitize_point( key_prefix, clean, raw, point_is_required ) {
   // check each property individually. now that it is known a bbox is present,
   // all properties must exist, so pass the true flag for coord_is_required
   properties.forEach(function(prop) {
-    sanitize_coord(prop, clean, raw[prop], true);
+    sanitize_coord(prop, clean, raw, true);
   });
 }
 
 /**
  * Validate lat,lon values
  *
- * @param {string} key
- * @param {object} clean
- * @param {string} rawValue
+ * @param {string} key - which key to validate
+ * @param {object} clean - cleaned parameters object
+ * @param {object} raw - the raw request object
  * @param {bool} latlon_is_required
  */
-function sanitize_coord( key, clean, rawValue, latlon_is_required ) {
-  var parsedValue = parseFloat( rawValue );
+function sanitize_coord( key, clean, raw, latlon_is_required ) {
+  var parsedValue = parseFloat( raw[key] );
   if ( _.isFinite( parsedValue ) ) {
     clean[key] = parsedValue;
   }
