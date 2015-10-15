@@ -6,7 +6,7 @@ machine:
 
 dependencies:
   pre:
-    - echo "{\"mapzen\":{\"api_key\":{\"search.mapzen.com\":\"$SEARCH_API_KEY\",\"pelias.mapzen.com\":\"$PELIAS_API_KEY\"}}}" >~/pelias.json
+    - echo "{\"mapzen\":{\"api_key\":{\"search.mapzen.com\":\"$SEARCH_API_KEY\"}}}" >~/pelias.json
 
 deployment:
   prod:
