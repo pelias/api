@@ -1,6 +1,6 @@
 var extend = require('extend'),
     search  = require('../../../sanitiser/search'),
-    parser = require('../../../helper/query_parser'),
+    parser = require('../../../helper/text_parser'),
     sanitize = search.sanitize,
     middleware = search.middleware,
     defaultError = 'invalid param \'text\': text length, must be >0';

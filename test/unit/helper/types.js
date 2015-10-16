@@ -33,7 +33,7 @@ module.exports.tests.no_cleaned_types = function(test, common) {
 module.exports.tests.address_parser = function(test, common) {
   test('address parser specifies only admin layers', function(t) {
     var cleaned_types = {
-      from_address_parser: ['admin0'] // simplified return value from address parser
+      from_text_parser: ['admin0'] // simplified return value from address parser
     };
     var actual = types(cleaned_types);
     var expected = ['admin0']; // simplified expected value for all admin layers
@@ -58,7 +58,7 @@ module.exports.tests.layers_parameter_and_address_parser = function(test, common
   test('layers parameter and address parser present', function(t) {
     var cleaned_types = {
       from_layers: ['geoname'],
-      from_address_parser: ['admin0'] // simplified return value from address parse
+      from_text_parser: ['admin0'] // simplified return value from address parse
     };
     var actual = types(cleaned_types);
     var expected = ['geoname'];
