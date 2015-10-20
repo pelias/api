@@ -1,5 +1,5 @@
 var sanitize = require('../../../sanitiser/_geo_reverse');
-var defaults = require('../../../query/defaults');
+var defaults = require('../../../query/reverse_defaults');
 
 module.exports.tests = {};
 

@@ -1,5 +1,5 @@
 var peliasQuery = require('pelias-query'),
-    defaults = require('./defaults'),
+    defaults = require('./reverse_defaults'),
     check = require('check-types');
 
 //------------------------------
