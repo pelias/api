@@ -30,6 +30,7 @@ var postProc = {
   distances: require('../middleware/distance'),
   confidenceScores: require('../middleware/confidenceScore'),
   confidenceScoresReverse: require('../middleware/confidenceScoreReverse'),
+  localNamingConventions: require('../middleware/localNamingConventions'),
   renamePlacenames: require('../middleware/renamePlacenames'),
   geocodeJSON: require('../middleware/geocodeJSON'),
   sendJSON: require('../middleware/sendJSON')
@@ -60,6 +61,7 @@ function addRoutes(app, peliasConfig) {
       controllers.search(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
+      postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
@@ -70,6 +72,7 @@ function addRoutes(app, peliasConfig) {
       controllers.search(null, require('../query/autocomplete')),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
+      postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
@@ -82,6 +85,7 @@ function addRoutes(app, peliasConfig) {
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),
+      postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
@@ -89,6 +93,7 @@ function addRoutes(app, peliasConfig) {
     place: createRouter([
       sanitisers.place.middleware,
       controllers.place(),
+      postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
