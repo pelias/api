@@ -1,7 +1,7 @@
 
 var geo_common = require ('./_geo_common');
 var _ = require('lodash');
-var defaults = require('../query/defaults');
+var defaults = require('../query/reverse_defaults');
 var LAT_LON_IS_REQUIRED = true,
     CIRCLE_IS_REQUIRED = false;
 
