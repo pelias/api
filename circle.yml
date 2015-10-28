@@ -21,6 +21,6 @@ deployment:
     branch: master
     commands:
       - git clone git@github.com:pelias/acceptance-tests && cd acceptance-tests && npm install
-      - cd acceptance-tests && npm test -- -e prod
+      - cd acceptance-tests && npm test -- -e dev
       - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
       - cd pelias-deploy && bundle exec rake deploy:api[dev]
