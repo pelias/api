@@ -9,15 +9,6 @@ module.exports = {
         'bool': {
           'must': [{
             'match': {
-              'name.default': {
-                'query': '1 water st',
-                'analyzer': 'peliasOneEdgeGram',
-                'boost': 1
-              }
-            }
-          }],
-          'should': [{
-            'match': {
               'phrase.default': {
                 'query': '1 water st',
                 'analyzer': 'peliasPhrase',
@@ -26,7 +17,8 @@ module.exports = {
                 'boost': 1
               }
             }
-          },{
+          }],
+          'should': [{
             'function_score': {
               'query': {
                 'match': {

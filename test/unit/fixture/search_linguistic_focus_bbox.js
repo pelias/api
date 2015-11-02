@@ -6,15 +6,6 @@ module.exports = {
         'bool': {
           'must': [{
             'match': {
-              'name.default': {
-                'query': 'test',
-                'boost': 1,
-                'analyzer': 'peliasOneEdgeGram'
-              }
-            }
-          }],
-          'should': [{
-            'match': {
               'phrase.default': {
                 'query': 'test',
                 'analyzer': 'peliasPhrase',
@@ -23,7 +14,8 @@ module.exports = {
                 'slop': 2
               }
             }
-          }, {
+          }],
+          'should': [{
             'function_score': {
               'query': {
                 'match': {
