@@ -48,7 +48,7 @@ module.exports = extend( false, peliasQuery.defaults, {
 
   'address:postcode:analyzer': 'peliasZip',
   'address:postcode:field': 'address.zip',
-  'address:postcode:boost': 3,
+  'address:postcode:boost': 20,
 
   'admin:alpha3:analyzer': 'standard',
   'admin:alpha3:field': 'alpha3',
