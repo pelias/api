@@ -10,7 +10,8 @@ var ADMIN_FIELDS = [
   'admin2',
   'local_admin',
   'locality',
-  'neighborhood'
+  'neighborhood',
+  'address.zip'
 ];
 
 /**

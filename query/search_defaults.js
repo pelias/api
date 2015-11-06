@@ -38,17 +38,17 @@ module.exports = extend( false, peliasQuery.defaults, {
   'function_score:score_mode': 'avg',
   'function_score:boost_mode': 'replace',
 
-  'address:housenumber:analyzer': 'standard',
+  'address:housenumber:analyzer': 'peliasHousenumber',
   'address:housenumber:field': 'address.number',
   'address:housenumber:boost': 2,
 
-  'address:street:analyzer': 'standard',
+  'address:street:analyzer': 'peliasStreet',
   'address:street:field': 'address.street',
   'address:street:boost': 5,
 
-  'address:postcode:analyzer': 'standard',
+  'address:postcode:analyzer': 'peliasZip',
   'address:postcode:field': 'address.zip',
-  'address:postcode:boost': 3,
+  'address:postcode:boost': 20,
 
   'admin:alpha3:analyzer': 'standard',
   'admin:alpha3:field': 'alpha3',
