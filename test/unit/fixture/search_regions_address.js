@@ -87,7 +87,7 @@ module.exports = {
           },{
             'match': {
               'address.number': {
-                'query': 1,
+                'query': '1',
                 'boost': vs.var('address:housenumber:boost').get(),
                 'analyzer': vs.var('address:housenumber:analyzer').get()
               }
