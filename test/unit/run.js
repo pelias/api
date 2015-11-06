@@ -15,6 +15,7 @@ var tests = [
   require('./middleware/confidenceScore'),
   require('./middleware/confidenceScoreReverse'),
   require('./middleware/distance'),
+  require('./middleware/localNamingConventions'),
   require('./query/autocomplete'),
   require('./query/autocomplete_defaults'),
   require('./query/search_defaults'),
