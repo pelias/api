@@ -1,5 +1,5 @@
 var peliasQuery = require('pelias-query'),
-    defaults = require('./defaults'),
+    defaults = require('./search_defaults'),
     textParser = require('./text_parser'),
     check = require('check-types'),
     geolib = require('geolib');

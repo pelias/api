@@ -1,6 +1,6 @@
 
 var peliasQuery = require('pelias-query'),
-    defaults = require('./defaults'),
+    defaults = require('./autocomplete_defaults'),
     check = require('check-types');
 
 //------------------------------

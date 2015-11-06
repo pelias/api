@@ -1,5 +1,5 @@
 
-var defaults = require('../../../query/defaults');
+var defaults = require('../../../query/reverse_defaults');
 
 module.exports.tests = {};
 
@@ -13,7 +13,7 @@ module.exports.tests.interface = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('query defaults ' + name, testFunction);
+    return tape('reverse defaults ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

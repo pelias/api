@@ -4,7 +4,7 @@
 var reverse  = require('../../../sanitiser/reverse'),
     sanitize = reverse.sanitize,
     middleware = reverse.middleware,
-    defaults = require('../../../query/defaults'),
+    defaults = require('../../../query/reverse_defaults'),
     defaultError = 'missing param \'lat\'',
     defaultClean =  { 'point.lat': 0,
                       'point.lon': 0,
