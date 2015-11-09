@@ -101,7 +101,7 @@ function checkForDealBreakers(req, hit) {
   }
 
   if (check.assigned(req.clean.parsed_text.postalcode) && req.clean.parsed_text.postalcode !== hit.address.zip) {
-    logger.debug('[confidence][deal-breaker]: postalcode !== zip');
+    logger.debug('[confidence][deal-breaker]: postalcode !== zip (' + req.clean.parsed_text.postalcode + ' !== ' + hit.address.zip + ')');
     return true;
   }
 }
