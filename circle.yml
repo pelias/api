@@ -4,18 +4,12 @@ machine:
   node:
     version: 0.12.2
 
-dependencies:
-  pre:
-    - echo "{\"mapzen\":{\"api_key\":{\"search.mapzen.com\":\"$SEARCH_API_KEY\",\"pelias.mapzen.com\":\"$PELIAS_API_KEY\"}}}" >~/pelias.json
-
 deployment:
   dev:
     branch: master
     commands:
-      - git clone git@github.com:pelias/acceptance-tests && cd acceptance-tests && npm install
       - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
       - cd pelias-deploy && bundle exec rake deploy:api[dev]
-      - cd acceptance-tests && npm test -- -e dev
   prod_build:
     branch: production
     commands:
