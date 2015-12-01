@@ -88,7 +88,7 @@ module.exports = {
           },{
             'match': {
               'address.number': {
-                'query': 123,
+                'query': '123',
                 'boost': vs.var('address:housenumber:boost').get(),
                 'analyzer': vs.var('address:housenumber:analyzer').get()
               }
@@ -104,7 +104,7 @@ module.exports = {
           }, {
             'match': {
               'address.zip': {
-                'query': 10010,
+                'query': '10010',
                 'boost': vs.var('address:postcode:boost').get(),
                 'analyzer': vs.var('address:postcode:analyzer').get()
               }
