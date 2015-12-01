@@ -6,7 +6,7 @@ machine:
 
 test:
   post:
-    - npm run coverage
+    - node_modules/.bin/istanbul cover --dir=$CIRCLE_ARTIFACTS test/unit/run.js
 deployment:
   dev:
     branch: master
