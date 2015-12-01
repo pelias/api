@@ -4,9 +4,14 @@ machine:
   node:
     version: 0.12.2
 
+general:
+  artifacts:
+    - "./coverage"
+
 test:
   post:
-    - node_modules/.bin/istanbul cover --dir=$CIRCLE_ARTIFACTS test/unit/run.js
+    - npm run coverage
+
 deployment:
   dev:
     branch: master
