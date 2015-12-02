@@ -16,7 +16,7 @@ function setup( backend, query ){
     }
 
     // log clean parameters for stats
-    logger.info(req.clean);
+    logger.info('[req]', 'endpoint=' + req.path, req.clean);
 
     // backend command
     var cmd = {

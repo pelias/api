@@ -1,5 +1,4 @@
-var util = require('util');
-var logger = require('pelias-logger').get('api:middle:dedupe');
+var logger = require('pelias-logger').get('api');
 var _ = require('lodash');
 
 function setup() {
@@ -45,8 +44,8 @@ function isDifferent(item1, item2) {
     if (item1.hasOwnProperty('name') && item2.hasOwnProperty('name')) {
       propMatch(item1.name, item2.name, 'default');
     }
-    else if (item1.name !== item2.name) {
-      throw 'different';
+    else {
+      propMatch(item1, item2, 'name');
     }
 
     if (item1.hasOwnProperty('address') && item2.hasOwnProperty('address')) {
@@ -68,14 +67,28 @@ function isDifferent(item1, item2) {
 /**
  * Throw exception if properties are different
  *
- * @param item1
- * @param item2
- * @param prop
+ * @param {object} item1
+ * @param {object} item2
+ * @param {string} prop
+ * @throws {string}
  */
 function propMatch(item1, item2, prop) {
-  if (item1[prop] !== item2[prop]) {
+  if (normalizeString(item1[prop]) !== normalizeString(item2[prop])) {
     throw 'different';
   }
+}
+
+/**
+ * Remove punctuation and lowercase
+ *
+ * @param {string} str
+ * @returns {string}
+ */
+function normalizeString(str) {
+  if (!str) {
+    return '';
+  }
+  return _.words(str.toLowerCase()).join(' ');
 }
 
 
