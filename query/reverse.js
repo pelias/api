@@ -1,6 +1,7 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./reverse_defaults'),
-    check = require('check-types');
+    check = require('check-types'),
+    calcSize = require('../helper/sizeCalculator');
 
 //------------------------------
 // reverse geocode query
@@ -30,7 +31,7 @@ function generateQuery( clean ){
 
   // set size
   if( clean.size ){
-    vs.var( 'size', clean.size );
+    vs.var( 'size', calcSize(clean.size));
   }
 
   // focus point to score by distance

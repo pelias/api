@@ -1,7 +1,8 @@
 
 var peliasQuery = require('pelias-query'),
     defaults = require('./autocomplete_defaults'),
-    check = require('check-types');
+    check = require('check-types'),
+    calcSize = require('../helper/sizeCalculator');
 
 //------------------------------
 // autocomplete query
@@ -31,7 +32,7 @@ function generateQuery( clean ){
   vs.var( 'input:name', clean.text );
 
   // always 10 (not user definable due to caching)
-  vs.var( 'size', 10 );
+  vs.var( 'size', calcSize(10));
 
   // focus point
   if( check.number(clean['focus.point.lat']) &&
