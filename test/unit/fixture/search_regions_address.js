@@ -86,7 +86,7 @@ module.exports = {
           },{
             'match': {
               'address.number': {
-                'query': 1,
+                'query': '1',
                 'boost': vs['address:housenumber:boost'],
                 'analyzer': vs['address:housenumber:analyzer']
               }
