@@ -2,8 +2,7 @@ var peliasQuery = require('pelias-query'),
     defaults = require('./search_defaults'),
     textParser = require('./text_parser'),
     check = require('check-types'),
-    geolib = require('geolib'),
-    calcSize = require('../helper/sizeCalculator');
+    geolib = require('geolib');
 
 //------------------------------
 // general-purpose search query
@@ -53,8 +52,9 @@ function generateQuery( clean ){
   vs.var( 'input:name', clean.text );
 
   // size
-  // specify twice as much data as we need so we can filter out dupes
-  vs.var( 'size', calcSize(clean.size || defaults.size));
+  if( clean.querySize ) {
+    vs.var( 'size', clean.querySize );
+  }
 
   // focus point
   if( check.number(clean['focus.point.lat']) &&

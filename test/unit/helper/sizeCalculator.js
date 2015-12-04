@@ -1,5 +1,5 @@
 
-var calcSize = require('../../../helper/sizeCalculator.js');
+var calcSize = require('../../../middleware/sizeCalculator.js')();
 
 module.exports.tests = {};
 
@@ -11,19 +11,47 @@ module.exports.tests.interface = function(test, common) {
 };
 
 module.exports.tests.valid = function(test, common) {
+  var req = { clean: {} };
+  function setup(val) {
+    if (isNaN(val)) {
+      delete req.clean.size;
+    }
+    else {
+      req.clean.size = val;
+    }
+    delete req.clean.querySize;
+  }
+
   test('size=0', function (t) {
-    t.equal(calcSize(0), 1);
-    t.end();
+    setup(0);
+    calcSize(req, {}, function () {
+      t.equal(req.clean.querySize, 1);
+      t.end();
+    });
   });
 
   test('size=1', function (t) {
-    t.equal(calcSize(1), 1);
-    t.end();
+    setup(1);
+    calcSize(req, {}, function () {
+      t.equal(req.clean.querySize, 1);
+      t.end();
+    });
   });
 
   test('size=10', function (t) {
-    t.equal(calcSize(10), 20);
-    t.end();
+    setup(10);
+    calcSize(req, {}, function () {
+      t.equal(req.clean.querySize, 20);
+      t.end();
+    });
+  });
+
+  test('no size', function (t) {
+    setup();
+    calcSize(req, {}, function () {
+      t.equal(req.clean.hasOwnProperty('querySize'), false);
+      t.end();
+    });
   });
 };
 

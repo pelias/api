@@ -35,6 +35,7 @@ function dedupeResults(req, res, next) {
  * @param {object} item1
  * @param {object} item2
  * @returns {boolean}
+ * @throws {Error}
  */
 function isDifferent(item1, item2) {
   try {
@@ -54,11 +55,14 @@ function isDifferent(item1, item2) {
       propMatch(item1.address, item2.address, 'zip');
     }
     else if (item1.address !== item2.address) {
-      throw 'different';
+      throw new Error('different');
     }
   }
   catch (err) {
-    return true;
+    if (err.message === 'different') {
+      return true;
+    }
+    throw err;
   }
 
   return false;
@@ -70,11 +74,11 @@ function isDifferent(item1, item2) {
  * @param {object} item1
  * @param {object} item2
  * @param {string} prop
- * @throws {string}
+ * @throws {Error}
  */
 function propMatch(item1, item2, prop) {
   if (normalizeString(item1[prop]) !== normalizeString(item2[prop])) {
-    throw 'different';
+    throw new Error('different');
   }
 }
 

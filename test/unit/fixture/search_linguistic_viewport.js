@@ -128,7 +128,7 @@ module.exports = {
       }
     }
   },
-  'size': 20,
+  'size': 10,
   'track_scores': true,
   'sort': [
     '_score'

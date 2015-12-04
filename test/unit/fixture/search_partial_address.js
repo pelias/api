@@ -1,6 +1,5 @@
 
-var peliasQuery = require('pelias-query'),
-    vs = new peliasQuery.Vars( peliasQuery.defaults );
+var vs = require('../../../query/search_defaults');
 
 module.exports = {
   'query': {
@@ -88,56 +87,56 @@ module.exports = {
             'match': {
               'admin0': {
                 'query': 'new york',
-                'boost': vs.var('admin:admin0:boost').get(),
-                'analyzer': vs.var('admin:admin0:analyzer').get()
+                'boost': vs['admin:admin0:boost'],
+                'analyzer': vs['admin:admin0:analyzer']
               }
             }
           }, {
             'match': {
               'admin1': {
                 'query': 'new york',
-                'boost': vs.var('admin:admin1:boost').get(),
-                'analyzer': vs.var('admin:admin1:analyzer').get()
+                'boost': vs['admin:admin1:boost'],
+                'analyzer': vs['admin:admin1:analyzer']
               }
             }
           }, {
             'match': {
               'admin1_abbr': {
                 'query': 'new york',
-                'boost': vs.var('admin:admin1_abbr:boost').get(),
-                'analyzer': vs.var('admin:admin1_abbr:analyzer').get()
+                'boost': vs['admin:admin1_abbr:boost'],
+                'analyzer': vs['admin:admin1_abbr:analyzer']
               }
             }
           }, {
             'match': {
               'admin2': {
                 'query': 'new york',
-                'boost': vs.var('admin:admin2:boost').get(),
-                'analyzer': vs.var('admin:admin2:analyzer').get()
+                'boost': vs['admin:admin2:boost'],
+                'analyzer': vs['admin:admin2:analyzer']
               }
             }
           }, {
             'match': {
               'local_admin': {
                 'query': 'new york',
-                'boost': vs.var('admin:local_admin:boost').get(),
-                'analyzer': vs.var('admin:local_admin:analyzer').get()
+                'boost': vs['admin:local_admin:boost'],
+                'analyzer': vs['admin:local_admin:analyzer']
               }
             }
           }, {
             'match': {
               'locality': {
                 'query': 'new york',
-                'boost': vs.var('admin:locality:boost').get(),
-                'analyzer': vs.var('admin:locality:analyzer').get()
+                'boost': vs['admin:locality:boost'],
+                'analyzer': vs['admin:locality:analyzer']
               }
             }
           }, {
             'match': {
               'neighborhood': {
                 'query': 'new york',
-                'boost': vs.var('admin:neighborhood:boost').get(),
-                'analyzer': vs.var('admin:neighborhood:analyzer').get()
+                'boost': vs['admin:neighborhood:boost'],
+                'analyzer': vs['admin:neighborhood:analyzer']
               }
             }
           }]
@@ -145,7 +144,7 @@ module.exports = {
       }
     }
   },
-  'size': 20,
+  'size': 10,
   'sort': [ '_score' ],
   'track_scores': true
 };

@@ -12,7 +12,8 @@ var sanitisers = {
 
 /** ----------------------- middleware ------------------------ **/
 var middleware = {
-  types: require('../middleware/_types')
+  types: require('../middleware/_types'),
+  calcSize: require('../middleware/sizeCalculator')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -59,6 +60,7 @@ function addRoutes(app, peliasConfig) {
     search: createRouter([
       sanitisers.search.middleware,
       middleware.types,
+      middleware.calcSize(),
       controllers.search(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
@@ -83,6 +85,7 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitisers.reverse.middleware,
       middleware.types,
+      middleware.calcSize(),
       controllers.search(undefined, reverseQuery),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin

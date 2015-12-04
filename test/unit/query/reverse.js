@@ -79,15 +79,15 @@ module.exports.tests.query = function(test, common) {
 
   test('size fuzz test', function(t) {
     // test different sizes
-    var sizes = [1,2,10,undefined,null];
-    var expectedSizes = [1,4,20,1,1];
+    var sizes = [1,4,20,undefined,null];
+    var expected = [1,4,20,1,1];
     sizes.forEach( function( size, index ){
       var query = generate({
-        'point.lat': 29.49136, 'point.lon': -82.50622, size: size
+        'point.lat': 29.49136, 'point.lon': -82.50622, querySize: size
       });
 
       var compiled = JSON.parse( JSON.stringify( query ) );
-      t.equal( compiled.size, expectedSizes[index], 'valid reverse query for size: '+ size);
+      t.equal( compiled.size, expected[index], 'valid reverse query for size: '+ size);
     });
     t.end();
   });
