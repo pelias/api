@@ -30,9 +30,6 @@ function generateQuery( clean ){
   // input text
   vs.var( 'input:name', clean.text );
 
-  // always 10 (not user definable due to caching)
-  vs.var( 'size', 10 );
-
   // focus point
   if( check.number(clean['focus.point.lat']) &&
       check.number(clean['focus.point.lon']) ){

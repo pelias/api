@@ -100,8 +100,8 @@ function checkForDealBreakers(req, hit) {
     return true;
   }
 
-  if (check.assigned(req.clean.parsed_text.postalcode) && req.clean.parsed_text.postalcode !== hit.zip) {
-    logger.debug('[confidence][deal-breaker]: postalcode !== zip');
+  if (check.assigned(req.clean.parsed_text.postalcode) && req.clean.parsed_text.postalcode !== hit.address.zip) {
+    logger.debug('[confidence][deal-breaker]: postalcode !== zip (' + req.clean.parsed_text.postalcode + ' !== ' + hit.address.zip + ')');
     return true;
   }
 }
@@ -208,7 +208,7 @@ function propMatch(textProp, hitProp, expectEnriched) {
  * @param {object} [hit.address]
  * @param {string|number} [hit.address.number]
  * @param {string} [hit.address.street]
- * @param {string|number} [hit.zip]
+ * @param {string|number} [hit.address.zip]
  * @param {string} [hit.admin1_abbr]
  * @param {string} [hit.alpha3]
  * @returns {number}

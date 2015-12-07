@@ -52,8 +52,8 @@ function generateQuery( clean ){
   vs.var( 'input:name', clean.text );
 
   // size
-  if( clean.size ){
-    vs.var( 'size', clean.size );
+  if( clean.querySize ) {
+    vs.var( 'size', clean.querySize );
   }
 
   // focus point
