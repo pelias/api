@@ -1,6 +1,4 @@
-
-var peliasQuery = require('pelias-query'),
-    vs = new peliasQuery.Vars( peliasQuery.defaults );
+var vs = require('../../../query/search_defaults');
 
 module.exports = {
   'query': {
@@ -89,88 +87,88 @@ module.exports = {
             'match': {
               'address.number': {
                 'query': '123',
-                'boost': vs.var('address:housenumber:boost').get(),
-                'analyzer': vs.var('address:housenumber:analyzer').get()
+                'boost': vs['address:housenumber:boost'],
+                'analyzer': vs['address:housenumber:analyzer']
               }
             }
           }, {
             'match': {
               'address.street': {
                 'query': 'main st',
-                'boost': vs.var('address:street:boost').get(),
-                'analyzer': vs.var('address:street:analyzer').get()
+                'boost': vs['address:street:boost'],
+                'analyzer': vs['address:street:analyzer']
               }
             }
           }, {
             'match': {
               'address.zip': {
                 'query': '10010',
-                'boost': vs.var('address:postcode:boost').get(),
-                'analyzer': vs.var('address:postcode:analyzer').get()
+                'boost': vs['address:postcode:boost'],
+                'analyzer': vs['address:postcode:analyzer']
               }
             }
           }, {
             'match': {
               'alpha3': {
                 'query': 'USA',
-                'boost': vs.var('admin:alpha3:boost').get(),
-                'analyzer': vs.var('admin:alpha3:analyzer').get()
+                'boost': vs['admin:alpha3:boost'],
+                'analyzer': vs['admin:alpha3:analyzer']
               }
             }
           }, {
             'match': {
               'admin0': {
                 'query': 'new york',
-                'boost': vs.var('admin:admin0:boost').get(),
-                'analyzer': vs.var('admin:admin0:analyzer').get()
+                'boost': vs['admin:admin0:boost'],
+                'analyzer': vs['admin:admin0:analyzer']
               }
             }
           }, {
             'match': {
               'admin1': {
                 'query': 'new york',
-                'boost': vs.var('admin:admin1:boost').get(),
-                'analyzer': vs.var('admin:admin1:analyzer').get()
+                'boost': vs['admin:admin1:boost'],
+                'analyzer': vs['admin:admin1:analyzer']
               }
             }
           }, {
             'match': {
               'admin1_abbr': {
                 'query': 'NY',
-                'boost': vs.var('admin:admin1_abbr:boost').get(),
-                'analyzer': vs.var('admin:admin1_abbr:analyzer').get()
+                'boost': vs['admin:admin1_abbr:boost'],
+                'analyzer': vs['admin:admin1_abbr:analyzer']
               }
             }
           }, {
             'match': {
               'admin2': {
                 'query': 'new york',
-                'boost': vs.var('admin:admin2:boost').get(),
-                'analyzer': vs.var('admin:admin2:analyzer').get()
+                'boost': vs['admin:admin2:boost'],
+                'analyzer': vs['admin:admin2:analyzer']
               }
             }
           }, {
             'match': {
               'local_admin': {
                 'query': 'new york',
-                'boost': vs.var('admin:local_admin:boost').get(),
-                'analyzer': vs.var('admin:local_admin:analyzer').get()
+                'boost': vs['admin:local_admin:boost'],
+                'analyzer': vs['admin:local_admin:analyzer']
               }
             }
           }, {
             'match': {
               'locality': {
                 'query': 'new york',
-                'boost': vs.var('admin:locality:boost').get(),
-                'analyzer': vs.var('admin:locality:analyzer').get()
+                'boost': vs['admin:locality:boost'],
+                'analyzer': vs['admin:locality:analyzer']
               }
             }
           }, {
             'match': {
               'neighborhood': {
                 'query': 'new york',
-                'boost': vs.var('admin:neighborhood:boost').get(),
-                'analyzer': vs.var('admin:neighborhood:analyzer').get()
+                'boost': vs['admin:neighborhood:boost'],
+                'analyzer': vs['admin:neighborhood:analyzer']
               }
             }
           }]
