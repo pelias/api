@@ -19,15 +19,18 @@ var focus = peliasQuery.view.focus( peliasQuery.view.phrase );
 var _tmpview = function( vs ){
 
   var view = focus( vs );
-  view.function_score.filter = {
-    'or': [
-      { 'type': { 'value': 'osmnode' } },
-      { 'type': { 'value': 'osmway' } },
-      { 'type': { 'value': 'osmaddress' } },
-      { 'type': { 'value': 'openaddresses' } },
-      { 'type': { 'value': 'geoname' } },
-    ]
-  };
+
+  if( view && view.hasOwnProperty('function_score') ){
+    view.function_score.filter = {
+      'or': [
+        { 'type': { 'value': 'osmnode' } },
+        { 'type': { 'value': 'osmway' } },
+        { 'type': { 'value': 'osmaddress' } },
+        { 'type': { 'value': 'openaddresses' } },
+        { 'type': { 'value': 'geoname' } },
+      ]
+    };
+  }
 
   // console.log( JSON.stringify( view, null, 2 ) );
   return view;
