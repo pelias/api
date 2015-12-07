@@ -1,10 +1,10 @@
 
-var peliasQuery = require('pelias-query'),
-    extend = require('extend');
+var peliasQuery = require('pelias-query');
+var _ = require('lodash');
 
-module.exports = extend( false, peliasQuery.defaults, {
+module.exports = _.merge({}, peliasQuery.defaults, {
 
-  'size': 10,
+  'size': 1,
   'track_scores': true,
 
   'centroid:field': 'center_point',
@@ -12,7 +12,7 @@ module.exports = extend( false, peliasQuery.defaults, {
   'sort:distance:order': 'asc',
   'sort:distance:distance_type': 'plane',
 
-  'boundary:circle:radius': '50km',
+  'boundary:circle:radius': '500km',
   'boundary:circle:distance_type': 'plane',
   'boundary:circle:optimize_bbox': 'indexed',
   'boundary:circle:_cache': true,

@@ -1,4 +1,5 @@
 var service = { search: require('../service/search') };
+var logger = require('pelias-logger').get('api:controller:search');
 
 function setup( backend, query ){
 
@@ -13,6 +14,9 @@ function setup( backend, query ){
     if( req.errors && req.errors.length ){
       return next();
     }
+
+    // log clean parameters for stats
+    logger.info('[req]', 'endpoint=' + req.path, req.clean);
 
     // backend command
     var cmd = {
