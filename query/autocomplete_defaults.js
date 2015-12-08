@@ -36,7 +36,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'focus:weight': 10,
 
   'function_score:score_mode': 'avg',
-  'function_score:boost_mode': 'replace',
+  'function_score:boost_mode': 'multiply',
 
   'address:housenumber:analyzer': 'peliasHousenumber',
   'address:housenumber:field': 'address.number',
