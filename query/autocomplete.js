@@ -39,7 +39,11 @@ function generateQuery( clean ){
     });
   }
 
-  return query.render( vs );
+  var q = query.render( vs );
+
+  console.log( JSON.stringify( q, null, 2 ) );
+
+  return q;
 }
 
 module.exports = generateQuery;
