@@ -13,7 +13,32 @@ query.score( peliasQuery.view.ngrams, 'must' );
 
 // scoring boost
 query.score( peliasQuery.view.phrase );
-query.score( peliasQuery.view.focus( peliasQuery.view.ngrams ) );
+
+var focus = peliasQuery.view.focus( peliasQuery.view.phrase );
+
+var _tmpview = function( vs ){
+
+  var view = focus( vs );
+
+  if( view && view.hasOwnProperty('function_score') ){
+    view.function_score.filter = {
+      'or': [
+        { 'type': { 'value': 'osmnode' } },
+        { 'type': { 'value': 'osmway' } },
+        { 'type': { 'value': 'osmaddress' } },
+        { 'type': { 'value': 'openaddresses' } },
+        { 'type': { 'value': 'geoname' } },
+      ]
+    };
+  }
+
+  // console.log( JSON.stringify( view, null, 2 ) );
+  return view;
+};
+
+// console.log( focus );
+
+query.score( _tmpview );
 query.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
 query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
 
