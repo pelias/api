@@ -5,17 +5,12 @@ module.exports.tests = {};
 module.exports.tests.confidenceScore = function(test, common) {
 
   test('empty res and req should not throw exception', function(t) {
-    try {
+    function testIt() {
       confidenceScore({}, {}, function() {});
-      t.pass('no exception');
-    }
-    catch (e) {
-      t.fail('an exception should not have been thrown');
-    }
-    finally {
-      t.end();
     }
 
+    t.doesNotThrow(testIt, 'an exception should not have been thrown');
+    t.end();
   });
 
   test('res.results without parsed_text should not throw exception', function(t) {
@@ -27,18 +22,12 @@ module.exports.tests.confidenceScore = function(test, common) {
       meta: [10]
     };
 
-    try {
+    function testIt() {
       confidenceScore(req, res, function() {});
-      t.pass('no exception');
-    }
-    catch (e) {
-      t.fail('an exception should not have been thrown');
-      console.log(e.stack);
-    }
-    finally {
-      t.end();
     }
 
+    t.doesNotThrow(testIt, 'an exception should not have been thrown');
+    t.end();
   });
 
   test('hit without address should not error', function(t) {
@@ -61,17 +50,12 @@ module.exports.tests.confidenceScore = function(test, common) {
       }
     };
 
-    try {
+    function testIt() {
       confidenceScore(req, res, function() {});
-      t.pass('no exception');
     }
-    catch (e) {
-      t.fail('an exception should not have been thrown with no address');
-      console.log(e.stack);
-    }
-    finally {
-      t.end();
-    }
+
+    t.doesNotThrow(testIt, 'an exception should not have been thrown with no address');
+    t.end();
   });
 
 
