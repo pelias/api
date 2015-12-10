@@ -4,16 +4,13 @@ module.exports.tests = {};
 
 module.exports.tests.no_cleaned_types = function(test, common) {
   test('no cleaned types', function(t) {
-    try {
+    function testIt() {
       types({});
-      t.fail('exception should be thrown');
     }
-    catch (err) {
-      t.equal(err.message, 'clean_types should not be null or undefined', 'no input should result in exception');
-    }
-    finally {
-      t.end();
-    }
+
+    t.throws(testIt, /clean_types should not be null or undefined/, 'no input should result in exception');
+
+    t.end();
   });
 };
 
