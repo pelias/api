@@ -41,6 +41,39 @@ module.exports.tests.confidenceScore = function(test, common) {
 
   });
 
+  test('hit without address should not error', function(t) {
+    var req = {
+      clean: {
+        text: 'test name3',
+        parsed_text: {
+          postalcode: 12345
+        }
+      }
+    };
+    var res = {
+      data: [{
+        name: {
+          default: 'foo'
+        }
+      }],
+      meta: {
+        scores: [10]
+      }
+    };
+
+    try {
+      confidenceScore(req, res, function() {});
+      t.pass('no exception');
+    }
+    catch (e) {
+      t.fail('an exception should not have been thrown with no address');
+      console.log(e.stack);
+    }
+    finally {
+      t.end();
+    }
+  });
+
 
   test('res.results without parsed_text should not throw exception', function(t) {
     var req = {
