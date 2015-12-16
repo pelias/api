@@ -4,6 +4,20 @@ var peliasQuery = require('pelias-query'),
     textParser = require('./text_parser'),
     check = require('check-types');
 
+var ngrams = function( vs ){
+  var view = peliasQuery.view.ngrams( vs );
+  view.match['name.default'].type = 'phrase';
+  view.match['name.default'].operator = 'and';
+  // console.log( JSON.stringify( view, null, 2 ) );
+  return view;
+};
+
+var phrase = function( vs ){
+  var view = peliasQuery.view.phrase( vs );
+  view.match['phrase.default'].type = 'phrase';
+  // console.log( JSON.stringify( view, null, 2 ) );
+  return view;
+};
 
 //------------------------------
 // autocomplete query
@@ -11,7 +25,12 @@ var peliasQuery = require('pelias-query'),
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
-query.score( peliasQuery.view.ngrams, 'must' );
+query.score( ngrams, 'must' );
+
+// address components
+query.score( peliasQuery.view.address('housenumber') );
+query.score( peliasQuery.view.address('street') );
+query.score( peliasQuery.view.address('postcode') );
 
 // admin components
 query.score( peliasQuery.view.admin('alpha3') );
@@ -24,11 +43,10 @@ query.score( peliasQuery.view.admin('locality') );
 query.score( peliasQuery.view.admin('neighborhood') );
 
 // scoring boost
-query.score( peliasQuery.view.phrase );
+query.score( phrase );
 
-var focus = peliasQuery.view.focus( peliasQuery.view.phrase );
-
-var _tmpview = function( vs ){
+var focus = peliasQuery.view.focus( ngrams );
+var localView = function( vs ){
 
   var view = focus( vs );
 
@@ -38,8 +56,7 @@ var _tmpview = function( vs ){
         { 'type': { 'value': 'osmnode' } },
         { 'type': { 'value': 'osmway' } },
         { 'type': { 'value': 'osmaddress' } },
-        { 'type': { 'value': 'openaddresses' } },
-        { 'type': { 'value': 'geoname' } },
+        { 'type': { 'value': 'openaddresses' } }
       ]
     };
   }
@@ -50,9 +67,21 @@ var _tmpview = function( vs ){
 
 // console.log( focus );
 
-query.score( _tmpview );
-query.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
-query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
+query.score( localView );
+
+var simpleNgramsView = function( vs ){
+
+  var view = ngrams( vs );
+
+  delete view.match['name.default'].type;
+  delete view.match['name.default'].boost;
+
+  // console.log( JSON.stringify( view, null, 2 ) );
+  return view;
+};
+
+query.score( peliasQuery.view.popularity( simpleNgramsView ) );
+query.score( peliasQuery.view.population( simpleNgramsView ) );
 
 // --------------------------------
 
@@ -63,6 +92,9 @@ query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
 function generateQuery( clean ){
 
   var vs = new peliasQuery.Vars( defaults );
+
+  // remove single grams at end
+  clean.text = clean.text.replace(/( .$)/g,'');
 
   // input text
   vs.var( 'input:name', clean.text );
