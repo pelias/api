@@ -1,3 +1,4 @@
+var vs = require('../../../query/reverse_defaults');
 
 module.exports = {
   'query': {
@@ -10,7 +11,7 @@ module.exports = {
           'must': [
             {
               'geo_distance': {
-                'distance': '500km',
+                'distance': vs.distance,
                 'distance_type': 'plane',
                 'optimize_bbox': 'indexed',
                 '_cache': true,
@@ -38,6 +39,6 @@ module.exports = {
       }
     }
   ],
-  'size': 1,
+  'size': vs.size,
   'track_scores': true
 };

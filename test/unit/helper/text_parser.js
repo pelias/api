@@ -85,7 +85,7 @@ module.exports.tests.parse_address = function(test, common) {
     var address = parser.get_parsed_address(query_string);
 
     t.equal(typeof address, 'object', 'valid object for the address');
-    t.equal(address.number, 123, 'parsed house number');
+    t.equal(address.number, '123', 'parsed house number');
     t.equal(address.street, 'main st', 'parsed street');
     t.deepEqual(address.regions, ['new york'], 'parsed city');
     t.equal(address.state , 'NY', 'parsed state');
@@ -96,11 +96,23 @@ module.exports.tests.parse_address = function(test, common) {
     var address = parser.get_parsed_address(query_string);
 
     t.equal(typeof address, 'object', 'valid object for the address');
-    t.equal(address.number, 123, 'parsed house number');
+    t.equal(address.number, '123', 'parsed house number');
     t.equal(address.street, 'main st', 'parsed street');
     t.deepEqual(address.regions, ['new york'], 'parsed city');
     t.equal(address.state , 'NY', 'parsed state');
-    t.equal(address.postalcode, 10010, 'parsed zip');
+    t.equal(address.postalcode, '10010', 'parsed zip is a string');
+    t.end();
+  });
+  test('valid address with leading 0s in zipcode', function(t) {
+    var query_string = '339 W Main St, Cheshire, 06410';
+    var address = parser.get_parsed_address(query_string);
+
+    console.log(address);
+
+    t.equal(typeof address, 'object', 'valid object for the address');
+    t.equal(address.street, 'W Main St', 'parsed street');
+    t.deepEqual(address.regions, ['Cheshire'], 'parsed city');
+    t.equal(address.postalcode, '06410', 'parsed zip');
     t.end();
   });
 };
