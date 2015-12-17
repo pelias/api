@@ -48,6 +48,39 @@ var phrase_first_only = function( vs ){
   return phrase( vs2 );
 };
 
+var simpleNgramsView = function( vs ){
+
+  var view = ngrams( vs );
+
+  view.match['name.default'].analyzer = 'peliasPhrase';
+  delete view.match['name.default'].type;
+  delete view.match['name.default'].boost;
+
+  // console.log( JSON.stringify( view, null, 2 ) );
+  return view;
+};
+
+var focus = peliasQuery.view.focus( ngrams );
+var localView = function( vs ){
+
+  var view = focus( vs );
+
+  if( view && view.hasOwnProperty('function_score') ){
+    view.function_score.query.match['name.default'].analyzer = 'peliasPhrase';
+    view.function_score.filter = {
+      'or': [
+        { 'type': { 'value': 'osmnode' } },
+        { 'type': { 'value': 'osmway' } },
+        { 'type': { 'value': 'osmaddress' } },
+        { 'type': { 'value': 'openaddresses' } }
+      ]
+    };
+  }
+
+  // console.log( JSON.stringify( view, null, 2 ) );
+  return view;
+};
+
 //------------------------------
 // autocomplete query
 //------------------------------
@@ -75,40 +108,8 @@ query.score( peliasQuery.view.admin('neighborhood') );
 // scoring boost
 // query.score( phrase );
 
-var focus = peliasQuery.view.focus( ngrams );
-var localView = function( vs ){
-
-  var view = focus( vs );
-
-  if( view && view.hasOwnProperty('function_score') ){
-    view.function_score.filter = {
-      'or': [
-        { 'type': { 'value': 'osmnode' } },
-        { 'type': { 'value': 'osmway' } },
-        { 'type': { 'value': 'osmaddress' } },
-        { 'type': { 'value': 'openaddresses' } }
-      ]
-    };
-  }
-
-  // console.log( JSON.stringify( view, null, 2 ) );
-  return view;
-};
-
 // console.log( focus );
-
 query.score( localView );
-
-var simpleNgramsView = function( vs ){
-
-  var view = ngrams( vs );
-
-  delete view.match['name.default'].type;
-  delete view.match['name.default'].boost;
-
-  // console.log( JSON.stringify( view, null, 2 ) );
-  return view;
-};
 
 query.score( peliasQuery.view.popularity( simpleNgramsView ) );
 query.score( peliasQuery.view.population( simpleNgramsView ) );

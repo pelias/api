@@ -30,7 +30,7 @@ module.exports = extend( false, peliasQuery.defaults, {
   'phrase:slop': 2,
 
   'focus:function': 'linear',
-  'focus:offset': '100km',
+  'focus:offset': '10km',
   'focus:scale': '250km',
   'focus:decay': 0.5,
   'focus:weight': 4,
