@@ -90,7 +90,7 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
-  // viewport scale sizing currently diabled.
+  // viewport scale sizing currently disabled.
   // ref: https://github.com/pelias/api/pull/388
   // test('search with viewport diagonal < 1km should set scale to 1km', function(t) {
   //   var query = generate({
