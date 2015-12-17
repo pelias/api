@@ -12,11 +12,40 @@ var ngrams = function( vs ){
   return view;
 };
 
+var ngrams_last_only = function( vs ){
+
+  var name = vs.var('input:name').get();
+
+  var vs2 = new peliasQuery.Vars( vs.export() );
+  vs2.var('input:name').set( name.substr( name.lastIndexOf(' ')+1 ) );
+
+  var view = ngrams( vs2 );
+  view.match['name.default'].analyzer = 'peliasOneEdgeGram';
+
+  return view;
+};
+
 var phrase = function( vs ){
   var view = peliasQuery.view.phrase( vs );
   view.match['phrase.default'].type = 'phrase';
   // console.log( JSON.stringify( view, null, 2 ) );
   return view;
+};
+
+var phrase_first_only = function( vs ){
+
+  var name = vs.var('input:name').get();
+  var s = name.split(' ');
+
+  // single token only, abort
+  if( s.length < 2 ){
+    return function(){ return null; };
+  }
+
+  var vs2 = new peliasQuery.Vars( vs.export() );
+  vs2.var('input:name').set( name.substr(0, name.lastIndexOf(' ') ) );
+
+  return phrase( vs2 );
 };
 
 //------------------------------
@@ -25,7 +54,8 @@ var phrase = function( vs ){
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
-query.score( ngrams, 'must' );
+query.score( phrase_first_only, 'must' );
+query.score( ngrams_last_only, 'must' );
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );
@@ -43,7 +73,7 @@ query.score( peliasQuery.view.admin('locality') );
 query.score( peliasQuery.view.admin('neighborhood') );
 
 // scoring boost
-query.score( phrase );
+// query.score( phrase );
 
 var focus = peliasQuery.view.focus( ngrams );
 var localView = function( vs ){
