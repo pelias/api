@@ -92,7 +92,7 @@ function normalizeString(str) {
   if (!str) {
     return '';
   }
-  return _.words(str.toLowerCase()).join(' ');
+  return str.toLowerCase().split(/[ ,-]+/).join(' ');
 }
 
 
