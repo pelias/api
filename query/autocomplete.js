@@ -124,7 +124,7 @@ function generateQuery( clean ){
   var vs = new peliasQuery.Vars( defaults );
 
   // remove single grams at end
-  clean.text = clean.text.replace(/( .$)/g,'');
+  clean.text = clean.text.replace(/( .$)/g,'').trim();
 
   // input text
   vs.var( 'input:name', clean.text );
