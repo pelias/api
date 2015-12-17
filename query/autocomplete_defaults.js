@@ -48,39 +48,39 @@ module.exports = extend( false, peliasQuery.defaults, {
 
   'address:postcode:analyzer': 'peliasZip',
   'address:postcode:field': 'address.zip',
-  'address:postcode:boost': 20,
+  'address:postcode:boost': 2000,
 
   'admin:alpha3:analyzer': 'standard',
   'admin:alpha3:field': 'alpha3',
-  'admin:alpha3:boost': 50,
+  'admin:alpha3:boost': 1000,
 
   'admin:admin0:analyzer': 'peliasAdmin',
   'admin:admin0:field': 'admin0',
-  'admin:admin0:boost': 40,
+  'admin:admin0:boost': 800,
 
   'admin:admin1:analyzer': 'peliasAdmin',
   'admin:admin1:field': 'admin1',
-  'admin:admin1:boost': 30,
+  'admin:admin1:boost': 600,
 
   'admin:admin1_abbr:analyzer': 'peliasAdmin',
   'admin:admin1_abbr:field': 'admin1_abbr',
-  'admin:admin1_abbr:boost': 30,
+  'admin:admin1_abbr:boost': 600,
 
   'admin:admin2:analyzer': 'peliasAdmin',
   'admin:admin2:field': 'admin2',
-  'admin:admin2:boost': 20,
+  'admin:admin2:boost': 400,
 
   'admin:local_admin:analyzer': 'peliasAdmin',
   'admin:local_admin:field': 'local_admin',
-  'admin:local_admin:boost': 10,
+  'admin:local_admin:boost': 200,
 
   'admin:locality:analyzer': 'peliasAdmin',
   'admin:locality:field': 'locality',
-  'admin:locality:boost': 10,
+  'admin:locality:boost': 200,
 
   'admin:neighborhood:analyzer': 'peliasAdmin',
   'admin:neighborhood:field': 'neighborhood',
-  'admin:neighborhood:boost': 10,
+  'admin:neighborhood:boost': 200,
 
   'popularity:field': 'popularity',
   'popularity:modifier': 'log1p',
