@@ -52,8 +52,8 @@ function generateQuery( clean ){
   vs.var( 'input:name', clean.text );
 
   // size
-  if( clean.size ){
-    vs.var( 'size', clean.size );
+  if( clean.querySize ) {
+    vs.var( 'size', clean.querySize );
   }
 
   // focus point
@@ -73,8 +73,8 @@ function generateQuery( clean ){
     // calculate the centroid from the viewport box
     vs.set({
       'focus:point:lat': clean['focus.viewport.min_lat'] + ( clean['focus.viewport.max_lat'] - clean['focus.viewport.min_lat'] ) / 2,
-      'focus:point:lon': clean['focus.viewport.min_lon'] + ( clean['focus.viewport.max_lon'] - clean['focus.viewport.min_lon'] ) / 2,
-      'focus:scale': calculateDiagonalDistance(clean) + 'km'
+      'focus:point:lon': clean['focus.viewport.min_lon'] + ( clean['focus.viewport.max_lon'] - clean['focus.viewport.min_lon'] ) / 2
+      //, 'focus:scale': calculateDiagonalDistance(clean) + 'km'
     });
   }
 

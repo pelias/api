@@ -1,3 +1,4 @@
+var vs = require('../../../query/reverse_defaults');
 
 module.exports = {
   'query': {
@@ -49,6 +50,6 @@ module.exports = {
       }
     }
   ],
-  'size': 1,
+  'size': vs.size,
   'track_scores': true
 };

@@ -13,7 +13,7 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.query = function(test, common) {
   test('valid search + focus + bbox', function(t) {
     var query = generate({
-      text: 'test', size: 10,
+      text: 'test', querySize: 10,
       'focus.point.lat': 29.49136, 'focus.point.lon': -82.50622,
       'boundary.rect.min_lat': 47.47,
       'boundary.rect.max_lon': -61.84,
@@ -31,7 +31,7 @@ module.exports.tests.query = function(test, common) {
 
   test('valid search + bbox', function(t) {
     var query = generate({
-      text: 'test', size: 10,
+      text: 'test', querySize: 10,
       'boundary.rect.min_lat': 47.47,
       'boundary.rect.max_lon': -61.84,
       'boundary.rect.max_lat': 11.51,
@@ -48,7 +48,7 @@ module.exports.tests.query = function(test, common) {
 
   test('valid lingustic-only search', function(t) {
     var query = generate({
-      text: 'test', size: 10,
+      text: 'test', querySize: 10,
       layers: ['test']
     });
 
@@ -61,7 +61,7 @@ module.exports.tests.query = function(test, common) {
 
   test('search search + focus', function(t) {
     var query = generate({
-      text: 'test', size: 10,
+      text: 'test', querySize: 10,
       'focus.point.lat': 29.49136, 'focus.point.lon': -82.50622,
       layers: ['test']
     });
@@ -75,7 +75,7 @@ module.exports.tests.query = function(test, common) {
 
   test('search search + viewport', function(t) {
     var query = generate({
-      text: 'test', size: 10,
+      text: 'test', querySize: 10,
       'focus.viewport.min_lat': 28.49136,
       'focus.viewport.max_lat': 30.49136,
       'focus.viewport.min_lon': -87.50622,
@@ -90,26 +90,28 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
-  test('search with viewport diagonal < 1km should set scale to 1km', function(t) {
-    var query = generate({
-      text: 'test', size: 10,
-      'focus.viewport.min_lat': 28.49135,
-      'focus.viewport.max_lat': 28.49137,
-      'focus.viewport.min_lon': -87.50622,
-      'focus.viewport.max_lon': -87.50624,
-      layers: ['test']
-    });
-
-    var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_viewport_min_diagonal');
-
-    t.deepEqual(compiled, expected, 'valid search query');
-    t.end();
-  });
+  // viewport scale sizing currently disabled.
+  // ref: https://github.com/pelias/api/pull/388
+  // test('search with viewport diagonal < 1km should set scale to 1km', function(t) {
+  //   var query = generate({
+  //     text: 'test', querySize: 10,
+  //     'focus.viewport.min_lat': 28.49135,
+  //     'focus.viewport.max_lat': 28.49137,
+  //     'focus.viewport.min_lon': -87.50622,
+  //     'focus.viewport.max_lon': -87.50624,
+  //     layers: ['test']
+  //   });
+  //
+  //   var compiled = JSON.parse( JSON.stringify( query ) );
+  //   var expected = require('../fixture/search_linguistic_viewport_min_diagonal');
+  //
+  //   t.deepEqual(compiled, expected, 'valid search query');
+  //   t.end();
+  // });
 
   test('search search + focus on null island', function(t) {
     var query = generate({
-      text: 'test', size: 10,
+      text: 'test', querySize: 10,
       'focus.point.lat': 0, 'focus.point.lon': 0,
       layers: ['test']
     });
@@ -126,7 +128,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate({ text: address,
       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
-      size: 10,
+      querySize: 10,
       parsed_text: parser.get_parsed_address(address),
     });
 
@@ -142,7 +144,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate({ text: partial_address,
       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
                 'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
-      size: 10,
+      querySize: 10,
       parsed_text: parser.get_parsed_address(partial_address),
     });
 
@@ -158,7 +160,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate({ text: partial_address,
       layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
         'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
-      size: 10,
+      querySize: 10,
       parsed_text: parser.get_parsed_address(partial_address),
     });
 
@@ -171,7 +173,7 @@ module.exports.tests.query = function(test, common) {
 
   test('valid boundary.country search', function(t) {
     var query = generate({
-      text: 'test', size: 10,
+      text: 'test', querySize: 10,
       layers: ['test'],
       'boundary.country': 'ABC'
     });

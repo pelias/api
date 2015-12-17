@@ -22,15 +22,9 @@ function generateQuery( clean ){
 
   var vs = new peliasQuery.Vars( defaults );
 
-  // set defaults
-  vs.set({
-    'size': 1,
-    'boundary:circle:radius': '500km'
-  });
-
   // set size
-  if( clean.size ){
-    vs.var( 'size', clean.size );
+  if( clean.querySize ){
+    vs.var( 'size', clean.querySize);
   }
 
   // focus point to score by distance

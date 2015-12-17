@@ -33,7 +33,7 @@
     "elasticsearch": ">=1.2.1"
   },
   "dependencies": {
-    "addressit": "1.3.0",
+    "addressit": "git://github.com/dianashk/addressit.git#temp",
     "async": "^0.9.0",
     "check-types": "^3.3.1",
     "cluster2": "git://github.com/missinglink/cluster2.git#node_zero_twelve",
