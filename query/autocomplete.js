@@ -14,6 +14,11 @@ var ngrams = function( vs ){
 
 var ngrams_last_only = function( vs ){
 
+  // hack to disable ngrams when query parsing enabled
+  if( vs.var('parsed_text').get() ){
+    return null;
+  }
+
   var name = vs.var('input:name').get();
 
   var vs2 = new peliasQuery.Vars( vs.export() );
@@ -34,18 +39,23 @@ var phrase = function( vs ){
 
 var phrase_first_only = function( vs ){
 
-  var name = vs.var('input:name').get();
-  var s = name.split(' ');
+  // hack to disable substr when query parsing enabled
+  if( !vs.var('parsed_text').get() ){
 
-  // single token only, abort
-  if( s.length < 2 ){
-    return function(){ return null; };
+    var name = vs.var('input:name').get();
+    var s = name.split(' ');
+
+    // single token only, abort
+    if( s.length < 2 ){
+      return null;
+    }
+
+    var vs2 = new peliasQuery.Vars( vs.export() );
+    vs2.var('input:name').set( name.substr(0, name.lastIndexOf(' ') ) );
+    return phrase( vs2 );
   }
 
-  var vs2 = new peliasQuery.Vars( vs.export() );
-  vs2.var('input:name').set( name.substr(0, name.lastIndexOf(' ') ) );
-
-  return phrase( vs2 );
+  return phrase( vs );
 };
 
 var simpleNgramsView = function( vs ){
@@ -123,12 +133,20 @@ query.score( peliasQuery.view.population( simpleNgramsView ) );
 function generateQuery( clean ){
 
   var vs = new peliasQuery.Vars( defaults );
+  vs.var( 'parsed_text', false );
 
   // remove single grams at end
-  clean.text = clean.text.replace(/( .$)/g,'').trim();
+  var text = clean.text.replace(/( .$)/g,'').trim();
+
+  if( clean.hasOwnProperty('parsed_text') ){
+    if( clean.parsed_text.hasOwnProperty('name') ){
+      vs.var( 'parsed_text', true );
+      text = clean.parsed_text.name;
+    }
+  }
 
   // input text
-  vs.var( 'input:name', clean.text );
+  vs.var( 'input:name', text );
 
   // always 10 (not user definable due to caching)
   vs.var( 'size', 10 );
