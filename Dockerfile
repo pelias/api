@@ -1,4 +1,4 @@
-FROM node:5.1
+FROM node:0.12
 MAINTAINER Pelias
 
 EXPOSE 3100
