@@ -8,7 +8,7 @@ module.exports = {
             'match': {
               'name.default': {
                 'analyzer': 'peliasPhrase',
-                'boost': 1,
+                'boost': 100,
                 'query': 'one',
                 'type': 'phrase',
                 'operator': 'and'
@@ -75,6 +75,6 @@ module.exports = {
     }
   },
   'sort': [ '_score' ],
-  'size': 10,
+  'size': 20,
   'track_scores': true
 };

@@ -22,7 +22,7 @@ module.exports = {
               'match': {
                 'admin0': {
                   'analyzer': 'peliasAdmin',
-                  'boost': 4,
+                  'boost': 800,
                   'query': 'three'
                 }
               }
@@ -31,7 +31,7 @@ module.exports = {
               'match': {
                 'admin1': {
                   'analyzer': 'peliasAdmin',
-                  'boost': 3,
+                  'boost': 600,
                   'query': 'three'
                 }
               }
@@ -40,7 +40,7 @@ module.exports = {
               'match': {
                 'admin1_abbr': {
                   'analyzer': 'peliasAdmin',
-                  'boost': 3,
+                  'boost': 600,
                   'query': 'three'
                 }
               }
@@ -49,7 +49,7 @@ module.exports = {
               'match': {
                 'admin2': {
                   'analyzer': 'peliasAdmin',
-                  'boost': 2,
+                  'boost': 400,
                   'query': 'three'
                 }
               }
@@ -58,7 +58,7 @@ module.exports = {
               'match': {
                 'local_admin': {
                   'analyzer': 'peliasAdmin',
-                  'boost': 1,
+                  'boost': 200,
                   'query': 'three'
                 }
               }
@@ -67,7 +67,7 @@ module.exports = {
               'match': {
                 'locality': {
                   'analyzer': 'peliasAdmin',
-                  'boost': 1,
+                  'boost': 200,
                   'query': 'three'
                 }
               }
@@ -76,7 +76,7 @@ module.exports = {
               'match': {
                 'neighborhood': {
                   'analyzer': 'peliasAdmin',
-                  'boost': 1,
+                  'boost': 200,
                   'query': 'three'
                 }
               }
@@ -146,7 +146,7 @@ module.exports = {
       }
     }
   },
-  'size': 10,
+  'size': 20,
   'track_scores': true,
   'sort': [
     '_score'

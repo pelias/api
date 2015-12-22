@@ -162,11 +162,7 @@ function generateQuery( clean ){
     textParser( clean.parsed_text, vs );
   }
 
-  var q = query.render( vs );
-
-  console.log( JSON.stringify( q, null, 2 ) );
-
-  return q;
+  return query.render( vs );
 }
 
 module.exports = generateQuery;

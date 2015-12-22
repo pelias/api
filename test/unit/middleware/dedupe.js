@@ -1,4 +1,5 @@
 var data = require('../fixture/dedupe_elasticsearch_results');
+var nonAsciiData = require('../fixture/dedupe_elasticsearch_nonascii_results');
 var dedupe = require('../../../middleware/dedupe')();
 
 module.exports.tests = {};
@@ -18,6 +19,23 @@ module.exports.tests.dedupe = function(test, common) {
     var expectedCount = 7;
     dedupe(req, res, function () {
       t.equal(res.data.length, expectedCount, 'results have fewer items than before');
+      t.end();
+    });
+  });
+
+  test('handle non-ascii gracefully', function(t) {
+    var req = {
+      clean: {
+        size: 100
+      }
+    };
+    var res = {
+      data: nonAsciiData
+    };
+
+    var expectedCount = 4;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'none were removed');
       t.end();
     });
   });

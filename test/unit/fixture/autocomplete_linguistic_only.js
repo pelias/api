@@ -1,4 +1,3 @@
-var vs = require('../../../query/autocomplete_defaults');
 
 module.exports = {
   'query': {
@@ -9,7 +8,7 @@ module.exports = {
             'match': {
               'name.default': {
                 'analyzer': 'peliasPhrase',
-                'boost': 1,
+                'boost': 100,
                 'query': 'test',
                 'type': 'phrase',
                 'operator': 'and'
@@ -76,6 +75,6 @@ module.exports = {
     }
   },
   'sort': [ '_score' ],
-  'size': vs.size,
+  'size': 20,
   'track_scores': true
 };

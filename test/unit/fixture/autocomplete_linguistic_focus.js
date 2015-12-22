@@ -1,4 +1,3 @@
-var vs = require('../../../query/autocomplete_defaults');
 
 module.exports = {
   'query': {
@@ -9,7 +8,7 @@ module.exports = {
             'match': {
               'name.default': {
                 'analyzer': 'peliasPhrase',
-                'boost': 1,
+                'boost': 100,
                 'query': 'test',
                 'type': 'phrase',
                 'operator': 'and'
@@ -22,7 +21,7 @@ module.exports = {
                 'match': {
                   'name.default': {
                     'analyzer': 'peliasPhrase',
-                    'boost': 1,
+                    'boost': 100,
                     'query': 'test',
                     'type': 'phrase',
                     'operator': 'and'
@@ -36,15 +35,15 @@ module.exports = {
                       'lat': 29.49136,
                       'lon': -82.50622
                     },
-                    'offset': '1km',
-                    'scale': '50km',
+                    'offset': '10km',
+                    'scale': '250km',
                     'decay': 0.5
                   }
                 },
-                'weight': 2
+                'weight': 3
               }],
               'score_mode': 'avg',
-              'boost_mode': 'replace',
+              'boost_mode': 'multiply',
               'filter': {
                 'or': [
                   {
@@ -130,6 +129,6 @@ module.exports = {
     }
   },
   'sort': [ '_score' ],
-  'size': vs.size,
+  'size': 20,
   'track_scores': true
 };
