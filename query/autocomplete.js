@@ -5,8 +5,10 @@ var peliasQuery = require('pelias-query'),
     check = require('check-types');
 
 // additional views (these may be merged in to pelias/query at a later date)
-var views = {};
-views.ngrams_strict = require('./view/ngrams_strict');
+var views = {
+  ngrams_strict:          require('./view/ngrams_strict'),
+  focus_selected_layers:  require('./view/focus_selected_layers')
+};
 
 var ngrams_last_only = function( vs ){
 
@@ -47,26 +49,6 @@ var phrase_first_only = function( vs ){
   return peliasQuery.view.phrase( vs );
 };
 
-var focus = peliasQuery.view.focus( views.ngrams_strict );
-var localView = function( vs ){
-
-  var view = focus( vs );
-
-  if( view && view.hasOwnProperty('function_score') ){
-    view.function_score.filter = {
-      'or': [
-        { 'type': { 'value': 'osmnode' } },
-        { 'type': { 'value': 'osmway' } },
-        { 'type': { 'value': 'osmaddress' } },
-        { 'type': { 'value': 'openaddresses' } }
-      ]
-    };
-  }
-
-  // console.log( JSON.stringify( view, null, 2 ) );
-  return view;
-};
-
 //------------------------------
 // autocomplete query
 //------------------------------
@@ -92,8 +74,7 @@ query.score( peliasQuery.view.admin('locality') );
 query.score( peliasQuery.view.admin('neighborhood') );
 
 // scoring boost
-query.score( localView );
-
+query.score( views.focus_selected_layers( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.ngrams_strict ) );
 query.score( peliasQuery.view.population( views.ngrams_strict ) );
 
