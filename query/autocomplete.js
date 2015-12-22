@@ -6,47 +6,10 @@ var peliasQuery = require('pelias-query'),
 
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
-  ngrams_strict:          require('./view/ngrams_strict'),
-  focus_selected_layers:  require('./view/focus_selected_layers')
-};
-
-var ngrams_last_only = function( vs ){
-
-  // hack to disable ngrams when query parsing enabled
-  if( vs.var('parsed_text').get() ){
-    return null;
-  }
-
-  var name = vs.var('input:name').get();
-
-  var vs2 = new peliasQuery.Vars( vs.export() );
-  vs2.var('input:name').set( name.substr( name.lastIndexOf(' ')+1 ) );
-
-  var view = views.ngrams_strict( vs2 );
-  view.match['name.default'].analyzer = 'peliasPhrase';
-
-  return view;
-};
-
-var phrase_first_only = function( vs ){
-
-  // hack to disable substr when query parsing enabled
-  if( !vs.var('parsed_text').get() ){
-
-    var name = vs.var('input:name').get();
-    var s = name.split(' ');
-
-    // single token only, abort
-    if( s.length < 2 ){
-      return null;
-    }
-
-    var vs2 = new peliasQuery.Vars( vs.export() );
-    vs2.var('input:name').set( name.substr(0, name.lastIndexOf(' ') ) );
-    return peliasQuery.view.phrase( vs2 );
-  }
-
-  return peliasQuery.view.phrase( vs );
+  ngrams_strict:              require('./view/ngrams_strict'),
+  focus_selected_layers:      require('./view/focus_selected_layers'),
+  ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
+  phrase_first_tokens_only:   require('./view/phrase_first_tokens_only')
 };
 
 //------------------------------
@@ -55,8 +18,8 @@ var phrase_first_only = function( vs ){
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
-query.score( phrase_first_only, 'must' );
-query.score( ngrams_last_only, 'must' );
+query.score( views.phrase_first_tokens_only, 'must' );
+query.score( views.ngrams_last_token_only, 'must' );
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );
@@ -87,16 +50,26 @@ query.score( peliasQuery.view.population( views.ngrams_strict ) );
 function generateQuery( clean ){
 
   var vs = new peliasQuery.Vars( defaults );
-  vs.var( 'parsed_text', false );
 
-  // remove single grams at end
+  // mark the name as incomplete (user has not yet typed a comma)
+  vs.var( 'input:name:isComplete', false );
+
+  // perform some operations on 'clean.text':
+  // 1. if there is a space followed by a single char, remove them.
+  //  - this is required as the index uses 2grams and sending 1grams
+  //  - to a 2gram index when using 'type:phrase' or 'operator:and' will
+  //  - result in a complete failure of the query.
+  // 2. trim leading and trailing whitespace.
   var text = clean.text.replace(/( .$)/g,'').trim();
 
-  if( clean.hasOwnProperty('parsed_text') ){
-    if( clean.parsed_text.hasOwnProperty('name') ){
-      vs.var( 'parsed_text', true );
-      text = clean.parsed_text.name;
-    }
+  // if the input parser has run and suggested a 'parsed_text.name' to use.
+  if( clean.hasOwnProperty('parsed_text') && clean.parsed_text.hasOwnProperty('name') ){
+
+    // mark the name as complete (user has already typed a comma)
+    vs.var( 'input:name:isComplete', true );
+
+    // use 'parsed_text.name' instead of 'clean.text'.
+    text = clean.parsed_text.name;
   }
 
   // input text
