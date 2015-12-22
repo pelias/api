@@ -7,30 +7,24 @@ module.exports = {
           'must': [{
             'match': {
               'name.default': {
-                'query': 'test',
+                'analyzer': 'peliasPhrase',
                 'boost': 1,
-                'analyzer': 'peliasOneEdgeGram'
+                'query': 'test',
+                'type': 'phrase',
+                'operator': 'and'
               }
             }
           }],
           'should': [{
-            'match': {
-              'phrase.default': {
-                'query': 'test',
-                'analyzer': 'peliasPhrase',
-                'type': 'phrase',
-                'boost': 1,
-                'slop': 2
-              }
-            }
-          }, {
             'function_score': {
               'query': {
                 'match': {
                   'name.default': {
-                    'analyzer': 'peliasOneEdgeGram',
+                    'analyzer': 'peliasPhrase',
                     'boost': 1,
-                    'query': 'test'
+                    'query': 'test',
+                    'type': 'phrase',
+                    'operator': 'and'
                   }
                 }
               },
@@ -49,18 +43,40 @@ module.exports = {
                 'weight': 2
               }],
               'score_mode': 'avg',
-              'boost_mode': 'replace'
+              'boost_mode': 'replace',
+              'filter': {
+                'or': [
+                  {
+                    'type': {
+                      'value': 'osmnode'
+                    }
+                  },
+                  {
+                    'type': {
+                      'value': 'osmway'
+                    }
+                  },
+                  {
+                    'type': {
+                      'value': 'osmaddress'
+                    }
+                  },
+                  {
+                    'type': {
+                      'value': 'openaddresses'
+                    }
+                  }
+                ]
+              }
             }
           },{
             'function_score': {
               'query': {
                 'match': {
-                  'phrase.default': {
-                    'query': 'test',
+                  'name.default': {
                     'analyzer': 'peliasPhrase',
-                    'type': 'phrase',
-                    'slop': 2,
-                    'boost': 1
+                    'query': 'test',
+                    'operator': 'and'
                   }
                 }
               },
@@ -84,12 +100,10 @@ module.exports = {
             'function_score': {
               'query': {
                 'match': {
-                  'phrase.default': {
-                    'query': 'test',
+                  'name.default': {
                     'analyzer': 'peliasPhrase',
-                    'type': 'phrase',
-                    'slop': 2,
-                    'boost': 1
+                    'query': 'test',
+                    'operator': 'and'
                   }
                 }
               },

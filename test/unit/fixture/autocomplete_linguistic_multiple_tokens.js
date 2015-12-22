@@ -6,76 +6,33 @@ module.exports = {
         'bool': {
           'must': [{
             'match': {
+              'phrase.default': {
+                'analyzer': 'peliasPhrase',
+                'type': 'phrase',
+                'boost': 1,
+                'slop': 2,
+                'query': 'one two'
+              }
+            }
+          },
+          {
+            'match': {
               'name.default': {
                 'analyzer': 'peliasPhrase',
                 'boost': 1,
-                'query': 'test',
+                'query': 'three',
                 'type': 'phrase',
                 'operator': 'and'
               }
             }
           }],
-          'should': [{
+          'should':[{
             'function_score': {
               'query': {
                 'match': {
                   'name.default': {
                     'analyzer': 'peliasPhrase',
-                    'boost': 1,
-                    'query': 'test',
-                    'type': 'phrase',
-                    'operator': 'and'
-                  }
-                }
-              },
-              'functions': [{
-                'linear': {
-                  'center_point': {
-                    'origin': {
-                      'lat': 29.49136,
-                      'lon': -82.50622
-                    },
-                    'offset': '1km',
-                    'scale': '50km',
-                    'decay': 0.5
-                  }
-                },
-                'weight': 2
-              }],
-              'score_mode': 'avg',
-              'boost_mode': 'replace',
-              'filter': {
-                'or': [
-                  {
-                    'type': {
-                      'value': 'osmnode'
-                    }
-                  },
-                  {
-                    'type': {
-                      'value': 'osmway'
-                    }
-                  },
-                  {
-                    'type': {
-                      'value': 'osmaddress'
-                    }
-                  },
-                  {
-                    'type': {
-                      'value': 'openaddresses'
-                    }
-                  }
-                ]
-              }
-            }
-          },{
-            'function_score': {
-              'query': {
-                'match': {
-                  'name.default': {
-                    'analyzer': 'peliasPhrase',
-                    'query': 'test',
+                    'query': 'one two three',
                     'operator': 'and'
                   }
                 }
@@ -102,7 +59,7 @@ module.exports = {
                 'match': {
                   'name.default': {
                     'analyzer': 'peliasPhrase',
-                    'query': 'test',
+                    'query': 'one two three',
                     'operator': 'and'
                   }
                 }
