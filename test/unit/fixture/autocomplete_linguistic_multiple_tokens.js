@@ -32,7 +32,9 @@ module.exports = {
                 'match': {
                   'name.default': {
                     'analyzer': 'peliasPhrase',
+                    'boost': 100,
                     'query': 'one two three',
+                    'type': 'phrase',
                     'operator': 'and'
                   }
                 }
@@ -59,7 +61,9 @@ module.exports = {
                 'match': {
                   'name.default': {
                     'analyzer': 'peliasPhrase',
+                    'boost': 100,
                     'query': 'one two three',
+                    'type': 'phrase',
                     'operator': 'and'
                   }
                 }

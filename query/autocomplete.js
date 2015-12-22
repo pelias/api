@@ -4,13 +4,9 @@ var peliasQuery = require('pelias-query'),
     textParser = require('./text_parser'),
     check = require('check-types');
 
-var ngrams = function( vs ){
-  var view = peliasQuery.view.ngrams( vs );
-  view.match['name.default'].type = 'phrase';
-  view.match['name.default'].operator = 'and';
-  // console.log( JSON.stringify( view, null, 2 ) );
-  return view;
-};
+// additional views (these may be merged in to pelias/query at a later date)
+var views = {};
+views.ngrams_strict = require('./view/ngrams_strict');
 
 var ngrams_last_only = function( vs ){
 
@@ -24,16 +20,9 @@ var ngrams_last_only = function( vs ){
   var vs2 = new peliasQuery.Vars( vs.export() );
   vs2.var('input:name').set( name.substr( name.lastIndexOf(' ')+1 ) );
 
-  var view = ngrams( vs2 );
+  var view = views.ngrams_strict( vs2 );
   view.match['name.default'].analyzer = 'peliasPhrase';
 
-  return view;
-};
-
-var phrase = function( vs ){
-  var view = peliasQuery.view.phrase( vs );
-  view.match['phrase.default'].type = 'phrase';
-  // console.log( JSON.stringify( view, null, 2 ) );
   return view;
 };
 
@@ -52,31 +41,18 @@ var phrase_first_only = function( vs ){
 
     var vs2 = new peliasQuery.Vars( vs.export() );
     vs2.var('input:name').set( name.substr(0, name.lastIndexOf(' ') ) );
-    return phrase( vs2 );
+    return peliasQuery.view.phrase( vs2 );
   }
 
-  return phrase( vs );
+  return peliasQuery.view.phrase( vs );
 };
 
-var simpleNgramsView = function( vs ){
-
-  var view = ngrams( vs );
-
-  view.match['name.default'].analyzer = 'peliasPhrase';
-  delete view.match['name.default'].type;
-  delete view.match['name.default'].boost;
-
-  // console.log( JSON.stringify( view, null, 2 ) );
-  return view;
-};
-
-var focus = peliasQuery.view.focus( ngrams );
+var focus = peliasQuery.view.focus( views.ngrams_strict );
 var localView = function( vs ){
 
   var view = focus( vs );
 
   if( view && view.hasOwnProperty('function_score') ){
-    view.function_score.query.match['name.default'].analyzer = 'peliasPhrase';
     view.function_score.filter = {
       'or': [
         { 'type': { 'value': 'osmnode' } },
@@ -116,13 +92,10 @@ query.score( peliasQuery.view.admin('locality') );
 query.score( peliasQuery.view.admin('neighborhood') );
 
 // scoring boost
-// query.score( phrase );
-
-// console.log( focus );
 query.score( localView );
 
-query.score( peliasQuery.view.popularity( simpleNgramsView ) );
-query.score( peliasQuery.view.population( simpleNgramsView ) );
+query.score( peliasQuery.view.popularity( views.ngrams_strict ) );
+query.score( peliasQuery.view.population( views.ngrams_strict ) );
 
 // --------------------------------
 

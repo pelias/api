@@ -87,7 +87,9 @@ module.exports = {
                   'match': {
                     'name.default': {
                       'analyzer': 'peliasPhrase',
+                      'boost': 100,
                       'query': 'one two',
+                      'type': 'phrase',
                       'operator': 'and'
                     }
                   }
@@ -117,7 +119,9 @@ module.exports = {
                   'match': {
                     'name.default': {
                       'analyzer': 'peliasPhrase',
+                      'boost': 100,
                       'query': 'one two',
+                      'type': 'phrase',
                       'operator': 'and'
                     }
                   }

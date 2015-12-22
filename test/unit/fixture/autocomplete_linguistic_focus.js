@@ -75,7 +75,9 @@ module.exports = {
                 'match': {
                   'name.default': {
                     'analyzer': 'peliasPhrase',
+                    'boost': 100,
                     'query': 'test',
+                    'type': 'phrase',
                     'operator': 'and'
                   }
                 }
@@ -102,7 +104,9 @@ module.exports = {
                 'match': {
                   'name.default': {
                     'analyzer': 'peliasPhrase',
+                    'boost': 100,
                     'query': 'test',
+                    'type': 'phrase',
                     'operator': 'and'
                   }
                 }
