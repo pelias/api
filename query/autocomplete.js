@@ -25,7 +25,7 @@ var ngrams_last_only = function( vs ){
   vs2.var('input:name').set( name.substr( name.lastIndexOf(' ')+1 ) );
 
   var view = ngrams( vs2 );
-  view.match['name.default'].analyzer = 'standard';
+  view.match['name.default'].analyzer = 'peliasPhrase';
 
   return view;
 };

@@ -20,7 +20,7 @@ module.exports = extend( false, peliasQuery.defaults, {
   'boundary:rect:type': 'indexed',
   'boundary:rect:_cache': true,
 
-  'ngram:analyzer': 'standard',
+  'ngram:analyzer': 'peliasPhrase',
   'ngram:field': 'name.default',
   'ngram:boost': 100,
 
@@ -33,7 +33,7 @@ module.exports = extend( false, peliasQuery.defaults, {
   'focus:offset': '10km',
   'focus:scale': '250km',
   'focus:decay': 0.5,
-  'focus:weight': 5,
+  'focus:weight': 3,
 
   'function_score:score_mode': 'avg',
   'function_score:boost_mode': 'multiply',
