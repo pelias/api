@@ -1,10 +1,10 @@
 
-var peliasQuery = require('pelias-query'),
-    extend = require('extend');
+var peliasQuery = require('pelias-query');
+var _ = require('lodash');
 
-module.exports = extend( false, peliasQuery.defaults, {
+module.exports = _.merge({}, peliasQuery.defaults, {
 
-  'size': 10,
+  'size': 20,
   'track_scores': true,
 
   'centroid:field': 'center_point',

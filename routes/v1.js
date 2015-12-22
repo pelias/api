@@ -12,7 +12,8 @@ var sanitisers = {
 
 /** ----------------------- middleware ------------------------ **/
 var middleware = {
-  types: require('../middleware/_types')
+  types: require('../middleware/_types'),
+  calcSize: require('../middleware/sizeCalculator')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -30,6 +31,7 @@ var postProc = {
   distances: require('../middleware/distance'),
   confidenceScores: require('../middleware/confidenceScore'),
   confidenceScoresReverse: require('../middleware/confidenceScoreReverse'),
+  dedupe: require('../middleware/dedupe'),
   localNamingConventions: require('../middleware/localNamingConventions'),
   renamePlacenames: require('../middleware/renamePlacenames'),
   geocodeJSON: require('../middleware/geocodeJSON'),
@@ -58,9 +60,11 @@ function addRoutes(app, peliasConfig) {
     search: createRouter([
       sanitisers.search.middleware,
       middleware.types,
+      middleware.calcSize(),
       controllers.search(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
+      postProc.dedupe(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig, base),
@@ -72,6 +76,7 @@ function addRoutes(app, peliasConfig) {
       controllers.search(null, require('../query/autocomplete')),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
+      postProc.dedupe(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig, base),
@@ -80,11 +85,13 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitisers.reverse.middleware,
       middleware.types,
+      middleware.calcSize(),
       controllers.search(undefined, reverseQuery),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),
+      postProc.dedupe(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.geocodeJSON(peliasConfig, base),

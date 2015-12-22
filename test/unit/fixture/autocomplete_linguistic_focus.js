@@ -1,3 +1,4 @@
+var vs = require('../../../query/autocomplete_defaults');
 
 module.exports = {
   'query': {
@@ -129,6 +130,6 @@ module.exports = {
     }
   },
   'sort': [ '_score' ],
-  'size': 10,
+  'size': vs.size,
   'track_scores': true
 };
