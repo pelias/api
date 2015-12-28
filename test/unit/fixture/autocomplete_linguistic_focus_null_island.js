@@ -1,4 +1,3 @@
-var vs = require('../../../query/autocomplete_defaults');
 
 module.exports = {
   'query': {
@@ -8,30 +7,24 @@ module.exports = {
           'must': [{
             'match': {
               'name.default': {
+                'analyzer': 'peliasPhrase',
+                'boost': 100,
                 'query': 'test',
-                'boost': 1,
-                'analyzer': 'peliasOneEdgeGram'
+                'type': 'phrase',
+                'operator': 'and'
               }
             }
           }],
           'should': [{
-            'match': {
-              'phrase.default': {
-                'query': 'test',
-                'analyzer': 'peliasPhrase',
-                'type': 'phrase',
-                'boost': 1,
-                'slop': 2
-              }
-            }
-          }, {
             'function_score': {
               'query': {
                 'match': {
                   'name.default': {
-                    'analyzer': 'peliasOneEdgeGram',
-                    'boost': 1,
-                    'query': 'test'
+                    'analyzer': 'peliasPhrase',
+                    'boost': 100,
+                    'query': 'test',
+                    'type': 'phrase',
+                    'operator': 'and'
                   }
                 }
               },
@@ -42,26 +35,50 @@ module.exports = {
                       'lat': 0,
                       'lon': 0
                     },
-                    'offset': '1km',
-                    'scale': '50km',
+                    'offset': '10km',
+                    'scale': '250km',
                     'decay': 0.5
                   }
                 },
-                'weight': 2
+                'weight': 3
               }],
               'score_mode': 'avg',
-              'boost_mode': 'replace'
+              'boost_mode': 'multiply',
+              'filter': {
+                'or': [
+                  {
+                    'type': {
+                      'value': 'osmnode'
+                    }
+                  },
+                  {
+                    'type': {
+                      'value': 'osmway'
+                    }
+                  },
+                  {
+                    'type': {
+                      'value': 'osmaddress'
+                    }
+                  },
+                  {
+                    'type': {
+                      'value': 'openaddresses'
+                    }
+                  }
+                ]
+              }
             }
           },{
             'function_score': {
               'query': {
                 'match': {
-                  'phrase.default': {
-                    'query': 'test',
+                  'name.default': {
                     'analyzer': 'peliasPhrase',
+                    'boost': 100,
+                    'query': 'test',
                     'type': 'phrase',
-                    'slop': 2,
-                    'boost': 1
+                    'operator': 'and'
                   }
                 }
               },
@@ -85,12 +102,12 @@ module.exports = {
             'function_score': {
               'query': {
                 'match': {
-                  'phrase.default': {
-                    'query': 'test',
+                  'name.default': {
                     'analyzer': 'peliasPhrase',
+                    'boost': 100,
+                    'query': 'test',
                     'type': 'phrase',
-                    'slop': 2,
-                    'boost': 1
+                    'operator': 'and'
                   }
                 }
               },
@@ -116,6 +133,6 @@ module.exports = {
     }
   },
   'sort': [ '_score' ],
-  'size': vs.size,
+  'size': 20,
   'track_scores': true
 };
