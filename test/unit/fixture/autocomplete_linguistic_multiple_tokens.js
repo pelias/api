@@ -6,10 +6,21 @@ module.exports = {
         'bool': {
           'must': [{
             'match': {
+              'phrase.default': {
+                'analyzer': 'peliasPhrase',
+                'type': 'phrase',
+                'boost': 1,
+                'slop': 2,
+                'query': 'one two'
+              }
+            }
+          },
+          {
+            'match': {
               'name.default': {
                 'analyzer': 'peliasPhrase',
                 'boost': 100,
-                'query': 'test',
+                'query': 'three',
                 'type': 'phrase',
                 'operator': 'and'
               }
@@ -22,7 +33,7 @@ module.exports = {
                   'name.default': {
                     'analyzer': 'peliasPhrase',
                     'boost': 100,
-                    'query': 'test',
+                    'query': 'one two three',
                     'type': 'phrase',
                     'operator': 'and'
                   }
@@ -51,7 +62,7 @@ module.exports = {
                   'name.default': {
                     'analyzer': 'peliasPhrase',
                     'boost': 100,
-                    'query': 'test',
+                    'query': 'one two three',
                     'type': 'phrase',
                     'operator': 'and'
                   }
