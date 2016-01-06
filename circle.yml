@@ -9,9 +9,9 @@ deployment:
     branch: master
     commands:
       - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
-      - cd pelias-deploy && bundle exec rake deploy:api[dev]
+      - cd pelias-deploy && bundle exec rake deploy:api dev
   prod_build:
     branch: staging
     commands:
       - git clone git@github.com:mapzen/pelias-deploy.git && cd pelias-deploy && bundle install
-      - cd pelias-deploy && bundle exec rake deploy:api[prod_build]
+      - cd pelias-deploy && bundle exec rake deploy:api prod_build
