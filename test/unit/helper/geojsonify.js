@@ -40,7 +40,8 @@ module.exports.tests.search = function(test, common) {
   var input = [
     {
       '_id': 'id1',
-      '_type': 'type1',
+      '_type': 'layer1',
+      'source': 'source1',
       'center_point': {
         'lat': 51.5337144,
         'lon': -0.1069716
@@ -72,7 +73,8 @@ module.exports.tests.search = function(test, common) {
     },
     {
       '_id': 'id2',
-      '_type': 'type2',
+      '_type': 'layer2',
+      'source': 'source2',
       'name': {
         'default': 'Blues Cafe'
       },
@@ -97,7 +99,8 @@ module.exports.tests.search = function(test, common) {
     },
     {
       '_id': '34633854',
-      '_type': 'osmway',
+      '_type': 'way',
+      'source': 'osm',
       'name': {
         'default': 'Empire State Building'
       },
@@ -141,9 +144,9 @@ module.exports.tests.search = function(test, common) {
         },
         'properties': {
           'id': 'id1',
-          'gid': 'type1:type1:id1',
-          'layer': 'type1',
-          'source': 'type1',
+          'gid': 'source1:layer1:id1',
+          'layer': 'layer1',
+          'source': 'source1',
           'label': '\'Round Midnight Jazz and Blues Bar, test3, Angel',
           'name': '\'Round Midnight Jazz and Blues Bar',
           'country_a': 'GBR',
@@ -170,9 +173,9 @@ module.exports.tests.search = function(test, common) {
         },
         'properties': {
           'id': 'id2',
-          'gid': 'type2:type2:id2',
-          'layer': 'type2',
-          'source': 'type2',
+          'gid': 'source2:layer2:id2',
+          'layer': 'layer2',
+          'source': 'source2',
           'label': 'Blues Cafe, test3, Smithfield',
           'name': 'Blues Cafe',
           'country_a': 'GBR',
@@ -196,8 +199,8 @@ module.exports.tests.search = function(test, common) {
         },
         'properties': {
           'id': '34633854',
-          'gid': 'osm:venue:34633854',
-          'layer': 'venue',
+          'gid': 'osm:way:34633854',
+          'layer': 'way',
           'source': 'osm',
           'label': 'Empire State Building, Manhattan, NY, USA',
           'name': 'Empire State Building',
