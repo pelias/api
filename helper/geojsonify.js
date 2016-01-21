@@ -25,8 +25,7 @@ var DETAILS_PROPS = [
 
 
 function lookupSource(src) {
-  var sources = type_mapping.type_to_source;
-  return sources.hasOwnProperty(src._type) ? sources[src._type] : src._type;
+  return src.source;
 }
 
 /*
@@ -34,24 +33,6 @@ function lookupSource(src) {
  * Elasticsearch document source allows a more specific layer name to be chosen
  */
 function lookupLayer(src) {
-  if (src._type === 'geoname') {
-    if (_.contains(src.category, 'admin')) {
-      if (_.contains(src.category, 'admin:city')) { return 'locality'; }
-      if (_.contains(src.category, 'admin:admin1')) { return 'region'; }
-      if (_.contains(src.category, 'admin:admin2')) { return 'county'; }
-      return 'neighbourhood'; // this could also be 'local_admin'
-    }
-
-    if (src.name) { return 'venue'; }
-    if (src.address) { return 'address'; }
-  }
-
-  if (_.contains(type_mapping.types, src._type)) {
-    return type_mapping.type_to_layer[src._type];
-  }
-
-  logger.warn('[geojsonify]: could not map _type ', src._type);
-
   return src._type;
 }
 
