@@ -1,5 +1,5 @@
 var type_mapping = require('../../../helper/type_mapping');
-var sanitize = require( '../../../sanitiser/_targets' )('sources', type_mapping.source_to_type);
+var sanitize = require( '../../../sanitiser/_targets' )('sources', type_mapping.source_mapping);
 
 var success_messages = { error: false };
 
@@ -14,7 +14,7 @@ module.exports.tests.no_sources = function(test, common) {
 
     var messages = sanitize(req.query, req.clean);
 
-    t.deepEqual(req.clean.types, {}, 'clean.types should be empty object');
+    t.equal(req.clean.sources, undefined, 'no sources should be defined');
     t.deepEqual(messages.errors, [], 'no error returned');
     t.deepEqual(messages.warnings, [], 'no warnings returned');
     t.end();
@@ -29,11 +29,11 @@ module.exports.tests.no_sources = function(test, common) {
     };
 
     var expected_error = 'sources parameter cannot be an empty string. ' +
-       'Valid options: gn,geonames,oa,openaddresses,qs,quattroshapes,osm,openstreetmap';
+       'Valid options: openstreetmap,oa,gn,qs,wof,osm,openaddresses,geonames,quattroshapes,whosonfirst';
 
     var messages = sanitize(req.query, req.clean);
 
-    t.deepEqual(req.clean.types, {}, 'clean.types should be empty object');
+    t.equal(req.clean.sources, undefined, 'no sources should be defined');
     t.deepEqual(messages.errors.length, 1, 'error returned');
     t.deepEqual(messages.errors[0], expected_error, 'error returned');
     t.deepEqual(messages.warnings, [], 'no warnings returned');
@@ -52,7 +52,7 @@ module.exports.tests.valid_sources = function(test, common) {
 
     var messages = sanitize(req.query, req.clean);
 
-    t.deepEqual(req.clean.types, { from_sources: ['geoname'] }, 'clean.types should contain from_source entry with geonames');
+    t.deepEqual(req.clean.sources, ['geonames'], 'sources should contain geonames');
     t.deepEqual(messages.errors, [], 'no error returned');
     t.deepEqual(messages.warnings, [], 'no warnings returned');
 
@@ -66,13 +66,10 @@ module.exports.tests.valid_sources = function(test, common) {
       },
       clean: { }
     };
-    var expected_types = {
-      from_sources: ['osmaddress', 'osmnode', 'osmway']
-    };
 
     var messages = sanitize(req.query, req.clean);
 
-    t.deepEqual(req.clean.types, expected_types, 'clean.types should contain from_source entry with multiple entries for openstreetmap');
+    t.deepEqual(req.clean.sources, ['osm'], 'full name openstreetmap is set to abbreviated version, osm');
     t.deepEqual(messages.errors, [], 'no error returned');
     t.deepEqual(messages.warnings, [], 'no warnings returned');
     t.end();
@@ -85,13 +82,10 @@ module.exports.tests.valid_sources = function(test, common) {
       },
       clean: { }
     };
-    var expected_types = {
-      from_sources: ['osmaddress', 'osmnode', 'osmway', 'openaddresses']
-    };
 
     var messages = sanitize(req.query, req.clean);
 
-    t.deepEqual(req.clean.types, expected_types,
+    t.deepEqual(req.clean.sources, ['osm', 'openaddresses'],
                 'clean.types should contain from_source entry with multiple entries for openstreetmap and openadresses');
     t.deepEqual(messages.errors, [], 'no error returned');
     t.deepEqual(messages.warnings, [], 'no warnings returned');
@@ -109,7 +103,7 @@ module.exports.tests.invalid_sources = function(test, common) {
     };
     var expected_messages = {
       errors: [
-        '\'notasource\' is an invalid sources parameter. Valid options: gn,geonames,oa,openaddresses,qs,quattroshapes,osm,openstreetmap'
+        '\'notasource\' is an invalid sources parameter. Valid options: openstreetmap,oa,gn,qs,wof,osm,openaddresses,geonames,quattroshapes,whosonfirst'
       ],
       warnings: []
     };
@@ -117,7 +111,7 @@ module.exports.tests.invalid_sources = function(test, common) {
     var messages = sanitize(req.query, req.clean);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
-    t.deepEqual(req.clean.types, { }, 'clean.types should remain empty');
+    t.equal(req.clean.sources, undefined, 'clean.sources should remain empty');
     t.end();
   });
 };

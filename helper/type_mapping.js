@@ -1,87 +1,49 @@
 var extend = require('extend'),
   _ = require('lodash');
 
-var TYPE_TO_SOURCE = {
-  'geoname': 'gn',
-  'osmnode': 'osm',
-  'osmway': 'osm',
-  'admin0': 'qs',
-  'admin1': 'qs',
-  'admin2': 'qs',
-  'neighborhood': 'qs',
-  'locality': 'qs',
-  'local_admin': 'qs',
-  'osmaddress': 'osm',
-  'openaddresses': 'oa'
+function addStandardTargetsToAliases(standard, aliases) {
+  var combined = _.extend({}, aliases);
+  standard.forEach(function(target) {
+    combined[target] = [target];
+  });
+
+  return combined
 };
 
 /*
- * This doesn't include alias layers such as coarse
+ * Sources
  */
-var TYPE_TO_LAYER = {
-  'geoname': 'venue',
-  'osmnode': 'venue',
-  'osmway': 'venue',
-  'admin0': 'country',
-  'admin1': 'region',
-  'admin2': 'county',
-  'neighborhood': 'neighbourhood',
-  'locality': 'locality',
-  'local_admin': 'localadmin',
-  'osmaddress': 'address',
-  'openaddresses': 'address'
+var SOURCES = ['osm', 'openaddresses', 'geonames', 'quattroshapes', 'whosonfirst'];
+
+var SOURCE_ALIASES = {
+  'openstreetmap': ['osm'],
+  'oa': ['openaddresses'],
+  'gn': ['geonames'],
+  'qs': ['quattroshapes'],
+  'wof': ['whosonfirst']
 };
 
-var SOURCE_TO_TYPE = {
-  'gn'            : ['geoname'],
-  'geonames'      : ['geoname'],
-  'oa'            : ['openaddresses'],
-  'openaddresses' : ['openaddresses'],
-  'qs'            : ['admin0', 'admin1', 'admin2', 'neighborhood', 'locality', 'local_admin'],
-  'quattroshapes' : ['admin0', 'admin1', 'admin2', 'neighborhood', 'locality', 'local_admin'],
-  'osm'           : ['osmaddress', 'osmnode', 'osmway'],
-  'openstreetmap' : ['osmaddress', 'osmnode', 'osmway']
-};
+var SOURCE_MAPPING = addStandardTargetsToAliases(SOURCES, SOURCE_ALIASES);
 
-/**
- * This does not included alias layers, those are built separately
+/*
+ * Layers
  */
-var LAYER_TO_TYPE = {
-  'venue': ['geoname','osmnode','osmway'],
-  'address': ['osmaddress','openaddresses'],
-  'country': ['admin0'],
-  'region': ['admin1'],
-  'county': ['admin2'],
-  'locality': ['locality'],
-  'localadmin': ['local_admin'],
-  'neighbourhood': ['neighborhood']
-};
+var WOF_LAYERS = [ 'continent', 'macrocountry', 'country', 'dependency', 'region', 'locality', 'localadmin', 'county', 'macrohood', 'neighbourhood', 'microhood', 'disputed'];
+var QS_LAYERS = ['admin0', 'admin1', 'admin2', 'neighborhood', 'locality', 'local_admin'];
 
 var LAYER_ALIASES = {
-  'coarse': ['admin0','admin1','admin2','neighborhood','locality','local_admin']
+  'coarse': WOF_LAYERS.concat(QS_LAYERS),
+  'venue': ['venue', 'way', 'node'] // 'venue' is a valid layer for Geonames, so while a little weird,
+                                    // this alias that contains itself does actaully work
 };
 
-var LAYER_WITH_ALIASES_TO_TYPE = extend({}, LAYER_ALIASES, LAYER_TO_TYPE);
+var LAYERS = WOF_LAYERS.concat(QS_LAYERS, ['address', 'way', 'node']);
 
-/*
- * derive the list of types, sources, and layers from above mappings
- */
-var TYPES   = Object.keys(TYPE_TO_SOURCE);
-var SOURCES = Object.keys(SOURCE_TO_TYPE);
-var LAYERS  = Object.keys(LAYER_TO_TYPE);
-
-var sourceAndLayerToType = function sourceAndLayerToType(source, layer) {
-  return _.intersection(SOURCE_TO_TYPE[source], LAYER_WITH_ALIASES_TO_TYPE[layer]);
-};
+var LAYER_MAPPING = addStandardTargetsToAliases(LAYERS, LAYER_ALIASES);
 
 module.exports = {
-  types: TYPES,
   sources: SOURCES,
   layers: LAYERS,
-  type_to_source: TYPE_TO_SOURCE,
-  type_to_layer: TYPE_TO_LAYER,
-  source_to_type: SOURCE_TO_TYPE,
-  layer_to_type: LAYER_TO_TYPE,
-  layer_with_aliases_to_type: LAYER_WITH_ALIASES_TO_TYPE,
-  source_and_layer_to_type: sourceAndLayerToType
+  source_mapping: SOURCE_MAPPING,
+  layer_mapping: LAYER_MAPPING,
 };

@@ -1,6 +1,6 @@
 var type_mapping = require('../../../helper/type_mapping');
 
-var sanitize = require('../../../sanitiser/_targets')('layers', type_mapping.layer_with_aliases_to_type);
+var sanitize = require('../../../sanitiser/_targets')('layers', type_mapping.layer_mapping);
 
 module.exports.tests = {};
 
@@ -24,36 +24,36 @@ module.exports.tests.sanitize_layers = function(test, common) {
     t.end();
   });
 
-  test('venue (alias) layer', function(t) {
-    var venue_layers = ['geoname','osmnode','osmway'];
-    var raw = { layers: 'venue' };
-    var clean = {};
+  //TODO: decide if venue alias layer contains OSM node+way
+  //test('venue (alias) layer', function(t) {
+    //var venue_layers = ['geoname','osmnode','osmway'];
+    //var raw = { layers: 'venue' };
+    //var clean = {};
 
-    sanitize(raw, clean);
+    //sanitize(raw, clean);
 
-    t.deepEqual(clean.types.from_layers, venue_layers, 'venue layers set');
-    t.end();
-  });
+    //t.deepEqual(clean.types.from_layers, venue_layers, 'venue layers set');
+    //t.end();
+  //});
 
   test('coarse (alias) layer', function(t) {
-    var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
+    var admin_layers = [ 'continent', 'macrocountry', 'country', 'dependency', 'region', 'locality', 'localadmin', 'county', 'macrohood', 'neighbourhood', 'microhood', 'disputed', 'admin0', 'admin1', 'admin2', 'neighborhood', 'local_admin' ];
     var raw = { layers: 'coarse' };
     var clean = {};
 
     sanitize(raw, clean);
 
-    t.deepEqual(clean.types.from_layers, admin_layers, 'coarse layers set');
+    t.deepEqual(clean.layers, admin_layers, 'coarse layers set');
     t.end();
   });
 
-  test('address (alias) layer', function(t) {
-    var address_layers = ['osmaddress','openaddresses'];
+  test('address layer', function(t) {
     var raw = { layers: 'address' };
     var clean = {};
 
     sanitize(raw, clean);
 
-    t.deepEqual(clean.types.from_layers, address_layers, 'address layers set');
+    t.deepEqual(clean.layers, ['address'], 'address layer set');
     t.end();
   });
 
@@ -73,7 +73,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
     var reg_layers   = ['geoname', 'osmnode', 'osmway'];
 
-    var raw = { layers: 'coarse,venue,country' };
+    var raw = { layers: 'coarse,country' };
     var clean = {};
 
     sanitize(raw, clean);
@@ -83,15 +83,12 @@ module.exports.tests.sanitize_layers = function(test, common) {
   });
 
   test('address alias layer plus regular layers', function(t) {
-    var address_layers = ['osmaddress','openaddresses'];
-    var reg_layers   = ['admin0', 'locality'];
-
     var raw = { layers: 'address,country,locality' };
     var clean = {};
 
     sanitize(raw, clean);
 
-    t.deepEqual(clean.types.from_layers, address_layers.concat(reg_layers), 'address + regular layers set');
+    t.deepEqual(clean.layers, ['address', 'country', 'locality'], 'address + regular layers set');
     t.end();
   });
 

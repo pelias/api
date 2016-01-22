@@ -1,18 +1,24 @@
-
 var _ = require('lodash'),
     check = require('check-types');
+
+function getValidKeys(mapping) {
+  return _.uniq(Object.keys(mapping)).join(',');
+}
 
 function setup( paramName, targetMap ) {
   return function( raw, clean ){
     return sanitize( raw, clean, {
       paramName: paramName,
       targetMap: targetMap,
-      targetMapKeysString: Object.keys(targetMap).join(',')
+      targetMapKeysString: getValidKeys(targetMap)
     });
   };
 }
 
 function sanitize( raw, clean, opts ) {
+  // assume property can be derived from param name with
+  // very simple removal of plural (layers -> layer, sources -> source)
+  var propertyName = opts.paramName;//opts.paramName.slice(0,-1);
 
   // error & warning messages
   var messages = { errors: [], warnings: [] };
@@ -51,19 +57,13 @@ function sanitize( raw, clean, opts ) {
 
       // only set types value when no error occured
       if( !messages.errors.length ){
-
-        // store the values under a new key as 'clean.types.from_*'
-        var typesKey = 'from_' + opts.paramName;
-
-        // ?
-        clean.types[typesKey] = targets.reduce(function(acc, target) {
+        clean[propertyName] = targets.reduce(function(acc, target) {
           return acc.concat(opts.targetMap[target]);
         }, []);
 
         // dedupe in case aliases expanded to common things or user typed in duplicates
-        clean.types[typesKey] = _.unique(clean.types[typesKey]);
+        clean[propertyName] = _.unique(clean[propertyName]);
       }
-
     }
   }
 
