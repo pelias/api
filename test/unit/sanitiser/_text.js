@@ -15,7 +15,6 @@ module.exports.tests.text_parser = function(test, common) {
 
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
-    t.equal(clean.types.from_text_parser, type_mapping.layer_with_aliases_to_type.coarse, 'coarse layers preferred');
 
     t.end();
   });
