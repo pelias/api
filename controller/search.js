@@ -8,10 +8,10 @@ function setup( backend, query ){
   query = query || require('../query/search');
 
   function controller( req, res, next ){
-
     // do not run controller when a request
     // validation error has occurred.
     if( req.errors && req.errors.length ){
+      delete req.clean.type; //to declutter output
       return next();
     }
 
@@ -25,9 +25,12 @@ function setup( backend, query ){
       body: query( req.clean )
     };
 
-    // ?
+    // set the Elasticsearch types to filter by,
+    // and remove the property from clean so the API
+    // response output is cleaner
     if( req.clean.hasOwnProperty('type') ){
       cmd.type = req.clean.type;
+      delete req.clean.type;
     }
 
     logger.debug( '[ES req]', JSON.stringify(cmd) );

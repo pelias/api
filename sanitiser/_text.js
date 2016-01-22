@@ -23,10 +23,6 @@ function sanitize( raw, clean ){
     if (check.assigned(parsed_text)) {
       clean.parsed_text = parsed_text;
     }
-
-    // try to set layers from query parser results
-    clean.types = clean.layers || {};
-    clean.types.from_text_parser = text_parser.get_layers(clean.text);
   }
 
   return messages;

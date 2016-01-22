@@ -37,7 +37,7 @@ query.score( peliasQuery.view.admin('neighborhood') );
 // non-scoring hard filters
 query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.boundary_rect );
-
+query.filter( peliasQuery.view.sources );
 // --------------------------------
 
 /**
@@ -50,6 +50,8 @@ function generateQuery( clean ){
 
   // input text
   vs.var( 'input:name', clean.text );
+
+  vs.var( 'sources', clean.sources);
 
   // size
   if( clean.querySize ) {
@@ -119,7 +121,9 @@ function generateQuery( clean ){
     textParser( clean.parsed_text, vs );
   }
 
-  return query.render( vs );
+  var q = query.render( vs );
+  //console.log(JSON.stringify(q, null, 2));
+  return q;
 }
 
 // return diagonal distance in km, with min=1

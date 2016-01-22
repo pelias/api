@@ -1,87 +1,85 @@
 var extend = require('extend'),
   _ = require('lodash');
 
-var TYPE_TO_SOURCE = {
-  'geoname': 'gn',
-  'osmnode': 'osm',
-  'osmway': 'osm',
-  'admin0': 'qs',
-  'admin1': 'qs',
-  'admin2': 'qs',
-  'neighborhood': 'qs',
-  'locality': 'qs',
-  'local_admin': 'qs',
-  'osmaddress': 'osm',
-  'openaddresses': 'oa'
+function addStandardTargetsToAliases(standard, aliases) {
+  var combined = _.extend({}, aliases);
+  standard.forEach(function(target) {
+    if (combined[target] === undefined) {
+      combined[target] = [target];
+    }
+  });
+
+  return combined;
+}
+
+/*
+ * Sources
+ */
+
+// a list of all sources
+var SOURCES = ['openstreetmap', 'openaddresses', 'geonames', 'quattroshapes', 'whosonfirst'];
+
+/*
+ * A list of alternate names for sources, mostly used to save typing
+ */
+var SOURCE_ALIASES = {
+  'osm': ['openstreetmap'],
+  'oa': ['openaddresses'],
+  'gn': ['geonames'],
+  'qs': ['quattroshapes'],
+  'wof': ['whosonfirst']
 };
 
 /*
- * This doesn't include alias layers such as coarse
+ * Create an object that contains all sources or aliases. The key is the source or alias,
+ * the value is either that source, or the canonical name for that alias if it's an alias.
  */
-var TYPE_TO_LAYER = {
-  'geoname': 'venue',
-  'osmnode': 'venue',
-  'osmway': 'venue',
-  'admin0': 'country',
-  'admin1': 'region',
-  'admin2': 'county',
-  'neighborhood': 'neighbourhood',
-  'locality': 'locality',
-  'local_admin': 'localadmin',
-  'osmaddress': 'address',
-  'openaddresses': 'address'
-};
+var SOURCE_MAPPING = addStandardTargetsToAliases(SOURCES, SOURCE_ALIASES);
 
-var SOURCE_TO_TYPE = {
-  'gn'            : ['geoname'],
-  'geonames'      : ['geoname'],
-  'oa'            : ['openaddresses'],
-  'openaddresses' : ['openaddresses'],
-  'qs'            : ['admin0', 'admin1', 'admin2', 'neighborhood', 'locality', 'local_admin'],
-  'quattroshapes' : ['admin0', 'admin1', 'admin2', 'neighborhood', 'locality', 'local_admin'],
-  'osm'           : ['osmaddress', 'osmnode', 'osmway'],
-  'openstreetmap' : ['osmaddress', 'osmnode', 'osmway']
-};
-
-/**
- * This does not included alias layers, those are built separately
+/*
+ * Layers
  */
-var LAYER_TO_TYPE = {
-  'venue': ['geoname','osmnode','osmway'],
-  'address': ['osmaddress','openaddresses'],
-  'country': ['admin0'],
-  'region': ['admin1'],
-  'county': ['admin2'],
-  'locality': ['locality'],
-  'localadmin': ['local_admin'],
-  'neighbourhood': ['neighborhood']
+
+/*
+ * A list of all layers in each source. This is used for convenience elswhere
+ * and to determine when a combination of source and layer parameters is
+ * not going to match any records and will return no results.
+ */
+var LAYERS_BY_SOURCE = {
+ openstreetmap: [ 'address', 'venue' ],
+ openaddresses: [ 'address' ],
+ geonames: [ 'country', 'region', 'county', 'locality', 'venue' ],
+ quattroshapes: ['admin0', 'admin1', 'admin2', 'neighborhood', 'locality', 'local_admin'],
+ whosonfirst: [ 'continent', 'macrocountry', 'country', 'dependency', 'region',
+   'locality', 'localadmin', 'county', 'macrohood', 'neighbourhood', 'microhood', 'disputed']
 };
 
+/*
+ * A list of layer aliases that can be used to support specific use cases
+ * (like coarse geocoding) * or work around the fact that different sources
+ * may have layers that mean the same thing but have a different name
+ */
 var LAYER_ALIASES = {
-  'coarse': ['admin0','admin1','admin2','neighborhood','locality','local_admin']
+  'coarse': LAYERS_BY_SOURCE.whosonfirst.concat(LAYERS_BY_SOURCE.quattroshapes),
+  'country': ['country', 'admin0'],  // Include both QS and WOF layers for various types of places
+  'region': ['region', 'admin1']     // Alias layers that include themselves look weird, but do work
 };
 
-var LAYER_WITH_ALIASES_TO_TYPE = extend({}, LAYER_ALIASES, LAYER_TO_TYPE);
+// create a list of all layers by combining each entry from LAYERS_BY_SOURCE
+var LAYERS = _.uniq(Object.keys(LAYERS_BY_SOURCE).reduce(function(acc, key) {
+  return acc.concat(LAYERS_BY_SOURCE[key]);
+}, []));
 
 /*
- * derive the list of types, sources, and layers from above mappings
+ * Create the an object that has a key for each possible layer or alias,
+ * and returns either that layer, or all the layers in the alias
  */
-var TYPES   = Object.keys(TYPE_TO_SOURCE);
-var SOURCES = Object.keys(SOURCE_TO_TYPE);
-var LAYERS  = Object.keys(LAYER_TO_TYPE);
-
-var sourceAndLayerToType = function sourceAndLayerToType(source, layer) {
-  return _.intersection(SOURCE_TO_TYPE[source], LAYER_WITH_ALIASES_TO_TYPE[layer]);
-};
+var LAYER_MAPPING = addStandardTargetsToAliases(LAYERS, LAYER_ALIASES);
 
 module.exports = {
-  types: TYPES,
   sources: SOURCES,
   layers: LAYERS,
-  type_to_source: TYPE_TO_SOURCE,
-  type_to_layer: TYPE_TO_LAYER,
-  source_to_type: SOURCE_TO_TYPE,
-  layer_to_type: LAYER_TO_TYPE,
-  layer_with_aliases_to_type: LAYER_WITH_ALIASES_TO_TYPE,
-  source_and_layer_to_type: sourceAndLayerToType
+  source_mapping: SOURCE_MAPPING,
+  layer_mapping: LAYER_MAPPING,
+  layers_by_source: LAYERS_BY_SOURCE
 };
