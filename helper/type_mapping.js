@@ -52,7 +52,7 @@ var LAYER_TO_TYPE = {
   'country': ['admin0'],
   'region': ['admin1'],
   'county': ['admin2'],
-  'locality': ['locality'],
+  'locality': ['locality', 'geoname'],
   'localadmin': ['local_admin'],
   'neighbourhood': ['neighborhood']
 };

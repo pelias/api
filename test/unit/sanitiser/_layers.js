@@ -77,7 +77,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
   });
   test('address alias layer plus regular layers', function(t) {
     var address_layers = ['osmaddress','openaddresses'];
-    var reg_layers   = ['admin0', 'locality'];
+    var reg_layers   = ['admin0', 'locality', 'geoname'];
 
     var raw = { layers: 'address,country,locality' };
     var clean = {};
