@@ -16,8 +16,7 @@ function setup( paramName, targetMap ) {
 }
 
 function sanitize( raw, clean, opts ) {
-  // assume property can be derived from param name with
-  // very simple removal of plural (layers -> layer, sources -> source)
+  // TODO: remove this next line
   var propertyName = opts.paramName;//opts.paramName.slice(0,-1);
 
   // error & warning messages

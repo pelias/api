@@ -4,7 +4,9 @@ var extend = require('extend'),
 function addStandardTargetsToAliases(standard, aliases) {
   var combined = _.extend({}, aliases);
   standard.forEach(function(target) {
-    combined[target] = [target];
+    if (combined[target] === undefined) {
+      combined[target] = [target];
+    }
   });
 
   return combined
@@ -33,11 +35,13 @@ var QS_LAYERS = ['admin0', 'admin1', 'admin2', 'neighborhood', 'locality', 'loca
 
 var LAYER_ALIASES = {
   'coarse': WOF_LAYERS.concat(QS_LAYERS),
-  'venue': ['venue', 'way', 'node'] // 'venue' is a valid layer for Geonames, so while a little weird,
-                                    // this alias that contains itself does actaully work
+  'venue': ['venue', 'node', 'way'], // 'venue' is a valid layer for Geonames, so while a little weird,
+                                     // this alias that contains itself does actaully work.
+  'country': ['country', 'admin0'],  // Include both QS and WOF layers for various types of places
+  'region': ['region', 'admin1']
 };
 
-var LAYERS = WOF_LAYERS.concat(QS_LAYERS, ['address', 'way', 'node']);
+var LAYERS = WOF_LAYERS.concat(QS_LAYERS, ['address', 'way', 'node', 'venue']);
 
 var LAYER_MAPPING = addStandardTargetsToAliases(LAYERS, LAYER_ALIASES);
 

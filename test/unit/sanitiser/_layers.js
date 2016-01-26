@@ -24,25 +24,24 @@ module.exports.tests.sanitize_layers = function(test, common) {
     t.end();
   });
 
-  //TODO: decide if venue alias layer contains OSM node+way
-  //test('venue (alias) layer', function(t) {
-    //var venue_layers = ['geoname','osmnode','osmway'];
-    //var raw = { layers: 'venue' };
-    //var clean = {};
+  test('venue (alias) layer', function(t) {
+    var raw = { layers: 'venue' };
+    var clean = {};
 
-    //sanitize(raw, clean);
+    sanitize(raw, clean);
 
-    //t.deepEqual(clean.types.from_layers, venue_layers, 'venue layers set');
-    //t.end();
-  //});
+    var venue_layers = ['venue','node','way'];
+    t.deepEqual(clean.layers, venue_layers, 'venue layers set');
+    t.end();
+  });
 
   test('coarse (alias) layer', function(t) {
-    var admin_layers = [ 'continent', 'macrocountry', 'country', 'dependency', 'region', 'locality', 'localadmin', 'county', 'macrohood', 'neighbourhood', 'microhood', 'disputed', 'admin0', 'admin1', 'admin2', 'neighborhood', 'local_admin' ];
     var raw = { layers: 'coarse' };
     var clean = {};
 
     sanitize(raw, clean);
 
+    var admin_layers = [ 'continent', 'macrocountry', 'country', 'dependency', 'region', 'locality', 'localadmin', 'county', 'macrohood', 'neighbourhood', 'microhood', 'disputed', 'admin0', 'admin1', 'admin2', 'neighborhood', 'local_admin' ];
     t.deepEqual(clean.layers, admin_layers, 'coarse layers set');
     t.end();
   });
@@ -58,27 +57,24 @@ module.exports.tests.sanitize_layers = function(test, common) {
   });
 
   test('venue alias layer plus regular layers', function(t) {
-    var venue_layers = ['geoname','osmnode','osmway'];
-    var reg_layers = ['admin0', 'admin1'];
     var raw = { layers: 'venue,country,region' };
     var clean = {};
 
     sanitize(raw, clean);
 
-    t.deepEqual(clean.types.from_layers, venue_layers.concat(reg_layers), 'venue + regular layers');
+    var expected_layers = ['venue','node', 'way', 'country', 'admin0', 'region', 'admin1'];
+    t.deepEqual(clean.layers, expected_layers, 'venue + regular layers');
     t.end();
   });
 
   test('coarse alias layer plus regular layers', function(t) {
-    var admin_layers = ['admin0','admin1','admin2','neighborhood','locality','local_admin'];
-    var reg_layers   = ['geoname', 'osmnode', 'osmway'];
-
     var raw = { layers: 'coarse,country' };
     var clean = {};
 
     sanitize(raw, clean);
 
-    t.deepEqual(clean.types.from_layers, admin_layers.concat(reg_layers), 'coarse + regular layers set');
+    var expected_layers = [ 'continent', 'macrocountry', 'country', 'dependency', 'region', 'locality', 'localadmin', 'county', 'macrohood', 'neighbourhood', 'microhood', 'disputed', 'admin0', 'admin1', 'admin2', 'neighborhood', 'local_admin' ];
+    t.deepEqual(clean.layers, expected_layers, 'coarse + regular layers set');
     t.end();
   });
 
@@ -88,29 +84,32 @@ module.exports.tests.sanitize_layers = function(test, common) {
 
     sanitize(raw, clean);
 
-    t.deepEqual(clean.layers, ['address', 'country', 'locality'], 'address + regular layers set');
+    var expected_layers = ['address', 'country', 'admin0', 'locality' ]
+    t.deepEqual(clean.layers, expected_layers, 'address + regular layers set');
     t.end();
   });
 
   test('alias layer plus regular layers (no duplicates)', function(t) {
-    var venue_layers = ['geoname','osmnode','osmway','admin0'];
     var raw = { layers: 'venue,country' };
     var clean = {};
 
     sanitize(raw, clean);
 
-    t.deepEqual(clean.types.from_layers, venue_layers, 'venue layers found (no duplicates)');
+    var expected_layers = ['venue', 'node', 'way', 'country', 'admin0'];
+    t.deepEqual(clean.layers, expected_layers, 'venue layers found (no duplicates)');
     t.end();
   });
 
   test('multiple alias layers (no duplicates)', function(t) {
-    var alias_layers = ['geoname','osmnode','osmway','admin0','admin1','admin2','neighborhood','locality','local_admin'];
     var raw = { layers: 'venue,coarse' };
     var clean = {};
 
     sanitize(raw, clean);
 
-    t.deepEqual(clean.types.from_layers, alias_layers, 'all layers found (no duplicates)');
+    var coarse_layers = [ 'continent', 'macrocountry', 'country', 'dependency', 'region', 'locality', 'localadmin', 'county', 'macrohood', 'neighbourhood', 'microhood', 'disputed', 'admin0', 'admin1', 'admin2', 'neighborhood', 'local_admin' ];
+    var venue_layers = [ 'venue', 'node', 'way' ];
+    var expected_layers = venue_layers.concat(coarse_layers);
+    t.deepEqual(clean.layers, expected_layers, 'all layers found (no duplicates)');
     t.end();
   });
 };

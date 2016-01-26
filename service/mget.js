@@ -24,6 +24,7 @@ function service( backend, query, cb ){
 
   // query new backend
   backend().client.mget( cmd, function( err, data ){
+    console.log('service err: ' + err);
 
     // handle backend errors
     if( err ){ return cb( err ); }

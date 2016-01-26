@@ -94,30 +94,32 @@ module.exports.tests.valid_ids = function(test, common) {
   test('ids: valid input (openaddresses)', function(t) {
     var raw = { ids: 'openaddresses:address:20' };
     var clean = {};
-    var expected_ids = [{
-      id: '20',
-      types: [ 'openaddresses' ]
-    }];
 
     var messages = sanitize( raw, clean );
 
+    var expected_ids = [{
+      source: 'openaddresses',
+      layer: 'address',
+      id: '20',
+    }];
     t.deepEqual( messages.errors, [], ' no errors');
     t.deepEqual( clean.ids, expected_ids, 'single type value returned');
     t.end();
   });
 
   test('ids: valid input (osm)', function(t) {
-    var raw = { ids: 'osm:venue:500' };
+    var raw = { ids: 'osm:venue:node:500' };
     var clean = {};
     var expected_ids = [{
-      id: '500',
-      types: [ 'osmnode', 'osmway' ]
+      source: 'osm',
+      layer: 'venue',
+      id: 'node:500',
     }];
 
     var messages = sanitize( raw, clean );
 
     t.deepEqual( messages.errors, [], ' no errors');
-    t.deepEqual( clean.ids, expected_ids, 'osm could be two types, but that\'s ok');
+    t.deepEqual( clean.ids, expected_ids, 'osm has node: or way: in id field');
     t.end();
   });
 };
@@ -152,30 +154,47 @@ module.exports.tests.geonames = function(test, common) {
 
 module.exports.tests.multiple_ids = function(test, common) {
   test('multiple ids', function(t) {
-    var raw = { ids: 'geonames:venue:1,osm:venue:2' };
+    var raw = { ids: 'geonames:venue:1,osm:address:way:2' };
     var clean = {};
-    var expected_clean = { ids: [ { id: '1', types: [ 'geoname' ] }, { id: '2', types: [ 'osmnode', 'osmway' ] } ] };
 
     var messages = sanitize( raw, clean);
 
+    var expected_ids = [ {
+      source: 'geonames',
+      layer: 'venue',
+      id: '1'
+    }, {
+      source: 'osm',
+      layer: 'address',
+      id: 'way:2'
+    } ];
+
     t.deepEqual( messages.errors, [], 'no errors' );
     t.deepEqual( messages.warnings, [], 'no warnings' );
-    t.deepEqual(clean, expected_clean, 'clean set correctly');
+    t.deepEqual(clean.ids, expected_ids, 'clean set correctly');
     t.end();
   });
 };
 
 module.exports.tests.de_dupe = function(test, common) {
   test('duplicate ids', function(t) {
-    var expected_clean = { ids: [ { id: '1', types: [ 'geoname' ] }, { id: '2', types: [ 'osmnode', 'osmway' ] } ] };
-    var raw = { ids: 'geonames:venue:1,osm:venue:2,geonames:venue:1' };
+    var raw = { ids: 'geonames:venue:1,osm:venue:node:2,geonames:venue:1' };
     var clean = {};
 
     var messages = sanitize( raw, clean );
 
+    var expected_ids = [ {
+      source: 'geonames',
+      layer: 'venue',
+      id: '1'
+    }, {
+      source: 'osm',
+      layer: 'venue',
+      id: 'node:2'
+    } ];
     t.deepEqual( messages.errors, [], 'no errors' );
     t.deepEqual( messages.warnings, [], 'no warnings' );
-    t.deepEqual(clean, expected_clean, 'clean set correctly');
+    t.deepEqual(clean.ids, expected_ids, 'clean set correctly');
     t.end();
   });
 };
