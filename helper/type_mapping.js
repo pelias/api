@@ -15,10 +15,10 @@ function addStandardTargetsToAliases(standard, aliases) {
 /*
  * Sources
  */
-var SOURCES = ['osm', 'openaddresses', 'geonames', 'quattroshapes', 'whosonfirst'];
+var SOURCES = ['openstreetmap', 'openaddresses', 'geonames', 'quattroshapes', 'whosonfirst'];
 
 var SOURCE_ALIASES = {
-  'openstreetmap': ['osm'],
+  'osm': ['openstreetmap'],
   'oa': ['openaddresses'],
   'gn': ['geonames'],
   'qs': ['quattroshapes'],
