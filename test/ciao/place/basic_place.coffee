@@ -29,5 +29,5 @@ should.not.exist json.geocoding.errors
 should.not.exist json.geocoding.warnings
 
 #? inputs
-json.geocoding.query['ids'].should.eql [{ id: '1', types: [ 'geoname' ] }]
+json.geocoding.query['ids'].should.eql [{ id: '1', layer: 'venue', source: 'geonames' }]
 should.not.exist json.geocoding.query['size']

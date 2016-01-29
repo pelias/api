@@ -11,7 +11,6 @@ var tests = [
   require('./helper/labelSchema'),
   require('./helper/text_parser'),
   require('./helper/type_mapping'),
-  require('./helper/types'),
   require('./helper/sizeCalculator'),
   require('./middleware/confidenceScore'),
   require('./middleware/confidenceScoreReverse'),

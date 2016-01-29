@@ -20,13 +20,13 @@ module.exports.tests.interfaces = function(test, common) {
   });
 
   test('basic source mapping', function(t) {
-    t.deepEquals(type_mapping.source_mapping.osm, ['osm']);
+    t.deepEquals(type_mapping.source_mapping.osm, ['openstreetmap']);
     t.deepEquals(type_mapping.source_mapping.openaddresses, ['openaddresses']);
     t.end();
   });
 
   test('alias source mapping', function(t) {
-    t.deepEquals(type_mapping.source_mapping.openstreetmap, ['osm']);
+    t.deepEquals(type_mapping.source_mapping.openstreetmap, ['openstreetmap']);
     t.deepEquals(type_mapping.source_mapping.wof, ['whosonfirst']);
     t.end();
   });

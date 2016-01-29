@@ -22,9 +22,6 @@ function sanitize( raw, clean, opts ) {
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  // init clean.types
-  clean.types = clean.types || {};
-
   // the string of targets (comma delimeted)
   var targetsString = raw[opts.paramName];
 

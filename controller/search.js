@@ -25,9 +25,12 @@ function setup( backend, query ){
       body: query( req.clean )
     };
 
-    // ?
+    // set the Elasticsearch types to filter by,
+    // and remove the property from clean so the API
+    // response output is cleaner
     if( req.clean.hasOwnProperty('type') ){
       cmd.type = req.clean.type;
+      delete req.clean.type;
     }
 
     // query backend

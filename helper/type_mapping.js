@@ -44,6 +44,7 @@ var LAYER_ALIASES = {
 var LAYERS = WOF_LAYERS.concat(QS_LAYERS, ['address', 'way', 'node', 'venue']);
 
 var LAYER_MAPPING = addStandardTargetsToAliases(LAYERS, LAYER_ALIASES);
+console.log(SOURCE_MAPPING);
 
 module.exports = {
   sources: SOURCES,

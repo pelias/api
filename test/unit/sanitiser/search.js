@@ -5,7 +5,7 @@ var extend = require('extend'),
     middleware = search.middleware,
     defaultError = 'invalid param \'text\': text length, must be >0';
 // these are the default values you would expect when no input params are specified.
-var emptyClean = { private: false, size: 10, types: {} };
+var emptyClean = { private: false, size: 10 };
 
 module.exports.tests = {};
 

@@ -29,7 +29,7 @@ module.exports.tests.no_sources = function(test, common) {
     };
 
     var expected_error = 'sources parameter cannot be an empty string. ' +
-       'Valid options: openstreetmap,oa,gn,qs,wof,osm,openaddresses,geonames,quattroshapes,whosonfirst';
+       'Valid options: osm,oa,gn,qs,wof,openstreetmap,openaddresses,geonames,quattroshapes,whosonfirst';
 
     var messages = sanitize(req.query, req.clean);
 
@@ -59,17 +59,17 @@ module.exports.tests.valid_sources = function(test, common) {
     t.end();
   });
 
-  test('openstreetmap source', function(t) {
+  test('openstreetmap (abbreviated) source', function(t) {
     var req = {
       query: {
-        sources: 'openstreetmap'
+        sources: 'osm'
       },
       clean: { }
     };
 
     var messages = sanitize(req.query, req.clean);
 
-    t.deepEqual(req.clean.sources, ['osm'], 'full name openstreetmap is set to abbreviated version, osm');
+    t.deepEqual(req.clean.sources, ['openstreetmap'], 'abbreviation is expanded to full version');
     t.deepEqual(messages.errors, [], 'no error returned');
     t.deepEqual(messages.warnings, [], 'no warnings returned');
     t.end();
@@ -85,8 +85,8 @@ module.exports.tests.valid_sources = function(test, common) {
 
     var messages = sanitize(req.query, req.clean);
 
-    t.deepEqual(req.clean.sources, ['osm', 'openaddresses'],
-                'clean.types should contain from_source entry with multiple entries for openstreetmap and openadresses');
+    t.deepEqual(req.clean.sources, ['openstreetmap', 'openaddresses'],
+                'clean.sources should contain openstreetmap and openadresses');
     t.deepEqual(messages.errors, [], 'no error returned');
     t.deepEqual(messages.warnings, [], 'no warnings returned');
     t.end();
@@ -103,7 +103,7 @@ module.exports.tests.invalid_sources = function(test, common) {
     };
     var expected_messages = {
       errors: [
-        '\'notasource\' is an invalid sources parameter. Valid options: openstreetmap,oa,gn,qs,wof,osm,openaddresses,geonames,quattroshapes,whosonfirst'
+        '\'notasource\' is an invalid sources parameter. Valid options: osm,oa,gn,qs,wof,openstreetmap,openaddresses,geonames,quattroshapes,whosonfirst'
       ],
       warnings: []
     };
