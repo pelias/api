@@ -2,5 +2,8 @@
 
 rm -r docs || true
 
+curl -s http://localhost:3100/v1 > /dev/null || die "Pelias server does not appear to be running \
+on http://localhost:3100, run npm start in another window before generating docs."
+
 cd test/ciao
 node ../../node_modules/ciao/bin/ciao -c ../ciao.json . -d ../../docs
