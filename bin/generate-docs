@@ -1,0 +1,6 @@
+#!/bin/bash -ex
+
+rm -r docs || true
+
+cd test/ciao
+node ../../node_modules/ciao/bin/ciao -c ../ciao.json . -d ../../docs
