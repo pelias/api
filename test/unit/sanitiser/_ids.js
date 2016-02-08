@@ -2,10 +2,6 @@ var sanitize = require('../../../sanitiser/_ids');
 
 var delimiter = ':';
 var type_mapping = require('../../../helper/type_mapping');
-var inputs = {
-  valid: [ 'geoname:1', 'osmnode:2', 'admin0:53', 'osmway:44', 'geoname:5' ],
-  invalid: [ ':', '', '::', 'geoname:', ':234', 'gibberish:23' ]
-};
 
 var formatError = function(input) {
   return 'id `' + input + ' is invalid: must be of the format source:layer:id for ex: \'geonames:venue:4163334\'';
