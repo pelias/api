@@ -45,7 +45,13 @@ function sanitizeId(rawId, messages) {
     return;
   }
 
-  var types = type_mapping.source_and_layer_to_type(source, layer);
+  //TODO: remove this once we have a better set of layers for Geonames
+  var types;
+  if (source === 'gn' || source === 'geonames') {
+    types = ['geoname'];
+  } else {
+    types = type_mapping.source_and_layer_to_type(source, layer);
+  }
 
   return {
     id: id,
