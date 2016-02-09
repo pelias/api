@@ -63,7 +63,7 @@ function sanitize( raw, clean ){
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  if (!check.unemptyString( raw.ids )) {
+  if (!check.nonEmptyString( raw.ids )) {
     messages.errors.push( lengthError);
     return messages;
   }
@@ -75,7 +75,7 @@ function sanitize( raw, clean ){
   rawIds = _.unique(rawIds);
 
   // ensure all elements are valid non-empty strings
-  if (!rawIds.every(check.unemptyString)) {
+  if (!rawIds.every(check.nonEmptyString)) {
       messages.errors.push( lengthError );
   }
 

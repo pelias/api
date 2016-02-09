@@ -24,11 +24,11 @@ function sanitize( raw, clean, opts ) {
   var targetsString = raw[opts.paramName];
 
   // trim whitespace
-  if( check.unemptyString( targetsString ) ){
+  if( check.nonEmptyString( targetsString ) ){
     targetsString = targetsString.trim();
 
     // param must be a valid non-empty string
-    if( !check.unemptyString( targetsString ) ){
+    if( !check.nonEmptyString( targetsString ) ){
       messages.errors.push(
         opts.paramName + ' parameter cannot be an empty string. Valid options: ' + opts.targetMapKeysString
       );
