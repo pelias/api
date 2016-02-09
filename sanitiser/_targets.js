@@ -61,7 +61,7 @@ function sanitize( raw, clean, opts ) {
         }, []);
 
         // dedupe in case aliases expanded to common things or user typed in duplicates
-        clean.types[typesKey] = _.unique(clean.types[typesKey]);
+        clean.types[typesKey] = _.uniq(clean.types[typesKey]);
       }
 
     }

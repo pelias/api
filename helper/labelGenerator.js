@@ -29,7 +29,7 @@ module.exports = function( record ){
   }
 
   // de-dupe outputs
-  labelParts = _.unique( labelParts );
+  labelParts = _.uniq( labelParts );
 
   return labelParts.join(', ').trim();
 };

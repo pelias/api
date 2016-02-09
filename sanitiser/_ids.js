@@ -72,7 +72,7 @@ function sanitize( raw, clean ){
   var rawIds = raw.ids.split(',');
 
   // deduplicate
-  rawIds = _.unique(rawIds);
+  rawIds = _.uniq(rawIds);
 
   // ensure all elements are valid non-empty strings
   if (!rawIds.every(check.nonEmptyString)) {
