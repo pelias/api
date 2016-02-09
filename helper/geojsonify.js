@@ -35,10 +35,10 @@ function lookupSource(src) {
  */
 function lookupLayer(src) {
   if (src._type === 'geoname') {
-    if (_.contains(src.category, 'admin')) {
-      if (_.contains(src.category, 'admin:city')) { return 'locality'; }
-      if (_.contains(src.category, 'admin:admin1')) { return 'region'; }
-      if (_.contains(src.category, 'admin:admin2')) { return 'county'; }
+    if (_.includes(src.category, 'admin')) {
+      if (_.includes(src.category, 'admin:city')) { return 'locality'; }
+      if (_.includes(src.category, 'admin:admin1')) { return 'region'; }
+      if (_.includes(src.category, 'admin:admin2')) { return 'county'; }
       return 'neighbourhood'; // this could also be 'local_admin'
     }
 
@@ -46,7 +46,7 @@ function lookupLayer(src) {
     if (src.address) { return 'address'; }
   }
 
-  if (_.contains(type_mapping.types, src._type)) {
+  if (_.includes(type_mapping.types, src._type)) {
     return type_mapping.type_to_layer[src._type];
   }
 

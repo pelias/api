@@ -30,17 +30,17 @@ function sanitizeId(rawId, messages) {
   var id = parts.slice(2).join(ID_DELIM);
 
   // check if any parts of the gid are empty
-  if (_.contains([source, layer, id], '')) {
+  if (_.includes([source, layer, id], '')) {
     messages.errors.push( formatError(rawId) );
     return;
   }
 
-  if (!_.contains(type_mapping.sources, source)) {
+  if (!_.includes(type_mapping.sources, source)) {
     messages.errors.push( targetError(source, type_mapping.sources) );
     return;
   }
 
-  if (!_.contains(type_mapping.layers, layer)) {
+  if (!_.includes(type_mapping.layers, layer)) {
     messages.errors.push( targetError(layer, type_mapping.layers) );
     return;
   }

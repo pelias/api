@@ -22,7 +22,7 @@ function sanitize( raw, clean ){
 // be lenient with 'truthy' values
 function isTruthy(val) {
   if( check.string( val ) ){
-    return _.contains( ['true', '1'], val );
+    return _.includes( ['true', '1'], val );
   }
 
   return val === 1 || val === true;

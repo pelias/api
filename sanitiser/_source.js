@@ -21,7 +21,7 @@ function sanitize( raw, clean ) {
     var sources = raw.source.split(',');
 
     var invalid_sources = sources.filter(function(source) {
-      return !_.contains( ALL_SOURCES, source );
+      return !_.includes( ALL_SOURCES, source );
     });
 
     if( invalid_sources.length > 0 ){

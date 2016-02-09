@@ -16,7 +16,7 @@ module.exports = function( record ){
   var buildOutput = function(parts, schemaArr, record) {
     for (var i=0; i<schemaArr.length; i++) {
       var fieldValue = record[schemaArr[i]];
-      if (check.unemptyString(fieldValue) && !_.contains(parts, fieldValue)) {
+      if (check.unemptyString(fieldValue) && !_.includes(parts, fieldValue)) {
         parts.push( fieldValue );
         return parts;
       }
