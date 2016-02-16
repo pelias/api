@@ -122,34 +122,6 @@ module.exports.tests.valid_ids = function(test, common) {
   });
 };
 
-module.exports.tests.geonames = function(test, common) {
-  test('geonames venue maps correctly as normal', function(t) {
-    var raw = { ids: 'geonames:venue:15' };
-    var clean = {};
-
-    var messages = sanitize( raw, clean);
-
-    var expected_clean = { ids: [ { id: '15', types: [ 'geoname' ] } ] };
-    t.deepEqual( messages.errors, [], 'no errors' );
-    t.deepEqual( messages.warnings, [], 'no warnings' );
-    t.deepEqual(clean, expected_clean, 'clean set correctly');
-    t.end();
-  });
-
-  test('arbitrary geonames layer maps to geoname type', function(t) {
-    var raw = { ids: 'geonames:address:16' }; // geonames technically has no address records!
-    var clean = {};
-
-    var messages = sanitize( raw, clean);
-
-    var expected_clean = { ids: [ { id: '16', types: [ 'geoname' ] } ] };
-    t.deepEqual( messages.errors, [], 'no errors' );
-    t.deepEqual( messages.warnings, [], 'no warnings' );
-    t.deepEqual(clean, expected_clean, 'clean set correctly');
-    t.end();
-  });
-};
-
 module.exports.tests.multiple_ids = function(test, common) {
   test('multiple ids', function(t) {
     var raw = { ids: 'geonames:venue:1,osm:venue:2' };
