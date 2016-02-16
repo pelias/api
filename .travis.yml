@@ -1,6 +1,16 @@
-language: node_js
-script: "npm run unit"
-node_js:
-  - "0.10"
-  - "0.12"
 sudo: false
+language: node_js
+node_js:
+  - 0.10
+  - 0.12
+  - 4.0
+  - 4.1
+  - 4.2
+matrix:
+    allow_failures:
+        - node_js: 4.0
+        - node_js: 4.1
+        - node_js: 4.2
+env:
+    - TEST_SUITE=unit
+script: "npm run $TEST_SUITE"
