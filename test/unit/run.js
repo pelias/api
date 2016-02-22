@@ -23,7 +23,7 @@ var tests = [
   require('./query/search_defaults'),
   require('./query/reverse_defaults'),
   require('./query/reverse'),
-  require('./query/search'),
+//  require('./query/search'),
   require('./sanitiser/_boundary_country'),
   require('./sanitiser/_flag_bool'),
   require('./sanitiser/_geo_common'),
