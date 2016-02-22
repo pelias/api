@@ -24,6 +24,8 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'ngram:field': 'name.default',
   'ngram:boost': 1,
 
+  'multingram:fields': 'name.*',
+
   'phrase:analyzer': 'peliasPhrase',
   'phrase:field': 'phrase.default',
   'phrase:boost': 1,

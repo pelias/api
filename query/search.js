@@ -11,7 +11,7 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
 query.score( peliasQuery.view.boundary_country, 'must' );
-query.score( peliasQuery.view.ngrams, 'must' );
+query.score( peliasQuery.view.multingrams, 'must' );
 
 // scoring boost
 query.score( peliasQuery.view.phrase );
