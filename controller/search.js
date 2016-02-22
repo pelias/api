@@ -42,7 +42,7 @@ function setup( backend, query ){
         res.data = docs;
         res.meta = meta;
       }
-
+      logger.debug('[raw response]:', JSON.stringify(docs));
       next();
     });
 

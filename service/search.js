@@ -15,6 +15,7 @@ function service( backend, cmd, cb ){
     // handle backend errors
     if( err ){ return cb( err ); }
 
+    peliasLogger.debug( JSON.stringify(cmd) );
     // log total ms elasticsearch reported the query took to execute
     peliasLogger.verbose( 'time elasticsearch reported:', data.took / 1000 );
 
