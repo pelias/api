@@ -35,12 +35,12 @@ module.exports = {
                       'lat': 29.49136,
                       'lon': -82.50622
                     },
-                    'offset': '10km',
+                    'offset': '0km',
                     'scale': '250km',
                     'decay': 0.5
                   }
                 },
-                'weight': 3
+                'weight': 10
               }],
               'score_mode': 'avg',
               'boost_mode': 'multiply',
@@ -114,7 +114,7 @@ module.exports = {
                   'modifier': 'log1p',
                   'field': 'population'
                 },
-                'weight': 2
+                'weight': 3
               }]
             }
           }]
