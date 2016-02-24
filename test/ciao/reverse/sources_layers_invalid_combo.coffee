@@ -24,13 +24,12 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ 'You have specified both the `sources` and `layers` parameters in a combination that will return no results.' ]
+json.geocoding.errors.should.eql [ 'You have specified both the `sources` and `layers` parameters in a combination that will return no results: the quattroshapes source has nothing in the address layer' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
 
 #? inputs
 json.geocoding.query['size'].should.eql 10
-json.geocoding.query.types['from_layers'].should.eql ["osmaddress","openaddresses"]
-json.geocoding.query.types['from_sources'].should.eql ["admin0","admin1","admin2","neighborhood","locality","local_admin"]
-should.not.exist json.geocoding.query['type']
+json.geocoding.query.layers.should.eql ["address"]
+json.geocoding.query.sources.should.eql ["quattroshapes"]

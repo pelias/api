@@ -24,7 +24,7 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ '\'notasource\' is an invalid sources parameter. Valid options: gn,geonames,oa,openaddresses,qs,quattroshapes,osm,openstreetmap' ]
+json.geocoding.errors.should.eql [ '\'notasource\' is an invalid sources parameter. Valid options: osm,oa,gn,qs,wof,openstreetmap,openaddresses,geonames,quattroshapes,whosonfirst' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
