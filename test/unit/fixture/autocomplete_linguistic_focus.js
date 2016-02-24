@@ -47,23 +47,13 @@ module.exports = {
               'filter': {
                 'or': [
                   {
-                    'type': {
-                      'value': 'osmnode'
+                    'term': {
+                      'layer': 'venue'
                     }
                   },
                   {
-                    'type': {
-                      'value': 'osmway'
-                    }
-                  },
-                  {
-                    'type': {
-                      'value': 'osmaddress'
-                    }
-                  },
-                  {
-                    'type': {
-                      'value': 'openaddresses'
+                    'term': {
+                      'layer': 'address'
                     }
                   }
                 ]
