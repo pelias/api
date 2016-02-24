@@ -7,12 +7,8 @@ module.exports = function( record ){
 
   var labelParts = [ record.name.default ];
 
-  var schema = schemas.default;
-  
-  if (record.country_a && record.country_a.length && schemas[record.country_a]) {
-    schema = schemas[record.country_a];
-  }
-  
+  var schema = getSchema(record.country_a);
+
   var buildOutput = function(parts, schemaArr, record) {
     for (var i=0; i<schemaArr.length; i++) {
       var fieldValue = record[schemaArr[i]];
@@ -33,3 +29,12 @@ module.exports = function( record ){
 
   return labelParts.join(', ').trim();
 };
+
+// helper method that determines which schema to use based on country alpha3
+function getSchema(country_a) {
+  if (country_a && country_a.length && schemas[country_a]) {
+    return schemas[country_a];
+  }
+
+  return schemas.default;
+}
