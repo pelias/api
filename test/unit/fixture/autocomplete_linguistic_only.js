@@ -70,7 +70,7 @@ module.exports = {
                   'modifier': 'log1p',
                   'field': 'population'
                 },
-                'weight': 2
+                'weight': 3
               }]
             }
           }]
