@@ -27,6 +27,22 @@ module.exports.tests.san_francisco = function(test, common) {
   });
 };
 
+// USA county
+module.exports.tests.maui = function(test, common) {
+  test('USA county is the most granular local field', function(t) {
+    var doc = {
+      'name': { 'default': 'Maui' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'Hawaii',
+      'region_a': 'HI',
+      'county': 'Maui'
+    };
+    t.equal(generator(doc),'Maui, HI');
+    t.end();
+  });
+};
+
 // USA venue
 module.exports.tests.nyc_office = function(test, common) {
   test('30 West 26th Street', function(t) {
