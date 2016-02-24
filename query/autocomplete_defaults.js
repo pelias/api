@@ -30,10 +30,10 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'phrase:slop': 2,
 
   'focus:function': 'linear',
-  'focus:offset': '10km',
+  'focus:offset': '0km',
   'focus:scale': '250km',
   'focus:decay': 0.5,
-  'focus:weight': 3,
+  'focus:weight': 10,
 
   'function_score:score_mode': 'avg',
   'function_score:boost_mode': 'multiply',
@@ -90,6 +90,6 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'population:field': 'population',
   'population:modifier': 'log1p',
   'population:max_boost': 20,
-  'population:weight': 2
+  'population:weight': 3
 
 });
