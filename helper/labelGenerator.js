@@ -7,6 +7,7 @@ module.exports = function( record ){
 
   var labelParts = [ record.name.default ];
 
+  // get the schema to use for the records' country
   var schema = getSchema(record.country_a);
 
   var buildOutput = function(parts, schemaArr, record) {
@@ -24,10 +25,9 @@ module.exports = function( record ){
     labelParts = buildOutput(labelParts, schema[key], record);
   }
 
-  // de-dupe outputs
-  labelParts = _.unique( labelParts );
+  // de-dupe, join with comma, trim, return
+  return _.unique( labelParts ).join(', ').trim();
 
-  return labelParts.join(', ').trim();
 };
 
 // helper method that determines which schema to use based on country alpha3
