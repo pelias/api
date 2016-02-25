@@ -9,34 +9,41 @@ var peliasQuery = require('pelias-query'),
 //------------------------------
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
-// mandatory matches
-query.score( peliasQuery.view.boundary_country, 'must' );
-query.score( peliasQuery.view.multingrams, 'must' );
+var views;
+var query_settings = require('pelias-config').generate().query;
+if (query_settings && query_settings.views) { // external config for views
+  views = query_settings.views;
+} else {
+  // Get default view configuration
+  views = require( './query_views.json' );
+}
 
-// scoring boost
-query.score( peliasQuery.view.phrase );
-query.score( peliasQuery.view.focus( peliasQuery.view.phrase ) );
-query.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
-query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
-
-// address components
-query.score( peliasQuery.view.address('housenumber') );
-query.score( peliasQuery.view.address('street') );
-query.score( peliasQuery.view.address('postcode') );
-
-// admin components
-query.score( peliasQuery.view.admin('alpha3') );
-query.score( peliasQuery.view.admin('admin0') );
-query.score( peliasQuery.view.admin('admin1') );
-query.score( peliasQuery.view.admin('admin1_abbr') );
-query.score( peliasQuery.view.admin('admin2') );
-query.score( peliasQuery.view.admin('local_admin') );
-query.score( peliasQuery.view.admin('locality') );
-query.score( peliasQuery.view.admin('neighborhood') );
-
-// non-scoring hard filters
-query.filter( peliasQuery.view.boundary_circle );
-query.filter( peliasQuery.view.boundary_rect );
+for(var type in views) { // type = score | filter
+  var viewSet = views[type];
+  if(!query[type]) { // skip unknown
+    return;
+  }
+  for(var viewName in viewSet) {
+    var params = viewSet[viewName];
+    var param, option;
+    if (Array.isArray(params) ) {
+      if( typeof params[0] === 'string') {
+        param = params[0];
+      }
+      else if (typeof params[1] === 'string') {
+        param =  peliasQuery.view[params[1]]; // func
+      }
+      option = params[2]; // must | should ...
+    } else { // default case: string param for view
+      param = params;
+    }
+    if(param) {
+      query[type]( peliasQuery.view[viewName](param), option );
+    } else {
+      query[type]( peliasQuery.view[viewName], option );
+    }
+  }
+}
 
 // --------------------------------
 
