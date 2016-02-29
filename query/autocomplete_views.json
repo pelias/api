@@ -1,0 +1,19 @@
+{
+  "score": [
+    [ "ngrams", null, false, "must"],
+
+    ["admin", "alpha3"],
+    ["admin", "admin0"],
+    ["admin", "admin1"],
+    ["admin", "admin1_abbr"],
+    ["admin", "admin2"],
+    ["admin", "local_admin"],
+    ["admin", "locality"],
+    ["admin", "neighborhood"],
+
+    ["phrase", null, false, "should"],
+    ["focus", "ngrams", true],
+    ["popularity", "phrase", true],
+    ["population", "phrase", true]
+  ]
+}

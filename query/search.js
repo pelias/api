@@ -1,6 +1,7 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./search_defaults'),
     textParser = require('./text_parser'),
+    viewsToQuery = require('./views_to_query'),
     check = require('check-types'),
     geolib = require('geolib');
 
@@ -11,44 +12,16 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 var views;
 var query_settings = require('pelias-config').generate().query;
-if (query_settings && query_settings.views) { // external config for views
-  views = query_settings.views;
+if (query_settings && query_settings.search && query_settings.search.views) {
+  // external config for views
+  views = query_settings.search.views;
 } else {
   // Get default view configuration
-  views = require( './query_views.json' );
+  views = require( './search_views.json' );
 }
 
-// Note: 'views' config values below are not sanitized. Api should stop if conf is bad.
-for(var type in views) { // type = score | filter
-  var viewSet = views[type];
-  for(var i=0; i<viewSet.length; i++) {
-    var params = viewSet[i];
-
-    // parse parameters from an array with the following format:
-    //   [0]=view name, [1]=view's parameter type (string or func)
-    //   [2]=bool to select func in [1], [3]=optional scoring type
-    var viewName = params[0];
-    var param = null, option=null;
-    if(params.length >= 2) {
-      param = params[1];
-      if(params.length >= 3) {
-        if (param && params[2]) {  // param is name of a function parameter
-          param =  peliasQuery.view[param]; // name to function
-	}
-	if(params.length >= 4) {
-	  option = params[3]; // must | should ...
-	}
-      }
-    }
-    if(param) {
-      query[type]( peliasQuery.view[viewName](param), option );
-    } else {
-      query[type]( peliasQuery.view[viewName], option );
-    }
-  }
-}
-
-// --------------------------------
+// add defined views to the query
+viewsToQuery(views, query);
 
 /**
   map request variables to query variables for all inputs

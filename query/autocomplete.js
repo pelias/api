@@ -2,6 +2,7 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./autocomplete_defaults'),
     textParser = require('./text_parser'),
+    viewsToQuery = require('./views_to_query'),
     check = require('check-types');
 
 
@@ -10,26 +11,18 @@ var peliasQuery = require('pelias-query'),
 //------------------------------
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
-// mandatory matches
-query.score( peliasQuery.view.ngrams, 'must' );
+var views;
+var query_settings = require('pelias-config').generate().query;
+if (query_settings && query_settings.autocomplete && query_settings.autocomplete.views) {
+  // external config
+  views = query_settings.autocomplete.views;
+} else {
+  // Get default view configuration
+  views = require( './autocomplete_views.json' );
+}
 
-// admin components
-query.score( peliasQuery.view.admin('alpha3') );
-query.score( peliasQuery.view.admin('admin0') );
-query.score( peliasQuery.view.admin('admin1') );
-query.score( peliasQuery.view.admin('admin1_abbr') );
-query.score( peliasQuery.view.admin('admin2') );
-query.score( peliasQuery.view.admin('local_admin') );
-query.score( peliasQuery.view.admin('locality') );
-query.score( peliasQuery.view.admin('neighborhood') );
-
-// scoring boost
-query.score( peliasQuery.view.phrase );
-query.score( peliasQuery.view.focus( peliasQuery.view.ngrams ) );
-query.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
-query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
-
-// --------------------------------
+// add defined views to the query
+viewsToQuery(views, query);
 
 /**
   map request variables to query variables for all inputs

@@ -1,5 +1,6 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./reverse_defaults'),
+    viewsToQuery = require('./views_to_query'),
     check = require('check-types');
 
 //------------------------------
@@ -7,14 +8,18 @@ var peliasQuery = require('pelias-query'),
 //------------------------------
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
-// mandatory matches
-query.score( peliasQuery.view.boundary_country, 'must' );
+var views;
+var query_settings = require('pelias-config').generate().query;
+if (query_settings && query_settings.reverse && query_settings.reverse.views) {
+  // external config for views
+  views = query_settings.reverse.views;
+} else {
+  // get default view configuration
+  views = require( './reverse_views.json' );
+}
 
-// scoring boost
-query.sort( peliasQuery.view.sort_distance );
-
-// non-scoring hard filters
-query.filter( peliasQuery.view.boundary_circle );
+// add defined views to the query
+viewsToQuery(views, query);
 
 // --------------------------------
 
