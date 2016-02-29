@@ -12,7 +12,7 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.localadmin = function(test, common) {
   test('localadmin should trump locality, neighbourhood, and county', function(t) {
     var doc = {
-      'name': { 'default': 'Default Name' },
+      'name': 'Default Name',
       'country_a': 'USA',
       'country': 'United States',
       'region': 'Region Name',
@@ -30,7 +30,7 @@ module.exports.tests.localadmin = function(test, common) {
 module.exports.tests.locality = function(test, common) {
   test('locality should trump neighbourhood and county when localadmin not available', function(t) {
     var doc = {
-      'name': { 'default': 'Default Name' },
+      'name': 'Default Name',
       'country_a': 'USA',
       'country': 'United States',
       'region': 'Region Name',
@@ -47,7 +47,7 @@ module.exports.tests.locality = function(test, common) {
 module.exports.tests.neighbourhood = function(test, common) {
   test('neighbourhood should trump county when neither localadmin nor locality', function(t) {
     var doc = {
-      'name': { 'default': 'Default Name' },
+      'name': 'Default Name',
       'country_a': 'USA',
       'country': 'United States',
       'region': 'Region Name',
@@ -63,7 +63,7 @@ module.exports.tests.neighbourhood = function(test, common) {
 module.exports.tests.county = function(test, common) {
   test('county should be used when localadmin, locality, and neighbourhood are not available', function(t) {
     var doc = {
-      'name': { 'default': 'Default Name' },
+      'name': 'Default Name',
       'country_a': 'USA',
       'country': 'United States',
       'region': 'Region Name',
@@ -78,7 +78,7 @@ module.exports.tests.county = function(test, common) {
 module.exports.tests.region = function(test, common) {
   test('region should be used when region_a is not available', function(t) {
     var doc = {
-      'name': { 'default': 'Default Name' },
+      'name': 'Default Name',
       'country_a': 'USA',
       'country': 'United States',
       'region': 'Region Name'
@@ -92,7 +92,7 @@ module.exports.tests.region = function(test, common) {
 module.exports.tests.region_geonames = function(test, common) {
   test('default name should not be prepended when source=geonames and layer=region', function(t) {
     var doc = {
-      'name': { 'default': 'Region Name' },
+      'name': 'Region Name',
       'country_a': 'USA',
       'country': 'United States',
       'region': 'Region Name',
@@ -109,7 +109,7 @@ module.exports.tests.region_geonames = function(test, common) {
 module.exports.tests.region_whosonfirst = function(test, common) {
   test('default name should not be prepended when source=whosonfirst and layer=region', function(t) {
     var doc = {
-      'name': { 'default': 'Region Name' },
+      'name': 'Region Name',
       'country_a': 'USA',
       'country': 'United States',
       'region': 'Region Name',
@@ -126,7 +126,7 @@ module.exports.tests.region_whosonfirst = function(test, common) {
 module.exports.tests.region_other_source = function(test, common) {
   test('default name should be prepended when layer=region and source is not whosonfirst or geonames', function(t) {
     var doc = {
-      'name': { 'default': 'Default Name' },
+      'name': 'Default Name',
       'country_a': 'USA',
       'country': 'United States',
       'region': 'Region Name',
@@ -143,7 +143,7 @@ module.exports.tests.region_other_source = function(test, common) {
 module.exports.tests.san_francisco = function(test, common) {
   test('san francisco', function(t) {
     var doc = {
-      'name': { 'default': 'San Francisco' },
+      'name': 'San Francisco',
       'country_a': 'USA',
       'country': 'United States',
       'region': 'California',
@@ -160,7 +160,7 @@ module.exports.tests.san_francisco = function(test, common) {
 module.exports.tests.nyc_office = function(test, common) {
   test('30 West 26th Street', function(t) {
     var doc = {
-      'name': { 'default': '30 West 26th Street' },
+      'name': '30 West 26th Street',
       'housenumber': '30',
       'street': 'West 26th Street',
       'postalcode': '10010',
@@ -182,7 +182,7 @@ module.exports.tests.nyc_office = function(test, common) {
 module.exports.tests.nyc_bakery = function(test, common) {
   test('New York Bakery', function(t) {
     var doc = {
-      'name': { 'default': 'New York Bakery' },
+      'name': 'New York Bakery',
       'housenumber': '51 W',
       'street': '29th',
       'country_a': 'USA',
@@ -203,7 +203,7 @@ module.exports.tests.nyc_bakery = function(test, common) {
 module.exports.tests.ferry_building = function(test, common) {
   test('Ferry Building', function(t) {
     var doc = {
-      'name': { 'default': 'Ferry Building' },
+      'name': 'Ferry Building',
       'country_a': 'USA',
       'country': 'United States',
       'region': 'California',
