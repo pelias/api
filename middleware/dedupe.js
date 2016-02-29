@@ -39,8 +39,13 @@ function dedupeResults(req, res, next) {
  */
 function isDifferent(item1, item2) {
   try {
-    propMatch(item1, item2, 'admin1_abbr');
-    propMatch(item1, item2, 'alpha3');
+    if (item1.hasOwnProperty('parent') && item2.hasOwnProperty('parent')) {
+      propMatch(item1.parent, item2.parent, 'region_a');
+      propMatch(item1.parent, item2.parent, 'country');
+    }
+    else if (item1.parent !== item2.parent) {
+      throw new Error('different');
+    }
 
     if (item1.hasOwnProperty('name') && item2.hasOwnProperty('name')) {
       propMatch(item1.name, item2.name, 'default');

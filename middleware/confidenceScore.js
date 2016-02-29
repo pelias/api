@@ -84,7 +84,7 @@ function computeConfidenceScore(req, mean, stdev, hit) {
 
 /*
  * Check for clearly mismatching properties in a result
- * zip code and state (admin1) are currently checked if present
+ * zip code and state (region) are currently checked if present
  *
  * @param {object|undefined} text
  * @param {object} hit
@@ -95,8 +95,8 @@ function checkForDealBreakers(req, hit) {
     return false;
   }
 
-  if (check.assigned(req.clean.parsed_text.state) && req.clean.parsed_text.state !== hit.admin1_abbr) {
-    logger.debug('[confidence][deal-breaker]: state !== admin1_abbr');
+  if (check.assigned(req.clean.parsed_text.state) && req.clean.parsed_text.state !== hit.parent.region_a) {
+    logger.debug('[confidence][deal-breaker]: state !== region_a');
     return true;
   }
 
@@ -210,8 +210,8 @@ function propMatch(textProp, hitProp, expectEnriched) {
  * @param {string|number} [hit.address.number]
  * @param {string} [hit.address.street]
  * @param {string|number} [hit.address.zip]
- * @param {string} [hit.admin1_abbr]
- * @param {string} [hit.alpha3]
+ * @param {string} [hit.parent.region_a]
+ * @param {string} [hit.parent.country_a]
  * @returns {number}
  */
 function checkAddress(text, hit) {
@@ -222,8 +222,8 @@ function checkAddress(text, hit) {
     res += propMatch(text.number, (hit.address ? hit.address.number : null), false);
     res += propMatch(text.street, (hit.address ? hit.address.street : null), false);
     res += propMatch(text.postalcode, (hit.address ? hit.address.zip: null), true);
-    res += propMatch(text.state, hit.admin1_abbr, true);
-    res += propMatch(text.country, hit.alpha3, true);
+    res += propMatch(text.state, hit.parent.region_a, true);
+    res += propMatch(text.country, hit.parent.country_a, true);
 
     res /= checkCount;
   }
