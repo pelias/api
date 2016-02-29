@@ -1,6 +1,6 @@
 
 #> sources and layers specified (invalid combo)
-path: '/v1/reverse?point.lat=1&point.lon=2&sources=quattroshapes&layers=address'
+path: '/v1/reverse?point.lat=1&point.lon=2&sources=whosonfirst&layers=address'
 
 #? 200 ok
 response.statusCode.should.be.equal 400
@@ -24,7 +24,7 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ 'You have specified both the `sources` and `layers` parameters in a combination that will return no results: the quattroshapes source has nothing in the address layer' ]
+json.geocoding.errors.should.eql [ 'You have specified both the `sources` and `layers` parameters in a combination that will return no results: the whosonfirst source has nothing in the address layer' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
@@ -32,4 +32,4 @@ should.not.exist json.geocoding.warnings
 #? inputs
 json.geocoding.query['size'].should.eql 10
 json.geocoding.query.layers.should.eql ["address"]
-json.geocoding.query.sources.should.eql ["quattroshapes"]
+json.geocoding.query.sources.should.eql ["whosonfirst"]
