@@ -14,14 +14,14 @@ function addViewsToQuery(views, query) {
       var param = null, option=null;
       if(params.length >= 2) {
 	param = params[1];
-	if(params.length >= 3) {
-          if (param && params[2]) {  // param is name of a function parameter
-            param =  peliasQuery.view[param]; // name to function
-	  }
-	  if(params.length >= 4) {
-	    option = params[3]; // must | should ...
-	  }
+      }
+      if(params.length >= 3) {
+        if (param && params[2]) {  // param is name of a function parameter
+          param =  peliasQuery.view[param]; // name to function
 	}
+      }
+      if(params.length >= 4) {
+	option = params[3]; // must | should ...
       }
       if(param) {
 	query[type]( peliasQuery.view[viewName](param), option );
