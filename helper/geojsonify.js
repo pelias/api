@@ -11,16 +11,25 @@ var DETAILS_PROPS = [
   'housenumber',
   'street',
   'postalcode',
-  'country_a',
+  'confidence',
+  'distance',
   'country',
+  'country_id',
+  'country_a',
   'region',
+  'region_id',
   'region_a',
   'county',
+  'county_id',
+  'county_a',
   'localadmin',
+  'localadmin_id',
+  'localadmin_a',
   'locality',
+  'locality_id',
+  'locality_a',
   'neighbourhood',
-  'confidence',
-  'distance'
+  'neighbourhood_id'
 ];
 
 
@@ -93,7 +102,7 @@ function addDetails(src, dst) {
  * @param {object} dst
  */
 function addLabel(src, dst) {
-  dst.label = labelGenerator(src);
+  dst.label = labelGenerator(dst);
 }
 
 /**
@@ -126,8 +135,23 @@ function computeBBox(geojson) {
  */
 function copyProperties( source, props, dst ) {
   props.forEach( function ( prop ) {
+
     if ( source.hasOwnProperty( prop ) ) {
-      dst[prop] = source[prop];
+
+      // array value, take first item in array (at this time only used for admin values)
+      if (source[prop] instanceof Array) {
+        if (source[prop].length === 0) {
+          return;
+        }
+        if (source[prop][0]) {
+          dst[prop] = source[prop][0];
+        }
+      }
+
+      // simple value
+      else {
+        dst[prop] = source[prop];
+      }
     }
   });
 }
