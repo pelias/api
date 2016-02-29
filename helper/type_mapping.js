@@ -17,7 +17,7 @@ function addStandardTargetsToAliases(standard, aliases) {
  */
 
 // a list of all sources
-var SOURCES = ['openstreetmap', 'openaddresses', 'geonames', 'quattroshapes', 'whosonfirst'];
+var SOURCES = ['openstreetmap', 'openaddresses', 'geonames', 'whosonfirst'];
 
 /*
  * A list of alternate names for sources, mostly used to save typing
@@ -26,7 +26,6 @@ var SOURCE_ALIASES = {
   'osm': ['openstreetmap'],
   'oa': ['openaddresses'],
   'gn': ['geonames'],
-  'qs': ['quattroshapes'],
   'wof': ['whosonfirst']
 };
 
