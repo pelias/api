@@ -68,7 +68,7 @@ function renameStuff(place) {
   if (place.parent) {
     PARENT_PROPS.forEach(function (prop) {
       place[prop] = place.parent[prop];
-    })
+    });
   }
 
   return place;
