@@ -42,7 +42,7 @@
     "express": "^4.8.8",
     "express-http-proxy": "^0.6.0",
     "extend": "2.0.1",
-    "geojson": "^0.2.1",
+    "geojson": "^0.3.0",
     "geojson-extent": "^0.3.1",
     "geolib": "^2.0.18",
     "geopipes-elasticsearch-backend": "^0.2.0",
