@@ -1,28 +1,28 @@
 {
-    "score": {
-	"boundary_country" : [null, null, "must"],
-	"multingrams": [null, null, "must"],
+  "score": [
+    [ "boundary_country", null, false, "must"],
+    [ "multingrams", null, false, "must"],
 
-	"phrase" : [null, null, "should"],
-	"focus" : [null, "phrase"],
-	"popularity": [null, "phrase"],
-	"population": [null, "phrase"],
+    ["phrase", null, false, "should"],
+    ["focus", "phrase", true],
+    ["popularity", "phrase", true],
+    ["population", "phrase", true],
 
-	"address": "housenumber",
-	"address": "street",
-	"address": "postcode",
+    ["address", "housenumber"],
+    ["address", "street"],
+    ["address", "postcode"],
 
-	"admin": "alpha3",
-	"admin": "admin0",
-	"admin": "admin1",
-	"admin": "admin1_abbr",
-	"admin": "admin2",
-	"admin": "local_admin",
-	"admin": "locality",
-	"admin": "neighborhood"
-    },
-    "filter": {
-	"boundary_circle": null,
-	"boundary_rect": null
-    }
+    ["admin", "alpha3"],
+    ["admin", "admin0"],
+    ["admin", "admin1"],
+    ["admin", "admin1_abbr"],
+    ["admin", "admin2"],
+    ["admin", "local_admin"],
+    ["admin", "locality"],
+    ["admin", "neighborhood"]
+  ],
+  "filter": [
+    ["boundary_circle"],
+    ["boundary_rect"]
+  ]
 }
