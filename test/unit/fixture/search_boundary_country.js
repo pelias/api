@@ -7,7 +7,7 @@ module.exports = {
           'must': [
             {
               'match': {
-                'alpha3': {
+                'parent.country_a': {
                   'analyzer': 'standard',
                   'query': 'ABC'
                 }

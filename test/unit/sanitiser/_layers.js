@@ -43,7 +43,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
 
     var admin_layers = [ 'continent', 'macrocountry', 'country', 'dependency',
     'region', 'locality', 'localadmin', 'county', 'macrohood', 'neighbourhood',
-    'microhood', 'disputed', 'admin0', 'admin1', 'admin2', 'neighborhood', 'local_admin' ];
+    'microhood', 'disputed' ];
 
     t.deepEqual(clean.layers, admin_layers, 'coarse layers set');
     t.end();
@@ -65,7 +65,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
 
     sanitize(raw, clean);
 
-    var expected_layers = ['venue', 'country', 'admin0', 'region', 'admin1'];
+    var expected_layers = ['venue', 'country', 'region'];
     t.deepEqual(clean.layers, expected_layers, 'venue + regular layers');
     t.end();
   });
@@ -78,7 +78,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
 
     var expected_layers = [ 'continent', 'macrocountry', 'country', 'dependency',
     'region', 'locality', 'localadmin', 'county', 'macrohood', 'neighbourhood',
-    'microhood', 'disputed', 'admin0', 'admin1', 'admin2', 'neighborhood', 'local_admin' ];
+    'microhood', 'disputed' ];
 
     t.deepEqual(clean.layers, expected_layers, 'coarse + regular layers set');
     t.end();
@@ -90,7 +90,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
 
     sanitize(raw, clean);
 
-    var expected_layers = ['address', 'country', 'admin0', 'locality' ];
+    var expected_layers = ['address', 'country', 'locality' ];
     t.deepEqual(clean.layers, expected_layers, 'address + regular layers set');
     t.end();
   });
@@ -101,7 +101,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
 
     sanitize(raw, clean);
 
-    var expected_layers = ['venue', 'country', 'admin0'];
+    var expected_layers = ['venue', 'country'];
     t.deepEqual(clean.layers, expected_layers, 'venue layers found (no duplicates)');
     t.end();
   });
@@ -115,7 +115,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var coarse_layers = [ 'continent', 'macrocountry',
       'country', 'dependency', 'region', 'locality', 'localadmin',
       'county', 'macrohood', 'neighbourhood', 'microhood',
-      'disputed', 'admin0', 'admin1', 'admin2', 'neighborhood', 'local_admin'];
+      'disputed' ];
 
     var venue_layers = [ 'venue' ];
     var expected_layers = venue_layers.concat(coarse_layers);

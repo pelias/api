@@ -14,7 +14,7 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.north_west_singapore = function(test, common) {
   test('north west singapore', function(t) {
     var doc = {
-      'name': { 'default': 'North West' },
+      'name': 'North West',
       'country_a': 'SGP',
       'country': 'Singapore',
       'region': 'North West'
@@ -28,7 +28,7 @@ module.exports.tests.north_west_singapore = function(test, common) {
 module.exports.tests.singapore_mcdonalds = function(test, common) {
   test('singapore_mcdonalds', function(t) {
     var doc = {
-      'name': { 'default': 'McDonald\'s' },
+      'name': 'McDonald\'s',
       'country_a': 'SGP',
       'country': 'Singapore',
       'region': 'Central Singapore',

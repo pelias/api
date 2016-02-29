@@ -52,6 +52,6 @@ function getInitialLabel(record) {
     return [];
   }
 
-  return [record.name.default];
+  return [record.name];
 
 }
