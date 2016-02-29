@@ -1,4 +1,3 @@
-
 var _ = require('lodash'),
     schemas = require('./labelSchema');
 
@@ -11,7 +10,6 @@ module.exports = function( record ){
     var valueFunction = schema[key];
 
     labelParts = valueFunction(record, labelParts);
-
   }
 
   // NOTE: while it may seem odd to call `uniq` on the list of label parts,
