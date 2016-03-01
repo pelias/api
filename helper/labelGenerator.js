@@ -6,7 +6,7 @@ var _ = require('lodash'),
 module.exports = function( record ){
   var schema = getSchema(record.country_a);
 
-  var labelParts = [ record.name.default ];
+  var labelParts = getInitialLabel(record);
 
   var buildOutput = function(parts, schemaArr, record) {
     for (var i=0; i<schemaArr.length; i++) {
@@ -33,5 +33,14 @@ function getSchema(country_a) {
   }
 
   return schemas.default;
+
+}
+
+function getInitialLabel(record) {
+  if ('region' === record.layer && ('geonames' === record.source || 'whosonfirst' === record.source)) {
+    return [];
+  }
+
+  return [record.name.default];
 
 }

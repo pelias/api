@@ -88,15 +88,51 @@ module.exports.tests.ferry_building = function(test, common) {
   });
 };
 
-// USA state
-module.exports.tests.california = function(test, common) {
-  test('california', function(t) {
+// USA geonames state
+module.exports.tests.california_geonames = function(test, common) {
+  test('default name should not be prepended when source=geonames and layer=region', function(t) {
     var doc = {
       'name': { 'default': 'California' },
       'country_a': 'USA',
       'country': 'United States',
       'region': 'California',
-      'region_a': 'CA'
+      'region_a': 'CA',
+      'source': 'geonames',
+      'layer': 'region'
+    };
+    t.equal(generator(doc),'CA, USA');
+    t.end();
+  });
+};
+
+// USA whosonfirst state
+module.exports.tests.california_whosonfirst = function(test, common) {
+  test('default name should not be prepended when source=whosonfirst and layer=region', function(t) {
+    var doc = {
+      'name': { 'default': 'California' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'California',
+      'region_a': 'CA',
+      'source': 'whosonfirst',
+      'layer': 'region'
+    };
+    t.equal(generator(doc),'CA, USA');
+    t.end();
+  });
+};
+
+// USA non-geonames/whosonfirst state
+module.exports.tests.california_other_source = function(test, common) {
+  test('default name should not be prepended when source=whosonfirst and layer=region', function(t) {
+    var doc = {
+      'name': { 'default': 'California' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'California',
+      'region_a': 'CA',
+      'source': 'not geonames or whosonfirst',
+      'layer': 'region'
     };
     t.equal(generator(doc),'California, CA, USA');
     t.end();
