@@ -3,7 +3,8 @@ var peliasQuery = require('pelias-query'),
     defaults = require('./autocomplete_defaults'),
     textParser = require('./text_parser'),
     viewsToQuery = require('./views_to_query'),
-    check = require('check-types');
+    check = require('check-types'),
+    _ = require('lodash');
 
 //------------------------------
 // autocomplete query
@@ -25,10 +26,16 @@ for (var name in peliasQuery.view) {
 
 var views;
 var query_settings = require('pelias-config').generate().query;
-if (query_settings && query_settings.autocomplete && query_settings.autocomplete.views) {
+if (query_settings && query_settings.autocomplete) {
   // external config
   views = query_settings.autocomplete.views;
-} else {
+
+  if(query_settings.autocomplete.defaults) {
+    defaults = _.merge({}, defaults, query_settings.autocomplete.defaults);
+  }
+}
+
+if (!views) {
   // Get default view configuration
   views = require( './autocomplete_views.json' );
 }
