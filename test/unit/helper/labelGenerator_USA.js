@@ -10,6 +10,136 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
+module.exports.tests.localadmin = function(test, common) {
+  test('localadmin should trump locality, neighbourhood, and county', function(t) {
+    var doc = {
+      'name': { 'default': 'Default Name' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'Region Name',
+      'region_a': 'Region Abbr',
+      'county': 'County Name',
+      'localadmin': 'LocalAdmin Name',
+      'locality': 'Locality Name',
+      'neighbourhood': 'Neighbourhood Name'
+    };
+    t.equal(generator(doc),'Default Name, LocalAdmin Name, Region Abbr, USA');
+    t.end();
+  });
+};
+
+module.exports.tests.locality = function(test, common) {
+  test('locality should trump neighbourhood and county when localadmin not available', function(t) {
+    var doc = {
+      'name': { 'default': 'Default Name' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'Region Name',
+      'region_a': 'Region Abbr',
+      'county': 'County Name',
+      'locality': 'Locality Name',
+      'neighbourhood': 'Neighbourhood Name'
+    };
+    t.equal(generator(doc),'Default Name, Locality Name, Region Abbr, USA');
+    t.end();
+  });
+};
+
+module.exports.tests.neighbourhood = function(test, common) {
+  test('neighbourhood should trump county when neither localadmin nor locality', function(t) {
+    var doc = {
+      'name': { 'default': 'Default Name' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'Region Name',
+      'region_a': 'Region Abbr',
+      'county': 'County Name',
+      'neighbourhood': 'Neighbourhood Name'
+    };
+    t.equal(generator(doc),'Default Name, Neighbourhood Name, Region Abbr, USA');
+    t.end();
+  });
+};
+
+module.exports.tests.county = function(test, common) {
+  test('county should be used when localadmin, locality, and neighbourhood are not available', function(t) {
+    var doc = {
+      'name': { 'default': 'Default Name' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'Region Name',
+      'region_a': 'Region Abbr',
+      'county': 'County Name'
+    };
+    t.equal(generator(doc),'Default Name, County Name, Region Abbr, USA');
+    t.end();
+  });
+};
+
+module.exports.tests.region = function(test, common) {
+  test('region should be used when region_a is not available', function(t) {
+    var doc = {
+      'name': { 'default': 'Default Name' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'Region Name'
+    };
+    t.equal(generator(doc),'Default Name, Region Name, USA');
+    t.end();
+  });
+};
+
+// USA geonames state
+module.exports.tests.region_geonames = function(test, common) {
+  test('default name should not be prepended when source=geonames and layer=region', function(t) {
+    var doc = {
+      'name': { 'default': 'Region Name' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'Region Name',
+      'region_a': 'Region Abbr',
+      'source': 'geonames',
+      'layer': 'region'
+    };
+    t.equal(generator(doc),'Region Abbr, USA');
+    t.end();
+  });
+};
+
+// USA whosonfirst state
+module.exports.tests.region_whosonfirst = function(test, common) {
+  test('default name should not be prepended when source=whosonfirst and layer=region', function(t) {
+    var doc = {
+      'name': { 'default': 'California' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'Region Name',
+      'region_a': 'Region Abbr',
+      'source': 'whosonfirst',
+      'layer': 'region'
+    };
+    t.equal(generator(doc),'Region Abbr, USA');
+    t.end();
+  });
+};
+
+// USA non-geonames/whosonfirst state
+module.exports.tests.region_other_source = function(test, common) {
+  test('default name should not be prepended when source=whosonfirst and layer=region', function(t) {
+    var doc = {
+      'name': { 'default': 'Region Name' },
+      'country_a': 'USA',
+      'country': 'United States',
+      'region': 'Region Name',
+      'region_a': 'Region Abbr',
+      'source': 'not geonames or whosonfirst',
+      'layer': 'region'
+    };
+    t.equal(generator(doc),'Region Name, Region Abbr, USA');
+    t.end();
+  });
+};
+
 // major USA city
 module.exports.tests.san_francisco = function(test, common) {
   test('san francisco', function(t) {
@@ -84,57 +214,6 @@ module.exports.tests.ferry_building = function(test, common) {
       'neighbourhood': 'Financial District'
     };
     t.equal(generator(doc),'Ferry Building, San Francisco, CA, USA');
-    t.end();
-  });
-};
-
-// USA geonames state
-module.exports.tests.california_geonames = function(test, common) {
-  test('default name should not be prepended when source=geonames and layer=region', function(t) {
-    var doc = {
-      'name': { 'default': 'California' },
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'California',
-      'region_a': 'CA',
-      'source': 'geonames',
-      'layer': 'region'
-    };
-    t.equal(generator(doc),'CA, USA');
-    t.end();
-  });
-};
-
-// USA whosonfirst state
-module.exports.tests.california_whosonfirst = function(test, common) {
-  test('default name should not be prepended when source=whosonfirst and layer=region', function(t) {
-    var doc = {
-      'name': { 'default': 'California' },
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'California',
-      'region_a': 'CA',
-      'source': 'whosonfirst',
-      'layer': 'region'
-    };
-    t.equal(generator(doc),'CA, USA');
-    t.end();
-  });
-};
-
-// USA non-geonames/whosonfirst state
-module.exports.tests.california_other_source = function(test, common) {
-  test('default name should not be prepended when source=whosonfirst and layer=region', function(t) {
-    var doc = {
-      'name': { 'default': 'California' },
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'California',
-      'region_a': 'CA',
-      'source': 'not geonames or whosonfirst',
-      'layer': 'region'
-    };
-    t.equal(generator(doc),'California, CA, USA');
     t.end();
   });
 };
