@@ -4,15 +4,10 @@ var _ = require('lodash'),
     schemas = require('./labelSchema.json');
 
 module.exports = function( record ){
+  var schema = getSchema(record.country_a);
 
   var labelParts = [ record.name.default ];
 
-  var schema = schemas.default;
-  
-  if (record.country_a && record.country_a.length && schemas[record.country_a]) {
-    schema = schemas[record.country_a];
-  }
-  
   var buildOutput = function(parts, schemaArr, record) {
     for (var i=0; i<schemaArr.length; i++) {
       var fieldValue = record[schemaArr[i]];
@@ -33,3 +28,12 @@ module.exports = function( record ){
 
   return labelParts.join(', ').trim();
 };
+
+function getSchema(country_a) {
+  if (country_a && country_a.length && schemas[country_a]) {
+    return schemas[country_a];
+  }
+
+  return schemas.default;
+
+}
