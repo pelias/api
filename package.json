@@ -53,7 +53,7 @@
     "pelias-config": "^1.0.1",
     "pelias-esclient": "1.0.0",
     "pelias-logger": "^0.0.8",
-    "pelias-query": "^5.1.0",
+    "pelias-query": "^6.0.0",
     "pelias-schema": "3.0.0",
     "pelias-suggester-pipeline": "2.0.4",
     "stats-lite": "1.0.3",
