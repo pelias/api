@@ -16,12 +16,12 @@ function sanitize( raw, clean ) {
 
   // default case (no layers specified in GET params)
   // don't even set the from_layers key in this case
-  if( check.unemptyString( raw.source ) ){
+  if( check.nonEmptyString( raw.source ) ){
 
     var sources = raw.source.split(',');
 
     var invalid_sources = sources.filter(function(source) {
-      return !_.contains( ALL_SOURCES, source );
+      return !_.includes( ALL_SOURCES, source );
     });
 
     if( invalid_sources.length > 0 ){

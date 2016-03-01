@@ -24,11 +24,11 @@ function sanitize( raw, clean, opts ) {
   var targetsString = raw[opts.paramName];
 
   // trim whitespace
-  if( check.unemptyString( targetsString ) ){
+  if( check.nonEmptyString( targetsString ) ){
     targetsString = targetsString.trim();
 
     // param must be a valid non-empty string
-    if( !check.unemptyString( targetsString ) ){
+    if( !check.nonEmptyString( targetsString ) ){
       messages.errors.push(
         opts.paramName + ' parameter cannot be an empty string. Valid options: ' + opts.targetMapKeysString
       );
@@ -61,7 +61,7 @@ function sanitize( raw, clean, opts ) {
         }, []);
 
         // dedupe in case aliases expanded to common things or user typed in duplicates
-        clean.types[typesKey] = _.unique(clean.types[typesKey]);
+        clean.types[typesKey] = _.uniq(clean.types[typesKey]);
       }
 
     }

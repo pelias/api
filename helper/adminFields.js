@@ -32,7 +32,7 @@ function getAvailableAdminFields(schema, expectedFields, logger) {
 
   // check if expected fields are actually in current schema
   var available = expectedFields.filter(function (field) {
-    return _.contains( actualFields, field );
+    return _.includes( actualFields, field );
   });
 
   if (available.length === 0) {

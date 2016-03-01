@@ -8,7 +8,7 @@ function sanitize( raw, clean ){
   var messages = { errors: [], warnings: [] };
 
   // invalid input 'text'
-  if( !check.unemptyString( raw.text ) ){
+  if( !check.nonEmptyString( raw.text ) ){
     messages.errors.push('invalid param \'text\': text length, must be >0');
   }
 
