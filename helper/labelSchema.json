@@ -1,7 +1,8 @@
 {
   "USA": {
     "local": ["localadmin", "locality", "neighbourhood", "county"],
-    "regional": ["region_a", "region", "country"]
+    "regional": ["region_a", "region"],
+    "country": ["country_a"]
   },
   "GBR": {
     "local": ["neighbourhood", "county", "localadmin", "locality", "region"],

@@ -22,7 +22,7 @@ module.exports.tests.san_francisco = function(test, common) {
       'county': 'San Francisco County',
       'locality': 'San Francisco'
     };
-    t.equal(generator(doc),'San Francisco, San Francisco County, CA');
+    t.equal(generator(doc),'San Francisco, San Francisco County, CA, USA');
     t.end();
   });
 };
@@ -44,7 +44,7 @@ module.exports.tests.nyc_office = function(test, common) {
       'locality': 'New York',
       'neighbourhood': 'Flatiron District'
     };
-    t.equal(generator(doc),'30 West 26th Street, Manhattan, NY');
+    t.equal(generator(doc),'30 West 26th Street, Manhattan, NY, USA');
     t.end();
   });
 };
@@ -65,7 +65,7 @@ module.exports.tests.nyc_bakery = function(test, common) {
       'locality': 'New York',
       'neighbourhood': 'Koreatown'
     };
-    t.equal(generator(doc),'New York Bakery, Manhattan, NY');
+    t.equal(generator(doc),'New York Bakery, Manhattan, NY, USA');
     t.end();
   });
 };
@@ -83,7 +83,7 @@ module.exports.tests.ferry_building = function(test, common) {
       'locality': 'San Francisco',
       'neighbourhood': 'Financial District'
     };
-    t.equal(generator(doc),'Ferry Building, San Francisco, CA');
+    t.equal(generator(doc),'Ferry Building, San Francisco, CA, USA');
     t.end();
   });
 };
@@ -98,7 +98,7 @@ module.exports.tests.california = function(test, common) {
       'region': 'California',
       'region_a': 'CA'
     };
-    t.equal(generator(doc),'California, CA');
+    t.equal(generator(doc),'California, CA, USA');
     t.end();
   });
 };
