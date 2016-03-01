@@ -23,10 +23,8 @@ module.exports = function( record ){
     labelParts = buildOutput(labelParts, schema[key], record);
   }
 
-  // de-dupe outputs
-  labelParts = _.uniq( labelParts );
-
-  return labelParts.join(', ').trim();
+  // de-dupe, join, trim
+  return _.uniq( labelParts ).join(', ').trim();
 };
 
 function getSchema(country_a) {
