@@ -28,12 +28,8 @@ function lookupSource(src) {
   return src.source;
 }
 
-/*
- * Use the type to layer mapping, except for Geonames, where having a full
- * Elasticsearch document source allows a more specific layer name to be chosen
- */
 function lookupLayer(src) {
-  return src._type;
+  return src.layer;
 }
 
 function geojsonifyPlaces( docs ){
