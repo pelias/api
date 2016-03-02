@@ -12,7 +12,6 @@ var sanitisers = {
 
 /** ----------------------- middleware ------------------------ **/
 var middleware = {
-  types: require('../middleware/_types'),
   calcSize: require('../middleware/sizeCalculator')
 };
 
@@ -59,7 +58,6 @@ function addRoutes(app, peliasConfig) {
     ]),
     search: createRouter([
       sanitisers.search.middleware,
-      middleware.types,
       middleware.calcSize(),
       controllers.search(),
       postProc.distances('focus.point.'),
@@ -72,7 +70,6 @@ function addRoutes(app, peliasConfig) {
     ]),
     autocomplete: createRouter([
       sanitisers.autocomplete.middleware,
-      middleware.types,
       controllers.search(null, require('../query/autocomplete')),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
@@ -84,7 +81,6 @@ function addRoutes(app, peliasConfig) {
     ]),
     reverse: createRouter([
       sanitisers.reverse.middleware,
-      middleware.types,
       middleware.calcSize(),
       controllers.search(undefined, reverseQuery),
       postProc.distances('point.'),
