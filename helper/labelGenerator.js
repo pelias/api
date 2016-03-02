@@ -1,7 +1,7 @@
 
 var _ = require('lodash'),
     check = require('check-types'),
-    schemas = require('./labelSchema.json');
+    schemas = require('./labelSchema');
 
 module.exports = function( record ){
   var schema = getSchema(record.country_a);
@@ -23,7 +23,6 @@ module.exports = function( record ){
     labelParts = buildOutput(labelParts, schema[key], record);
   }
 
-  // de-dupe, join, trim
   // NOTE: while it may seem odd to call `uniq` on the list of label parts,
   //  the effect is quite subtle.  Take, for instance, a result for "Lancaster, PA"
   //  the pseudo-object is:
@@ -44,6 +43,8 @@ module.exports = function( record ){
   //  where the `name` field would contain the address or name of a point-of-interest
   //
   //  Also see https://github.com/pelias/api/issues/429 for other ways that this is bad
+  //
+  // de-dupe, join, trim
   return _.uniq( labelParts ).join(', ').trim();
 
 };
