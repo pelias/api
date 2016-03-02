@@ -54,7 +54,6 @@
     "pelias-esclient": "1.0.0",
     "pelias-logger": "^0.0.8",
     "pelias-query": "^6.0.0",
-    "pelias-schema": "3.0.0",
     "pelias-suggester-pipeline": "2.0.4",
     "stats-lite": "1.0.3",
     "through2": "2.0.1"
