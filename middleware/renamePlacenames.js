@@ -40,24 +40,24 @@ var PARENT_PROPS = [
 
 
 function setup() {
-
   return renamePlacenames;
 }
 
 function renamePlacenames(req, res, next) {
-
   // do nothing if no result data set
   if (!res || !res.data) {
     return next();
   }
 
-  res.data = res.data.map(renameStuff);
-    
+  res.data = res.data.map(renameOneRecord);
+
   next();
 }
 
-function renameStuff(place) {
-
+/*
+ * Rename the fields in one record
+ */
+function renameOneRecord(place) {
   if (place.address) {
     Object.keys(ADDRESS_PROPS).forEach(function (prop) {
       place[ADDRESS_PROPS[prop]] = place.address[prop];
