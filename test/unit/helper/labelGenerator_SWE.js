@@ -34,7 +34,7 @@ module.exports.tests.skane2 = function(test, common) {
       'country': 'Sweden',
       'region': 'Skåne',
       'county': 'Malmö',
-      'locality': 'MalmÃ¶'
+      'locality': 'Malmö'
     };
     t.equal(generator(doc),'Malmö, Skåne, Sweden');
     t.end();
