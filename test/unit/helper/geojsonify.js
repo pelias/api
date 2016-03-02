@@ -42,6 +42,7 @@ module.exports.tests.search = function(test, common) {
       '_id': 'id1',
       '_type': 'layer1',
       'source': 'source1',
+      'layer': 'layer1',
       'center_point': {
         'lat': 51.5337144,
         'lon': -0.1069716
@@ -60,12 +61,6 @@ module.exports.tests.search = function(test, common) {
       'localadmin': 'test1',
       'locality': 'test2',
       'neighbourhood': 'test3',
-      'suggest': {
-        'input': [
-          '\'round midnight jazz and blues bar'
-        ],
-        'output': 'osmnode:2208150035'
-      },
       'category': [
         'food',
         'nightlife'
@@ -75,6 +70,7 @@ module.exports.tests.search = function(test, common) {
       '_id': 'id2',
       '_type': 'layer2',
       'source': 'source2',
+      'layer': 'layer2',
       'name': {
         'default': 'Blues Cafe'
       },
@@ -90,17 +86,12 @@ module.exports.tests.search = function(test, common) {
       'localadmin': 'test1',
       'locality': 'test2',
       'neighbourhood': 'test3',
-      'suggest': {
-        'input': [
-          'blues cafe'
-        ],
-        'output': 'osmway:147495160'
-      }
     },
     {
-      '_id': '34633854',
-      '_type': 'way',
-      'source': 'osm',
+      '_id': 'node:34633854',
+      '_type': 'venue',
+      'source': 'openstreetmap',
+      'layer': 'venue',
       'name': {
         'default': 'Empire State Building'
       },
@@ -116,12 +107,6 @@ module.exports.tests.search = function(test, common) {
       'localadmin': 'Manhattan',
       'locality': 'New York',
       'neighbourhood': 'Koreatown',
-      'suggest': {
-        'input': [
-          'empire state building'
-        ],
-        'output': 'osmway:34633854'
-      },
       'category': [
         'tourism',
         'transport'
@@ -198,10 +183,10 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         'properties': {
-          'id': '34633854',
-          'gid': 'osm:way:34633854',
-          'layer': 'way',
-          'source': 'osm',
+          'id': 'node:34633854',
+          'gid': 'openstreetmap:venue:node:34633854',
+          'layer': 'venue',
+          'source': 'openstreetmap',
           'label': 'Empire State Building, Manhattan, NY, USA',
           'name': 'Empire State Building',
           'country_a': 'USA',
