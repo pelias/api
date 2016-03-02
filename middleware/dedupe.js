@@ -42,6 +42,9 @@ function isDifferent(item1, item2) {
     propMatch(item1, item2, 'admin1_abbr');
     propMatch(item1, item2, 'alpha3');
 
+    propMatch(item1, item2, 'locality');
+    propMatch(item1, item2, 'neighborhood');
+
     if (item1.hasOwnProperty('name') && item2.hasOwnProperty('name')) {
       propMatch(item1.name, item2.name, 'default');
     }
