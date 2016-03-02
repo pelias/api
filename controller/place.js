@@ -47,7 +47,7 @@ function setup( backend ){
       };
     });
 
-    logger.debug( '[ES req]', JSON.stringify(query) );
+    logger.debug( '[ES req]', query );
 
     service.mget( backend, query, function( err, docs ) {
 
@@ -59,7 +59,7 @@ function setup( backend ){
       else {
         res.data = docs;
       }
-      logger.debug('[ES response]', JSON.stringify(docs));
+      logger.debug('[ES response]', docs);
 
       next();
     });
