@@ -199,7 +199,7 @@ module.exports.tests.search = function(test, common) {
           'gid': 'osm:venue:34633854',
           'layer': 'venue',
           'source': 'osm',
-          'label': 'Empire State Building, Manhattan, NY',
+          'label': 'Empire State Building, Manhattan, NY, USA',
           'name': 'Empire State Building',
           'country_a': 'USA',
           'country': 'United States',
