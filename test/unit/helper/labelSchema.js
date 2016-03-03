@@ -645,6 +645,135 @@ module.exports.tests.swe = function(test, common) {
 
 };
 
+module.exports.tests.default = function(test, common) {
+  test('default.local should use localadmin value over locality, neighbourhood, county, region', function(t) {
+    var record = {
+      neighbourhood: 'neighbourhood value',
+      county: 'county value',
+      localadmin: 'localadmin value',
+      locality: 'locality value',
+      region: 'region value'
+    };
+
+    var labelParts = ['initial value'];
+
+    var f = schemas.default.local;
+
+    t.deepEqual(f(record, labelParts), ['initial value', 'localadmin value']);
+    t.end();
+
+  });
+
+  test('default.local should use locality value over neighbourhood, county, region', function(t) {
+    var record = {
+      neighbourhood: 'neighbourhood value',
+      county: 'county value',
+      locality: 'locality value',
+      region: 'region value'
+    };
+
+    var labelParts = ['initial value'];
+
+    var f = schemas.default.local;
+
+    t.deepEqual(f(record, labelParts), ['initial value', 'locality value']);
+    t.end();
+
+  });
+
+  test('default.local should use neighbourhood value over county, region', function(t) {
+    var record = {
+      neighbourhood: 'neighbourhood value',
+      county: 'county value',
+      region: 'region value'
+    };
+
+    var labelParts = ['initial value'];
+
+    var f = schemas.default.local;
+
+    t.deepEqual(f(record, labelParts), ['initial value', 'neighbourhood value']);
+    t.end();
+
+  });
+
+  test('default.local should use county value over region', function(t) {
+    var record = {
+      county: 'county value',
+      region: 'region value'
+    };
+
+    var labelParts = ['initial value'];
+
+    var f = schemas.default.local;
+
+    t.deepEqual(f(record, labelParts), ['initial value', 'county value']);
+    t.end();
+
+  });
+
+  test('default.local should use region value when nothing else is available', function(t) {
+    var record = {
+      region: 'region value'
+    };
+
+    var labelParts = ['initial value'];
+
+    var f = schemas.default.local;
+
+    t.deepEqual(f(record, labelParts), ['initial value', 'region value']);
+    t.end();
+
+  });
+
+  test('default.local should not append anything when none of neighbourhood, region, county, localadmin, ' +
+        'locality are available', function(t) {
+    var record = {};
+
+    var labelParts = ['initial value'];
+
+    var f = schemas.default.local;
+
+    t.deepEqual(f(record, labelParts), ['initial value']);
+    t.end();
+
+  });
+
+  test('default.regional should use country over region, region_a, or country_a', function(t) {
+    var record = {
+      region: 'region value',
+      region_a: 'region_a value',
+      country: 'country value',
+      country_a: 'country_a value'
+    };
+
+    var labelParts = ['initial value'];
+
+    var f = schemas.default.regional;
+
+    t.deepEqual(f(record, labelParts), ['initial value', 'country value']);
+    t.end();
+
+  });
+
+  test('default.regional should not append any value if country is not available', function(t) {
+    var record = {
+      region: 'region value',
+      region_a: 'region_a value',
+      country_a: 'country_a value'
+    };
+
+    var labelParts = ['initial value'];
+
+    var f = schemas.default.regional;
+
+    t.deepEqual(f(record, labelParts), ['initial value']);
+    t.end();
+
+  });
+
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
