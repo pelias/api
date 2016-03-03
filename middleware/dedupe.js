@@ -80,6 +80,9 @@ function isDifferent(item1, item2) {
  * @throws {Error}
  */
 function propMatch(item1, item2, prop) {
+  if (!item1[prop] || !item2[prop]) {
+    return; // absence of information does not make an item different
+  }
   if (normalizeString(item1[prop]) !== normalizeString(item2[prop])) {
     throw new Error('different');
   }
