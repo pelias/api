@@ -2,10 +2,6 @@ var sanitize = require('../../../sanitiser/_ids');
 
 var delimiter = ':';
 var type_mapping = require('../../../helper/type_mapping');
-var inputs = {
-  valid: [ 'geoname:1', 'osmnode:2', 'admin0:53', 'osmway:44', 'geoname:5' ],
-  invalid: [ ':', '', '::', 'geoname:', ':234', 'gibberish:23' ]
-};
 
 var formatError = function(input) {
   return 'id `' + input + ' is invalid: must be of the format source:layer:id for ex: \'geonames:venue:4163334\'';
@@ -122,6 +118,34 @@ module.exports.tests.valid_ids = function(test, common) {
 
     t.deepEqual( messages.errors, [], ' no errors');
     t.deepEqual( clean.ids, expected_ids, 'osm could be two types, but that\'s ok');
+    t.end();
+  });
+};
+
+module.exports.tests.geonames = function(test, common) {
+  test('geonames venue maps correctly as normal', function(t) {
+    var raw = { ids: 'geonames:venue:15' };
+    var clean = {};
+
+    var messages = sanitize( raw, clean);
+
+    var expected_clean = { ids: [ { id: '15', types: [ 'geoname' ] } ] };
+    t.deepEqual( messages.errors, [], 'no errors' );
+    t.deepEqual( messages.warnings, [], 'no warnings' );
+    t.deepEqual(clean, expected_clean, 'clean set correctly');
+    t.end();
+  });
+
+  test('arbitrary geonames layer maps to geoname type', function(t) {
+    var raw = { ids: 'geonames:address:16' }; // geonames technically has no address records!
+    var clean = {};
+
+    var messages = sanitize( raw, clean);
+
+    var expected_clean = { ids: [ { id: '16', types: [ 'geoname' ] } ] };
+    t.deepEqual( messages.errors, [], 'no errors' );
+    t.deepEqual( messages.warnings, [], 'no warnings' );
+    t.deepEqual(clean, expected_clean, 'clean set correctly');
     t.end();
   });
 };

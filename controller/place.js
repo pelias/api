@@ -1,4 +1,5 @@
 var service = { mget: require('../service/mget') };
+var logger = require('pelias-logger').get('api:controller:place');
 
 function setup( backend ){
 
@@ -46,6 +47,8 @@ function setup( backend ){
       };
     });
 
+    logger.debug( '[ES req]', query );
+
     service.mget( backend, query, function( err, docs ) {
 
       // error handler
@@ -56,6 +59,7 @@ function setup( backend ){
       else {
         res.data = docs;
       }
+      logger.debug('[ES response]', docs);
 
       next();
     });

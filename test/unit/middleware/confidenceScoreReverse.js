@@ -6,16 +6,12 @@ module.exports.tests.confidenceScoreReverse = function(test, common) {
   test('res without results should not throw exception', function(t) {
     var res = {};
 
-    try {
+    function testIt() {
       confidenceScoreReverse(null, res, function() {});
     }
-    catch (e) {
-      t.fail('an exception should not have been thrown');
-    }
-    finally {
-      t.end();
-    }
 
+    t.doesNotThrow(testIt, 'an exception should not have been thrown');
+    t.end();
   });
 
   test('res.results without data should not throw exception', function(t) {
@@ -23,16 +19,12 @@ module.exports.tests.confidenceScoreReverse = function(test, common) {
       results: {}
     };
 
-    try {
+    function testIt() {
       confidenceScoreReverse(null, res, function() {});
     }
-    catch (e) {
-      t.fail('an exception should not have been thrown');
-    }
-    finally {
-      t.end();
-    }
 
+    t.doesNotThrow(testIt, 'an exception should not have been thrown');
+    t.end();
   });
 
   test('0m <= distance < 1m should be given score 1.0', function(t) {

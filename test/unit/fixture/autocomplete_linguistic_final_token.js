@@ -9,7 +9,7 @@ module.exports = {
               'name.default': {
                 'analyzer': 'peliasPhrase',
                 'boost': 100,
-                'query': 'test',
+                'query': 'one',
                 'type': 'phrase',
                 'operator': 'and'
               }
@@ -22,7 +22,7 @@ module.exports = {
                   'name.default': {
                     'analyzer': 'peliasPhrase',
                     'boost': 100,
-                    'query': 'test',
+                    'query': 'one',
                     'type': 'phrase',
                     'operator': 'and'
                   }
@@ -51,7 +51,7 @@ module.exports = {
                   'name.default': {
                     'analyzer': 'peliasPhrase',
                     'boost': 100,
-                    'query': 'test',
+                    'query': 'one',
                     'type': 'phrase',
                     'operator': 'and'
                   }
