@@ -1,4 +1,3 @@
-
 var generator = require('../../../helper/labelGenerator');
 
 module.exports.tests = {};
@@ -101,7 +100,7 @@ module.exports.tests.region_geonames = function(test, common) {
       'source': 'geonames',
       'layer': 'region'
     };
-    t.equal(generator(doc),'Region Abbr, USA');
+    t.equal(generator(doc),'Region Name, USA');
     t.end();
   });
 };
@@ -110,7 +109,7 @@ module.exports.tests.region_geonames = function(test, common) {
 module.exports.tests.region_whosonfirst = function(test, common) {
   test('default name should not be prepended when source=whosonfirst and layer=region', function(t) {
     var doc = {
-      'name': { 'default': 'California' },
+      'name': { 'default': 'Region Name' },
       'country_a': 'USA',
       'country': 'United States',
       'region': 'Region Name',
@@ -118,16 +117,16 @@ module.exports.tests.region_whosonfirst = function(test, common) {
       'source': 'whosonfirst',
       'layer': 'region'
     };
-    t.equal(generator(doc),'Region Abbr, USA');
+    t.equal(generator(doc),'Region Name, USA');
     t.end();
   });
 };
 
 // USA non-geonames/whosonfirst state
 module.exports.tests.region_other_source = function(test, common) {
-  test('default name should not be prepended when source=whosonfirst and layer=region', function(t) {
+  test('default name should be prepended when layer=region and source is not whosonfirst or geonames', function(t) {
     var doc = {
-      'name': { 'default': 'Region Name' },
+      'name': { 'default': 'Default Name' },
       'country_a': 'USA',
       'country': 'United States',
       'region': 'Region Name',
@@ -135,7 +134,7 @@ module.exports.tests.region_other_source = function(test, common) {
       'source': 'not geonames or whosonfirst',
       'layer': 'region'
     };
-    t.equal(generator(doc),'Region Name, Region Abbr, USA');
+    t.equal(generator(doc),'Default Name, Region Name, USA',generator(doc));
     t.end();
   });
 };

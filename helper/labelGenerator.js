@@ -1,6 +1,5 @@
 
 var _ = require('lodash'),
-    check = require('check-types'),
     schemas = require('./labelSchema');
 
 module.exports = function( record ){
@@ -8,19 +7,11 @@ module.exports = function( record ){
 
   var labelParts = getInitialLabel(record);
 
-  var buildOutput = function(parts, schemaArr, record) {
-    for (var i=0; i<schemaArr.length; i++) {
-      var fieldValue = record[schemaArr[i]];
-      if (check.nonEmptyString(fieldValue) && !_.includes(parts, fieldValue)) {
-        parts.push( fieldValue );
-        return parts;
-      }
-    }
-    return parts;
-  };
-
   for (var key in schema) {
-    labelParts = buildOutput(labelParts, schema[key], record);
+    var valueFunction = schema[key];
+
+    labelParts = valueFunction(record, labelParts);
+
   }
 
   // NOTE: while it may seem odd to call `uniq` on the list of label parts,
