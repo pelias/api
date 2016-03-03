@@ -14,5 +14,40 @@
         "port": 9300
       }
     ]
+  },
+  "query": {
+    "search": {
+      "defaults": {
+	"multingram:fields": ["name.*"]
+      },
+      "views": {
+	"score": [
+	  [ "boundary_country", null, false, "must"],
+	  [ "multingrams", null, false, "must"],
+
+	  ["phrase", null, false, "should"],
+	  ["focus", "phrase", true],
+	  ["popularity", "phrase", true],
+	  ["population", "phrase", true],
+
+	  ["address", "housenumber"],
+	  ["address", "street"],
+	  ["address", "postcode"],
+
+	  ["admin", "alpha3"],
+	  ["admin", "admin0"],
+	  ["admin", "admin1"],
+	  ["admin", "admin1_abbr"],
+	  ["admin", "admin2"],
+	  ["admin", "local_admin"],
+	  ["admin", "locality"],
+	  ["admin", "neighborhood"]
+	],
+	"filter": [
+	  ["boundary_circle"],
+	  ["boundary_rect"]
+	]
+      }
+    }
   }
 }
