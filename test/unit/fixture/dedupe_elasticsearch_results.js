@@ -22,7 +22,7 @@ module.exports = [
       'education'
     ],
     '_id': '357321757',
-    '_type': 'osmnode',
+    '_type': 'venue',
     '_score': 1.2367082,
     'confidence': 0.879
   },
@@ -49,7 +49,7 @@ module.exports = [
       'education'
     ],
     '_id': '357321757',
-    '_type': 'osmnode',
+    '_type': 'venue',
     '_score': 1.2367082,
     'confidence': 0.879
   },
@@ -130,7 +130,7 @@ module.exports = [
       'education'
     ],
     '_id': '357294404',
-    '_type': 'osmnode',
+    '_type': 'venue',
     '_score': 1.2367082,
     'confidence': 0.879
   },
@@ -157,7 +157,7 @@ module.exports = [
       'education'
     ],
     '_id': '357283977',
-    '_type': 'osmnode',
+    '_type': 'venue',
     '_score': 1.1036991,
     'confidence': 0.664
   },
@@ -210,7 +210,7 @@ module.exports = [
       'education'
     ],
     '_id': '358058986',
-    '_type': 'osmnode',
+    '_type': 'venue',
     '_score': 1.0492544,
     'confidence': 0.658
   },
@@ -288,7 +288,7 @@ module.exports = [
       'education'
     ],
     '_id': '356646971',
-    '_type': 'osmway',
+    '_type': 'venue',
     '_score': 0.9724125,
     'confidence': 0.649
   }
