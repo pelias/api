@@ -10,84 +10,6 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-// major USA city
-module.exports.tests.san_francisco = function(test, common) {
-  test('san francisco', function(t) {
-    var doc = {
-      'name': { 'default': 'San Francisco' },
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'California',
-      'region_a': 'CA',
-      'county': 'San Francisco County',
-      'locality': 'San Francisco'
-    };
-    t.equal(generator(doc),'San Francisco, San Francisco County, CA');
-    t.end();
-  });
-};
-
-// USA venue
-module.exports.tests.nyc_office = function(test, common) {
-  test('30 West 26th Street', function(t) {
-    var doc = {
-      'name': { 'default': '30 West 26th Street' },
-      'housenumber': '30',
-      'street': 'West 26th Street',
-      'postalcode': '10010',
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'New York',
-      'region_a': 'NY',
-      'county': 'New York County',
-      'localadmin': 'Manhattan',
-      'locality': 'New York',
-      'neighbourhood': 'Flatiron District'
-    };
-    t.equal(generator(doc),'30 West 26th Street, Manhattan, NY');
-    t.end();
-  });
-};
-
-// USA NYC eatery
-module.exports.tests.nyc_bakery = function(test, common) {
-  test('New York Bakery', function(t) {
-    var doc = {
-      'name': { 'default': 'New York Bakery' },
-      'housenumber': '51 W',
-      'street': '29th',
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'New York',
-      'region_a': 'NY',
-      'county': 'New York County',
-      'localadmin': 'Manhattan',
-      'locality': 'New York',
-      'neighbourhood': 'Koreatown'
-    };
-    t.equal(generator(doc),'New York Bakery, Manhattan, NY');
-    t.end();
-  });
-};
-
-// USA SFC building
-module.exports.tests.ferry_building = function(test, common) {
-  test('Ferry Building', function(t) {
-    var doc = {
-      'name': { 'default': 'Ferry Building' },
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'California',
-      'region_a': 'CA',
-      'county': 'San Francisco County',
-      'locality': 'San Francisco',
-      'neighbourhood': 'Financial District'
-    };
-    t.equal(generator(doc),'Ferry Building, San Francisco, CA');
-    t.end();
-  });
-};
-
 // AUS state
 module.exports.tests.new_south_wales = function(test, common) {
   test('new south wales', function(t) {
@@ -98,21 +20,6 @@ module.exports.tests.new_south_wales = function(test, common) {
       'region': 'New South Wales'
     };
     t.equal(generator(doc),'New South Wales, Australia');
-    t.end();
-  });
-};
-
-// USA state
-module.exports.tests.california = function(test, common) {
-  test('california', function(t) {
-    var doc = {
-      'name': { 'default': 'California' },
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'California',
-      'region_a': 'CA'
-    };
-    t.equal(generator(doc),'California, CA');
     t.end();
   });
 };
@@ -194,20 +101,6 @@ module.exports.tests.wellington_victoria = function(test, common) {
   });
 };
 
-// SGP region
-module.exports.tests.north_west_singapore = function(test, common) {
-  test('north west singapore', function(t) {
-    var doc = {
-      'name': { 'default': 'North West' },
-      'country_a': 'SGP',
-      'country': 'Singapore',
-      'region': 'North West'
-    };
-    t.equal(generator(doc),'North West, Singapore');
-    t.end();
-  });
-};
-
 // IRQ region
 module.exports.tests.arbil = function(test, common) {
   test('arbil', function(t) {
@@ -232,71 +125,6 @@ module.exports.tests.madrid = function(test, common) {
       'region': 'Madrid'
     };
     t.equal(generator(doc),'Madrid, Spain');
-    t.end();
-  });
-};
-
-// SWE city
-module.exports.tests.skane1 = function(test, common) {
-  test('skåne 1', function(t) {
-    var doc = {
-      'name': { 'default': 'Malmö' },
-      'country_a': 'SWE',
-      'country': 'Sweden',
-      'region': 'Skåne',
-      'county': 'Malmö'
-    };
-    t.equal(generator(doc),'Malmö, Skåne, Sweden');
-    t.end();
-  });
-};
-
-// SWE city
-module.exports.tests.skane2 = function(test, common) {
-  test('skåne 2', function(t) {
-    var doc = {
-      'name': { 'default': 'Malmö' },
-      'country_a': 'SWE',
-      'country': 'Sweden',
-      'region': 'Skåne',
-      'county': 'Malmö',
-      'locality': 'MalmÃ¶'
-    };
-    t.equal(generator(doc),'Malmö, Skåne, Sweden');
-    t.end();
-  });
-};
-
-// GBR street address
-module.exports.tests.one_main_street_uk = function(test, common) {
-  test('one main street uk', function(t) {
-    var doc = {
-      'name': { 'default': '1 Main St' },
-      'housenumber': '1',
-      'street': 'Main St',
-      'postalcode': 'BT77 0BG',
-      'country_a': 'GBR',
-      'country': 'United Kingdom',
-      'region': 'Dungannon'
-    };
-    t.equal(generator(doc),'1 Main St, Dungannon, United Kingdom');
-    t.end();
-  });
-};
-
-// GBR venue
-module.exports.tests.hackney_city_farm = function(test, common) {
-  test('hackney city farm', function(t) {
-    var doc = {
-      'name': { 'default': 'Hackney City Farm' },
-      'country_a': 'GBR',
-      'country': 'United Kingdom',
-      'region': 'Hackney',
-      'county': 'Greater London',
-      'locality': 'London',
-      'neighbourhood': 'Haggerston'
-    };
-    t.equal(generator(doc),'Hackney City Farm, Haggerston, Greater London');
     t.end();
   });
 };
@@ -334,20 +162,6 @@ module.exports.tests.new_zealand = function(test, common) {
   });
 };
 
-// GBR country
-module.exports.tests.wales = function(test, common) {
-  test('wales', function(t) {
-    var doc = {
-      'name': { 'default': 'Wales' },
-      'country_a': 'GBR',
-      'country': 'United Kingdom',
-      'region': 'Wales'
-    };
-    t.equal(generator(doc),'Wales, United Kingdom');
-    t.end();
-  });
-};
-
 // IRL country
 module.exports.tests.republic_of_ireland = function(test, common) {
   test('northern ireland', function(t) {
@@ -358,21 +172,6 @@ module.exports.tests.republic_of_ireland = function(test, common) {
     };
     // !! this is not part of the UK !!
     t.equal(generator(doc),'Ireland');
-    t.end();
-  });
-};
-
-// SGP venue
-module.exports.tests.singapore_mcdonalds = function(test, common) {
-  test('singapore_mcdonalds', function(t) {
-    var doc = {
-      'name': { 'default': 'McDonald\'s' },
-      'country_a': 'SGP',
-      'country': 'Singapore',
-      'region': 'Central Singapore',
-      'locality': 'Singapore'
-    };
-    t.equal(generator(doc),'McDonald\'s, Central Singapore, Singapore');
     t.end();
   });
 };

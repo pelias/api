@@ -37,7 +37,7 @@ query.score( peliasQuery.view.admin('neighborhood') );
 // non-scoring hard filters
 query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.boundary_rect );
-
+query.filter( peliasQuery.view.sources );
 // --------------------------------
 
 /**
@@ -50,6 +50,8 @@ function generateQuery( clean ){
 
   // input text
   vs.var( 'input:name', clean.text );
+
+  vs.var( 'sources', clean.sources);
 
   // size
   if( clean.querySize ) {

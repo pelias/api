@@ -8,7 +8,6 @@ function setup( backend, query ){
   query = query || require('../query/search');
 
   function controller( req, res, next ){
-
     // do not run controller when a request
     // validation error has occurred.
     if( req.errors && req.errors.length ){
@@ -25,9 +24,9 @@ function setup( backend, query ){
       body: query( req.clean )
     };
 
-    // ?
-    if( req.clean.hasOwnProperty('type') ){
-      cmd.type = req.clean.type;
+    // use layers field for filtering by type
+    if( req.clean.hasOwnProperty('layers') ){
+      cmd.type = req.clean.layers;
     }
 
     logger.debug( '[ES req]', JSON.stringify(cmd) );
