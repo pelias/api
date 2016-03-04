@@ -7,6 +7,7 @@ var tests = [
   require('./controller/place'),
   require('./controller/search'),
   require('./helper/geojsonify'),
+  require('./helper/iterate'),
   require('./helper/labelGenerator'),
   require('./helper/labelSchema'),
   require('./helper/text_parser'),
