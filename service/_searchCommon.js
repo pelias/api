@@ -1,5 +1,6 @@
 var peliasLogger = require( 'pelias-logger' ).get( 'service/_searchCommon' );
 
+// Process an Elasticsearch search result.
 function processResult( data ) {
   // map returned documents
   var docs = [];
@@ -8,8 +9,6 @@ function processResult( data ) {
   };
   var error = null;
 
-
-  // TODO Handle errors
   if( data ) {
     if( data.error ) {
       error = data.error;
