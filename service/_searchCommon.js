@@ -6,26 +6,33 @@ function processResult( data ) {
   var meta = {
     scores: []
   };
+  var error = null;
 
-  if( data && data.hits && data.hits.total && Array.isArray(data.hits.hits)){
 
-    docs = data.hits.hits.map( function( hit ){
+  // TODO Handle errors
+  if( data ) {
+    if( data.error ) {
+      error = data.error;
+    } else if( data.hits && data.hits.total && Array.isArray(data.hits.hits)){
+      docs = data.hits.hits.map( function( hit ){
 
-      meta.scores.push(hit._score);
+        meta.scores.push(hit._score);
 
-      // map metadata in to _source so we
-      // can serve it up to the consumer
-      hit._source._id = hit._id;
-      hit._source._type = hit._type;
-      hit._source._score = hit._score;
+        // map metadata in to _source so we
+        // can serve it up to the consumer
+        hit._source._id = hit._id;
+        hit._source._type = hit._type;
+        hit._source._score = hit._score;
 
-      return hit._source;
-    });
+        return hit._source;
+      });
+    }
   }
 
   return {
     docs: docs,
-    meta: meta
+    meta: meta,
+    error: error
   };
 }
 
