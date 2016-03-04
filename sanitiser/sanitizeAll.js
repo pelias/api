@@ -8,7 +8,7 @@ function sanitize( req, sanitizers, cb ){
   // (sanitized) input parameters
   req.clean = [];
 
-  // init errors and warnings arrays
+  // init errors and warnings objects
   req.errors = {};
   req.warnings = {};
 
@@ -26,7 +26,7 @@ function sanitize( req, sanitizers, cb ){
       // if errors occurred then set them
       // on the req object.
       if( sanity.errors.length ){
-        req.errors = (req.errors[index] || []).concat( sanity.errors );
+        req.errors[index] = (req.errors[index] || []).concat( sanity.errors );
       }
 
       // if warnings occurred then set them
