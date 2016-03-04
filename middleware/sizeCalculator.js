@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var iterate = require('../helper/iterate');
 
 var SIZE_PADDING = 2;
 
@@ -8,11 +9,15 @@ var SIZE_PADDING = 2;
  */
 function setup() {
  return function setQuerySize(req, res, next) {
-   if (_.isUndefined(req.clean) || _.isUndefined(req.clean.size)) {
+   if (_.isUndefined(req.clean)) {
      return next();
    }
 
-   req.clean.querySize = calculateSize(req.clean.size);
+   iterate(req.clean, function(clean) {
+     if(!_.isUndefined(clean.size)) {
+       clean.querySize = calculateSize(clean.size);
+     }
+   });
    next();
  };
 }

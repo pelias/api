@@ -1,4 +1,5 @@
 var extend = require('extend');
+var iterate = require('../helper/iterate');
 
 /**
  - P is a preferred English name
@@ -32,12 +33,16 @@ function setup() {
 function renamePlacenames(req, res, next) {
 
   // do nothing if no result data set
-  if (!res || !res.data) {
+  if (!res || !res.results) {
     return next();
   }
 
-  // loop through data items and remap placenames
-  res.data = res.data.map(renameProperties);
+  iterate(res.results, function(result) {
+    // loop through data items and remap placenames
+    if(result.data) {
+      result.data = result.data.map(renameProperties);
+    }
+  });
 
   next();
 }

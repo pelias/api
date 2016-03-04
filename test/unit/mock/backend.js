@@ -68,6 +68,10 @@ function setup( key, cmdCb ){
           if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
           return responses[key.indexOf('mget') === -1 ? 'client/mget/ok/1' : key].apply( this, arguments );
         },
+        msearch: function( cmd, cb ){
+          if( 'function' === typeof cmdCb ){ cmdCb( cmd); }
+          return responses[key].apply( this, arguments );
+        },
         suggest: function( cmd, cb ){
           if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
           return responses[key].apply( this, arguments );
@@ -82,6 +86,48 @@ function setup( key, cmdCb ){
   return backend;
 }
 
+responses['client/msearch/ok/1'] = function( cmd, cb ){
+  return cb( undefined, searchEnvelope([{
+    _id: 'myid1',
+    _type: 'mytype1',
+    _score: 10,
+    _source: {
+      value: 1,
+      center_point: { lat: 100.1, lon: -50.5 },
+      name: { default: 'test name1' },
+      admin0: 'country1', admin1: 'state1', admin2: 'city1'
+    }
+  }, {
+    _id: 'myid2',
+    _type: 'mytype2',
+    _score: 20,
+    _source: {
+      value: 2,
+      center_point: { lat: 100.2, lon: -51.5 },
+      name: { default: 'test name2' },
+      admin0: 'country2', admin1: 'state2', admin2: 'city2'
+    }
+  }]));
+};
+
+responses['client/msearch/fail/1'] = responses['client/search/fail/1'];
+responses['client/msearch/queryerror/1'] = function( cmd, cb ){
+  return cb( null, msearchEnvelope([
+                    'Query error',
+                    {
+                      _id: 'myid2',
+                      _type: 'mytype2',
+                      _score: 20,
+                      _source: {
+                        value: 2,
+                        center_point: { lat: 100.2, lon: -51.5 },
+                        name: { default: 'test name2' },
+                        admin0: 'country2', admin1: 'state2', admin2: 'city2'
+                      }
+                    }
+                  ]));
+};
+
 function mgetEnvelope( options ){
   return { docs: options };
 }
@@ -92,6 +138,17 @@ function suggestEnvelope( options1, options2 ){
 
 function searchEnvelope( options ){
   return { hits: { total: options.length, hits: options } };
+}
+
+function msearchEnvelope( options ){
+  return {
+    results: options.map(function(o) {
+      if(typeof o === 'string') {
+        return { error: o };
+      }
+      return { hits: { total: 1, hits: [o] } };
+    })
+  };
 }
 
 module.exports = setup;

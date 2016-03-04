@@ -1,6 +1,7 @@
 var url = require('url');
 var extend = require('extend');
 var geojsonify = require('../helper/geojsonify').search;
+var iterate = require('../helper/iterate');
 
 /**
  * Returns a middleware function that converts elasticsearch
@@ -16,7 +17,7 @@ function setup(peliasConfig, basePath) {
     config: peliasConfig || require('pelias-config').generate().api,
     basePath: basePath || '/'
   };
-  
+
   function middleware(req, res, next) {
     return convertToGeocodeJSON(req, res, next, opts);
   }
@@ -38,44 +39,58 @@ function setup(peliasConfig, basePath) {
  */
 function convertToGeocodeJSON(req, res, next, opts) {
 
-  res.body = { geocoding: {} };
+  var singleton = !Array.isArray(res.results);
+  var timestamp = new Date().getTime();
 
-  // REQUIRED. A semver.org compliant version number. Describes the version of
-  // the GeocodeJSON spec that is implemented by this instance.
-  res.body.geocoding.version = '0.1';
+  iterate(res.results, req.clean, function(result, clean, index) {
 
-  // OPTIONAL. Default: null. The attribution of the data. In case of multiple sources,
-  // and then multiple attributions, can be an object with one key by source.
-  // Can be a URI on the server, which outlines attribution details.
-  res.body.geocoding.attribution = url.resolve(opts.config.host, opts.basePath + 'attribution');
+    var geocoding = {};
 
-  // OPTIONAL. Default: null. The query that has been issued to trigger the
-  // search.
-  // Freeform object.
-  // This is the equivalent of how the engine interpreted the incoming request.
-  // Helpful for debugging and understanding how the input impacts results.
-  res.body.geocoding.query = req.clean;
+    // REQUIRED. A semver.org compliant version number. Describes the version of
+    // the GeocodeJSON spec that is implemented by this instance.
+    geocoding.version = '0.1';
 
-  // OPTIONAL. Warnings and errors.
-  addMessages(req, 'warnings', res.body.geocoding);
-  addMessages(req, 'errors', res.body.geocoding);
+    // OPTIONAL. Default: null. The attribution of the data. In case of multiple sources,
+    // and then multiple attributions, can be an object with one key by source.
+    // Can be a URI on the server, which outlines attribution details.
+    geocoding.attribution = url.resolve(opts.config.host, opts.basePath + 'attribution');
 
-  // OPTIONAL
-  // Freeform
-  addEngine(opts.config.version, res.body.geocoding);
+    // OPTIONAL. Default: null. The query that has been issued to trigger the
+    // search.
+    // Freeform object.
+    // This is the equivalent of how the engine interpreted the incoming request.
+    // Helpful for debugging and understanding how the input impacts results.
+    geocoding.query = clean;
 
-  // response envelope
-  res.body.geocoding.timestamp = new Date().getTime();
+    // OPTIONAL. Warnings and errors.
+    addMessages(req, 'warnings', index, geocoding);
+    addMessages(req, 'errors', index, geocoding);
 
-  // convert docs to geojson and merge with geocoding block
-  extend(res.body, geojsonify(res.data || []));
+    // OPTIONAL
+    // Freeform
+    addEngine(opts.config.version, geocoding);
+
+    // response envelope
+    geocoding.timestamp = timestamp;
+
+    // convert docs to geojson and merge with geocoding block
+    var body = { geocoding: geocoding };
+    extend(body, geojsonify(result.data || []));
+
+    res.body.push(body);
+  });
+
+  if(singleton) {
+    // Send input out in the same format it came in.
+    res.body = res.body[0];
+  }
 
   next();
 }
 
-function addMessages(req, msgType, geocoding) {
-  if (req.hasOwnProperty(msgType) && req[msgType].length) {
-    geocoding[msgType] = req[msgType];
+function addMessages(req, msgType, index, geocoding) {
+  if (req.hasOwnProperty(msgType) && req[msgType][index] && req[msgType][index].length) {
+    geocoding[msgType] = req[msgType][index];
   }
 }
 

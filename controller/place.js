@@ -1,5 +1,6 @@
 var service = { mget: require('../service/mget') };
 var logger = require('pelias-logger').get('api:controller:place');
+var _ = require('lodash');
 
 function setup( backend ){
 
@@ -10,7 +11,7 @@ function setup( backend ){
 
     // do not run controller when a request
     // validation error has occurred.
-    if( req.errors && req.errors.length ){
+    if( !_.isEmpty(req.errors) ){
       return next();
     }
 
@@ -29,11 +30,11 @@ function setup( backend ){
 
       // error handler
       if( err ){
-        req.errors.push( err );
+        req.errors[0] = (req.errors[0] || []).concat( err );
       }
       // set response data
       else {
-        res.data = docs;
+        res.results = { data: docs };
       }
       logger.debug('[ES response]', JSON.stringify(docs));
 
