@@ -6,7 +6,7 @@
 **/
 
 var peliasLogger = require( 'pelias-logger' ).get( 'service/search' );
-var processResult = require( './_searchCommon').processResult;
+var processResult = require( './_searchCommon' ).processResult;
 
 function service( backend, cmd, cb ){
 
