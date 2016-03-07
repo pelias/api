@@ -33,6 +33,30 @@ module.exports = [
     'local_admin': 'East Lampeter',
     'admin1_abbr': 'PA',
     'name': {
+      'default': 'East Lampeter High School'
+    },
+    'admin1': 'Pennsylvania',
+    'alpha3': 'USA',
+    'admin2': 'Lancaster County',
+    'admin0': 'United States',
+    'neighborhood': 'Greenland',
+    'category': [
+      'education'
+    ],
+    '_id': '357321757',
+    '_type': 'osmnode',
+    '_score': 1.2367082,
+    'confidence': 0.879
+  },
+  {
+    'center_point': {
+      'lon': -76.207456,
+      'lat': 40.039265
+    },
+    'address': {},
+    'local_admin': 'East Lampeter',
+    'admin1_abbr': 'PA',
+    'name': {
       'default': 'East Lampeter, High-School'
     },
     'admin1': 'Pennsylvania',
