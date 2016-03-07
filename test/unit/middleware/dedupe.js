@@ -62,6 +62,35 @@ module.exports.tests.dedupe = function(test, common) {
       t.end();
     });
   });
+
+  test('handle results array items independently', function(t) {
+    var req = {
+      clean: [
+        {
+          text: 'lampeter strasburg high school',
+          size: 100
+        },
+        {
+          text: 'lampeter strasburg high school',
+          size: 3
+        }
+      ]
+    };
+
+    var res = {
+      results: [
+        { data: data },
+        { data: data }
+      ]
+    };
+
+    dedupe(req, res, function() {
+      var firstExpectedCount = 7;
+      t.equal(res.results[0].data.length, firstExpectedCount, 'first result: dupes are removed');
+      t.equal(res.results[1].data.length, req.clean[1].size, 'second result: request size is heeded');
+      t.end();
+    });
+  });
 };
 
 module.exports.all = function (tape, common) {

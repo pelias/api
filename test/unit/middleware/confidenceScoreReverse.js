@@ -173,6 +173,76 @@ module.exports.tests.confidenceScoreReverse = function(test, common) {
 
   });
 
+  test('results array processes all items', function(t) {
+    var res = {
+      results: [
+        {
+          data: [
+            { distance: 10.0000 / 1000.0 },
+            { distance: 250.0000 / 1000.0},
+          ]
+        },
+        {
+          data: [
+            { distance: 1.0000 / 1000.0 },
+            { distance: 9.9999 / 1000.0 },
+            { distance: 100.0000 / 1000.0 },
+          ]
+        },
+        {
+          data: [
+            { distance: 0.9999 / 1000.0 }
+          ]
+        }
+      ]
+    };
+
+    confidenceScoreReverse(null, res, function() {
+      t.equal(res.results[0].data[0].confidence, 0.8, 'r[0].d[0] score should be 0.0 confidence');
+      t.equal(res.results[0].data[1].confidence, 0.6, 'r[0].d[1] score should be 0.0 confidence');
+      t.equal(res.results[1].data[0].confidence, 0.9, 'r[1].d[0] score should be 0.9 confidence');
+      t.equal(res.results[1].data[1].confidence, 0.9, 'r[1].d[1] score should be 0.9 confidence');
+      t.equal(res.results[1].data[2].confidence, 0.7, 'r[1].d[2] score should be 0.7 confidence');
+      t.equal(res.results[2].data[0].confidence, 1.0, 'r[2].d[0] score should be 0.9 confidence');
+      t.end();
+    });
+
+  });
+
+  test('results array: invalid distance should be given score 0.0 while other results are processed', function(t) {
+    var res = {
+      results: [
+        {
+          data: [
+            {},
+            {distance: []},
+            {distance: {}},
+            {distance: 'this is not a number'}
+          ]
+        },
+        {
+          data: [
+            { distance: 1.0000 / 1000.0 },
+            { distance: 9.9999 / 1000.0 },
+            { distance: 100.0000 / 1000.0 },
+          ]
+        }
+      ]
+    };
+
+    confidenceScoreReverse(null, res, function() {
+      t.equal(res.results[0].data[0].confidence, 0.0, 'r[0].d[0] score should be 0.0 confidence');
+      t.equal(res.results[0].data[1].confidence, 0.0, 'r[0].d[1] score should be 0.0 confidence');
+      t.equal(res.results[0].data[2].confidence, 0.0, 'r[0].d[2] score should be 0.0 confidence');
+      t.equal(res.results[0].data[3].confidence, 0.0, 'r[0].d[3] score should be 0.0 confidence');
+      t.equal(res.results[1].data[0].confidence, 0.9, 'r[1].d[0] score should be 0.9 confidence');
+      t.equal(res.results[1].data[1].confidence, 0.9, 'r[1].d[1] score should be 0.9 confidence');
+      t.equal(res.results[1].data[2].confidence, 0.7, 'r[1].d[2] score should be 0.7 confidence');
+      t.end();
+    });
+
+  });
+
 };
 
 module.exports.all = function (tape, common) {

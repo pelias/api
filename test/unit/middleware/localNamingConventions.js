@@ -39,10 +39,10 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
   };
 
   var req = {},
-      res = { results: { data: [ ukAddress, deAddress ] } },
       middleware = localNamingConventions();
 
   test('flipNumberAndStreet', function(t) {
+    var res = { results: { data: [ ukAddress, deAddress ] } };
 
     middleware( req, res, function next(){
 
@@ -52,6 +52,24 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
       // DEU address should have the housenumber and street name flipped
       // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
       t.equal( res.results.data[1].name.default, 'Grolmanstraße 23', 'flipped name' );
+
+      t.end();
+    });
+  });
+
+  test('flipNumberAndStreet with array results', function(t) {
+    var res = { results: [
+      { data: [ ukAddress ] }, { data: [ deAddress ] }
+    ] };
+
+    middleware( req, res, function next(){
+
+      // GBR address should be a noop
+      t.equal( res.results[0].data[0].name.default, '1 Main St', 'standard name' );
+
+      // DEU address should have the housenumber and street name flipped
+      // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
+      t.equal( res.results[1].data[0].name.default, 'Grolmanstraße 23', 'flipped name' );
 
       t.end();
     });
