@@ -14,7 +14,7 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.new_south_wales = function(test, common) {
   test('new south wales', function(t) {
     var doc = {
-      'name': { 'default': 'New South Wales' },
+      'name': 'New South Wales',
       'country_a': 'AUS',
       'country': 'Australia',
       'region': 'New South Wales'
@@ -28,7 +28,7 @@ module.exports.tests.new_south_wales = function(test, common) {
 module.exports.tests.west_bengal = function(test, common) {
   test('west bengal', function(t) {
     var doc = {
-      'name': { 'default': 'West Bengal' },
+      'name': 'West Bengal',
       'country_a': 'IND',
       'country': 'India',
       'region': 'West Bengal'
@@ -42,7 +42,7 @@ module.exports.tests.west_bengal = function(test, common) {
 module.exports.tests.bangalore = function(test, common) {
   test('bangalore', function(t) {
     var doc = {
-      'name': { 'default': 'Bangalore' },
+      'name': 'Bangalore',
       'country_a': 'IND',
       'country': 'India',
       'region': 'Karnataka',
@@ -58,7 +58,7 @@ module.exports.tests.bangalore = function(test, common) {
 module.exports.tests.sarjapur = function(test, common) {
   test('Sarjapur', function(t) {
     var doc = {
-      'name': { 'default': 'Sarjapur' },
+      'name': 'Sarjapur',
       'country_a': 'IND',
       'country': 'India',
       'region': 'Karnataka'
@@ -72,7 +72,7 @@ module.exports.tests.sarjapur = function(test, common) {
 module.exports.tests.bengaluru_east = function(test, common) {
   test('Bengaluru East', function(t) {
     var doc = {
-      'name': { 'default': 'Bengaluru East' },
+      'name': 'Bengaluru East',
       'country_a': 'IND',
       'country': 'India',
       'region': 'Karnataka',
@@ -90,7 +90,7 @@ module.exports.tests.bengaluru_east = function(test, common) {
 module.exports.tests.wellington_victoria = function(test, common) {
   test('Wellington, Victoria, Australia', function(t) {
     var doc = {
-      'name': { 'default': 'Wellington' },
+      'name': 'Wellington',
       'country_a': 'AUS',
       'country': 'Australia',
       'region': 'Victoria',
@@ -105,7 +105,7 @@ module.exports.tests.wellington_victoria = function(test, common) {
 module.exports.tests.arbil = function(test, common) {
   test('arbil', function(t) {
     var doc = {
-      'name': { 'default': 'Arbil' },
+      'name': 'Arbil',
       'country_a': 'IRQ',
       'country': 'Iraq',
       'region': 'Arbil'
@@ -119,7 +119,7 @@ module.exports.tests.arbil = function(test, common) {
 module.exports.tests.madrid = function(test, common) {
   test('madrid', function(t) {
     var doc = {
-      'name': { 'default': 'Madrid' },
+      'name': 'Madrid',
       'country_a': 'ESP',
       'country': 'Spain',
       'region': 'Madrid'
@@ -133,7 +133,7 @@ module.exports.tests.madrid = function(test, common) {
 module.exports.tests.one_grolmanstrasse = function(test, common) {
   test('one grolmanstrasse', function(t) {
     var doc = {
-      'name': { 'default': '1 Grolmanstraße' },
+      'name': '1 Grolmanstraße',
       'housenumber': '1',
       'street': 'Grolmanstraße',
       'postalcode': '10623',
@@ -153,7 +153,7 @@ module.exports.tests.one_grolmanstrasse = function(test, common) {
 module.exports.tests.new_zealand = function(test, common) {
   test('new zealand', function(t) {
     var doc = {
-      'name': { 'default': 'New Zealand' },
+      'name': 'New Zealand',
       'country_a': 'NZL',
       'country': 'New Zealand'
     };
@@ -166,7 +166,7 @@ module.exports.tests.new_zealand = function(test, common) {
 module.exports.tests.republic_of_ireland = function(test, common) {
   test('northern ireland', function(t) {
     var doc = {
-      'name': { 'default': 'Ireland' },
+      'name': 'Ireland',
       'country_a': 'IRL',
       'country': 'Ireland'
     };
@@ -180,7 +180,7 @@ module.exports.tests.republic_of_ireland = function(test, common) {
 module.exports.tests.krabi_province = function(test, common) {
   test('Krabi Provence', function(t) {
     var doc = {
-      'name': { 'default': 'Krabi' },
+      'name': 'Krabi',
       'country_a': 'THA',
       'country': 'Thailand',
       'region': 'Krabi'
@@ -194,7 +194,7 @@ module.exports.tests.krabi_province = function(test, common) {
 module.exports.tests.koh_lanta = function(test, common) {
   test('Koh Lanta', function(t) {
     var doc = {
-      'name': { 'default': 'Ko Lanta' },
+      'name': 'Ko Lanta',
       'country_a': 'THA',
       'country': 'Thailand',
       'region': 'Krabi'
@@ -208,7 +208,7 @@ module.exports.tests.koh_lanta = function(test, common) {
 module.exports.tests.black_dog_cafe = function(test, common) {
   test('Black Dog Cafe', function(t) {
     var doc = {
-      'name': { 'default': 'Black Dog Cafe' },
+      'name': 'Black Dog Cafe',
       'country_a': 'NZL',
       'country': 'New Zealand',
       'region': 'Auckland Region',
@@ -223,7 +223,7 @@ module.exports.tests.black_dog_cafe = function(test, common) {
 module.exports.tests.beach_bablyon = function(test, common) {
   test('Beach Bablyon', function(t) {
     var doc = {
-      'name': { 'default': 'Beach Bablyon' },
+      'name': 'Beach Bablyon',
       'country_a': 'NZL',
       'country': 'New Zealand',
       'region': 'Wellington Region',
@@ -240,7 +240,7 @@ module.exports.tests.beach_bablyon = function(test, common) {
 module.exports.tests.waiotapu = function(test, common) {
   test('Waiotapu', function(t) {
     var doc = {
-      'name': { 'default': 'Waiotapu' },
+      'name': 'Waiotapu',
       'country_a': 'NZL',
       'country': 'New Zealand',
       'region': 'Bay of Plenty',

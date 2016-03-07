@@ -42,10 +42,5 @@ json.geocoding.query.layers.should.eql [ "continent",
   "macrohood",
   "neighbourhood",
   "microhood",
-  "disputed",
-  "admin0",
-  "admin1",
-  "admin2",
-  "neighborhood",
-  "local_admin"
+  "disputed"
 ]

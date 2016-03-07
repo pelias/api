@@ -17,7 +17,7 @@ function addStandardTargetsToAliases(standard, aliases) {
  */
 
 // a list of all sources
-var SOURCES = ['openstreetmap', 'openaddresses', 'geonames', 'quattroshapes', 'whosonfirst'];
+var SOURCES = ['openstreetmap', 'openaddresses', 'geonames', 'whosonfirst'];
 
 /*
  * A list of alternate names for sources, mostly used to save typing
@@ -26,7 +26,6 @@ var SOURCE_ALIASES = {
   'osm': ['openstreetmap'],
   'oa': ['openaddresses'],
   'gn': ['geonames'],
-  'qs': ['quattroshapes'],
   'wof': ['whosonfirst']
 };
 
@@ -49,7 +48,6 @@ var LAYERS_BY_SOURCE = {
  openstreetmap: [ 'address', 'venue' ],
  openaddresses: [ 'address' ],
  geonames: [ 'country', 'region', 'county', 'locality', 'venue' ],
- quattroshapes: ['admin0', 'admin1', 'admin2', 'neighborhood', 'locality', 'local_admin'],
  whosonfirst: [ 'continent', 'macrocountry', 'country', 'dependency', 'region',
    'locality', 'localadmin', 'county', 'macrohood', 'neighbourhood', 'microhood', 'disputed']
 };
@@ -60,9 +58,7 @@ var LAYERS_BY_SOURCE = {
  * may have layers that mean the same thing but have a different name
  */
 var LAYER_ALIASES = {
-  'coarse': LAYERS_BY_SOURCE.whosonfirst.concat(LAYERS_BY_SOURCE.quattroshapes),
-  'country': ['country', 'admin0'],  // Include both QS and WOF layers for various types of places
-  'region': ['region', 'admin1']     // Alias layers that include themselves look weird, but do work
+  'coarse': LAYERS_BY_SOURCE.whosonfirst
 };
 
 // create a list of all layers by combining each entry from LAYERS_BY_SOURCE

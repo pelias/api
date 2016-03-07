@@ -14,7 +14,7 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.one_main_street_uk = function(test, common) {
   test('one main street uk', function(t) {
     var doc = {
-      'name': { 'default': '1 Main St' },
+      'name': '1 Main St',
       'housenumber': '1',
       'street': 'Main St',
       'postalcode': 'BT77 0BG',
@@ -31,7 +31,7 @@ module.exports.tests.one_main_street_uk = function(test, common) {
 module.exports.tests.hackney_city_farm = function(test, common) {
   test('hackney city farm', function(t) {
     var doc = {
-      'name': { 'default': 'Hackney City Farm' },
+      'name': 'Hackney City Farm',
       'country_a': 'GBR',
       'country': 'United Kingdom',
       'region': 'Hackney',
@@ -48,7 +48,7 @@ module.exports.tests.hackney_city_farm = function(test, common) {
 module.exports.tests.wales = function(test, common) {
   test('wales', function(t) {
     var doc = {
-      'name': { 'default': 'Wales' },
+      'name': 'Wales',
       'country_a': 'GBR',
       'country': 'United Kingdom',
       'region': 'Wales'
