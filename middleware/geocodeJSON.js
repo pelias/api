@@ -42,6 +42,8 @@ function convertToGeocodeJSON(req, res, next, opts) {
   var singleton = !Array.isArray(res.results);
   var timestamp = new Date().getTime();
 
+  res.body = [];
+
   iterate(res.results, req.clean, function(result, clean, index) {
 
     var geocoding = {};
@@ -75,7 +77,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
 
     // convert docs to geojson and merge with geocoding block
     var body = { geocoding: geocoding };
-    extend(body, geojsonify(result.data || []));
+    extend(body, geojsonify((result && result.data) || []));
 
     res.body.push(body);
   });
