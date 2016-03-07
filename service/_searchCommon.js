@@ -7,7 +7,7 @@ function processResult( data ) {
   var meta = {
     scores: []
   };
-  var error = null;
+  var error;
 
   if( data ) {
     if( data.error ) {
