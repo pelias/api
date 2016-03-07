@@ -87,7 +87,7 @@ function setup( key, cmdCb ){
 }
 
 responses['client/msearch/ok/1'] = function( cmd, cb ){
-  return cb( undefined, searchEnvelope([{
+  return cb( undefined, msearchEnvelope([{
     _id: 'myid1',
     _type: 'mytype1',
     _score: 10,
@@ -146,7 +146,7 @@ function msearchEnvelope( options ){
       if(typeof o === 'string') {
         return { error: o };
       }
-      return { hits: { total: 1, hits: [o] } };
+      return { hits: { total: 1, hits: [].concat(o) } };
     })
   };
 }

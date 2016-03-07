@@ -11,19 +11,21 @@ module.exports.tests.computeDistance = function(test, common) {
       }
     };
     var res = {
-      data: [
-        {
-          center_point: {
-            lat: 40,
-            lon: -71
+      results: {
+        data: [
+          {
+            center_point: {
+              lat: 40,
+              lon: -71
+            }
           }
-        }
-      ]
+        ]
+      }
     };
 
     var expected = 742.348;
     distance(req, res, function () {
-      t.equal(res.data[0].distance, expected, 'correct distance computed');
+      t.equal(res.results.data[0].distance, expected, 'correct distance computed');
       t.end();
     });
   });

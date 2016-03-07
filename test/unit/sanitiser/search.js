@@ -5,7 +5,7 @@ var extend = require('extend'),
     middleware = search.middleware,
     defaultError = 'invalid param \'text\': text length, must be >0';
 // these are the default values you would expect when no input params are specified.
-var emptyClean = { private: false, size: 10 };
+var emptyClean = [{ private: false, size: 10 }];
 
 module.exports.tests = {};
 
@@ -37,7 +37,7 @@ module.exports.tests.sanitize_invalid_text = function(test, common) {
     invalid.forEach( function( text ){
       var req = { query: { text: text } };
       sanitize(req, function(){
-        t.equal(req.errors[0], 'invalid param \'text\': text length, must be >0', text + ' is an invalid text');
+        t.equal(req.errors[0][0], 'invalid param \'text\': text length, must be >0', text + ' is an invalid text');
         t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
       });
     });
@@ -82,8 +82,8 @@ module.exports.tests.sanitize_text_with_delim = function(test, common) {
 
         var expected_parsed_text = parser.get_parsed_address(text);
         t.equal(req.errors[0], undefined, 'no error');
-        t.equal(req.clean.parsed_text.name, expected_parsed_text.name, 'clean name set correctly');
-        t.equal(req.clean.text, expected_text, 'text should match');
+        t.equal(req.clean[0].parsed_text.name, expected_parsed_text.name, 'clean name set correctly');
+        t.equal(req.clean[0].text, expected_text, 'text should match');
 
       });
     });
@@ -95,7 +95,7 @@ module.exports.tests.sanitize_private_no_value = function(test, common) {
   test('default private should be set to true', function(t) {
     var req = { query: { text: 'test' } };
     sanitize(req, function(){
-      t.equal(req.clean.private, false, 'private set to false');
+      t.equal(req.clean[0].private, false, 'private set to false');
     });
     t.end();
   });
@@ -105,7 +105,7 @@ module.exports.tests.sanitize_private_explicit_true_value = function(test, commo
   test('explicit private should be set to true', function(t) {
     var req = { query: { text: 'test', private: true } };
     sanitize(req, function(){
-      t.equal(req.clean.private, true, 'private set to true');
+      t.equal(req.clean[0].private, true, 'private set to true');
     });
     t.end();
   });
@@ -115,7 +115,7 @@ module.exports.tests.sanitize_private_explicit_false_value = function(test, comm
   test('explicit private should be set to false', function(t) {
     var req = { query: { text: 'test', private: false } };
     sanitize(req, function(){
-      t.equal(req.clean.private, false, 'private set to false');
+      t.equal(req.clean[0].private, false, 'private set to false');
     });
     t.end();
   });
@@ -129,7 +129,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
       sanitize(req, function(){
         var expected_lat = parseFloat( lat );
         t.equal(req.errors[0], undefined, 'no error');
-        t.equal(req.clean['focus.point.lat'], expected_lat, 'clean lat set correctly (' + lat + ')');
+        t.equal(req.clean[0]['focus.point.lat'], expected_lat, 'clean lat set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -146,7 +146,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
       sanitize( req, function(){
         var expected_lon = parseFloat( lon );
         t.equal(req.errors[0], undefined, 'no error');
-        t.deepEqual(req.clean['focus.point.lon'], expected_lon, 'clean set correctly (' + lon + ')');
+        t.deepEqual(req.clean[0]['focus.point.lon'], expected_lon, 'clean set correctly (' + lon + ')');
       });
     });
     t.end();
@@ -158,8 +158,8 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     var req = { query: { text: 'test' } };
     sanitize(req, function(){
       t.equal(req.errors[0], undefined, 'no error');
-      t.equal(req.clean['focus.point.lat'], undefined, 'clean set without lat');
-      t.equal(req.clean['focus.point.lon'], undefined, 'clean set without lon');
+      t.equal(req.clean[0]['focus.point.lat'], undefined, 'clean set without lat');
+      t.equal(req.clean[0]['focus.point.lon'], undefined, 'clean set without lon');
     });
     t.end();
   });
@@ -167,9 +167,9 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     var req = { query: { text: 'test', 'focus.point.lon': 0 } };
     sanitize(req, function(){
       var expected_lon = 0;
-      t.equal(req.errors[0], 'parameters focus.point.lat and focus.point.lon must both be specified');
-      t.equal(req.clean['focus.point.lat'], undefined);
-      t.equal(req.clean['focus.point.lon'], undefined);
+      t.equal(req.errors[0][0], 'parameters focus.point.lat and focus.point.lon must both be specified');
+      t.equal(req.clean[0]['focus.point.lat'], undefined);
+      t.equal(req.clean[0]['focus.point.lon'], undefined);
     });
     t.end();
   });
@@ -177,9 +177,9 @@ module.exports.tests.sanitize_optional_geo = function(test, common) {
     var req = { query: { text: 'test', 'focus.point.lat': 0 } };
     sanitize(req, function(){
       var expected_lat = 0;
-      t.equal(req.errors[0], 'parameters focus.point.lat and focus.point.lon must both be specified');
-      t.equal(req.clean['focus.point.lat'], undefined);
-      t.equal(req.clean['focus.point.lon'], undefined);
+      t.equal(req.errors[0][0], 'parameters focus.point.lat and focus.point.lon must both be specified');
+      t.equal(req.clean[0]['focus.point.lat'], undefined);
+      t.equal(req.clean[0]['focus.point.lon'], undefined);
     });
     t.end();
   });
@@ -199,10 +199,10 @@ module.exports.tests.sanitize_bounding_rect = function(test, common) {
 
     sanitize(req, function(){
       t.equal(req.errors[0], undefined, 'no error');
-      t.equal(req.clean['boundary.rect.min_lon'], parseFloat(req.query['boundary.rect.min_lon']));
-      t.equal(req.clean['boundary.rect.max_lat'], parseFloat(req.query['boundary.rect.max_lat']));
-      t.equal(req.clean['boundary.rect.max_lon'], parseFloat(req.query['boundary.rect.max_lon']));
-      t.equal(req.clean['boundary.rect.min_lat'], parseFloat(req.query['boundary.rect.min_lat']));
+      t.equal(req.clean[0]['boundary.rect.min_lon'], parseFloat(req.query['boundary.rect.min_lon']));
+      t.equal(req.clean[0]['boundary.rect.max_lat'], parseFloat(req.query['boundary.rect.max_lat']));
+      t.equal(req.clean[0]['boundary.rect.max_lon'], parseFloat(req.query['boundary.rect.max_lon']));
+      t.equal(req.clean[0]['boundary.rect.min_lat'], parseFloat(req.query['boundary.rect.min_lat']));
       t.end();
     });
   });
@@ -221,10 +221,10 @@ module.exports.tests.sanitize_viewport = function(test, common) {
     };
     sanitize(req, function() {
       t.equal(req.errors[0], undefined, 'no error');
-      t.equal(req.clean['focus.viewport.min_lat'], parseFloat(req.query['focus.viewport.min_lat']), 'correct min_lat in clean');
-      t.equal(req.clean['focus.viewport.max_lat'], parseFloat(req.query['focus.viewport.max_lat']), 'correct max_lat in clean');
-      t.equal(req.clean['focus.viewport.min_lon'], parseFloat(req.query['focus.viewport.min_lon']), 'correct min_lon in clean');
-      t.equal(req.clean['focus.viewport.max_lon'], parseFloat(req.query['focus.viewport.max_lon']), 'correct max_lon in clean');
+      t.equal(req.clean[0]['focus.viewport.min_lat'], parseFloat(req.query['focus.viewport.min_lat']), 'correct min_lat in clean');
+      t.equal(req.clean[0]['focus.viewport.max_lat'], parseFloat(req.query['focus.viewport.max_lat']), 'correct max_lat in clean');
+      t.equal(req.clean[0]['focus.viewport.min_lon'], parseFloat(req.query['focus.viewport.min_lon']), 'correct min_lon in clean');
+      t.equal(req.clean[0]['focus.viewport.max_lon'], parseFloat(req.query['focus.viewport.max_lon']), 'correct max_lon in clean');
       t.end();
     });
   });
@@ -243,13 +243,13 @@ module.exports.tests.sanitize_viewport = function(test, common) {
     };
 
     sanitize(req, function() {
-      t.equal(req.errors[0], 'focus.point and focus.viewport can\'t both be set', 'no error');
-      t.notOk(req.clean.hasOwnProperty('focus.viewport.min_lat'), 'clean should be empty');
-      t.notOk(req.clean.hasOwnProperty('focus.viewport.max_lat'), 'clean should be empty');
-      t.notOk(req.clean.hasOwnProperty('focus.viewport.min_lon'), 'clean should be empty');
-      t.notOk(req.clean.hasOwnProperty('focus.viewport.max_lon'), 'clean should be empty');
-      t.notOk(req.clean.hasOwnProperty('focus.point.lat'), 'clean should be empty');
-      t.notOk(req.clean.hasOwnProperty('focus.point.lon'), 'clean should be empty');
+      t.equal(req.errors[0][0], 'focus.point and focus.viewport can\'t both be set', 'no error');
+      t.notOk(req.clean[0].hasOwnProperty('focus.viewport.min_lat'), 'clean should be empty');
+      t.notOk(req.clean[0].hasOwnProperty('focus.viewport.max_lat'), 'clean should be empty');
+      t.notOk(req.clean[0].hasOwnProperty('focus.viewport.min_lon'), 'clean should be empty');
+      t.notOk(req.clean[0].hasOwnProperty('focus.viewport.max_lon'), 'clean should be empty');
+      t.notOk(req.clean[0].hasOwnProperty('focus.point.lat'), 'clean should be empty');
+      t.notOk(req.clean[0].hasOwnProperty('focus.point.lon'), 'clean should be empty');
       t.end();
     });
   });
@@ -265,13 +265,13 @@ module.exports.tests.sanitize_viewport = function(test, common) {
     };
 
     sanitize(req, function() {
-      t.equal(req.errors[0], 'focus.point and focus.viewport can\'t both be set', 'no error');
-      t.notOk(req.clean.hasOwnProperty('focus.viewport.min_lat'), 'clean should be empty');
-      t.notOk(req.clean.hasOwnProperty('focus.viewport.max_lat'), 'clean should be empty');
-      t.notOk(req.clean.hasOwnProperty('focus.viewport.min_lon'), 'clean should be empty');
-      t.notOk(req.clean.hasOwnProperty('focus.viewport.max_lon'), 'clean should be empty');
-      t.notOk(req.clean.hasOwnProperty('focus.point.lat'), 'clean should be empty');
-      t.notOk(req.clean.hasOwnProperty('focus.point.lon'), 'clean should be empty');
+      t.equal(req.errors[0][0], 'focus.point and focus.viewport can\'t both be set', 'no error');
+      t.notOk(req.clean[0].hasOwnProperty('focus.viewport.min_lat'), 'clean should be empty');
+      t.notOk(req.clean[0].hasOwnProperty('focus.viewport.max_lat'), 'clean should be empty');
+      t.notOk(req.clean[0].hasOwnProperty('focus.viewport.min_lon'), 'clean should be empty');
+      t.notOk(req.clean[0].hasOwnProperty('focus.viewport.max_lon'), 'clean should be empty');
+      t.notOk(req.clean[0].hasOwnProperty('focus.point.lat'), 'clean should be empty');
+      t.notOk(req.clean[0].hasOwnProperty('focus.point.lon'), 'clean should be empty');
       t.end();
     });
   });
@@ -281,21 +281,21 @@ module.exports.tests.sanitize_size = function(test, common) {
   test('invalid size value', function(t) {
     var req = { query: { size: 'a', text: 'test', lat: 0, lon: 0 } };
     sanitize(req, function(){
-      t.equal(req.clean.size, 10, 'default size set');
+      t.equal(req.clean[0].size, 10, 'default size set');
       t.end();
     });
   });
   test('below min size value', function(t) {
     var req = { query: { size: -100, text: 'test', lat: 0, lon: 0 } };
     sanitize(req, function(){
-      t.equal(req.clean.size, 1, 'min size set');
+      t.equal(req.clean[0].size, 1, 'min size set');
       t.end();
     });
   });
   test('above max size value', function(t) {
     var req = { query: { size: 9999, text: 'test', lat: 0, lon: 0 } };
     sanitize(req, function(){
-      t.equal(req.clean.size, 40, 'max size set');
+      t.equal(req.clean[0].size, 40, 'max size set');
       t.end();
     });
   });
@@ -307,7 +307,7 @@ module.exports.tests.sanitize_private = function(test, common) {
     test('invalid private param ' + value, function(t) {
       var req = { query: { text: 'test', lat: 0, lon: 0, 'private': value } };
       sanitize(req, function(){
-        t.equal(req.clean.private, false, 'default private set (to false)');
+        t.equal(req.clean[0].private, false, 'default private set (to false)');
         t.end();
       });
     });
@@ -318,7 +318,7 @@ module.exports.tests.sanitize_private = function(test, common) {
     test('valid private ' + value, function(t) {
       var req = { query: { text: 'test', 'private': value } };
       sanitize(req, function(){
-        t.equal(req.clean.private, true, 'private set to true');
+        t.equal(req.clean[0].private, true, 'private set to true');
         t.end();
       });
     });
@@ -329,7 +329,7 @@ module.exports.tests.sanitize_private = function(test, common) {
     test('test setting false explicitly ' + value, function(t) {
       var req = { query: { text: 'test', 'private': value } };
       sanitize(req, function(){
-        t.equal(req.clean.private, false, 'private set to false');
+        t.equal(req.clean[0].private, false, 'private set to false');
         t.end();
       });
     });
@@ -338,7 +338,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   test('test default behavior', function(t) {
     var req = { query: { text: 'test' } };
     sanitize(req, function(){
-      t.equal(req.clean.private, false, 'private set to false');
+      t.equal(req.clean[0].private, false, 'private set to false');
       t.end();
     });
   });
@@ -348,7 +348,7 @@ module.exports.tests.invalid_params = function(test, common) {
   test('invalid text params', function(t) {
     var req = { query: {} };
     sanitize( req, function(){
-      t.equal(req.errors[0], defaultError, 'handle invalid params gracefully');
+      t.equal(req.errors[0][0], defaultError, 'handle invalid params gracefully');
       t.end();
     });
   });

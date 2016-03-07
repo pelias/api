@@ -16,10 +16,12 @@ module.exports.tests.confidenceScore = function(test, common) {
   test('res.results without parsed_text should not throw exception', function(t) {
     var req = {};
     var res = {
-      data: [{
-        name: 'foo'
-      }],
-      meta: [10]
+      results: {
+        data: [{
+          name: 'foo'
+        }],
+        meta: [10]
+      }
     };
 
     function testIt() {
@@ -40,13 +42,15 @@ module.exports.tests.confidenceScore = function(test, common) {
       }
     };
     var res = {
-      data: [{
-        name: {
-          default: 'foo'
+      results: {
+        data: [{
+          name: {
+            default: 'foo'
+          }
+        }],
+        meta: {
+          scores: [10]
         }
-      }],
-      meta: {
-        scores: [10]
       }
     };
 
@@ -64,25 +68,27 @@ module.exports.tests.confidenceScore = function(test, common) {
       clean: { text: 'test name1' }
     };
     var res = {
-      data: [{
-        _score: 10,
-        found: true,
-        value: 1,
-        center_point: { lat: 100.1, lon: -50.5 },
-        name: { default: 'test name1' },
-        admin0: 'country1', admin1: 'state1', admin2: 'city1'
-      }, {
-        value: 2,
-        center_point: { lat: 100.2, lon: -51.5 },
-        name: { default: 'test name2' },
-        admin0: 'country2', admin1: 'state2', admin2: 'city2',
-        _score: 20
-      }],
-      meta: {scores: [10]}
+      results: {
+        data: [{
+          _score: 10,
+          found: true,
+          value: 1,
+          center_point: { lat: 100.1, lon: -50.5 },
+          name: { default: 'test name1' },
+          admin0: 'country1', admin1: 'state1', admin2: 'city1'
+        }, {
+          value: 2,
+          center_point: { lat: 100.2, lon: -51.5 },
+          name: { default: 'test name2' },
+          admin0: 'country2', admin1: 'state2', admin2: 'city2',
+          _score: 20
+        }],
+        meta: {scores: [10]}
+      }
     };
 
     confidenceScore(req, res, function() {});
-    t.equal(res.data[0].confidence, 0.6, 'score was set');
+    t.equal(res.results.data[0].confidence, 0.6, 'score was set');
     t.end();
   });
 

@@ -13,7 +13,7 @@ function applyLocalNamingConventions(req, res, next) {
 
   iterate(res.results, function(result) {
     // do nothing if no result data set
-    if(_.isUndefined(result.data)) { return; }
+    if(_.isUndefined(result) || _.isUndefined(result.data)) { return; }
 
     // loop through data items and flip relevant number/street
     result.data.filter(function(place){

@@ -92,11 +92,13 @@ module.exports.tests.functional_success = function(test, common) {
         t.deepEqual(json.features, expected, 'values correctly mapped');
       }
     };
-    var req = { clean: { a: 'b' }, errors: [], warnings: [] };
+    var req = { clean: { a: 'b' }, errors: {}, warnings: {} };
     var next = function next() {
-      t.equal(req.errors.length, 0, 'next was called without error');
-      t.deepEqual(res.meta, expectedMeta, 'meta data was set');
-      t.deepEqual(res.data, expectedData, 'data was set');
+      t.deepEqual(req.errors, {}, 'next was called without error');
+      t.ok(res.results);
+      // t.ok(res.results[0]);
+      t.deepEqual(res.results.meta, expectedMeta, 'meta data was set');
+      t.deepEqual(res.results.data, expectedData, 'data was set');
       t.end();
     };
     controller(req, res, next);
@@ -110,9 +112,9 @@ module.exports.tests.functional_failure = function(test, common) {
       t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias', searchType: 'dfs_query_then_fetch' }, 'correct backend command');
     });
     var controller = setup( backend, mockQuery() );
-    var req = { clean: { a: 'b' }, errors: [], warnings: [] };
+    var req = { clean: { a: 'b' }, errors: {}, warnings: {} };
     var next = function(){
-      t.equal(req.errors[0],'a backend error occurred');
+      t.equal(req.errors[0][0],'a backend error occurred');
       t.end();
     };
     controller(req, undefined, next );

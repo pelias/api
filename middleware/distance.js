@@ -20,10 +20,9 @@ function computeDistances(req, res, next, opts) {
     return next();
   }
 
-  iterate(res.results, function(r, i) {
+  iterate(res.results, req.clean, function(r, clean, i) {
     var data = r.data;
-    var clean = Array.isArray(req.clean) ? req.clean[i] : req.clean;
-    if (!r.data || !(check.number(clean[opts.prefix + 'lat']) &&
+    if (!data || !(check.number(clean[opts.prefix + 'lat']) &&
                      check.number(clean[opts.prefix + 'lon']))) {
       return;
     }

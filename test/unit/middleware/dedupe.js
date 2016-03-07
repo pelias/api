@@ -13,12 +13,14 @@ module.exports.tests.dedupe = function(test, common) {
       }
     };
     var res = {
-      data: data
+      results: {
+        data: data
+      }
     };
 
     var expectedCount = 7;
     dedupe(req, res, function () {
-      t.equal(res.data.length, expectedCount, 'results have fewer items than before');
+      t.equal(res.results.data.length, expectedCount, 'results have fewer items than before');
       t.end();
     });
   });
@@ -30,12 +32,14 @@ module.exports.tests.dedupe = function(test, common) {
       }
     };
     var res = {
-      data: nonAsciiData
+      results: {
+        data: nonAsciiData
+      }
     };
 
     var expectedCount = 4;
     dedupe(req, res, function () {
-      t.equal(res.data.length, expectedCount, 'none were removed');
+      t.equal(res.results.data.length, expectedCount, 'none were removed');
       t.end();
     });
   });
@@ -48,11 +52,13 @@ module.exports.tests.dedupe = function(test, common) {
       }
     };
     var res = {
-      data: data
+      results: {
+        data: data
+      }
     };
 
     dedupe(req, res, function () {
-      t.equal(res.data.length, req.clean.size, 'results have fewer items than before');
+      t.equal(res.results.data.length, req.clean.size, 'results have fewer items than before');
       t.end();
     });
   });

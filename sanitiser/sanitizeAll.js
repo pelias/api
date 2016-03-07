@@ -18,8 +18,6 @@ function sanitize( req, sanitizers, cb ){
 
   iterate(params, function(p, index) {
     var clean = {};
-    req.clean.push(clean);
-
     for (var s in sanitizers) {
       var sanity = sanitizers[s]( p, clean );
 
@@ -35,6 +33,8 @@ function sanitize( req, sanitizers, cb ){
         req.warnings[index] = (req.warnings[index] || []).concat( sanity.warnings );
       }
     }
+
+    req.clean.push(clean);
   });
 
   // @todo remove these args, they do not need to be passed out
