@@ -69,7 +69,7 @@ function setup( key, cmdCb ){
           return responses[key.indexOf('mget') === -1 ? 'client/mget/ok/1' : key].apply( this, arguments );
         },
         msearch: function( cmd, cb ){
-          if( 'function' === typeof cmdCb ){ cmdCb( cmd); }
+          if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
           return responses[key].apply( this, arguments );
         },
         suggest: function( cmd, cb ){
@@ -127,6 +127,7 @@ responses['client/msearch/ok/1'] = function( cmd, cb ){
       },
     ]
   ];
+  // msearch expects 2 array items per search, so return n/2 results.
   return cb( undefined, msearchEnvelope(results.slice(0, cmd.length/2)));
 };
 

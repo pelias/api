@@ -47,6 +47,11 @@ function setup( backend, query ){
       });
 
       service.msearch( backend, commands, function( err, results ) {
+        if(err) {
+          req.errors[0] = (req.errors[0] || []).concat( err );
+          return next();
+        }
+
         res.results = results;
         results.forEach(function(r, index) {
           if(r.error) {

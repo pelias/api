@@ -223,7 +223,7 @@ module.exports.tests.array_functional_success = function(test, common) {
       }
     };
 
-    var cleans = [{ a: 'b' }, {a: 'c'}].slice(0, numItems);
+    var cleans = [{ a: 'b'}, {a: 'c'}].slice(0, numItems);
     var req = { clean: cleans, errors: {}, warnings: {} };
     var next = function next() {
       t.deepEqual(req.errors, {}, 'next was called without error');
@@ -260,6 +260,50 @@ module.exports.tests.functional_failure = function(test, common) {
       t.end();
     };
     controller(req, undefined, next );
+  });
+};
+
+module.exports.tests.array_functional_failure = function(test, common) {
+  test('functional failure', function(t) {
+    var backend = mockBackend( 'client/msearch/fail/1', function( cmd ){
+      var expected = [
+        {index: 'pelias', searchType: 'dfs_query_then_fetch'},
+        {a: 'b'}
+      ];
+      t.deepEqual(cmd, expected, 'correct backend command');
+    });
+    var controller = setup( backend, mockQuery() );
+    var req = { clean: [{ a: 'b' }], errors: {}, warnings: {} };
+    var next = function(){
+      t.equal(req.errors[0][0],'a backend error occurred');
+      t.end();
+    };
+    controller(req, undefined, next );
+  });
+};
+
+module.exports.tests.array_query_failure = function(test, common) {
+  test('functional failure', function(t) {
+    var backend = mockBackend( 'client/msearch/queryerror/1', function( cmd ){
+      var expected = [
+        {index: 'pelias', searchType: 'dfs_query_then_fetch'},
+        {a: 'b'},
+        {index: 'pelias', searchType: 'dfs_query_then_fetch'},
+        {a: 'c'}
+      ];
+      t.deepEqual(cmd, expected, 'correct backend command');
+    });
+    var controller = setup( backend, mockQuery() );
+    var req = { clean: [{ a: 'b' }, { a: 'c' }], errors: {}, warnings: {} };
+    var res = {};
+    var next = function(){
+      t.equal(req.errors[0][0],'Query error');
+      t.true(Array.isArray(res.results[1].data), 'Working query returned data');
+      t.equal(res.results[1].data.length, 2, 'Working query returned correct number of results');
+      t.ok(res.results[1].meta, 'Working query returned meta');
+      t.end();
+    };
+    controller(req, res, next );
   });
 };
 
