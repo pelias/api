@@ -129,6 +129,24 @@ responses['client/msearch/ok/1'] = function( cmd, cb ){
   ]));
 };
 
+responses['client/msearch/ok/2'] = function( cmd, cb ){
+  return cb( undefined, msearchEnvelope([
+    [ // 1st set of results
+      {
+        _id: 'myid1',
+        _type: 'mytype1',
+        _score: 10,
+        _source: {
+          value: 1,
+          center_point: { lat: 100.1, lon: -50.5 },
+          name: { default: 'test name1' },
+          admin0: 'country1', admin1: 'state1', admin2: 'city1'
+        }
+      }
+    ]
+  ]));
+};
+
 responses['client/msearch/fail/1'] = responses['client/search/fail/1'];
 responses['client/msearch/queryerror/1'] = function( cmd, cb ){
   return cb( null, msearchEnvelope([

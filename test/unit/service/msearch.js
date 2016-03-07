@@ -53,8 +53,8 @@ var expectedMeta = [
 ];
 
 // functionally test service
-module.exports.tests.functional_success = function(test, common) {
-  test('valid ES query', function(t) {
+module.exports.tests.functional_success_two_items = function(test, common) {
+  test('two valid ES queries', function(t) {
     var backend = mockBackend( 'client/msearch/ok/1', function( cmd ){
       t.deepEqual(cmd, example_valid_es_query, 'no change to the command');
     });
@@ -67,6 +67,24 @@ module.exports.tests.functional_success = function(test, common) {
         t.deepEqual(r.meta, expectedMeta[index], 'meta data correctly mapped');
       });
 
+      t.end();
+    });
+  });
+
+};
+
+// functionally test service
+module.exports.tests.functional_success_one_item = function(test, common) {
+  test('one valid ES query', function(t) {
+    var backend = mockBackend( 'client/msearch/ok/2', function( cmd ){
+      t.deepEqual(cmd, [example_valid_es_query[0]], 'no change to the command');
+    });
+    setup( backend, [example_valid_es_query[0]], function(err, results) {
+      t.true(Array.isArray(results), 'returns an array');
+      t.equal(results.length, 1);
+      t.true(typeof results[0] === 'object', 'valid object');
+      t.deepEqual(results[0].docs, expected[0], 'values correctly mapped');
+      t.deepEqual(results[0].meta, expectedMeta[0], 'meta data correctly mapped');
       t.end();
     });
   });
