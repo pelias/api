@@ -30,6 +30,8 @@ function setup( backend, query ){
       cmd.type = req.clean.type;
     }
 
+    logger.debug( '[ES req]', cmd);
+
     // query backend
     service.search( backend, cmd, function( err, docs, meta ){
 
@@ -42,7 +44,7 @@ function setup( backend, query ){
         res.data = docs;
         res.meta = meta;
       }
-
+      logger.debug('[ES response]', docs);
       next();
     });
 

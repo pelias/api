@@ -2,46 +2,46 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./autocomplete_defaults'),
     textParser = require('./text_parser'),
-    check = require('check-types');
-
-// additional views (these may be merged in to pelias/query at a later date)
-var views = {
-  ngrams_strict:              require('./view/ngrams_strict'),
-  focus_selected_layers:      require('./view/focus_selected_layers'),
-  ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
-  phrase_first_tokens_only:   require('./view/phrase_first_tokens_only')
-};
+    viewsToQuery = require('./views_to_query'),
+    check = require('check-types'),
+    _ = require('lodash');
 
 //------------------------------
 // autocomplete query
 //------------------------------
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
-// mandatory matches
-query.score( views.phrase_first_tokens_only, 'must' );
-query.score( views.ngrams_last_token_only, 'must' );
+// additional views (these may be merged in to pelias/query at a later date)
+var viewLib = {
+  ngrams_strict:              require('./view/ngrams_strict'),
+  focus_selected_layers:      require('./view/focus_selected_layers'),
+  ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
+  phrase_first_tokens_only:   require('./view/phrase_first_tokens_only')
+};
 
-// address components
-query.score( peliasQuery.view.address('housenumber') );
-query.score( peliasQuery.view.address('street') );
-query.score( peliasQuery.view.address('postcode') );
+// merge available views into a single library
+for (var name in peliasQuery.view) {
+  viewLib[name] = peliasQuery.view[name];
+}
 
-// admin components
-query.score( peliasQuery.view.admin('alpha3') );
-query.score( peliasQuery.view.admin('admin0') );
-query.score( peliasQuery.view.admin('admin1') );
-query.score( peliasQuery.view.admin('admin1_abbr') );
-query.score( peliasQuery.view.admin('admin2') );
-query.score( peliasQuery.view.admin('local_admin') );
-query.score( peliasQuery.view.admin('locality') );
-query.score( peliasQuery.view.admin('neighborhood') );
+var views;
+var query_settings = require('pelias-config').generate().query;
+if (query_settings && query_settings.autocomplete) {
+  // external config
+  views = query_settings.autocomplete.views;
 
-// scoring boost
-query.score( views.focus_selected_layers( views.ngrams_strict ) );
-query.score( peliasQuery.view.popularity( views.ngrams_strict ) );
-query.score( peliasQuery.view.population( views.ngrams_strict ) );
+  if(query_settings.autocomplete.defaults) {
+    defaults = _.merge({}, defaults, query_settings.autocomplete.defaults);
+  }
+}
 
-// --------------------------------
+if (!views) {
+  // Get default view configuration
+  views = require( './autocomplete_views.json' );
+}
+
+// add defined views to the query
+viewsToQuery(views, query, viewLib);
 
 /**
   map request variables to query variables for all inputs
