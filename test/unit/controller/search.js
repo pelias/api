@@ -214,7 +214,6 @@ module.exports.tests.array_functional_success = function(test, common) {
       json: function (json) {
         t.equal(typeof json, 'array', 'returns json array');
         t.equal(json.length, numItems, 'correct number of results returned');
-        t.comment("json length " + json.length);
         json.forEach(function(item, index) {
           t.equal(typeof item.date, 'number', 'date set');
           t.equal(item.type, 'FeatureCollection', 'valid geojson');
@@ -230,7 +229,6 @@ module.exports.tests.array_functional_success = function(test, common) {
       t.deepEqual(req.errors, {}, 'next was called without error');
       t.ok(res.results);
       t.equal(res.results.length, numItems, 'results has correct number of items');
-      t.comment("results length " + res.results.length);
       res.results.forEach(function(result, index) {
         t.deepEqual(result.meta, expectedMeta[index], 'meta data was set');
         t.deepEqual(result.data, expectedData[index], 'data was set');
