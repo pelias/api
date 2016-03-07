@@ -46,7 +46,7 @@ function setup( backend, query ){
         commands.push( cmd );
       });
 
-      service.msearch( backend, commands, function( results ) {
+      service.msearch( backend, commands, function( err, results ) {
         res.results = results;
         results.forEach(function(r, index) {
           if(r.error) {
