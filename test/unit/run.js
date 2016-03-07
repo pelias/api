@@ -17,6 +17,7 @@ var tests = [
   require('./helper/text_parser'),
   require('./helper/type_mapping'),
   require('./helper/sizeCalculator'),
+  require('./middleware/bulkSizeLimit'),
   require('./middleware/confidenceScore'),
   require('./middleware/confidenceScoreReverse'),
   require('./middleware/distance'),
