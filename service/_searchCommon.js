@@ -29,7 +29,7 @@ function processResult( data ) {
   }
 
   return {
-    docs: docs,
+    data: docs,
     meta: meta,
     error: error
   };

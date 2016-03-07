@@ -22,7 +22,7 @@ function service( backend, cmd, cb ){
     var result = processResult( data );
 
     // fire callback
-    return cb( null, result.docs, result.meta );
+    return cb( null, result.data, result.meta );
   });
 
 }

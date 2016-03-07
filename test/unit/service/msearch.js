@@ -63,7 +63,7 @@ module.exports.tests.functional_success_two_items = function(test, common) {
       t.equal(results.length, 2);
       results.forEach(function(r, index) {
         t.true(typeof r === 'object', 'valid object');
-        t.deepEqual(r.docs, expected[index], 'values correctly mapped');
+        t.deepEqual(r.data, expected[index], 'values correctly mapped');
         t.deepEqual(r.meta, expectedMeta[index], 'meta data correctly mapped');
       });
 
@@ -83,7 +83,7 @@ module.exports.tests.functional_success_one_item = function(test, common) {
       t.true(Array.isArray(results), 'returns an array');
       t.equal(results.length, 1);
       t.true(typeof results[0] === 'object', 'valid object');
-      t.deepEqual(results[0].docs, expected[0], 'values correctly mapped');
+      t.deepEqual(results[0].data, expected[0], 'values correctly mapped');
       t.deepEqual(results[0].meta, expectedMeta[0], 'meta data correctly mapped');
       t.end();
     });
@@ -131,10 +131,10 @@ module.exports.tests.functional_queryerror = function(test, common) {
       t.true(Array.isArray(results), 'returns an array');
       t.equal(results.length, 2);
       t.equal(results[0].error, 'Query error', 'bad query returns an error');
-      t.deepEqual(results[0].docs, [], 'bad query has no data');
+      t.deepEqual(results[0].data, [], 'bad query has no data');
       t.deepEqual(results[0].meta, {scores:[]}, 'bad query has no meta');
       t.equal(results[1].error, undefined, 'correct query has no error');
-      t.deepEqual(results[1].docs, expected[1], 'values correctly mapped');
+      t.deepEqual(results[1].data, expected[1], 'values correctly mapped');
       t.deepEqual(results[1].meta, expectedMeta[1], 'meta data correctly mapped');
     });
     t.end();
