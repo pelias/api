@@ -3,8 +3,10 @@ var setup = require('../../../service/msearch'),
     mockBackend = require('../mock/backend');
 
 var example_valid_es_query = [
-  { body: { a: 'b' }, index: 'pelias' },
-  { body: { a: 'c' }, index: 'pelias' }
+  { index: 'pelias' },
+  { body: { a: 'b' } },
+  { index: 'pelias' },
+  { body: { a: 'c' } }
 ];
 
 module.exports.tests = {};
@@ -77,9 +79,9 @@ module.exports.tests.functional_success_two_items = function(test, common) {
 module.exports.tests.functional_success_one_item = function(test, common) {
   test('one valid ES query', function(t) {
     var backend = mockBackend( 'client/msearch/ok/2', function( cmd ){
-      t.deepEqual(cmd, [example_valid_es_query[0]], 'no change to the command');
+      t.deepEqual(cmd, example_valid_es_query.slice(0,2), 'no change to the command');
     });
-    setup( backend, [example_valid_es_query[0]], function(err, results) {
+    setup( backend, example_valid_es_query.slice(0,2), function(err, results) {
       t.true(Array.isArray(results), 'returns an array');
       t.equal(results.length, 1);
       t.true(typeof results[0] === 'object', 'valid object');
@@ -117,8 +119,10 @@ module.exports.tests.functional_queryerror = function(test, common) {
 
   test('invalid ES query', function(t) {
     var one_invalid_query = [
+      { index: 'pelias' },
       {  },
-      { body: { a: 'c' }, index: 'pelias' }
+      { index: 'pelias' },
+      { body: { a: 'c' } }
     ];
 
     var backend = mockBackend( 'client/msearch/queryerror/1', function( cmd ){

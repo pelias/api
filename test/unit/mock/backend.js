@@ -87,7 +87,7 @@ function setup( key, cmdCb ){
 }
 
 responses['client/msearch/ok/1'] = function( cmd, cb ){
-  return cb( undefined, msearchEnvelope([
+  var results = [
     [ // 1st set of results
       {
         _id: 'myid1',
@@ -126,7 +126,8 @@ responses['client/msearch/ok/1'] = function( cmd, cb ){
         }
       },
     ]
-  ]));
+  ];
+  return cb( undefined, msearchEnvelope(results.slice(0, cmd.length/2)));
 };
 
 responses['client/msearch/ok/2'] = function( cmd, cb ){
