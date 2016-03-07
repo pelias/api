@@ -1,8 +1,11 @@
 
-var setup = require('../../../service/search'),
+var setup = require('../../../service/msearch'),
     mockBackend = require('../mock/backend');
 
-var example_valid_es_query = { body: { a: 'b' }, index: 'pelias' };
+var example_valid_es_query = [
+  { body: { a: 'b' }, index: 'pelias' },
+  { body: { a: 'c' }, index: 'pelias' }
+];
 
 module.exports.tests = {};
 
@@ -13,10 +16,8 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-// functionally test service
-module.exports.tests.functional_success = function(test, common) {
-
-  var expected = [
+var expected = [
+  [
     {
       _id: 'myid1', _type: 'mytype1',
       _score: 10,
@@ -24,7 +25,9 @@ module.exports.tests.functional_success = function(test, common) {
       center_point: { lat: 100.1, lon: -50.5 },
       name: { default: 'test name1' },
       admin0: 'country1', admin1: 'state1', admin2: 'city1'
-    },
+    }
+  ],
+  [
     {
       _id: 'myid2', _type: 'mytype2',
       _score: 20,
@@ -32,24 +35,38 @@ module.exports.tests.functional_success = function(test, common) {
       center_point: { lat: 100.2, lon: -51.5 },
       name: { default: 'test name2' },
       admin0: 'country2', admin1: 'state2', admin2: 'city2'
+    },
+    {
+      _id: 'myid3', _type: 'mytype3',
+      _score: 30,
+      value: 3,
+      center_point: { lat: 100.3, lon: -52.5 },
+      name: { default: 'test name3' },
+      admin0: 'country3', admin1: 'state3', admin2: 'city3'
     }
-  ];
+  ]
+];
 
-  var expectedMeta = {
-    scores: [10, 20]
-  };
+var expectedMeta = [
+  {scores: [10]},
+  {scores: [20, 30]}
+];
 
+// functionally test service
+module.exports.tests.functional_success = function(test, common) {
   test('valid ES query', function(t) {
     var backend = mockBackend( 'client/msearch/ok/1', function( cmd ){
       t.deepEqual(cmd, example_valid_es_query, 'no change to the command');
     });
-    setup( backend, example_valid_es_query, function(err, data, meta) {
-      t.true(Array.isArray(data), 'returns an array');
-      data.forEach(function(d) {
-        t.true(typeof d === 'object', 'valid object');
+    setup( backend, example_valid_es_query, function(err, results) {
+      t.true(Array.isArray(results), 'returns an array');
+      t.equal(results.length, 2);
+      results.forEach(function(r, index) {
+        t.true(typeof r === 'object', 'valid object');
+        t.deepEqual(r.docs, expected[index], 'values correctly mapped');
+        t.deepEqual(r.meta, expectedMeta[index], 'meta data correctly mapped');
       });
-      t.deepEqual(data, expected, 'values correctly mapped');
-      t.deepEqual(meta, expectedMeta, 'meta data correctly mapped');
+
       t.end();
     });
   });
@@ -59,20 +76,18 @@ module.exports.tests.functional_success = function(test, common) {
 // functionally test service
 module.exports.tests.functional_failure = function(test, common) {
 
-  test('invalid ES query', function(t) {
+  test('connnection-level error', function(t) {
     var invalid_queries = [
       {  },
       { foo: 'bar' }
     ];
 
     var backend = mockBackend( 'client/msearch/fail/1', function( cmd ){
-      t.notDeepEqual(cmd, example_valid_es_query, 'incorrect backend command');
+      t.notDeepEqual(cmd, example_valid_es_query, 'connnection-level error');
     });
-    invalid_queries.forEach(function(query) {
-      setup( backend, [ query ], function(err, data) {
-        t.equal(err, 'a backend error occurred','error passed to errorHandler');
-        t.equal(data, undefined, 'data is undefined');
-      });
+    setup( backend, invalid_queries, function(err, data) {
+      t.equal(err, 'a backend error occurred','error passed to errorHandler');
+      t.equal(data, undefined, 'data is undefined');
     });
     t.end();
   });
@@ -83,19 +98,26 @@ module.exports.tests.functional_failure = function(test, common) {
 module.exports.tests.functional_queryerror = function(test, common) {
 
   test('invalid ES query', function(t) {
-    var invalid_queries = [
+    var one_invalid_query = [
       {  },
-      { foo: 'bar' }
+      { body: { a: 'c' }, index: 'pelias' }
     ];
 
     var backend = mockBackend( 'client/msearch/queryerror/1', function( cmd ){
       t.notDeepEqual(cmd, example_valid_es_query, 'incorrect backend command');
     });
-    invalid_queries.forEach(function(query) {
-      setup( backend, [ query ], function(err, data) {
-        t.equal(err, 'a backend error occurred','error passed to errorHandler');
-        t.equal(data, undefined, 'data is undefined');
-      });
+    setup( backend, one_invalid_query, function(err, results) {
+      // An error in one query returns an error in the object for that query,
+      // so expect no err here.
+      t.notOk(err, undefined,'no error passed to errorHandler');
+      t.true(Array.isArray(results), 'returns an array');
+      t.equal(results.length, 2);
+      t.equal(results[0].error, 'Query error', 'bad query returns an error');
+      t.deepEqual(results[0].docs, [], 'bad query has no data');
+      t.deepEqual(results[0].meta, {scores:[]}, 'bad query has no meta');
+      t.equal(results[1].error, undefined, 'correct query has no error');
+      t.deepEqual(results[1].docs, expected[1], 'values correctly mapped');
+      t.deepEqual(results[1].meta, expectedMeta[1], 'meta data correctly mapped');
     });
     t.end();
   });

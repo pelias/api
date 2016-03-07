@@ -87,44 +87,76 @@ function setup( key, cmdCb ){
 }
 
 responses['client/msearch/ok/1'] = function( cmd, cb ){
-  return cb( undefined, msearchEnvelope([{
-    _id: 'myid1',
-    _type: 'mytype1',
-    _score: 10,
-    _source: {
-      value: 1,
-      center_point: { lat: 100.1, lon: -50.5 },
-      name: { default: 'test name1' },
-      admin0: 'country1', admin1: 'state1', admin2: 'city1'
-    }
-  }, {
-    _id: 'myid2',
-    _type: 'mytype2',
-    _score: 20,
-    _source: {
-      value: 2,
-      center_point: { lat: 100.2, lon: -51.5 },
-      name: { default: 'test name2' },
-      admin0: 'country2', admin1: 'state2', admin2: 'city2'
-    }
-  }]));
+  return cb( undefined, msearchEnvelope([
+    [ // 1st set of results
+      {
+        _id: 'myid1',
+        _type: 'mytype1',
+        _score: 10,
+        _source: {
+          value: 1,
+          center_point: { lat: 100.1, lon: -50.5 },
+          name: { default: 'test name1' },
+          admin0: 'country1', admin1: 'state1', admin2: 'city1'
+        }
+      }
+    ],
+
+    [ // 2nd set of results
+      {
+        _id: 'myid2',
+        _type: 'mytype2',
+        _score: 20,
+        _source: {
+          value: 2,
+          center_point: { lat: 100.2, lon: -51.5 },
+          name: { default: 'test name2' },
+          admin0: 'country2', admin1: 'state2', admin2: 'city2'
+        }
+      },
+      {
+        _id: 'myid3',
+        _type: 'mytype3',
+        _score: 30,
+        _source: {
+          value: 3,
+          center_point: { lat: 100.3, lon: -52.5 },
+          name: { default: 'test name3' },
+          admin0: 'country3', admin1: 'state3', admin2: 'city3'
+        }
+      },
+    ]
+  ]));
 };
 
 responses['client/msearch/fail/1'] = responses['client/search/fail/1'];
 responses['client/msearch/queryerror/1'] = function( cmd, cb ){
   return cb( null, msearchEnvelope([
                     'Query error',
-                    {
-                      _id: 'myid2',
-                      _type: 'mytype2',
-                      _score: 20,
-                      _source: {
-                        value: 2,
-                        center_point: { lat: 100.2, lon: -51.5 },
-                        name: { default: 'test name2' },
-                        admin0: 'country2', admin1: 'state2', admin2: 'city2'
-                      }
-                    }
+                    [ // 2nd set of results
+                      {
+                        _id: 'myid2',
+                        _type: 'mytype2',
+                        _score: 20,
+                        _source: {
+                          value: 2,
+                          center_point: { lat: 100.2, lon: -51.5 },
+                          name: { default: 'test name2' },
+                          admin0: 'country2', admin1: 'state2', admin2: 'city2'
+                        }
+                      },
+                      {
+                        _id: 'myid3',
+                        _type: 'mytype3',
+                        _score: 30,
+                        _source: {
+                          value: 3,
+                          center_point: { lat: 100.3, lon: -52.5 },
+                          name: { default: 'test name3' },
+                          admin0: 'country3', admin1: 'state3', admin2: 'city3'
+                        }
+                      },
+                    ]
                   ]));
 };
 
@@ -146,7 +178,7 @@ function msearchEnvelope( options ){
       if(typeof o === 'string') {
         return { error: o };
       }
-      return { hits: { total: 1, hits: [].concat(o) } };
+      return { hits: { total: o.length || 1, hits: [].concat(o) } };
     })
   };
 }
