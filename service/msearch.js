@@ -17,9 +17,10 @@ function service( backend, cmd, cb ){
     if( err ){ return cb( err ); }
 
     // log total ms elasticsearch reported the query took to execute
-    peliasLogger.verbose( 'time elasticsearch reported:', data.took / 1000 );
+    var took = data.responses.map(function(r) { return r.took / 1000; });
+    peliasLogger.verbose( 'time elasticsearch reported:', took );
 
-    var results = data.results.map( processResult );
+    var results = data.responses.map( processResult );
 
     // fire callback
     return cb( null, results );

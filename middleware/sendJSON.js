@@ -1,15 +1,22 @@
 var check = require('check-types');
 var iterate = require('../helper/iterate');
+var peliasLogger = require( 'pelias-logger' ).get( 'middleware/sendJSON' );
 
 function sendJSONResponse(req, res, next) {
 
+  peliasLogger.debug(JSON.stringify(res.body));
+
   // do nothing if no result data set
-  if (!res || !check.object(res.body)) {
+  if (!res || !(check.object(res.body) || check.array(res.body))) {
     return next();
   }
 
   // default status
   var statusCode = 200;
+
+  if(req.singleton && check.array(res.body)) {
+    res.body = res.body[0];
+  }
 
   iterate(res.body, function(body) {
     // vary status code whenever an error was reported

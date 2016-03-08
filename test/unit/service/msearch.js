@@ -2,12 +2,12 @@
 var setup = require('../../../service/msearch'),
     mockBackend = require('../mock/backend');
 
-var example_valid_es_query = [
+var example_valid_es_query = {body: [
   { index: 'pelias' },
   { body: { a: 'b' } },
   { index: 'pelias' },
   { body: { a: 'c' } }
-];
+]};
 
 module.exports.tests = {};
 
@@ -78,10 +78,11 @@ module.exports.tests.functional_success_two_items = function(test, common) {
 // functionally test service
 module.exports.tests.functional_success_one_item = function(test, common) {
   test('one valid ES query', function(t) {
+    var validQuery = { body: example_valid_es_query.body.slice(0,2) };
     var backend = mockBackend( 'client/msearch/ok/2', function( cmd ){
-      t.deepEqual(cmd, example_valid_es_query.slice(0,2), 'no change to the command');
+      t.deepEqual(cmd, validQuery, 'no change to the command');
     });
-    setup( backend, example_valid_es_query.slice(0,2), function(err, results) {
+    setup( backend, validQuery, function(err, results) {
       t.true(Array.isArray(results), 'returns an array');
       t.equal(results.length, 1);
       t.true(typeof results[0] === 'object', 'valid object');
@@ -97,10 +98,10 @@ module.exports.tests.functional_success_one_item = function(test, common) {
 module.exports.tests.functional_failure = function(test, common) {
 
   test('connnection-level error', function(t) {
-    var invalid_queries = [
+    var invalid_queries = {body: [
       {  },
       { foo: 'bar' }
-    ];
+    ]};
 
     var backend = mockBackend( 'client/msearch/fail/1', function( cmd ){
       t.notDeepEqual(cmd, example_valid_es_query, 'connnection-level error');
@@ -118,12 +119,12 @@ module.exports.tests.functional_failure = function(test, common) {
 module.exports.tests.functional_queryerror = function(test, common) {
 
   test('invalid ES query', function(t) {
-    var one_invalid_query = [
+    var one_invalid_query = {body: [
       { index: 'pelias' },
       {  },
       { index: 'pelias' },
       { body: { a: 'c' } }
-    ];
+    ]};
 
     var backend = mockBackend( 'client/msearch/queryerror/1', function( cmd ){
       t.notDeepEqual(cmd, example_valid_es_query, 'incorrect backend command');

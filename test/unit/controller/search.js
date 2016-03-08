@@ -195,15 +195,16 @@ module.exports.tests.array_functional_success = function(test, common) {
   ];
 
   function testIt(t, numItems) {
-    var queries = [
+    var queries = {body: [
       { index: 'pelias', searchType: 'dfs_query_then_fetch' },
       { a: 'b' },
       { index: 'pelias', searchType: 'dfs_query_then_fetch' },
       { a: 'c' }
-    ];
+    ]};
 
     var backend = mockBackend('client/msearch/ok/1', function (cmd) {
-      t.deepEqual(cmd, queries.slice(0, numItems*2), 'correct backend command');
+      var expected = {body: queries.body.slice(0, numItems*2)};
+      t.deepEqual(cmd, expected, 'correct backend command');
     });
     var controller = setup(backend, mockQuery());
     var res = {
@@ -266,10 +267,10 @@ module.exports.tests.functional_failure = function(test, common) {
 module.exports.tests.array_functional_failure = function(test, common) {
   test('functional failure', function(t) {
     var backend = mockBackend( 'client/msearch/fail/1', function( cmd ){
-      var expected = [
+      var expected = {body: [
         {index: 'pelias', searchType: 'dfs_query_then_fetch'},
         {a: 'b'}
-      ];
+      ]};
       t.deepEqual(cmd, expected, 'correct backend command');
     });
     var controller = setup( backend, mockQuery() );
@@ -285,12 +286,12 @@ module.exports.tests.array_functional_failure = function(test, common) {
 module.exports.tests.array_query_failure = function(test, common) {
   test('functional failure', function(t) {
     var backend = mockBackend( 'client/msearch/queryerror/1', function( cmd ){
-      var expected = [
+      var expected = {body: [
         {index: 'pelias', searchType: 'dfs_query_then_fetch'},
         {a: 'b'},
         {index: 'pelias', searchType: 'dfs_query_then_fetch'},
         {a: 'c'}
-      ];
+      ]};
       t.deepEqual(cmd, expected, 'correct backend command');
     });
     var controller = setup( backend, mockQuery() );

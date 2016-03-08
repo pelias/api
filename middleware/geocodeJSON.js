@@ -39,7 +39,6 @@ function setup(peliasConfig, basePath) {
  */
 function convertToGeocodeJSON(req, res, next, opts) {
 
-  var singleton = !Array.isArray(res.results);
   var timestamp = new Date().getTime();
 
   res.body = [];
@@ -81,11 +80,6 @@ function convertToGeocodeJSON(req, res, next, opts) {
 
     res.body.push(body);
   });
-
-  if(singleton) {
-    // Send input out in the same format it came in.
-    res.body = res.body[0];
-  }
 
   next();
 }

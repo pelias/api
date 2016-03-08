@@ -46,8 +46,9 @@ function setup( backend, query ){
         commands.push( cmd );
       });
 
-      service.msearch( backend, commands, function( err, results ) {
+      service.msearch( backend, { body: commands }, function( err, results ) {
         if(err) {
+          logger.debug(err);
           req.errors[0] = (req.errors[0] || []).concat( err );
           return next();
         }

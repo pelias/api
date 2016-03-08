@@ -128,7 +128,7 @@ responses['client/msearch/ok/1'] = function( cmd, cb ){
     ]
   ];
   // msearch expects 2 array items per search, so return n/2 results.
-  return cb( undefined, msearchEnvelope(results.slice(0, cmd.length/2)));
+  return cb( undefined, msearchEnvelope(results.slice(0, cmd.body.length/2)));
 };
 
 responses['client/msearch/ok/2'] = function( cmd, cb ){
@@ -194,7 +194,7 @@ function searchEnvelope( options ){
 
 function msearchEnvelope( options ){
   return {
-    results: options.map(function(o) {
+    responses: options.map(function(o) {
       if(typeof o === 'string') {
         return { error: o };
       }

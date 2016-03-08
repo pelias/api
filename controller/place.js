@@ -15,7 +15,7 @@ function setup( backend ){
       return next();
     }
 
-    var query = req.clean.ids.map( function(id) {
+    var query = req.clean[0].ids.map( function(id) {
       return {
         _index: 'pelias',
         _type: id.layers,
