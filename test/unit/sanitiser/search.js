@@ -136,7 +136,7 @@ module.exports.tests.sanitize_text_array = function(test, common, method) {
 };
 
 module.exports.tests.sanitize_text_with_delim = function(test, common, method) {
-  var texts = [ 'a,bcd', '123 main st, admin1', ',,,', ' ' ];
+  var texts = [ 'a,bcd', '123 main st, region', ',,,', ' ' ];
 
   test('valid texts with a comma', function(t) {
     texts.forEach( function( text ){

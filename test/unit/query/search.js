@@ -126,8 +126,7 @@ module.exports.tests.query = function(test, common) {
   test('valid query with a full valid address', function(t) {
     var address = '123 main st new york ny 10010 US';
     var query = generate({ text: address,
-      layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
-                'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
+      layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
       parsed_text: parser.get_parsed_address(address),
     });
@@ -142,8 +141,7 @@ module.exports.tests.query = function(test, common) {
   test('valid query with partial address', function(t) {
     var partial_address = 'soho grand, new york';
     var query = generate({ text: partial_address,
-      layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
-                'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
+      layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
       parsed_text: parser.get_parsed_address(partial_address),
     });
@@ -158,8 +156,7 @@ module.exports.tests.query = function(test, common) {
   test('valid query with regions in address', function(t) {
     var partial_address = '1 water st manhattan ny';
     var query = generate({ text: partial_address,
-      layers: [ 'geoname', 'osmnode', 'osmway', 'admin0', 'admin1', 'admin2', 'neighborhood',
-        'locality', 'local_admin', 'osmaddress', 'openaddresses' ],
+      layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
       parsed_text: parser.get_parsed_address(partial_address),
     });

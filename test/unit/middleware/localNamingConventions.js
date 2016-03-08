@@ -15,9 +15,11 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
        'number': '1',
        'street': 'Main St'
     },
-    'admin1': 'Dungannon',
-    'alpha3': 'GBR',
-    'admin0': 'United Kingdom'
+    'parent': {
+      'region': 'Dungannon',
+      'country_a': 'GBR',
+      'country': 'United Kingdom'
+    }
   };
 
   var deAddress = {
@@ -30,12 +32,14 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
        'number': '23',
        'street': 'Grolmanstraße'
     },
-    'admin1': 'Berlin',
-    'locality': 'Berlin',
-    'alpha3': 'DEU',
-    'admin2': 'Berlin',
-    'admin0': 'Germany',
-    'neighborhood': 'Hansaviertel'
+    'parent': {
+      'region': 'Berlin',
+      'locality': 'Berlin',
+      'country_a': 'DEU',
+      'county': 'Berlin',
+      'country': 'Germany',
+      'neighbourhood': 'Hansaviertel'
+    }
   };
 
   var req = {},

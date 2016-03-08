@@ -85,47 +85,47 @@ module.exports = {
             }
           },{
             'match': {
-              'admin0': {
+              'parent.country': {
                 'query': 'new york',
-                'boost': vs['admin:admin0:boost'],
-                'analyzer': vs['admin:admin0:analyzer']
+                'boost': vs['admin:country:boost'],
+                'analyzer': vs['admin:country:analyzer']
               }
             }
           }, {
             'match': {
-              'admin1': {
+              'parent.region': {
                 'query': 'new york',
-                'boost': vs['admin:admin1:boost'],
-                'analyzer': vs['admin:admin1:analyzer']
+                'boost': vs['admin:region:boost'],
+                'analyzer': vs['admin:region:analyzer']
               }
             }
           }, {
             'match': {
-              'admin1_abbr': {
+              'parent.region_a': {
                 'query': 'new york',
-                'boost': vs['admin:admin1_abbr:boost'],
-                'analyzer': vs['admin:admin1_abbr:analyzer']
+                'boost': vs['admin:region_a:boost'],
+                'analyzer': vs['admin:region_a:analyzer']
               }
             }
           }, {
             'match': {
-              'admin2': {
+              'parent.county': {
                 'query': 'new york',
-                'boost': vs['admin:admin2:boost'],
-                'analyzer': vs['admin:admin2:analyzer']
+                'boost': vs['admin:county:boost'],
+                'analyzer': vs['admin:county:analyzer']
               }
             }
           }, {
             'match': {
-              'local_admin': {
+              'parent.localadmin': {
                 'query': 'new york',
-                'boost': vs['admin:local_admin:boost'],
-                'analyzer': vs['admin:local_admin:analyzer']
+                'boost': vs['admin:localadmin:boost'],
+                'analyzer': vs['admin:localadmin:analyzer']
               }
             }
           }, {
             'match': {
-              'locality': {
+              'parent.locality': {
                 'query': 'new york',
                 'boost': vs['admin:locality:boost'],
                 'analyzer': vs['admin:locality:analyzer']
@@ -133,10 +133,10 @@ module.exports = {
             }
           }, {
             'match': {
-              'neighborhood': {
+              'parent.neighbourhood': {
                 'query': 'new york',
-                'boost': vs['admin:neighborhood:boost'],
-                'analyzer': vs['admin:neighborhood:analyzer']
+                'boost': vs['admin:neighbourhood:boost'],
+                'analyzer': vs['admin:neighbourhood:analyzer']
               }
             }
           }]

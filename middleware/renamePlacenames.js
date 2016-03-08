@@ -1,5 +1,6 @@
 var extend = require('extend');
 var iterate = require('../helper/iterate');
+var _ = require('lodash');
 
 /**
  - P is a preferred English name
@@ -12,26 +13,39 @@ var iterate = require('../helper/iterate');
  - A is an abbreviation or code for the place (e.g. "NYC" for New
  York)
  */
-// config mapping of old names to new ones
-var NAME_MAP = {
+
+var ADDRESS_PROPS = {
   'number': 'housenumber',
   'zip': 'postalcode',
-  'alpha3': 'country_a',
-  'admin0': 'country',
-  'admin1': 'region',
-  'admin1_abbr': 'region_a',
-  'admin2': 'county',
-  'local_admin': 'localadmin',
-  'neighborhood': 'neighbourhood'
+  'street': 'street'
 };
 
-function setup() {
+var PARENT_PROPS = [
+  'country',
+  'country_id',
+  'country_a',
+  'region',
+  'region_id',
+  'region_a',
+  'county',
+  'county_id',
+  'county_a',
+  'localadmin',
+  'localadmin_id',
+  'localadmin_a',
+  'locality',
+  'locality_id',
+  'locality_a',
+  'neighbourhood',
+  'neighbourhood_id'
+];
 
+
+function setup() {
   return renamePlacenames;
 }
 
 function renamePlacenames(req, res, next) {
-
   // do nothing if no result data set
   if (!res || !res.results) {
     return next();
@@ -40,32 +54,31 @@ function renamePlacenames(req, res, next) {
   iterate(res.results, function(result) {
     // loop through data items and remap placenames
     if(result.data) {
-      result.data = result.data.map(renameProperties);
+      result.data = result.data.map(renameOneRecord);
     }
   });
 
   next();
 }
 
-function renameProperties(place) {
-  var newPlace = {};
-  Object.keys(place).forEach(function (property) {
-    if (property === 'address') {
-      extend(newPlace, renameProperties(place[property]));
-    }
-    else {
-      renameProperty(place, newPlace, property);
-    }
-  });
-  return newPlace;
-}
-
-function renameProperty(oldObj, newObj, property) {
-  if (!oldObj.hasOwnProperty(property)) {
-    return;
+/*
+ * Rename the fields in one record
+ */
+function renameOneRecord(place) {
+  if (place.address) {
+    Object.keys(ADDRESS_PROPS).forEach(function (prop) {
+      place[ADDRESS_PROPS[prop]] = place.address[prop];
+    });
   }
 
-  newObj[(NAME_MAP[property] || property)] = oldObj[property];
+  // merge the parent block into the top level object to flatten the structure
+  if (place.parent) {
+    PARENT_PROPS.forEach(function (prop) {
+      place[prop] = place.parent[prop];
+    });
+  }
+
+  return place;
 }
 
 module.exports = setup;

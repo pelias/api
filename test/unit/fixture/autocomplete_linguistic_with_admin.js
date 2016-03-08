@@ -20,7 +20,7 @@ module.exports = {
           'should': [
             {
               'match': {
-                'admin0': {
+                'parent.country': {
                   'analyzer': 'peliasAdmin',
                   'boost': 800,
                   'query': 'three'
@@ -29,7 +29,7 @@ module.exports = {
             },
             {
               'match': {
-                'admin1': {
+                'parent.region': {
                   'analyzer': 'peliasAdmin',
                   'boost': 600,
                   'query': 'three'
@@ -38,7 +38,7 @@ module.exports = {
             },
             {
               'match': {
-                'admin1_abbr': {
+                'parent.region_a': {
                   'analyzer': 'peliasAdmin',
                   'boost': 600,
                   'query': 'three'
@@ -47,7 +47,7 @@ module.exports = {
             },
             {
               'match': {
-                'admin2': {
+                'parent.county': {
                   'analyzer': 'peliasAdmin',
                   'boost': 400,
                   'query': 'three'
@@ -56,7 +56,7 @@ module.exports = {
             },
             {
               'match': {
-                'local_admin': {
+                'parent.localadmin': {
                   'analyzer': 'peliasAdmin',
                   'boost': 200,
                   'query': 'three'
@@ -65,7 +65,7 @@ module.exports = {
             },
             {
               'match': {
-                'locality': {
+                'parent.locality': {
                   'analyzer': 'peliasAdmin',
                   'boost': 200,
                   'query': 'three'
@@ -74,7 +74,7 @@ module.exports = {
             },
             {
               'match': {
-                'neighborhood': {
+                'parent.neighbourhood': {
                   'analyzer': 'peliasAdmin',
                   'boost': 200,
                   'query': 'three'
