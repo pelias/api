@@ -43,7 +43,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
 
   res.body = [];
 
-  iterate(res.results, req.clean, function(result, clean, index) {
+  iterate(req.clean, res.results, function(clean, result, index) {
 
     var geocoding = {};
 
