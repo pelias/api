@@ -14,7 +14,7 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.skane1 = function(test, common) {
   test('skåne 1', function(t) {
     var doc = {
-      'name': { 'default': 'Malmö' },
+      'name': 'Malmö',
       'country_a': 'SWE',
       'country': 'Sweden',
       'region': 'Skåne',
@@ -29,7 +29,7 @@ module.exports.tests.skane1 = function(test, common) {
 module.exports.tests.skane2 = function(test, common) {
   test('skåne 2', function(t) {
     var doc = {
-      'name': { 'default': 'Malmö' },
+      'name': 'Malmö',
       'country_a': 'SWE',
       'country': 'Sweden',
       'region': 'Skåne',

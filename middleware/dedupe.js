@@ -39,8 +39,13 @@ function dedupeResults(req, res, next) {
  */
 function isDifferent(item1, item2) {
   try {
-    propMatch(item1, item2, 'admin1_abbr');
-    propMatch(item1, item2, 'alpha3');
+    if (item1.hasOwnProperty('parent') && item2.hasOwnProperty('parent')) {
+      propMatch(item1.parent, item2.parent, 'region_a');
+      propMatch(item1.parent, item2.parent, 'country');
+    }
+    else if (item1.parent !== item2.parent) {
+      throw new Error('different');
+    }
 
     if (item1.hasOwnProperty('name') && item2.hasOwnProperty('name')) {
       propMatch(item1.name, item2.name, 'default');
@@ -77,7 +82,17 @@ function isDifferent(item1, item2) {
  * @throws {Error}
  */
 function propMatch(item1, item2, prop) {
-  if (normalizeString(item1[prop]) !== normalizeString(item2[prop])) {
+  var prop1 = item1[prop];
+  var prop2 = item2[prop];
+
+  // in the case the property is an array (currently only in parent schema)
+  // simply take the 1st item. this will change in the near future to support multiple hierarchies
+  if (_.isArray(prop1) && _.isArray(prop2)) {
+    prop1 = prop1[0];
+    prop2= prop2[0];
+  }
+
+  if (normalizeString(prop1) !== normalizeString(prop2)) {
     throw new Error('different');
   }
 }
