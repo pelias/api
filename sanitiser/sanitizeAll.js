@@ -16,8 +16,6 @@ function sanitize( req, sanitizers, cb ){
   // (in this case from the GET querystring params or POST body)
   var params = ((req.method === 'POST') ? req.body : req.query) || {};
 
-  console.error(JSON.stringify(params));
-
   // Record if the input was a singleton. This is used in the output stage
   // to ensure that the output is also a singleton.
   req.singleton = !Array.isArray(params);
