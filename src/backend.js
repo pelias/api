@@ -1,6 +1,6 @@
 
 var Backend = require('geopipes-elasticsearch-backend'),
-    client = require('pelias-esclient')(),
+    client = require('elasticsearch').Client(),
     backends = {};
 
 function getBackend( index, type ){
