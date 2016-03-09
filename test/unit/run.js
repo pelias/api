@@ -27,6 +27,7 @@ var tests = [
   require('./middleware/distance'),
   require('./middleware/localNamingConventions'),
   require('./middleware/dedupe'),
+  require('./middleware/parseBBox'),
   require('./query/autocomplete'),
   require('./query/autocomplete_defaults'),
   require('./query/search_defaults'),
