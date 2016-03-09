@@ -61,6 +61,7 @@
   },
   "devDependencies": {
     "ciao": "^0.6.0",
+    "difflet": "^1.0.1",
     "istanbul": "^0.4.2",
     "jshint": "^2.5.6",
     "nsp": "^2.2.0",
