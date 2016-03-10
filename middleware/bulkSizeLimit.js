@@ -5,7 +5,7 @@ var SIZE_LIMIT;
 
 function setup(peliasConfig) {
   if(check.assigned(peliasConfig)) {
-    SIZE_LIMIT = peliasConfig.hasOwnProperty('bulkSizeLimit') ? peliasConfig.bulkSizeLimit : 0;
+    SIZE_LIMIT = peliasConfig.hasOwnProperty('bulkSizeLimit') ? peliasConfig.bulkSizeLimit : 50;
   }
 
   return enforceSizeLimit;
