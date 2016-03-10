@@ -291,28 +291,5 @@ module.exports = [
     '_type': 'venue',
     '_score': 0.9724125,
     'confidence': 0.649
-  },
-  { // same as above, but with some missing attributes. Should be considered as duplicate.
-    'center_point': {
-      'lon': -81.532392,
-      'lat': 40.597578
-    },
-    'address': {},
-    'name': {
-      'default': 'Strasburg High School'
-    },
-    'parent': {
-      'localadmin': 'Franklin',
-      'region_a': 'OH',
-      'region': 'Ohio'
-    },
-    'category': [
-      'education'
-    ],
-    '_id': '356646971',
-    '_type': 'venue',
-    '_score': 0.9724125,
-    'confidence': 0.649
   }
-
 ];
