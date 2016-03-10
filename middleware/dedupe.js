@@ -42,13 +42,17 @@ function isDifferent(item1, item2) {
     if (item1.hasOwnProperty('parent') && item2.hasOwnProperty('parent')) {
       propMatch(item1.parent, item2.parent, 'region_a');
       propMatch(item1.parent, item2.parent, 'country');
+      propMatch(item1.parent, item2.parent, 'locality');
+      propMatch(item1.parent, item2.parent, 'neighborhood');
     }
     else if (item1.parent !== item2.parent) {
       throw new Error('different');
     }
 
     if (item1.hasOwnProperty('name') && item2.hasOwnProperty('name')) {
-      propMatch(item1.name, item2.name, 'default');
+      for (var lang in item1.name) {
+	propMatch(item1.name, item2.name, lang);
+      }
     }
     else {
       propMatch(item1, item2, 'name');
@@ -90,6 +94,10 @@ function propMatch(item1, item2, prop) {
   if (_.isArray(prop1) && _.isArray(prop2)) {
     prop1 = prop1[0];
     prop2= prop2[0];
+  }
+
+  if (!prop1 || !prop2) {
+    return; // absence of information does not make an item different
   }
 
   if (normalizeString(prop1) !== normalizeString(prop2)) {
