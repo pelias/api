@@ -96,10 +96,6 @@ function propMatch(item1, item2, prop) {
     prop2= prop2[0];
   }
 
-  if (!prop1 || !prop2) {
-    return; // absence of information does not make an item different
-  }
-
   if (normalizeString(prop1) !== normalizeString(prop2)) {
     throw new Error('different');
   }
