@@ -18,7 +18,7 @@ function applyLocalNamingConventions(req, res, next) {
     // loop through data items and flip relevant number/street
     result.data.filter(function(place){
       // only relevant for German addresses
-      if( 'DEU' !== place.parent.country_a ){ return false; }
+      if( place.parent.country_a.indexOf('DEU') === -1 ){ return false; }
       if( !place.hasOwnProperty('address') ){ return false; }
       if( !place.address.hasOwnProperty('number') ){ return false; }
       if( !place.address.hasOwnProperty('street') ){ return false; }

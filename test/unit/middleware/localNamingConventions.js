@@ -16,9 +16,9 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
        'street': 'Main St'
     },
     'parent': {
-      'region': 'Dungannon',
-      'country_a': 'GBR',
-      'country': 'United Kingdom'
+      'region': ['Dungannon'],
+      'country_a': ['GBR'],
+      'country': ['United Kingdom']
     }
   };
 
@@ -33,12 +33,12 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
        'street': 'Grolmanstraße'
     },
     'parent': {
-      'region': 'Berlin',
-      'locality': 'Berlin',
-      'country_a': 'DEU',
-      'county': 'Berlin',
-      'country': 'Germany',
-      'neighbourhood': 'Hansaviertel'
+      'region': ['Berlin'],
+      'locality': ['Berlin'],
+      'country_a': ['DEU'],
+      'county': ['Berlin'],
+      'country': ['Germany'],
+      'neighbourhood': ['Hansaviertel']
     }
   };
 
