@@ -51,9 +51,9 @@ module.exports.tests.functional_success = function(test, common) {
       _score: 10,
       _type: 'mytype1',
       parent: {
-        country: 'country1',
-        region: 'state1',
-        county: 'city1'
+        country: ['country1'],
+        region: ['state1'],
+        county: ['city1']
       },
       center_point: { lat: 100.1, lon: -50.5 },
       name: { default: 'test name1' },
@@ -64,9 +64,9 @@ module.exports.tests.functional_success = function(test, common) {
       _score: 20,
       _type: 'mytype2',
       parent: {
-        country: 'country2',
-        region: 'state2',
-        county: 'city2'
+        country: ['country2'],
+        region: ['state2'],
+        county: ['city2']
       },
       center_point: { lat: 100.2, lon: -51.5 },
       name: { default: 'test name2' },
