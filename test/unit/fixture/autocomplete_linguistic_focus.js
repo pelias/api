@@ -75,15 +75,11 @@ module.exports = {
               'max_boost': 20,
               'score_mode': 'first',
               'boost_mode': 'replace',
-              'filter': {
-                'exists': {
-                  'field': 'popularity'
-                }
-              },
               'functions': [{
                 'field_value_factor': {
                   'modifier': 'log1p',
-                  'field': 'popularity'
+                  'field': 'popularity',
+                  'missing': 1
                 },
                 'weight': 1
               }]
@@ -104,15 +100,11 @@ module.exports = {
               'max_boost': 20,
               'score_mode': 'first',
               'boost_mode': 'replace',
-              'filter': {
-                'exists': {
-                  'field': 'population'
-                }
-              },
               'functions': [{
                 'field_value_factor': {
                   'modifier': 'log1p',
-                  'field': 'population'
+                  'field': 'population',
+                  'missing': 1
                 },
                 'weight': 3
               }]

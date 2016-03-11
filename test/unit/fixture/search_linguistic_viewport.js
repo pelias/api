@@ -77,18 +77,14 @@ module.exports = {
                   {
                     'field_value_factor': {
                       'modifier': 'log1p',
-                      'field': 'popularity'
+                      'field': 'popularity',
+                      'missing': 1
                     },
                     'weight': 1
                   }
                 ],
                 'score_mode': 'first',
-                'boost_mode': 'replace',
-                'filter': {
-                  'exists': {
-                    'field': 'popularity'
-                  }
-                }
+                'boost_mode': 'replace'
               }
             },
             {
@@ -109,18 +105,14 @@ module.exports = {
                   {
                     'field_value_factor': {
                       'modifier': 'log1p',
-                      'field': 'population'
+                      'field': 'population',
+                      'missing': 1
                     },
                     'weight': 2
                   }
                 ],
                 'score_mode': 'first',
-                'boost_mode': 'replace',
-                'filter': {
-                  'exists': {
-                    'field': 'population'
-                  }
-                }
+                'boost_mode': 'replace'
               }
             }
           ]
