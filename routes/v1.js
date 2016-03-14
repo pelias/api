@@ -34,7 +34,8 @@ var postProc = {
   localNamingConventions: require('../middleware/localNamingConventions'),
   renamePlacenames: require('../middleware/renamePlacenames'),
   geocodeJSON: require('../middleware/geocodeJSON'),
-  sendJSON: require('../middleware/sendJSON')
+  sendJSON: require('../middleware/sendJSON'),
+  parseBoundingBox: require('../middleware/parseBBox')
 };
 
 /**
@@ -65,6 +66,7 @@ function addRoutes(app, peliasConfig) {
       postProc.dedupe(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
+      postProc.parseBoundingBox(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
@@ -76,6 +78,7 @@ function addRoutes(app, peliasConfig) {
       postProc.dedupe(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
+      postProc.parseBoundingBox(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
@@ -90,6 +93,7 @@ function addRoutes(app, peliasConfig) {
       postProc.dedupe(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
+      postProc.parseBoundingBox(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
@@ -98,6 +102,7 @@ function addRoutes(app, peliasConfig) {
       controllers.place(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
+      postProc.parseBoundingBox(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),

@@ -106,7 +106,7 @@ module.exports = {
                   }
                 ],
                 'score_mode': 'first',
-                'boost_mode': 'replace',
+                'boost_mode': 'replace'
               }
             },
             {
