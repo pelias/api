@@ -54,12 +54,12 @@ function isDifferent(item1, item2) {
       propMatch(item1, item2, 'name');
     }
 
-    if (item1.hasOwnProperty('address') && item2.hasOwnProperty('address')) {
-      propMatch(item1.address, item2.address, 'number');
-      propMatch(item1.address, item2.address, 'street');
-      propMatch(item1.address, item2.address, 'zip');
+    if (item1.hasOwnProperty('address_parts') && item2.hasOwnProperty('address_parts')) {
+      propMatch(item1.address_parts, item2.address_parts, 'number');
+      propMatch(item1.address_parts, item2.address_parts, 'street');
+      propMatch(item1.address_parts, item2.address_parts, 'zip');
     }
-    else if (item1.address !== item2.address) {
+    else if (item1.address_parts !== item2.address_parts) {
       throw new Error('different');
     }
   }

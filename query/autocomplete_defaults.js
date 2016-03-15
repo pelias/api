@@ -39,15 +39,15 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'function_score:boost_mode': 'multiply',
 
   'address:housenumber:analyzer': 'peliasHousenumber',
-  'address:housenumber:field': 'address.number',
+  'address:housenumber:field': 'address_parts.number',
   'address:housenumber:boost': 2,
 
   'address:street:analyzer': 'peliasStreet',
-  'address:street:field': 'address.street',
+  'address:street:field': 'address_parts.street',
   'address:street:boost': 5,
 
   'address:postcode:analyzer': 'peliasZip',
-  'address:postcode:field': 'address.zip',
+  'address:postcode:field': 'address_parts.zip',
   'address:postcode:boost': 2000,
 
   'admin:country_a:analyzer': 'standard',

@@ -4,7 +4,7 @@ module.exports = [
       'lon': -76.207456,
       'lat': 40.039265
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
       'localadmin': ['East Lampeter'],
       'region_a': ['PA'],
@@ -31,7 +31,7 @@ module.exports = [
       'lon': -76.207456,
       'lat': 40.039265
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
       'localadmin': ['East Lampeter'],
       'region_a': ['PA'],
@@ -58,7 +58,7 @@ module.exports = [
       'lon': -76.23246,
       'lat': 39.99288
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
       'localadmin': ['West Lampeter'],
       'region_a': ['PA'],
@@ -85,7 +85,7 @@ module.exports = [
       'lon': -76.20746,
       'lat': 40.03927
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
       'localadmin': ['East Lampeter'],
       'region_a': ['PA'],
@@ -112,7 +112,7 @@ module.exports = [
       'lon': -76.232457,
       'lat': 39.992877
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
       'region': ['Pennsylvania'],
       'locality': ['Lampeter'],
@@ -139,7 +139,7 @@ module.exports = [
       'lon': -76.207456,
       'lat': 40.038987
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
       'region': ['Pennsylvania'],
       'locality': ['Smoketown'],
@@ -166,7 +166,7 @@ module.exports = [
       'lon': -76.20746,
       'lat': 40.03899
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
       'region': ['Pennsylvania'],
       'locality': ['Smoketown'],
@@ -193,7 +193,7 @@ module.exports = [
       'lon': -94.167445,
       'lat': 38.762788
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
       'region': ['Missouri'],
       'locality': ['Strasburg'],
@@ -219,7 +219,7 @@ module.exports = [
       'lon': -78.36317,
       'lat': 38.98445
     },
-    'address': {},
+    'address_parts': {},
     'name': {
       'default': 'Strasburg High School'
     },
@@ -245,7 +245,7 @@ module.exports = [
       'lon': -100.16516,
       'lat': 46.13427
     },
-    'address': {},
+    'address_parts': {},
     'name': {
       'default': 'Strasburg High School'
     },
@@ -271,7 +271,7 @@ module.exports = [
       'lon': -81.532392,
       'lat': 40.597578
     },
-    'address': {},
+    'address_parts': {},
     'name': {
       'default': 'Strasburg High School'
     },

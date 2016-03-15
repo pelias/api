@@ -55,7 +55,7 @@ module.exports = [
     'name': {
       'default': '万里加油站'
     },
-    'address': {
+    'address_parts': {
       'street': 'S308',
       'postalcode': '312044'
     },

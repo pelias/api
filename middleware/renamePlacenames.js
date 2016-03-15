@@ -58,9 +58,9 @@ function renamePlacenames(req, res, next) {
  * Rename the fields in one record
  */
 function renameOneRecord(place) {
-  if (place.address) {
+  if (place.address_parts) {
     Object.keys(ADDRESS_PROPS).forEach(function (prop) {
-      place[ADDRESS_PROPS[prop]] = place.address[prop];
+      place[ADDRESS_PROPS[prop]] = place.address_parts[prop];
     });
   }
 
