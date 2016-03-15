@@ -10,7 +10,7 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
     '_type': 'test',
     'name': { 'default': '1 Main St' },
     'center_point': { 'lon': -7.131521, 'lat': 54.428866 },
-    'address': {
+    'address_parts': {
        'zip': 'BT77 0BG',
        'number': '1',
        'street': 'Main St'
@@ -27,7 +27,7 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
     '_type': 'test',
     'name': { 'default': '23 Grolmanstraße' },
     'center_point': { 'lon': 13.321487, 'lat': 52.506781 },
-    'address': {
+    'address_parts': {
        'zip': '10623',
        'number': '23',
        'street': 'Grolmanstraße'

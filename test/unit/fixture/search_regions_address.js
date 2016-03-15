@@ -77,7 +77,7 @@ module.exports = {
             }
           },{
             'match': {
-              'address.number': {
+              'address_parts.number': {
                 'query': '1',
                 'boost': vs['address:housenumber:boost'],
                 'analyzer': vs['address:housenumber:analyzer']
@@ -85,7 +85,7 @@ module.exports = {
             }
           }, {
             'match': {
-              'address.street': {
+              'address_parts.street': {
                 'query': 'water st',
                 'boost': vs['address:street:boost'],
                 'analyzer': vs['address:street:analyzer']
