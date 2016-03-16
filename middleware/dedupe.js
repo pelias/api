@@ -43,7 +43,7 @@ function isDifferent(item1, item2) {
       propMatch(item1.parent, item2.parent, 'region_a');
       propMatch(item1.parent, item2.parent, 'country');
       propMatch(item1.parent, item2.parent, 'locality');
-      propMatch(item1.parent, item2.parent, 'neighborhood');
+      propMatch(item1.parent, item2.parent, 'neighbourhood');
     }
     else if (item1.parent !== item2.parent) {
       throw new Error('different');
