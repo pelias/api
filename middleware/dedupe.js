@@ -91,10 +91,8 @@ function propMatch(item1, item2, prop) {
 
   // in the case the property is an array (currently only in parent schema)
   // simply take the 1st item. this will change in the near future to support multiple hierarchies
-  if (_.isArray(prop1) && _.isArray(prop2)) {
-    prop1 = prop1[0];
-    prop2= prop2[0];
-  }
+  if (_.isArray(prop1)) { prop1 = prop1[0]; }
+  if (_.isArray(prop2)) { prop2 = prop2[0]; }
 
   if (normalizeString(prop1) !== normalizeString(prop2)) {
     throw new Error('different');
