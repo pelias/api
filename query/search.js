@@ -2,43 +2,34 @@ var peliasQuery = require('pelias-query'),
     defaults = require('./search_defaults'),
     textParser = require('./text_parser'),
     check = require('check-types'),
-    geolib = require('geolib');
+    geolib = require('geolib'),
+    viewsToQuery = require('./views_to_query'),
+    _ = require('lodash');
 
 //------------------------------
 // general-purpose search query
 //------------------------------
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
-// mandatory matches
-query.score( peliasQuery.view.boundary_country, 'must' );
-query.score( peliasQuery.view.ngrams, 'must' );
+var views;
+var api = require('pelias-config').generate().api;
+if (api && api.query && api.query.search) {
+  // external config for views
+  views = api.query.search.views;
 
-// scoring boost
-query.score( peliasQuery.view.phrase );
-query.score( peliasQuery.view.focus( peliasQuery.view.phrase ) );
-query.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
-query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
+  // merge external defaults if available
+  if(api.query.search.defaults) {
+    defaults = _.merge({}, defaults, api.query.search.defaults);
+  }
+}
 
-// address components
-query.score( peliasQuery.view.address('housenumber') );
-query.score( peliasQuery.view.address('street') );
-query.score( peliasQuery.view.address('postcode') );
+if (!views) {
+  // Get default view configuration
+  views = require( './search_views.json' );
+}
 
-// admin components
-query.score( peliasQuery.view.admin('country') );
-query.score( peliasQuery.view.admin('country_a') );
-query.score( peliasQuery.view.admin('region') );
-query.score( peliasQuery.view.admin('region_a') );
-query.score( peliasQuery.view.admin('county') );
-query.score( peliasQuery.view.admin('localadmin') );
-query.score( peliasQuery.view.admin('locality') );
-query.score( peliasQuery.view.admin('neighbourhood') );
-
-// non-scoring hard filters
-query.filter( peliasQuery.view.boundary_circle );
-query.filter( peliasQuery.view.boundary_rect );
-query.filter( peliasQuery.view.sources );
-// --------------------------------
+// add defined views to the query
+viewsToQuery(views, query, peliasQuery.view);
 
 /**
   map request variables to query variables for all inputs
