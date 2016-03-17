@@ -1,5 +1,16 @@
+var check = require('check-types');
+var _ = require('lodash');
+
+var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL'];
 
 function setup() {
+  var api = require('pelias-config').generate().api;
+  var settings = api.localization;
+  if (settings && settings.flipNumberAndStreetCountries) {
+    var countries = settings.flipNumberAndStreetCountries;
+    flipNumberAndStreetCountries = _.uniq(flipNumberAndStreetCountries.concat(countries));
+  }
+
   return applyLocalNamingConventions;
 }
 
@@ -12,11 +23,15 @@ function applyLocalNamingConventions(req, res, next) {
 
   // loop through data items and flip relevant number/street
   res.data.filter(function(place){
-    // only relevant for German addresses
-    if( place.parent.country_a.indexOf('DEU') === -1 ){ return false; }
+    // relevant for some countries
+    var flip = place.parent.country_a.some(function(country) {
+      return _.includes(flipNumberAndStreetCountries, country);
+    });
+    if (!flip){ return false; }
     if( !place.hasOwnProperty('address_parts') ){ return false; }
     if( !place.address_parts.hasOwnProperty('number') ){ return false; }
     if( !place.address_parts.hasOwnProperty('street') ){ return false; }
+
     return true;
   })
   .forEach( flipNumberAndStreet );
@@ -24,7 +39,7 @@ function applyLocalNamingConventions(req, res, next) {
   next();
 }
 
-// DE address should have the housenumber and street name flipped
+// flip the housenumber and street name
 // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
 function flipNumberAndStreet(place) {
   var standard = ( place.address_parts.number + ' ' + place.address_parts.street ),
