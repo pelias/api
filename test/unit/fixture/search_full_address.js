@@ -77,7 +77,7 @@ module.exports = {
             }
           },{
             'match': {
-              'address.number': {
+              'address_parts.number': {
                 'query': '123',
                 'boost': vs['address:housenumber:boost'],
                 'analyzer': vs['address:housenumber:analyzer']
@@ -85,7 +85,7 @@ module.exports = {
             }
           }, {
             'match': {
-              'address.street': {
+              'address_parts.street': {
                 'query': 'main st',
                 'boost': vs['address:street:boost'],
                 'analyzer': vs['address:street:analyzer']
@@ -93,7 +93,7 @@ module.exports = {
             }
           }, {
             'match': {
-              'address.zip': {
+              'address_parts.zip': {
                 'query': '10010',
                 'boost': vs['address:postcode:boost'],
                 'analyzer': vs['address:postcode:analyzer']

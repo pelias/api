@@ -29,7 +29,8 @@ var DETAILS_PROPS = [
   'locality_id',
   'locality_a',
   'neighbourhood',
-  'neighbourhood_id'
+  'neighbourhood_id',
+  'bounding_box'
 ];
 
 
@@ -50,11 +51,16 @@ function geojsonifyPlaces( docs ){
       return !!doc;
     });
 
+  // get all the bounding_box corners as well as single points
+  // to be used for computing the overall bounding_box for the FeatureCollection
+  var extentPoints = extractExtentPoints(geodata);
+
   // convert to geojson
-  var geojson = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
+  var geojson             = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
+  var geojsonExtentPoints = GeoJSON.parse( extentPoints, { Point: ['lat', 'lng'] });
 
   // bounding box calculations
-  computeBBox(geojson);
+  computeBBox(geojson, geojsonExtentPoints);
 
   return geojson;
 }
@@ -105,23 +111,56 @@ function addLabel(src, dst) {
   dst.label = labelGenerator(dst);
 }
 
+
+/**
+ * Collect all points from the geodata.
+ * If an item is a single point, just use that.
+ * If an item has a bounding box, add two corners of the box as individual points.
+ *
+ * @param {Array} geodata
+ * @returns {Array}
+ */
+function extractExtentPoints(geodata) {
+  var extentPoints = [];
+  geodata.forEach(function (place) {
+    if (place.bounding_box) {
+      extentPoints.push({
+        lng: place.bounding_box.min_lon,
+        lat: place.bounding_box.min_lat
+      });
+      extentPoints.push({
+        lng: place.bounding_box.max_lon,
+        lat: place.bounding_box.max_lat
+      });
+    }
+    else {
+      extentPoints.push({
+        lng: place.lng,
+        lat: place.lat
+      });
+    }
+  });
+
+  return extentPoints;
+}
+
 /**
  * Compute bbox that encompasses all features in the result set.
  * Set bbox property on the geojson object.
  *
  * @param {object} geojson
  */
-function computeBBox(geojson) {
+function computeBBox(geojson, geojsonExtentPoints) {
   // @note: extent() sometimes throws Errors for unusual data
   // eg: https://github.com/pelias/pelias/issues/84
   try {
-    var bbox = extent( geojson );
+    var bbox = extent( geojsonExtentPoints );
     if( !!bbox ){
       geojson.bbox = bbox;
     }
   } catch( e ){
     console.error( 'bbox error', e.message, e.stack );
-    console.error( 'geojson', JSON.stringify( geojson, null, 2 ) );
+    console.error( 'geojson', JSON.stringify( geojsonExtentPoints, null, 2 ) );
   }
 }
 
