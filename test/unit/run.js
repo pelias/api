@@ -22,6 +22,7 @@ var tests = [
   require('./helper/logging'),
   require('./helper/type_mapping'),
   require('./helper/sizeCalculator'),
+  require('./middleware/access_log'),
   require('./middleware/confidenceScore'),
   require('./middleware/confidenceScoreReverse'),
   require('./middleware/distance'),
