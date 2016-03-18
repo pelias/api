@@ -55,7 +55,7 @@
     "pelias-logger": "^0.0.8",
     "pelias-query": "6.2.0",
     "pelias-suggester-pipeline": "2.0.4",
-    "stats-lite": "1.0.3",
+    "stats-lite": "2.0.1",
     "through2": "2.0.1"
   },
   "devDependencies": {
