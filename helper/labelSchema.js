@@ -8,7 +8,7 @@ module.exports = {
     'country': getFirstProperty(['country_a'])
   },
   'GBR': {
-    'local': getFirstProperty(['neighbourhood', 'county', 'localadmin', 'locality', 'region']),
+    'local': getFirstProperty(['neighbourhood', 'county', 'localadmin', 'locality', 'macroregion', 'region']),
     'regional': getFirstProperty(['county','country','region'])
   },
   'SGP': {
@@ -20,7 +20,7 @@ module.exports = {
     'regional': getFirstProperty(['country'])
   },
   'default': {
-    'local': getFirstProperty(['localadmin', 'locality', 'neighbourhood', 'county', 'region']),
+    'local': getFirstProperty(['localadmin', 'locality', 'neighbourhood', 'county', 'macroregion', 'region']),
     'regional': getFirstProperty(['country'])
   }
 };
@@ -28,10 +28,15 @@ module.exports = {
 // find the first field of record that has a non-empty value that's not already in labelParts
 function getFirstProperty(fields) {
   return function(record, labelParts) {
+    console.log(record);
+    console.log();
+
     for (var i = 0; i < fields.length; i++) {
+      console.log('considering ' + fields[i]);
       var fieldValue = record[fields[i]];
 
       if (check.nonEmptyString(fieldValue) && !_.includes(labelParts, fieldValue)) {
+        console.log('adding ' + fields[i] + ' value: ' + fieldValue);
         labelParts.push( fieldValue );
         return labelParts;
       }
