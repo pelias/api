@@ -26,6 +26,60 @@ module.exports = [
     '_score': 1.2367082,
     'confidence': 0.879
   },
+  { // same as above, but change the neighbourhood
+    'center_point': {
+      'lon': -77.207456,
+      'lat': 41.039265
+    },
+    'address': {},
+    'parent': {
+      'localadmin': 'East Lampeter',
+      'region_a': 'PA',
+      'region': 'Pennsylvania',
+      'locality': 'Smoketown',
+      'country_a': 'USA',
+      'county': 'Lancaster County',
+      'country': 'United States',
+      'neighbourhood': 'Blueland' // ###
+    },
+    'name': {
+      'default': 'East Lampeter High School'
+    },
+    'category': [
+      'education'
+    ],
+    '_id': '357321757',
+    '_type': 'venue',
+    '_score': 1.2367082,
+    'confidence': 0.879
+  },
+  { // same as #1, but change the locality
+    'center_point': {
+      'lon': -73.207456,
+      'lat': 42.039265
+    },
+    'address': {},
+    'parent': {
+      'localadmin': 'East Lampeter',
+      'region_a': 'PA',
+      'region': 'Pennsylvania',
+      'locality': 'Firetown', // ###
+      'country_a': 'USA',
+      'county': 'Lancaster County',
+      'country': 'United States',
+      'neighbourhood': 'Greenland'
+    },
+    'name': {
+      'default': 'East Lampeter High School'
+    },
+    'category': [
+      'education'
+    ],
+    '_id': '357321757',
+    '_type': 'venue',
+    '_score': 1.2367082,
+    'confidence': 0.879
+  },
   {
     'center_point': {
       'lon': -76.207456,
