@@ -28,15 +28,10 @@ module.exports = {
 // find the first field of record that has a non-empty value that's not already in labelParts
 function getFirstProperty(fields) {
   return function(record, labelParts) {
-    console.log(record);
-    console.log();
-
     for (var i = 0; i < fields.length; i++) {
-      console.log('considering ' + fields[i]);
       var fieldValue = record[fields[i]];
 
       if (check.nonEmptyString(fieldValue) && !_.includes(labelParts, fieldValue)) {
-        console.log('adding ' + fields[i] + ' value: ' + fieldValue);
         labelParts.push( fieldValue );
         return labelParts;
       }

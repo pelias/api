@@ -4,8 +4,6 @@ var _ = require('lodash'),
 module.exports = function( record ){
   var schema = getSchema(record.country_a);
 
-  console.log(schema);
-
   var labelParts = getInitialLabel(record);
 
   for (var key in schema) {
