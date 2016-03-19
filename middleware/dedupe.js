@@ -48,24 +48,28 @@ function isDifferent(item1, item2) {
     if (item1.hasOwnProperty('parent') && item2.hasOwnProperty('parent')) {
       propMatch(item1.parent, item2.parent, 'region_a');
       propMatch(item1.parent, item2.parent, 'country');
+      propMatch(item1.parent, item2.parent, 'locality');
+      propMatch(item1.parent, item2.parent, 'neighbourhood');
     }
     else if (item1.parent !== item2.parent) {
       throw new Error('different');
     }
 
     if (item1.hasOwnProperty('name') && item2.hasOwnProperty('name')) {
-      propMatch(item1.name, item2.name, 'default');
+      for (var lang in item1.name) {
+	propMatch(item1.name, item2.name, lang);
+      }
     }
     else {
       propMatch(item1, item2, 'name');
     }
 
-    if (item1.hasOwnProperty('address') && item2.hasOwnProperty('address')) {
-      propMatch(item1.address, item2.address, 'number');
-      propMatch(item1.address, item2.address, 'street');
-      propMatch(item1.address, item2.address, 'zip');
+    if (item1.hasOwnProperty('address_parts') && item2.hasOwnProperty('address_parts')) {
+      propMatch(item1.address_parts, item2.address_parts, 'number');
+      propMatch(item1.address_parts, item2.address_parts, 'street');
+      propMatch(item1.address_parts, item2.address_parts, 'zip');
     }
-    else if (item1.address !== item2.address) {
+    else if (item1.address_parts !== item2.address_parts) {
       throw new Error('different');
     }
   }
@@ -93,10 +97,8 @@ function propMatch(item1, item2, prop) {
 
   // in the case the property is an array (currently only in parent schema)
   // simply take the 1st item. this will change in the near future to support multiple hierarchies
-  if (_.isArray(prop1) && _.isArray(prop2)) {
-    prop1 = prop1[0];
-    prop2= prop2[0];
-  }
+  if (_.isArray(prop1)) { prop1 = prop1[0]; }
+  if (_.isArray(prop2)) { prop2 = prop2[0]; }
 
   if (normalizeString(prop1) !== normalizeString(prop2)) {
     throw new Error('different');

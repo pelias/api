@@ -18,7 +18,7 @@ module.exports.tests.dedupe = function(test, common) {
       }
     };
 
-    var expectedCount = 7;
+    var expectedCount = 9;
     dedupe(req, res, function () {
       t.equal(res.results.data.length, expectedCount, 'results have fewer items than before');
       t.end();
@@ -85,7 +85,7 @@ module.exports.tests.dedupe = function(test, common) {
     };
 
     dedupe(req, res, function() {
-      var firstExpectedCount = 7;
+      var firstExpectedCount = 9;
       t.equal(res.results[0].data.length, firstExpectedCount, 'first result: dupes are removed');
       t.equal(res.results[1].data.length, req.clean[1].size, 'second result: request size is heeded');
       t.end();

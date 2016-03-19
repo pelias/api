@@ -41,15 +41,11 @@ module.exports = {
               'max_boost': 20,
               'score_mode': 'first',
               'boost_mode': 'replace',
-              'filter': {
-                'exists': {
-                  'field': 'popularity'
-                }
-              },
               'functions': [{
                 'field_value_factor': {
                   'modifier': 'log1p',
-                  'field': 'popularity'
+                  'field': 'popularity',
+                  'missing': 1
                 },
                 'weight': 1
               }]
@@ -70,22 +66,18 @@ module.exports = {
               'max_boost': 20,
               'score_mode': 'first',
               'boost_mode': 'replace',
-              'filter': {
-                'exists': {
-                  'field': 'population'
-                }
-              },
               'functions': [{
                 'field_value_factor': {
                   'modifier': 'log1p',
-                  'field': 'population'
+                  'field': 'population',
+                  'missing': 1
                 },
                 'weight': 2
               }]
             }
           },{
             'match': {
-              'address.number': {
+              'address_parts.number': {
                 'query': '1',
                 'boost': vs['address:housenumber:boost'],
                 'analyzer': vs['address:housenumber:analyzer']
@@ -93,7 +85,7 @@ module.exports = {
             }
           }, {
             'match': {
-              'address.street': {
+              'address_parts.street': {
                 'query': 'water st',
                 'boost': vs['address:street:boost'],
                 'analyzer': vs['address:street:analyzer']
