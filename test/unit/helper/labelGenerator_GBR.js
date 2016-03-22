@@ -58,6 +58,23 @@ module.exports.tests.wales = function(test, common) {
   });
 };
 
+// GBR macroregion
+module.exports.tests.macroregion_trumps_region = function(test, common) {
+  test('macroregion should trump region when none of neighbourhood, county, localadmin, locality are available', function(t) {
+    var doc = {
+      'name': 'Name',
+      'country_a': 'GBR',
+      'country': 'Country Name',
+      'macroregion': 'Macroregion Name',
+      'region': 'Region Name'
+    };
+
+    t.equal(generator(doc), 'Name, Macroregion Name, Country Name');
+    t.end();
+
+  });
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {

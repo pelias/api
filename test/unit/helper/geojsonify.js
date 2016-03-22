@@ -246,6 +246,15 @@ module.exports.tests.search = function(test, common) {
         'country_a': [
           'USA'
         ],
+        'macroregion': [
+          'MacroRegion Name'
+        ],
+        'macroregion_id': [
+          'MacroRegion Id'
+        ],
+        'macroregion_a': [
+          'MacroRegion Abbreviation'
+        ],
         'region': [
           'New York'
         ],
@@ -254,6 +263,15 @@ module.exports.tests.search = function(test, common) {
         ],
         'region_a': [
           'NY'
+        ],
+        'macrocounty': [
+          'MacroCounty Name'
+        ],
+        'macrocounty_id': [
+          'MacroCounty Id'
+        ],
+        'macrocounty_a': [
+          'MacroCounty Abbreviation'
         ],
         'county': [
           'Kings County'
@@ -300,9 +318,15 @@ module.exports.tests.search = function(test, common) {
             'country': 'United States',
             'country_id': '85633793',
             'country_a': 'USA',
+            'macroregion': 'MacroRegion Name',
+            'macroregion_id': 'MacroRegion Id',
+            'macroregion_a': 'MacroRegion Abbreviation',
             'region': 'New York',
             'region_id': '85688543',
             'region_a': 'NY',
+            'macrocounty': 'MacroCounty Name',
+            'macrocounty_id': 'MacroCounty Id',
+            'macrocounty_a': 'MacroCounty Abbreviation',
             'county': 'Kings County',
             'county_id': '102082361',
             'localadmin': 'Brooklyn',
