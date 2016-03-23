@@ -15,7 +15,7 @@ function sanitize( raw, clean, opts ) {
      'Quattroshapes will be disabled as a data source for Mapzen Search in the next several ' +
      'weeks, and is being replaced by Who\'s on First, an actively maintained data project ' +
      'based on Quattroshapes. Your existing queries WILL CONTINUE TO WORK for the foreseeable ' +
-     'future, but results will be coming from Who\'s on First and `source=quattroshapes` will ' +
+     'future, but results will be coming from Who\'s on First and `sources=quattroshapes` will ' +
      'be deprecated. If you have any questions, please email search@mapzen.com.');
   }
 
