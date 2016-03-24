@@ -28,6 +28,9 @@ function generateQuery( clean ){
     vs.var( 'size', clean.querySize);
   }
 
+  // sources
+  vs.var( 'sources', clean.sources);
+
   // focus point to score by distance
   if( check.number(clean['point.lat']) &&
       check.number(clean['point.lon']) ){
