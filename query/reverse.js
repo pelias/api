@@ -1,20 +1,32 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./reverse_defaults'),
-    check = require('check-types');
+    check = require('check-types'),
+    viewsToQuery = require('./views_to_query'),
+    _ = require('lodash');
 
 //------------------------------
 // reverse geocode query
 //------------------------------
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
-// mandatory matches
-query.score( peliasQuery.view.boundary_country, 'must' );
+var views;
+var api = require('pelias-config').generate().api;
+if (api && api.query && api.query.reverse) {
+  // external config for views
+  views = api.query.reverse.views;
 
-// scoring boost
-query.sort( peliasQuery.view.sort_distance );
+  // external default values
+  if(api.query.reverse.defaults) {
+    defaults = _.merge({}, defaults, api.query.reverse.defaults);
+  }
+}
 
-// non-scoring hard filters
-query.filter( peliasQuery.view.boundary_circle );
+if(!views){  // get default view configuration
+  views = require( './reverse_views.json' );
+}
+
+// add defined views to the query
+viewsToQuery(views, query, peliasQuery.view);
 
 // --------------------------------
 
