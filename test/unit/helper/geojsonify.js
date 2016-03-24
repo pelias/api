@@ -40,7 +40,9 @@ module.exports.tests.search = function(test, common) {
   var input = [
     {
       '_id': 'id1',
-      '_type': 'type1',
+      '_type': 'layer1',
+      'source': 'source1',
+      'layer': 'layer1',
       'center_point': {
         'lat': 51.5337144,
         'lon': -0.1069716
@@ -59,12 +61,6 @@ module.exports.tests.search = function(test, common) {
       'localadmin': 'test1',
       'locality': 'test2',
       'neighbourhood': 'test3',
-      'suggest': {
-        'input': [
-          '\'round midnight jazz and blues bar'
-        ],
-        'output': 'osmnode:2208150035'
-      },
       'category': [
         'food',
         'nightlife'
@@ -72,7 +68,9 @@ module.exports.tests.search = function(test, common) {
     },
     {
       '_id': 'id2',
-      '_type': 'type2',
+      '_type': 'layer2',
+      'source': 'source2',
+      'layer': 'layer2',
       'name': {
         'default': 'Blues Cafe'
       },
@@ -88,16 +86,12 @@ module.exports.tests.search = function(test, common) {
       'localadmin': 'test1',
       'locality': 'test2',
       'neighbourhood': 'test3',
-      'suggest': {
-        'input': [
-          'blues cafe'
-        ],
-        'output': 'osmway:147495160'
-      }
     },
     {
-      '_id': '34633854',
-      '_type': 'osmway',
+      '_id': 'node:34633854',
+      '_type': 'venue',
+      'source': 'openstreetmap',
+      'layer': 'venue',
       'name': {
         'default': 'Empire State Building'
       },
@@ -113,12 +107,6 @@ module.exports.tests.search = function(test, common) {
       'localadmin': 'Manhattan',
       'locality': 'New York',
       'neighbourhood': 'Koreatown',
-      'suggest': {
-        'input': [
-          'empire state building'
-        ],
-        'output': 'osmway:34633854'
-      },
       'category': [
         'tourism',
         'transport'
@@ -141,9 +129,9 @@ module.exports.tests.search = function(test, common) {
         },
         'properties': {
           'id': 'id1',
-          'gid': 'type1:type1:id1',
-          'layer': 'type1',
-          'source': 'type1',
+          'gid': 'source1:layer1:id1',
+          'layer': 'layer1',
+          'source': 'source1',
           'label': '\'Round Midnight Jazz and Blues Bar, test3, Angel',
           'name': '\'Round Midnight Jazz and Blues Bar',
           'country_a': 'GBR',
@@ -170,9 +158,9 @@ module.exports.tests.search = function(test, common) {
         },
         'properties': {
           'id': 'id2',
-          'gid': 'type2:type2:id2',
-          'layer': 'type2',
-          'source': 'type2',
+          'gid': 'source2:layer2:id2',
+          'layer': 'layer2',
+          'source': 'source2',
           'label': 'Blues Cafe, test3, Smithfield',
           'name': 'Blues Cafe',
           'country_a': 'GBR',
@@ -195,11 +183,11 @@ module.exports.tests.search = function(test, common) {
           ]
         },
         'properties': {
-          'id': '34633854',
-          'gid': 'osm:venue:34633854',
+          'id': 'node:34633854',
+          'gid': 'openstreetmap:venue:node:34633854',
           'layer': 'venue',
-          'source': 'osm',
-          'label': 'Empire State Building, Manhattan, NY',
+          'source': 'openstreetmap',
+          'label': 'Empire State Building, Manhattan, NY, USA',
           'name': 'Empire State Building',
           'country_a': 'USA',
           'country': 'United States',
@@ -217,6 +205,155 @@ module.exports.tests.search = function(test, common) {
   test('geojsonify.search(doc)', function(t) {
     var json = geojsonify.search( input );
     t.deepEqual(json, expected, 'all docs mapped');
+    t.end();
+  });
+
+  test('filtering out empty items', function (t) {
+    var input = [
+      {
+        'bounding_box': {
+          'min_lat': 40.6514712164,
+          'max_lat': 40.6737320588,
+          'min_lon': -73.8967895508,
+          'max_lon': -73.8665771484
+        },
+        'locality': [
+          'New York'
+        ],
+        'source': 'whosonfirst',
+        'layer': 'neighbourhood',
+        'population': 173198,
+        'popularity': 495,
+        'center_point': {
+          'lon': -73.881319,
+          'lat': 40.663303
+        },
+        'name': {
+          'default': 'East New York'
+        },
+        'source_id': '85816607',
+        'category': [],
+        '_id': '85816607',
+        '_type': 'neighbourhood',
+        '_score': 21.434,
+        'confidence': 0.888,
+        'country': [
+          'United States'
+        ],
+        'country_id': [
+          '85633793'
+        ],
+        'country_a': [
+          'USA'
+        ],
+        'macroregion': [
+          'MacroRegion Name'
+        ],
+        'macroregion_id': [
+          'MacroRegion Id'
+        ],
+        'macroregion_a': [
+          'MacroRegion Abbreviation'
+        ],
+        'region': [
+          'New York'
+        ],
+        'region_id': [
+          '85688543'
+        ],
+        'region_a': [
+          'NY'
+        ],
+        'macrocounty': [
+          'MacroCounty Name'
+        ],
+        'macrocounty_id': [
+          'MacroCounty Id'
+        ],
+        'macrocounty_a': [
+          'MacroCounty Abbreviation'
+        ],
+        'county': [
+          'Kings County'
+        ],
+        'county_id': [
+          '102082361'
+        ],
+        'county_a': [
+          null
+        ],
+        'localadmin': [
+          'Brooklyn'
+        ],
+        'localadmin_id': [
+          '404521211'
+        ],
+        'localadmin_a': [
+          null
+        ],
+        'locality_id': [
+          '85977539'
+        ],
+        'locality_a': [
+          null
+        ],
+        'neighbourhood': [],
+        'neighbourhood_id': []
+      }
+    ];
+
+    var expected = {
+      'type': 'FeatureCollection',
+      'bbox': [-73.8967895508, 40.6514712164, -73.8665771484, 40.6737320588],
+      'features': [
+        {
+          'type': 'Feature',
+          'properties': {
+            'id': '85816607',
+            'gid': 'whosonfirst:neighbourhood:85816607',
+            'layer': 'neighbourhood',
+            'source': 'whosonfirst',
+            'name': 'East New York',
+            'confidence': 0.888,
+            'country': 'United States',
+            'country_id': '85633793',
+            'country_a': 'USA',
+            'macroregion': 'MacroRegion Name',
+            'macroregion_id': 'MacroRegion Id',
+            'macroregion_a': 'MacroRegion Abbreviation',
+            'region': 'New York',
+            'region_id': '85688543',
+            'region_a': 'NY',
+            'macrocounty': 'MacroCounty Name',
+            'macrocounty_id': 'MacroCounty Id',
+            'macrocounty_a': 'MacroCounty Abbreviation',
+            'county': 'Kings County',
+            'county_id': '102082361',
+            'localadmin': 'Brooklyn',
+            'localadmin_id': '404521211',
+            'locality': 'New York',
+            'locality_id': '85977539',
+            'bounding_box': {
+              'min_lat': 40.6514712164,
+              'max_lat': 40.6737320588,
+              'min_lon': -73.8967895508,
+              'max_lon': -73.8665771484
+            },
+            'label': 'East New York, Brooklyn, NY, USA'
+          },
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [
+              -73.881319,
+              40.663303
+            ]
+          }
+        }
+      ]
+    };
+
+    var json = geojsonify.search( input );
+    t.deepEqual(json, expected, 'all wanted properties exposed');
     t.end();
   });
 };

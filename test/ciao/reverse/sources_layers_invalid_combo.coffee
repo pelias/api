@@ -1,6 +1,6 @@
 
 #> sources and layers specified (invalid combo)
-path: '/v1/reverse?point.lat=1&point.lon=2&sources=quattroshapes&layers=address'
+path: '/v1/reverse?point.lat=1&point.lon=2&sources=whosonfirst&layers=address'
 
 #? 200 ok
 response.statusCode.should.be.equal 400
@@ -24,13 +24,12 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ 'You have specified both the `sources` and `layers` parameters in a combination that will return no results.' ]
+json.geocoding.errors.should.eql [ 'You have specified both the `sources` and `layers` parameters in a combination that will return no results: the whosonfirst source has nothing in the address layer' ]
 
 #? expected warnings
 json.geocoding.warnings.should.eql [ 'You are using Quattroshapes as a data source in this query. Quattroshapes will be disabled as a data source for Mapzen Search in the next several weeks, and is being replaced by Who\'s on First, an actively maintained data project based on Quattroshapes. Your existing queries WILL CONTINUE TO WORK for the foreseeable future, but results will be coming from Who\'s on First and `sources=quattroshapes` will be deprecated. If you have any questions, please email search@mapzen.com.' ]
 
 #? inputs
 json.geocoding.query['size'].should.eql 10
-json.geocoding.query.types['from_layers'].should.eql ["osmaddress","openaddresses"]
-json.geocoding.query.types['from_sources'].should.eql ["admin0","admin1","admin2","neighborhood","locality","local_admin"]
-should.not.exist json.geocoding.query['type']
+json.geocoding.query.layers.should.eql ["address"]
+json.geocoding.query.sources.should.eql ["whosonfirst"]

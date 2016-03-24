@@ -25,19 +25,19 @@ query.score( peliasQuery.view.address('street') );
 query.score( peliasQuery.view.address('postcode') );
 
 // admin components
-query.score( peliasQuery.view.admin('alpha3') );
-query.score( peliasQuery.view.admin('admin0') );
-query.score( peliasQuery.view.admin('admin1') );
-query.score( peliasQuery.view.admin('admin1_abbr') );
-query.score( peliasQuery.view.admin('admin2') );
-query.score( peliasQuery.view.admin('local_admin') );
+query.score( peliasQuery.view.admin('country') );
+query.score( peliasQuery.view.admin('country_a') );
+query.score( peliasQuery.view.admin('region') );
+query.score( peliasQuery.view.admin('region_a') );
+query.score( peliasQuery.view.admin('county') );
+query.score( peliasQuery.view.admin('localadmin') );
 query.score( peliasQuery.view.admin('locality') );
-query.score( peliasQuery.view.admin('neighborhood') );
+query.score( peliasQuery.view.admin('neighbourhood') );
 
 // non-scoring hard filters
 query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.boundary_rect );
-
+query.filter( peliasQuery.view.sources );
 // --------------------------------
 
 /**
@@ -50,6 +50,8 @@ function generateQuery( clean ){
 
   // input text
   vs.var( 'input:name', clean.text );
+
+  vs.var( 'sources', clean.sources);
 
   // size
   if( clean.querySize ) {

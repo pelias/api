@@ -44,7 +44,7 @@ function sanitize( raw, clean, opts ){
  * @returns {boolean}
  */
 function isTruthy(val) {
-  return _.contains( ['true', '1', 1, true], val );
+  return _.includes( ['true', '1', 1, true], val );
 }
 
 module.exports = setup;
