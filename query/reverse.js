@@ -15,6 +15,7 @@ query.sort( peliasQuery.view.sort_distance );
 
 // non-scoring hard filters
 query.filter( peliasQuery.view.boundary_circle );
+query.filter( peliasQuery.view.sources );
 
 // --------------------------------
 
