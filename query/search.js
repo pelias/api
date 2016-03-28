@@ -51,6 +51,7 @@ function generateQuery( clean ){
   // input text
   vs.var( 'input:name', clean.text );
 
+  // sources
   vs.var( 'sources', clean.sources);
 
   // size
