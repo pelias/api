@@ -9,7 +9,7 @@ module.exports = {
               'name.default': {
                 'query': 'test',
                 'boost': 1,
-                'analyzer': 'peliasOneEdgeGram'
+                'analyzer': 'peliasQueryPartialToken'
               }
             }
           }],
