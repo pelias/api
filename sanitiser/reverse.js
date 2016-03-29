@@ -8,7 +8,7 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       // depends on the layers and sources sanitisers, must be run after them
       sources_and_layers: require('../sanitiser/_sources_and_layers'),
       quattroshapes_warning: require('../sanitiser/_warn_quattroshapes')(),
-      size: require('../sanitiser/_size'),
+      size: require('../sanitiser/_size')(/* use defaults*/),
       private: require('../sanitiser/_flag_bool')('private', false),
       geo_reverse: require('../sanitiser/_geo_reverse'),
       boundary_country: require('../sanitiser/_boundary_country'),

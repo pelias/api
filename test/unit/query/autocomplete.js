@@ -95,6 +95,19 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled, expected, 'autocomplete_linguistic_focus_null_island');
     t.end();
   });
+
+  test('valid sources filter', function(t) {
+    var query = generate({
+      'text': 'test',
+      'sources': ['test_source']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_with_source_filtering');
+
+    t.deepEqual(compiled, expected, 'valid autocomplete query with source filtering');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
