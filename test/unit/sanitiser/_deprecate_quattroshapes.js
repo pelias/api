@@ -11,11 +11,11 @@ module.exports.tests.warning_message_1 = function(test, common) {
     t.deepEquals(messages, {
       errors: [],
       warnings: ['You are using Quattroshapes as a data source in this query. ' +
-       'Quattroshapes will be disabled as a data source for Mapzen Search in the next several ' +
-       'weeks, and is being replaced by Who\'s on First, an actively maintained data project ' +
-       'based on Quattroshapes. Your existing queries WILL CONTINUE TO WORK for the foreseeable ' +
-       'future, but results will be coming from Who\'s on First and `sources=quattroshapes` will ' +
-       'be deprecated. If you have any questions, please email search@mapzen.com.']
+       'Quattroshapes has been disabled as a data source for Mapzen Search, and has been' +
+       'replaced by Who\'s on First, an actively maintained data project based on Quattroshapes' +
+       'Your existing queries WILL CONTINUE TO WORK for the foreseeable future, but results will ' +
+       'be coming from Who\'s on First and `sources=quattroshapes` will be interpreted as ' +
+       '`sources=whosonfirst`. If you have any questions, please email search@mapzen.com.']
     }, 'warning emitted');
 
     t.end();
@@ -31,11 +31,11 @@ module.exports.tests.warning_message_2 = function(test, common) {
     t.deepEquals(messages, {
       errors: [],
       warnings: ['You are using Quattroshapes as a data source in this query. ' +
-       'Quattroshapes will be disabled as a data source for Mapzen Search in the next several ' +
-       'weeks, and is being replaced by Who\'s on First, an actively maintained data project ' +
-       'based on Quattroshapes. Your existing queries WILL CONTINUE TO WORK for the foreseeable ' +
-       'future, but results will be coming from Who\'s on First and `sources=quattroshapes` will ' +
-       'be deprecated. If you have any questions, please email search@mapzen.com.']
+       'Quattroshapes has been disabled as a data source for Mapzen Search, and has been' +
+       'replaced by Who\'s on First, an actively maintained data project based on Quattroshapes' +
+       'Your existing queries WILL CONTINUE TO WORK for the foreseeable future, but results will ' +
+       'be coming from Who\'s on First and `sources=quattroshapes` will be interpreted as ' +
+       '`sources=whosonfirst`. If you have any questions, please email search@mapzen.com.']
     }, 'warning emitted');
 
     t.end();
