@@ -31,5 +31,4 @@ should.not.exist json.geocoding.warnings
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10
-json.geocoding.query.types['from_layers'].should.eql ["admin0"]
-json.geocoding.query['type'].should.eql ["admin0"]
+json.geocoding.query.layers.should.eql ["country"]

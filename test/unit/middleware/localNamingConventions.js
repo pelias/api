@@ -1,4 +1,19 @@
-var localNamingConventions = require('../../../middleware/localNamingConventions');
+
+var proxyquire = require('proxyquire');
+
+var customConfig = {
+  generate: function generate() {
+    return {
+      api : {
+	localization : { // expand the set of flipped countries
+	  flipNumberAndStreetCountries : ['NLD'] // Netherlands
+	}
+      }
+    };
+  }
+};
+
+var localNamingConventions = proxyquire('../../../middleware/localNamingConventions', { 'pelias-config': customConfig });
 
 module.exports.tests = {};
 
@@ -10,14 +25,16 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
     '_type': 'test',
     'name': { 'default': '1 Main St' },
     'center_point': { 'lon': -7.131521, 'lat': 54.428866 },
-    'address': {
+    'address_parts': {
        'zip': 'BT77 0BG',
        'number': '1',
        'street': 'Main St'
     },
-    'admin1': 'Dungannon',
-    'alpha3': 'GBR',
-    'admin0': 'United Kingdom'
+    'parent': {
+      'region': ['Dungannon'],
+      'country_a': ['GBR'],
+      'country': ['United Kingdom']
+    }
   };
 
   var deAddress = {
@@ -25,21 +42,43 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
     '_type': 'test',
     'name': { 'default': '23 Grolmanstraße' },
     'center_point': { 'lon': 13.321487, 'lat': 52.506781 },
-    'address': {
+    'address_parts': {
        'zip': '10623',
        'number': '23',
        'street': 'Grolmanstraße'
     },
-    'admin1': 'Berlin',
-    'locality': 'Berlin',
-    'alpha3': 'DEU',
-    'admin2': 'Berlin',
-    'admin0': 'Germany',
-    'neighborhood': 'Hansaviertel'
+    'parent': {
+      'region': ['Berlin'],
+      'locality': ['Berlin'],
+      'country_a': ['DEU'],
+      'county': ['Berlin'],
+      'country': ['Germany'],
+      'neighbourhood': ['Hansaviertel']
+    }
+  };
+
+  var nlAddress = {
+    '_id': 'test3',
+    '_type': 'test',
+    'name': { 'default': '117 Keizersgracht' },
+    'center_point': { 'lon': 4.887545, 'lat': 52.376795 },
+    'address_parts': {
+       'zip': '1015',
+       'number': '117',
+       'street': 'Keizersgracht'
+    },
+    'parent': {
+      'region': ['Amsterdam'],
+      'locality': ['Amsterdam'],
+      'country_a': ['NLD'],
+      'county': ['Noord-Holland'],
+      'country': ['Netherlands'],
+      'neighbourhood': ['Grachtengordel-West']
+    }
   };
 
   var req = {},
-      res = { data: [ ukAddress, deAddress ] },
+      res = { data: [ ukAddress, deAddress, nlAddress ] },
       middleware = localNamingConventions();
 
   test('flipNumberAndStreet', function(t) {
@@ -52,6 +91,10 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
       // DEU address should have the housenumber and street name flipped
       // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
       t.equal( res.data[1].name.default, 'Grolmanstraße 23', 'flipped name' );
+
+      // NLD address should have the housenumber and street name flipped, too
+      // this definition comes from pelias configuration
+      t.equal( res.data[2].name.default, 'Keizersgracht 117', 'flipped name' );
 
       t.end();
     });

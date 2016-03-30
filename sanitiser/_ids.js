@@ -30,32 +30,25 @@ function sanitizeId(rawId, messages) {
   var id = parts.slice(2).join(ID_DELIM);
 
   // check if any parts of the gid are empty
-  if (_.contains([source, layer, id], '')) {
+  if (_.includes([source, layer, id], '')) {
     messages.errors.push( formatError(rawId) );
     return;
   }
 
-  if (!_.contains(type_mapping.sources, source)) {
+  if (!_.includes(type_mapping.sources, source)) {
     messages.errors.push( targetError(source, type_mapping.sources) );
     return;
   }
 
-  if (!_.contains(type_mapping.layers, layer)) {
+  if (!_.includes(type_mapping.layers, layer)) {
     messages.errors.push( targetError(layer, type_mapping.layers) );
     return;
   }
 
-  //TODO: remove this once we have a better set of layers for Geonames
-  var types;
-  if (source === 'gn' || source === 'geonames') {
-    types = ['geoname'];
-  } else {
-    types = type_mapping.source_and_layer_to_type(source, layer);
-  }
-
   return {
+    source: source,
+    layer: layer,
     id: id,
-    types: types
   };
 }
 
@@ -63,7 +56,7 @@ function sanitize( raw, clean ){
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  if (!check.unemptyString( raw.ids )) {
+  if (!check.nonEmptyString( raw.ids )) {
     messages.errors.push( lengthError);
     return messages;
   }
@@ -72,10 +65,10 @@ function sanitize( raw, clean ){
   var rawIds = raw.ids.split(',');
 
   // deduplicate
-  rawIds = _.unique(rawIds);
+  rawIds = _.uniq(rawIds);
 
   // ensure all elements are valid non-empty strings
-  if (!rawIds.every(check.unemptyString)) {
+  if (!rawIds.every(check.nonEmptyString)) {
       messages.errors.push( lengthError );
   }
 

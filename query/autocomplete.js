@@ -2,14 +2,9 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./autocomplete_defaults'),
     textParser = require('./text_parser'),
-    viewsToQuery = require('./views_to_query'),
     check = require('check-types'),
+    viewsToQuery = require('./views_to_query'),
     _ = require('lodash');
-
-//------------------------------
-// autocomplete query
-//------------------------------
-var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // additional views (these may be merged in to pelias/query at a later date)
 var viewLib = {
@@ -24,14 +19,19 @@ for (var name in peliasQuery.view) {
   viewLib[name] = peliasQuery.view[name];
 }
 
-var views;
-var query_settings = require('pelias-config').generate().query;
-if (query_settings && query_settings.autocomplete) {
-  // external config
-  views = query_settings.autocomplete.views;
+//------------------------------
+// autocomplete query
+//------------------------------
+var query = new peliasQuery.layout.FilteredBooleanQuery();
 
-  if(query_settings.autocomplete.defaults) {
-    defaults = _.merge({}, defaults, query_settings.autocomplete.defaults);
+var views;
+var api = require('pelias-config').generate().api;
+if (api && api.query && api.query.autocomplete) {
+  // external config
+  views = api.query.autocomplete.views;
+
+  if(api.query.autocomplete.defaults) {
+    defaults = _.merge({}, defaults, api.query.autocomplete.defaults);
   }
 }
 
@@ -42,6 +42,8 @@ if (!views) {
 
 // add defined views to the query
 viewsToQuery(views, query, viewLib);
+
+// --------------------------------
 
 /**
   map request variables to query variables for all inputs

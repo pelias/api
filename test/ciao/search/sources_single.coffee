@@ -31,5 +31,4 @@ should.not.exist json.geocoding.warnings
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10
-json.geocoding.query.types['from_sources'].should.eql ["osmaddress","osmnode","osmway"]
-json.geocoding.query['type'].should.eql ["osmnode","osmway","osmaddress"]
+json.geocoding.query.sources.should.eql ["openstreetmap"]

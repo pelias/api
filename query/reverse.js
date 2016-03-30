@@ -1,21 +1,23 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./reverse_defaults'),
-    viewsToQuery = require('./views_to_query'),
     check = require('check-types'),
+    viewsToQuery = require('./views_to_query'),
     _ = require('lodash');
 
 //------------------------------
 // reverse geocode query
 //------------------------------
 var query = new peliasQuery.layout.FilteredBooleanQuery();
-var views;
-var query_settings = require('pelias-config').generate().query;
-if (query_settings && query_settings.reverse) {
-  // external config for views
-  views = query_settings.reverse.views;
 
-  if(query_settings.reverse.defaults) {
-    defaults = _.merge({}, defaults, query_settings.reverse.defaults);
+var views;
+var api = require('pelias-config').generate().api;
+if (api && api.query && api.query.reverse) {
+  // external config for views
+  views = api.query.reverse.views;
+
+  // external default values
+  if(api.query.reverse.defaults) {
+    defaults = _.merge({}, defaults, api.query.reverse.defaults);
   }
 }
 
@@ -26,6 +28,8 @@ if(!views){  // get default view configuration
 // add defined views to the query
 viewsToQuery(views, query, peliasQuery.view);
 
+// --------------------------------
+
 function generateQuery( clean ){
 
   var vs = new peliasQuery.Vars( defaults );
@@ -34,6 +38,9 @@ function generateQuery( clean ){
   if( clean.querySize ){
     vs.var( 'size', clean.querySize);
   }
+
+  // sources
+  vs.var( 'sources', clean.sources);
 
   // focus point to score by distance
   if( check.number(clean['point.lat']) &&
