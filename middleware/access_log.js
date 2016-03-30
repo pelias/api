@@ -17,4 +17,6 @@ function createAccessLogger( logFormat ){
   });
 }
 
-module.exports = createAccessLogger;
+module.exports = {
+  createAccessLogger: createAccessLogger
+};
