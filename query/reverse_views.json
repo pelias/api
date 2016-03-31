@@ -1,5 +1,5 @@
 {
   "score":  [ ["boundary_country", null, false, "must"] ],
   "sort":   [ ["sort_distance"] ],
-  "filter": [ ["boundary_circle"] ]
+  "filter": [ ["boundary_circle"], ["sources"] ]
 }

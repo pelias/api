@@ -11,7 +11,7 @@ function sanitize( raw, clean ){
   clean.categories = [];
 
   // if categories string has been set
-  if( check.unemptyString( raw.categories ) ){
+  if( check.nonEmptyString( raw.categories ) ){
 
     // map input categories to valid format
     clean.categories = raw.categories.split(',')

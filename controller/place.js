@@ -14,35 +14,10 @@ function setup( backend ){
       return next();
     }
 
-    /* req.clean.ids contains an array of objects with id and types properties.
-     * types is an array of one or more types, since it can't always be known which single
-     * type a gid might belong to (osmnode and osmway both have source osm and layer venue).
-     *
-     * However, the mget Elasticsearch query only accepts a single type at a
-     * time.
-     *
-     * So, first create a new array that, has an entry
-     * with each type and id combination. This requires creating a new array with more entries
-     * than req.clean.ids in the case where entries have multiple types.
-     */
-
-    var recordsToReturn = req.clean.ids.reduce(function (acc, ids_element) {
-      ids_element.types.forEach(function(type) {
-        acc.push({
-          id: ids_element.id,
-          type: type
-        });
-      });
-      return acc;
-    }, []);
-
-    /*
-     * Next, map the list of records to an Elasticsearch mget query
-     */
-    var query = recordsToReturn.map( function(id) {
+    var query = req.clean.ids.map( function(id) {
       return {
         _index: 'pelias',
-        _type: id.type,
+        _type: id.layers,
         _id: id.id
       };
     });
@@ -50,6 +25,7 @@ function setup( backend ){
     logger.debug( '[ES req]', query );
 
     service.mget( backend, query, function( err, docs ) {
+      console.log('err:' + err);
 
       // error handler
       if( err ){

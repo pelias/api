@@ -8,7 +8,7 @@ function sanitize( raw, clean ){
   var messages = { errors: [], warnings: [] };
 
   // invalid input 'text'
-  if( !check.unemptyString( raw.text ) ){
+  if( !check.nonEmptyString( raw.text ) ){
     messages.errors.push('invalid param \'text\': text length, must be >0');
   }
 
@@ -23,10 +23,6 @@ function sanitize( raw, clean ){
     if (check.assigned(parsed_text)) {
       clean.parsed_text = parsed_text;
     }
-
-    // try to set layers from query parser results
-    clean.types = clean.layers || {};
-    clean.types.from_text_parser = text_parser.get_layers(clean.text);
   }
 
   return messages;

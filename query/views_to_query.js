@@ -7,7 +7,7 @@ function addViewsToQuery(views, query, viewLib) {
       var params = viewSet[i];
 
       // parse parameters from an array with the following format:
-      //   [0]=view name, [1]=view's parameter type (string or func)
+      //   [0]=view name, [1]=view's parameter (string or func)
       //   [2]=bool to select func in [1], [3]=optional scoring type
       var viewName = params[0];
       var param = null, option=null;

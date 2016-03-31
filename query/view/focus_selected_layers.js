@@ -22,10 +22,8 @@ module.exports = function( subview ){
     if( view && view.hasOwnProperty('function_score') ){
       view.function_score.filter = {
         'or': [
-          { 'type': { 'value': 'osmnode' } },
-          { 'type': { 'value': 'osmway' } },
-          { 'type': { 'value': 'osmaddress' } },
-          { 'type': { 'value': 'openaddresses' } }
+          { 'term': { 'layer': 'venue' } },
+          { 'term': { 'layer': 'address' } }
         ]
       };
     }

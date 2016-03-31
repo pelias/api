@@ -12,17 +12,18 @@
     ["address", "street"],
     ["address", "postcode"],
 
-    ["admin", "alpha3"],
-    ["admin", "admin0"],
-    ["admin", "admin1"],
-    ["admin", "admin1_abbr"],
-    ["admin", "admin2"],
-    ["admin", "local_admin"],
+    ["admin", "country"],
+    ["admin", "country_a"],
+    ["admin", "region"],
+    ["admin", "region_a"],
+    ["admin", "county"],
+    ["admin", "localadmin"],
     ["admin", "locality"],
-    ["admin", "neighborhood"]
+    ["admin", "neighbourhood"]
   ],
   "filter": [
     ["boundary_circle"],
-    ["boundary_rect"]
+    ["boundary_rect"],
+    ["sources"]
   ]
 }

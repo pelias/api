@@ -13,7 +13,7 @@ function sanitize(raw, clean) {
   if (check.assigned(country)){
 
     // must be valid string
-    if (!check.unemptyString(country)) {
+    if (!check.nonEmptyString(country)) {
       messages.errors.push('boundary.country is not a string');
     }
 

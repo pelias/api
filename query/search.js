@@ -1,9 +1,9 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./search_defaults'),
     textParser = require('./text_parser'),
-    viewsToQuery = require('./views_to_query'),
     check = require('check-types'),
     geolib = require('geolib'),
+    viewsToQuery = require('./views_to_query'),
     _ = require('lodash');
 
 //------------------------------
@@ -12,13 +12,14 @@ var peliasQuery = require('pelias-query'),
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 var views;
-var query_settings = require('pelias-config').generate().query;
-if (query_settings && query_settings.search) {
+var api = require('pelias-config').generate().api;
+if (api && api.query && api.query.search) {
   // external config for views
-  views = query_settings.search.views;
+  views = api.query.search.views;
 
-  if(query_settings.search.defaults) {
-    defaults = _.merge({}, defaults, query_settings.search.defaults);
+  // merge external defaults if available
+  if(api.query.search.defaults) {
+    defaults = _.merge({}, defaults, api.query.search.defaults);
   }
 }
 
@@ -40,6 +41,9 @@ function generateQuery( clean ){
 
   // input text
   vs.var( 'input:name', clean.text );
+
+  // sources
+  vs.var( 'sources', clean.sources);
 
   // size
   if( clean.querySize ) {
