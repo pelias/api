@@ -47,6 +47,7 @@ var tests = [
   require('./sanitiser/_sources'),
   require('./sanitiser/_sources_and_layers'),
   require('./sanitiser/_text'),
+  require('./sanitiser/_deprecate_quattroshapes'),
   require('./src/backend'),
   require('./sanitiser/autocomplete'),
   require('./sanitiser/place'),
