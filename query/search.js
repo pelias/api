@@ -22,7 +22,6 @@ query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
 // address components
 query.score( peliasQuery.view.address('housenumber') );
 query.score( peliasQuery.view.address('street') );
-query.score( peliasQuery.view.address('postcode') );
 
 // admin components
 query.score( peliasQuery.view.admin('country') );
@@ -38,6 +37,7 @@ query.score( peliasQuery.view.admin('neighbourhood') );
 query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.boundary_rect );
 query.filter( peliasQuery.view.sources );
+query.filter( peliasQuery.view.postcode );
 // --------------------------------
 
 /**
