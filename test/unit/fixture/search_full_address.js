@@ -93,14 +93,6 @@ module.exports = {
             }
           }, {
             'match': {
-              'address_parts.zip': {
-                'query': '10010',
-                'boost': vs['address:postcode:boost'],
-                'analyzer': vs['address:postcode:analyzer']
-              }
-            }
-          }, {
-            'match': {
               'parent.country': {
                 'query': 'new york',
                 'boost': vs['admin:country:boost'],
@@ -164,6 +156,31 @@ module.exports = {
               }
             }
           }]
+        }
+      },
+      'filter': {
+        'bool': {
+          'must': [
+            {
+              'or': [
+                {
+                  'query': {
+                    'match': {
+                      'address_parts.zip': {
+                        'analyzer': 'peliasZip',
+                        'query': '10010'
+                      }
+                    }
+                  }
+                },
+                {
+                  'missing': {
+                    'field': 'address_parts.zip'
+                  }
+                }
+              ]
+            }
+          ]
         }
       }
     }
