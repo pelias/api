@@ -3,6 +3,13 @@ var peliasQuery = require('pelias-query'),
     textParser = require('./text_parser'),
     check = require('check-types'),
     geolib = require('geolib');
+var placeTypes = require('../helper/placeTypes');
+
+// region_a is also an admin field. addressit tries to detect
+// region_a, in which case we use a match query specifically for it.
+// but address it doesn't know about all of them so it helps to search
+// against this with the other admin parts as a fallback
+var adminFields = placeTypes.concat(['region_a']);
 
 //------------------------------
 // general-purpose search query
@@ -25,15 +32,12 @@ query.score( peliasQuery.view.address('street') );
 query.score( peliasQuery.view.address('postcode') );
 
 // admin components
-query.score( peliasQuery.view.admin('country') );
+// country_a and region_a are left as matches here because the text-analyzer
+// can sometimes detect them, in which case a query more specific than a
+// multi_match is appropriate.
 query.score( peliasQuery.view.admin('country_a') );
-query.score( peliasQuery.view.admin('region') );
 query.score( peliasQuery.view.admin('region_a') );
-query.score( peliasQuery.view.admin('county') );
-query.score( peliasQuery.view.admin('borough') );
-query.score( peliasQuery.view.admin('localadmin') );
-query.score( peliasQuery.view.admin('locality') );
-query.score( peliasQuery.view.admin('neighbourhood') );
+query.score( peliasQuery.view.admin_multi_match(adminFields), 'peliasAdmin' );
 
 // non-scoring hard filters
 query.filter( peliasQuery.view.boundary_circle );

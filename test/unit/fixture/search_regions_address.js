@@ -93,22 +93,6 @@ module.exports = {
             }
           }, {
             'match': {
-              'parent.country': {
-                'query': 'manhattan',
-                'boost': vs['admin:country:boost'],
-                'analyzer': vs['admin:country:analyzer']
-              }
-            }
-          }, {
-            'match': {
-              'parent.region': {
-                'query': 'manhattan',
-                'boost': vs['admin:region:boost'],
-                'analyzer': vs['admin:region:analyzer']
-              }
-            }
-          }, {
-            'match': {
               'parent.region_a': {
                 'query': 'NY',
                 'boost': vs['admin:region_a:boost'],
@@ -116,44 +100,19 @@ module.exports = {
               }
             }
           }, {
-            'match': {
-              'parent.county': {
+            'multi_match': {
+                'fields': [
+                  'parent.country^4',
+                  'parent.region^3',
+                  'parent.county^2',
+                  'parent.localadmin^1',
+                  'parent.locality^1',
+                  'parent.borough^1',
+                  'parent.neighbourhood^1',
+                  'parent.region_a^3'
+                ],
                 'query': 'manhattan',
-                'boost': vs['admin:county:boost'],
-                'analyzer': vs['admin:county:analyzer']
-              }
-            }
-          }, {
-            'match': {
-              'parent.borough': {
-                'query': 'manhattan',
-                'boost': vs['admin:borough:boost'],
-                'analyzer': vs['admin:borough:analyzer']
-              }
-            }
-          }, {
-            'match': {
-              'parent.localadmin': {
-                'query': 'manhattan',
-                'boost': vs['admin:localadmin:boost'],
-                'analyzer': vs['admin:localadmin:analyzer']
-              }
-            }
-          }, {
-            'match': {
-              'parent.locality': {
-                'query': 'manhattan',
-                'boost': vs['admin:locality:boost'],
-                'analyzer': vs['admin:locality:analyzer']
-              }
-            }
-          }, {
-            'match': {
-              'parent.neighbourhood': {
-                'query': 'manhattan',
-                'boost': vs['admin:neighbourhood:boost'],
-                'analyzer': vs['admin:neighbourhood:analyzer']
-              }
+                'analyzer': 'peliasAdmin'
             }
           }]
         }
