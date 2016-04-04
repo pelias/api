@@ -9,36 +9,8 @@ var customConfig = {
 	query: {
 	  search: {
 	    defaults: {
-	      'multingram:fields': ['name.*']
-	    },
-	    views: {
-	      score: [
-		['boundary_country', null, false, 'must'],
-		['multingrams', null, false, 'must'], // non-standard part
-
-		['phrase', null, false, 'should'],
-		['focus', 'phrase', true],
-		['popularity', 'phrase', true],
-		['population', 'phrase', true],
-
-		['address', 'housenumber'],
-		['address', 'street'],
-		['address', 'postcode'],
-
-		['admin', 'country'],
-		['admin', 'country_a'],
-		['admin', 'region'],
-		['admin', 'region_a'],
-		['admin', 'county'],
-		['admin', 'localadmin'],
-		['admin', 'locality'],
-		['admin', 'neighbourhood']
-	      ],
-	      filter: [
-		['boundary_circle'],
-		['boundary_rect'],
-		['sources']
-	      ]
+	      'ngram:multifield': ['name.*'],
+	      'phrase:multifield': ['name.*']
 	    }
 	  }
 	}
