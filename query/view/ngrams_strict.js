@@ -12,8 +12,19 @@ module.exports = function( vs ){
 
   var view = peliasQuery.view.ngrams( vs );
 
-  view.match['name.default'].type = 'phrase';
-  view.match['name.default'].operator = 'and';
+  if (!view) {
+    return null;
+  }
+
+  var target;
+  if(vs.isset('ngram:multifield')) {
+    target = view.multi_match;
+  }
+  else {
+    target = view.match[vs.var('ngram:field')];
+  }
+  target.type = 'phrase';
+  target.operator = 'and';
 
   return view;
 };
