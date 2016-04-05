@@ -35,8 +35,7 @@ var DETAILS_PROPS = [
   'locality_id',
   'locality_a',
   'neighbourhood',
-  'neighbourhood_id',
-  'bounding_box'
+  'neighbourhood_id'
 ];
 
 
@@ -64,6 +63,10 @@ function geojsonifyPlaces( docs ){
   // convert to geojson
   var geojson             = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
   var geojsonExtentPoints = GeoJSON.parse( extentPoints, { Point: ['lat', 'lng'] });
+
+  // to insert the bbox property at the top level of each feature, it must be done separately after
+  // initial geojson construction is finished
+  addBBoxPerFeature(geojson);
 
   // bounding box calculations
   computeBBox(geojson, geojsonExtentPoints);
@@ -117,6 +120,30 @@ function addLabel(src, dst) {
   dst.label = labelGenerator(dst);
 }
 
+/**
+ * Add bounding box
+ *
+ * @param {object} geojson
+ */
+function addBBoxPerFeature(geojson) {
+  geojson.features.forEach(function (feature) {
+
+    if (!feature.properties.hasOwnProperty('bounding_box')) {
+      return;
+    }
+
+    if (feature.properties.bounding_box) {
+      feature.bbox = [
+        feature.properties.bounding_box.min_lon,
+        feature.properties.bounding_box.min_lat,
+        feature.properties.bounding_box.max_lon,
+        feature.properties.bounding_box.max_lat
+      ];
+    }
+
+    delete feature.properties.bounding_box;
+  });
+}
 
 /**
  * Collect all points from the geodata.
@@ -222,6 +249,9 @@ function addMetaData(src, dst) {
   dst.gid = makeGid(src);
   dst.layer = lookupLayer(src);
   dst.source = lookupSource(src);
+  if (src.hasOwnProperty('bounding_box')) {
+    dst.bounding_box = src.bounding_box;
+  }
 }
 
 /**
