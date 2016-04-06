@@ -118,14 +118,14 @@ module.exports = {
           }, {
             'multi_match': {
                 'fields': [
-                  'parent.country^4',
-                  'parent.region^3',
-                  'parent.county^2',
+                  'parent.country^1',
+                  'parent.region^1',
+                  'parent.county^1',
                   'parent.localadmin^1',
                   'parent.locality^1',
                   'parent.borough^1',
                   'parent.neighbourhood^1',
-                  'parent.region_a^3'
+                  'parent.region_a^1'
                 ],
                 'query': 'new york',
                 'analyzer': 'peliasAdmin'
