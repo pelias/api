@@ -53,6 +53,7 @@
     "morgan": "1.7.0",
     "pelias-config": "^1.0.1",
     "pelias-logger": "^0.0.8",
+    "pelias-model": "^3.1.0",
     "pelias-query": "6.2.0",
     "pelias-suggester-pipeline": "2.0.4",
     "stats-lite": "1.0.3",
@@ -66,7 +67,7 @@
     "nsp": "^2.2.0",
     "precommit-hook": "^3.0.0",
     "proxyquire": "^1.4.0",
-    "tap-dot": "1.0.4",
+    "tap-dot": "1.0.5",
     "tape": "^4.4.0"
   },
   "pre-commit": [
