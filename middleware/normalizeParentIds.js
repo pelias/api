@@ -1,17 +1,7 @@
 var logger = require('pelias-logger').get('api');
 var Document = require('pelias-model').Document;
 
-var placeTypes = [
-  'country',
-  'macroregion',
-  'region',
-  'macrocounty',
-  'county',
-  'localadmin',
-  'locality',
-  'neighbourhood',
-  'borough'
-];
+var placeTypes = require('../helper/placeTypes');
 
 /**
  * Convert WOF integer ids to Pelias formatted ids that can be used by the /place endpoint.
@@ -42,7 +32,7 @@ function normalizeParentIds(place) {
   if (place) {
     placeTypes.forEach(function (placeType) {
       if (place[placeType] && place[placeType].length > 0 && place[placeType][0]) {
-        place[placeType + '_id'] = [ makeNewId(placeType, place[placeType + '_id']) ];
+        place[placeType + '_gid'] = [ makeNewId(placeType, place[placeType + '_gid']) ];
       }
     });
   }
