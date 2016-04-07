@@ -67,8 +67,23 @@ function convertToGeocodeJSON(req, res, next, opts) {
   // response envelope
   res.body.geocoding.timestamp = new Date().getTime();
 
+  var lang = req.lang; // maybe undefined
+  var langIndex = 0;   // for admin fields
+
+  if (opts.languages && opts.languages.length>0) {
+    if (!lang) {
+      lang = opts.languages[0];
+    }
+    else {
+      langIndex = opts.languages.indexOf(lang);
+      if (langIndex === -1) {
+	langIndex = 0;
+      }
+    }
+  }
+
   // convert docs to geojson and merge with geocoding block
-  extend(res.body, geojsonify(res.data || []));
+  extend(res.body, geojsonify(res.data || [], lang, langIndex));
 
   next();
 }

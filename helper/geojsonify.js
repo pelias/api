@@ -48,7 +48,33 @@ function lookupLayer(src) {
   return src.layer;
 }
 
-function geojsonifyPlaces( docs ){
+function geojsonifyPlaces( docs, lang, langIndex ){
+
+  lang = lang || 'default';
+
+  if (langIndex === undefined) {
+    langIndex = 0;
+  }
+
+  var geojsonifyPlace = function (place) {
+    // something went very wrong
+    if( !place || !place.hasOwnProperty( 'center_point' ) ) {
+      return warning('No doc or center_point property');
+    }
+
+    var output = {};
+
+    addMetaData(place, output);
+    addDetails(place, output, lang, langIndex);
+    addLabel(place, output);
+
+    // map center_point for GeoJSON to work properly
+    // these should not show up in the final feature properties
+    output.lat = parseFloat(place.center_point.lat);
+    output.lng = parseFloat(place.center_point.lon);
+
+    return output;
+  };
 
   // flatten & expand data for geojson conversion
   var geodata = docs
@@ -71,40 +97,26 @@ function geojsonifyPlaces( docs ){
   return geojson;
 }
 
-function geojsonifyPlace(place) {
-
-  // something went very wrong
-  if( !place || !place.hasOwnProperty( 'center_point' ) ) {
-    return warning('No doc or center_point property');
-  }
-
-  var output = {};
-
-  addMetaData(place, output);
-  addDetails(place, output);
-  addLabel(place, output);
-
-
-  // map center_point for GeoJSON to work properly
-  // these should not show up in the final feature properties
-  output.lat = parseFloat(place.center_point.lat);
-  output.lng = parseFloat(place.center_point.lon);
-
-  return output;
-}
-
 /**
  * Add details properties
  *
  * @param {object} src
  * @param {object} dst
+ * @param {string} lang
+ * @param {int} langIndex
  */
-function addDetails(src, dst) {
+function addDetails(src, dst, lang, langIndex) {
   // map name
-  if( !src.name || !src.name.default ) { return warning(src); }
-  dst.name = src.name.default;
+  if( !src.name ) { return warning(src); }
 
-  copyProperties(src, DETAILS_PROPS, dst);
+  if( src.name[lang] ) {
+    dst.name = src.name[lang];
+  } else if (src.name.default) { // fallback
+    dst.name = src.name.default;
+  } else {
+    return warning(src);
+  }
+  copyProperties(src, DETAILS_PROPS, dst, langIndex);
 }
 
 /**
@@ -178,16 +190,21 @@ function computeBBox(geojson, geojsonExtentPoints) {
  * @param {[]} props
  * @param {object} dst
  */
-function copyProperties( source, props, dst ) {
+function copyProperties( source, props, dst, langIndex ) {
+
   props.forEach( function ( prop ) {
 
     if ( source.hasOwnProperty( prop ) ) {
 
-      // array value, take first item in array (at this time only used for admin values)
+      // array value, take defined item from array (at this time only used for admin values)
       if (source[prop] instanceof Array) {
-        if (source[prop].length === 0) {
+	var len = source[prop].length;
+        if (len === 0) {
           return;
         }
+	if (langIndex >= len) { // fallback
+	  langIndex = 0;
+	}
         if (source[prop][0]) {
           dst[prop] = source[prop][0];
         }
