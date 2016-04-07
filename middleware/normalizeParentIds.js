@@ -39,10 +39,10 @@ function setup() {
  */
 function normalizeParentIds(place) {
 
-  if (place && place.parent) {
+  if (place) {
     placeTypes.forEach(function (placeType) {
-      if (place.parent[placeType] && place.parent[placeType].length > 0 && place.parent[placeType][0]) {
-        place.parent[placeType + '_id'] = [ makeNewId(placeType, place.parent[placeType + '_id']) ];
+      if (place[placeType] && place[placeType].length > 0 && place[placeType][0]) {
+        place[placeType + '_id'] = [ makeNewId(placeType, place[placeType + '_id']) ];
       }
     });
   }
