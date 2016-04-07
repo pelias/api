@@ -11,7 +11,7 @@ module.exports = {
                   'analyzer': 'peliasPhrase',
                   'type': 'phrase',
                   'boost': 1,
-                  'slop': 2,
+                  'slop': 3,
                   'query': 'one two'
                 }
               }
