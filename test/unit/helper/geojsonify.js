@@ -17,6 +17,8 @@ module.exports.tests.earth = function(test, common) {
   var earth = [{
     '_type': 'geoname',
     '_id': '6295630',
+    'source': 'whosonfirst',
+    'layer': 'continent',
     'name': {
       'default': 'Earth'
     },
@@ -240,7 +242,7 @@ module.exports.tests.search = function(test, common) {
         'country': [
           'United States'
         ],
-        'country_id': [
+        'country_gid': [
           '85633793'
         ],
         'country_a': [
@@ -249,7 +251,7 @@ module.exports.tests.search = function(test, common) {
         'macroregion': [
           'MacroRegion Name'
         ],
-        'macroregion_id': [
+        'macroregion_gid': [
           'MacroRegion Id'
         ],
         'macroregion_a': [
@@ -258,7 +260,7 @@ module.exports.tests.search = function(test, common) {
         'region': [
           'New York'
         ],
-        'region_id': [
+        'region_gid': [
           '85688543'
         ],
         'region_a': [
@@ -267,7 +269,7 @@ module.exports.tests.search = function(test, common) {
         'macrocounty': [
           'MacroCounty Name'
         ],
-        'macrocounty_id': [
+        'macrocounty_gid': [
           'MacroCounty Id'
         ],
         'macrocounty_a': [
@@ -276,7 +278,7 @@ module.exports.tests.search = function(test, common) {
         'county': [
           'Kings County'
         ],
-        'county_id': [
+        'county_gid': [
           '102082361'
         ],
         'county_a': [
@@ -285,20 +287,20 @@ module.exports.tests.search = function(test, common) {
         'localadmin': [
           'Brooklyn'
         ],
-        'localadmin_id': [
+        'localadmin_gid': [
           '404521211'
         ],
         'localadmin_a': [
           null
         ],
-        'locality_id': [
+        'locality_gid': [
           '85977539'
         ],
         'locality_a': [
           null
         ],
         'neighbourhood': [],
-        'neighbourhood_id': []
+        'neighbourhood_gid': []
       }
     ];
 
@@ -316,23 +318,23 @@ module.exports.tests.search = function(test, common) {
             'name': 'East New York',
             'confidence': 0.888,
             'country': 'United States',
-            'country_id': '85633793',
+            'country_gid': '85633793',
             'country_a': 'USA',
             'macroregion': 'MacroRegion Name',
-            'macroregion_id': 'MacroRegion Id',
+            'macroregion_gid': 'MacroRegion Id',
             'macroregion_a': 'MacroRegion Abbreviation',
             'region': 'New York',
-            'region_id': '85688543',
+            'region_gid': '85688543',
             'region_a': 'NY',
             'macrocounty': 'MacroCounty Name',
-            'macrocounty_id': 'MacroCounty Id',
+            'macrocounty_gid': 'MacroCounty Id',
             'macrocounty_a': 'MacroCounty Abbreviation',
             'county': 'Kings County',
-            'county_id': '102082361',
+            'county_gid': '102082361',
             'localadmin': 'Brooklyn',
-            'localadmin_id': '404521211',
+            'localadmin_gid': '404521211',
             'locality': 'New York',
-            'locality_id': '85977539',
+            'locality_gid': '85977539',
             'label': 'East New York, Brooklyn, NY, USA'
           },
           'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
