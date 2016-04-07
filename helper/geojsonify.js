@@ -4,6 +4,7 @@ var GeoJSON = require('geojson'),
     labelGenerator = require('./labelGenerator'),
     logger = require('pelias-logger').get('api'),
     type_mapping = require('./type_mapping'),
+    Document = require('pelias-model').Document,
     _ = require('lodash');
 
 // Properties to be copied
@@ -14,28 +15,29 @@ var DETAILS_PROPS = [
   'confidence',
   'distance',
   'country',
-  'country_id',
+  'country_gid',
   'country_a',
   'macroregion',
-  'macroregion_id',
+  'macroregion_gid',
   'macroregion_a',
   'region',
-  'region_id',
+  'region_gid',
   'region_a',
   'macrocounty',
-  'macrocounty_id',
+  'macrocounty_gid',
   'macrocounty_a',
   'county',
-  'county_id',
+  'county_gid',
   'county_a',
   'localadmin',
-  'localadmin_id',
+  'localadmin_gid',
   'localadmin_a',
   'locality',
-  'locality_id',
+  'locality_gid',
   'locality_a',
   'neighbourhood',
-  'neighbourhood_id'
+  'neighbourhood_gid',
+  'bounding_box'
 ];
 
 
@@ -235,7 +237,8 @@ function copyProperties( source, props, dst ) {
  * @param {object} src
  */
 function makeGid(src) {
-  return lookupSource(src) + ':' + lookupLayer(src) + ':' + src._id;
+  var doc = new Document(lookupSource(src), lookupLayer(src), src._id);
+  return doc.getGid();
 }
 
 /**
