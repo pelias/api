@@ -333,14 +333,9 @@ module.exports.tests.search = function(test, common) {
             'localadmin_id': '404521211',
             'locality': 'New York',
             'locality_id': '85977539',
-            'bounding_box': {
-              'min_lat': 40.6514712164,
-              'max_lat': 40.6737320588,
-              'min_lon': -73.8967895508,
-              'max_lon': -73.8665771484
-            },
             'label': 'East New York, Brooklyn, NY, USA'
           },
+          'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
           'geometry': {
             'type': 'Point',
             'coordinates': [
