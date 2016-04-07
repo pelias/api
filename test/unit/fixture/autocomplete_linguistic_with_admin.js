@@ -20,7 +20,7 @@ module.exports = {
           'should': [
             {
               'match': {
-                'admin0': {
+                'parent.country': {
                   'analyzer': 'peliasAdmin',
                   'boost': 800,
                   'query': 'three'
@@ -29,7 +29,7 @@ module.exports = {
             },
             {
               'match': {
-                'admin1': {
+                'parent.region': {
                   'analyzer': 'peliasAdmin',
                   'boost': 600,
                   'query': 'three'
@@ -38,7 +38,7 @@ module.exports = {
             },
             {
               'match': {
-                'admin1_abbr': {
+                'parent.region_a': {
                   'analyzer': 'peliasAdmin',
                   'boost': 600,
                   'query': 'three'
@@ -47,7 +47,7 @@ module.exports = {
             },
             {
               'match': {
-                'admin2': {
+                'parent.county': {
                   'analyzer': 'peliasAdmin',
                   'boost': 400,
                   'query': 'three'
@@ -56,7 +56,7 @@ module.exports = {
             },
             {
               'match': {
-                'local_admin': {
+                'parent.localadmin': {
                   'analyzer': 'peliasAdmin',
                   'boost': 200,
                   'query': 'three'
@@ -65,7 +65,7 @@ module.exports = {
             },
             {
               'match': {
-                'locality': {
+                'parent.locality': {
                   'analyzer': 'peliasAdmin',
                   'boost': 200,
                   'query': 'three'
@@ -74,7 +74,7 @@ module.exports = {
             },
             {
               'match': {
-                'neighborhood': {
+                'parent.neighbourhood': {
                   'analyzer': 'peliasAdmin',
                   'boost': 200,
                   'query': 'three'
@@ -99,18 +99,14 @@ module.exports = {
                   {
                     'field_value_factor': {
                       'modifier': 'log1p',
-                      'field': 'popularity'
+                      'field': 'popularity',
+                      'missing': 1
                     },
                     'weight': 1
                   }
                 ],
                 'score_mode': 'first',
-                'boost_mode': 'replace',
-                'filter': {
-                  'exists': {
-                    'field': 'popularity'
-                  }
-                }
+                'boost_mode': 'replace'
               }
             },
             {
@@ -131,18 +127,14 @@ module.exports = {
                   {
                     'field_value_factor': {
                       'modifier': 'log1p',
-                      'field': 'population'
+                      'field': 'population',
+                      'missing': 1
                     },
-                    'weight': 2
+                    'weight': 3
                   }
                 ],
                 'score_mode': 'first',
-                'boost_mode': 'replace',
-                'filter': {
-                  'exists': {
-                    'field': 'population'
-                  }
-                }
+                'boost_mode': 'replace'
               }
             }
           ]

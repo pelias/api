@@ -1,23 +1,34 @@
+var tape = require('tape'),
+    diff = require('difflet')({ indent : 2, comment : true });
 
-var tape = require('tape');
-var common = {};
+var common = {
+  // a visual deep diff rendered using console.error()
+  diff: function( actual, expected ){
+    console.error( diff.compare( actual, expected ) );
+  }
+};
 
 var tests = [
   require('./controller/index'),
   require('./controller/place'),
   require('./controller/search'),
   require('./helper/geojsonify'),
-  require('./helper/labelGenerator'),
+  require('./helper/labelGenerator_default'),
+  require('./helper/labelGenerator_GBR'),
+  require('./helper/labelGenerator_SGP'),
+  require('./helper/labelGenerator_SWE'),
+  require('./helper/labelGenerator_USA'),
   require('./helper/labelSchema'),
   require('./helper/text_parser'),
   require('./helper/type_mapping'),
-  require('./helper/types'),
   require('./helper/sizeCalculator'),
   require('./middleware/confidenceScore'),
   require('./middleware/confidenceScoreReverse'),
   require('./middleware/distance'),
   require('./middleware/localNamingConventions'),
   require('./middleware/dedupe'),
+  require('./middleware/parseBBox'),
+  require('./middleware/normalizeParentIds'),
   require('./query/autocomplete'),
   require('./query/autocomplete_defaults'),
   require('./query/search_defaults'),
@@ -34,7 +45,10 @@ var tests = [
   require('./sanitiser/_single_scalar_parameters'),
   require('./sanitiser/_size'),
   require('./sanitiser/_sources'),
+  require('./sanitiser/_sources_and_layers'),
   require('./sanitiser/_text'),
+  require('./sanitiser/_deprecate_quattroshapes'),
+  require('./src/backend'),
   require('./sanitiser/autocomplete'),
   require('./sanitiser/place'),
   require('./sanitiser/reverse'),

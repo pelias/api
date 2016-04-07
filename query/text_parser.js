@@ -1,6 +1,20 @@
 
 var logger = require('pelias-logger').get('api');
-var adminFields = require('../helper/adminFields')();
+
+/*
+This list should only contain admin fields we are comfortable matching in the case
+when we can't identify parts of an address. This shouldn't contain fields like country_a
+or postalcode because we should only try to match those when we're sure that's what they are.
+ */
+var adminFields = [
+  'country',
+  'region',
+  'region_a',
+  'county',
+  'localadmin',
+  'locality',
+  'neighbourhood'
+];
 
 /**
   @todo: refactor me
@@ -48,17 +62,17 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
 
   // city
   if( parsed_text.hasOwnProperty('city') ){
-    vs.var( 'input:admin2', parsed_text.city );
+    vs.var( 'input:county', parsed_text.city );
   }
 
   // state
   if( parsed_text.hasOwnProperty('state') ){
-    vs.var( 'input:admin1_abbr', parsed_text.state );
+    vs.var( 'input:region_a', parsed_text.state );
   }
 
   // country
   if( parsed_text.hasOwnProperty('country') ){
-    vs.var( 'input:alpha3', parsed_text.country );
+    vs.var( 'input:country_a', parsed_text.country );
   }
 
   // ==== deal with the 'leftover' components ====
@@ -76,11 +90,10 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
   // if we have 'leftovers' then assign them to any fields which
   // currently don't have a value assigned.
   if( leftoversString.length ){
-    var unmatchedAdminFields = adminFields.slice();
-    
+
     // cycle through fields and set fields which
     // are still currently unset
-    unmatchedAdminFields.forEach( function( key ){
+    adminFields.forEach( function( key ){
       if( !vs.isset( 'input:' + key ) ){
         vs.var( 'input:' + key, leftoversString );
       }

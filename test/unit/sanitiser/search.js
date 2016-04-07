@@ -5,7 +5,7 @@ var extend = require('extend'),
     middleware = search.middleware,
     defaultError = 'invalid param \'text\': text length, must be >0';
 // these are the default values you would expect when no input params are specified.
-var emptyClean = { private: false, size: 10, types: {} };
+var emptyClean = { private: false, size: 10 };
 
 module.exports.tests = {};
 
@@ -24,8 +24,8 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
-    var expected = [ 'singleScalarParameters', 'text', 'size', 'layers', 'sources',
-      'quattroshapes_warning', 'private', 'geo_search', 'boundary_country' ];
+    var expected = ['quattroshapes_deprecation', 'singleScalarParameters', 'text', 'size',
+      'layers', 'sources', 'sources_and_layers', 'private', 'geo_search', 'boundary_country' ];
     t.deepEqual(Object.keys(search.sanitiser_list), expected);
     t.end();
   });
@@ -72,7 +72,7 @@ module.exports.tests.sanitise_valid_text = function(test, common) {
 };
 
 module.exports.tests.sanitize_text_with_delim = function(test, common) {
-  var texts = [ 'a,bcd', '123 main st, admin1', ',,,', ' ' ];
+  var texts = [ 'a,bcd', '123 main st, region', ',,,', ' ' ];
 
   test('valid texts with a comma', function(t) {
     texts.forEach( function( text ){

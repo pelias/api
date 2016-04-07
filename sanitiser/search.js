@@ -2,12 +2,14 @@ var type_mapping = require('../helper/type_mapping');
 
 var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
+      quattroshapes_deprecation: require('../sanitiser/_deprecate_quattroshapes'),
       singleScalarParameters: require('../sanitiser/_single_scalar_parameters'),
       text: require('../sanitiser/_text'),
       size: require('../sanitiser/_size'),
-      layers: require('../sanitiser/_targets')('layers', type_mapping.layer_with_aliases_to_type),
-      sources: require('../sanitiser/_targets')('sources', type_mapping.source_to_type),
-      quattroshapes_warning: require('../sanitiser/_warn_quattroshapes')(),
+      layers: require('../sanitiser/_targets')('layers', type_mapping.layer_mapping),
+      sources: require('../sanitiser/_targets')('sources', type_mapping.source_mapping),
+      // depends on the layers and sources sanitisers, must be run after them
+      sources_and_layers: require('../sanitiser/_sources_and_layers'),
       private: require('../sanitiser/_flag_bool')('private', false),
       geo_search: require('../sanitiser/_geo_search'),
       boundary_country: require('../sanitiser/_boundary_country'),

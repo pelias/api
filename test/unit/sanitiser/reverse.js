@@ -11,15 +11,13 @@ var reverse  = require('../../../sanitiser/reverse'),
                       'boundary.circle.lat': 0,
                       'boundary.circle.lon': 0,
                       'boundary.circle.radius': parseFloat(defaults['boundary:circle:radius']),
-                      types: {
-                      },
                       size: 10,
                       private: false
                     };
 
 // these are the default values you would expect when no input params are specified.
 // @todo: why is this different from $defaultClean?
-var emptyClean = { private: false, size: 10, types: {} };
+var emptyClean = { private: false, size: 10 };
 
 module.exports.tests = {};
 
@@ -38,8 +36,8 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
-    var expected = [ 'singleScalarParameters', 'layers', 'sources', 'quattroshapes_warning',
-      'size', 'private', 'geo_reverse', 'boundary_country' ];
+    var expected = ['quattroshapes_deprecation', 'singleScalarParameters', 'layers',
+      'sources', 'sources_and_layers', 'size', 'private', 'geo_reverse', 'boundary_country'];
     t.deepEqual(Object.keys(reverse.sanitiser_list), expected);
     t.end();
   });
@@ -105,7 +103,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
       var req = { query: { 'point.lat': 0, 'point.lon': lon } };
 
       // @todo: why is lat set?
-      var expected = { 'point.lat': 0, private: false, size: 10, types: {} };
+      var expected = { 'point.lat': 0, private: false, size: 10 };
       sanitize(req, function(){
         t.equal(req.errors[0], 'missing param \'point.lon\'', 'longitude is a required field');
         t.deepEqual(req.clean, expected, 'clean only has default values set');

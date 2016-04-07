@@ -50,9 +50,11 @@ module.exports.tests.functional_success = function(test, common) {
       _id: 'myid1',
       _score: 10,
       _type: 'mytype1',
-      admin0: 'country1',
-      admin1: 'state1',
-      admin2: 'city1',
+      parent: {
+        country: ['country1'],
+        region: ['state1'],
+        county: ['city1']
+      },
       center_point: { lat: 100.1, lon: -50.5 },
       name: { default: 'test name1' },
       value: 1
@@ -61,9 +63,11 @@ module.exports.tests.functional_success = function(test, common) {
       _id: 'myid2',
       _score: 20,
       _type: 'mytype2',
-      admin0: 'country2',
-      admin1: 'state2',
-      admin2: 'city2',
+      parent: {
+        country: ['country2'],
+        region: ['state2'],
+        county: ['city2']
+      },
       center_point: { lat: 100.2, lon: -51.5 },
       name: { default: 'test name2' },
       value: 2
