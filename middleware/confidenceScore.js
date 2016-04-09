@@ -14,6 +14,7 @@
 var stats = require('stats-lite');
 var logger = require('pelias-logger').get('api');
 var check = require('check-types');
+var iterate = require('../helper/iterate');
 
 var RELATIVE_SCORES = true;
 
@@ -26,18 +27,22 @@ function setup(peliasConfig) {
 
 function computeScores(req, res, next) {
   // do nothing if no result data set
-  if (check.undefined(req.clean) || check.undefined(res) ||
-      check.undefined(res.data) || check.undefined(res.meta)) {
+  if (check.undefined(req.clean) || check.undefined(res) || check.undefined(res.results)) {
     return next();
   }
 
-  // compute standard deviation and mean from all scores
-  var scores = res.meta.scores;
-  var stdev = computeStandardDeviation(scores);
-  var mean = stats.mean(scores);
+  iterate(res.results, req.clean, function(r, clean, i) {
+    if(check.undefined(r.data) || check.undefined(r.meta) || check.undefined(clean)) {
+      return;
+    }
+    // compute standard deviation and mean from all scores
+    var scores = r.meta.scores;
+    var stdev = computeStandardDeviation(scores);
+    var mean = stats.mean(scores);
 
-  // loop through data items and determine confidence scores
-  res.data = res.data.map(computeConfidenceScore.bind(null, req, mean, stdev));
+    // loop through data items and determine confidence scores
+    r.data = r.data.map(computeConfidenceScore.bind(null, clean, mean, stdev));
+  });
 
   next();
 }
@@ -53,8 +58,8 @@ function computeScores(req, res, next) {
  * @param {object} hit
  * @returns {object}
  */
-function computeConfidenceScore(req, mean, stdev, hit) {
-  var dealBreakers = checkForDealBreakers(req, hit);
+function computeConfidenceScore(clean, mean, stdev, hit) {
+  var dealBreakers = checkForDealBreakers(clean, hit);
   if (dealBreakers) {
     hit.confidence = 0.5;
     return hit;
@@ -68,9 +73,9 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     hit.confidence += checkDistanceFromMean(hit._score, mean, stdev);
     hit.confidence += computeZScore(hit._score, mean, stdev);
   }
-  hit.confidence += checkName(req.clean.text, req.clean.parsed_text, hit);
-  hit.confidence += checkQueryType(req.clean.parsed_text, hit);
-  hit.confidence += checkAddress(req.clean.parsed_text, hit);
+  hit.confidence += checkName(clean.text, clean.parsed_text, hit);
+  hit.confidence += checkQueryType(clean.parsed_text, hit);
+  hit.confidence += checkAddress(clean.parsed_text, hit);
 
   // TODO: look at categories and location
 
@@ -90,19 +95,19 @@ function computeConfidenceScore(req, mean, stdev, hit) {
  * @param {object} hit
  * @returns {bool}
  */
-function checkForDealBreakers(req, hit) {
-  if (check.undefined(req.clean.parsed_text)) {
+function checkForDealBreakers(clean, hit) {
+  if (check.undefined(clean.parsed_text)) {
     return false;
   }
 
-  if (check.assigned(req.clean.parsed_text.state) && req.clean.parsed_text.state !== hit.parent.region_a[0]) {
+  if (check.assigned(clean.parsed_text.state) && clean.parsed_text.state !== hit.parent.region_a[0]) {
     logger.debug('[confidence][deal-breaker]: state !== region_a');
     return true;
   }
 
-  if (check.assigned(req.clean.parsed_text.postalcode) && check.assigned(hit.address_parts) &&
-      req.clean.parsed_text.postalcode !== hit.address_parts.zip) {
-    logger.debug('[confidence][deal-breaker]: postalcode !== zip (' + req.clean.parsed_text.postalcode +
+  if (check.assigned(clean.parsed_text.postalcode) && check.assigned(hit.address_parts) &&
+      clean.parsed_text.postalcode !== hit.address_parts.zip) {
+    logger.debug('[confidence][deal-breaker]: postalcode !== zip (' + clean.parsed_text.postalcode +
       ' !== ' + hit.address_parts.zip + ')');
     return true;
   }

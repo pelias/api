@@ -1,5 +1,6 @@
 var logger = require('pelias-logger').get('api');
 var _ = require('lodash');
+var iterate = require('../helper/iterate');
 
 // these are subjective terms, but wanted to add shortcuts to denote something
 //  about importance
@@ -27,12 +28,15 @@ function setup() {
 
 function computeScores(req, res, next) {
   // do nothing if no result data set
-  if (!res.data || !res.data) {
+  if (!res || !res.results) {
     return next();
   }
 
   // loop through data items and determine confidence scores
-  res.data = res.data.map(computeConfidenceScore);
+  iterate(res.results, function(result) {
+    if(!result || !result.data) { return; }
+    result.data = result.data.map(computeConfidenceScore);
+  });
 
   next();
 }

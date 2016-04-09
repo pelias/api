@@ -78,23 +78,45 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
   };
 
   var req = {},
-      res = { data: [ ukAddress, deAddress, nlAddress ] },
       middleware = localNamingConventions();
 
   test('flipNumberAndStreet', function(t) {
+    var res = { results: { data: [ ukAddress, deAddress, nlAddress ] } };
 
     middleware( req, res, function next(){
 
       // GBR address should be a noop
-      t.equal( res.data[0].name.default, '1 Main St', 'standard name' );
+      t.equal( res.results.data[0].name.default, '1 Main St', 'standard name' );
 
       // DEU address should have the housenumber and street name flipped
       // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
-      t.equal( res.data[1].name.default, 'Grolmanstraße 23', 'flipped name' );
+      t.equal( res.results.data[1].name.default, 'Grolmanstraße 23', 'flipped name' );
 
       // NLD address should have the housenumber and street name flipped, too
       // this definition comes from pelias configuration
-      t.equal( res.data[2].name.default, 'Keizersgracht 117', 'flipped name' );
+      t.equal( res.results.data[2].name.default, 'Keizersgracht 117', 'flipped name' );
+
+      t.end();
+    });
+  });
+
+  test('flipNumberAndStreet with array results', function(t) {
+    var res = { results: [
+      { data: [ ukAddress ] }, { data: [ deAddress, nlAddress ] }
+    ] };
+
+    middleware( req, res, function next(){
+
+      // GBR address should be a noop
+      t.equal( res.results[0].data[0].name.default, '1 Main St', 'standard name' );
+
+      // DEU address should have the housenumber and street name flipped
+      // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
+      t.equal( res.results[1].data[0].name.default, 'Grolmanstraße 23', 'flipped name' );
+
+      // NLD address should have the housenumber and street name flipped, too
+      // this definition comes from pelias configuration
+      t.equal( res.results[1].data[1].name.default, 'Keizersgracht 117', 'flipped name' );
 
       t.end();
     });

@@ -5,24 +5,25 @@
 
 **/
 
-var peliasLogger = require( 'pelias-logger' ).get( 'service/search' );
+var peliasLogger = require( 'pelias-logger' ).get( 'service/msearch' );
 var processResult = require( './_searchCommon' ).processResult;
 
 function service( backend, cmd, cb ){
 
   // query new backend
-  backend().client.search( cmd, function( err, data ){
+  backend().client.msearch( cmd, function( err, data ){
 
     // handle backend errors
     if( err ){ return cb( err ); }
 
     // log total ms elasticsearch reported the query took to execute
-    peliasLogger.verbose( 'time elasticsearch reported:', data.took / 1000 );
+    var took = data.responses.map(function(r) { return r.took / 1000; });
+    peliasLogger.verbose( 'time elasticsearch reported:', took );
 
-    var result = processResult( data );
+    var results = data.responses.map( processResult );
 
     // fire callback
-    return cb( null, result.data, result.meta );
+    return cb( null, results );
   });
 
 }

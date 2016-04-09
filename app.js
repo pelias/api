@@ -1,5 +1,6 @@
 
 var app = require('express')();
+var bodyParser = require('body-parser');
 
 var peliasConfig = require( 'pelias-config' ).generate().api;
 
@@ -14,6 +15,8 @@ app.use( require('./middleware/headers') );
 app.use( require('./middleware/cors') );
 app.use( require('./middleware/options') );
 app.use( require('./middleware/jsonp') );
+app.use( bodyParser.json() ); // for parsing application/json
+app.use( bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 /** ----------------------- routes ----------------------- **/
 

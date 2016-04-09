@@ -4,3 +4,5 @@ coverage
 *.log
 reports
 pids
+.DS_Store
+.nvmrc

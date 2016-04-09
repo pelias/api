@@ -57,7 +57,7 @@ module.exports.tests.functional_success = function(test, common) {
         t.deepEqual(json.features, expected, 'values correctly mapped');
       }
     };
-    var req = { clean: { ids: [ {'id' : 123, layers: [ 'a' ] } ] }, errors: [], warnings: [] };
+    var req = { clean: [ { ids: [ {'id' : 123, layers: [ 'a' ] } ] } ], errors: [], warnings: [] };
     var next = function next() {
       t.equal(req.errors.length, 0, 'next was called without error');
       t.end();
@@ -73,9 +73,9 @@ module.exports.tests.functional_failure = function(test, common) {
       t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: ['b'] } ] } }, 'correct backend command');
     });
     var controller = setup( backend );
-    var req = { clean: { ids: [ {'id' : 123, layers: [ 'b' ] } ] }, errors: [], warnings: [] };
+    var req = { clean: [ { ids: [ {'id' : 123, layers: [ 'b' ] } ] } ], errors: [], warnings: [] };
     var next = function( message ){
-      t.equal(req.errors[0],'a backend error occurred','error passed to errorHandler');
+      t.equal(req.errors[0][0],'a backend error occurred','error passed to errorHandler');
       t.end();
     };
     controller(req, undefined, next );

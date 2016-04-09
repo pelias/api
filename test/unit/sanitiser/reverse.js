@@ -6,14 +6,14 @@ var reverse  = require('../../../sanitiser/reverse'),
     middleware = reverse.middleware,
     defaults = require('../../../query/reverse_defaults'),
     defaultError = 'missing param \'lat\'',
-    defaultClean =  { 'point.lat': 0,
+    defaultClean =  [{ 'point.lat': 0,
                       'point.lon': 0,
                       'boundary.circle.lat': 0,
                       'boundary.circle.lon': 0,
                       'boundary.circle.radius': parseFloat(defaults['boundary:circle:radius']),
                       size: 10,
                       private: false
-                    };
+                    }];
 
 // these are the default values you would expect when no input params are specified.
 // @todo: why is this different from $defaultClean?
@@ -53,8 +53,8 @@ module.exports.tests.sanitize_lat = function(test, common) {
     lats.invalid.forEach( function( lat ){
       var req = { query: { 'point.lat': lat, 'point.lon': 0 } };
       sanitize(req, function(){
-        t.equal(req.errors[0], 'invalid param \'point.lat\': must be >-90 and <90', lat + ' is an invalid latitude');
-        t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
+        t.equal(req.errors[0][0], 'invalid param \'point.lat\': must be >-90 and <90', lat + ' is an invalid latitude');
+        t.deepEqual(req.clean[0], emptyClean, 'clean only has default values set');
       });
     });
     t.end();
@@ -65,7 +65,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
       sanitize(req, function(){
         var expected_lat = parseFloat( lat );
         t.deepEqual(req.errors, [], 'no errors');
-        t.equal(req.clean['point.lat'], expected_lat, 'clean set correctly (' + lat + ')');
+        t.equal(req.clean[0]['point.lat'], expected_lat, 'clean set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -74,8 +74,8 @@ module.exports.tests.sanitize_lat = function(test, common) {
     lats.missing.forEach( function( lat ){
       var req = { query: { 'point.lat': lat, 'point.lon': 0 } };
       sanitize(req, function(){
-        t.equal(req.errors[0], 'missing param \'point.lat\'', 'latitude is a required field');
-        t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
+        t.equal(req.errors[0][0], 'missing param \'point.lat\'', 'latitude is a required field');
+        t.deepEqual(req.clean[0], emptyClean, 'clean only has default values set');
       });
     });
     t.end();
@@ -93,7 +93,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
       sanitize(req, function(){
         var expected_lon = parseFloat( lon );
         t.deepEqual(req.errors, [], 'no errors');
-        t.equal(req.clean['point.lon'], expected_lon, 'clean set correctly (' + lon + ')');
+        t.equal(req.clean[0]['point.lon'], expected_lon, 'clean set correctly (' + lon + ')');
       });
     });
     t.end();
@@ -105,8 +105,8 @@ module.exports.tests.sanitize_lon = function(test, common) {
       // @todo: why is lat set?
       var expected = { 'point.lat': 0, private: false, size: 10 };
       sanitize(req, function(){
-        t.equal(req.errors[0], 'missing param \'point.lon\'', 'longitude is a required field');
-        t.deepEqual(req.clean, expected, 'clean only has default values set');
+        t.equal(req.errors[0][0], 'missing param \'point.lon\'', 'longitude is a required field');
+        t.deepEqual(req.clean[0], expected, 'clean only has default values set');
       });
     });
     t.end();
@@ -117,21 +117,21 @@ module.exports.tests.sanitize_size = function(test, common) {
   test('invalid size value', function(t) {
     var req = { query: { size: 'a', 'point.lat': 0, 'point.lon': 0 } };
     sanitize(req, function(){
-      t.equal(req.clean.size, 10, 'default size set');
+      t.equal(req.clean[0].size, 10, 'default size set');
       t.end();
     });
   });
   test('below min size value', function(t) {
     var req = { query: { size: -100, 'point.lat': 0, 'point.lon': 0 } };
     sanitize(req, function(){
-      t.equal(req.clean.size, 1, 'min size set');
+      t.equal(req.clean[0].size, 1, 'min size set');
       t.end();
     });
   });
   test('above max size value', function(t) {
     var req = { query: { size: 9999, 'point.lat': 0, 'point.lon': 0 } };
     sanitize(req, function(){
-      t.equal(req.clean.size, 40, 'max size set');
+      t.equal(req.clean[0].size, 40, 'max size set');
       t.end();
     });
   });
@@ -143,7 +143,7 @@ module.exports.tests.sanitize_private = function(test, common) {
     test('invalid private param ' + value, function(t) {
       var req = { query: { 'point.lat': 0, 'point.lon': 0, 'private': value } };
       sanitize(req, function(){
-        t.equal(req.clean.private, false, 'default private set (to false)');
+        t.equal(req.clean[0].private, false, 'default private set (to false)');
         t.end();
       });
     });
@@ -154,7 +154,7 @@ module.exports.tests.sanitize_private = function(test, common) {
     test('valid private param ' + value, function(t) {
       var req = { query: { 'point.lat': 0, 'point.lon': 0, 'private': value } };
       sanitize(req, function(){
-        t.equal(req.clean.private, true, 'private set to true');
+        t.equal(req.clean[0].private, true, 'private set to true');
         t.end();
       });
     });
@@ -165,7 +165,7 @@ module.exports.tests.sanitize_private = function(test, common) {
     test('test setting false explicitly ' + value, function(t) {
       var req = { query: { 'point.lat': 0, 'point.lon': 0, 'private': value } };
       sanitize(req, function(){
-        t.equal(req.clean.private, false, 'private set to false');
+        t.equal(req.clean[0].private, false, 'private set to false');
         t.end();
       });
     });
@@ -174,7 +174,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   test('test default behavior', function(t) {
     var req = { query: { 'point.lat': 0, 'point.lon': 0 } };
     sanitize(req, function(){
-      t.equal(req.clean.private, false, 'private set to false');
+      t.equal(req.clean[0].private, false, 'private set to false');
       t.end();
     });
   });

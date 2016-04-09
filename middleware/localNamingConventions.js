@@ -1,3 +1,4 @@
+var iterate = require('../helper/iterate');
 var check = require('check-types');
 var _ = require('lodash');
 
@@ -16,25 +17,29 @@ function setup() {
 
 function applyLocalNamingConventions(req, res, next) {
 
-  // do nothing if no result data set
-  if (!res || !res.data) {
+  if (!res) {
     return next();
   }
 
-  // loop through data items and flip relevant number/street
-  res.data.filter(function(place){
-    // relevant for some countries
-    var flip = place.parent.country_a.some(function(country) {
-      return _.includes(flipNumberAndStreetCountries, country);
-    });
-    if (!flip){ return false; }
-    if( !place.hasOwnProperty('address_parts') ){ return false; }
-    if( !place.address_parts.hasOwnProperty('number') ){ return false; }
-    if( !place.address_parts.hasOwnProperty('street') ){ return false; }
+  iterate(res.results, function(result) {
+    // do nothing if no result data set
+    if(_.isUndefined(result) || _.isUndefined(result.data)) { return; }
 
-    return true;
-  })
-  .forEach( flipNumberAndStreet );
+    // loop through data items and flip relevant number/street
+    result.data.filter(function(place){
+      // relevant for some countries
+      var flip = place.parent.country_a.some(function(country) {
+        return _.includes(flipNumberAndStreetCountries, country);
+      });
+      if (!flip){ return false; }
+      if( !place.hasOwnProperty('address_parts') ){ return false; }
+      if( !place.address_parts.hasOwnProperty('number') ){ return false; }
+      if( !place.address_parts.hasOwnProperty('street') ){ return false; }
+
+      return true;
+    })
+    .forEach( flipNumberAndStreet );
+  });
 
   next();
 }

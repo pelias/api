@@ -35,7 +35,7 @@ module.exports.tests.sanitize_private = function(test, common) {
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
-        t.equal(req.clean.private, false, 'default private set (to false)');
+        t.equal(req.clean[0].private, false, 'default private set (to false)');
         t.end();
       });
     });
@@ -48,7 +48,7 @@ module.exports.tests.sanitize_private = function(test, common) {
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
-        t.equal(req.clean.private, true, 'private set to true');
+        t.equal(req.clean[0].private, true, 'private set to true');
         t.end();
       });
     });
@@ -61,7 +61,7 @@ module.exports.tests.sanitize_private = function(test, common) {
       sanitize(req, function(){
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
-        t.equal(req.clean.private, false, 'private set to false');
+        t.equal(req.clean[0].private, false, 'private set to false');
         t.end();
       });
     });
@@ -72,7 +72,7 @@ module.exports.tests.sanitize_private = function(test, common) {
     sanitize(req, function(){
       t.deepEqual( req.errors, [], 'no errors' );
       t.deepEqual( req.warnings, [], 'no warnings' );
-      t.equal(req.clean.private, false, 'private set to false');
+      t.equal(req.clean[0].private, false, 'private set to false');
       t.end();
     });
   });
@@ -82,7 +82,7 @@ module.exports.tests.invalid_params = function(test, common) {
   test('no params', function(t) {
     var req = { query: {} };
     sanitize( req, function(){
-      t.equal( req.errors[0], 'invalid param \'ids\': length must be >0', 'error for missing `ids` param');
+      t.equal( req.errors[0][0], 'invalid param \'ids\': length must be >0', 'error for missing `ids` param');
       t.deepEqual( req.warnings, [], 'no warnings' );
       t.end();
     });
@@ -95,7 +95,7 @@ module.exports.tests.middleware_success = function(test, common) {
     var next = function(){
       t.deepEqual( req.errors, [], 'no errors' );
       t.deepEqual( req.warnings, [], 'no warnings' );
-      t.deepEqual(req.clean, defaultClean);
+      t.deepEqual(req.clean[0], defaultClean);
       t.end();
     };
     middleware( req, undefined, next );

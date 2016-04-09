@@ -13,12 +13,14 @@ module.exports.tests.dedupe = function(test, common) {
       }
     };
     var res = {
-      data: data
+      results: {
+        data: data
+      }
     };
 
     var expectedCount = 9;
     dedupe(req, res, function () {
-      t.equal(res.data.length, expectedCount, 'results have fewer items than before');
+      t.equal(res.results.data.length, expectedCount, 'results have fewer items than before');
       t.end();
     });
   });
@@ -30,12 +32,14 @@ module.exports.tests.dedupe = function(test, common) {
       }
     };
     var res = {
-      data: nonAsciiData
+      results: {
+        data: nonAsciiData
+      }
     };
 
     var expectedCount = 4;
     dedupe(req, res, function () {
-      t.equal(res.data.length, expectedCount, 'none were removed');
+      t.equal(res.results.data.length, expectedCount, 'none were removed');
       t.end();
     });
   });
@@ -48,11 +52,42 @@ module.exports.tests.dedupe = function(test, common) {
       }
     };
     var res = {
-      data: data
+      results: {
+        data: data
+      }
     };
 
     dedupe(req, res, function () {
-      t.equal(res.data.length, req.clean.size, 'results have fewer items than before');
+      t.equal(res.results.data.length, req.clean.size, 'results have fewer items than before');
+      t.end();
+    });
+  });
+
+  test('handle results array items independently', function(t) {
+    var req = {
+      clean: [
+        {
+          text: 'lampeter strasburg high school',
+          size: 100
+        },
+        {
+          text: 'lampeter strasburg high school',
+          size: 3
+        }
+      ]
+    };
+
+    var res = {
+      results: [
+        { data: data },
+        { data: data }
+      ]
+    };
+
+    dedupe(req, res, function() {
+      var firstExpectedCount = 9;
+      t.equal(res.results[0].data.length, firstExpectedCount, 'first result: dupes are removed');
+      t.equal(res.results[1].data.length, req.clean[1].size, 'second result: request size is heeded');
       t.end();
     });
   });

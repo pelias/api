@@ -5,22 +5,30 @@ module.exports.tests = {};
 module.exports.tests.computeDistance = function(test, common) {
   test('valid bounding_box json', function(t) {
     var res = {
-      data: [
+      results: [
         {
-          bounding_box: '{"min_lat":40.6514712164,"max_lat":40.6737320588,"min_lon":-73.8967895508,"max_lon":-73.8665771484}'
+          data: [
+            {
+              bounding_box: '{"min_lat":40.6514712164,"max_lat":40.6737320588,"min_lon":-73.8967895508,"max_lon":-73.8665771484}'
+            }
+          ]
         }
       ]
     };
 
     var expected = {
-      data: [
+      results: [
         {
-          bounding_box: {
-            min_lat: 40.6514712164,
-            max_lat: 40.6737320588,
-            min_lon: -73.8967895508,
-            max_lon: -73.8665771484
-          }
+          data: [
+            {
+              bounding_box: {
+                min_lat: 40.6514712164,
+                max_lat: 40.6737320588,
+                min_lon: -73.8967895508,
+                max_lon: -73.8665771484
+              }
+            }
+          ]
         }
       ]
     };
@@ -33,16 +41,24 @@ module.exports.tests.computeDistance = function(test, common) {
 
   test('invalid bounding_box json', function(t) {
     var res = {
-      data: [
+      results: [
         {
-          bounding_box: 'garbage json'
+          data: [
+            {
+              bounding_box: 'garbage json'
+            }
+          ]
         }
       ]
     };
 
     var expected = {
-      data: [
-        {}
+      results: [
+        {
+          data: [
+            {}
+          ]
+        }
       ]
     };
 

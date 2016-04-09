@@ -13,6 +13,7 @@ var tests = [
   require('./controller/place'),
   require('./controller/search'),
   require('./helper/geojsonify'),
+  require('./helper/iterate'),
   require('./helper/labelGenerator_default'),
   require('./helper/labelGenerator_GBR'),
   require('./helper/labelGenerator_SGP'),
@@ -22,6 +23,7 @@ var tests = [
   require('./helper/text_parser'),
   require('./helper/type_mapping'),
   require('./helper/sizeCalculator'),
+  require('./middleware/bulkSizeLimit'),
   require('./middleware/confidenceScore'),
   require('./middleware/confidenceScoreReverse'),
   require('./middleware/distance'),
@@ -54,6 +56,7 @@ var tests = [
   require('./sanitiser/reverse'),
   require('./sanitiser/search'),
   require('./service/mget'),
+  require('./service/msearch'),
   require('./service/search'),
 ];
 

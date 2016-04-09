@@ -12,7 +12,8 @@ var sanitisers = {
 
 /** ----------------------- middleware ------------------------ **/
 var middleware = {
-  calcSize: require('../middleware/sizeCalculator')
+  calcSize: require('../middleware/sizeCalculator'),
+  bulkSizeLimit: require('../middleware/bulkSizeLimit')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -60,6 +61,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     search: createRouter([
       sanitisers.search.middleware,
+      middleware.bulkSizeLimit(peliasConfig),
       middleware.calcSize(),
       controllers.search(),
       postProc.distances('focus.point.'),

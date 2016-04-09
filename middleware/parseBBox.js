@@ -1,4 +1,5 @@
 var logger = require('pelias-logger').get('api');
+var iterate = require('../helper/iterate');
 
 /**
  * Parses the bounding box property in docs, if one is found
@@ -7,11 +8,15 @@ var logger = require('pelias-logger').get('api');
 function setup() {
   return function (req, res, next) {
     // do nothing if no result data set
-    if (!res || !res.data) {
+    if (!res || !res.results) {
       return next();
     }
 
-    res.data = res.data.map(parseBBox);
+    iterate(res.results, function(result) {
+      if(result.data) {
+        result.data = result.data.map(parseBBox);
+      }
+    });
 
     next();
   };

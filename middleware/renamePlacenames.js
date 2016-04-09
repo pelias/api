@@ -1,3 +1,5 @@
+var extend = require('extend');
+var iterate = require('../helper/iterate');
 var _ = require('lodash');
 
 var PARENT_PROPS = require('../helper/placeTypes');
@@ -15,11 +17,16 @@ function setup() {
 
 function renamePlacenames(req, res, next) {
   // do nothing if no result data set
-  if (!res || !res.data) {
+  if (!res || !res.results) {
     return next();
   }
 
-  res.data = res.data.map(renameOneRecord);
+  iterate(res.results, function(result) {
+    // loop through data items and remap placenames
+    if(result.data) {
+      result.data = result.data.map(renameOneRecord);
+    }
+  });
 
   next();
 }
