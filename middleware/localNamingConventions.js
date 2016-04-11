@@ -1,16 +1,23 @@
+
 var check = require('check-types');
 var _ = require('lodash');
+var logger = require('pelias-logger').get('api:middleware:localNamingConventions');
 
 var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL'];
+var translations = {};
 
 function setup() {
   var api = require('pelias-config').generate().api;
-  var settings = api.localization;
-  if (settings && settings.flipNumberAndStreetCountries) {
-    var countries = settings.flipNumberAndStreetCountries;
-    flipNumberAndStreetCountries = _.uniq(flipNumberAndStreetCountries.concat(countries));
+  var localization = api.localization;
+  if (localization) {
+    if (localization.flipNumberAndStreetCountries) {
+      var countries = localization.flipNumberAndStreetCountries;
+      flipNumberAndStreetCountries = _.uniq(flipNumberAndStreetCountries.concat(countries));
+    }
+    if (localization.translations) {
+      translations = localization.translations;
+    }
   }
-
   return applyLocalNamingConventions;
 }
 
@@ -20,6 +27,8 @@ function applyLocalNamingConventions(req, res, next) {
   if (!res || !res.data) {
     return next();
   }
+
+  logger.debug('============ request.clean', req.clean);
 
   // loop through data items and flip relevant number/street
   res.data.filter(function(place){
@@ -36,6 +45,26 @@ function applyLocalNamingConventions(req, res, next) {
   })
   .forEach( flipNumberAndStreet );
 
+  if( req.lang && translations[req.lang] ) {
+    _.forEach(translations[req.lang], function(names, key) {
+      _.forEach(res.data, function(place) {
+	if( place[key] !== null ) {
+	  var name;
+	  if (place[key] instanceof Array) {
+	    name = place[key][0];
+	    if (name && names[name]) {
+	      place[key][0] = names[name]; // do the translation
+	    }
+	  } else {
+	    name = place[key];
+	    if (name && names[name]) {
+	      place[key] = names[name];
+	    }
+	  }
+	}
+      });
+    });
+  }
   next();
 }
 
