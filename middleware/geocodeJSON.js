@@ -67,17 +67,14 @@ function convertToGeocodeJSON(req, res, next, opts) {
   // response envelope
   res.body.geocoding.timestamp = new Date().getTime();
 
-  var lang = req.lang;
-  if (!lang) {
-    var languages = opts.config.languages;
-    if (languages && languages.length>0) {
-      lang = languages[0];
-    }
+  var lang;
+  if (req.clean) {
+    lang = req.clean.lang;
   }
-  lang = lang || 'default'; // fallback
+  lang = lang || 'default';
 
   // convert docs to geojson and merge with geocoding block
-  extend(res.body, geojsonify(res.data || [], lang));
+  extend(res.body, geojsonify(res.data || [], lang ));
 
   next();
 }
