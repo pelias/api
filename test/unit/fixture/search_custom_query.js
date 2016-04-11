@@ -14,27 +14,25 @@ module.exports = {
             }
           }],
           'should': [{
-            'match': {
-              'phrase.default': {
-                'query': '123 main st',
-                'analyzer': 'peliasPhrase',
-                'type': 'phrase',
-                'slop': 2,
-                'boost': 1
-              }
+            'multi_match': {
+	      'query': '123 main st',
+              'analyzer': 'peliasPhrase',
+              'type': 'phrase',
+              'slop': 2,
+              'boost': 1,
+	      'fields': ['name.*']
             }
           },
           {
             'function_score': {
               'query': {
-                'match': {
-                  'phrase.default': {
-                    'query': '123 main st',
-                    'analyzer': 'peliasPhrase',
-                    'type': 'phrase',
-                    'slop': 2,
-                    'boost': 1
-                  }
+                'multi_match': {
+                  'query': '123 main st',
+                  'analyzer': 'peliasPhrase',
+                  'type': 'phrase',
+                  'slop': 2,
+                  'boost': 1,
+		  'fields': ['name.*']
                 }
               },
               'max_boost': 20,
@@ -52,14 +50,13 @@ module.exports = {
           },{
             'function_score': {
               'query': {
-                'match': {
-                  'phrase.default': {
-                    'query': '123 main st',
-                    'analyzer': 'peliasPhrase',
-                    'type': 'phrase',
-                    'slop': 2,
-                    'boost': 1
-                  }
+                'multi_match': {
+                  'query': '123 main st',
+                  'analyzer': 'peliasPhrase',
+                  'type': 'phrase',
+                  'slop': 2,
+                  'boost': 1,
+		  'fields': ['name.*']
                 }
               },
               'max_boost': 20,
