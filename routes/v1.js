@@ -12,7 +12,8 @@ var sanitisers = {
 
 /** ----------------------- middleware ------------------------ **/
 var middleware = {
-  calcSize: require('../middleware/sizeCalculator')
+  calcSize: require('../middleware/sizeCalculator'),
+  selectLanguage: require('../middleware/languagSelector')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -60,6 +61,7 @@ function addRoutes(app, peliasConfig) {
     search: createRouter([
       sanitisers.search.middleware,
       middleware.calcSize(),
+      middleware.selectLanguage(),
       controllers.search(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
@@ -72,6 +74,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     autocomplete: createRouter([
       sanitisers.autocomplete.middleware,
+      middleware.selectLanguage(),
       controllers.search(null, require('../query/autocomplete')),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
@@ -85,6 +88,7 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitisers.reverse.middleware,
       middleware.calcSize(),
+      middleware.selectLanguage(),
       controllers.search(undefined, reverseQuery),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
@@ -99,6 +103,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     place: createRouter([
       sanitisers.place.middleware,
+      middleware.selectLanguage(),
       controllers.place(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
