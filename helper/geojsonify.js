@@ -48,14 +48,7 @@ function lookupLayer(src) {
   return src.layer;
 }
 
-function geojsonifyPlaces( docs, lang, langIndex ){
-
-  lang = lang || 'default';
-
-  if (langIndex === undefined) {
-    langIndex = 0;
-  }
-
+function geojsonifyPlaces( docs, lang ){
   var geojsonifyPlace = function (place) {
     // something went very wrong
     if( !place || !place.hasOwnProperty( 'center_point' ) ) {
@@ -65,7 +58,7 @@ function geojsonifyPlaces( docs, lang, langIndex ){
     var output = {};
 
     addMetaData(place, output);
-    addDetails(place, output, lang, langIndex);
+    addDetails(place, output, lang);
     addLabel(place, output);
 
     // map center_point for GeoJSON to work properly
@@ -103,9 +96,8 @@ function geojsonifyPlaces( docs, lang, langIndex ){
  * @param {object} src
  * @param {object} dst
  * @param {string} lang
- * @param {int} langIndex
  */
-function addDetails(src, dst, lang, langIndex) {
+function addDetails(src, dst, lang) {
   // map name
   if( !src.name ) { return warning(src); }
 
@@ -116,7 +108,7 @@ function addDetails(src, dst, lang, langIndex) {
   } else {
     return warning(src);
   }
-  copyProperties(src, DETAILS_PROPS, dst, langIndex);
+  copyProperties(src, DETAILS_PROPS, dst);
 }
 
 /**
@@ -190,29 +182,24 @@ function computeBBox(geojson, geojsonExtentPoints) {
  * @param {[]} props
  * @param {object} dst
  */
-function copyProperties( source, props, dst, langIndex ) {
-
+function copyProperties( source, props, dst ) {
   props.forEach( function ( prop ) {
 
     if ( source.hasOwnProperty( prop ) ) {
 
-      // array value, take defined item from array (at this time only used for admin values)
+      // array value, take first item in array (at this time only used for admin values)
       if (source[prop] instanceof Array) {
-	var len = source[prop].length;
-        if (len === 0) {
-          return;
-        }
-	if (langIndex >= len) { // fallback
-	  langIndex = 0;
+	if (source[prop].length === 0) {
+	  return;
 	}
-        if (source[prop][0]) {
-          dst[prop] = source[prop][0];
-        }
+	if (source[prop][0]) {
+	  dst[prop] = source[prop][0];
+	}
       }
 
       // simple value
       else {
-        dst[prop] = source[prop];
+	dst[prop] = source[prop];
       }
     }
   });
