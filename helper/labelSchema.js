@@ -1,66 +1,62 @@
-var _ = require('lodash'),
-    check = require('check-types');
+var _ = require('lodash');
 
 module.exports = {
-  'USA': {
-    'local': getFirstProperty(['localadmin', 'locality', 'neighbourhood', 'county']),
-    'regional': getUsState,
-    'country': getFirstProperty(['country_a'])
+  'default': {
+    'local': getFirstProperty(['locality']),
+    'country': getFirstProperty(['country'])
   },
   'GBR': {
-    'local': getFirstProperty(['neighbourhood', 'county', 'localadmin', 'locality', 'macroregion', 'region']),
-    'regional': getFirstProperty(['county','country','region'])
+    'local': getFirstProperty(['locality']),
+    'regional': getFirstProperty(['macroregion']),
+    'country': getFirstProperty(['country'])
   },
-  'SGP': {
-    'local': getFirstProperty(['neighbourhood', 'region', 'county', 'localadmin', 'locality']),
-    'regional': getFirstProperty(['county','country','region'])
+  'USA': {
+    'borough': getFirstProperty(['borough']),
+    'local': getFirstProperty(['locality']),
+    'regional': getUsOrCaState,
+    'country': getFirstProperty(['country'])
   },
-  'SWE': {
-    'local': getFirstProperty(['neighbourhood', 'region', 'county', 'localadmin', 'locality']),
-    'regional': getFirstProperty(['country'])
-  },
-  'default': {
-    'local': getFirstProperty(['localadmin', 'locality', 'neighbourhood', 'county', 'macroregion', 'region']),
-    'regional': getFirstProperty(['country'])
+  'CAN': {
+    'local': getFirstProperty(['locality']),
+    'regional': getUsOrCaState,
+    'country': getFirstProperty(['country'])
   }
 };
 
 // find the first field of record that has a non-empty value that's not already in labelParts
 function getFirstProperty(fields) {
-  return function(record, labelParts) {
+  return function(record) {
     for (var i = 0; i < fields.length; i++) {
       var fieldValue = record[fields[i]];
 
-      if (check.nonEmptyString(fieldValue) && !_.includes(labelParts, fieldValue)) {
-        labelParts.push( fieldValue );
-        return labelParts;
+      if (!_.isEmpty(fieldValue)) {
+        return fieldValue;
       }
 
     }
-
-    return labelParts;
 
   };
 
 }
 
-// this function is exclusively used for figuring out which field to use for US States
-// 1.  if a US state is the most granular bit of info entered, the label should contain
-//  the full state name, eg: Pennsylvania, USA
-// 2.  otherwise, the state abbreviation should be used, eg: Lancaster, PA, USA
+// this function is exclusively used for figuring out which field to use for US/CA States
+// 1.  if a US/CA state is the most granular bit of info entered, the label should contain
+//  the full state name, eg: Pennsylvania, USA and Ontario, CA
+// 2.  otherwise, the state abbreviation should be used, eg: Lancaster, PA, USA and Bruce, ON, CA
 // 3.  if for some reason the abbreviation isn't available, use the full state name
-function getUsState(record, labelParts) {
+function getUsOrCaState(record) {
   if ('region' === record.layer && record.region) {
-    // add full state name when state is the most granular piece of info
-    labelParts.push(record.region);
-  } else if (record.region_a) {
-    // otherwise just add the region code when available
-    labelParts.push(record.region_a);
-  } else if (record.region) {
-    // add the full name when there's no region code available ()
-    labelParts.push(record.region);
-  }
+    // return full state name when state is the most granular piece of info
+    return record.region;
 
-  return labelParts;
+  } else if (record.region_a) {
+    // otherwise just return the region code when available
+    return record.region_a;
+
+  } else if (record.region) {
+    // return the full name when there's no region code available
+    return record.region;
+
+  }
 
 }

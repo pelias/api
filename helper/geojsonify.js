@@ -34,6 +34,8 @@ var DETAILS_PROPS = [
   'locality',
   'locality_id',
   'locality_a',
+  'borough',
+  'borough_id',
   'neighbourhood',
   'neighbourhood_id',
   'bounding_box'

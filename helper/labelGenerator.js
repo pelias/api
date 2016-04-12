@@ -4,37 +4,28 @@ var _ = require('lodash'),
 module.exports = function( record ){
   var schema = getSchema(record.country_a);
 
+  // in virtually all cases, this will be the `name` field
   var labelParts = getInitialLabel(record);
 
-  for (var key in schema) {
-    var valueFunction = schema[key];
-
-    labelParts = valueFunction(record, labelParts);
+  // iterate the schema
+  for (var field in schema) {
+    var valueFunction = schema[field];
+    labelParts.push(valueFunction(record));
   }
 
-  // NOTE: while it may seem odd to call `uniq` on the list of label parts,
-  //  the effect is quite subtle.  Take, for instance, a result for "Lancaster, PA"
-  //  the pseudo-object is:
-  //  {
-  //    'name': 'Lancaster',
-  //    'locality': 'Lancaster',
-  //    'region_a': 'PA',
-  //    'country_a': 'USA'
-  //  }
-  //
-  //  the code up to this point generates the label:
-  //  `Lancaster, Lancaster, PA, USA`
-  //
-  //  then the `unique` call reduces this to:
-  //  `Lancaster, PA, USA`
-  //
-  //  this code doesn't have the same effect in the case of a venue or address
-  //  where the `name` field would contain the address or name of a point-of-interest
-  //
-  //  Also see https://github.com/pelias/api/issues/429 for other ways that this is bad
-  //
-  // de-dupe, join, trim
-  return _.uniq( labelParts ).join(', ').trim();
+  // retain only things that are defined
+  labelParts = labelParts.filter(function(v) { return !_.isUndefined(v); });
+
+  // first, dedupe the name and 1st label array elements
+  //  this is used to ensure that the `name` and first admin hierarchy elements aren't repeated
+  //  eg - `["Lancaster", "Lancaster", "PA", "United States"]` -> `["Lancaster", "PA", "United States"]`
+  var dedupedNameAndFirstLabelElement = _.uniq([labelParts.shift(), labelParts.shift()]);
+
+  // second, unshift the deduped parts back onto the labelParts
+  labelParts.unshift.apply(labelParts, dedupedNameAndFirstLabelElement);
+
+  // third, join with a comma and return
+  return labelParts.join(', ');
 
 };
 

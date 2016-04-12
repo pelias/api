@@ -57,6 +57,7 @@ module.exports.tests.search = function(test, common) {
       'country': 'United Kingdom',
       'region': 'Islington',
       'region_a': 'ISL',
+      'macroregion': 'England',
       'county': 'Angel',
       'localadmin': 'test1',
       'locality': 'test2',
@@ -82,6 +83,7 @@ module.exports.tests.search = function(test, common) {
       'country': 'United Kingdom',
       'region': 'City And County Of The City Of London',
       'region_a': 'COL',
+      'macroregion': 'England',
       'county': 'Smithfield',
       'localadmin': 'test1',
       'locality': 'test2',
@@ -104,7 +106,7 @@ module.exports.tests.search = function(test, common) {
       'region': 'New York',
       'region_a': 'NY',
       'county': 'New York',
-      'localadmin': 'Manhattan',
+      'borough': 'Manhattan',
       'locality': 'New York',
       'neighbourhood': 'Koreatown',
       'category': [
@@ -132,10 +134,11 @@ module.exports.tests.search = function(test, common) {
           'gid': 'source1:layer1:id1',
           'layer': 'layer1',
           'source': 'source1',
-          'label': '\'Round Midnight Jazz and Blues Bar, test3, Angel',
+          'label': '\'Round Midnight Jazz and Blues Bar, test2, England, United Kingdom',
           'name': '\'Round Midnight Jazz and Blues Bar',
           'country_a': 'GBR',
           'country': 'United Kingdom',
+          'macroregion': 'England',
           'region': 'Islington',
           'region_a': 'ISL',
           'county': 'Angel',
@@ -161,10 +164,11 @@ module.exports.tests.search = function(test, common) {
           'gid': 'source2:layer2:id2',
           'layer': 'layer2',
           'source': 'source2',
-          'label': 'Blues Cafe, test3, Smithfield',
+          'label': 'Blues Cafe, test2, England, United Kingdom',
           'name': 'Blues Cafe',
           'country_a': 'GBR',
           'country': 'United Kingdom',
+          'macroregion': 'England',
           'region': 'City And County Of The City Of London',
           'region_a': 'COL',
           'county': 'Smithfield',
@@ -187,14 +191,14 @@ module.exports.tests.search = function(test, common) {
           'gid': 'openstreetmap:venue:node:34633854',
           'layer': 'venue',
           'source': 'openstreetmap',
-          'label': 'Empire State Building, Manhattan, NY, USA',
+          'label': 'Empire State Building, Manhattan, New York, NY, United States',
           'name': 'Empire State Building',
           'country_a': 'USA',
           'country': 'United States',
           'region': 'New York',
           'region_a': 'NY',
           'county': 'New York',
-          'localadmin': 'Manhattan',
+          'borough': 'Manhattan',
           'locality': 'New York',
           'neighbourhood': 'Koreatown'
         }
@@ -204,6 +208,7 @@ module.exports.tests.search = function(test, common) {
 
   test('geojsonify.search(doc)', function(t) {
     var json = geojsonify.search( input );
+
     t.deepEqual(json, expected, 'all docs mapped');
     t.end();
   });
@@ -282,13 +287,13 @@ module.exports.tests.search = function(test, common) {
         'county_a': [
           null
         ],
-        'localadmin': [
+        'borough': [
           'Brooklyn'
         ],
-        'localadmin_id': [
+        'borough_id': [
           '404521211'
         ],
-        'localadmin_a': [
+        'borough_a': [
           null
         ],
         'locality_id': [
@@ -329,8 +334,8 @@ module.exports.tests.search = function(test, common) {
             'macrocounty_a': 'MacroCounty Abbreviation',
             'county': 'Kings County',
             'county_id': '102082361',
-            'localadmin': 'Brooklyn',
-            'localadmin_id': '404521211',
+            'borough': 'Brooklyn',
+            'borough_id': '404521211',
             'locality': 'New York',
             'locality_id': '85977539',
             'bounding_box': {
@@ -339,7 +344,7 @@ module.exports.tests.search = function(test, common) {
               'min_lon': -73.8967895508,
               'max_lon': -73.8665771484
             },
-            'label': 'East New York, Brooklyn, NY, USA'
+            'label': 'East New York, Brooklyn, New York, NY, United States'
           },
           'geometry': {
             'type': 'Point',
@@ -353,6 +358,7 @@ module.exports.tests.search = function(test, common) {
     };
 
     var json = geojsonify.search( input );
+
     t.deepEqual(json, expected, 'all wanted properties exposed');
     t.end();
   });

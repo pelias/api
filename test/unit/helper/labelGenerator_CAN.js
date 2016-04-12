@@ -1,4 +1,3 @@
-
 var generator = require('../../../helper/labelGenerator');
 
 module.exports.tests = {};
@@ -10,7 +9,7 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-module.exports.tests.united_kingdom = function(test, common) {
+module.exports.tests.canada = function(test, common) {
   test('venue', function(t) {
     var doc = {
       'name': 'venue name',
@@ -22,18 +21,19 @@ module.exports.tests.united_kingdom = function(test, common) {
       'localadmin': 'localadmin name',
       'county': 'county name',
       'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'GBR',
-      'country': 'United Kingdom'
+      'country_a': 'CAN',
+      'country': 'Canada'
     };
-    t.equal(generator(doc),'venue name, locality name, macroregion name, United Kingdom');
+    t.equal(generator(doc),'venue name, locality name, region abbr, Canada');
     t.end();
   });
 
   test('street', function(t) {
     var doc = {
-      'name': 'street address',
+      'name': '1 Main St',
       'layer': 'address',
       'housenumber': '1',
       'street': 'Main St',
@@ -42,12 +42,13 @@ module.exports.tests.united_kingdom = function(test, common) {
       'localadmin': 'localadmin name',
       'county': 'county name',
       'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'GBR',
-      'country': 'United Kingdom'
+      'country_a': 'CAN',
+      'country': 'Canada'
     };
-    t.equal(generator(doc),'street address, locality name, macroregion name, United Kingdom');
+    t.equal(generator(doc),'1 Main St, locality name, region abbr, Canada');
     t.end();
   });
 
@@ -60,12 +61,13 @@ module.exports.tests.united_kingdom = function(test, common) {
       'localadmin': 'localadmin name',
       'county': 'county name',
       'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'GBR',
-      'country': 'United Kingdom'
+      'country_a': 'CAN',
+      'country': 'Canada'
     };
-    t.equal(generator(doc),'neighbourhood name, locality name, macroregion name, United Kingdom');
+    t.equal(generator(doc),'neighbourhood name, locality name, region abbr, Canada');
     t.end();
   });
 
@@ -77,12 +79,13 @@ module.exports.tests.united_kingdom = function(test, common) {
       'localadmin': 'localadmin name',
       'county': 'county name',
       'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'GBR',
-      'country': 'United Kingdom'
+      'country_a': 'CAN',
+      'country': 'Canada'
     };
-    t.equal(generator(doc),'locality name, macroregion name, United Kingdom');
+    t.equal(generator(doc),'locality name, region abbr, Canada');
     t.end();
   });
 
@@ -93,12 +96,13 @@ module.exports.tests.united_kingdom = function(test, common) {
       'localadmin': 'localadmin name',
       'county': 'county name',
       'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'GBR',
-      'country': 'United Kingdom'
+      'country_a': 'CAN',
+      'country': 'Canada'
     };
-    t.equal(generator(doc),'localadmin name, macroregion name, United Kingdom');
+    t.equal(generator(doc),'localadmin name, region abbr, Canada');
     t.end();
   });
 
@@ -108,12 +112,13 @@ module.exports.tests.united_kingdom = function(test, common) {
       'layer': 'county',
       'county': 'county name',
       'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'GBR',
-      'country': 'United Kingdom'
+      'country_a': 'CAN',
+      'country': 'Canada'
     };
-    t.equal(generator(doc),'county name, macroregion name, United Kingdom');
+    t.equal(generator(doc),'county name, region abbr, Canada');
     t.end();
   });
 
@@ -122,12 +127,13 @@ module.exports.tests.united_kingdom = function(test, common) {
       'name': 'macrocounty name',
       'layer': 'macrocounty',
       'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'GBR',
-      'country': 'United Kingdom'
+      'country_a': 'CAN',
+      'country': 'Canada'
     };
-    t.equal(generator(doc),'macrocounty name, macroregion name, United Kingdom');
+    t.equal(generator(doc),'macrocounty name, region abbr, Canada');
     t.end();
   });
 
@@ -135,12 +141,13 @@ module.exports.tests.united_kingdom = function(test, common) {
     var doc = {
       'name': 'region name',
       'layer': 'region',
+      'region_a': 'region abbr',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'GBR',
-      'country': 'United Kingdom'
+      'country_a': 'CAN',
+      'country': 'Canada'
     };
-    t.equal(generator(doc),'region name, macroregion name, United Kingdom');
+    t.equal(generator(doc),'region name, Canada');
     t.end();
   });
 
@@ -149,22 +156,38 @@ module.exports.tests.united_kingdom = function(test, common) {
       'name': 'macroregion name',
       'layer': 'macroregion',
       'macroregion': 'macroregion name',
-      'country_a': 'GBR',
-      'country': 'United Kingdom'
+      'country_a': 'CAN',
+      'country': 'Canada'
     };
-    t.equal(generator(doc),'macroregion name, United Kingdom');
+    t.equal(generator(doc),'macroregion name, Canada');
     t.end();
   });
 
   test('country', function(t) {
     var doc = {
-      'name': 'United Kingdom',
+      'name': 'Canada',
       'layer': 'country',
-      'postalcode': 'postalcode',
-      'country_a': 'GBR',
-      'country': 'United Kingdom'
+      'country_a': 'CAN',
+      'country': 'Canada'
     };
-    t.equal(generator(doc),'United Kingdom');
+    t.equal(generator(doc),'Canada');
+    t.end();
+  });
+
+  test('region should be used when region_a is not available', function(t) {
+    var doc = {
+      'name': 'locality name',
+      'layer': 'region',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'CAN',
+      'country': 'Canada'
+    };
+    t.equal(generator(doc),'locality name, region name, Canada', 'region should be used');
     t.end();
   });
 
@@ -173,7 +196,7 @@ module.exports.tests.united_kingdom = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('label generator (GBR): ' + name, testFunction);
+    return tape('label generator (CAN): ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
