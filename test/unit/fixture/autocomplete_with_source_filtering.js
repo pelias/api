@@ -15,51 +15,7 @@ module.exports = {
               }
             }
           }],
-          'should': [{
-            'function_score': {
-              'query': {
-                'match': {
-                  'name.default': {
-                    'analyzer': 'peliasQueryPartialToken',
-                    'boost': 100,
-                    'query': 'test',
-                    'type': 'phrase',
-                    'operator': 'and'
-                  }
-                }
-              },
-              'functions': [{
-                'linear': {
-                  'center_point': {
-                    'origin': {
-                      'lat': 0,
-                      'lon': 0
-                    },
-                    'offset': '0km',
-                    'scale': '250km',
-                    'decay': 0.5
-                  }
-                },
-                'weight': 10
-              }],
-              'score_mode': 'avg',
-              'boost_mode': 'multiply',
-              'filter': {
-                'or': [
-                  {
-                    'term': {
-                      'layer': 'venue'
-                    }
-                  },
-                  {
-                    'term': {
-                      'layer': 'address'
-                    }
-                  }
-                ]
-              }
-            }
-          },{
+          'should':[{
             'function_score': {
               'query': {
                 'match': {
@@ -108,6 +64,15 @@ module.exports = {
                 },
                 'weight': 3
               }]
+            }
+          }]
+        }
+      },
+      'filter': {
+        'bool': {
+          'must': [{
+            'terms': {
+              'source': ['test_source']
             }
           }]
         }

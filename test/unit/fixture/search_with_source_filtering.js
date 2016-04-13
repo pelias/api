@@ -23,36 +23,6 @@ module.exports = {
                 'slop': 2
               }
             }
-          }, {
-            'function_score': {
-              'query': {
-                'match': {
-                  'phrase.default': {
-                    'analyzer': 'peliasPhrase',
-                    'type': 'phrase',
-                    'boost': 1,
-                    'slop': 2,
-                    'query': 'test'
-                  }
-                }
-              },
-              'functions': [{
-                'linear': {
-                  'center_point': {
-                    'origin': {
-                      'lat': 29.49136,
-                      'lon': -82.50622
-                    },
-                    'offset': '1km',
-                    'scale': '50km',
-                    'decay': 0.5
-                  }
-                },
-                'weight': 2
-              }],
-              'score_mode': 'avg',
-              'boost_mode': 'replace'
-            }
           },{
             'function_score': {
               'query': {
@@ -109,15 +79,8 @@ module.exports = {
       'filter': {
         'bool': {
           'must': [{
-            'geo_bounding_box': {
-              'center_point': {
-                'top': 11.51,
-                'right': -61.84,
-                'bottom': 47.47,
-                'left': -103.16
-              },
-              '_cache': true,
-              'type': 'indexed'
+            'terms': {
+              'source': ['test_source']
             }
           }]
         }
@@ -125,6 +88,6 @@ module.exports = {
     }
   },
   'sort': [ '_score' ],
-  'size': 10,
+  'size': 20,
   'track_scores': true
 };

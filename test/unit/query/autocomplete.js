@@ -20,7 +20,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/autocomplete_linguistic_only');
 
-    t.deepEqual(compiled, expected, 'valid autocomplete query');
+    t.deepEqual(compiled, expected, 'autocomplete_linguistic_only');
     t.end();
   });
 
@@ -30,9 +30,9 @@ module.exports.tests.query = function(test, common) {
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/autocomplete_linguistic_multiple_tokens.js');
+    var expected = require('../fixture/autocomplete_linguistic_multiple_tokens');
 
-    t.deepEqual(compiled, expected, 'valid autocomplete query');
+    t.deepEqual(compiled, expected, 'autocomplete_linguistic_multiple_tokens');
     t.end();
   });
 
@@ -47,9 +47,9 @@ module.exports.tests.query = function(test, common) {
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/autocomplete_linguistic_with_admin.js');
+    var expected = require('../fixture/autocomplete_linguistic_with_admin');
 
-    t.deepEqual(compiled, expected, 'valid autocomplete query');
+    t.deepEqual(compiled, expected, 'autocomplete_linguistic_with_admin');
     t.end();
   });
 
@@ -62,9 +62,9 @@ module.exports.tests.query = function(test, common) {
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/autocomplete_linguistic_final_token.js');
+    var expected = require('../fixture/autocomplete_linguistic_final_token');
 
-    t.deepEqual(compiled, expected, 'valid autocomplete query');
+    t.deepEqual(compiled, expected, 'autocomplete_linguistic_final_token');
     t.end();
   });
 
@@ -78,7 +78,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/autocomplete_linguistic_focus');
 
-    t.deepEqual(compiled, expected, 'valid autocomplete query');
+    t.deepEqual(compiled, expected, 'autocomplete_linguistic_focus');
     t.end();
   });
 
@@ -92,7 +92,20 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/autocomplete_linguistic_focus_null_island');
 
-    t.deepEqual(compiled, expected, 'valid autocomplete query');
+    t.deepEqual(compiled, expected, 'autocomplete_linguistic_focus_null_island');
+    t.end();
+  });
+
+  test('valid sources filter', function(t) {
+    var query = generate({
+      'text': 'test',
+      'sources': ['test_source']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_with_source_filtering');
+
+    t.deepEqual(compiled, expected, 'valid autocomplete query with source filtering');
     t.end();
   });
 };

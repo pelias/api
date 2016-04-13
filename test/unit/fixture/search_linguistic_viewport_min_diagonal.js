@@ -7,7 +7,7 @@ module.exports = {
             {
               'match': {
                 'name.default': {
-                  'analyzer': 'peliasOneEdgeGram',
+                  'analyzer': 'peliasQueryPartialToken',
                   'boost': 1,
                   'query': 'test'
                 }
