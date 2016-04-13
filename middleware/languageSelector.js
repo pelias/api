@@ -6,10 +6,12 @@ var _ = require('lodash');
 
 function setup(peliasConfig) {
   var defaultLang;
-  var languages = peliasConfig.languages;
 
-  if (languages && languages.length>0) {
-    defaultLang = languages[0];
+  if (peliasConfig) {
+    var languages = peliasConfig.languages;
+    if (languages && languages.length>0) {
+      defaultLang = languages[0];
+    }
   }
   defaultLang = defaultLang || 'default'; // fallback
 
