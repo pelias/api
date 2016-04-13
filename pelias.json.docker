@@ -16,11 +16,7 @@
     ]
   },
   "api" : {
-    "localization" : {
-      "flipNumberAndStreetCountries": ["FIN"]
-    },
     "query": {
-      "languages": ["fi", "en", "sv", "default"],
       "search": {
 	"defaults": {
 	  "ngram:multifield": ["name.*"],
@@ -33,6 +29,11 @@
 	  "phrase:multifield": ["name.*"]
 	}
       }
+    },
+    "languages": ["fi", "sv", "se"],
+    "localization" : {
+      "flipNumberAndStreetCountries": ["FIN"],
+      "translations": "/opt/pelias/api/translations.json"
     }
   }
 }
