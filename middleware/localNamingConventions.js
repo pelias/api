@@ -15,7 +15,7 @@ function setup() {
       flipNumberAndStreetCountries = _.uniq(flipNumberAndStreetCountries.concat(countries));
     }
     if (localization.translations) {
-      translations = localization.translations;
+      translations = require(localization.translations);
     }
   }
   return applyLocalNamingConventions;
