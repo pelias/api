@@ -772,6 +772,21 @@ module.exports.tests.default = function(test, common) {
 
   });
 
+  test('USA.local borough should be shown if available', function(t) {
+    var record = {
+      borough: 'borough value',
+      region: 'region value',
+      region_a: 'region_a value',
+      country_a: 'country_a value'
+    };
+
+    var labelParts = ['initial value'];
+
+    var f = schemas.USA.local;
+
+    t.deepEqual(f(record, labelParts), ['initial value', 'borough value']);
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {

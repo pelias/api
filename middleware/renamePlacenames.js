@@ -1,48 +1,12 @@
 var _ = require('lodash');
 
-/**
- - P is a preferred English name
- - Q is a preferred name (in other languages)
- - V is a well-known (but unofficial) variant for the place
- (e.g. "New York City" for New York)
- - S is either a synonym or a colloquial name for the place
- (e.g. "Big Apple" for New York), or a version of the name which
- is stripped of accent characters.
- - A is an abbreviation or code for the place (e.g. "NYC" for New
- York)
- */
+var PARENT_PROPS = require('../helper/placeTypes');
 
 var ADDRESS_PROPS = {
   'number': 'housenumber',
   'zip': 'postalcode',
   'street': 'street'
 };
-
-var PARENT_PROPS = [
-  'country',
-  'country_id',
-  'country_a',
-  'macroregion',
-  'macroregion_id',
-  'macroregion_a',
-  'region',
-  'region_id',
-  'region_a',
-  'macrocounty',
-  'macrocounty_id',
-  'macrocounty_a',
-  'county',
-  'county_id',
-  'county_a',
-  'localadmin',
-  'localadmin_id',
-  'localadmin_a',
-  'locality',
-  'locality_id',
-  'locality_a',
-  'neighbourhood',
-  'neighbourhood_id'
-];
 
 
 function setup() {
@@ -74,6 +38,8 @@ function renameOneRecord(place) {
   if (place.parent) {
     PARENT_PROPS.forEach(function (prop) {
       place[prop] = place.parent[prop];
+      place[prop + '_a'] = place.parent[prop + '_a'];
+      place[prop + '_gid'] = place.parent[prop + '_id'];
     });
   }
 
