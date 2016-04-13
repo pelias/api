@@ -22,7 +22,7 @@ function setup(peliasConfig) {
 function matchLanguage(req, res, next) {
 
   // do nothing if no result data set
-  if (!res || !res.data) {
+  if (!res || !res.data || !res.data[0]) {
     return next();
   }
 
