@@ -42,31 +42,32 @@ function matchLanguage(req, res, next) {
   // match name versions of 1st search result with the searched name
   var bestLang;
   var bestScore=0;
-  var names = res.data[0].name; // 1st = best so far
+  var fullScore = fuzzy(name, name).score;
+  var names = res.data[0].name; // 1st hit from ES = best so far
 
   for(var lang in names) {
-    var match = fuzzy(name, names[lang]);
-    match.lang = lang;
-    if (match.score > bestScore ) {
-      bestScore = match.score;
+    var score = fuzzy(name, names[lang]).score;
+    if (score > bestScore ) {
+      bestScore = score;
       bestLang = lang;
-    } else if (match.score === bestScore) {
+    } else if (score === bestScore) {
       if (lang === currentLang || lang === 'default' || !bestLang) {
 	// favor defaults
-	bestScore = match.score;
+	bestScore = score;
 	bestLang = lang;
       } else if (languages) {
 	//judge by configured priority
 	var i1 = languages.indexOf(lang);
 	var i2 = languages.indexOf(bestLang);
 	if (i1 !== -1 && (i2 === -1 ||  i1 < i2)) {
-	  bestScore = match.score;
+	  bestScore = score;
 	  bestLang = lang;
 	}
       }
     }
   }
-  if (bestLang) {
+  // change lang if best hit is good enough
+  if (bestLang && bestScore === fullScore) {
     // logger.debug('Best match by lang ' + bestLang );
     req.clean.lang = bestLang;
   }
