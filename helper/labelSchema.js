@@ -3,12 +3,12 @@ var _ = require('lodash'),
 
 module.exports = {
   'USA': {
-    'local': getFirstProperty(['localadmin', 'locality', 'neighbourhood', 'county']),
+    'local': getFirstProperty(['borough', 'localadmin', 'locality', 'neighbourhood', 'county']),
     'regional': getUsState,
     'country': getFirstProperty(['country_a'])
   },
   'GBR': {
-    'local': getFirstProperty(['neighbourhood', 'county', 'localadmin', 'locality', 'region']),
+    'local': getFirstProperty(['neighbourhood', 'county', 'localadmin', 'locality', 'macroregion', 'region']),
     'regional': getFirstProperty(['county','country','region'])
   },
   'SGP': {
@@ -20,7 +20,7 @@ module.exports = {
     'regional': getFirstProperty(['country'])
   },
   'default': {
-    'local': getFirstProperty(['localadmin', 'locality', 'neighbourhood', 'county', 'region']),
+    'local': getFirstProperty(['localadmin', 'locality', 'neighbourhood', 'county', 'macroregion', 'region']),
     'regional': getFirstProperty(['country'])
   }
 };

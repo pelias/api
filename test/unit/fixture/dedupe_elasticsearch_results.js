@@ -4,12 +4,66 @@ module.exports = [
       'lon': -76.207456,
       'lat': 40.039265
     },
+    'address_parts': {},
+    'parent': {
+      'localadmin': ['East Lampeter'],
+      'region_a': ['PA'],
+      'region': ['Pennsylvania'],
+      'locality': ['Smoketown'],
+      'country_a': ['USA'],
+      'county': ['Lancaster County'],
+      'country': ['United States'],
+      'neighbourhood': ['Greenland']
+    },
+    'name': {
+      'default': 'East Lampeter High School'
+    },
+    'category': [
+      'education'
+    ],
+    '_id': '357321757',
+    '_type': 'venue',
+    '_score': 1.2367082,
+    'confidence': 0.879
+  },
+  { // same as above, but change the neighbourhood
+    'center_point': {
+      'lon': -77.207456,
+      'lat': 41.039265
+    },
     'address': {},
     'parent': {
       'localadmin': 'East Lampeter',
       'region_a': 'PA',
       'region': 'Pennsylvania',
       'locality': 'Smoketown',
+      'country_a': 'USA',
+      'county': 'Lancaster County',
+      'country': 'United States',
+      'neighbourhood': 'Blueland' // ###
+    },
+    'name': {
+      'default': 'East Lampeter High School'
+    },
+    'category': [
+      'education'
+    ],
+    '_id': '357321757',
+    '_type': 'venue',
+    '_score': 1.2367082,
+    'confidence': 0.879
+  },
+  { // same as #1, but change the locality
+    'center_point': {
+      'lon': -73.207456,
+      'lat': 42.039265
+    },
+    'address': {},
+    'parent': {
+      'localadmin': 'East Lampeter',
+      'region_a': 'PA',
+      'region': 'Pennsylvania',
+      'locality': 'Firetown', // ###
       'country_a': 'USA',
       'county': 'Lancaster County',
       'country': 'United States',
@@ -31,16 +85,16 @@ module.exports = [
       'lon': -76.207456,
       'lat': 40.039265
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
-      'localadmin': 'East Lampeter',
-      'region_a': 'PA',
-      'region': 'Pennsylvania',
-      'locality': 'Smoketown',
-      'country_a': 'USA',
-      'county': 'Lancaster County',
-      'country': 'United States',
-      'neighbourhood': 'Greenland'
+      'localadmin': ['East Lampeter'],
+      'region_a': ['PA'],
+      'region': ['Pennsylvania'],
+      'locality': ['Smoketown'],
+      'country_a': ['USA'],
+      'county': ['Lancaster County'],
+      'country': ['United States'],
+      'neighbourhood': ['Greenland']
     },
     'name': {
       'default': 'East Lampeter, High-School'
@@ -58,16 +112,16 @@ module.exports = [
       'lon': -76.23246,
       'lat': 39.99288
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
-      'localadmin': 'West Lampeter',
-      'region_a': 'PA',
-      'region': 'Pennsylvania',
-      'locality': 'Lampeter',
-      'country_a': 'USA',
-      'county': 'Lancaster County',
-      'country': 'United States',
-      'neighbourhood': 'Wheatland Mills'
+      'localadmin': ['West Lampeter'],
+      'region_a': ['PA'],
+      'region': ['Pennsylvania'],
+      'locality': ['Lampeter'],
+      'country_a': ['USA'],
+      'county': ['Lancaster County'],
+      'country': ['United States'],
+      'neighbourhood': ['Wheatland Mills']
     },
     'name': {
       'default': 'Lampeter-Strasburg High School'
@@ -85,16 +139,16 @@ module.exports = [
       'lon': -76.20746,
       'lat': 40.03927
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
-      'localadmin': 'East Lampeter',
-      'region_a': 'PA',
-      'region': 'Pennsylvania',
-      'locality': 'Smoketown',
-      'country_a': 'USA',
-      'county': 'Lancaster County',
-      'country': 'United States',
-      'neighbourhood': 'Greenland'
+      'localadmin': ['East Lampeter'],
+      'region_a': ['PA'],
+      'region': ['Pennsylvania'],
+      'locality': ['Smoketown'],
+      'country_a': ['USA'],
+      'county': ['Lancaster County'],
+      'country': ['United States'],
+      'neighbourhood': ['Greenland']
     },
     'name': {
       'default': 'East Lampeter High School'
@@ -112,16 +166,16 @@ module.exports = [
       'lon': -76.232457,
       'lat': 39.992877
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
-      'region': 'Pennsylvania',
-      'locality': 'Lampeter',
-      'country_a': 'USA',
-      'county': 'Lancaster County',
-      'country': 'United States',
-      'neighbourhood': 'Wheatland Mills',
-      'localadmin': 'West Lampeter',
-      'region_a': 'PA'
+      'region': ['Pennsylvania'],
+      'locality': ['Lampeter'],
+      'country_a': ['USA'],
+      'county': ['Lancaster County'],
+      'country': ['United States'],
+      'neighbourhood': ['Wheatland Mills'],
+      'localadmin': ['West Lampeter'],
+      'region_a': ['PA']
     },
     'name': {
       'default': 'Lampeter-Strasburg High School'
@@ -139,16 +193,16 @@ module.exports = [
       'lon': -76.207456,
       'lat': 40.038987
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
-      'region': 'Pennsylvania',
-      'locality': 'Smoketown',
-      'country_a': 'USA',
-      'county': 'Lancaster County',
-      'country': 'United States',
-      'neighbourhood': 'Greenland',
-      'localadmin': 'East Lampeter',
-      'region_a': 'PA'
+      'region': ['Pennsylvania'],
+      'locality': ['Smoketown'],
+      'country_a': ['USA'],
+      'county': ['Lancaster County'],
+      'country': ['United States'],
+      'neighbourhood': ['Greenland'],
+      'localadmin': ['East Lampeter'],
+      'region_a': ['PA']
     },
     'name': {
       'default': 'East Lampeter School'
@@ -166,16 +220,16 @@ module.exports = [
       'lon': -76.20746,
       'lat': 40.03899
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
-      'region': 'Pennsylvania',
-      'locality': 'Smoketown',
-      'country_a': 'USA',
-      'county': 'Lancaster County',
-      'country': 'United States',
-      'neighbourhood': 'Greenland',
-      'localadmin': 'East Lampeter',
-      'region_a': 'PA'
+      'region': ['Pennsylvania'],
+      'locality': ['Smoketown'],
+      'country_a': ['USA'],
+      'county': ['Lancaster County'],
+      'country': ['United States'],
+      'neighbourhood': ['Greenland'],
+      'localadmin': ['East Lampeter'],
+      'region_a': ['PA']
     },
     'name': {
       'default': 'East Lampeter School'
@@ -193,15 +247,15 @@ module.exports = [
       'lon': -94.167445,
       'lat': 38.762788
     },
-    'address': {},
+    'address_parts': {},
     'parent': {
-      'region': 'Missouri',
-      'locality': 'Strasburg',
-      'country_a': 'USA',
-      'county': 'Cass County',
-      'country': 'United States',
-      'localadmin': 'Polk',
-      'region_a': 'MO'
+      'region': ['Missouri'],
+      'locality': ['Strasburg'],
+      'country_a': ['USA'],
+      'county': ['Cass County'],
+      'country': ['United States'],
+      'localadmin': ['Polk'],
+      'region_a': ['MO']
     },
     'name': {
       'default': 'Strasburg School'
@@ -219,18 +273,18 @@ module.exports = [
       'lon': -78.36317,
       'lat': 38.98445
     },
-    'address': {},
+    'address_parts': {},
     'name': {
       'default': 'Strasburg High School'
     },
     'parent': {
-      'region_a': 'VA',
-      'region': 'Virginia',
-      'locality': 'Strasburg',
-      'country_a': 'USA',
-      'county': 'Shenandoah County',
-      'country': 'United States',
-      'neighbourhood': 'Strasburg Junction'
+      'region_a': ['VA'],
+      'region': ['Virginia'],
+      'locality': ['Strasburg'],
+      'country_a': ['USA'],
+      'county': ['Shenandoah County'],
+      'country': ['United States'],
+      'neighbourhood': ['Strasburg Junction']
     },
     'category': [
       'education'
@@ -245,18 +299,18 @@ module.exports = [
       'lon': -100.16516,
       'lat': 46.13427
     },
-    'address': {},
+    'address_parts': {},
     'name': {
       'default': 'Strasburg High School'
     },
     'parent': {
-      'localadmin': 'Strasburg',
-      'region_a': 'ND',
-      'region': 'North Dakota',
-      'locality': 'Strasburg',
-      'country_a': 'USA',
-      'county': 'Emmons County',
-      'country': 'United States'
+      'localadmin': ['Strasburg'],
+      'region_a': ['ND'],
+      'region': ['North Dakota'],
+      'locality': ['Strasburg'],
+      'country_a': ['USA'],
+      'county': ['Emmons County'],
+      'country': ['United States']
     },
     'category': [
       'education'
@@ -271,18 +325,18 @@ module.exports = [
       'lon': -81.532392,
       'lat': 40.597578
     },
-    'address': {},
+    'address_parts': {},
     'name': {
       'default': 'Strasburg High School'
     },
     'parent': {
-      'localadmin': 'Franklin',
-      'region_a': 'OH',
-      'region': 'Ohio',
-      'locality': 'Strasburg',
-      'country_a': 'USA',
-      'county': 'Tuscarawas County',
-      'country': 'United States'
+      'localadmin': ['Franklin'],
+      'region_a': ['OH'],
+      'region': ['Ohio'],
+      'locality': ['Strasburg'],
+      'country_a': ['USA'],
+      'county': ['Tuscarawas County'],
+      'country': ['United States']
     },
     'category': [
       'education'

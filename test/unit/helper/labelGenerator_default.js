@@ -251,6 +251,57 @@ module.exports.tests.waiotapu = function(test, common) {
   });
 };
 
+
+module.exports.tests.non_us_or_ca_region = function(test, common) {
+  test('geonames US', function(t) {
+    var doc = {
+      'name': 'Default Name',
+      'country_a': 'XYZ',
+      'country': 'Full Country Name',
+      'region': 'Full Region Name',
+      'layer': 'region',
+      'source': 'geonames'
+    };
+
+    t.equal(generator(doc), 'Default Name, Full Region Name, Full Country Name');
+    t.end();
+
+  });
+
+  test('whosonfirst US', function(t) {
+    var doc = {
+      'name': 'Default Name',
+      'country_a': 'XYZ',
+      'country': 'Full Country Name',
+      'region': 'Full Region Name',
+      'layer': 'region',
+      'source': 'whosonfirst'
+    };
+
+    t.equal(generator(doc), 'Default Name, Full Region Name, Full Country Name');
+    t.end();
+
+  });
+
+};
+
+// macroregion
+module.exports.tests.macroregion_trumps_region = function(test, common) {
+  test('macroregion should trump region when none of localadmin, locality, neighbourhood, county are available', function(t) {
+    var doc = {
+      'name': 'Name',
+      'country_a': 'Country abbreviation',
+      'country': 'Country Name',
+      'macroregion': 'Macroregion Name',
+      'region': 'Region Name'
+    };
+
+    t.equal(generator(doc), 'Name, Macroregion Name, Country Name');
+    t.end();
+
+  });
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {

@@ -2,6 +2,7 @@ var type_mapping = require('../helper/type_mapping');
 
 var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
+      quattroshapes_deprecation: require('../sanitiser/_deprecate_quattroshapes'),
       singleScalarParameters: require('../sanitiser/_single_scalar_parameters'),
       text: require('../sanitiser/_text'),
       size: require('../sanitiser/_size'),

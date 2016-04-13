@@ -8,9 +8,9 @@ module.exports = [
       'default': '万里长城万里长城'
     },
     'parent': {
-      'country_a': 'CHN',
-      'country': 'China',
-      'region': 'Beijing'
+      'country_a': ['CHN'],
+      'country': ['China'],
+      'region': ['Beijing']
     },
     'confidence': 0.733
   },
@@ -23,9 +23,9 @@ module.exports = [
       'default': '万里长城'
     },
     'parent': {
-      'country_a': 'CHN',
-      'country': 'China',
-      'region': 'Beijing'
+      'country_a': ['CHN'],
+      'country': ['China'],
+      'region': ['Beijing']
     },
     'confidence': 0.733
   },
@@ -38,12 +38,12 @@ module.exports = [
       'default': '万里花'
     },
     'parent': {
-      'country_a': 'JPN',
-      'country': 'Japan',
-      'region': 'Tokyo',
-      'county': '豊島区',
-      'locality': 'Tokyo',
-      'neighbourhood': '２丁目'
+      'country_a': ['JPN'],
+      'country': ['Japan'],
+      'region': ['Tokyo'],
+      'county': ['豊島区'],
+      'locality': ['Tokyo'],
+      'neighbourhood': ['２丁目']
     },
     'confidence': 0.646
   },
@@ -55,14 +55,14 @@ module.exports = [
     'name': {
       'default': '万里加油站'
     },
-    'address': {
+    'address_parts': {
       'street': 'S308',
       'postalcode': '312044'
     },
     'parent': {
-      'country_a': 'CHN',
-      'country': 'China',
-      'region': 'Zhejiang'
+      'country_a': ['CHN'],
+      'country': ['China'],
+      'region': ['Zhejiang']
     },
     'confidence': 0.646
   }

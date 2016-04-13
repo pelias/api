@@ -2,6 +2,7 @@
 var type_mapping = require('../helper/type_mapping');
 var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
+      quattroshapes_deprecation: require('../sanitiser/_deprecate_quattroshapes'),
       singleScalarParameters: require('../sanitiser/_single_scalar_parameters'),
       layers: require('../sanitiser/_targets')('layers', type_mapping.layer_mapping),
       sources: require('../sanitiser/_targets')('sources', type_mapping.source_mapping),

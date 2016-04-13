@@ -47,11 +47,28 @@ function getSchema(country_a) {
 
 }
 
+// helper function that sets a default label for non-US/CA regions
+// this is a very special case
 function getInitialLabel(record) {
-  if ('region' === record.layer && ('geonames' === record.source || 'whosonfirst' === record.source)) {
+  if (isRegion(record.layer) &&
+      isGeonamesOrWhosOnFirst(record.source) &&
+      isUSAOrCAN(record.country_a)) {
     return [];
   }
 
   return [record.name];
+
+}
+
+function isRegion(layer) {
+  return 'region' === layer;
+}
+
+function isUSAOrCAN(country_a) {
+  return 'USA' === country_a || 'CAN' === country_a;
+}
+
+function isGeonamesOrWhosOnFirst(source) {
+  return 'geonames' === source || 'whosonfirst' === source;
 
 }

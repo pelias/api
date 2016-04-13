@@ -96,14 +96,15 @@ function checkForDealBreakers(req, hit) {
     return false;
   }
 
-  if (check.assigned(req.clean.parsed_text.state) && req.clean.parsed_text.state !== hit.parent.region_a) {
+  if (check.assigned(req.clean.parsed_text.state) && req.clean.parsed_text.state !== hit.parent.region_a[0]) {
     logger.debug('[confidence][deal-breaker]: state !== region_a');
     return true;
   }
 
-  if (check.assigned(req.clean.parsed_text.postalcode) && check.assigned(hit.address) &&
-      req.clean.parsed_text.postalcode !== hit.address.zip) {
-    logger.debug('[confidence][deal-breaker]: postalcode !== zip (' + req.clean.parsed_text.postalcode + ' !== ' + hit.address.zip + ')');
+  if (check.assigned(req.clean.parsed_text.postalcode) && check.assigned(hit.address_parts) &&
+      req.clean.parsed_text.postalcode !== hit.address_parts.zip) {
+    logger.debug('[confidence][deal-breaker]: postalcode !== zip (' + req.clean.parsed_text.postalcode +
+      ' !== ' + hit.address_parts.zip + ')');
     return true;
   }
 }
@@ -175,8 +176,8 @@ function checkName(text, parsed_text, hit) {
  */
 function checkQueryType(text, hit) {
   if (check.assigned(text) && check.assigned(text.number) &&
-      (check.undefined(hit.address) ||
-      (check.assigned(hit.address) && check.undefined(hit.address.number)))) {
+      (check.undefined(hit.address_parts) ||
+      (check.assigned(hit.address_parts) && check.undefined(hit.address_parts.number)))) {
     return 0;
   }
   return 1;
@@ -226,12 +227,12 @@ function propMatch(textProp, hitProp, expectEnriched) {
  * @param {string} [text.state]
  * @param {string} [text.country]
  * @param {object} hit
- * @param {object} [hit.address]
- * @param {string|number} [hit.address.number]
- * @param {string} [hit.address.street]
- * @param {string|number} [hit.address.zip]
- * @param {string} [hit.parent.region_a]
- * @param {string} [hit.parent.country_a]
+ * @param {object} [hit.address_parts]
+ * @param {string|number} [hit.address_parts.number]
+ * @param {string} [hit.address_parts.street]
+ * @param {string|number} [hit.address_parts.zip]
+ * @param {Array} [hit.parent.region_a]
+ * @param {Array} [hit.parent.country_a]
  * @returns {number}
  */
 function checkAddress(text, hit) {
@@ -239,11 +240,11 @@ function checkAddress(text, hit) {
   var res = 0;
 
   if (check.assigned(text) && check.assigned(text.number) && check.assigned(text.street)) {
-    res += propMatch(text.number, (hit.address ? hit.address.number : null), false);
-    res += propMatch(text.street, (hit.address ? hit.address.street : null), false);
-    res += propMatch(text.postalcode, (hit.address ? hit.address.zip: null), true);
-    res += propMatch(text.state, hit.parent.region_a, true);
-    res += propMatch(text.country, hit.parent.country_a, true);
+    res += propMatch(text.number, (hit.address_parts ? hit.address_parts.number : null), false);
+    res += propMatch(text.street, (hit.address_parts ? hit.address_parts.street : null), false);
+    res += propMatch(text.postalcode, (hit.address_parts ? hit.address_parts.zip: null), true);
+    res += propMatch(text.state, hit.parent.region_a[0], true);
+    res += propMatch(text.country, hit.parent.country_a[0], true);
 
     res /= checkCount;
   }

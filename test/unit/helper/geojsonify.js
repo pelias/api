@@ -17,6 +17,8 @@ module.exports.tests.earth = function(test, common) {
   var earth = [{
     '_type': 'geoname',
     '_id': '6295630',
+    'source': 'whosonfirst',
+    'layer': 'continent',
     'name': {
       'default': 'Earth'
     },
@@ -205,6 +207,150 @@ module.exports.tests.search = function(test, common) {
   test('geojsonify.search(doc)', function(t) {
     var json = geojsonify.search( input );
     t.deepEqual(json, expected, 'all docs mapped');
+    t.end();
+  });
+
+  test('filtering out empty items', function (t) {
+    var input = [
+      {
+        'bounding_box': {
+          'min_lat': 40.6514712164,
+          'max_lat': 40.6737320588,
+          'min_lon': -73.8967895508,
+          'max_lon': -73.8665771484
+        },
+        'locality': [
+          'New York'
+        ],
+        'source': 'whosonfirst',
+        'layer': 'neighbourhood',
+        'population': 173198,
+        'popularity': 495,
+        'center_point': {
+          'lon': -73.881319,
+          'lat': 40.663303
+        },
+        'name': {
+          'default': 'East New York'
+        },
+        'source_id': '85816607',
+        'category': [],
+        '_id': '85816607',
+        '_type': 'neighbourhood',
+        '_score': 21.434,
+        'confidence': 0.888,
+        'country': [
+          'United States'
+        ],
+        'country_gid': [
+          '85633793'
+        ],
+        'country_a': [
+          'USA'
+        ],
+        'macroregion': [
+          'MacroRegion Name'
+        ],
+        'macroregion_gid': [
+          'MacroRegion Id'
+        ],
+        'macroregion_a': [
+          'MacroRegion Abbreviation'
+        ],
+        'region': [
+          'New York'
+        ],
+        'region_gid': [
+          '85688543'
+        ],
+        'region_a': [
+          'NY'
+        ],
+        'macrocounty': [
+          'MacroCounty Name'
+        ],
+        'macrocounty_gid': [
+          'MacroCounty Id'
+        ],
+        'macrocounty_a': [
+          'MacroCounty Abbreviation'
+        ],
+        'county': [
+          'Kings County'
+        ],
+        'county_gid': [
+          '102082361'
+        ],
+        'county_a': [
+          null
+        ],
+        'localadmin': [
+          'Brooklyn'
+        ],
+        'localadmin_gid': [
+          '404521211'
+        ],
+        'localadmin_a': [
+          null
+        ],
+        'locality_gid': [
+          '85977539'
+        ],
+        'locality_a': [
+          null
+        ],
+        'neighbourhood': [],
+        'neighbourhood_gid': []
+      }
+    ];
+
+    var expected = {
+      'type': 'FeatureCollection',
+      'bbox': [-73.8967895508, 40.6514712164, -73.8665771484, 40.6737320588],
+      'features': [
+        {
+          'type': 'Feature',
+          'properties': {
+            'id': '85816607',
+            'gid': 'whosonfirst:neighbourhood:85816607',
+            'layer': 'neighbourhood',
+            'source': 'whosonfirst',
+            'name': 'East New York',
+            'confidence': 0.888,
+            'country': 'United States',
+            'country_gid': '85633793',
+            'country_a': 'USA',
+            'macroregion': 'MacroRegion Name',
+            'macroregion_gid': 'MacroRegion Id',
+            'macroregion_a': 'MacroRegion Abbreviation',
+            'region': 'New York',
+            'region_gid': '85688543',
+            'region_a': 'NY',
+            'macrocounty': 'MacroCounty Name',
+            'macrocounty_gid': 'MacroCounty Id',
+            'macrocounty_a': 'MacroCounty Abbreviation',
+            'county': 'Kings County',
+            'county_gid': '102082361',
+            'localadmin': 'Brooklyn',
+            'localadmin_gid': '404521211',
+            'locality': 'New York',
+            'locality_gid': '85977539',
+            'label': 'East New York, Brooklyn, NY, USA'
+          },
+          'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [
+              -73.881319,
+              40.663303
+            ]
+          }
+        }
+      ]
+    };
+
+    var json = geojsonify.search( input );
+    t.deepEqual(json, expected, 'all wanted properties exposed');
     t.end();
   });
 };
