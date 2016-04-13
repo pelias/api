@@ -28,8 +28,6 @@ function applyLocalNamingConventions(req, res, next) {
     return next();
   }
 
-  logger.debug('============ request.clean', req.clean);
-
   // loop through data items and flip relevant number/street
   res.data.filter(function(place){
     // relevant for some countries
@@ -45,27 +43,38 @@ function applyLocalNamingConventions(req, res, next) {
   })
   .forEach( flipNumberAndStreet );
 
-  if( req.lang && translations[req.lang] ) {
-    _.forEach(translations[req.lang], function(names, key) {
+  var lang;
+  if (req.clean) {
+    lang = req.clean.lang;
+  }
+
+  if( lang && translations[lang] ) {
+    _.forEach(translations[lang], function(names, key) {
       _.forEach(res.data, function(place) {
-	if( place[key] !== null ) {
-	  var name;
-	  if (place[key] instanceof Array) {
-	    name = place[key][0];
-	    if (name && names[name]) {
-	      place[key][0] = names[name]; // do the translation
-	    }
-	  } else {
-	    name = place[key];
-	    if (name && names[name]) {
-	      place[key] = names[name];
-	    }
-	  }
-	}
+	translateName(place, key, names);
+	translateName(place.parent, key, names);
       });
     });
   }
   next();
+}
+
+
+function translateName(place, key, names) {
+  if( place[key] !== null ) {
+    var name;
+    if (place[key] instanceof Array) {
+      name = place[key][0];
+      if (name && names[name]) {
+	place[key][0] = names[name]; // do the translation
+      }
+    } else {
+      name = place[key];
+      if (name && names[name]) {
+	place[key] = names[name];
+      }
+    }
+  }
 }
 
 // flip the housenumber and street name
