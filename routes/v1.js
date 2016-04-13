@@ -106,6 +106,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     place: createRouter([
       sanitisers.place.middleware,
+      middleware.selectLanguage(peliasConfig),
       controllers.place(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
