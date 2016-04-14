@@ -27,7 +27,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'venue name, locality name, region abbr, United States');
+    t.equal(generator(doc),'venue name, locality name, region abbr, USA');
     t.end();
   });
 
@@ -47,7 +47,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'venue name, localadmin name, region abbr, United States');
+    t.equal(generator(doc),'venue name, localadmin name, region abbr, USA');
     t.end();
   });
 
@@ -68,7 +68,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'house number street name, locality name, region abbr, United States');
+    t.equal(generator(doc),'house number street name, locality name, region abbr, USA');
     t.end();
   });
 
@@ -87,7 +87,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'neighbourhood name, locality name, region abbr, United States');
+    t.equal(generator(doc),'neighbourhood name, locality name, region abbr, USA');
     t.end();
   });
 
@@ -107,7 +107,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'venue name, borough name, locality name, region abbr, United States');
+    t.equal(generator(doc),'venue name, borough name, locality name, region abbr, USA');
     t.end();
   });
 
@@ -125,7 +125,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'locality name, region abbr, United States');
+    t.equal(generator(doc),'locality name, region abbr, USA');
     t.end();
   });
 
@@ -142,7 +142,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'localadmin name, region abbr, United States');
+    t.equal(generator(doc),'localadmin name, region abbr, USA');
     t.end();
   });
 
@@ -158,7 +158,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'county name, region abbr, United States');
+    t.equal(generator(doc),'county name, region abbr, USA');
     t.end();
   });
 
@@ -173,7 +173,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'macrocounty name, region abbr, United States');
+    t.equal(generator(doc),'macrocounty name, region abbr, USA');
     t.end();
   });
 
@@ -187,7 +187,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'region name, United States');
+    t.equal(generator(doc),'region name, USA');
     t.end();
   });
 
@@ -199,7 +199,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'macroregion name, United States');
+    t.equal(generator(doc),'macroregion name, USA');
     t.end();
   });
 
@@ -226,7 +226,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'locality name, region name, United States', 'region should be used');
+    t.equal(generator(doc),'locality name, region name, USA', 'region should be used');
     t.end();
   });
 

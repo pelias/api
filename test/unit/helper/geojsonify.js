@@ -193,7 +193,7 @@ module.exports.tests.search = function(test, common) {
           'gid': 'openstreetmap:venue:node:34633854',
           'layer': 'venue',
           'source': 'openstreetmap',
-          'label': 'Empire State Building, Manhattan, New York, NY, United States',
+          'label': 'Empire State Building, Manhattan, New York, NY, USA',
           'name': 'Empire State Building',
           'country_a': 'USA',
           'country': 'United States',
@@ -340,7 +340,7 @@ module.exports.tests.search = function(test, common) {
             'localadmin_gid': '404521211',
             'locality': 'New York',
             'locality_gid': '85977539',
-            'label': 'East New York, Brooklyn, New York, NY, United States'
+            'label': 'East New York, Brooklyn, New York, NY, USA'
           },
           'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
           'geometry': {
