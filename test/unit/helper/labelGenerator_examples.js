@@ -39,7 +39,7 @@ module.exports.tests.canada = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'1 Main St, Truth or Consequences, NM, United States');
+    t.equal(generator(doc),'1 Main St, Truth or Consequences, NM, USA');
     t.end();
   });
 };

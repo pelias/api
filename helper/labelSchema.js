@@ -14,7 +14,7 @@ module.exports = {
     'borough': getFirstProperty(['borough']),
     'local': getFirstProperty(['locality', 'localadmin']),
     'regional': getUsOrCaState,
-    'country': getFirstProperty(['country'])
+    'country': getUSACountryValue
   },
   'CAN': {
     'local': getFirstProperty(['locality']), // no localadmins in CAN
@@ -59,4 +59,15 @@ function getUsOrCaState(record) {
 
   }
 
+}
+
+// this function returns the full name of a country if the result is in the
+// country layer (for "United States" record).  It returns the abbreviation
+// otherwise (eg - Lancaster, PA, USA).
+function getUSACountryValue(record) {
+  if ('country' === record.layer && record.country) {
+    return record.country;
+  }
+
+  return record.country_a;
 }
