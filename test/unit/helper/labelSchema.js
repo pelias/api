@@ -1,4 +1,3 @@
-
 var schemas = require('../../../helper/labelSchema');
 var alpha3  = require('../mock/alpha3.json');
 
