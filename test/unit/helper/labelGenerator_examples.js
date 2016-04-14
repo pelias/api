@@ -42,7 +42,9 @@ module.exports.tests.canada = function(test, common) {
     t.equal(generator(doc),'1 Main St, Truth or Consequences, NM, United States');
     t.end();
   });
+};
 
+module.exports.tests.france = function(test, common) {
   test('eiffel tower', function(t) {
     var doc = {
       'name': 'Tour Eiffel',
