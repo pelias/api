@@ -45,6 +45,7 @@ var tests = [
   require('./sanitiser/_layers'),
   require('./sanitiser/_single_scalar_parameters'),
   require('./sanitiser/_size'),
+  require('./sanitiser/_lang'),
   require('./sanitiser/_sources'),
   require('./sanitiser/_sources_and_layers'),
   require('./sanitiser/_text'),

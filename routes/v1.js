@@ -12,7 +12,8 @@ var sanitisers = {
 
 /** ----------------------- middleware ------------------------ **/
 var middleware = {
-  calcSize: require('../middleware/sizeCalculator')
+  calcSize: require('../middleware/sizeCalculator'),
+  selectLanguage: require('../middleware/languageSelector')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -27,6 +28,7 @@ var controllers = {
 /** ----------------------- controllers ----------------------- **/
 
 var postProc = {
+  matchLanguage: require('../middleware/matchLanguage'),
   distances: require('../middleware/distance'),
   confidenceScores: require('../middleware/confidenceScore'),
   confidenceScoresReverse: require('../middleware/confidenceScoreReverse'),
@@ -61,7 +63,9 @@ function addRoutes(app, peliasConfig) {
     search: createRouter([
       sanitisers.search.middleware,
       middleware.calcSize(),
+      middleware.selectLanguage(peliasConfig),
       controllers.search(),
+      postProc.matchLanguage(peliasConfig),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.dedupe(),
@@ -74,7 +78,9 @@ function addRoutes(app, peliasConfig) {
     ]),
     autocomplete: createRouter([
       sanitisers.autocomplete.middleware,
+      middleware.selectLanguage(peliasConfig),
       controllers.search(null, require('../query/autocomplete')),
+      postProc.matchLanguage(peliasConfig),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.dedupe(),
@@ -88,6 +94,7 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitisers.reverse.middleware,
       middleware.calcSize(),
+      middleware.selectLanguage(peliasConfig),
       controllers.search(undefined, reverseQuery),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
@@ -103,6 +110,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     place: createRouter([
       sanitisers.place.middleware,
+      middleware.selectLanguage(peliasConfig),
       controllers.place(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),

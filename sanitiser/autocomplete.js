@@ -3,6 +3,7 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       singleScalarParameters: require('../sanitiser/_single_scalar_parameters'),
       text: require('../sanitiser/_text'),
       size: require('../sanitiser/_size'),
+      lang: require('../sanitiser/_lang'),
       private: require('../sanitiser/_flag_bool')('private', false),
       geo_autocomplete: require('../sanitiser/_geo_autocomplete'),
     };

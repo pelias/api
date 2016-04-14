@@ -6,7 +6,7 @@ module.exports.tests = {};
 module.exports.tests.interface = function(test, common) {
   test('valid interface .search()', function(t) {
     t.equal(typeof geojsonify.search, 'function', 'search is a function');
-    t.equal(geojsonify.search.length, 1, 'accepts x arguments');
+    t.equal(geojsonify.search.length, 2, 'accepts x arguments');
     t.end();
   });
 };
@@ -350,7 +350,7 @@ module.exports.tests.search = function(test, common) {
     };
 
     var json = geojsonify.search( input );
-    t.deepEqual(json, expected, 'all wanted properties exposed');
+    t.deepEqual(json, expected, 'all wanted properties exposed:' + ' # ' + JSON.stringify(json) + ' # ' + JSON.stringify(expected) );
     t.end();
   });
 };

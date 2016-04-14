@@ -14,12 +14,18 @@
 var stats = require('stats-lite');
 var logger = require('pelias-logger').get('api');
 var check = require('check-types');
+var _ = require('lodash');
 
 var RELATIVE_SCORES = true;
+
+var languages = ['default'];
 
 function setup(peliasConfig) {
   if (check.assigned(peliasConfig)) {
     RELATIVE_SCORES = peliasConfig.hasOwnProperty('relativeScores') ? peliasConfig.relativeScores : true;
+    if (peliasConfig.languages) {
+      languages = _.uniq(languages.concat(peliasConfig.languages));
+    }
   }
   return computeScores;
 }
@@ -134,6 +140,9 @@ function checkDistanceFromMean(score, mean, stdev) {
 function checkLanguageProperty(text, propertyObject) {
   var ltext = text.toLowerCase();
   for (var lang in propertyObject) {
+    if (languages.indexOf(lang) === -1) {
+      continue;
+    }
     if (propertyObject[lang].toLowerCase() === ltext) {
       return true;
     }

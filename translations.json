@@ -1,0 +1,70 @@
+{
+  "sv": {
+    "locality": {
+      "Espoo":"Esbo",
+      "Hanko":"Hangö",
+      "Helsinki":"Helsingfors",
+      "Inkoo":"Ingå",
+      "Kaskinen":"Kaskö",
+      "Kauniainen":"Grankulla",
+      "Kemiö":"Kimito",
+      "Kirkkonummi":"Kyrkslätt",
+      "Kokkola":"Karleby",
+      "Korsnäs":"Korsnäs",
+      "Kristiinankaupunki":"Kristinestad",
+      "Kruunupyy":"Kronoby",
+      "Lapinjärvi":"Lappträsk",
+      "Lohja":"Lojo",
+      "Loviisa":"Lovisa",
+      "Luoto":"Larsmo",
+      "Maalahti":"Malax",
+      "Maarianhamina":"Mariehamn",
+      "Mustasaari":"Korsholm",
+      "Myrskylä":"Mörskom",
+      "Närpiö":"Närpes",
+      "Parainen":"Pargas",
+      "Pietarsaari":"Jakobstad",
+      "Porvoo":"Borgå",
+      "Pyhtää":"Pyttis",
+      "Raasepori":"Raseborg",
+      "Sipoo":"Sibbo",
+      "Siuntio":"Sjundeå",
+      "Turku":"Åbo",
+      "Uusikaarlepyy":"Nykarleby",
+      "Vaasa":"Vasa",
+      "Vantaa":"Vanda",
+      "Vöyri":"Vörå"
+    },
+    "region": {
+      "Uusimaa":"Nyland",
+      "Varsinais-Suomi":"Egentliga Finland",
+      "Satakunta":"Satakunta",
+      "Kanta-Häme":"Egentliga Tavastland",
+      "Pirkanmaa":"Birkaland",
+      "Päijät-Häme":"Päijänne-Tavastland",
+      "Kymenlaakso":"Kymmenedalen",
+      "Etelä-Karjala":"Södra Karelen",
+      "Etelä-Savo":"Södra Savolax",
+      "Pohjois-Savo":"Norra Savolax",
+      "Pohjois-Karjala":"Norra Karelen",
+      "Keski-Suomi":"Mellersta Finland",
+      "Etelä-Pohjanmaa":"Södra Österbotten",
+      "Pohjanmaa":"Österbotten",
+      "Keski-Pohjanmaa":"Mellersta Österbotten",
+      "Pohjois-Pohjanmaa":"Norra Österbotten",
+      "Kainuu":"Kajanaland",
+      "Lappi":"Lappland",
+      "Ahvenanmaa":"Åland"
+    }
+  },
+  "fi": {
+    "country": {
+      "Finland": "Suomi"
+    }
+  },
+  "se": {
+    "country": {
+      "Finland": "Suopma"
+    }
+  }
+}

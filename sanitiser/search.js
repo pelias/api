@@ -6,6 +6,7 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       singleScalarParameters: require('../sanitiser/_single_scalar_parameters'),
       text: require('../sanitiser/_text'),
       size: require('../sanitiser/_size'),
+      lang: require('../sanitiser/_lang'),
       layers: require('../sanitiser/_targets')('layers', type_mapping.layer_mapping),
       sources: require('../sanitiser/_targets')('sources', type_mapping.source_mapping),
       // depends on the layers and sources sanitisers, must be run after them
