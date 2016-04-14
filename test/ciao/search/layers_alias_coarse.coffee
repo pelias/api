@@ -32,12 +32,12 @@ should.not.exist json.geocoding.warnings
 json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10
 json.geocoding.query.layers.should.eql [ "continent",
-  "macrocountry",
   "country",
   "dependency",
   "region",
   "locality",
   "localadmin",
+  "macrocounty",
   "county",
   "macrohood",
   "neighbourhood",
