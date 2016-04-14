@@ -31,12 +31,13 @@ should.not.exist json.geocoding.warnings
 #? inputs
 json.geocoding.query['size'].should.eql 10
 json.geocoding.query.layers.should.eql [ "continent",
-  "macrocounty",
   "country",
   "dependency",
+  "macroregion",
   "region",
   "locality",
   "localadmin",
+  "macrocounty",
   "county",
   "macrohood",
   "neighbourhood",

@@ -34,6 +34,7 @@ json.geocoding.query['size'].should.eql 10
 json.geocoding.query.layers.should.eql [ "continent",
   "country",
   "dependency",
+  "macroregion",
   "region",
   "locality",
   "localadmin",
