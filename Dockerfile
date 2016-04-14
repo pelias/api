@@ -23,8 +23,8 @@ ADD . ${WORK}
 
 # Build and set permissions for arbitrary non-root user
 RUN npm install \
-  && npm test \
   && npm link pelias-query \
+  && npm test \
   && chmod -R a+rwX .
 
 ADD pelias.json.docker pelias.json
