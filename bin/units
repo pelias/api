@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -euo pipefail
+
+node test/unit/run.js | ./node_modules/.bin/tap-dot
