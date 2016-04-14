@@ -1,9 +1,9 @@
 
-#> layer alias
-path: '/v1/reverse?point.lat=1&point.lon=2&layers=coarse'
+#> sources and layers specified (invalid combo)
+path: '/v1/autocomplete?text=a&sources=whosonfirst&layers=address'
 
 #? 200 ok
-response.statusCode.should.be.equal 200
+response.statusCode.should.be.equal 400
 response.should.have.header 'charset', 'utf8'
 response.should.have.header 'content-type', 'application/json; charset=utf-8'
 
@@ -23,24 +23,15 @@ json.type.should.be.equal 'FeatureCollection'
 json.features.should.be.instanceof Array
 
 #? expected errors
-should.not.exist json.geocoding.errors
+should.exist json.geocoding.errors
+json.geocoding.errors.should.eql [ 'You have specified both the `sources` and `layers` parameters in a combination that will return no results: the whosonfirst source has nothing in the address layer' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings
 
 #? inputs
+json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10
-json.geocoding.query.layers.should.eql [ "continent",
-  "country",
-  "dependency",
-  "macroregion",
-  "region",
-  "locality",
-  "localadmin",
-  "macrocounty",
-  "county",
-  "macrohood",
-  "neighbourhood",
-  "microhood",
-  "disputed"
-]
+json.geocoding.query.layers.should.eql ["address"]
+json.geocoding.query.sources.should.eql ["whosonfirst"]
+should.not.exist json.geocoding.query['type']

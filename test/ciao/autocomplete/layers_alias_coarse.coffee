@@ -1,6 +1,6 @@
 
 #> layer alias
-path: '/v1/reverse?point.lat=1&point.lon=2&layers=coarse'
+path: '/v1/autocomplete?text=a&layers=coarse'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -29,6 +29,7 @@ should.not.exist json.geocoding.errors
 should.not.exist json.geocoding.warnings
 
 #? inputs
+json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10
 json.geocoding.query.layers.should.eql [ "continent",
   "country",
