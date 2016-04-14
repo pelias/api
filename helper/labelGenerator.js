@@ -13,8 +13,8 @@ module.exports = function( record ){
     labelParts.push(valueFunction(record));
   }
 
-  // retain only things that are defined
-  labelParts = labelParts.filter(function(v) { return !_.isUndefined(v); });
+  // retain only things that are truthy
+  labelParts = _.compact(labelParts);
 
   // first, dedupe the name and 1st label array elements
   //  this is used to ensure that the `name` and first admin hierarchy elements aren't repeated
