@@ -29,6 +29,15 @@ module.exports.tests.split_on_comma = function(test, common) {
       t.equal(address.admin_parts, query.admin_parts, 'admin_parts set correctly to ' + address.admin_parts);
       t.end();
     });
+
+    test('naive parsing ' + query + 'without spaces', function(t) {
+      var address = parser.get_parsed_address(query.name + ',' + query.admin_parts);
+
+      t.equal(typeof address, 'object', 'valid object');
+      t.equal(address.name, query.name, 'name set correctly to ' + address.name);
+      t.equal(address.admin_parts, query.admin_parts, 'admin_parts set correctly to ' + address.admin_parts);
+      t.end();
+    });
   });
 };
 
