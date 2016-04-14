@@ -3,7 +3,7 @@ var _ = require('lodash'),
 
 module.exports = {
   'USA': {
-    'local': getFirstProperty(['localadmin', 'locality', 'neighbourhood', 'county']),
+    'local': getFirstProperty(['borough', 'localadmin', 'locality', 'neighbourhood', 'county']),
     'regional': getUsState,
     'country': getFirstProperty(['country_a'])
   },

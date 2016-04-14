@@ -4,6 +4,7 @@ var GeoJSON = require('geojson'),
     labelGenerator = require('./labelGenerator'),
     logger = require('pelias-logger').get('api'),
     type_mapping = require('./type_mapping'),
+    Document = require('pelias-model').Document,
     _ = require('lodash');
 
 // Properties to be copied
@@ -14,28 +15,31 @@ var DETAILS_PROPS = [
   'confidence',
   'distance',
   'country',
-  'country_id',
+  'country_gid',
   'country_a',
   'macroregion',
-  'macroregion_id',
+  'macroregion_gid',
   'macroregion_a',
   'region',
-  'region_id',
+  'region_gid',
   'region_a',
   'macrocounty',
-  'macrocounty_id',
+  'macrocounty_gid',
   'macrocounty_a',
   'county',
-  'county_id',
+  'county_gid',
   'county_a',
   'localadmin',
-  'localadmin_id',
+  'localadmin_gid',
   'localadmin_a',
   'locality',
-  'locality_id',
+  'locality_gid',
   'locality_a',
+  'borough',
+  'borough_gid',
+  'borough_a',
   'neighbourhood',
-  'neighbourhood_id',
+  'neighbourhood_gid',
   'bounding_box'
 ];
 
@@ -84,6 +88,10 @@ function geojsonifyPlaces( docs, lang ){
   var geojson             = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
   var geojsonExtentPoints = GeoJSON.parse( extentPoints, { Point: ['lat', 'lng'] });
 
+  // to insert the bbox property at the top level of each feature, it must be done separately after
+  // initial geojson construction is finished
+  addBBoxPerFeature(geojson);
+
   // bounding box calculations
   computeBBox(geojson, geojsonExtentPoints);
 
@@ -121,6 +129,30 @@ function addLabel(src, dst) {
   dst.label = labelGenerator(dst);
 }
 
+/**
+ * Add bounding box
+ *
+ * @param {object} geojson
+ */
+function addBBoxPerFeature(geojson) {
+  geojson.features.forEach(function (feature) {
+
+    if (!feature.properties.hasOwnProperty('bounding_box')) {
+      return;
+    }
+
+    if (feature.properties.bounding_box) {
+      feature.bbox = [
+        feature.properties.bounding_box.min_lon,
+        feature.properties.bounding_box.min_lat,
+        feature.properties.bounding_box.max_lon,
+        feature.properties.bounding_box.max_lat
+      ];
+    }
+
+    delete feature.properties.bounding_box;
+  });
+}
 
 /**
  * Collect all points from the geodata.
@@ -212,7 +244,8 @@ function copyProperties( source, props, dst ) {
  * @param {object} src
  */
 function makeGid(src) {
-  return lookupSource(src) + ':' + lookupLayer(src) + ':' + src._id;
+  var doc = new Document(lookupSource(src), lookupLayer(src), src._id);
+  return doc.getGid();
 }
 
 /**
@@ -226,6 +259,9 @@ function addMetaData(src, dst) {
   dst.gid = makeGid(src);
   dst.layer = lookupLayer(src);
   dst.source = lookupSource(src);
+  if (src.hasOwnProperty('bounding_box')) {
+    dst.bounding_box = src.bounding_box;
+  }
 }
 
 /**
