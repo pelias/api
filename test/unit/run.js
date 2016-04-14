@@ -28,6 +28,7 @@ var tests = [
   require('./middleware/localNamingConventions'),
   require('./middleware/dedupe'),
   require('./middleware/parseBBox'),
+  require('./middleware/normalizeParentIds'),
   require('./query/autocomplete'),
   require('./query/autocomplete_defaults'),
   require('./query/search_defaults'),
