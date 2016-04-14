@@ -30,7 +30,7 @@
 	}
       }
     },
-    "languages": ["fi", "sv", "se"],
+    "languages": ["fi", "default", "sv", "se"],
     "localization" : {
       "flipNumberAndStreetCountries": ["FIN"],
       "translations": "/opt/pelias/api/translations.json"
