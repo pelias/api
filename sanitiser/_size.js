@@ -5,32 +5,40 @@ var MIN_SIZE = 1,
     DEFAULT_SIZE = 10;
 
 // validate inputs, convert types and apply defaults
-function sanitize( raw, clean ){
+function setup( size_min, size_max, size_def ){
 
-  // error & warning messages
-  var messages = { errors: [], warnings: [] };
+  // allow caller to inject custom min/max/default values
+  if( !check.number( size_min ) ){ size_min = MIN_SIZE; }
+  if( !check.number( size_max ) ){ size_max = MAX_SIZE; }
+  if( !check.number( size_def ) ){ size_def = DEFAULT_SIZE; }
 
-  // coercions
-  clean.size = parseInt( raw.size, 10 );
+  return function sanitize( raw, clean ){
 
-  // invalid numeric input
-  if( isNaN( clean.size ) ){
-    clean.size = DEFAULT_SIZE;
-  }
-  // ensure size falls within defined range
-  else if( clean.size > MAX_SIZE ){
-    // set the max size
-    messages.warnings.push('out-of-range integer \'size\', using MAX_SIZE');
-    clean.size = MAX_SIZE;
-  }
-  else if( clean.size < MIN_SIZE ){
-    // set the min size
-    messages.warnings.push('out-of-range integer \'size\', using MIN_SIZE');
-    clean.size = MIN_SIZE;
-  }
+    // error & warning messages
+    var messages = { errors: [], warnings: [] };
 
-  return messages;
+    // coercions
+    clean.size = parseInt( raw.size, 10 );
+
+    // invalid numeric input
+    if( isNaN( clean.size ) ){
+      clean.size = size_def;
+    }
+    // ensure size falls within defined range
+    else if( clean.size > size_max ){
+      // set the max size
+      messages.warnings.push('out-of-range integer \'size\', using MAX_SIZE');
+      clean.size = size_max;
+    }
+    else if( clean.size < size_min ){
+      // set the min size
+      messages.warnings.push('out-of-range integer \'size\', using MIN_SIZE');
+      clean.size = size_min;
+    }
+
+    return messages;
+  };
 }
 
 // export function
-module.exports = sanitize;
+module.exports = setup;
