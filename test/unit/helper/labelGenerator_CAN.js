@@ -14,8 +14,8 @@ module.exports.tests.canada = function(test, common) {
     var doc = {
       'name': 'venue name',
       'layer': 'venue',
-      'housenumber': '1',
-      'street': 'Main St',
+      'housenumber': 'house number',
+      'street': 'street name',
       'neighbourhood': 'neighbourhood name',
       'locality': 'locality name',
       'localadmin': 'localadmin name',
@@ -33,10 +33,10 @@ module.exports.tests.canada = function(test, common) {
 
   test('street', function(t) {
     var doc = {
-      'name': '1 Main St',
+      'name': 'house number street name',
       'layer': 'address',
-      'housenumber': '1',
-      'street': 'Main St',
+      'housenumber': 'house number',
+      'street': 'street name',
       'neighbourhood': 'neighbourhood name',
       'locality': 'locality name',
       'localadmin': 'localadmin name',
@@ -48,7 +48,7 @@ module.exports.tests.canada = function(test, common) {
       'country_a': 'CAN',
       'country': 'Canada'
     };
-    t.equal(generator(doc),'1 Main St, locality name, region abbr, Canada');
+    t.equal(generator(doc),'house number street name, locality name, region abbr, Canada');
     t.end();
   });
 

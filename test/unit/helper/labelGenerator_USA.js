@@ -14,8 +14,8 @@ module.exports.tests.united_states = function(test, common) {
     var doc = {
       'name': 'venue name',
       'layer': 'venue',
-      'housenumber': '1',
-      'street': 'Main St',
+      'housenumber': 'house number',
+      'street': 'street name',
       'neighbourhood': 'neighbourhood name',
       'locality': 'locality name',
       'localadmin': 'localadmin name',
@@ -35,8 +35,8 @@ module.exports.tests.united_states = function(test, common) {
     var doc = {
       'name': 'venue name',
       'layer': 'venue',
-      'housenumber': '1',
-      'street': 'Main St',
+      'housenumber': 'house number',
+      'street': 'street name',
       'neighbourhood': 'neighbourhood name',
       'localadmin': 'localadmin name',
       'county': 'county name',
@@ -53,10 +53,10 @@ module.exports.tests.united_states = function(test, common) {
 
   test('street', function(t) {
     var doc = {
-      'name': '1 Main St',
+      'name': 'house number street name',
       'layer': 'address',
-      'housenumber': '1',
-      'street': 'Main St',
+      'housenumber': 'house number',
+      'street': 'street name',
       'neighbourhood': 'neighbourhood name',
       'locality': 'locality name',
       'localadmin': 'localadmin name',
@@ -68,7 +68,7 @@ module.exports.tests.united_states = function(test, common) {
       'country_a': 'USA',
       'country': 'United States'
     };
-    t.equal(generator(doc),'1 Main St, locality name, region abbr, United States');
+    t.equal(generator(doc),'house number street name, locality name, region abbr, United States');
     t.end();
   });
 

@@ -15,8 +15,8 @@ module.exports.tests.default_country = function(test, common) {
     var doc = {
       'name': 'venue name',
       'layer': 'venue',
-      'housenumber': '1',
-      'street': 'Main St',
+      'housenumber': 'house number',
+      'street': 'street name',
       'neighbourhood': 'neighbourhood name',
       'locality': 'locality name',
       'localadmin': 'localadmin name',
@@ -35,8 +35,8 @@ module.exports.tests.default_country = function(test, common) {
     var doc = {
       'name': 'venue name',
       'layer': 'venue',
-      'housenumber': '1',
-      'street': 'Main St',
+      'housenumber': 'house number',
+      'street': 'street name',
       'neighbourhood': 'neighbourhood name',
       'localadmin': 'localadmin name',
       'county': 'county name',
@@ -52,10 +52,10 @@ module.exports.tests.default_country = function(test, common) {
 
   test('street', function(t) {
     var doc = {
-      'name': 'address',
+      'name': 'house number street name',
       'layer': 'address',
-      'housenumber': '1',
-      'street': 'Main St',
+      'housenumber': 'house number',
+      'street': 'street name',
       'neighbourhood': 'neighbourhood name',
       'locality': 'locality name',
       'localadmin': 'localadmin name',
@@ -66,7 +66,7 @@ module.exports.tests.default_country = function(test, common) {
       'country_a': 'country code',
       'country': 'country name'
     };
-    t.equal(generator(doc),'address, locality name, country name');
+    t.equal(generator(doc),'house number street name, locality name, country name');
     t.end();
   });
 
