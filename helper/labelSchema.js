@@ -2,22 +2,22 @@ var _ = require('lodash');
 
 module.exports = {
   'default': {
-    'local': getFirstProperty(['locality']),
+    'local': getFirstProperty(['locality', 'localadmin']),
     'country': getFirstProperty(['country'])
   },
   'GBR': {
-    'local': getFirstProperty(['locality']),
+    'local': getFirstProperty(['locality', 'localadmin']),
     'regional': getFirstProperty(['macroregion']),
     'country': getFirstProperty(['country'])
   },
   'USA': {
     'borough': getFirstProperty(['borough']),
-    'local': getFirstProperty(['locality']),
+    'local': getFirstProperty(['locality', 'localadmin']),
     'regional': getUsOrCaState,
     'country': getFirstProperty(['country'])
   },
   'CAN': {
-    'local': getFirstProperty(['locality']),
+    'local': getFirstProperty(['locality']), // no localadmins in CAN
     'regional': getUsOrCaState,
     'country': getFirstProperty(['country'])
   }

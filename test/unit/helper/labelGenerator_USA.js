@@ -31,6 +31,26 @@ module.exports.tests.united_states = function(test, common) {
     t.end();
   });
 
+  test('localadmin value should be used when there is no locality', function(t) {
+    var doc = {
+      'name': 'venue name',
+      'layer': 'venue',
+      'housenumber': '1',
+      'street': 'Main St',
+      'neighbourhood': 'neighbourhood name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'venue name, localadmin name, region abbr, United States');
+    t.end();
+  });
+
   test('street', function(t) {
     var doc = {
       'name': '1 Main St',

@@ -31,6 +31,25 @@ module.exports.tests.default_country = function(test, common) {
     t.end();
   });
 
+  test('localadmin value should be used when locality is not available', function(t) {
+    var doc = {
+      'name': 'venue name',
+      'layer': 'venue',
+      'housenumber': '1',
+      'street': 'Main St',
+      'neighbourhood': 'neighbourhood name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'country code',
+      'country': 'country name'
+    };
+    t.equal(generator(doc),'venue name, localadmin name, country name');
+    t.end();
+  });
+
   test('street', function(t) {
     var doc = {
       'name': 'address',

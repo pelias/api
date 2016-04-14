@@ -31,6 +31,25 @@ module.exports.tests.united_kingdom = function(test, common) {
     t.end();
   });
 
+  test('localadmin value should be used when locality is not available', function(t) {
+    var doc = {
+      'name': 'venue name',
+      'layer': 'venue',
+      'housenumber': '1',
+      'street': 'Main St',
+      'neighbourhood': 'neighbourhood name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'GBR',
+      'country': 'United Kingdom'
+    };
+    t.equal(generator(doc),'venue name, localadmin name, macroregion name, United Kingdom');
+    t.end();
+  });
+
   test('street', function(t) {
     var doc = {
       'name': 'street address',
