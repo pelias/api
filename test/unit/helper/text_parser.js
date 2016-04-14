@@ -119,8 +119,6 @@ module.exports.tests.parse_address = function(test, common) {
     var query_string = '339 W Main St,Lancaster,PA';
     var address = parser.get_parsed_address(query_string);
 
-    console.log(address);
-
     t.equal(typeof address, 'object', 'valid object for the address');
     t.equal(address.number, '339', 'parsed house number');
     t.equal(address.street, 'W Main St', 'parsed street');

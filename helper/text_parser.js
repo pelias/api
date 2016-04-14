@@ -24,20 +24,15 @@ module.exports.get_parsed_address = function get_parsed_address(query) {
     // naive approach - for admin matching during query time
     // split 'flatiron, new york, ny' into 'flatiron' and 'new york, ny'
 
-    //var delimIndex = query.indexOf(DELIM);
-    //var address = {};
-    //if ( delimIndex !== -1 ) {
-    //  address.name = query.substring(0, delimIndex);
-    //  address.admin_parts = query.substring(delimIndex + 1).trim();
-    //}
-
-
     var address = {};
 
     if (queryParts.length > 1) {
       address.name = queryParts[0].trim();
 
-      address.adminParts = queryParts.slice(1)
+      // 1. slice away all parts after the first one
+      // 2. trim spaces from each part just in case
+      // 3. join the parts back together with appropriate delimiter and spacing
+      address.admin_parts = queryParts.slice(1)
                                 .map(function (part) { return part.trim(); })
                                 .join(DELIM + ' ');
     }
