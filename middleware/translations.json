@@ -1,0 +1,16 @@
+{
+  "comment": "Some example translations from German to English",
+  "en": {
+    "country": {
+      "Deutschland": "Germany"
+    },
+    "region": {
+      "Bayern":"Bavaria",
+      "Nordrhein-Westfalen": "North Rhine-Westphalia"
+    },
+    "locality": {
+      "München": "Munich",
+      "Köln": "Cologne"
+    }
+  }
+}

@@ -1,3 +1,4 @@
+
 {
   "name": "pelias-api",
   "author": "mapzen",
@@ -14,8 +15,7 @@
     "coverage": "node_modules/.bin/istanbul cover test/unit/run.js",
     "audit": "npm shrinkwrap; node node_modules/nsp/bin/nspCLI.js audit-shrinkwrap; rm npm-shrinkwrap.json;",
     "docs": "./bin/generate-docs",
-    "lint": "jshint .",
-    "validate": "npm ls"
+    "lint": "jshint ."
   },
   "repository": {
     "type": "git",
@@ -57,7 +57,8 @@
     "pelias-query": "6.2.0",
     "pelias-suggester-pipeline": "2.0.4",
     "stats-lite": "1.0.3",
-    "through2": "2.0.1"
+    "through2": "2.0.1",
+    "fuzzy.js": "^0.1.0"
   },
   "devDependencies": {
     "ciao": "^0.6.0",
