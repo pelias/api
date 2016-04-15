@@ -40,7 +40,7 @@ module.exports = {
                     'decay': 0.5
                   }
                 },
-                'weight': 10
+                'weight': 40
               }],
               'score_mode': 'avg',
               'boost_mode': 'multiply',
@@ -64,11 +64,8 @@ module.exports = {
               'query': {
                 'match': {
                   'name.default': {
-                    'analyzer': 'peliasQueryPartialToken',
-                    'boost': 100,
+                    'analyzer': 'peliasQueryFullToken',
                     'query': 'test',
-                    'type': 'phrase',
-                    'operator': 'and'
                   }
                 }
               },
@@ -89,11 +86,8 @@ module.exports = {
               'query': {
                 'match': {
                   'name.default': {
-                    'analyzer': 'peliasQueryPartialToken',
-                    'boost': 100,
+                    'analyzer': 'peliasQueryFullToken',
                     'query': 'test',
-                    'type': 'phrase',
-                    'operator': 'and'
                   }
                 }
               },

@@ -86,11 +86,8 @@ module.exports = {
                 'query': {
                   'match': {
                     'name.default': {
-                      'analyzer': 'peliasQueryPartialToken',
-                      'boost': 100,
+                      'analyzer': 'peliasQueryFullToken',
                       'query': 'one two',
-                      'type': 'phrase',
-                      'operator': 'and'
                     }
                   }
                 },
@@ -114,11 +111,8 @@ module.exports = {
                 'query': {
                   'match': {
                     'name.default': {
-                      'analyzer': 'peliasQueryPartialToken',
-                      'boost': 100,
+                      'analyzer': 'peliasQueryFullToken',
                       'query': 'one two',
-                      'type': 'phrase',
-                      'operator': 'and'
                     }
                   }
                 },
