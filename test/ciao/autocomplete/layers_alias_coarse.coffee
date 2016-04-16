@@ -41,6 +41,7 @@ json.geocoding.query.layers.should.eql [ "continent",
   "macrocounty",
   "county",
   "macrohood",
+  "borough",
   "neighbourhood",
   "microhood",
   "disputed"
