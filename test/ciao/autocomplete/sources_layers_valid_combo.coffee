@@ -1,6 +1,6 @@
 
-#> layer alias
-path: '/v1/reverse?point.lat=1&point.lon=2&layers=coarse'
+#> sources and layers specified
+path: '/v1/autocomplete?text=a&sources=openaddresses&layers=address'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -29,18 +29,7 @@ should.not.exist json.geocoding.errors
 should.not.exist json.geocoding.warnings
 
 #? inputs
+json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10
-json.geocoding.query.layers.should.eql [ "continent",
-  "country",
-  "dependency",
-  "macroregion",
-  "region",
-  "locality",
-  "localadmin",
-  "macrocounty",
-  "county",
-  "macrohood",
-  "neighbourhood",
-  "microhood",
-  "disputed"
-]
+json.geocoding.query.layers.should.eql ["address"]
+json.geocoding.query.sources.should.eql ["openaddresses"]

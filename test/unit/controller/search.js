@@ -123,6 +123,21 @@ module.exports.tests.functional_failure = function(test, common) {
   });
 };
 
+module.exports.tests.timeout = function(test, common) {
+  test('timeout', function(t) {
+    var backend = mockBackend( 'client/search/timeout/1', function( cmd ){
+      t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias', searchType: 'dfs_query_then_fetch' }, 'correct backend command');
+    });
+    var controller = setup( backend, mockQuery() );
+    var req = { clean: { a: 'b' }, errors: [], warnings: [] };
+    var next = function(){
+      t.equal(req.errors[0],'Request Timeout after 5000ms');
+      t.end();
+    };
+    controller(req, undefined, next );
+  });
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {

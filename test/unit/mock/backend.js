@@ -33,6 +33,14 @@ responses['client/search/fail/1'] = function( cmd, cb ){
   return cb( 'a backend error occurred' );
 };
 
+responses['client/search/timeout/1'] = function( cmd, cb) {
+  // timeout errors are objects
+  return cb({
+    status: 408,
+    message: 'Request Timeout after 5000ms'
+  });
+};
+
 responses['client/mget/ok/1'] = function( cmd, cb ){
   return cb( undefined, mgetEnvelope([{
     _id: 'myid1',

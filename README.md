@@ -34,3 +34,41 @@ The API recognizes the following properties under the top-level `api` key in you
 
 Please fork and pull request against upstream master on a feature branch. Pretty please; provide unit tests and script
 fixtures in the `test` directory.
+
+## Unit tests
+
+You can run the unit test suite using the command:
+
+```bash
+$ npm test
+```
+
+## HTTP tests
+
+We have another set of tests which are used to test the HTTP API layer, these tests send expected HTTP requests and then
+assert that the responses coming back have the correct geoJSON format and HTTP status codes.
+
+You can run the HTTP test suite using the command:
+
+```bash
+$ npm run ciao
+```
+
+Note: some of the tests in this suite fail when no data is present in the index, there is a small set of test documents
+provided in `./test/ciao_test_data` which can be inserted in order to avoid these errors.
+
+To inject dummy data in to your local index:
+
+```bash
+$ node test/ciao_test_data.js
+```
+
+You can confirm the dummy data has been inserted with the command:
+
+```bash
+$ curl localhost:9200/pelias/_count?pretty
+{
+  "count" : 9,
+  ...
+}
+```

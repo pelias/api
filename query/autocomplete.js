@@ -43,6 +43,9 @@ if (!views) {
 // add defined views to the query
 viewsToQuery(views, query, viewLib);
 
+// non-scoring hard filters
+query.filter( peliasQuery.view.sources );
+
 // --------------------------------
 
 /**
@@ -52,6 +55,11 @@ viewsToQuery(views, query, viewLib);
 function generateQuery( clean ){
 
   var vs = new peliasQuery.Vars( defaults );
+
+  // sources
+  if( check.array(clean.sources) && clean.sources.length ){
+    vs.var( 'sources', clean.sources );
+  }
 
   // mark the name as incomplete (user has not yet typed a comma)
   vs.var( 'input:name:isComplete', false );
