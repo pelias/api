@@ -1,6 +1,7 @@
 var _ = require('lodash');
+var api = require('pelias-config').generate().api;
 
-module.exports = {
+var schemas = {
   'default': {
     'local': getFirstProperty(['locality', 'localadmin']),
     'country': getFirstProperty(['country'])
@@ -22,6 +23,20 @@ module.exports = {
     'country': getFirstProperty(['country'])
   }
 };
+
+if (api && api.localization && api.localization.labelSchemas) {
+  var imported = api.localization.labelSchemas;
+
+  for (var country in imported) {
+    var schema = imported[country];
+    for (var key in schema) { // convert to the convention above
+      schema[key] = getFirstProperty(schema[key]); // param array to func
+    }
+    schemas[country] = schema;
+  }
+}
+
+module.exports = schemas;
 
 // find the first field of record that has a non-empty value that's not already in labelParts
 function getFirstProperty(fields) {
