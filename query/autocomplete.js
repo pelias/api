@@ -41,6 +41,9 @@ query.score( views.focus_selected_layers( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.ngrams_strict ) );
 query.score( peliasQuery.view.population( views.ngrams_strict ) );
 
+// non-scoring hard filters
+query.filter( peliasQuery.view.sources );
+
 // --------------------------------
 
 /**
@@ -50,6 +53,11 @@ query.score( peliasQuery.view.population( views.ngrams_strict ) );
 function generateQuery( clean ){
 
   var vs = new peliasQuery.Vars( defaults );
+
+  // sources
+  if( check.array(clean.sources) && clean.sources.length ){
+    vs.var( 'sources', clean.sources );
+  }
 
   // mark the name as incomplete (user has not yet typed a comma)
   vs.var( 'input:name:isComplete', false );

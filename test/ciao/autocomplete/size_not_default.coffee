@@ -1,6 +1,6 @@
 
-#> layer alias
-path: '/v1/reverse?point.lat=1&point.lon=2&layers=coarse'
+#> set size (autocomplete does not allow size to be changed)
+path: '/v1/autocomplete?text=a&size=3'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -26,21 +26,9 @@ json.features.should.be.instanceof Array
 should.not.exist json.geocoding.errors
 
 #? expected warnings
-should.not.exist json.geocoding.warnings
+should.exist json.geocoding.warnings
+json.geocoding.warnings.should.eql [ 'out-of-range integer \'size\', using MIN_SIZE' ]
 
 #? inputs
-json.geocoding.query['size'].should.eql 10
-json.geocoding.query.layers.should.eql [ "continent",
-  "country",
-  "dependency",
-  "macroregion",
-  "region",
-  "locality",
-  "localadmin",
-  "macrocounty",
-  "county",
-  "macrohood",
-  "neighbourhood",
-  "microhood",
-  "disputed"
-]
+json.geocoding.query['text'].should.eql 'a'
+json.geocoding.query['size'].should.eql 10 # should remain the default size
