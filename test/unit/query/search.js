@@ -182,6 +182,19 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  test('valid sources filter', function(t) {
+    var query = generate({
+      'text': 'test',
+      'sources': ['test_source']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_with_source_filtering');
+
+    t.deepEqual(compiled, expected, 'valid search query with source filtering');
+    t.end();
+  });
+
 };
 
 module.exports.all = function (tape, common) {

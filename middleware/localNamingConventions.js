@@ -30,6 +30,9 @@ function applyLocalNamingConventions(req, res, next) {
 
   // loop through data items and flip relevant number/street
   res.data.filter(function(place){
+    // do nothing for records with no admin info
+    if (!place.parent || !place.parent.country_a) { return false; }
+
     // relevant for some countries
     var flip = place.parent.country_a.some(function(country) {
       return _.includes(flipNumberAndStreetCountries, country);
