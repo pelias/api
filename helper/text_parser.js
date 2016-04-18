@@ -2,11 +2,10 @@
 var parser     = require('addressit');
 var extend     = require('extend');
 var type_mapping = require('../helper/type_mapping');
-var delim      = ',';
 var check      = require('check-types');
 var logger     = require('pelias-logger').get('api');
 
-module.exports = {};
+var DELIM = ',';
 
 /*
  * For performance, and to prefer POI and admin records, express a preference
@@ -21,14 +20,21 @@ module.exports.get_layers = function get_layers(query) {
 
 module.exports.get_parsed_address = function get_parsed_address(query) {
 
-  var getAdminPartsBySplittingOnDelim = function(query) {
+  var getAdminPartsBySplittingOnDelim = function(queryParts) {
     // naive approach - for admin matching during query time
     // split 'flatiron, new york, ny' into 'flatiron' and 'new york, ny'
-    var delimIndex = query.indexOf(delim);
+
     var address = {};
-    if ( delimIndex !== -1 ) {
-      address.name = query.substring(0, delimIndex);
-      address.admin_parts = query.substring(delimIndex + 1).trim();
+
+    if (queryParts.length > 1) {
+      address.name = queryParts[0].trim();
+
+      // 1. slice away all parts after the first one
+      // 2. trim spaces from each part just in case
+      // 3. join the parts back together with appropriate delimiter and spacing
+      address.admin_parts = queryParts.slice(1)
+                                .map(function (part) { return part.trim(); })
+                                .join(DELIM + ' ');
     }
 
     return address;
@@ -42,8 +48,10 @@ module.exports.get_parsed_address = function get_parsed_address(query) {
     }
   };
 
-  var addressWithAdminParts  = getAdminPartsBySplittingOnDelim(query);
-  var addressWithAddressParts= getAddressParts(query);
+  var queryParts = query.split(DELIM);
+
+  var addressWithAdminParts  = getAdminPartsBySplittingOnDelim(queryParts);
+  var addressWithAddressParts= getAddressParts(queryParts.join(DELIM + ' '));
 
   var parsedAddress  = extend(addressWithAdminParts,
                               addressWithAddressParts);

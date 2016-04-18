@@ -6,7 +6,7 @@ module.exports.tests.sanitize_size = function(test, common) {
   test('size=0', function(t) {
     var raw = { size: 0 };
     var clean = {};
-    var res = sanitize(raw, clean);
+    var res = sanitize(/*defaults*/)(raw, clean);
     t.equal(res.errors.length, 0, 'should return no errors');
     t.equal(res.warnings.length, 1, 'should return warning');
     t.equal(res.warnings[0], 'out-of-range integer \'size\', using MIN_SIZE', 'check warning text');
@@ -17,7 +17,7 @@ module.exports.tests.sanitize_size = function(test, common) {
   test('size=10000', function(t) {
     var raw = { size: 10000 };
     var clean = {};
-    var res = sanitize(raw, clean);
+    var res = sanitize(/*defaults*/)(raw, clean);
     t.equal(res.errors.length, 0, 'should return no errors');
     t.equal(res.warnings.length, 1, 'should return warning');
     t.equal(res.warnings[0], 'out-of-range integer \'size\', using MAX_SIZE', 'check warning text');
@@ -28,7 +28,7 @@ module.exports.tests.sanitize_size = function(test, common) {
   test('size not set', function(t) {
     var raw = {};
     var clean = {};
-    var res = sanitize(raw, clean);
+    var res = sanitize(/*defaults*/)(raw, clean);
     t.equal(res.errors.length, 0, 'should return no errors');
     t.equal(res.warnings.length, 0, 'should return no warning');
     t.equal(clean.size, 10, 'default to 10');
@@ -41,7 +41,7 @@ module.exports.tests.sanitize_size = function(test, common) {
     test('size=' + size, function (t) {
       var raw = {size: size};
       var clean = {};
-      var res = sanitize(raw, clean);
+      var res = sanitize(/*defaults*/)(raw, clean);
       t.equal(res.errors.length, 0, 'should return no errors');
       t.equal(res.warnings.length, 0, 'should return warning');
       t.equal(clean.size, 5, 'set to correct integer');
