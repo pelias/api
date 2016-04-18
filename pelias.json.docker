@@ -33,7 +33,13 @@
     "languages": ["fi", "default", "sv", "se"],
     "localization" : {
       "flipNumberAndStreetCountries": ["FIN"],
-      "translations": "/opt/pelias/api/translations.json"
+      "translations": "/opt/pelias/api/translations.json",
+      "labelSchemas": {
+	"FIN": {
+	  "local": ["locality", "region"],
+	  "country": ["country"]
+	}
+      }
     }
   }
 }
