@@ -104,6 +104,17 @@ module.exports.tests.france = function(test, common) {
 
 };
 
+module.exports.tests.name_only = function(test, common) {
+  test('name-only results (no admin fields) should not include extraneous comma', function(t) {
+    var doc = {
+      'name': 'Result name',
+    };
+    t.equal(generator(doc),'Result name');
+    t.end();
+  });
+
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
