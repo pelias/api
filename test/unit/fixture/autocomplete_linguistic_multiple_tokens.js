@@ -10,7 +10,7 @@ module.exports = {
                 'analyzer': 'peliasQueryFullToken',
                 'type': 'phrase',
                 'boost': 1,
-                'slop': 2,
+                'slop': 3,
                 'query': 'one two'
               }
             }
