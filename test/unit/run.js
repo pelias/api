@@ -19,7 +19,6 @@ var tests = [
   require('./helper/labelGenerator_GBR'),
   require('./helper/labelGenerator_USA'),
   require('./helper/labelSchema'),
-  require('./helper/text_parser'),
   require('./helper/type_mapping'),
   require('./helper/sizeCalculator'),
   require('./middleware/confidenceScore'),
