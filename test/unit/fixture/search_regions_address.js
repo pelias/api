@@ -10,7 +10,7 @@ module.exports = {
             'match': {
               'name.default': {
                 'query': '1 water st',
-                'analyzer': 'peliasQueryPartialToken',
+                'analyzer': 'peliasIndexOneEdgeGram',
                 'boost': 1
               }
             }

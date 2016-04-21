@@ -20,7 +20,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'boundary:rect:type': 'indexed',
   'boundary:rect:_cache': true,
 
-  'ngram:analyzer': 'peliasQueryPartialToken',
+  'ngram:analyzer': 'peliasIndexOneEdgeGram',
   'ngram:field': 'name.default',
   'ngram:boost': 1,
 

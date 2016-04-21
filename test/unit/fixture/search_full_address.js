@@ -9,7 +9,7 @@ module.exports = {
             'match': {
               'name.default': {
                 'query': '123 main st',
-                'analyzer': 'peliasQueryPartialToken',
+                'analyzer': 'peliasIndexOneEdgeGram',
                 'boost': 1
               }
             }
