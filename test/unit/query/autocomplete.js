@@ -1,6 +1,5 @@
 
 var generate = require('../../../query/autocomplete');
-var parser = require('../../../helper/text_parser');
 
 module.exports.tests = {};
 
