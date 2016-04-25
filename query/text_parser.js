@@ -9,6 +9,7 @@ or postalcode because we should only try to match those when we're sure that's w
  */
 var adminFields = placeTypes.concat([
   'region_a',
+  'borough'
 ]);
 
 /**

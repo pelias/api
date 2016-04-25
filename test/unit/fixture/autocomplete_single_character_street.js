@@ -58,6 +58,14 @@ module.exports = {
               }
             }, {
               'match': {
+                'parent.borough': {
+                  'analyzer': 'peliasAdmin',
+                  'boost': 800,
+                  'query': 'laird'
+                }
+              }
+            }, {
+              'match': {
                 'parent.localadmin': {
                   'query': 'laird',
                   'boost': 200,
