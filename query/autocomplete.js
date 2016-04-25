@@ -71,7 +71,8 @@ function generateQuery( clean ){
   //  - to a 2gram index when using 'type:phrase' or 'operator:and' will
   //  - result in a complete failure of the query.
   // 2. trim leading and trailing whitespace.
-  var text = clean.text.replace(/( .$)/g,'').trim();
+  // note: single digit grams are now being produced in the name.* index
+  var text = clean.text.replace(/( [^0-9]$)/g,'').trim();
 
   // if the input parser has run and suggested a 'parsed_text.name' to use.
   if( clean.hasOwnProperty('parsed_text') && clean.parsed_text.hasOwnProperty('name') ){
