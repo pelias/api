@@ -107,6 +107,23 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled, expected, 'valid autocomplete query with source filtering');
     t.end();
   });
+
+  test('single character street address', function(t) {
+    var query = generate({
+      text: 'k road, laird',
+      parsed_text: {
+        name: 'k road',
+        street: 'k road',
+        regions: [ 'laird' ]
+      }
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_single_character_street');
+
+    t.deepEqual(compiled, expected, 'autocomplete_single_character_street');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
