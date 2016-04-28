@@ -30,7 +30,6 @@ query.score( peliasQuery.view.admin('country_a') );
 query.score( peliasQuery.view.admin('region') );
 query.score( peliasQuery.view.admin('region_a') );
 query.score( peliasQuery.view.admin('county') );
-query.score( peliasQuery.view.admin('borough') );
 query.score( peliasQuery.view.admin('localadmin') );
 query.score( peliasQuery.view.admin('locality') );
 query.score( peliasQuery.view.admin('neighbourhood') );

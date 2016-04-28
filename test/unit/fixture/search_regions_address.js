@@ -125,14 +125,6 @@ module.exports = {
             }
           }, {
             'match': {
-              'parent.borough': {
-                'query': 'manhattan',
-                'boost': vs['admin:borough:boost'],
-                'analyzer': vs['admin:borough:analyzer']
-              }
-            }
-          }, {
-            'match': {
               'parent.localadmin': {
                 'query': 'manhattan',
                 'boost': vs['admin:localadmin:boost'],
