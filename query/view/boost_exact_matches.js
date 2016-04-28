@@ -27,19 +27,11 @@ module.exports = function( vs ){
   vsCopy.var('phrase:analyzer').set(searchDefaults['phrase:analyzer']);
   vsCopy.var('phrase:field').set(searchDefaults['phrase:field']);
 
-  // split the 'input:name' on whitespace
-  var name = vs.var('input:name').get(),
-      tokens = name.split(' ');
-
-  // if the query is incomplete then we need to remove
-  // the final (incomplete) token as it will not match
-  // tokens in the phrase.* index.
-  if( !vs.var('input:name:isComplete').get() ){
-    tokens.pop();
-  }
+  // get a copy of the *complete* tokens produced from the input:name
+  var tokens = vs.var('input:name:tokens_complete').get();
 
   // no valid tokens to use, fail now, don't render this view.
-  if( tokens.length < 1 ){ return null; }
+  if( !tokens || tokens.length < 1 ){ return null; }
 
   // set 'input:name' to be only the fully completed characters
   vsCopy.var('input:name').set( tokens.join(' ') );

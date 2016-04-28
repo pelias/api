@@ -13,7 +13,10 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.query = function(test, common) {
   test('valid lingustic-only autocomplete', function(t) {
     var query = generate({
-      text: 'test'
+      text: 'test',
+      tokens: ['test'],
+      tokens_complete: [],
+      tokens_incomplete: ['test']
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -25,7 +28,10 @@ module.exports.tests.query = function(test, common) {
 
   test('valid lingustic autocomplete with 3 tokens', function(t) {
     var query = generate({
-      text: 'one two three'
+      text: 'one two three',
+      tokens: ['one','two','three'],
+      tokens_complete: ['one','two'],
+      tokens_incomplete: ['three']
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -42,7 +48,10 @@ module.exports.tests.query = function(test, common) {
         name: 'one two',
         regions: [ 'one two', 'three' ],
         admin_parts: 'three'
-      }
+      },
+      tokens: ['one','two'],
+      tokens_complete: ['one','two'],
+      tokens_incomplete: []
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -57,7 +66,10 @@ module.exports.tests.query = function(test, common) {
   // note: if 1 grams are enabled at a later date, remove this behaviour.
   test('valid lingustic autocomplete final token', function(t) {
     var query = generate({
-      text: 'one t'
+      text: 'one t',
+      tokens: ['one','t'],
+      tokens_complete: ['one'],
+      tokens_incomplete: []
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -71,7 +83,10 @@ module.exports.tests.query = function(test, common) {
     var query = generate({
       text: 'test',
       'focus.point.lat': 29.49136,
-      'focus.point.lon': -82.50622
+      'focus.point.lon': -82.50622,
+      tokens: ['test'],
+      tokens_complete: [],
+      tokens_incomplete: ['test']
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -85,7 +100,10 @@ module.exports.tests.query = function(test, common) {
     var query = generate({
       text: 'test',
       'focus.point.lat': 0,
-      'focus.point.lon': 0
+      'focus.point.lon': 0,
+      tokens: ['test'],
+      tokens_complete: [],
+      tokens_incomplete: ['test']
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -98,7 +116,10 @@ module.exports.tests.query = function(test, common) {
   test('valid sources filter', function(t) {
     var query = generate({
       'text': 'test',
-      'sources': ['test_source']
+      'sources': ['test_source'],
+      tokens: ['test'],
+      tokens_complete: [],
+      tokens_incomplete: ['test']
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -115,7 +136,10 @@ module.exports.tests.query = function(test, common) {
         name: 'k road',
         street: 'k road',
         regions: [ 'laird' ]
-      }
+      },
+      tokens: ['k', 'road'],
+      tokens_complete: ['k', 'road'],
+      tokens_incomplete: []
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
