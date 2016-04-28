@@ -60,7 +60,7 @@ module.exports = {
               'match': {
                 'parent.borough': {
                   'analyzer': 'peliasAdmin',
-                  'boost': 800,
+                  'boost': 600,
                   'query': 'laird'
                 }
               }
