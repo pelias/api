@@ -15,25 +15,17 @@ module.exports = {
             },
             {
               'match': {
-                'name.default': {
+                'phrase.default': {
                   'query': 'test',
+                  'analyzer': 'peliasPhrase',
+                  'type': 'phrase',
                   'boost': 1,
-                  'analyzer': 'peliasOneEdgeGram'
+                  'slop': 2
                 }
               }
             }
           ],
           'should': [{
-            'match': {
-              'phrase.default': {
-                'query': 'test',
-                'analyzer': 'peliasPhrase',
-                'type': 'phrase',
-                'boost': 1,
-                'slop': 2
-              }
-            }
-          },{
             'function_score': {
               'query': {
                 'match': {

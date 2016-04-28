@@ -11,10 +11,9 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
 query.score( peliasQuery.view.boundary_country, 'must' );
-query.score( peliasQuery.view.ngrams, 'must' );
+query.score( peliasQuery.view.phrase, 'must' );
 
 // scoring boost
-query.score( peliasQuery.view.phrase );
 query.score( peliasQuery.view.focus( peliasQuery.view.phrase ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
 query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );

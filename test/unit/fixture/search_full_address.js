@@ -7,15 +7,6 @@ module.exports = {
         'bool': {
           'must': [{
             'match': {
-              'name.default': {
-                'query': '123 main st',
-                'analyzer': 'peliasOneEdgeGram',
-                'boost': 1
-              }
-            }
-          }],
-          'should': [{
-            'match': {
               'phrase.default': {
                 'query': '123 main st',
                 'analyzer': 'peliasPhrase',
@@ -24,8 +15,8 @@ module.exports = {
                 'boost': 1
               }
             }
-          },
-          {
+          }],
+          'should': [{
             'function_score': {
               'query': {
                 'match': {
