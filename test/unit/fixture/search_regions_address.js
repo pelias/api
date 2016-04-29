@@ -10,7 +10,7 @@ module.exports = {
             'match': {
               'name.default': {
                 'query': '1 water st',
-                'analyzer': 'peliasOneEdgeGram',
+                'analyzer': 'peliasIndexOneEdgeGram',
                 'boost': 1
               }
             }
@@ -121,6 +121,14 @@ module.exports = {
                 'query': 'manhattan',
                 'boost': vs['admin:county:boost'],
                 'analyzer': vs['admin:county:analyzer']
+              }
+            }
+          }, {
+            'match': {
+              'parent.borough': {
+                'query': 'manhattan',
+                'boost': vs['admin:borough:boost'],
+                'analyzer': vs['admin:borough:analyzer']
               }
             }
           }, {

@@ -1,5 +1,5 @@
 var generate = require('../../../query/search');
-var parser = require('../../../helper/text_parser');
+var text_analyzer = require('pelias-text-analyzer');
 
 module.exports.tests = {};
 
@@ -25,7 +25,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_bbox');
 
-    t.deepEqual(compiled, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'search_linguistic_focus_bbox');
     t.end();
   });
 
@@ -42,7 +42,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_bbox');
 
-    t.deepEqual(compiled, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'search_linguistic_bbox');
     t.end();
   });
 
@@ -55,7 +55,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_only');
 
-    t.deepEqual(compiled, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'search_linguistic_only');
     t.end();
   });
 
@@ -69,7 +69,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus');
 
-    t.deepEqual(compiled, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'search_linguistic_focus');
     t.end();
   });
 
@@ -86,7 +86,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_viewport');
 
-    t.deepEqual(compiled, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'search_linguistic_viewport');
     t.end();
   });
 
@@ -119,7 +119,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_null_island');
 
-    t.deepEqual(compiled, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'search_linguistic_focus_null_island');
     t.end();
   });
 
@@ -128,13 +128,13 @@ module.exports.tests.query = function(test, common) {
     var query = generate({ text: address,
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
-      parsed_text: parser.get_parsed_address(address),
+      parsed_text: text_analyzer.parse(address),
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_full_address');
 
-    t.deepEqual(compiled, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'search_full_address');
     t.end();
   });
 
@@ -143,13 +143,13 @@ module.exports.tests.query = function(test, common) {
     var query = generate({ text: partial_address,
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
-      parsed_text: parser.get_parsed_address(partial_address),
+      parsed_text: text_analyzer.parse(partial_address),
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_partial_address');
 
-    t.deepEqual(compiled, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'search_partial_address');
     t.end();
   });
 
@@ -158,13 +158,13 @@ module.exports.tests.query = function(test, common) {
     var query = generate({ text: partial_address,
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
-      parsed_text: parser.get_parsed_address(partial_address),
+      parsed_text: text_analyzer.parse(partial_address),
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_regions_address');
 
-    t.deepEqual(compiled, expected, 'valid search query');
+    t.deepEqual(compiled, expected, 'search_regions_address');
     t.end();
   });
 

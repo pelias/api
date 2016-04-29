@@ -8,9 +8,6 @@ var peliasQuery = require('pelias-query'),
   eg. if the input was "100 foo str", then 'input:name' would only be 'str'
   note: it is assumed that the rest of the input is matched using another view.
 
-  there is an additional flag 'input:name:isComplete' used to disable this view
-  selectively, see that section for more info.
-
   code notes: this view makes a copy of the $vs object in order to change their
   values without mutating the original values, which may be expected in their
   unaltered form by other views.
@@ -18,19 +15,17 @@ var peliasQuery = require('pelias-query'),
 
 module.exports = function( vs ){
 
-  // Totally disable this view when bool value 'input:name:isComplete' is true.
-  // This is the case when the user has typed a comma, so we can assume
-  // that the 'name' part of the query is now complete.
-  if( vs.var('input:name:isComplete').get() ){ return null; }
+  // get a copy of the *tokens_incomplete* tokens produced from the input:name
+  var tokens = vs.var('input:name:tokens_incomplete').get();
+
+  // no valid tokens to use, fail now, don't render this view.
+  if( !tokens || tokens.length < 1 ){ return null; }
 
   // make a copy Vars so we don't mutate the original
   var vsCopy = new peliasQuery.Vars( vs.export() );
 
-  // get the input 'name' variable
-  var name = vs.var('input:name').get();
-
   // set the 'name' variable in the copy to only the last token
-  vsCopy.var('input:name').set( name.substr( name.lastIndexOf(' ')+1 ) );
+  vsCopy.var('input:name').set( tokens.join(' ') );
 
   // return the view rendered using the copy
   return ngrams_strict( vsCopy );
