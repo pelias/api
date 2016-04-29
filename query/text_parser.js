@@ -8,7 +8,7 @@ when we can't identify parts of an address. This shouldn't contain fields like c
 or postalcode because we should only try to match those when we're sure that's what they are.
  */
 var adminFields = placeTypes.concat([
-  'region_a',
+  'region_a'
 ]);
 
 /**

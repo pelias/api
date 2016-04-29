@@ -7,11 +7,11 @@ module.exports = {
           'must': [
             {
               'match': {
-                'phrase.default': {
-                  'analyzer': 'peliasPhrase',
+                'name.default': {
+                  'analyzer': 'peliasQueryFullToken',
                   'type': 'phrase',
                   'boost': 1,
-                  'slop': 2,
+                  'slop': 3,
                   'query': 'one two'
                 }
               }
@@ -56,6 +56,15 @@ module.exports = {
             },
             {
               'match': {
+                'parent.borough': {
+                  'analyzer': 'peliasAdmin',
+                  'boost': 600,
+                  'query': 'three'
+                }
+              }
+            },
+            {
+              'match': {
                 'parent.localadmin': {
                   'analyzer': 'peliasAdmin',
                   'boost': 200,
@@ -82,15 +91,23 @@ module.exports = {
               }
             },
             {
+              'match': {
+                'phrase.default': {
+                  'analyzer' : 'peliasPhrase',
+                  'type' : 'phrase',
+                  'boost' : 1,
+                  'slop' : 3,
+                  'query' : 'one two'
+                }
+              }
+            },
+            {
               'function_score': {
                 'query': {
                   'match': {
                     'name.default': {
-                      'analyzer': 'peliasPhrase',
-                      'boost': 100,
+                      'analyzer': 'peliasQueryFullToken',
                       'query': 'one two',
-                      'type': 'phrase',
-                      'operator': 'and'
                     }
                   }
                 },
@@ -114,11 +131,8 @@ module.exports = {
                 'query': {
                   'match': {
                     'name.default': {
-                      'analyzer': 'peliasPhrase',
-                      'boost': 100,
+                      'analyzer': 'peliasQueryFullToken',
                       'query': 'one two',
-                      'type': 'phrase',
-                      'operator': 'and'
                     }
                   }
                 },

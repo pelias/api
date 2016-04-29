@@ -6,11 +6,11 @@ module.exports = {
         'bool': {
           'must': [{
             'match': {
-              'phrase.default': {
-                'analyzer': 'peliasPhrase',
+              'name.default': {
+                'analyzer': 'peliasQueryFullToken',
                 'type': 'phrase',
                 'boost': 1,
-                'slop': 2,
+                'slop': 3,
                 'query': 'one two'
               }
             }
@@ -18,7 +18,7 @@ module.exports = {
           {
             'match': {
               'name.default': {
-                'analyzer': 'peliasPhrase',
+                'analyzer': 'peliasQueryPartialToken',
                 'boost': 100,
                 'query': 'three',
                 'type': 'phrase',
@@ -26,16 +26,25 @@ module.exports = {
               }
             }
           }],
-          'should':[{
+          'should':[
+            {
+              'match': {
+                'phrase.default': {
+                  'analyzer' : 'peliasPhrase',
+                  'type' : 'phrase',
+                  'boost' : 1,
+                  'slop' : 3,
+                  'query' : 'one two'
+                }
+              }
+            },
+            {
             'function_score': {
               'query': {
                 'match': {
                   'name.default': {
-                    'analyzer': 'peliasPhrase',
-                    'boost': 100,
+                    'analyzer': 'peliasQueryFullToken',
                     'query': 'one two three',
-                    'type': 'phrase',
-                    'operator': 'and'
                   }
                 }
               },
@@ -56,11 +65,8 @@ module.exports = {
               'query': {
                 'match': {
                   'name.default': {
-                    'analyzer': 'peliasPhrase',
-                    'boost': 100,
+                    'analyzer': 'peliasQueryFullToken',
                     'query': 'one two three',
-                    'type': 'phrase',
-                    'operator': 'and'
                   }
                 }
               },
