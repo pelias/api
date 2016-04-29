@@ -74,11 +74,16 @@ function generateQuery( clean ){
   // input text
   vs.var( 'input:name', clean.text );
 
-  // if the input parser has run and suggested a 'parsed_text.name' to use.
-  if( clean.hasOwnProperty('parsed_text') && clean.parsed_text.hasOwnProperty('name') ){
-
-    // use 'parsed_text.name' instead of 'clean.text'.
-    vs.var( 'input:name', clean.parsed_text.name );
+  // if the tokenizer has run then we set 'input:name' to as the combination of the
+  // 'complete' tokens with the 'incomplete' tokens, the resuting array differs
+  // slightly from the 'input:name:tokens' array as some tokens might have been
+  // removed in the process; such as single grams which are not present in then
+  // ngrams index.
+  if( check.array( clean.tokens_complete ) && check.array( clean.tokens_incomplete ) ){
+    var combined = clean.tokens_complete.concat( clean.tokens_incomplete );
+    if( combined.length ){
+      vs.var( 'input:name', combined.join(' ') );
+    }
   }
 
   // focus point
