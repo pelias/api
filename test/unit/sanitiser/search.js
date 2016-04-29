@@ -1,6 +1,6 @@
 var extend = require('extend'),
     search  = require('../../../sanitiser/search'),
-    parser = require('../../../helper/text_parser'),
+    text_analyzer = require('pelias-text-analyzer'),
     sanitize = search.sanitize,
     middleware = search.middleware,
     defaultError = 'invalid param \'text\': text length, must be >0';
@@ -80,7 +80,7 @@ module.exports.tests.sanitize_text_with_delim = function(test, common) {
       sanitize( req, function( ){
         var expected_text = text;
 
-        var expected_parsed_text = parser.get_parsed_address(text);
+        var expected_parsed_text = text_analyzer.parse(text);
         t.equal(req.errors[0], undefined, 'no error');
         t.equal(req.clean.parsed_text.name, expected_parsed_text.name, 'clean name set correctly');
         t.equal(req.clean.text, expected_text, 'text should match');

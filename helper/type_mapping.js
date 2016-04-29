@@ -49,7 +49,8 @@ var LAYERS_BY_SOURCE = {
  openaddresses: [ 'address' ],
  geonames: [ 'country', 'region', 'county', 'locality', 'venue' ],
  whosonfirst: [ 'continent', 'country', 'dependency', 'macroregion', 'region',
-   'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'neighbourhood', 'microhood', 'disputed']
+   'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
+   'neighbourhood', 'microhood', 'disputed']
 };
 
 /*

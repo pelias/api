@@ -20,7 +20,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'boundary:rect:type': 'indexed',
   'boundary:rect:_cache': true,
 
-  'ngram:analyzer': 'peliasOneEdgeGram',
+  'ngram:analyzer': 'peliasIndexOneEdgeGram',
   'ngram:field': 'name.default',
   'ngram:boost': 1,
 
@@ -77,6 +77,10 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'admin:locality:analyzer': 'peliasAdmin',
   'admin:locality:field': 'parent.locality',
   'admin:locality:boost': 1,
+
+  'admin:borough:analyzer': 'peliasAdmin',
+  'admin:borough:field': 'parent.borough',
+  'admin:borough:boost': 1,
 
   'admin:neighbourhood:analyzer': 'peliasAdmin',
   'admin:neighbourhood:field': 'parent.neighbourhood',
