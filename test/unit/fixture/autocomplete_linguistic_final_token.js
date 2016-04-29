@@ -7,15 +7,25 @@ module.exports = {
           'must': [{
             'match': {
               'name.default': {
-                'analyzer': 'peliasQueryPartialToken',
-                'boost': 100,
+                'analyzer': 'peliasQueryFullToken',
+                'boost': 1,
+                'slop': 3,
                 'query': 'one',
-                'type': 'phrase',
-                'operator': 'and'
+                'type': 'phrase'
               }
             }
           }],
           'should':[{
+            'match': {
+              'phrase.default': {
+                'analyzer': 'peliasPhrase',
+                'boost': 1,
+                'slop': 3,
+                'query': 'one',
+                'type': 'phrase'
+              }
+            }
+          },{
             'function_score': {
               'query': {
                 'match': {

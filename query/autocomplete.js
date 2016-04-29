@@ -63,30 +63,23 @@ function generateQuery( clean ){
     vs.var( 'sources', clean.sources );
   }
 
-  // mark the name as incomplete (user has not yet typed a comma)
-  vs.var( 'input:name:isComplete', false );
+  // pass the input tokens to the views so they can choose which tokens
+  // are relevant for their specific function.
+  if( check.array( clean.tokens ) ){
+    vs.var( 'input:name:tokens', clean.tokens );
+    vs.var( 'input:name:tokens_complete', clean.tokens_complete );
+    vs.var( 'input:name:tokens_incomplete', clean.tokens_incomplete );
+  }
 
-  // perform some operations on 'clean.text':
-  // 1. if there is a space followed by a single char, remove them.
-  //  - this is required as the index uses 2grams and sending 1grams
-  //  - to a 2gram index when using 'type:phrase' or 'operator:and' will
-  //  - result in a complete failure of the query.
-  // 2. trim leading and trailing whitespace.
-  // note: single digit grams are now being produced in the name.* index
-  var text = clean.text.replace(/( [^0-9]$)/g,'').trim();
+  // input text
+  vs.var( 'input:name', clean.text );
 
   // if the input parser has run and suggested a 'parsed_text.name' to use.
   if( clean.hasOwnProperty('parsed_text') && clean.parsed_text.hasOwnProperty('name') ){
 
-    // mark the name as complete (user has already typed a comma)
-    vs.var( 'input:name:isComplete', true );
-
     // use 'parsed_text.name' instead of 'clean.text'.
-    text = clean.parsed_text.name;
+    vs.var( 'input:name', clean.parsed_text.name );
   }
-
-  // input text
-  vs.var( 'input:name', text );
 
   // focus point
   if( check.number(clean['focus.point.lat']) &&

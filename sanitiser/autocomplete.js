@@ -4,6 +4,7 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
       singleScalarParameters: require('../sanitiser/_single_scalar_parameters'),
       text: require('../sanitiser/_text'),
+      tokenizer: require('../sanitiser/_tokenizer'),
       size: require('../sanitiser/_size')(10, 10, 10),
       layers: require('../sanitiser/_targets')('layers', type_mapping.layer_mapping),
       sources: require('../sanitiser/_targets')('sources', type_mapping.source_mapping),
