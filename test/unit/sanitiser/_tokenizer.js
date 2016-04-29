@@ -83,6 +83,38 @@ module.exports.tests.sanity_checks = function(test, common) {
 
     t.end();
   });
+  test('favor clean.parsed_text street data over clean.text', function(t) {
+
+    var clean = { parsed_text: { number: '190', street: 'foo st' }, text: 'bar' };
+    var messages = sanitiser({}, clean);
+
+    // favor clean.parsed_text.name over clean.text
+    t.deepEquals(clean.tokens, [ '190', 'foo', 'st' ], 'use street name + number');
+    t.deepEquals(clean.tokens_complete, [ '190', 'foo', 'st' ], 'use street name + number');
+    t.deepEquals(clean.tokens_incomplete, [], 'no tokens');
+
+    // no errors/warnings produced
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+
+    t.end();
+  });
+  test('favor clean.parsed_text.name over clean.parsed_text street data', function(t) {
+
+    var clean = { parsed_text: { number: '190', street: 'foo st', name: 'foo' }, text: 'bar' };
+    var messages = sanitiser({}, clean);
+
+    // favor clean.parsed_text.name over all other variables
+    t.deepEquals(clean.tokens, [ 'foo' ], 'use clean.parsed_text.name');
+    t.deepEquals(clean.tokens_complete, [ 'foo' ], 'use clean.parsed_text.name');
+    t.deepEquals(clean.tokens_incomplete, [], 'no tokens');
+
+    // no errors/warnings produced
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+
+    t.end();
+  });
 };
 
 module.exports.tests.space_delimiter = function(test, common) {

@@ -27,9 +27,26 @@ function sanitize( raw, clean ){
 
   // if the text parser has run then we only tokenize the 'name' section
   // of the 'parsed_text' object, ignoring the 'admin' parts.
-  if( clean.hasOwnProperty('parsed_text') && clean.parsed_text.hasOwnProperty('name') ){
+  if( clean.hasOwnProperty('parsed_text') ) {
     inputParserRanSuccessfully = true;
-    text = clean.parsed_text.name; // use this string instead
+
+    // parsed_text.name is set, this is the highest priority, use this string
+    if( clean.parsed_text.hasOwnProperty('name') ){
+      text = clean.parsed_text.name; // use this string instead
+    }
+
+    // else handle the case where parsed_text.street was produced but
+    // no parsed_text.name is produced.
+    // additionally, handle the case where parsed_text.number is present
+    // note: the addressit module may also produce parsed_text.unit info
+    // for now, we discard that information as we don't have an appropriate
+    else if( clean.parsed_text.hasOwnProperty('street') ){
+      text = [
+        clean.parsed_text.number,
+        clean.parsed_text.street
+      ].filter(function(el){return el;})
+      .join(' '); // remove empty elements
+    }
   }
 
   // always set 'clean.tokens*' arrays for consistency and to avoid upstream errors.
