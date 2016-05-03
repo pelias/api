@@ -1,4 +1,8 @@
-var confidenceScore = require('../../../middleware/confidenceScore')();
+var customConfig = {
+  languages : ['default', 'fi', 'sv'] // consider these name versions in confidence scoring
+};
+
+var confidenceScore = require('../../../middleware/confidenceScore')(customConfig);
 
 module.exports.tests = {};
 
@@ -91,6 +95,44 @@ module.exports.tests.confidenceScore = function(test, common) {
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 0.6, 'score was set');
+    t.end();
+  });
+
+  test('internationalization should not throw exception', function(t) {
+    var req = {
+      clean: { text: 'fabriksgatan' }
+    };
+    var res = {
+      data: [{
+        _score: 10,
+        found: true,
+        value: 1,
+        center_point: { lat: 100.1, lon: -50.5 },
+        name: { default: 'factory street', fi: 'tehtaankatu', sv: 'fabriksgatan' }, // match in sv
+        parent: {
+          country: ['country1'],
+          region: ['state1'],
+          county: ['city1']
+        }
+      }, {
+        _score: 10,
+        value: 2,
+        center_point: { lat: 100.2, lon: -51.5 },
+	name: { default: 'factory street', fi: 'tehtaankatu',
+		sv: 'wrong name here', ignore: 'fabriksgatan' }, // match in ignore
+        parent: {
+          country: ['country2'],
+          region: ['state2'],
+          county: ['city2']
+        }
+      }],
+      meta: {scores: [10]}
+    };
+
+    confidenceScore(req, res, function() {});
+    t.equal(res.data[0].confidence, 0.6, 'Internationalized name contributed in scoring');
+    t.equal(res.data[1].confidence, 0.54, 'Do not consider name versions excluded from configuration');
+
     t.end();
   });
 
