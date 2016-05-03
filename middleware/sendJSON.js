@@ -1,4 +1,5 @@
-var check = require('check-types');
+var check = require('check-types'),
+    es = require('elasticsearch');
 
 function sendJSONResponse(req, res, next) {
 
@@ -21,17 +22,18 @@ function sendJSONResponse(req, res, next) {
     geocoding.errors.forEach( function( err ){
       // custom status codes for instances of the Error() object.
       if( err instanceof Error ){
-        // we can extract the error type from the constructor name
-        switch( err.constructor.name ){
-          // elasticsearch errors
-          // see: https://github.com/elastic/elasticsearch-js/blob/master/src/lib/errors.js
-          case 'RequestTimeout': statusCode = 408; break; // 408 Request Timeout
-          case 'NoConnections': statusCode = 502; break; // 502 Bad Gateway
-          case 'ConnectionFault': statusCode = 502; break; // 502 Bad Gateway
-          case 'Serialization': statusCode = 500; break; // 500 Internal Server Error
-          case 'Generic': statusCode = 500; break; // 500 Internal Server Error
-          default: statusCode = 500; // 500 Internal Server Error
-        }
+        /*
+          elasticsearch errors
+          see: https://github.com/elastic/elasticsearch-js/blob/master/src/lib/errors.js
+
+          408 Request Timeout
+          500 Internal Server Error
+          502 Bad Gateway
+        */
+        if( err instanceof es.errors.RequestTimeout ){ statusCode = 408; }
+        else if( err instanceof es.errors.NoConnections ){ statusCode = 502; }
+        else if( err instanceof es.errors.ConnectionFault ){ statusCode = 502; }
+        else { statusCode = 500; }
       }
     });
   }

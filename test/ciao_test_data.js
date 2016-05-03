@@ -54,5 +54,5 @@ actions.push( function( done ){
 
 // perform all actions in series
 async.series( actions, function( err, resp ){
-  console.log('test data inported');
+  console.log('test data imported');
 });
