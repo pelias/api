@@ -7,24 +7,31 @@ module.exports = {
           'must': [{
             'match': {
               'name.default': {
-                'analyzer': 'peliasPhrase',
-                'boost': 100,
+                'analyzer': 'peliasQueryFullToken',
+                'boost': 1,
+                'slop': 3,
                 'query': 'one',
-                'type': 'phrase',
-                'operator': 'and'
+                'type': 'phrase'
               }
             }
           }],
           'should':[{
+            'match': {
+              'phrase.default': {
+                'analyzer': 'peliasPhrase',
+                'boost': 1,
+                'slop': 3,
+                'query': 'one',
+                'type': 'phrase'
+              }
+            }
+          },{
             'function_score': {
               'query': {
                 'match': {
                   'name.default': {
-                    'analyzer': 'peliasPhrase',
-                    'boost': 100,
+                    'analyzer': 'peliasQueryFullToken',
                     'query': 'one',
-                    'type': 'phrase',
-                    'operator': 'and'
                   }
                 }
               },
@@ -45,11 +52,8 @@ module.exports = {
               'query': {
                 'match': {
                   'name.default': {
-                    'analyzer': 'peliasPhrase',
-                    'boost': 100,
+                    'analyzer': 'peliasQueryFullToken',
                     'query': 'one',
-                    'type': 'phrase',
-                    'operator': 'and'
                   }
                 }
               },

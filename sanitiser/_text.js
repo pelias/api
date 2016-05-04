@@ -1,5 +1,5 @@
 var check = require('check-types'),
-    text_parser = require('../helper/text_parser');
+    text_analyzer = require('pelias-text-analyzer');
 
 // validate texts, convert types and apply defaults
 function sanitize( raw, clean ){
@@ -19,7 +19,7 @@ function sanitize( raw, clean ){
     clean.text = raw.text;
 
     // parse text with query parser
-    var parsed_text = text_parser.get_parsed_address(clean.text);
+    var parsed_text = text_analyzer.parse(clean.text);
     if (check.assigned(parsed_text)) {
       clean.parsed_text = parsed_text;
     }

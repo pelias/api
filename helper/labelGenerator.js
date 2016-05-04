@@ -16,18 +16,27 @@ module.exports = function( record ){
   // retain only things that are truthy
   labelParts = _.compact(labelParts);
 
-  // first, dedupe the name and 1st label array elements
-  //  this is used to ensure that the `name` and first admin hierarchy elements aren't repeated
-  //  eg - `["Lancaster", "Lancaster", "PA", "United States"]` -> `["Lancaster", "PA", "United States"]`
-  var dedupedNameAndFirstLabelElement = _.uniq([labelParts.shift(), labelParts.shift()]);
-
-  // second, unshift the deduped parts back onto the labelParts
-  labelParts.unshift.apply(labelParts, dedupedNameAndFirstLabelElement);
-
-  // third, join with a comma and return
-  return labelParts.join(', ');
+  // third, dedupe and join with a comma and return
+  return dedupeNameAndFirstLabelElement(labelParts).join(', ');
 
 };
+
+function dedupeNameAndFirstLabelElement(labelParts) {
+  // only dedupe if a result has more than a name (the first label part)
+  if (labelParts.length > 1) {
+    // first, dedupe the name and 1st label array elements
+    //  this is used to ensure that the `name` and first admin hierarchy elements aren't repeated
+    //  eg - `["Lancaster", "Lancaster", "PA", "United States"]` -> `["Lancaster", "PA", "United States"]`
+    var deduped = _.uniq([labelParts.shift(), labelParts.shift()]);
+
+    // second, unshift the deduped parts back onto the labelParts
+    labelParts.unshift.apply(labelParts, deduped);
+
+  }
+
+  return labelParts;
+
+}
 
 function getSchema(country_a) {
   if (country_a && country_a.length && schemas[country_a]) {

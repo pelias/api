@@ -7,7 +7,7 @@ module.exports = {
           'must': [{
             'match': {
               'name.default': {
-                'analyzer': 'peliasPhrase',
+                'analyzer': 'peliasQueryPartialToken',
                 'boost': 100,
                 'query': 'test',
                 'type': 'phrase',
@@ -20,11 +20,8 @@ module.exports = {
               'query': {
                 'match': {
                   'name.default': {
-                    'analyzer': 'peliasPhrase',
-                    'boost': 100,
+                    'analyzer': 'peliasQueryFullToken',
                     'query': 'test',
-                    'type': 'phrase',
-                    'operator': 'and'
                   }
                 }
               },
@@ -45,11 +42,8 @@ module.exports = {
               'query': {
                 'match': {
                   'name.default': {
-                    'analyzer': 'peliasPhrase',
-                    'boost': 100,
+                    'analyzer': 'peliasQueryFullToken',
                     'query': 'test',
-                    'type': 'phrase',
-                    'operator': 'and'
                   }
                 }
               },
