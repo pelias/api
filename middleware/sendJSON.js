@@ -3,7 +3,7 @@ var check = require('check-types'),
     exceptions = require('elasticsearch-exceptions/lib/exceptions/SupportedExceptions');
 
 // create a list of regular expressions to match against.
-// note: list created at runtime for performance reasons.
+// note: list created when the server starts up; for performance reasons.
 var exceptionRegexList = exceptions.map( function( exceptionName ){
   return new RegExp( '^' + exceptionName );
 });
