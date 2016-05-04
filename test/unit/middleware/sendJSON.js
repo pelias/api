@@ -38,7 +38,7 @@ module.exports.tests.default_status = function(test, common) {
 
     res.status = function( code ){
       return { json: function( body ){
-        t.equal( code, 200, 'default status' );
+        t.equal( code, 200, '200 OK' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};
@@ -52,7 +52,7 @@ module.exports.tests.default_status = function(test, common) {
 
     res.status = function( code ){
       return { json: function( body ){
-        t.equal( code, 200, 'default status' );
+        t.equal( code, 200, '200 OK' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};
@@ -70,7 +70,7 @@ module.exports.tests.default_error_status = function(test, common) {
 
     res.status = function( code ){
       return { json: function( body ){
-        t.equal( code, 400, 'default status' );
+        t.equal( code, 400, '400 Bad Request' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};
@@ -88,7 +88,7 @@ module.exports.tests.generic_server_error = function(test, common) {
 
     res.status = function( code ){
       return { json: function( body ){
-        t.equal( code, 500, 'default status' );
+        t.equal( code, 500, 'Internal Server Error' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};
@@ -106,7 +106,7 @@ module.exports.tests.generic_elasticsearch_error = function(test, common) {
 
     res.status = function( code ){
       return { json: function( body ){
-        t.equal( code, 500, 'default status' );
+        t.equal( code, 500, 'Internal Server Error' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};
@@ -124,7 +124,7 @@ module.exports.tests.request_timeout = function(test, common) {
 
     res.status = function( code ){
       return { json: function( body ){
-        t.equal( code, 408, 'default status' );
+        t.equal( code, 408, 'Request Timeout' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};
@@ -142,7 +142,7 @@ module.exports.tests.no_connections = function(test, common) {
 
     res.status = function( code ){
       return { json: function( body ){
-        t.equal( code, 502, 'default status' );
+        t.equal( code, 502, 'Bad Gateway' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};
@@ -160,7 +160,7 @@ module.exports.tests.connection_fault = function(test, common) {
 
     res.status = function( code ){
       return { json: function( body ){
-        t.equal( code, 502, 'default status' );
+        t.equal( code, 502, 'Bad Gateway' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};
@@ -178,7 +178,25 @@ module.exports.tests.serialization = function(test, common) {
 
     res.status = function( code ){
       return { json: function( body ){
-        t.equal( code, 500, 'default status' );
+        t.equal( code, 500, 'Internal Server Error' );
+        t.deepEqual( body, res.body, 'body set' );
+        t.end();
+      }};
+    };
+
+    middleware(null, res);
+  });
+};
+
+module.exports.tests.search_phase_execution_exception = function(test, common) {
+  test('search phase execution exception', function(t) {
+    var res = { body: { geocoding: {
+      errors: [ 'SearchPhaseExecutionException[ foo ]' ]
+    }}};
+
+    res.status = function( code ){
+      return { json: function( body ){
+        t.equal( code, 500, 'Internal Server Error' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};

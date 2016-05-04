@@ -1,5 +1,12 @@
 var check = require('check-types'),
-    es = require('elasticsearch');
+    es = require('elasticsearch'),
+    exceptions = require('elasticsearch-exceptions/lib/exceptions/SupportedExceptions');
+
+// create a list of regular expressions to match against.
+// note: list created at runtime for performance reasons.
+var exceptionRegexList = exceptions.map( function( exceptionName ){
+  return new RegExp( '^' + exceptionName );
+});
 
 function sendJSONResponse(req, res, next) {
 
@@ -9,10 +16,11 @@ function sendJSONResponse(req, res, next) {
   }
 
   // default status
-  var statusCode = 200;
+  var statusCode = 200; // 200 OK
 
   // vary status code whenever an error was reported
   var geocoding = res.body.geocoding;
+
   if( check.array( geocoding.errors ) && geocoding.errors.length ){
 
     // default status for errors is 400 Bad Request
@@ -20,6 +28,7 @@ function sendJSONResponse(req, res, next) {
 
     // iterate over all reported errors
     geocoding.errors.forEach( function( err ){
+
       // custom status codes for instances of the Error() object.
       if( err instanceof Error ){
         /*
@@ -30,10 +39,23 @@ function sendJSONResponse(req, res, next) {
           500 Internal Server Error
           502 Bad Gateway
         */
-        if( err instanceof es.errors.RequestTimeout ){ statusCode = 408; }
-        else if( err instanceof es.errors.NoConnections ){ statusCode = 502; }
-        else if( err instanceof es.errors.ConnectionFault ){ statusCode = 502; }
-        else { statusCode = 500; }
+        if( err instanceof es.errors.RequestTimeout ){ statusCode = Math.max( statusCode, 408 ); }
+        else if( err instanceof es.errors.NoConnections ){ statusCode = Math.max( statusCode, 502 ); }
+        else if( err instanceof es.errors.ConnectionFault ){ statusCode = Math.max( statusCode, 502 ); }
+        else { statusCode = Math.max( statusCode, 500 ); }
+
+      /*
+        some elasticsearch errors are only returned as strings (not instances of Error).
+        in this case we (unfortunately) need to match the exception at position 0 inside the string.
+      */
+      } else if( check.string( err ) ){
+        for( var i=0; i<exceptionRegexList.length; i++ ){
+          // check error string against a list of known elasticsearch exceptions
+          if( err.match( exceptionRegexList[i] ) ){
+            statusCode = Math.max( statusCode, 500 );
+            break; // break on first match
+          }
+        }
       }
     });
   }
