@@ -206,6 +206,24 @@ module.exports.tests.search_phase_execution_exception = function(test, common) {
   });
 };
 
+module.exports.tests.unknown_exception = function(test, common) {
+  test('unknown exception', function(t) {
+    var res = { body: { geocoding: {
+      errors: [ 'MadeUpExceptionName[ foo ]' ]
+    }}};
+
+    res.status = function( code ){
+      return { json: function( body ){
+        t.equal( code, 400, '400 Bad Request' );
+        t.deepEqual( body, res.body, 'body set' );
+        t.end();
+      }};
+    };
+
+    middleware(null, res);
+  });
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
