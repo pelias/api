@@ -31,7 +31,7 @@ function setup( backend, query ){
       cmd.type = req.clean.layers;
     }
 
-    logger.debug( '[ES req]', JSON.stringify(cmd) );
+    logger.debug( '[ES req]', cmd );
 
     // query backend
     service.search( backend, cmd, function( err, docs, meta ){
@@ -49,7 +49,7 @@ function setup( backend, query ){
         res.data = docs;
         res.meta = meta;
       }
-      logger.debug('[ES response]', JSON.stringify(docs));
+      logger.debug('[ES response]', docs);
       next();
     });
 
