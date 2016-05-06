@@ -38,6 +38,7 @@
     "check-types": "^6.0.0",
     "cluster2": "git://github.com/missinglink/cluster2.git#node_zero_twelve",
     "elasticsearch": "^11.0.0",
+    "elasticsearch-exceptions": "0.0.4",
     "express": "^4.8.8",
     "express-http-proxy": "^0.6.0",
     "extend": "3.0.0",
