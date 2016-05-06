@@ -48,8 +48,9 @@ var LAYERS_BY_SOURCE = {
  openstreetmap: [ 'address', 'venue' ],
  openaddresses: [ 'address' ],
  geonames: [ 'country', 'region', 'county', 'locality', 'venue' ],
- whosonfirst: [ 'continent', 'macrocountry', 'country', 'dependency', 'region',
-   'locality', 'localadmin', 'county', 'macrohood', 'neighbourhood', 'microhood', 'disputed']
+ whosonfirst: [ 'continent', 'country', 'dependency', 'macroregion', 'region',
+   'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
+   'neighbourhood', 'microhood', 'disputed']
 };
 
 /*

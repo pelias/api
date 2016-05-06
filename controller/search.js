@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 var service = { search: require('../service/search') };
 var logger = require('pelias-logger').get('api:controller:search');
 
@@ -29,21 +31,25 @@ function setup( backend, query ){
       cmd.type = req.clean.layers;
     }
 
-    logger.debug( '[ES req]', JSON.stringify(cmd) );
+    logger.debug( '[ES req]', cmd );
 
     // query backend
     service.search( backend, cmd, function( err, docs, meta ){
 
       // error handler
       if( err ){
-        req.errors.push( err );
+        if (_.isObject(err) && err.message) {
+          req.errors.push( err.message );
+        } else {
+          req.errors.push( err );
+        }
       }
       // set response data
       else {
         res.data = docs;
         res.meta = meta;
       }
-      logger.debug('[ES response]', JSON.stringify(docs));
+      logger.debug('[ES response]', docs);
       next();
     });
 

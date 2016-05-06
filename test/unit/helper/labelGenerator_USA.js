@@ -9,218 +9,233 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-module.exports.tests.localadmin = function(test, common) {
-  test('localadmin should trump locality, neighbourhood, and county', function(t) {
+module.exports.tests.united_states = function(test, common) {
+  test('venue', function(t) {
     var doc = {
-      'name': 'Default Name',
+      'name': 'venue name',
+      'layer': 'venue',
+      'housenumber': 'house number',
+      'street': 'street name',
+      'neighbourhood': 'neighbourhood name',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
       'country_a': 'USA',
-      'country': 'United States',
-      'region': 'Region Name',
-      'region_a': 'Region Abbr',
-      'county': 'County Name',
-      'localadmin': 'LocalAdmin Name',
-      'locality': 'Locality Name',
-      'neighbourhood': 'Neighbourhood Name'
+      'country': 'United States'
     };
-    t.equal(generator(doc),'Default Name, LocalAdmin Name, Region Abbr, USA');
+    t.equal(generator(doc),'venue name, locality name, region abbr, USA');
     t.end();
   });
-};
 
-module.exports.tests.locality = function(test, common) {
-  test('locality should trump neighbourhood and county when localadmin not available', function(t) {
+  test('localadmin value should be used when there is no locality', function(t) {
     var doc = {
-      'name': 'Default Name',
+      'name': 'venue name',
+      'layer': 'venue',
+      'housenumber': 'house number',
+      'street': 'street name',
+      'neighbourhood': 'neighbourhood name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
       'country_a': 'USA',
-      'country': 'United States',
-      'region': 'Region Name',
-      'region_a': 'Region Abbr',
-      'county': 'County Name',
-      'locality': 'Locality Name',
-      'neighbourhood': 'Neighbourhood Name'
+      'country': 'United States'
     };
-    t.equal(generator(doc),'Default Name, Locality Name, Region Abbr, USA');
+    t.equal(generator(doc),'venue name, localadmin name, region abbr, USA');
     t.end();
   });
-};
 
-module.exports.tests.neighbourhood = function(test, common) {
-  test('neighbourhood should trump county when neither localadmin nor locality', function(t) {
+  test('street', function(t) {
     var doc = {
-      'name': 'Default Name',
+      'name': 'house number street name',
+      'layer': 'address',
+      'housenumber': 'house number',
+      'street': 'street name',
+      'neighbourhood': 'neighbourhood name',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
       'country_a': 'USA',
-      'country': 'United States',
-      'region': 'Region Name',
-      'region_a': 'Region Abbr',
-      'county': 'County Name',
-      'neighbourhood': 'Neighbourhood Name'
+      'country': 'United States'
     };
-    t.equal(generator(doc),'Default Name, Neighbourhood Name, Region Abbr, USA');
+    t.equal(generator(doc),'house number street name, locality name, region abbr, USA');
     t.end();
   });
-};
 
-module.exports.tests.county = function(test, common) {
-  test('county should be used when localadmin, locality, and neighbourhood are not available', function(t) {
+  test('neighbourhood', function(t) {
     var doc = {
-      'name': 'Default Name',
+      'name': 'neighbourhood name',
+      'layer': 'neighbourhood',
+      'neighbourhood': 'neighbourhood name',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
       'country_a': 'USA',
-      'country': 'United States',
-      'region': 'Region Name',
-      'region_a': 'Region Abbr',
-      'county': 'County Name'
+      'country': 'United States'
     };
-    t.equal(generator(doc),'Default Name, County Name, Region Abbr, USA');
+    t.equal(generator(doc),'neighbourhood name, locality name, region abbr, USA');
     t.end();
   });
-};
 
-module.exports.tests.region = function(test, common) {
+  test('venue in borough', function(t) {
+    var doc = {
+      'name': 'venue name',
+      'layer': 'borough',
+      'neighbourhood': 'neighbourhood name',
+      'borough': 'borough name',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'venue name, borough name, locality name, region abbr, USA');
+    t.end();
+  });
+
+  test('locality', function(t) {
+    var doc = {
+      'name': 'locality name',
+      'layer': 'locality',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'locality name, region abbr, USA');
+    t.end();
+  });
+
+  test('localadmin', function(t) {
+    var doc = {
+      'name': 'localadmin name',
+      'layer': 'localadmin',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'localadmin name, region abbr, USA');
+    t.end();
+  });
+
+  test('county', function(t) {
+    var doc = {
+      'name': 'county name',
+      'layer': 'county',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'county name, region abbr, USA');
+    t.end();
+  });
+
+  test('macrocounty', function(t) {
+    var doc = {
+      'name': 'macrocounty name',
+      'layer': 'macrocounty',
+      'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'macrocounty name, region abbr, USA');
+    t.end();
+  });
+
+  test('region', function(t) {
+    var doc = {
+      'name': 'region name',
+      'layer': 'region',
+      'region_a': 'region abbr',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'region name, USA');
+    t.end();
+  });
+
+  test('macroregion', function(t) {
+    var doc = {
+      'name': 'macroregion name',
+      'layer': 'macroregion',
+      'macroregion': 'macroregion name',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'macroregion name, USA');
+    t.end();
+  });
+
+  test('country', function(t) {
+    var doc = {
+      'name': 'United States',
+      'layer': 'country',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'United States');
+    t.end();
+  });
+
   test('region should be used when region_a is not available', function(t) {
     var doc = {
-      'name': 'Default Name',
+      'name': 'locality name',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
       'country_a': 'USA',
-      'country': 'United States',
-      'region': 'Region Name'
+      'country': 'United States'
     };
-    t.equal(generator(doc),'Default Name, Region Name, USA');
+    t.equal(generator(doc),'locality name, region name, USA', 'region should be used');
     t.end();
   });
-};
 
-// USA geonames state
-module.exports.tests.region_geonames = function(test, common) {
-  test('default name should not be prepended when source=geonames and layer=region', function(t) {
-    var doc = {
-      'name': 'Region Name',
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'Region Name',
-      'region_a': 'Region Abbr',
-      'source': 'geonames',
-      'layer': 'region'
-    };
-    t.equal(generator(doc),'Region Name, USA');
-    t.end();
-  });
-};
-
-// USA whosonfirst state
-module.exports.tests.region_whosonfirst = function(test, common) {
-  test('default name should not be prepended when source=whosonfirst and layer=region', function(t) {
-    var doc = {
-      'name': 'Region Name',
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'Region Name',
-      'region_a': 'Region Abbr',
-      'source': 'whosonfirst',
-      'layer': 'region'
-    };
-    t.equal(generator(doc),'Region Name, USA');
-    t.end();
-  });
-};
-
-// USA non-geonames/whosonfirst state
-module.exports.tests.region_other_source = function(test, common) {
-  test('default name should be prepended when layer=region and source is not whosonfirst or geonames', function(t) {
-    var doc = {
-      'name': 'Default Name',
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'Region Name',
-      'region_a': 'Region Abbr',
-      'source': 'not geonames or whosonfirst',
-      'layer': 'region'
-    };
-    t.equal(generator(doc),'Default Name, Region Name, USA',generator(doc));
-    t.end();
-  });
-};
-
-// major USA city
-module.exports.tests.san_francisco = function(test, common) {
-  test('san francisco', function(t) {
-    var doc = {
-      'name': 'San Francisco',
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'California',
-      'region_a': 'CA',
-      'county': 'San Francisco County',
-      'locality': 'San Francisco'
-    };
-    t.equal(generator(doc),'San Francisco, San Francisco County, CA, USA');
-    t.end();
-  });
-};
-
-// USA venue
-module.exports.tests.nyc_office = function(test, common) {
-  test('30 West 26th Street', function(t) {
-    var doc = {
-      'name': '30 West 26th Street',
-      'housenumber': '30',
-      'street': 'West 26th Street',
-      'postalcode': '10010',
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'New York',
-      'region_a': 'NY',
-      'county': 'New York County',
-      'localadmin': 'Manhattan',
-      'locality': 'New York',
-      'neighbourhood': 'Flatiron District'
-    };
-    t.equal(generator(doc),'30 West 26th Street, Manhattan, NY, USA');
-    t.end();
-  });
-};
-
-// USA NYC eatery
-module.exports.tests.nyc_bakery = function(test, common) {
-  test('New York Bakery', function(t) {
-    var doc = {
-      'name': 'New York Bakery',
-      'housenumber': '51 W',
-      'street': '29th',
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'New York',
-      'region_a': 'NY',
-      'county': 'New York County',
-      'localadmin': 'Manhattan',
-      'locality': 'New York',
-      'neighbourhood': 'Koreatown'
-    };
-    t.equal(generator(doc),'New York Bakery, Manhattan, NY, USA');
-    t.end();
-  });
-};
-
-// USA SFC building
-module.exports.tests.ferry_building = function(test, common) {
-  test('Ferry Building', function(t) {
-    var doc = {
-      'name': 'Ferry Building',
-      'country_a': 'USA',
-      'country': 'United States',
-      'region': 'California',
-      'region_a': 'CA',
-      'county': 'San Francisco County',
-      'locality': 'San Francisco',
-      'neighbourhood': 'Financial District'
-    };
-    t.equal(generator(doc),'Ferry Building, San Francisco, CA, USA');
-    t.end();
-  });
 };
 
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('label generator: ' + name, testFunction);
+    return tape('label generator (USA): ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

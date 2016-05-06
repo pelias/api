@@ -12,9 +12,9 @@ module.exports.tests.interfaces = function(test, common) {
 
   test('alias layer mapping', function(t) {
     t.deepEquals(type_mapping.layer_mapping.coarse,
-                 [ 'continent', 'macrocountry', 'country', 'dependency',
-                   'region', 'locality', 'localadmin', 'county', 'macrohood',
-                   'neighbourhood', 'microhood', 'disputed' ]);
+                 [ 'continent', 'country', 'dependency', 'macroregion',
+                   'region', 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood',
+                   'borough', 'neighbourhood', 'microhood', 'disputed' ]);
     t.end();
   });
 

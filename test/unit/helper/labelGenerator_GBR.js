@@ -10,69 +10,183 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-// GBR street address
-module.exports.tests.one_main_street_uk = function(test, common) {
-  test('one main street uk', function(t) {
+module.exports.tests.united_kingdom = function(test, common) {
+  test('venue', function(t) {
     var doc = {
-      'name': '1 Main St',
-      'housenumber': '1',
-      'street': 'Main St',
-      'postalcode': 'BT77 0BG',
+      'name': 'venue name',
+      'layer': 'venue',
+      'housenumber': 'house number',
+      'street': 'street name',
+      'neighbourhood': 'neighbourhood name',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
       'country_a': 'GBR',
-      'country': 'United Kingdom',
-      'region': 'Dungannon'
+      'country': 'United Kingdom'
     };
-    t.equal(generator(doc),'1 Main St, Dungannon, United Kingdom');
+    t.equal(generator(doc),'venue name, locality name, macroregion name, United Kingdom');
     t.end();
   });
-};
 
-// GBR venue
-module.exports.tests.hackney_city_farm = function(test, common) {
-  test('hackney city farm', function(t) {
+  test('localadmin value should be used when locality is not available', function(t) {
     var doc = {
-      'name': 'Hackney City Farm',
+      'name': 'venue name',
+      'layer': 'venue',
+      'housenumber': 'house number',
+      'street': 'street name',
+      'neighbourhood': 'neighbourhood name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
       'country_a': 'GBR',
-      'country': 'United Kingdom',
-      'region': 'Hackney',
-      'county': 'Greater London',
-      'locality': 'London',
-      'neighbourhood': 'Haggerston'
+      'country': 'United Kingdom'
     };
-    t.equal(generator(doc),'Hackney City Farm, Haggerston, Greater London');
+    t.equal(generator(doc),'venue name, localadmin name, macroregion name, United Kingdom');
     t.end();
   });
-};
 
-// GBR country
-module.exports.tests.wales = function(test, common) {
-  test('wales', function(t) {
+  test('street', function(t) {
     var doc = {
-      'name': 'Wales',
+      'name': 'house number street name',
+      'layer': 'address',
+      'housenumber': 'house number',
+      'street': 'street name',
+      'neighbourhood': 'neighbourhood name',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
       'country_a': 'GBR',
-      'country': 'United Kingdom',
-      'region': 'Wales'
+      'country': 'United Kingdom'
     };
-    t.equal(generator(doc),'Wales, United Kingdom');
+    t.equal(generator(doc),'house number street name, locality name, macroregion name, United Kingdom');
     t.end();
   });
-};
 
-// GBR macroregion
-module.exports.tests.macroregion_trumps_region = function(test, common) {
-  test('macroregion should trump region when none of neighbourhood, county, localadmin, locality are available', function(t) {
+  test('neighbourhood', function(t) {
     var doc = {
-      'name': 'Name',
+      'name': 'neighbourhood name',
+      'layer': 'neighbourhood',
+      'neighbourhood': 'neighbourhood name',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
       'country_a': 'GBR',
-      'country': 'Country Name',
-      'macroregion': 'Macroregion Name',
-      'region': 'Region Name'
+      'country': 'United Kingdom'
     };
-
-    t.equal(generator(doc), 'Name, Macroregion Name, Country Name');
+    t.equal(generator(doc),'neighbourhood name, locality name, macroregion name, United Kingdom');
     t.end();
-
   });
+
+  test('locality', function(t) {
+    var doc = {
+      'name': 'locality name',
+      'layer': 'locality',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'GBR',
+      'country': 'United Kingdom'
+    };
+    t.equal(generator(doc),'locality name, macroregion name, United Kingdom');
+    t.end();
+  });
+
+  test('localadmin', function(t) {
+    var doc = {
+      'name': 'localadmin name',
+      'layer': 'localadmin',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'GBR',
+      'country': 'United Kingdom'
+    };
+    t.equal(generator(doc),'localadmin name, macroregion name, United Kingdom');
+    t.end();
+  });
+
+  test('county', function(t) {
+    var doc = {
+      'name': 'county name',
+      'layer': 'county',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'GBR',
+      'country': 'United Kingdom'
+    };
+    t.equal(generator(doc),'county name, macroregion name, United Kingdom');
+    t.end();
+  });
+
+  test('macrocounty', function(t) {
+    var doc = {
+      'name': 'macrocounty name',
+      'layer': 'macrocounty',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'GBR',
+      'country': 'United Kingdom'
+    };
+    t.equal(generator(doc),'macrocounty name, macroregion name, United Kingdom');
+    t.end();
+  });
+
+  test('region', function(t) {
+    var doc = {
+      'name': 'region name',
+      'layer': 'region',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'GBR',
+      'country': 'United Kingdom'
+    };
+    t.equal(generator(doc),'region name, macroregion name, United Kingdom');
+    t.end();
+  });
+
+  test('macroregion', function(t) {
+    var doc = {
+      'name': 'macroregion name',
+      'layer': 'macroregion',
+      'macroregion': 'macroregion name',
+      'country_a': 'GBR',
+      'country': 'United Kingdom'
+    };
+    t.equal(generator(doc),'macroregion name, United Kingdom');
+    t.end();
+  });
+
+  test('country', function(t) {
+    var doc = {
+      'name': 'United Kingdom',
+      'layer': 'country',
+      'postalcode': 'postalcode',
+      'country_a': 'GBR',
+      'country': 'United Kingdom'
+    };
+    t.equal(generator(doc),'United Kingdom');
+    t.end();
+  });
+
 };
 
 module.exports.all = function (tape, common) {

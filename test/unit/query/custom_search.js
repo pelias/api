@@ -1,5 +1,5 @@
 // test creating a custom query using pelias config file
-var parser = require('../../../helper/text_parser');
+var text_analyzer = require('pelias-text-analyzer');
 var proxyquire = require('proxyquire');
 
 var customConfig = {
@@ -36,7 +36,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate({ text: address,
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
-      parsed_text: parser.get_parsed_address(address),
+      parsed_text: text_analyzer.parse(address)
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );

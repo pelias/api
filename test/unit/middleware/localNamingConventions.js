@@ -77,8 +77,21 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
     }
   };
 
+  var unknownCountryAddress = {
+    '_id': 'test4',
+    '_type': 'test',
+    'name': { 'default': '123 Main Street' },
+    'center_point': { 'lon': 30.1, 'lat': -50 },
+    'address_parts': {
+       'number': '123',
+       'street': 'Main Street'
+    },
+    'parent': {
+    }
+  };
+
   var req = {},
-      res = { data: [ ukAddress, deAddress, nlAddress ] },
+      res = { data: [ ukAddress, deAddress, nlAddress, unknownCountryAddress ] },
       middleware = localNamingConventions();
 
   test('flipNumberAndStreet', function(t) {
@@ -95,6 +108,10 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
       // NLD address should have the housenumber and street name flipped, too
       // this definition comes from pelias configuration
       t.equal( res.data[2].name.default, 'Keizersgracht 117', 'flipped name' );
+
+      // addresses without a known country (either due to missing data or admin lookup
+      // being disabled), don't have the name flipped
+      t.equal( res.data[3].name.default, '123 Main Street', 'standard name');
 
       t.end();
     });
