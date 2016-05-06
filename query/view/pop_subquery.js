@@ -1,4 +1,5 @@
 
+
 var peliasQuery = require('pelias-query'),
     check = require('check-types');
 
@@ -9,6 +10,7 @@ var peliasQuery = require('pelias-query'),
 module.exports = function( vs ){
 
   var view = peliasQuery.view.ngrams( vs );
+
   var matchLabel = vs.var('ngram:field');
 
   if ( view.match && matchLabel ) {
