@@ -1,3 +1,4 @@
+
 function addViewsToQuery(views, query, viewLib) {
 
   // Note: 'views' config values below are not sanitized. Api should stop if conf is bad.

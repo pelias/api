@@ -9,7 +9,7 @@
 
 function middleware(req, res, next){
   if( req.method === 'OPTIONS' ){
-    res.send(200);
+    res.sendStatus(200);
   } else {
     next();
   }

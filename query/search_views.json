@@ -12,14 +12,11 @@
     ["address", "street"],
     ["address", "postcode"],
 
-    ["admin", "country"],
     ["admin", "country_a"],
-    ["admin", "region"],
     ["admin", "region_a"],
-    ["admin", "county"],
-    ["admin", "localadmin"],
-    ["admin", "locality"],
-    ["admin", "neighbourhood"]
+    ["admin_multi_match", [ "country", "macroregion", "region", "macrocounty",
+			    "county", "localadmin", "locality", "borough",
+			    "neighbourhood", "region_a"], false, "peliasAdmin"]
   ],
   "filter": [
     ["boundary_circle"],

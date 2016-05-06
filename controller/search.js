@@ -31,7 +31,7 @@ function setup( backend, query ){
       cmd.type = req.clean.layers;
     }
 
-    logger.debug( '[ES req]', cmd);
+    logger.debug( '[ES req]', cmd );
 
     // query backend
     service.search( backend, cmd, function( err, docs, meta ){

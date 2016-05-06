@@ -20,20 +20,20 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'boundary:rect:type': 'indexed',
   'boundary:rect:_cache': true,
 
-  'ngram:analyzer': 'peliasPhrase',
+  'ngram:analyzer': 'peliasQueryPartialToken',
   'ngram:field': 'name.default',
   'ngram:boost': 100,
 
-  'phrase:analyzer': 'peliasPhrase',
-  'phrase:field': 'phrase.default',
+  'phrase:analyzer': 'peliasQueryFullToken',
+  'phrase:field': 'name.default',
   'phrase:boost': 1,
-  'phrase:slop': 2,
+  'phrase:slop': 3,
 
   'focus:function': 'linear',
   'focus:offset': '0km',
   'focus:scale': '250km',
   'focus:decay': 0.5,
-  'focus:weight': 10,
+  'focus:weight': 40,
 
   'function_score:score_mode': 'avg',
   'function_score:boost_mode': 'multiply',
@@ -81,6 +81,10 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'admin:neighbourhood:analyzer': 'peliasAdmin',
   'admin:neighbourhood:field': 'parent.neighbourhood',
   'admin:neighbourhood:boost': 200,
+
+  'admin:borough:analyzer': 'peliasAdmin',
+  'admin:borough:field': 'parent.borough',
+  'admin:borough:boost': 600,
 
   'popularity:field': 'popularity',
   'popularity:modifier': 'log1p',
