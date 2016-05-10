@@ -1,90 +1,86 @@
 
 module.exports = {
   'query': {
-    'filtered': {
-      'query': {
-        'bool': {
-          'must': [{
+    'bool': {
+      'must': [{
+        'match': {
+          'name.default': {
+            'analyzer': 'peliasQueryFullToken',
+            'type': 'phrase',
+            'boost': 1,
+            'slop': 3,
+            'query': 'one two'
+          }
+        }
+      },
+      {
+        'match': {
+          'name.default': {
+            'analyzer': 'peliasQueryPartialToken',
+            'boost': 100,
+            'query': 'three',
+            'type': 'phrase',
+            'operator': 'and'
+          }
+        }
+      }],
+      'should':[
+        {
+          'match': {
+            'phrase.default': {
+              'analyzer' : 'peliasPhrase',
+              'type' : 'phrase',
+              'boost' : 1,
+              'slop' : 3,
+              'query' : 'one two'
+            }
+          }
+        },
+        {
+        'function_score': {
+          'query': {
             'match': {
               'name.default': {
                 'analyzer': 'peliasQueryFullToken',
-                'type': 'phrase',
-                'boost': 1,
-                'slop': 3,
-                'query': 'one two'
+                'query': 'one two three',
               }
             }
           },
-          {
-            'match': {
-              'name.default': {
-                'analyzer': 'peliasQueryPartialToken',
-                'boost': 100,
-                'query': 'three',
-                'type': 'phrase',
-                'operator': 'and'
-              }
-            }
-          }],
-          'should':[
-            {
-              'match': {
-                'phrase.default': {
-                  'analyzer' : 'peliasPhrase',
-                  'type' : 'phrase',
-                  'boost' : 1,
-                  'slop' : 3,
-                  'query' : 'one two'
-                }
-              }
+          'max_boost': 20,
+          'score_mode': 'first',
+          'boost_mode': 'replace',
+          'functions': [{
+            'field_value_factor': {
+              'modifier': 'log1p',
+              'field': 'popularity',
+              'missing': 1
             },
-            {
-            'function_score': {
-              'query': {
-                'match': {
-                  'name.default': {
-                    'analyzer': 'peliasQueryFullToken',
-                    'query': 'one two three',
-                  }
-                }
-              },
-              'max_boost': 20,
-              'score_mode': 'first',
-              'boost_mode': 'replace',
-              'functions': [{
-                'field_value_factor': {
-                  'modifier': 'log1p',
-                  'field': 'popularity',
-                  'missing': 1
-                },
-                'weight': 1
-              }]
-            }
-          },{
-            'function_score': {
-              'query': {
-                'match': {
-                  'name.default': {
-                    'analyzer': 'peliasQueryFullToken',
-                    'query': 'one two three',
-                  }
-                }
-              },
-              'max_boost': 20,
-              'score_mode': 'first',
-              'boost_mode': 'replace',
-              'functions': [{
-                'field_value_factor': {
-                  'modifier': 'log1p',
-                  'field': 'population',
-                  'missing': 1
-                },
-                'weight': 3
-              }]
-            }
+            'weight': 1
           }]
         }
-      }
+      },{
+        'function_score': {
+          'query': {
+            'match': {
+              'name.default': {
+                'analyzer': 'peliasQueryFullToken',
+                'query': 'one two three',
+              }
+            }
+          },
+          'max_boost': 20,
+          'score_mode': 'first',
+          'boost_mode': 'replace',
+          'functions': [{
+            'field_value_factor': {
+              'modifier': 'log1p',
+              'field': 'population',
+              'missing': 1
+            },
+            'weight': 3
+          }]
+        }
+      }]
     }
   },
   'sort': [ '_score' ],
