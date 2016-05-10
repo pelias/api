@@ -116,7 +116,6 @@ module.exports = {
                 'bottom': 47.47,
                 'left': -103.16
               },
-              '_cache': true,
               'type': 'indexed'
             }
           }]

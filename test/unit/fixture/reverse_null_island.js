@@ -16,7 +16,6 @@ module.exports = {
                 'distance': '500km',
                 'distance_type': 'plane',
                 'optimize_bbox': 'indexed',
-                '_cache': true,
                 'center_point': {
                   'lat': 0,
                   'lon': 0
