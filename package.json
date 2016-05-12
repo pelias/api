@@ -30,8 +30,7 @@
     "url": "https://github.com/pelias/api/issues"
   },
   "engines": {
-    "node": ">=0.10.26",
-    "npm": ">=1.4.3"
+    "node": ">=0.10.26"
   },
   "dependencies": {
     "async": "^1.5.2",
