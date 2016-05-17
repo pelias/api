@@ -1,0 +1,28 @@
+{
+  "score": [
+    [ "phrase_first_tokens_only", null, false, "must"],
+    [ "ngrams_last_token_only", null, false, "must"],
+
+    [ "address", "housenumber" ],
+    [ "address", "street" ],
+    [ "address", "postcode" ],
+
+    ["admin", "country"],
+    ["admin", "country_a"],
+    ["admin", "region"],
+    ["admin", "region_a"],
+    ["admin", "county"],
+    ["admin", "borough"],
+    ["admin", "localadmin"],
+    ["admin", "locality"],
+    ["admin", "neighbourhood"],
+
+    ["boost_exact_matches"],
+    ["focus_selected_layers", "ngrams_strict", true],
+    ["popularity", "pop_subquery", true],
+    ["population", "pop_subquery", true]
+  ],
+  "filter": [
+    ["sources"]
+  ]
+}
