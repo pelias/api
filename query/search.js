@@ -37,7 +37,7 @@ query.score( peliasQuery.view.address('postcode') );
 // multi_match is appropriate.
 query.score( peliasQuery.view.admin('country_a') );
 query.score( peliasQuery.view.admin('region_a') );
-query.score( peliasQuery.view.admin_multi_match(adminFields), 'peliasAdmin' );
+query.score( peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin') );
 
 // non-scoring hard filters
 query.filter( peliasQuery.view.boundary_circle );
