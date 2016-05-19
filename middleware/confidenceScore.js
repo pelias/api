@@ -77,8 +77,6 @@ function computeConfidenceScore(req, mean, stdev, hit) {
   hit.confidence /= checkCount;
   hit.confidence = Number((hit.confidence).toFixed(3));
 
-  logger.debug('[confidence]:', hit.confidence, hit.name.default);
-
   return hit;
 }
 
@@ -102,8 +100,6 @@ function checkForDealBreakers(req, hit) {
 
   if (check.assigned(req.clean.parsed_text.postalcode) && check.assigned(hit.address_parts) &&
       req.clean.parsed_text.postalcode !== hit.address_parts.zip) {
-    logger.debug('[confidence][deal-breaker]: postalcode !== zip (' + req.clean.parsed_text.postalcode +
-      ' !== ' + hit.address_parts.zip + ')');
     return true;
   }
 }

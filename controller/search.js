@@ -2,6 +2,7 @@ var _ = require('lodash');
 
 var service = { search: require('../service/search') };
 var logger = require('pelias-logger').get('api:controller:search');
+var logging = require( '../helper/logging' );
 
 function setup( backend, query ){
 
@@ -16,8 +17,12 @@ function setup( backend, query ){
       return next();
     }
 
+    var cleanOutput = _.cloneDeep(req.clean);
+    if (logging.isDNT(req)) {
+      cleanOutput = logging.removeFields(cleanOutput);
+    }
     // log clean parameters for stats
-    logger.info('[req]', 'endpoint=' + req.path, req.clean);
+    logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
 
     // backend command
     var cmd = {
