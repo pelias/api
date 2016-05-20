@@ -13,7 +13,8 @@ var sanitisers = {
 
 /** ----------------------- middleware ------------------------ **/
 var middleware = {
-  calcSize: require('../middleware/sizeCalculator')
+  calcSize: require('../middleware/sizeCalculator'),
+  generatePermutations: require('../middleware/generatePermutations')
 };
 
 /** ----------------------- controllers ----------------------- **/
