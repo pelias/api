@@ -19,22 +19,22 @@ var adminFields = placeTypes.concat([
 function addParsedVariablesToQueryVariables( parsed_text, vs ){
 
   // is it a street address?
-  var isStreetAddress = parsed_text.hasOwnProperty('number') && parsed_text.hasOwnProperty('street');
-  if( isStreetAddress ){
-    vs.var( 'input:name', parsed_text.number + ' ' + parsed_text.street );
-  }
-
-  // ?
-  else if( parsed_text.admin_parts ) {
-    vs.var( 'input:name', parsed_text.name );
-  }
-
-  // ?
-  else {
-    logger.warn( 'chaos monkey asks: what happens now?' );
-    logger.warn( parsed_text );
-    try{ throw new Error(); } catch(e){ logger.warn( e.stack ); } // print a stack trace
-  }
+  // var isStreetAddress = parsed_text.hasOwnProperty('number') && parsed_text.hasOwnProperty('street');
+  // if( isStreetAddress ){
+  //   vs.var( 'input:name', parsed_text.number + ' ' + parsed_text.street );
+  // }
+  //
+  // // ?
+  // else if( parsed_text.admin_parts ) {
+  //   vs.var( 'input:name', parsed_text.name );
+  // }
+  //
+  // // ?
+  // else {
+  //   logger.warn( 'chaos monkey asks: what happens now?' );
+  //   logger.warn( parsed_text );
+  //   try{ throw new Error(); } catch(e){ logger.warn( e.stack ); } // print a stack trace
+  // }
 
   // ==== add parsed matches [address components] ====
 
@@ -74,26 +74,26 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
   // @todo: clean up this code
 
   // a concept called 'leftovers' which is just 'admin_parts' /or 'regions'.
-  var leftoversString = '';
-  if( parsed_text.hasOwnProperty('admin_parts') ){
-    leftoversString = parsed_text.admin_parts;
-  }
-  else if( parsed_text.hasOwnProperty('regions') ){
-    leftoversString = parsed_text.regions.join(' ');
-  }
-
-  // if we have 'leftovers' then assign them to any fields which
-  // currently don't have a value assigned.
-  if( leftoversString.length ){
-
-    // cycle through fields and set fields which
-    // are still currently unset
-    adminFields.forEach( function( key ){
-      if( !vs.isset( 'input:' + key ) ){
-        vs.var( 'input:' + key, leftoversString );
-      }
-    });
-  }
+  // var leftoversString = '';
+  // if( parsed_text.hasOwnProperty('admin_parts') ){
+  //   leftoversString = parsed_text.admin_parts;
+  // }
+  // else if( parsed_text.hasOwnProperty('regions') ){
+  //   leftoversString = parsed_text.regions.join(' ');
+  // }
+  //
+  // // if we have 'leftovers' then assign them to any fields which
+  // // currently don't have a value assigned.
+  // if( leftoversString.length ){
+  //
+  //   // cycle through fields and set fields which
+  //   // are still currently unset
+  //   adminFields.forEach( function( key ){
+  //     if( !vs.isset( 'input:' + key ) ){
+  //       vs.var( 'input:' + key, leftoversString );
+  //     }
+  //   });
+  // }
 }
 
 module.exports = addParsedVariablesToQueryVariables;
