@@ -60,7 +60,7 @@ var tests = [
   require('./sanitiser/search'),
   require('./sanitiser/wrap'),
   require('./service/mget'),
-  require('./service/search'),
+  require('./service/search')
 ];
 
 tests.map(function(t) {
