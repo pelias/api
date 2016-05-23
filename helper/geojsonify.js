@@ -48,6 +48,10 @@ function lookupSource(src) {
   return src.source;
 }
 
+function lookupSourceId(src) {
+  return src.source_id;
+}
+
 function lookupLayer(src) {
   return src.layer;
 }
@@ -259,6 +263,7 @@ function addMetaData(src, dst) {
   dst.gid = makeGid(src);
   dst.layer = lookupLayer(src);
   dst.source = lookupSource(src);
+  dst.source_id = lookupSourceId(src);
   if (src.hasOwnProperty('bounding_box')) {
     dst.bounding_box = src.bounding_box;
   }

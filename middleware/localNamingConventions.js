@@ -80,6 +80,7 @@ function translateName(place, key, names) {
   }
 }
 
+
 // flip the housenumber and street name
 // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
 function flipNumberAndStreet(place) {
@@ -89,6 +90,12 @@ function flipNumberAndStreet(place) {
   // flip street name and housenumber
   if( place.name.default === standard ){
     place.name.default = flipped;
+
+    // flip also other name versions
+    for (var lang in place.name) {
+      var name = place.name[lang].replace(place.address_parts.number, '').trim();
+      place.name[lang] = name + ' ' + place.address_parts.number;
+    }
   }
 }
 
