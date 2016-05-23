@@ -5,7 +5,7 @@ var peliasConfig = require( 'pelias-config' ).generate().api;
 
 
 if( peliasConfig.accessLog ){
-  app.use( require( './middleware/access_log' )( peliasConfig.accessLog ) );
+  app.use( require( './middleware/access_log' ).createAccessLogger( peliasConfig.accessLog ) );
 }
 
 /** ----------------------- pre-processing-middleware ----------------------- **/

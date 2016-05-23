@@ -3,11 +3,10 @@ var peliasQuery = require('pelias-query'),
     defaults = require('./autocomplete_defaults'),
     textParser = require('./text_parser'),
     check = require('check-types'),
-    viewsToQuery = require('./views_to_query'),
     _ = require('lodash');
 
 // additional views (these may be merged in to pelias/query at a later date)
-var viewLib = {
+var views = {
   ngrams_strict:              require('./view/ngrams_strict'),
   focus_selected_layers:      require('./view/focus_selected_layers'),
   ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
@@ -16,9 +15,10 @@ var viewLib = {
   boost_exact_matches:        require('./view/boost_exact_matches')
 };
 
-// merge available views into a single library
-for (var name in peliasQuery.view) {
-  viewLib[name] = peliasQuery.view[name];
+var api = require('pelias-config').generate().api;
+if (api && api.query && api.query.autocomplete && api.query.autocomplete.defaults) {
+  // merge external defaults if available
+  defaults = _.merge({}, defaults, api.query.autocomplete.defaults);
 }
 
 //------------------------------
@@ -26,24 +26,34 @@ for (var name in peliasQuery.view) {
 //------------------------------
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
-var views;
-var api = require('pelias-config').generate().api;
-if (api && api.query && api.query.autocomplete) {
-  // external config
-  views = api.query.autocomplete.views;
+// mandatory matches
+query.score( views.phrase_first_tokens_only, 'must' );
+query.score( views.ngrams_last_token_only, 'must' );
 
-  if(api.query.autocomplete.defaults) {
-    defaults = _.merge({}, defaults, api.query.autocomplete.defaults);
-  }
-}
+// address components
+query.score( peliasQuery.view.address('housenumber') );
+query.score( peliasQuery.view.address('street') );
+query.score( peliasQuery.view.address('postcode') );
 
-if (!views) {
-  // Get default view configuration
-  views = require( './autocomplete_views.json' );
-}
+// admin components
+query.score( peliasQuery.view.admin('country') );
+query.score( peliasQuery.view.admin('country_a') );
+query.score( peliasQuery.view.admin('region') );
+query.score( peliasQuery.view.admin('region_a') );
+query.score( peliasQuery.view.admin('county') );
+query.score( peliasQuery.view.admin('borough') );
+query.score( peliasQuery.view.admin('localadmin') );
+query.score( peliasQuery.view.admin('locality') );
+query.score( peliasQuery.view.admin('neighbourhood') );
 
-// add defined views to the query
-viewsToQuery(views, query, viewLib);
+// scoring boost
+query.score( views.boost_exact_matches );
+query.score( views.focus_selected_layers( views.ngrams_strict ) );
+query.score( peliasQuery.view.popularity( views.pop_subquery ) );
+query.score( peliasQuery.view.population( views.pop_subquery ) );
+
+// non-scoring hard filters
+query.filter( peliasQuery.view.sources );
 
 // --------------------------------
 
