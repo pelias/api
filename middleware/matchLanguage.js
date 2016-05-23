@@ -19,6 +19,11 @@ function setup(peliasConfig) {
   return matchLanguage;
 }
 
+
+function removeNumbers(val) {
+  return val.replace(/[0-9]/g, '').trim();
+}
+
 function matchLanguage(req, res, next) {
 
   // do nothing if no result data set
@@ -38,6 +43,8 @@ function matchLanguage(req, res, next) {
   } else {
     name = req.clean.text;
   }
+  // fix street/number order problem by stripping the number part
+  name = removeNumbers(name);
 
   // match name versions of 1st search result with the searched name
   var bestLang;
@@ -46,7 +53,8 @@ function matchLanguage(req, res, next) {
   var names = res.data[0].name; // 1st hit from ES = best so far
 
   for(var lang in names) {
-    var score = fuzzy(name, names[lang]).score;
+    var name2 = removeNumbers(names[lang]);
+    var score = fuzzy(name, name2).score;
     if (score > bestScore ) {
       bestScore = score;
       bestLang = lang;
@@ -67,7 +75,7 @@ function matchLanguage(req, res, next) {
     }
   }
   // change lang if best hit is good enough
-  if (bestLang && bestScore === fullScore) {
+  if (bestLang && bestScore/fullScore > 0.8) {
     // logger.debug('Best match by lang ' + bestLang );
     req.clean.lang = bestLang;
   }
