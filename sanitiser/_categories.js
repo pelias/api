@@ -1,34 +1,50 @@
 
 var check = require('check-types');
 
+var ERRORS = {
+  empty: 'Categories parameter cannot be left blank. See documentation of service for valid options.',
+  invalid: 'Invalid categories parameter value(s). See documentation of service for valid options.'
+};
+
 // validate inputs, convert types and apply defaults
-function sanitize( raw, clean ){
+function sanitize( raw, clean, validCategories ) {
 
   // error & warning messages
-  var messages = { errors: [], warnings: [] };
+  var messages = {errors: [], warnings: []};
 
-  // default case (no categories specified in GET params)
-  clean.categories = [];
+  // it's not a required parameter, so if it's not provided just move on
+  if (!raw.hasOwnProperty('categories')) {
+    return messages;
+  }
+
+  if (!check.nonEmptyString(raw.categories)) {
+    messages.errors.push(ERRORS.empty);
+    return messages;
+  }
 
   // if categories string has been set
-  if( check.nonEmptyString( raw.categories ) ){
-
-    // map input categories to valid format
+  // map input categories to valid format
+  try {
     clean.categories = raw.categories.split(',')
       .map(function (cat) {
         return cat.toLowerCase().trim(); // lowercase inputs
       })
-      .filter( function( cat ) {
-        return ( cat.length > 0 );
+      .filter(function (cat) {
+        if (check.nonEmptyString(cat) && validCategories && validCategories.indexOf(cat) !== -1) {
+          return true;
+        }
+        throw new Error('Empty string value');
       });
+  } catch (err) {
+    // remove everything from the list if there was any error
+    delete clean.categories;
+  }
 
-    if( !clean.categories.length ){
-      messages.warnings.push( 'invalid \'categories\': no valid category strings found');
-    }
+  if (check.undefined(clean.categories) || check.emptyArray(clean.categories)) {
+    messages.errors.push(ERRORS.invalid);
   }
 
   return messages;
-
 }
 
 // export function
