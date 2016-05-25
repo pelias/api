@@ -85,6 +85,32 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.end();
   });
 
+  test('no boundary.circle.radius and coarse layers supplied should be set to coarse default', function(t) {
+    var raw = {
+      'point.lat': '12.121212',
+      'point.lon': '21.212121'
+    };
+    var clean = { layers: 'coarse' };
+    var errorsAndWarnings = sanitize(raw, clean);
+
+    t.equals(raw['boundary.circle.radius'], defaults['boundary:circle:radius:coarse'], 'should be from defaults');
+    t.equals(clean['boundary.circle.radius'], parseFloat(defaults['boundary:circle:radius:coarse']), 'should be same as raw');
+    t.end();
+  });
+
+  test('no boundary.circle.radius and coarse layer supplied should be set to coarse default', function(t) {
+    var raw = {
+      'point.lat': '12.121212',
+      'point.lon': '21.212121'
+    };
+    var clean = { layers: 'locality' };
+    var errorsAndWarnings = sanitize(raw, clean);
+
+    t.equals(raw['boundary.circle.radius'], defaults['boundary:circle:radius:coarse'], 'should be from defaults');
+    t.equals(clean['boundary.circle.radius'], parseFloat(defaults['boundary:circle:radius:coarse']), 'should be same as raw');
+    t.end();
+  });
+
   test('explicit boundary.circle.radius should be used instead of default', function(t) {
     var raw = {
       'point.lat': '12.121212',
