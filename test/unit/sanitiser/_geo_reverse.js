@@ -72,7 +72,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.end();
   });
 
-  test('no boundary.circle.radius supplied should be set to default', function(t) {
+  test('no boundary.circle.radius and no layers supplied should be set to default', function(t) {
     var raw = {
       'point.lat': '12.121212',
       'point.lon': '21.212121'
