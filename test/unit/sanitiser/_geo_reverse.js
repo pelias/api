@@ -83,7 +83,6 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.equals(raw['boundary.circle.radius'], defaults['boundary:circle:radius'], 'should be from defaults');
     t.equals(clean['boundary.circle.radius'], parseFloat(defaults['boundary:circle:radius']), 'should be same as raw');
     t.end();
-
   });
 
   test('explicit boundary.circle.radius should be used instead of default', function(t) {
@@ -98,9 +97,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.equals(raw['boundary.circle.radius'], '3248732857km', 'should be parsed float');
     t.equals(clean['boundary.circle.radius'], 3248732857.0, 'should be copied from raw');
     t.end();
-
   });
-
 };
 
 module.exports.all = function (tape, common) {

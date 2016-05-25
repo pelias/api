@@ -1,4 +1,3 @@
-
 var geo_common = require ('./_geo_common');
 var _ = require('lodash');
 var defaults = require('../query/reverse_defaults');
