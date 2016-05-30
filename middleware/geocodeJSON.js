@@ -17,6 +17,8 @@ function setup(peliasConfig, basePath) {
     config: peliasConfig || require('pelias-config').generate().api,
     basePath: basePath || '/'
   };
+
+
   function middleware(req, res, next) {
     return convertToGeocodeJSON(req, res, next, opts);
   }
@@ -55,6 +57,10 @@ function convertToGeocodeJSON(req, res, next, opts) {
   // This is the equivalent of how the engine interpreted the incoming request.
   // Helpful for debugging and understanding how the input impacts results.
   res.body.geocoding.query = req.clean;
+
+  // remove arrays produced by the tokenizer (only intended to be used internally).
+  delete res.body.geocoding.query.tokens_complete;
+  delete res.body.geocoding.query.tokens_incomplete;
 
   // OPTIONAL. Warnings and errors.
   addMessages(req, 'warnings', res.body.geocoding);

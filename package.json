@@ -30,16 +30,14 @@
     "url": "https://github.com/pelias/api/issues"
   },
   "engines": {
-    "node": ">=0.10.26",
-    "npm": ">=1.4.3",
-    "elasticsearch": ">=1.2.1"
+    "node": ">=0.10.26"
   },
   "dependencies": {
-    "addressit": "git://github.com/dianashk/addressit.git#temp",
     "async": "^1.5.2",
-    "check-types": "^6.0.0",
+    "check-types": "^7.0.0",
     "cluster2": "git://github.com/missinglink/cluster2.git#node_zero_twelve",
     "elasticsearch": "^11.0.0",
+    "elasticsearch-exceptions": "0.0.4",
     "express": "^4.8.8",
     "express-http-proxy": "^0.6.0",
     "extend": "3.0.0",
@@ -53,9 +51,10 @@
     "morgan": "1.7.0",
     "pelias-config": "^1.0.1",
     "pelias-logger": "^0.0.8",
-    "pelias-model": "^3.1.0",
-    "pelias-query": "6.2.0",
+    "pelias-model": "^4.0.0",
+    "pelias-query": "7.0.0",
     "pelias-suggester-pipeline": "2.0.4",
+    "pelias-text-analyzer": "^1.0.1",
     "stats-lite": "1.0.3",
     "through2": "2.0.1",
     "fuzzy.js": "^0.1.0"
@@ -67,9 +66,9 @@
     "jshint": "^2.5.6",
     "nsp": "^2.2.0",
     "precommit-hook": "^3.0.0",
-    "proxyquire": "^1.4.0",
+    "proxyquire": "^1.7.7",
     "tap-dot": "1.0.5",
-    "tape": "^4.4.0"
+    "tape": "^4.5.1"
   },
   "pre-commit": [
     "lint",

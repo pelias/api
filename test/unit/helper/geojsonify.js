@@ -44,6 +44,7 @@ module.exports.tests.search = function(test, common) {
       '_id': 'id1',
       '_type': 'layer1',
       'source': 'source1',
+      'source_id': 'source_id_1',
       'layer': 'layer1',
       'center_point': {
         'lat': 51.5337144,
@@ -73,6 +74,7 @@ module.exports.tests.search = function(test, common) {
       '_id': 'id2',
       '_type': 'layer2',
       'source': 'source2',
+      'source_id': 'source_id_2',
       'layer': 'layer2',
       'name': {
         'default': 'Blues Cafe'
@@ -89,12 +91,13 @@ module.exports.tests.search = function(test, common) {
       'county': 'Smithfield',
       'localadmin': 'test1',
       'locality': 'test2',
-      'neighbourhood': 'test3',
+      'neighbourhood': 'test3'
     },
     {
       '_id': 'node:34633854',
       '_type': 'venue',
       'source': 'openstreetmap',
+      'source_id': 'source_id_3',
       'layer': 'venue',
       'name': {
         'default': 'Empire State Building'
@@ -136,6 +139,7 @@ module.exports.tests.search = function(test, common) {
           'gid': 'source1:layer1:id1',
           'layer': 'layer1',
           'source': 'source1',
+          'source_id': 'source_id_1',
           'label': '\'Round Midnight Jazz and Blues Bar, test2, England, United Kingdom',
           'name': '\'Round Midnight Jazz and Blues Bar',
           'country_a': 'GBR',
@@ -166,6 +170,7 @@ module.exports.tests.search = function(test, common) {
           'gid': 'source2:layer2:id2',
           'layer': 'layer2',
           'source': 'source2',
+          'source_id': 'source_id_2',
           'label': 'Blues Cafe, test2, England, United Kingdom',
           'name': 'Blues Cafe',
           'country_a': 'GBR',
@@ -193,6 +198,7 @@ module.exports.tests.search = function(test, common) {
           'gid': 'openstreetmap:venue:node:34633854',
           'layer': 'venue',
           'source': 'openstreetmap',
+          'source_id': 'source_id_3',
           'label': 'Empire State Building, Manhattan, New York, NY, USA',
           'name': 'Empire State Building',
           'country_a': 'USA',
@@ -320,6 +326,7 @@ module.exports.tests.search = function(test, common) {
             'gid': 'whosonfirst:neighbourhood:85816607',
             'layer': 'neighbourhood',
             'source': 'whosonfirst',
+            'source_id': '85816607',
             'name': 'East New York',
             'confidence': 0.888,
             'country': 'United States',

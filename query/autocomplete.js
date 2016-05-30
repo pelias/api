@@ -9,7 +9,9 @@ var views = {
   ngrams_strict:              require('./view/ngrams_strict'),
   focus_selected_layers:      require('./view/focus_selected_layers'),
   ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
-  phrase_first_tokens_only:   require('./view/phrase_first_tokens_only')
+  phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
+  pop_subquery:               require('./view/pop_subquery'),
+  boost_exact_matches:        require('./view/boost_exact_matches')
 };
 
 //------------------------------
@@ -32,14 +34,16 @@ query.score( peliasQuery.view.admin('country_a') );
 query.score( peliasQuery.view.admin('region') );
 query.score( peliasQuery.view.admin('region_a') );
 query.score( peliasQuery.view.admin('county') );
+query.score( peliasQuery.view.admin('borough') );
 query.score( peliasQuery.view.admin('localadmin') );
 query.score( peliasQuery.view.admin('locality') );
 query.score( peliasQuery.view.admin('neighbourhood') );
 
 // scoring boost
+query.score( views.boost_exact_matches );
 query.score( views.focus_selected_layers( views.ngrams_strict ) );
-query.score( peliasQuery.view.popularity( views.ngrams_strict ) );
-query.score( peliasQuery.view.population( views.ngrams_strict ) );
+query.score( peliasQuery.view.popularity( views.pop_subquery ) );
+query.score( peliasQuery.view.population( views.pop_subquery ) );
 
 // non-scoring hard filters
 query.filter( peliasQuery.view.sources );
@@ -59,29 +63,28 @@ function generateQuery( clean ){
     vs.var( 'sources', clean.sources );
   }
 
-  // mark the name as incomplete (user has not yet typed a comma)
-  vs.var( 'input:name:isComplete', false );
-
-  // perform some operations on 'clean.text':
-  // 1. if there is a space followed by a single char, remove them.
-  //  - this is required as the index uses 2grams and sending 1grams
-  //  - to a 2gram index when using 'type:phrase' or 'operator:and' will
-  //  - result in a complete failure of the query.
-  // 2. trim leading and trailing whitespace.
-  var text = clean.text.replace(/( .$)/g,'').trim();
-
-  // if the input parser has run and suggested a 'parsed_text.name' to use.
-  if( clean.hasOwnProperty('parsed_text') && clean.parsed_text.hasOwnProperty('name') ){
-
-    // mark the name as complete (user has already typed a comma)
-    vs.var( 'input:name:isComplete', true );
-
-    // use 'parsed_text.name' instead of 'clean.text'.
-    text = clean.parsed_text.name;
+  // pass the input tokens to the views so they can choose which tokens
+  // are relevant for their specific function.
+  if( check.array( clean.tokens ) ){
+    vs.var( 'input:name:tokens', clean.tokens );
+    vs.var( 'input:name:tokens_complete', clean.tokens_complete );
+    vs.var( 'input:name:tokens_incomplete', clean.tokens_incomplete );
   }
 
   // input text
-  vs.var( 'input:name', text );
+  vs.var( 'input:name', clean.text );
+
+  // if the tokenizer has run then we set 'input:name' to as the combination of the
+  // 'complete' tokens with the 'incomplete' tokens, the resuting array differs
+  // slightly from the 'input:name:tokens' array as some tokens might have been
+  // removed in the process; such as single grams which are not present in then
+  // ngrams index.
+  if( check.array( clean.tokens_complete ) && check.array( clean.tokens_incomplete ) ){
+    var combined = clean.tokens_complete.concat( clean.tokens_incomplete );
+    if( combined.length ){
+      vs.var( 'input:name', combined.join(' ') );
+    }
+  }
 
   // focus point
   if( check.number(clean['focus.point.lat']) &&

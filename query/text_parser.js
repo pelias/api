@@ -1,20 +1,15 @@
 
 var logger = require('pelias-logger').get('api');
+var placeTypes = require('../helper/placeTypes');
 
 /*
 This list should only contain admin fields we are comfortable matching in the case
 when we can't identify parts of an address. This shouldn't contain fields like country_a
 or postalcode because we should only try to match those when we're sure that's what they are.
  */
-var adminFields = [
-  'country',
-  'region',
-  'region_a',
-  'county',
-  'localadmin',
-  'locality',
-  'neighbourhood'
-];
+var adminFields = placeTypes.concat([
+  'region_a'
+]);
 
 /**
   @todo: refactor me
