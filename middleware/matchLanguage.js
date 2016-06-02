@@ -53,11 +53,12 @@ function matchLanguage(req, res, next) {
     name = req.clean.text;
   }
   // fix street/number order problem by stripping the number part
+  // TODO: Improve stripping. Does not work for numbers like 4a, or 3rd etc.
   name = removeNumbers(name);
 
   // match name versions of 1st search result with the searched name
   var names = res.data[0].name; // use 1st hit from ES = best match so far
-
+                                // apply the same language for all entries
   var bestLang;
   var bestScore = -1;
   var fullScore = fuzzy(name, name).score;
