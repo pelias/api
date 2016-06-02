@@ -5,6 +5,8 @@ var _ = require('lodash');
  */
 
 function setup(peliasConfig) {
+  peliasConfig = peliasConfig || require('pelias-config').generate().api;
+
   var defaultLang;
 
   if (peliasConfig) {
@@ -16,9 +18,9 @@ function setup(peliasConfig) {
   defaultLang = defaultLang || 'default'; // fallback
 
   return function setQueryLanguage(req, res, next) {
-   if (_.isUndefined(req.clean)) {
-     return next();
-   }
+    if (_.isUndefined(req.clean)) {
+      return next();
+    }
 
    req.clean.lang = req.clean.lang || defaultLang;
    next();
