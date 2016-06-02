@@ -31,6 +31,8 @@ var tests = [
   require('./middleware/parseBBox'),
   require('./middleware/sendJSON'),
   require('./middleware/normalizeParentIds'),
+  require('./middleware/matchLanguage'),
+  require('./middleware/languageSelector'),
   require('./query/autocomplete'),
   require('./query/autocomplete_defaults'),
   require('./query/search_defaults'),
