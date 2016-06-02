@@ -153,7 +153,11 @@ module.exports.tests.search = function(test, common) {
           'neighbourhood': 'test3',
           'housenumber': '13',
           'street': 'Liverpool Road',
-          'postalcode': 'N1 0RW'
+          'postalcode': 'N1 0RW',
+          'category': [
+            'food',
+            'nightlife'
+          ]
         }
       },
       {
@@ -208,7 +212,11 @@ module.exports.tests.search = function(test, common) {
           'county': 'New York',
           'borough': 'Manhattan',
           'locality': 'New York',
-          'neighbourhood': 'Koreatown'
+          'neighbourhood': 'Koreatown',
+          'category': [
+            'tourism',
+            'transport'
+          ]
         }
       }
     ]
@@ -245,7 +253,7 @@ module.exports.tests.search = function(test, common) {
           'default': 'East New York'
         },
         'source_id': '85816607',
-        'category': [],
+        'category': ['government'],
         '_id': '85816607',
         '_type': 'neighbourhood',
         '_score': 21.434,
@@ -328,6 +336,7 @@ module.exports.tests.search = function(test, common) {
             'source': 'whosonfirst',
             'source_id': '85816607',
             'name': 'East New York',
+            'category': ['government'],
             'confidence': 0.888,
             'country': 'United States',
             'country_gid': '85633793',

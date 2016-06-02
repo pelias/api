@@ -8,11 +8,13 @@ var GeoJSON = require('geojson'),
     _ = require('lodash');
 
 // Properties to be copied
+// If a property is identified as a single string, assume it should be presented as a string in response
+// If something other than string is desired, use the following structure: { name: 'category', type: 'array' }
 var DETAILS_PROPS = [
   'housenumber',
   'street',
   'postalcode',
-  'confidence',
+  { name: 'confidence', type: 'default' },
   'distance',
   'country',
   'country_gid',
@@ -40,9 +42,9 @@ var DETAILS_PROPS = [
   'borough_a',
   'neighbourhood',
   'neighbourhood_gid',
-  'bounding_box'
+  { name: 'bounding_box', type: 'default' },
+  { name: 'category', type: 'array' }
 ];
-
 
 function lookupSource(src) {
   return src.source;
@@ -217,24 +219,63 @@ function computeBBox(geojson, geojsonExtentPoints) {
 function copyProperties( source, props, dst ) {
   props.forEach( function ( prop ) {
 
-    if ( source.hasOwnProperty( prop ) ) {
+    var property = {
+      name: prop.name || prop,
+      type: prop.type || 'string'
+    };
 
-      // array value, take first item in array (at this time only used for admin values)
-      if (source[prop] instanceof Array) {
-        if (source[prop].length === 0) {
-          return;
-        }
-        if (source[prop][0]) {
-          dst[prop] = source[prop][0];
-        }
+    var value = null;
+    if ( source.hasOwnProperty( property.name ) ) {
+
+      switch (property.type) {
+        case 'string':
+          value = getStringValue(source[property.name]);
+          break;
+        case 'array':
+          value = getArrayValue(source[property.name]);
+          break;
+        // default behavior is to copy property exactly as is
+        default:
+          value = source[property.name];
       }
 
-      // simple value
-      else {
-        dst[prop] = source[prop];
+      if (_.isNumber(value) || (value && !_.isEmpty(value))) {
+        dst[property.name] = value;
       }
     }
   });
+}
+
+function getStringValue(property) {
+  // isEmpty check works for all types of values: strings, arrays, objects
+  if (_.isEmpty(property)) {
+    return '';
+  }
+
+  if (_.isString(property)) {
+    return property;
+  }
+
+  // array value, take first item in array (at this time only used for admin values)
+  if (_.isArray(property)) {
+    return property[0];
+  }
+
+  return _.toString(property);
+}
+
+
+function getArrayValue(property) {
+  // isEmpty check works for all types of values: strings, arrays, objects
+  if (_.isEmpty(property)) {
+    return '';
+  }
+
+  if (_.isArray(property)) {
+    return property;
+  }
+
+  return [property];
 }
 
 /**
