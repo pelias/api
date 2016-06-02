@@ -1,4 +1,3 @@
-
 var geo_common = require ('./_geo_common');
 var _ = require('lodash');
 var defaults = require('../query/reverse_defaults');
@@ -30,7 +29,12 @@ module.exports = function sanitize( raw, clean ){
 
     // if no radius was passed, set the default
     if ( _.isUndefined( raw['boundary.circle.radius'] ) ) {
-      raw['boundary.circle.radius'] = defaults['boundary:circle:radius'];
+      // the default is small unless layers other than venue or address were explicitly specified
+      if (clean.layers && clean.layers.length > 0 && !_.includes(clean.layers, 'venue') && !_.includes(clean.layers, 'address')) {
+        raw['boundary.circle.radius'] = defaults['boundary:circle:radius:coarse'];
+      } else {
+        raw['boundary.circle.radius'] = defaults['boundary:circle:radius'];
+      }
     }
 
     // santize the boundary.circle
