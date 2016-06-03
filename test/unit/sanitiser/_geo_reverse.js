@@ -72,7 +72,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.end();
   });
 
-  test('no boundary.circle.radius supplied should be set to default', function(t) {
+  test('no boundary.circle.radius and no layers supplied should be set to default', function(t) {
     var raw = {
       'point.lat': '12.121212',
       'point.lon': '21.212121'
@@ -83,7 +83,32 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.equals(raw['boundary.circle.radius'], defaults['boundary:circle:radius'], 'should be from defaults');
     t.equals(clean['boundary.circle.radius'], parseFloat(defaults['boundary:circle:radius']), 'should be same as raw');
     t.end();
+  });
 
+  test('no boundary.circle.radius and coarse layers supplied should be set to coarse default', function(t) {
+    var raw = {
+      'point.lat': '12.121212',
+      'point.lon': '21.212121'
+    };
+    var clean = { layers: 'coarse' };
+    var errorsAndWarnings = sanitize(raw, clean);
+
+    t.equals(raw['boundary.circle.radius'], defaults['boundary:circle:radius:coarse'], 'should be from defaults');
+    t.equals(clean['boundary.circle.radius'], parseFloat(defaults['boundary:circle:radius:coarse']), 'should be same as raw');
+    t.end();
+  });
+
+  test('no boundary.circle.radius and coarse layer supplied should be set to coarse default', function(t) {
+    var raw = {
+      'point.lat': '12.121212',
+      'point.lon': '21.212121'
+    };
+    var clean = { layers: 'locality' };
+    var errorsAndWarnings = sanitize(raw, clean);
+
+    t.equals(raw['boundary.circle.radius'], defaults['boundary:circle:radius:coarse'], 'should be from defaults');
+    t.equals(clean['boundary.circle.radius'], parseFloat(defaults['boundary:circle:radius:coarse']), 'should be same as raw');
+    t.end();
   });
 
   test('explicit boundary.circle.radius should be used instead of default', function(t) {
@@ -98,9 +123,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.equals(raw['boundary.circle.radius'], '3248732857km', 'should be parsed float');
     t.equals(clean['boundary.circle.radius'], 3248732857.0, 'should be copied from raw');
     t.end();
-
   });
-
 };
 
 module.exports.all = function (tape, common) {

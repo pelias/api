@@ -30,6 +30,8 @@ var tests = [
   require('./middleware/dedupe'),
   require('./middleware/parseBBox'),
   require('./middleware/sendJSON'),
+  require('./middleware/matchLanguage'),
+  require('./middleware/languageSelector'),
   require('./middleware/normalizeParentIds'),
   require('./query/autocomplete'),
   require('./query/autocomplete_defaults'),
