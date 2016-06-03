@@ -1,11 +1,18 @@
-[![Build Status](https://travis-ci.org/pelias/api.png?branch=master)](https://travis-ci.org/pelias/api)
+>This repository is part of the [Pelias](https://github.com/pelias/pelias)
+>project. Pelias is an open-source, open-data geocoder built by
+>[Mapzen](https://www.mapzen.com/) that also powers [Mapzen Search](https://mapzen.com/projects/search). Our
+>official user documentation is [here](https://mapzen.com/documentation/search/).
 
-# API
+# Pelias API Server
+
+This is the API server for the Pelias project. It's the service that runs to process user HTTP requests and return results as GeoJSON by querying Elasticsearch.
+
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/pelias/api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/pelias/api.png?branch=master)](https://travis-ci.org/pelias/api)
 
 ## Documentation
 
-See our [API Documentation](https://github.com/pelias/api/blob/master/public/apiDoc.md).
+See the [Mapzen Search documentation](https://mapzen.com/documentation/search/).
 
 ## Install Dependencies
 
