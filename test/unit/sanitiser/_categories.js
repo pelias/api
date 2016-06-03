@@ -57,9 +57,16 @@ module.exports.tests.no_categories = function(test, common) {
 };
 
 module.exports.tests.valid_categories = function(test, common) {
-  var validCategories = ['food','health','financial','education','government'];
+  var isValidCategoryCalled = 0;
+  var validCategories = {
+    isValidCategory: function (cat) {
+      isValidCategoryCalled++;
+      return ['food','health','financial','education','government'].indexOf(cat) !== -1; }
+  };
 
   test('single category', function(t) {
+    isValidCategoryCalled = 0;
+
     var req = {
       query: {
         categories: 'food'
@@ -73,29 +80,41 @@ module.exports.tests.valid_categories = function(test, common) {
     t.deepEqual(messages.errors, [], 'no error returned');
     t.deepEqual(messages.warnings, [], 'no warnings returned');
 
+    t.equal(isValidCategoryCalled, 1);
+
     t.end();
   });
 
   test('multiple categories', function(t) {
+    isValidCategoryCalled = 0;
     var req = {
       query: {
         categories: 'food,health'
       },
       clean: { }
     };
+    var expectedCategories = ['food', 'health'];
 
     var messages = sanitize(req.query, req.clean, validCategories);
 
-    t.deepEqual(req.clean.categories, ['food', 'health'],
+    t.deepEqual(req.clean.categories, expectedCategories,
                 'clean.categories should be an array with proper values');
     t.deepEqual(messages.errors, [], 'no error returned');
     t.deepEqual(messages.warnings, [], 'no warnings returned');
+
+    t.equal(isValidCategoryCalled, expectedCategories.length);
+
     t.end();
   });
 };
 
 module.exports.tests.invalid_categories = function(test, common) {
-  var validCategories = ['food','health','financial','education','government'];
+  var isValidCategoryCalled = 0;
+  var validCategories = {
+    isValidCategory: function (cat) {
+      isValidCategoryCalled++;
+      return ['food','health','financial','education','government'].indexOf(cat) !== -1; }
+  };
 
   test('garbage category', function(t) {
     var req = {
@@ -132,7 +151,7 @@ module.exports.tests.invalid_categories = function(test, common) {
       warnings: []
     };
 
-    var messages = sanitize(req.query, req.clean);
+    var messages = sanitize(req.query, req.clean, validCategories);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
     t.equal(req.clean.categories, undefined, 'clean.categories should remain empty');

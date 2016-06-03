@@ -56,6 +56,7 @@
     "pelias-query": "8.3.0",
     "pelias-text-analyzer": "1.3.0",
     "stats-lite": "2.0.3",
+    "pelias-categories": "1.0.0",
     "through2": "2.0.1"
   },
   "devDependencies": {
