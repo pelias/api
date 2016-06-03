@@ -44,6 +44,8 @@ query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.boundary_rect );
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
+query.filter( peliasQuery.view.categories );
+
 // --------------------------------
 
 /**
@@ -62,6 +64,11 @@ function generateQuery( clean ){
 
   // layers
   vs.var( 'layers', clean.layers);
+
+  // categories
+  if (clean.categories) {
+    vs.var('input:categories', clean.categories);
+  }
 
   // size
   if( clean.querySize ) {
