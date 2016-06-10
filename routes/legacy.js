@@ -4,8 +4,8 @@ function addRoutes(app, peliasConfig) {
   var sendToLegacy;
 
   if (!peliasConfig.hasOwnProperty('legacyUrl')) {
-    sendToLegacy = function doNothing(req, res, next) {
-      next(new Error('Invalid path, no legacy proxy specified'));
+    sendToLegacy = function redirectToV1(req, res, next) {
+      res.redirect(301, '/v1');
     };
   }
   else {
