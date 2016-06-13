@@ -4,9 +4,9 @@ var geojsonify = require('../../../helper/geojsonify');
 module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
-  test('valid interface .search()', function(t) {
-    t.equal(typeof geojsonify.search, 'function', 'search is a function');
-    t.equal(geojsonify.search.length, 1, 'accepts x arguments');
+  test('valid interface', function(t) {
+    t.equal(typeof geojsonify, 'function', 'search is a function');
+    t.equal(geojsonify.length, 2, 'accepts x arguments');
     t.end();
   });
 };
@@ -30,14 +30,14 @@ module.exports.tests.earth = function(test, common) {
 
   test('earth', function(t) {
     t.doesNotThrow(function(){
-      geojsonify.search( earth );
+      geojsonify( {}, earth );
     });
     t.end();
   });
 
 };
 
-module.exports.tests.search = function(test, common) {
+module.exports.tests.geojsonify = function(test, common) {
 
   var input = [
     {
@@ -222,8 +222,8 @@ module.exports.tests.search = function(test, common) {
     ]
   };
 
-  test('geojsonify.search(doc)', function(t) {
-    var json = geojsonify.search( input );
+  test('geojsonify(doc)', function(t) {
+    var json = geojsonify( {categories: 'foo'}, input );
 
     t.deepEqual(json, expected, 'all docs mapped');
     t.end();
@@ -370,7 +370,67 @@ module.exports.tests.search = function(test, common) {
       ]
     };
 
-    var json = geojsonify.search( input );
+    var json = geojsonify( {categories: 'foo'}, input );
+
+    t.deepEqual(json, expected, 'all wanted properties exposed');
+    t.end();
+  });
+};
+
+module.exports.tests.categories = function (test, common) {
+  test('only set category if categories filter was used', function (t) {
+    var input = [
+      {
+        '_id': '85816607',
+        'bounding_box': {
+          'min_lat': 40.6514712164,
+          'max_lat': 40.6737320588,
+          'min_lon': -73.8967895508,
+          'max_lon': -73.8665771484
+        },
+        'source': 'whosonfirst',
+        'layer': 'neighbourhood',
+        'center_point': {
+          'lon': -73.881319,
+          'lat': 40.663303
+        },
+        'name': {
+          'default': 'East New York'
+        },
+        'source_id': '85816607',
+        'category': ['government']
+      }
+    ];
+
+    var expected = {
+      'type': 'FeatureCollection',
+      'bbox': [-73.8967895508, 40.6514712164, -73.8665771484, 40.6737320588],
+      'features': [
+        {
+          'type': 'Feature',
+          'properties': {
+            'id': '85816607',
+            'gid': 'whosonfirst:neighbourhood:85816607',
+            'layer': 'neighbourhood',
+            'source': 'whosonfirst',
+            'source_id': '85816607',
+            'name': 'East New York',
+            'category': ['government'],
+            'label': 'East New York'
+          },
+          'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [
+              -73.881319,
+              40.663303
+            ]
+          }
+        }
+      ]
+    };
+
+    var json = geojsonify( {categories: 'foo'}, input );
 
     t.deepEqual(json, expected, 'all wanted properties exposed');
     t.end();
