@@ -52,6 +52,7 @@ var tests = [
   require('./sanitiser/_tokenizer'),
   require('./sanitiser/_deprecate_quattroshapes'),
   require('./sanitiser/_categories'),
+  require('./sanitiser/nearby'),
   require('./src/backend'),
   require('./sanitiser/autocomplete'),
   require('./sanitiser/place'),
