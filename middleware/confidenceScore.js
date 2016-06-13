@@ -39,6 +39,8 @@ function computeScores(req, res, next) {
   // loop through data items and determine confidence scores
   res.data = res.data.map(computeConfidenceScore.bind(null, req, mean, stdev));
 
+  res.data.sort(function(a, b) { return(b.confidence - a.confidence); });
+
   next();
 }
 
