@@ -21,6 +21,7 @@ var RELATIVE_SCORES = true;
 
 var languages = ['default'];
 var adminProperties;
+var nameWeight = 1;
 
 function setup(peliasConfig) {
   if (check.assigned(peliasConfig)) {
@@ -32,6 +33,7 @@ function setup(peliasConfig) {
       if(peliasConfig.localization.confidenceAdminProperties) {
 	adminProperties = peliasConfig.localization.confidenceAdminProperties;
       }
+      nameWeight = peliasConfig.localization.confidenceNameWeight || nameWeight;
     }
   }
   return computeScores;
@@ -75,7 +77,7 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     return hit;
   }
 
-  var checkCount = 3;
+  var checkCount = 2 + nameWeight; // name can have extra strong weight
   hit.confidence = 0;
 
   if (RELATIVE_SCORES) {
@@ -83,7 +85,7 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     hit.confidence += checkDistanceFromMean(hit._score, mean, stdev);
     hit.confidence += computeZScore(hit._score, mean, stdev);
   }
-  hit.confidence += checkName(req.clean.text, req.clean.parsed_text, hit);
+  hit.confidence += nameWeight*checkName(req.clean.text, req.clean.parsed_text, hit);
   hit.confidence += checkQueryType(req.clean.parsed_text, hit);
   hit.confidence += checkAddress(req.clean.parsed_text, hit);
 
@@ -138,6 +140,10 @@ function checkDistanceFromMean(score, mean, stdev) {
   return (score - mean) > stdev ? 1 : 0;
 }
 
+// should be improved to handle better complex names such as '5th forest rd'
+function normalizeName(text) {
+  return text.toLowerCase().replace(/[0-9]/g, '').trim();
+}
 
 /**
  * Compare text string against all language versions of a property
@@ -148,12 +154,12 @@ function checkDistanceFromMean(score, mean, stdev) {
  */
 
 function checkLanguageProperty(text, propertyObject) {
-  var ltext = text.toLowerCase();
+  var ltext = normalizeName(text);
   for (var lang in propertyObject) {
     if (languages.indexOf(lang) === -1) {
       continue;
     }
-    if (propertyObject[lang].toLowerCase() === ltext) {
+    if (normalizeName(propertyObject[lang]) === ltext) {
       return true;
     }
   }
@@ -171,18 +177,19 @@ function checkLanguageProperty(text, propertyObject) {
  */
 function checkName(text, parsed_text, hit) {
   // parsed_text name should take precedence if available since it's the cleaner name property
-  if (check.assigned(parsed_text) && check.assigned(parsed_text.name) &&
-      checkLanguageProperty(parsed_text.name, hit.name)) {
-    return 1;
+  if (check.assigned(parsed_text) && check.assigned(parsed_text.name)) {
+    if (checkLanguageProperty(parsed_text.name, hit.name)) {
+      return 1;
+    }
+  } else {
+    // if no parsed_text check the text value as provided against result's name
+    if (checkLanguageProperty(text, hit.name)) {
+      return 1;
+    }
   }
 
-  // if no parsed_text check the text value as provided against result's name
-  if (checkLanguageProperty(text, hit.name)) {
-    return 1;
-  }
-
-  // if no matches detected, don't judge too harshly since it was a longshot anyway
-  return 0.7;
+  // no matches detected
+  return 0;
 }
 
 /**
