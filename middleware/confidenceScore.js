@@ -1,7 +1,6 @@
-
 /**
  *
- *Basic confidence score should be computed and returned for each item in the results.
+ * Basic confidence score should be computed and returned for each item in the results.
  * The score should range between 0-1, and take into consideration as many factors as possible.
  *
  * Some factors to consider:
@@ -94,7 +93,6 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     hit.confidence += checkAdmin(req.clean.parsed_text, hit);
     checkCount++;
   }
-
   // TODO: look at categories and location
 
   hit.confidence /= checkCount;
@@ -140,13 +138,14 @@ function checkDistanceFromMean(score, mean, stdev) {
   return (score - mean) > stdev ? 1 : 0;
 }
 
+
 // should be improved to handle better complex names such as '5th forest rd'
 function normalizeName(text) {
   return text.toLowerCase().replace(/[0-9]/g, '').trim();
 }
 
 /**
- * Compare text string against all language versions of a property
+ * Compare text string against configuration defined language versions of a property
  *
  * @param {string} text
  * @param {object} property with language versions
@@ -193,7 +192,7 @@ function checkName(text, parsed_text, hit) {
 }
 
 /**
- * text being set indicates the query was for an address
+ * text.number being set indicates the query was for an address
  * check if house number was specified and found in result
  *
  * @param {object|undefined} text
