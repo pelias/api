@@ -22,6 +22,15 @@ var languages = ['default'];
 var adminProperties;
 var nameWeight = 1;
 
+// default configuration for address confidence check
+var confidenceAddressParts = {
+  number: { parent: 'address_parts', field: 'number', enrich: false},
+  street: { parent: 'address_parts', field: 'street', enrich: false},
+  postalcode: { parent: 'address_parts', field: 'zip', enrich: true},
+  state: { parent: 'parent', field: 'region_a', enrich: true},
+  country: { parent: 'parent', field: 'country_a', enrich: true}
+};
+
 function setup(peliasConfig) {
   if (check.assigned(peliasConfig)) {
     RELATIVE_SCORES = peliasConfig.hasOwnProperty('relativeScores') ? peliasConfig.relativeScores : true;
@@ -31,6 +40,9 @@ function setup(peliasConfig) {
     if (peliasConfig.localization) {
       if(peliasConfig.localization.confidenceAdminProperties) {
 	adminProperties = peliasConfig.localization.confidenceAdminProperties;
+      }
+      if(peliasConfig.localization.confidenceAddressParts) {
+	confidenceAddressParts = peliasConfig.localization.confidenceAddressParts;
       }
       nameWeight = peliasConfig.localization.confidenceNameWeight || nameWeight;
     }
@@ -261,21 +273,33 @@ function propMatch(textProp, hitProp, expectEnriched) {
  * @returns {number}
  */
 function checkAddress(text, hit) {
-  var checkCount = 5;
   var res = 0;
 
   if (check.assigned(text) && check.assigned(text.number) && check.assigned(text.street)) {
-    res += propMatch(text.number, (hit.address_parts ? hit.address_parts.number : null), false);
-    res += propMatch(text.street, (hit.address_parts ? hit.address_parts.street : null), false);
-    res += propMatch(text.postalcode, (hit.address_parts ? hit.address_parts.zip: null), true);
-    res += propMatch(text.state, hit.parent.region_a[0], true);
-    res += propMatch(text.country, hit.parent.country_a[0], true);
+    var checkCount = 0;
 
+    for(var key in confidenceAddressParts) {
+      var value;
+      var part = confidenceAddressParts[key];
+      var parent = hit[part.parent];
+
+      if(!parent) {
+	value = null;
+      } else {
+	value = parent[part.field];
+	if (Array.isArray(value)) {
+	  value = value[0];
+	}
+      }
+      res += propMatch(text[key], value, part.enrich);
+      checkCount++;
+    }
     res /= checkCount;
   }
   else {
     res = 1;
   }
+  logger.debug('address match', res );
 
   return res;
 }
@@ -334,7 +358,7 @@ function checkAdmin(text, hit) {
  * An average z-score is ZERO.
  * A negative z-score indicates that the item/element is below
  * average and a positive z-score means that the item/element
- * in above average. When teachers say they are going to "curve"
+ * in above average. When teachers say they are going to 'curve'
  * the test, they do this by computing z-scores for the students' test scores.
  *
  * @param {number} score
