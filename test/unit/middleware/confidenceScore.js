@@ -131,7 +131,7 @@ module.exports.tests.confidenceScore = function(test, common) {
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 0.6, 'Internationalized name contributed in scoring');
-    t.equal(res.data[1].confidence, 0.54, 'Do not consider name versions excluded from configuration');
+    t.equal(res.data[1].confidence, 0.4, 'Do not consider name versions excluded from configuration');
 
     t.end();
   });
