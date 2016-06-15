@@ -1,3 +1,4 @@
+
 /**
  *
  *Basic confidence score should be computed and returned for each item in the results.
@@ -19,12 +20,18 @@ var _ = require('lodash');
 var RELATIVE_SCORES = true;
 
 var languages = ['default'];
+var adminProperties;
 
 function setup(peliasConfig) {
   if (check.assigned(peliasConfig)) {
     RELATIVE_SCORES = peliasConfig.hasOwnProperty('relativeScores') ? peliasConfig.relativeScores : true;
     if (peliasConfig.languages) {
       languages = _.uniq(languages.concat(peliasConfig.languages));
+    }
+    if (peliasConfig.localization) {
+      if(peliasConfig.localization.confidenceAdminProperties) {
+	adminProperties = peliasConfig.localization.confidenceAdminProperties;
+      }
     }
   }
   return computeScores;
@@ -80,6 +87,11 @@ function computeConfidenceScore(req, mean, stdev, hit) {
   hit.confidence += checkQueryType(req.clean.parsed_text, hit);
   hit.confidence += checkAddress(req.clean.parsed_text, hit);
 
+  if(adminProperties && req.clean.parsed_text && req.clean.parsed_text.regions &&
+    req.clean.parsed_text.regions.length>1) {
+    hit.confidence += checkAdmin(req.clean.parsed_text, hit);
+    checkCount++;
+  }
 
   // TODO: look at categories and location
 
@@ -259,6 +271,55 @@ function checkAddress(text, hit) {
     res = 1;
   }
 
+  return res;
+}
+
+/**
+ * Check admin regions of the parsed text against a result.
+ *
+ * @param {object} text
+ * @param {object} [text.regions]
+ * @param {object} hit
+ * @param {object} [hit.parent]
+ * @returns {number}
+ */
+function checkAdmin(text, hit) {
+  var res = 0;
+  var regions = [];
+  var source = text.regions;
+
+  for(var i=1; i<source.length; i++) { // drop 1st entry = actual name or street
+    regions.push(source[i].toLowerCase());
+  }
+
+  // find out maximum count for matching properties
+  var count = Math.min(regions.length, adminProperties.length);
+
+  // loop trough configured properties to find a match
+  adminProperties.forEach( function(key) {
+    var prop = hit.parent[key];
+    if (prop) {
+      if (Array.isArray(prop)) {
+	for(var i=0; i<prop.length; i++) {
+	  var value = prop[i].toLowerCase();
+	  if(regions.indexOf(value) !== -1) {
+	    res = res + 1; // match
+	    break;
+	  }
+	}
+      } else {
+	if( regions.indexOf(prop) !== -1 ) {
+	  res = res + 1; // match
+	}
+      }
+    }
+  });
+
+  // set an upper limit; several parent fields can match the same text
+  // e.g. New York, New York (city, state)
+  res = Math.min(res/count, 1.0);
+
+  logger.debug('admin match', res);
   return res;
 }
 
