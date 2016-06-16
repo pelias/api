@@ -230,27 +230,32 @@ function checkQueryType(text, hit) {
  */
 function propMatch(textProp, hitProp, expectEnriched) {
 
-  // both missing, but expect to have enriched value in result => BAD
-  if (check.undefined(textProp) && check.undefined(hitProp) && check.assigned(expectEnriched)) { return 0; }
+  // both missing = match
+  if (check.undefined(textProp) && check.undefined(hitProp)) {
+    if (check.assigned(expectEnriched)) { return 0.5; }
+    else { return 0.8; } // no enrichment expected => GOOD
+  }
 
-  // both missing, and no enrichment expected => GOOD
-  if (check.undefined(textProp) && check.undefined(hitProp)) { return 1; }
+  // text has it, result missing
+  if (check.assigned(textProp) && check.undefined(hitProp)) {
+    if (check.assigned(expectEnriched)) { return 0.2; }
+    else { return 0.4; }
+  }
 
-  // text has it, result doesn't => BAD
-  if (check.assigned(textProp) && check.undefined(hitProp)) { return 0; }
+  // text missing, result has it
+  if (check.undefined(textProp) && check.assigned(hitProp)) {
+    if (check.assigned(expectEnriched)) { return 0.8; }
+    else { return 0.5; }
+  }
 
-  // text missing, result has it, and enrichment is expected => GOOD
-  if (check.undefined(textProp) && check.assigned(hitProp) && check.assigned(expectEnriched)) { return 1; }
+  // both present
 
-  // text missing, result has it, enrichment not desired => 50/50
-  if (check.undefined(textProp) && check.assigned(hitProp)) { return 0.5; }
+  if (textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) {
+    return 1; //values match
+  }
 
-  // both present, values match => GREAT
-  if (check.assigned(textProp) && check.assigned(hitProp) &&
-      textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) { return 1; }
-
-  // ¯\_(ツ)_/¯
-  return 0.7;
+  // both present, values differ => BAD regardless of enrichment
+  return 0;
 }
 
 /**
