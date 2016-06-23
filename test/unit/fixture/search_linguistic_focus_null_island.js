@@ -41,7 +41,7 @@ module.exports = {
                   'lat': 0,
                   'lon': 0
                 },
-                'offset': '1km',
+                'offset': '0km',
                 'scale': '50km',
                 'decay': 0.5
               }
