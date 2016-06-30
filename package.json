@@ -52,7 +52,7 @@
     "pelias-config": "^1.0.1",
     "pelias-logger": "^0.0.8",
     "pelias-model": "^4.0.0",
-    "pelias-query": "7.0.2",
+    "pelias-query": "8.0.0",
     "pelias-suggester-pipeline": "2.0.4",
     "pelias-text-analyzer": "^1.0.1",
     "stats-lite": "1.0.3",
