@@ -34,15 +34,19 @@ function sanitizeId(rawId, messages) {
     messages.errors.push( formatError(rawId) );
     return;
   }
-
-  if (!_.includes(type_mapping.sources, source)) {
-    messages.errors.push( targetError(source, type_mapping.sources) );
+  var valid_values = Object.keys(type_mapping.source_mapping);
+  if (!_.includes(valid_values, source)) {
+    messages.errors.push( targetError(source, valid_values) );
     return;
   }
 
   if (!_.includes(type_mapping.layers, layer)) {
     messages.errors.push( targetError(layer, type_mapping.layers) );
     return;
+  }
+  //converts the shortened source names to the full name
+  if(source !== type_mapping.source_mapping[source]){
+    source = type_mapping.source_mapping[source][0];
   }
 
   return {
