@@ -47,7 +47,8 @@ var SOURCE_MAPPING = addStandardTargetsToAliases(SOURCES, SOURCE_ALIASES);
 var LAYERS_BY_SOURCE = {
  openstreetmap: [ 'address', 'venue' ],
  openaddresses: [ 'address' ],
- geonames: [ 'country', 'region', 'county', 'locality', 'venue' ],
+ geonames: [ 'country','macroregion', 'region', 'county','localadmin',
+  'locality', 'neighbourhood', 'venue' ],
  whosonfirst: [ 'continent', 'country', 'dependency', 'macroregion', 'region',
    'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
    'neighbourhood', 'microhood', 'disputed']

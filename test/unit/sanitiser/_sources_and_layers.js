@@ -51,6 +51,17 @@ module.exports.tests.no_errors = function(test, common) {
     t.end();
   });
 
+test('valid combination', function(t) {
+    var raw = {};
+    var clean = { sources: ['geonames'], layers: ['macroregion'] };
+
+    var messages = sanitize(raw, clean);
+
+    t.equal(messages.errors.length, 0, 'should return no errors');
+    t.equal(messages.warnings.length, 0, 'should return no warnings');
+    t.end();
+  });
+
   test('valid combination because of multiple sources', function(t) {
     var raw = {};
     var clean = { sources: ['openstreetmap', 'openaddresses'], layers: ['venue'] };
