@@ -4,14 +4,13 @@ var peliasQuery = require('pelias-query'),
 
 /**
   Population / Popularity subquery
+
+  In prior versions we have had restricted the population/popularity boost
+  to only a section of the query results.
+
+  Currently it is configured to `match_all`, ie. targets all records.
 **/
 
 module.exports = function( vs ){
-
-  var view = peliasQuery.view.ngrams( vs );
-
-  view.match['name.default'].analyzer = vs.var('phrase:analyzer');
-  delete view.match['name.default'].boost;
-
-  return view;
+  return { 'match_all': {} };
 };

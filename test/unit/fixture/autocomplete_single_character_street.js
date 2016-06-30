@@ -101,12 +101,7 @@ module.exports = {
         {
         'function_score': {
           'query': {
-            'match': {
-              'name.default': {
-                'analyzer': 'peliasQueryFullToken',
-                'query': 'k road',
-              }
-            }
+            'match_all': {}
           },
           'max_boost': 20,
           'score_mode': 'first',
@@ -123,12 +118,7 @@ module.exports = {
       },{
         'function_score': {
           'query': {
-            'match': {
-              'name.default': {
-                'analyzer': 'peliasQueryFullToken',
-                'query': 'k road',
-              }
-            }
+            'match_all': {}
           },
           'max_boost': 20,
           'score_mode': 'first',

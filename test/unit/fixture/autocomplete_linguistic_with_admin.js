@@ -102,12 +102,7 @@ module.exports = {
         {
           'function_score': {
             'query': {
-              'match': {
-                'name.default': {
-                  'analyzer': 'peliasQueryFullToken',
-                  'query': 'one two',
-                }
-              }
+              'match_all': {}
             },
             'max_boost': 20,
             'functions': [
@@ -127,12 +122,7 @@ module.exports = {
         {
           'function_score': {
             'query': {
-              'match': {
-                'name.default': {
-                  'analyzer': 'peliasQueryFullToken',
-                  'query': 'one two',
-                }
-              }
+              'match_all': {}
             },
             'max_boost': 20,
             'functions': [

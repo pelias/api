@@ -20,7 +20,8 @@ module.exports = {
             'boost': 100,
             'query': 'three',
             'type': 'phrase',
-            'operator': 'and'
+            'operator': 'and',
+            'slop': 3
           }
         }
       }],
@@ -39,12 +40,7 @@ module.exports = {
         {
         'function_score': {
           'query': {
-            'match': {
-              'name.default': {
-                'analyzer': 'peliasQueryFullToken',
-                'query': 'one two three',
-              }
-            }
+            'match_all': {}
           },
           'max_boost': 20,
           'score_mode': 'first',
@@ -61,12 +57,7 @@ module.exports = {
       },{
         'function_score': {
           'query': {
-            'match': {
-              'name.default': {
-                'analyzer': 'peliasQueryFullToken',
-                'query': 'one two three',
-              }
-            }
+            'match_all': {}
           },
           'max_boost': 20,
           'score_mode': 'first',

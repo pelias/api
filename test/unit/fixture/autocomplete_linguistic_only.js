@@ -9,19 +9,15 @@ module.exports = {
             'boost': 100,
             'query': 'test',
             'type': 'phrase',
-            'operator': 'and'
+            'operator': 'and',
+            'slop': 3
           }
         }
       }],
       'should':[{
         'function_score': {
           'query': {
-            'match': {
-              'name.default': {
-                'analyzer': 'peliasQueryFullToken',
-                'query': 'test',
-              }
-            }
+            'match_all': {}
           },
           'max_boost': 20,
           'score_mode': 'first',
@@ -38,12 +34,7 @@ module.exports = {
       },{
         'function_score': {
           'query': {
-            'match': {
-              'name.default': {
-                'analyzer': 'peliasQueryFullToken',
-                'query': 'test',
-              }
-            }
+            'match_all': {}
           },
           'max_boost': 20,
           'score_mode': 'first',
