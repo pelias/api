@@ -10,10 +10,16 @@ var peliasQuery = require('pelias-query');
 
 module.exports = function( vs ){
 
+  // validate required params
+  if( !vs.isset('phrase:slop') ){
+    return null;
+  }
+
   var view = peliasQuery.view.ngrams( vs );
 
   view.match['name.default'].type = 'phrase';
   view.match['name.default'].operator = 'and';
+  view.match['name.default'].slop = vs.var('phrase:slop');
 
   return view;
 };

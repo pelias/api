@@ -51,7 +51,10 @@ function isDifferent(item1, item2) {
 
     if (item1.hasOwnProperty('name') && item2.hasOwnProperty('name')) {
       for (var lang in item1.name) {
-	propMatch(item1.name, item2.name, lang);
+        if(item2.name[lang] || lang === 'default') {
+          // do not consider absence of an additional name as a difference
+          propMatch(item1.name, item2.name, lang);
+        }
       }
     }
     else {
