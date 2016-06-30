@@ -178,7 +178,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_boundary_country');
 
-    t.deepEqual(compiled, expected, 'valid boundary.country query');
+    t.deepEqual(compiled, expected, 'search: valid boundary.country query');
     t.end();
   });
 
@@ -191,7 +191,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_with_source_filtering');
 
-    t.deepEqual(compiled, expected, 'valid search query with source filtering');
+    t.deepEqual(compiled, expected, 'search: valid search query with source filtering');
     t.end();
   });
 

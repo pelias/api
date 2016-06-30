@@ -15,12 +15,10 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'boundary:circle:radius': '50km',
   'boundary:circle:distance_type': 'plane',
   'boundary:circle:optimize_bbox': 'indexed',
-  'boundary:circle:_cache': true,
 
   'boundary:rect:type': 'indexed',
-  'boundary:rect:_cache': true,
 
-  'ngram:analyzer': 'peliasIndexOneEdgeGram',
+  'ngram:analyzer': 'peliasQueryFullToken',
   'ngram:field': 'name.default',
   'ngram:boost': 1,
 
