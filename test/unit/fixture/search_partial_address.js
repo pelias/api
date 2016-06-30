@@ -8,7 +8,7 @@ module.exports = {
         'match': {
           'name.default': {
             'query': 'soho grand',
-            'analyzer': 'peliasIndexOneEdgeGram',
+            'analyzer': 'peliasQueryFullToken',
             'boost': 1
           }
         }

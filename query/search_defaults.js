@@ -18,7 +18,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   'boundary:rect:type': 'indexed',
 
-  'ngram:analyzer': 'peliasIndexOneEdgeGram',
+  'ngram:analyzer': 'peliasQueryFullToken',
   'ngram:field': 'name.default',
   'ngram:boost': 1,
 
