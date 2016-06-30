@@ -3,14 +3,18 @@ module.exports = {
   'query': {
     'bool': {
       'must': [{
-        'match': {
-          'name.default': {
-            'analyzer': 'peliasQueryPartialToken',
-            'boost': 100,
-            'query': 'test',
-            'type': 'phrase',
-            'operator': 'and',
-            'slop': 3
+        'constant_score': {
+          'query': {
+            'match': {
+              'name.default': {
+                'analyzer': 'peliasQueryPartialToken',
+                'boost': 100,
+                'query': 'test',
+                'type': 'phrase',
+                'operator': 'and',
+                'slop': 3
+              }
+            }
           }
         }
       }],

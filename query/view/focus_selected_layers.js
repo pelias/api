@@ -14,6 +14,12 @@ var peliasQuery = require('pelias-query');
 module.exports = function( subview ){
   return function( vs ){
 
+    // don't perform this query on single character inputs
+    // as its too unperformant to sort a large part of the index.
+    if( vs.var('input:name').get().length < 2 ){
+      return null;
+    }
+
     if( !subview ){ return null; } // subview validation failed
     var macroView = peliasQuery.view.focus( subview );
     if( !macroView ){ return null; } // macroView validation failed
