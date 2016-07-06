@@ -92,13 +92,7 @@ function sanitize( raw, clean ){
       // set all but the last token as 'complete'
       clean.tokens_complete = tokensCopy;
 
-      /**
-        if the last token is a single non-numeric character then we must discard it.
-
-        at time of writing, single non-numeric ngrams are not stored in the index,
-        sending them as part of the query would result in 0 documents being returned.
-      **/
-      if( lastToken && ( lastToken.length > 1 || lastToken.match(/[0-9]/) ) ){
+      if( lastToken ){
         clean.tokens_incomplete = [ lastToken ];
       }
     }
