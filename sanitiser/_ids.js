@@ -44,13 +44,9 @@ function sanitizeId(rawId, messages) {
     messages.errors.push( targetError(layer, type_mapping.layers) );
     return;
   }
-  //converts the shortened source names to the full name
-  if(source !== type_mapping.source_mapping[source]){
-    source = type_mapping.source_mapping[source][0];
-  }
 
   return {
-    source: source,
+    source: type_mapping.source_mapping[source][0],
     layer: layer,
     id: id,
   };
