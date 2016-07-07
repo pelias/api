@@ -293,7 +293,7 @@ function checkAddress(text, hit) {
       } else {
 	value = parent[part.field];
 	if (Array.isArray(value)) {
-	  value = value[0];
+	  value = value[0]; // TODO: check all array values
 	}
       }
       res += propMatch(text[key], value, part.enrich);
