@@ -1,16 +1,28 @@
 
-var Cluster = require('cluster2'),
+var cluster = require('cluster'),
     app = require('./app'),
     port = ( process.env.PORT || 3100 ),
     multicore = true;
 
 /** cluster webserver across all cores **/
 if( multicore ){
-  var c = new Cluster({ port: port });
-  c.listen(function(cb){
+
+  var numCPUs = require('os').cpus().length;
+  if( cluster.isMaster ){
+
+    // fork workers
+    for (var i = 0; i < numCPUs; i++) {
+      cluster.fork();
+    }
+
+    cluster.on('exit', function( worker, code, signal ){
+      console.log('worker ' + worker.process.pid + ' died');
+    });
+
+  } else {
+    app.listen( port );
     console.log( 'worker: listening on ' + port );
-    cb(app);
-  });
+  }
 }
 
 /** run server on the default setup (single core) **/
