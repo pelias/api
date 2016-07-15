@@ -14,6 +14,7 @@
     "lint": "jshint .",
     "start": "node index.js",
     "test": "npm run unit",
+    "travis": "npm test",
     "unit": "./bin/units",
     "validate": "npm ls"
   },
