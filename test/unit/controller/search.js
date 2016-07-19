@@ -1,4 +1,3 @@
-
 var setup = require('../../../controller/search'),
     mockBackend = require('../mock/backend'),
     mockQuery = require('../mock/query');
