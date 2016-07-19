@@ -31,11 +31,6 @@ function setup( backend, query ){
       body: query( req.clean )
     };
 
-    // use layers field for filtering by type
-    if( req.clean.hasOwnProperty('layers') ){
-      cmd.type = req.clean.layers;
-    }
-
     logger.debug( '[ES req]', cmd );
 
     // query backend

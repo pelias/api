@@ -128,7 +128,23 @@ module.exports = {
             'query': 'new york',
             'analyzer': 'peliasAdmin'
         }
-      }]
+      }],
+      'filter': [
+        {
+          'terms': {
+            'layer': [
+              'address',
+              'venue',
+              'country',
+              'region',
+              'county',
+              'neighbourhood',
+              'locality',
+              'localadmin'
+            ]
+          }
+        }
+      ]
     }
   },
   'size': 10,

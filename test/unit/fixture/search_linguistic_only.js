@@ -71,7 +71,16 @@ module.exports = {
             'weight': 2
           }]
         }
-      }]
+      }],
+      'filter': [
+        {
+          'terms': {
+            'layer': [
+              'test'
+            ]
+          }
+        }
+      ]
     }
   },
   'sort': [ '_score' ],
