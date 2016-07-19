@@ -7,14 +7,15 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "npm run unit",
-    "unit": "./bin/units",
+    "audit": "npm shrinkwrap; node node_modules/nsp/bin/nspCLI.js audit-shrinkwrap; rm npm-shrinkwrap.json;",
     "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao",
     "coverage": "node_modules/.bin/istanbul cover test/unit/run.js",
-    "audit": "npm shrinkwrap; node node_modules/nsp/bin/nspCLI.js audit-shrinkwrap; rm npm-shrinkwrap.json;",
     "docs": "./bin/generate-docs",
     "lint": "jshint .",
+    "start": "node index.js",
+    "test": "npm run unit",
+    "travis": "npm test",
+    "unit": "./bin/units",
     "validate": "npm ls"
   },
   "repository": {
