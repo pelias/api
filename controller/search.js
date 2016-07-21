@@ -4,7 +4,7 @@ var service = { search: require('../service/search') };
 var logger = require('pelias-logger').get('api:controller:search');
 var logging = require( '../helper/logging' );
 
-function setup( backend, query ){
+function setup( config, backend, query ){
 
   // allow overriding of dependencies
   backend = backend || require('../src/backend');
@@ -26,7 +26,7 @@ function setup( backend, query ){
 
     // backend command
     var cmd = {
-      index: 'pelias',
+      index: config.indexName,
       searchType: 'dfs_query_then_fetch',
       body: query( req.clean )
     };

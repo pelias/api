@@ -12,6 +12,11 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
+// reminder: this is only the api subsection of the full config
+var fakeDefaultConfig = {
+  indexName: 'pelias'
+};
+
 // functionally test controller (backend success)
 module.exports.tests.functional_success = function(test, common) {
 
@@ -81,7 +86,7 @@ module.exports.tests.functional_success = function(test, common) {
         searchType: 'dfs_query_then_fetch'
       }, 'correct backend command');
     });
-    var controller = setup(backend, mockQuery());
+    var controller = setup(fakeDefaultConfig, backend, mockQuery());
     var res = {
       status: function (code) {
         t.equal(code, 200, 'status set');
@@ -104,6 +109,33 @@ module.exports.tests.functional_success = function(test, common) {
     };
     controller(req, res, next);
   });
+
+  test('functional success with alternate index name', function(t) {
+    var fakeCustomizedConfig = {
+      indexName: 'alternateindexname'
+    };
+
+    var backend = mockBackend('client/search/ok/1', function (cmd) {
+      t.deepEqual(cmd, {
+        body: {a: 'b'},
+        index: 'alternateindexname',
+        searchType: 'dfs_query_then_fetch'
+      }, 'correct backend command');
+    });
+    var controller = setup(fakeCustomizedConfig, backend, mockQuery());
+    var res = {
+      status: function (code) {
+        t.equal(code, 200, 'status set');
+        return res;
+      }
+    };
+    var req = { clean: { a: 'b' }, errors: [], warnings: [] };
+    var next = function next() {
+      t.equal(req.errors.length, 0, 'next was called without error');
+      t.end();
+    };
+    controller(req, res, next);
+  });
 };
 
 // functionally test controller (backend failure)
@@ -112,7 +144,7 @@ module.exports.tests.functional_failure = function(test, common) {
     var backend = mockBackend( 'client/search/fail/1', function( cmd ){
       t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias', searchType: 'dfs_query_then_fetch' }, 'correct backend command');
     });
-    var controller = setup( backend, mockQuery() );
+    var controller = setup( fakeDefaultConfig, backend, mockQuery() );
     var req = { clean: { a: 'b' }, errors: [], warnings: [] };
     var next = function(){
       t.equal(req.errors[0],'a backend error occurred');
@@ -127,7 +159,7 @@ module.exports.tests.timeout = function(test, common) {
     var backend = mockBackend( 'client/search/timeout/1', function( cmd ){
       t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias', searchType: 'dfs_query_then_fetch' }, 'correct backend command');
     });
-    var controller = setup( backend, mockQuery() );
+    var controller = setup( fakeDefaultConfig, backend, mockQuery() );
     var req = { clean: { a: 'b' }, errors: [], warnings: [] };
     var next = function(){
       t.equal(req.errors[0],'Request Timeout after 5000ms');
