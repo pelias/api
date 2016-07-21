@@ -51,7 +51,7 @@
     "morgan": "1.7.0",
     "pelias-config": "2.1.0",
     "pelias-logger": "0.0.8",
-    "pelias-model": "4.0.0",
+    "pelias-model": "4.1.0",
     "pelias-query": "8.1.3",
     "pelias-text-analyzer": "1.1.0",
     "stats-lite": "2.0.3",
