@@ -47,6 +47,7 @@ query.score( peliasQuery.view.population( views.pop_subquery ) );
 
 // non-scoring hard filters
 query.filter( peliasQuery.view.sources );
+query.filter( peliasQuery.view.layers );
 
 // --------------------------------
 
@@ -61,6 +62,11 @@ function generateQuery( clean ){
   // sources
   if( check.array(clean.sources) && clean.sources.length ){
     vs.var( 'sources', clean.sources );
+  }
+
+  // layers
+  if( check.array(clean.layers) && clean.layers.length ){
+    vs.var( 'layers', clean.layers);
   }
 
   // pass the input tokens to the views so they can choose which tokens
