@@ -129,6 +129,22 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  test('valid layers filter', function(t) {
+    var query = generate({
+      'text': 'test',
+      'layers': ['country'],
+      tokens: ['test'],
+      tokens_complete: [],
+      tokens_incomplete: ['test']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_with_layer_filtering');
+
+    t.deepEqual(compiled, expected, 'valid autocomplete query with layer filtering');
+    t.end();
+  });
+
   test('single character street address', function(t) {
     var query = generate({
       text: 'k road, laird',

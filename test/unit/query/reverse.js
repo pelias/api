@@ -125,6 +125,23 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled, expected, 'valid reverse query with source filtering');
     t.end();
   });
+
+  test('valid layers filter', function(t) {
+    var query = generate({
+      'point.lat': 29.49136,
+      'point.lon': -82.50622,
+      'boundary.circle.lat': 29.49136,
+      'boundary.circle.lon': -82.50622,
+      'boundary.circle.radius': 500,
+      'layers': ['country']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/reverse_with_layer_filtering');
+
+    t.deepEqual(compiled, expected, 'valid reverse query with source filtering');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
