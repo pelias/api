@@ -34,9 +34,9 @@ function sanitizeId(rawId, messages) {
     messages.errors.push( formatError(rawId) );
     return;
   }
-
-  if (!_.includes(type_mapping.sources, source)) {
-    messages.errors.push( targetError(source, type_mapping.sources) );
+  var valid_values = Object.keys(type_mapping.source_mapping);
+  if (!_.includes(valid_values, source)) {
+    messages.errors.push( targetError(source, valid_values) );
     return;
   }
 
@@ -46,7 +46,7 @@ function sanitizeId(rawId, messages) {
   }
 
   return {
-    source: source,
+    source: type_mapping.source_mapping[source][0],
     layer: layer,
     id: id,
   };

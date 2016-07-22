@@ -1,7 +1,7 @@
 var check = require('check-types');
 var _ = require('lodash');
 
-var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL'];
+var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL', 'CZE'];
 
 function setup() {
   var api = require('pelias-config').generate().api;
