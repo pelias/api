@@ -113,6 +113,15 @@ module.exports = {
             'boost_mode': 'replace'
           }
         }
+      ],
+      'filter': [
+        {
+          'terms': {
+            'layer': [
+              'test'
+            ]
+          }
+        }
       ]
     }
   },

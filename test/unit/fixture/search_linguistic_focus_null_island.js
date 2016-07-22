@@ -101,6 +101,13 @@ module.exports = {
             'weight': 2
           }]
         }
+      }],
+      'filter':[{
+        'terms': {
+          'layer': [
+            'test'
+          ]
+        }
       }]
     }
   },

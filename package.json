@@ -7,14 +7,15 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "npm run unit",
-    "unit": "./bin/units",
+    "audit": "npm shrinkwrap; node node_modules/nsp/bin/nspCLI.js audit-shrinkwrap; rm npm-shrinkwrap.json;",
     "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao",
     "coverage": "node_modules/.bin/istanbul cover test/unit/run.js",
-    "audit": "npm shrinkwrap; node node_modules/nsp/bin/nspCLI.js audit-shrinkwrap; rm npm-shrinkwrap.json;",
     "docs": "./bin/generate-docs",
     "lint": "jshint .",
+    "start": "node index.js",
+    "test": "npm run unit",
+    "travis": "npm test",
+    "unit": "./bin/units",
     "validate": "npm ls"
   },
   "repository": {
@@ -33,9 +34,8 @@
     "node": ">=0.10.26"
   },
   "dependencies": {
-    "async": "^1.5.2",
+    "async": "^2.0.0",
     "check-types": "^7.0.0",
-    "cluster2": "git://github.com/missinglink/cluster2.git#node_zero_twelve",
     "elasticsearch": "^11.0.0",
     "elasticsearch-exceptions": "0.0.4",
     "express": "^4.8.8",
@@ -49,13 +49,12 @@
     "lodash": "^4.5.0",
     "markdown": "0.5.0",
     "morgan": "1.7.0",
-    "pelias-config": "~2.0.0",
-    "pelias-logger": "^0.0.8",
-    "pelias-model": "^4.0.0",
-    "pelias-query": "~8.0.0",
-    "pelias-suggester-pipeline": "2.0.4",
-    "pelias-text-analyzer": "^1.0.1",
-    "stats-lite": "1.0.3",
+    "pelias-config": "2.1.0",
+    "pelias-logger": "0.0.8",
+    "pelias-model": "4.1.0",
+    "pelias-query": "8.1.3",
+    "pelias-text-analyzer": "1.1.0",
+    "stats-lite": "2.0.3",
     "through2": "2.0.1"
   },
   "devDependencies": {
