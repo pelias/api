@@ -61,7 +61,7 @@ function addRoutes(app, peliasConfig) {
     search: createRouter([
       sanitisers.search.middleware,
       middleware.calcSize(),
-      controllers.search(),
+      controllers.search(peliasConfig),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.dedupe(),
@@ -74,7 +74,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     autocomplete: createRouter([
       sanitisers.autocomplete.middleware,
-      controllers.search(null, require('../query/autocomplete')),
+      controllers.search(peliasConfig, null, require('../query/autocomplete')),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.dedupe(),
@@ -88,7 +88,7 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitisers.reverse.middleware,
       middleware.calcSize(),
-      controllers.search(undefined, reverseQuery),
+      controllers.search(peliasConfig, undefined, reverseQuery),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
