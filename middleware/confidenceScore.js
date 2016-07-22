@@ -14,12 +14,18 @@
 var stats = require('stats-lite');
 var logger = require('pelias-logger').get('api');
 var check = require('check-types');
+var _ = require('lodash');
 
 var RELATIVE_SCORES = true;
+
+var languages = ['default'];
 
 function setup(peliasConfig) {
   if (check.assigned(peliasConfig)) {
     RELATIVE_SCORES = peliasConfig.hasOwnProperty('relativeScores') ? peliasConfig.relativeScores : true;
+    if (peliasConfig.languages) {
+      languages = _.uniq(languages.concat(peliasConfig.languages));
+    }
   }
   return computeScores;
 }
@@ -72,6 +78,7 @@ function computeConfidenceScore(req, mean, stdev, hit) {
   hit.confidence += checkQueryType(req.clean.parsed_text, hit);
   hit.confidence += checkAddress(req.clean.parsed_text, hit);
 
+
   // TODO: look at categories and location
 
   hit.confidence /= checkCount;
@@ -117,6 +124,28 @@ function checkDistanceFromMean(score, mean, stdev) {
   return (score - mean) > stdev ? 1 : 0;
 }
 
+
+/**
+ * Compare text string against all language versions of a property
+ *
+ * @param {string} text
+ * @param {object} property with language versions
+ * @returns {bool}
+ */
+
+function checkLanguageProperty(text, propertyObject) {
+  var ltext = text.toLowerCase();
+  for (var lang in propertyObject) {
+    if (languages.indexOf(lang) === -1) {
+      continue;
+    }
+    if (propertyObject[lang].toLowerCase() === ltext) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /**
  * Compare text string or name component of parsed_text against
  * default name in result
@@ -129,12 +158,12 @@ function checkDistanceFromMean(score, mean, stdev) {
 function checkName(text, parsed_text, hit) {
   // parsed_text name should take precedence if available since it's the cleaner name property
   if (check.assigned(parsed_text) && check.assigned(parsed_text.name) &&
-    hit.name.default.toLowerCase() === parsed_text.name.toLowerCase()) {
+      checkLanguageProperty(parsed_text.name, hit.name)) {
     return 1;
   }
 
-  // if no parsed_text check the text value as provided against result's default name
-  if (hit.name.default.toLowerCase() === text.toLowerCase()) {
+  // if no parsed_text check the text value as provided against result's name
+  if (checkLanguageProperty(text, hit.name)) {
     return 1;
   }
 
