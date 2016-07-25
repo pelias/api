@@ -97,9 +97,11 @@ module.exports.tests.confidenceScore = function(test, common) {
   test('undefined region fields should be handled gracefully', function(t) {
     var req = {
       clean: {
-        text: 'test name1, TX',
+        text: '123 Main St, City, NM',
         parsed_text: {
-          state: 'TX'
+          number: 123,
+          street: 'Main St',
+          state: 'NM'
         }
       }
     };
@@ -121,7 +123,7 @@ module.exports.tests.confidenceScore = function(test, common) {
     };
 
     confidenceScore(req, res, function() {});
-    t.equal(res.data[0].confidence, 0.54, 'score was set');
+    t.equal(res.data[0].confidence, 0.28, 'score was set');
     t.end();
   });
 };

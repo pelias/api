@@ -219,8 +219,8 @@ function checkAddress(text, hit) {
     res += propMatch(text.number, (hit.address_parts ? hit.address_parts.number : null), false);
     res += propMatch(text.street, (hit.address_parts ? hit.address_parts.street : null), false);
     res += propMatch(text.postalcode, (hit.address_parts ? hit.address_parts.zip: null), true);
-    res += propMatch(text.state, hit.parent.region_a[0], true);
-    res += propMatch(text.country, hit.parent.country_a[0], true);
+    res += propMatch(text.state, (hit.parent.region_a ? hit.parent.region_a[0] : null), true);
+    res += propMatch(text.country, (hit.parent.country_a ? hit.parent.country_a[0] :null), true);
 
     res /= checkCount;
   }
