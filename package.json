@@ -1,7 +1,6 @@
 {
   "name": "pelias-api",
   "author": "mapzen",
-  "version": "2.2.0",
   "description": "Pelias API",
   "homepage": "https://github.com/pelias/api",
   "license": "MIT",
@@ -16,11 +15,12 @@
     "test": "npm run unit",
     "travis": "npm test",
     "unit": "./bin/units",
-    "validate": "npm ls"
+    "validate": "npm ls",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/pelias/api.git"
+    "url": "https://github.com/pelias/api.git"
   },
   "keywords": [
     "pelias",
@@ -68,7 +68,8 @@
     "source-map": "^0.5.6",
     "tap-dot": "1.0.5",
     "tape": "^4.5.1",
-    "uglify-js": "^2.6.2"
+    "uglify-js": "^2.6.2",
+    "semantic-release": "^4.3.5"
   },
   "pre-commit": [
     "lint",
