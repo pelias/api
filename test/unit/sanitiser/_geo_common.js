@@ -12,6 +12,64 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
+module.exports.tests.wrapping = function(test, common) {
+  test('control - no wrapping required', function (t) {
+    var clean = {};
+    var params = {
+      'point.lat': 40.7,
+      'point.lon': -73.9
+    };
+    sanitize.sanitize_point( 'point', clean, params, false );
+    t.equal(clean['point.lat'], params['point.lat']);
+    t.equal(clean['point.lon'], params['point.lon']);
+    t.end();
+  });
+  test('positive longitude wrapping', function (t) {
+    var clean = {};
+    var params = {
+      'point.lat': 40.7,
+      'point.lon': 195.1
+    };
+    sanitize.sanitize_point( 'point', clean, params, false );
+    t.equal(clean['point.lat'], 40.7);
+    t.equal(clean['point.lon'], -164.9);
+    t.end();
+  });
+  test('negative longitude wrapping', function (t) {
+    var clean = {};
+    var params = {
+      'point.lat': 40.7,
+      'point.lon': -195.1
+    };
+    sanitize.sanitize_point( 'point', clean, params, false );
+    t.equal(clean['point.lat'], 40.7);
+    t.equal(clean['point.lon'], 164.9);
+    t.end();
+  });
+  test('positive latitudinal wrapping', function (t) {
+    var clean = {};
+    var params = {
+      'point.lat': 98.1,
+      'point.lon': -73.9
+    };
+    sanitize.sanitize_point( 'point', clean, params, false );
+    t.equal(clean['point.lat'], 81.9);
+    t.equal(clean['point.lon'], 106.1);
+    t.end();
+  });
+  test('negative latitudinal wrapping', function (t) {
+    var clean = {};
+    var params = {
+      'point.lat': -98.1,
+      'point.lon': -73.9
+    };
+    sanitize.sanitize_point( 'point', clean, params, false );
+    t.equal(clean['point.lat'], -81.9);
+    t.equal(clean['point.lon'], 106.1);
+    t.end();
+  });
+};
+
 module.exports.tests.coord = function(test, common) {
   test('valid coord', function (t) {
     var clean = {};

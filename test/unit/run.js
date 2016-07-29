@@ -56,6 +56,7 @@ var tests = [
   require('./sanitiser/place'),
   require('./sanitiser/reverse'),
   require('./sanitiser/search'),
+  require('./sanitiser/wrap'),
   require('./service/mget'),
   require('./service/search'),
 ];
