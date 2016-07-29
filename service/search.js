@@ -35,6 +35,7 @@ function service( backend, cmd, cb ){
         hit._source._id = hit._id;
         hit._source._type = hit._type;
         hit._source._score = hit._score;
+        hit._source._matched_queries = hit._matched_queries;
 
         return hit._source;
       });
