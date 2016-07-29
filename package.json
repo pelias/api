@@ -67,7 +67,7 @@
     "jshint": "^2.5.6",
     "nsp": "^2.2.0",
     "precommit-hook": "^3.0.0",
-    "proxyquire": "^1.7.7",
+    "proxyquire": "^1.7.10",
     "source-map": "^0.5.6",
     "tap-dot": "1.0.5",
     "tape": "^4.5.1",
