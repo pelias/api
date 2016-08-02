@@ -11,6 +11,11 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
+// reminder: this is only the api subsection of the full config
+var fakeDefaultConfig = {
+  indexName: 'pelias'
+};
+
 // functionally test controller (backend success)
 module.exports.tests.functional_success = function(test, common) {
 
@@ -43,7 +48,37 @@ module.exports.tests.functional_success = function(test, common) {
     var backend = mockBackend( 'client/mget/ok/1', function( cmd ){
       t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: [ 'a' ] } ] } }, 'correct backend command');
     });
-    var controller = setup( backend );
+    var controller = setup( fakeDefaultConfig, backend );
+    var res = {
+      status: function( code ){
+        t.equal(code, 200, 'status set');
+        return res;
+      },
+      json: function( json ){
+        t.equal(typeof json, 'object', 'returns json');
+        t.equal(typeof json.date, 'number', 'date set');
+        t.equal(json.type, 'FeatureCollection', 'valid geojson');
+        t.true(Array.isArray(json.features), 'features is array');
+        t.deepEqual(json.features, expected, 'values correctly mapped');
+      }
+    };
+    var req = { clean: { ids: [ {'id' : 123, layers: [ 'a' ] } ] }, errors: [], warnings: [] };
+    var next = function next() {
+      t.equal(req.errors.length, 0, 'next was called without error');
+      t.end();
+    };
+    controller(req, res, next );
+  });
+
+  test('functional success with custom index name', function(t) {
+    var fakeCustomizedConfig = {
+      indexName: 'alternateindexname'
+    };
+
+    var backend = mockBackend( 'client/mget/ok/1', function( cmd ){
+      t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'alternateindexname', _type: [ 'a' ] } ] } }, 'correct backend command');
+    });
+    var controller = setup( fakeCustomizedConfig, backend );
     var res = {
       status: function( code ){
         t.equal(code, 200, 'status set');
@@ -72,7 +107,7 @@ module.exports.tests.functional_failure = function(test, common) {
     var backend = mockBackend( 'client/mget/fail/1', function( cmd ){
       t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: ['b'] } ] } }, 'correct backend command');
     });
-    var controller = setup( backend );
+    var controller = setup( fakeDefaultConfig, backend );
     var req = { clean: { ids: [ {'id' : 123, layers: [ 'b' ] } ] }, errors: [], warnings: [] };
     var next = function( message ){
       t.equal(req.errors[0],'a backend error occurred','error passed to errorHandler');

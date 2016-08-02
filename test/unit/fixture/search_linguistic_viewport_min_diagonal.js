@@ -7,7 +7,7 @@ module.exports = {
             {
               'match': {
                 'name.default': {
-                  'analyzer': 'peliasIndexOneEdgeGram',
+                  'analyzer': 'peliasQueryFullToken',
                   'boost': 1,
                   'query': 'test'
                 }
@@ -48,7 +48,7 @@ module.exports = {
                           'lat': 28.49136,
                           'lon': -87.50623
                         },
-                        'offset': '1km',
+                        'offset': '0km',
                         'scale': '1km',
                         'decay': 0.5
                       }

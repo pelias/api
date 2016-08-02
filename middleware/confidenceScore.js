@@ -39,10 +39,10 @@ function setup(peliasConfig) {
     }
     if (peliasConfig.localization) {
       if(peliasConfig.localization.confidenceAdminProperties) {
-	adminProperties = peliasConfig.localization.confidenceAdminProperties;
+        adminProperties = peliasConfig.localization.confidenceAdminProperties;
       }
       if(peliasConfig.localization.confidenceAddressParts) {
-	confidenceAddressParts = peliasConfig.localization.confidenceAddressParts;
+        confidenceAddressParts = peliasConfig.localization.confidenceAddressParts;
       }
       nameWeight = peliasConfig.localization.confidenceNameWeight || nameWeight;
     }
@@ -52,8 +52,8 @@ function setup(peliasConfig) {
 
 function computeScores(req, res, next) {
   // do nothing if no result data set
-  if (check.undefined(req.clean) || check.undefined(res) ||
-      check.undefined(res.data) || check.undefined(res.meta)) {
+  if (!check.assigned(req.clean) || !check.assigned(res) ||
+      !check.assigned(res.data) || !check.assigned(res.meta)) {
     return next();
   }
 
@@ -122,11 +122,11 @@ function computeConfidenceScore(req, mean, stdev, hit) {
  * @returns {bool}
  */
 function checkForDealBreakers(req, hit) {
-  if (check.undefined(req.clean.parsed_text)) {
+  if (!check.assigned(req.clean.parsed_text)) {
     return false;
   }
 
-  if (check.assigned(req.clean.parsed_text.state) && req.clean.parsed_text.state !== hit.parent.region_a[0]) {
+  if (check.assigned(req.clean.parsed_text.state) && hit.parent.region_a && req.clean.parsed_text.state !== hit.parent.region_a[0]) {
     logger.debug('[confidence][deal-breaker]: state !== region_a');
     return true;
   }
@@ -213,8 +213,8 @@ function checkName(text, parsed_text, hit) {
  */
 function checkQueryType(text, hit) {
   if (check.assigned(text) && check.assigned(text.number) &&
-      (check.undefined(hit.address_parts) ||
-      (check.assigned(hit.address_parts) && check.undefined(hit.address_parts.number)))) {
+      (!check.assigned(hit.address_parts) ||
+      (check.assigned(hit.address_parts) && !check.assigned(hit.address_parts.number)))) {
     return 0;
   }
   return 1;
@@ -231,28 +231,27 @@ function checkQueryType(text, hit) {
 function propMatch(textProp, hitProp, expectEnriched) {
 
   // both missing = match
-  if (check.undefined(textProp) && check.undefined(hitProp)) {
+  if (!check.assigned(textProp) && !check.assigned(hitProp)) {
     if (check.assigned(expectEnriched)) { return 0.5; }
     else { return 0.8; } // no enrichment expected => GOOD
   }
 
   // text has it, result missing
-  if (check.assigned(textProp) && check.undefined(hitProp)) {
+  if (check.assigned(textProp) && !check.assigned(hitProp)) {
     if (check.assigned(expectEnriched)) { return 0.2; }
     else { return 0.4; }
   }
 
   // text missing, result has it
-  if (check.undefined(textProp) && check.assigned(hitProp)) {
+  if (!check.assigned(textProp) && check.assigned(hitProp)) {
     if (check.assigned(expectEnriched)) { return 0.8; }
     else { return 0.5; }
   }
 
   // both present
-
   if (textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) {
-    return 1; //values match
-  }
+      return 1; //values match
+    }
 
   // both present, values differ => BAD regardless of enrichment
   return 0;
@@ -289,12 +288,12 @@ function checkAddress(text, hit) {
       var parent = hit[part.parent];
 
       if(!parent) {
-	value = null;
+        value = null;
       } else {
-	value = parent[part.field];
-	if (Array.isArray(value)) {
-	  value = value[0]; // TODO: check all array values
-	}
+        value = parent[part.field];
+        if (Array.isArray(value)) {
+          value = value[0]; // TODO: check all array values
+        }
       }
       res += propMatch(text[key], value, part.enrich);
       checkCount++;
@@ -335,17 +334,17 @@ function checkAdmin(text, hit) {
     var prop = hit.parent[key];
     if (prop) {
       if (Array.isArray(prop)) {
-	for(var i=0; i<prop.length; i++) {
-	  var value = prop[i].toLowerCase();
-	  if(regions.indexOf(value) !== -1) {
-	    res = res + 1; // match
-	    break;
-	  }
-	}
+        for(var i=0; i<prop.length; i++) {
+          var value = prop[i].toLowerCase();
+          if(regions.indexOf(value) !== -1) {
+            res = res + 1; // match
+            break;
+          }
+        }
       } else {
-	if( regions.indexOf(prop) !== -1 ) {
-	  res = res + 1; // match
-	}
+        if( regions.indexOf(prop) !== -1 ) {
+          res = res + 1; // match
+        }
       }
     }
   });
