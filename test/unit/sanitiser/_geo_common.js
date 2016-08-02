@@ -55,7 +55,7 @@ module.exports.tests.wrapping = function(test, common) {
     };
     sanitize.sanitize_point( 'point', clean, params, false );
     t.equal(clean['point.lat'], +88.9, 'equal to (+90 - 1.1)');
-    t.equal(clean['point.lon'], -178.9, 'equal to (-180 - 1.1)'); // polar flip
+    t.equal(clean['point.lon'], -178.9, 'equal to (-180 + 1.1)'); // polar flip
     t.end();
   });
   test('negative latitudinal wrapping', function (t) {
