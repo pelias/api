@@ -4,6 +4,7 @@
 var groups = require('./_groups'),
     util = require('util'),
     check = require('check-types'),
+    wrap = require('./wrap'),
     _ = require('lodash');
 
 /**
@@ -68,6 +69,7 @@ function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
  * @param {bool} point_is_required
  */
 function sanitize_point( key_prefix, clean, raw, point_is_required ) {
+
   // calculate full property names from the key_prefix
   var properties = [ 'lat', 'lon'].map(function(prop) {
     return key_prefix + '.' + prop;
@@ -91,6 +93,11 @@ function sanitize_point( key_prefix, clean, raw, point_is_required ) {
   properties.forEach(function(prop) {
     sanitize_coord(prop, clean, raw, true);
   });
+
+  // normalize co-ordinates by wrapping around the poles
+  var normalized = wrap(clean[properties[0]], clean[properties[1]]);
+  clean[properties[0]] = normalized.lat;
+  clean[properties[1]] = normalized.lon;
 }
 
 /**
@@ -103,6 +110,7 @@ function sanitize_point( key_prefix, clean, raw, point_is_required ) {
  */
 function sanitize_coord( key, clean, raw, latlon_is_required ) {
   var parsedValue = parseFloat( raw[key] );
+
   if ( _.isFinite( parsedValue ) ) {
     clean[key] = parsedValue;
   }

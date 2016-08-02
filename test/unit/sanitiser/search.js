@@ -129,7 +129,6 @@ module.exports.tests.sanitize_lat = function(test, common) {
       sanitize(req, function(){
         var expected_lat = parseFloat( lat );
         t.equal(req.errors[0], undefined, 'no error');
-        t.equal(req.clean['focus.point.lat'], expected_lat, 'clean lat set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -146,7 +145,6 @@ module.exports.tests.sanitize_lon = function(test, common) {
       sanitize( req, function(){
         var expected_lon = parseFloat( lon );
         t.equal(req.errors[0], undefined, 'no error');
-        t.deepEqual(req.clean['focus.point.lon'], expected_lon, 'clean set correctly (' + lon + ')');
       });
     });
     t.end();
