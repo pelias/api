@@ -105,7 +105,7 @@ function addRoutes(app, peliasConfig) {
     nearby: createRouter([
       sanitisers.nearby.middleware,
       middleware.calcSize(),
-      controllers.search(undefined, reverseQuery),
+      controllers.search(peliasConfig, undefined, reverseQuery),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
