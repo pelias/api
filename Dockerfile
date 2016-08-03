@@ -7,7 +7,7 @@ EXPOSE ${PORT}
 # use our extended query module until it gets merged upstream
 ENV QUERY=/opt/pelias/query
 WORKDIR ${QUERY}
-RUN git clone -b sync-upstream --single-branch https://github.com/HSLdevcom/query.git \
+RUN git clone --single-branch https://github.com/HSLdevcom/query.git \
   && cd query \
   && npm install \
   && npm link
