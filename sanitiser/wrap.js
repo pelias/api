@@ -34,14 +34,8 @@ function wrap( lat, lon ){
       break;
   }
 
-  // reduce lon
-  while( point.lon > 180 ){
-    point.lon -= 360;
-  }
-
-  // increase lon
-  while( point.lon < -180 ){
-    point.lon += 360;
+  if( point.lon > 180 || point.lon <= -180 ){
+    point.lon -= Math.floor(( point.lon + 180 ) / 360) * 360;
   }
 
   return point;
