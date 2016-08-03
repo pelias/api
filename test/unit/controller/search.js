@@ -54,6 +54,7 @@ module.exports.tests.functional_success = function(test, common) {
       _id: 'myid1',
       _score: 10,
       _type: 'mytype1',
+      _matched_queries: ['query 1', 'query 2'],
       parent: {
         country: ['country1'],
         region: ['state1'],
@@ -67,6 +68,7 @@ module.exports.tests.functional_success = function(test, common) {
       _id: 'myid2',
       _score: 20,
       _type: 'mytype2',
+      _matched_queries: ['query 3'],
       parent: {
         country: ['country2'],
         region: ['state2'],
