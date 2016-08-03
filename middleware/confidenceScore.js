@@ -88,7 +88,8 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     return hit;
   }
 
-  var checkCount = 2 + nameWeight; // name can have extra strong weight
+  var parsedText = req.clean.parsed_text;
+  var checkCount = 1 + nameWeight; // name can have extra strong weight
   hit.confidence = 0;
 
   if (RELATIVE_SCORES) {
@@ -96,13 +97,16 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     hit.confidence += checkDistanceFromMean(hit._score, mean, stdev);
     hit.confidence += computeZScore(hit._score, mean, stdev);
   }
-  hit.confidence += nameWeight*checkName(req.clean.text, req.clean.parsed_text, hit);
-  hit.confidence += checkQueryType(req.clean.parsed_text, hit);
-  hit.confidence += checkAddress(req.clean.parsed_text, hit);
+  hit.confidence += nameWeight*checkName(req.clean.text, parsedText, hit);
+  hit.confidence += checkQueryType(parsedText, hit);
 
-  if(adminProperties && req.clean.parsed_text && req.clean.parsed_text.regions &&
-    req.clean.parsed_text.regions.length>1) {
-    hit.confidence += checkAdmin(req.clean.parsed_text, hit);
+  if (parsedText && check.assigned(parsedText.number) && check.assigned(parsedText.street)) {
+    hit.confidence += checkAddress(parsedText, hit);
+    checkCount++;
+  }
+
+  if(adminProperties && parsedText && parsedText.regions && parsedText.regions.length>1) {
+    hit.confidence += checkAdmin(parsedText, hit);
     checkCount++;
   }
   // TODO: look at categories and location
@@ -278,31 +282,36 @@ function propMatch(textProp, hitProp, expectEnriched) {
  */
 function checkAddress(text, hit) {
   var res = 0;
+  var checkCount = 0;
 
-  if (check.assigned(text) && check.assigned(text.number) && check.assigned(text.street)) {
-    var checkCount = 0;
+  for(var key in confidenceAddressParts) {
+    var value;
+    var part = confidenceAddressParts[key];
+    var parent = hit[part.parent];
 
-    for(var key in confidenceAddressParts) {
-      var value;
-      var part = confidenceAddressParts[key];
-      var parent = hit[part.parent];
-
-      if(!parent) {
-        value = null;
-      } else {
-        value = parent[part.field];
-        if (Array.isArray(value)) {
-          value = value[0]; // TODO: check all array values
+    if (!parent) {
+      value = null;
+    } else {
+      value = parent[part.field];
+    }
+    if (Array.isArray(value)) { // check all array values
+      var count = Math.max(value.length, 1);
+      var maxMatch = 0;
+      for (var i=0; i<count; i++) {
+        value = value[i];
+        var match = propMatch(text[key], value, part.enrich);
+        if (match>maxMatch) {
+          maxMatch=match;
         }
       }
+      res += maxMatch;
+    } else {
       res += propMatch(text[key], value, part.enrich);
-      checkCount++;
     }
-    res /= checkCount;
+    checkCount++;
   }
-  else {
-    res = 1;
-  }
+  res /= checkCount;
+
   logger.debug('address match', res );
 
   return res;
