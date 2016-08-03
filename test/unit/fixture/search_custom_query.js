@@ -8,7 +8,7 @@ module.exports = {
           'query': '123 main st',
           'analyzer': 'peliasQueryFullToken',
           'boost': 1,
-	  'fields': ['name.*']
+          'fields': ['name.*']
         }
       }],
       'should': [{

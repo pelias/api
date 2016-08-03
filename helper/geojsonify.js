@@ -225,17 +225,17 @@ function copyProperties( source, props, dst ) {
 
       // array value, take first item in array (at this time only used for admin values)
       if (source[prop] instanceof Array) {
-	if (source[prop].length === 0) {
-	  return;
-	}
-	if (source[prop][0]) {
-	  dst[prop] = source[prop][0];
-	}
+        if (source[prop].length === 0) {
+          return;
+        }
+        if (source[prop][0]) {
+          dst[prop] = source[prop][0];
+        }
       }
 
       // simple value
       else {
-	dst[prop] = source[prop];
+        dst[prop] = source[prop];
       }
     }
   });

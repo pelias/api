@@ -151,8 +151,8 @@ module.exports.tests.confidenceScore = function(test, common) {
         _score: 10,
         value: 2,
         center_point: { lat: 100.2, lon: -51.5 },
-	name: { default: 'factory street', fi: 'tehtaankatu',
-		sv: 'wrong name here', ignore: 'fabriksgatan' }, // match in ignore
+        name: { default: 'factory street', fi: 'tehtaankatu',
+                sv: 'wrong name here', ignore: 'fabriksgatan' }, // match in ignore
         parent: {
           country: ['country2'],
           region: ['state2'],
