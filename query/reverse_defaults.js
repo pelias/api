@@ -16,10 +16,8 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'boundary:circle:radius:coarse': '500km',
   'boundary:circle:distance_type': 'plane',
   'boundary:circle:optimize_bbox': 'indexed',
-  'boundary:circle:_cache': true,
 
   'boundary:rect:type': 'indexed',
-  'boundary:rect:_cache': true,
 
   'ngram:analyzer': 'peliasQueryPartialToken',
   'ngram:field': 'name.default',
@@ -31,7 +29,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'phrase:slop': 2,
 
   'focus:function': 'linear',
-  'focus:offset': '1km',
+  'focus:offset': '0km',
   'focus:scale': '50km',
   'focus:decay': 0.5,
   'focus:weight': 2,

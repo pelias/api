@@ -3,24 +3,13 @@ module.exports = {
   'query': {
     'bool': {
       'must': [{
-        'match': {
-          'name.default': {
-            'analyzer': 'peliasQueryFullToken',
-            'type': 'phrase',
-            'boost': 1,
-            'slop': 3,
-            'query': 'one two'
-          }
-        }
-      },
-      {
         'constant_score': {
           'query': {
             'match': {
               'name.default': {
                 'analyzer': 'peliasQueryPartialToken',
                 'boost': 100,
-                'query': 'three',
+                'query': 'test',
                 'type': 'phrase',
                 'operator': 'and',
                 'slop': 3
@@ -29,19 +18,7 @@ module.exports = {
           }
         }
       }],
-      'should':[
-        {
-          'match': {
-            'phrase.default': {
-              'analyzer' : 'peliasPhrase',
-              'type' : 'phrase',
-              'boost' : 1,
-              'slop' : 3,
-              'query' : 'one two'
-            }
-          }
-        },
-        {
+      'should':[{
         'function_score': {
           'query': {
             'match_all': {}
@@ -74,6 +51,11 @@ module.exports = {
             },
             'weight': 3
           }]
+        }
+      }],
+      'filter': [{
+        'terms': {
+          'layer': ['country']
         }
       }]
     }

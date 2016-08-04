@@ -372,8 +372,10 @@ module.exports.tests.final_token_single_gram = function(test, common) {
       'grolmanstrasse',
     ], 'tokens produced');
 
-    // last token removed!
-    t.deepEquals(clean.tokens_incomplete, [], 'no tokens');
+    // last token marked as 'incomplete'
+    t.deepEquals(clean.tokens_incomplete, [
+      'a'
+    ], 'tokens produced');
 
     // no errors/warnings produced
     t.deepEquals(messages.errors, [], 'no errors');

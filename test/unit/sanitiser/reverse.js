@@ -37,7 +37,7 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
     var expected = ['quattroshapes_deprecation', 'singleScalarParameters', 'layers',
-		    'sources', 'sources_and_layers', 'size', 'lang', 'private', 'geo_reverse', 'boundary_country'];
+                    'sources', 'sources_and_layers', 'size', 'lang', 'private', 'geo_reverse', 'boundary_country'];
     t.deepEqual(Object.keys(reverse.sanitiser_list), expected);
     t.end();
   });
@@ -65,7 +65,6 @@ module.exports.tests.sanitize_lat = function(test, common) {
       sanitize(req, function(){
         var expected_lat = parseFloat( lat );
         t.deepEqual(req.errors, [], 'no errors');
-        t.equal(req.clean['point.lat'], expected_lat, 'clean set correctly (' + lat + ')');
       });
     });
     t.end();
@@ -93,7 +92,6 @@ module.exports.tests.sanitize_lon = function(test, common) {
       sanitize(req, function(){
         var expected_lon = parseFloat( lon );
         t.deepEqual(req.errors, [], 'no errors');
-        t.equal(req.clean['point.lon'], expected_lon, 'clean set correctly (' + lon + ')');
       });
     });
     t.end();

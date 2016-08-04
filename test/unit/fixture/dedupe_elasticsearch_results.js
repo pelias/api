@@ -80,6 +80,34 @@ module.exports = [
     '_score': 1.2367082,
     'confidence': 0.879
   },
+  { // same as #1, but with an additional name
+    'center_point': {
+      'lon': -76.207456,
+      'lat': 40.039265
+    },
+    'address_parts': {},
+    'parent': {
+      'localadmin': ['East Lampeter'],
+      'region_a': ['PA'],
+      'region': ['Pennsylvania'],
+      'locality': ['Smoketown'],
+      'country_a': ['USA'],
+      'county': ['Lancaster County'],
+      'country': ['United States'],
+      'neighbourhood': ['Greenland']
+    },
+    'name': {
+      'default': 'East Lampeter High School',
+      'alt': 'High School of East Lampeter',
+    },
+    'category': [
+      'education'
+    ],
+    '_id': '357321757',
+    '_type': 'venue',
+    '_score': 1.2367082,
+    'confidence': 0.879
+  },
   {
     'center_point': {
       'lon': -76.207456,

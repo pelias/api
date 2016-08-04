@@ -6,7 +6,7 @@ var customConfig = {
   generate: function generate() {
     return {
       api: {
-	languages: ['en', 'de', 'default' ]
+        languages: ['en', 'de', 'default' ]
       }
     };
   }

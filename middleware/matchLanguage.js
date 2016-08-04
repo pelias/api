@@ -81,15 +81,15 @@ function matchLanguage(req, res, next) {
     else if (score === bestScore && bestLang !== currentLang) {
       // explicit lang parameter has 2nd highest priority
       if (lang === currentLang) {
-	updateBest(lang, score);
+        updateBest(lang, score);
       }
       else {
-	// judge by configured language list priority
-	var i1 = languages.indexOf(lang);
-	var i2 = languages.indexOf(bestLang);
-	if (i1 !== -1 && (i2 === -1 ||  i1 < i2)) {
-	  updateBest(lang, score);
-	}
+        // judge by configured language list priority
+        var i1 = languages.indexOf(lang);
+        var i2 = languages.indexOf(bestLang);
+        if (i1 !== -1 && (i2 === -1 ||  i1 < i2)) {
+          updateBest(lang, score);
+        }
       }
     }
   }

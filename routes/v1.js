@@ -64,7 +64,7 @@ function addRoutes(app, peliasConfig) {
       sanitisers.search.middleware,
       middleware.calcSize(),
       middleware.selectLanguage(peliasConfig),
-      controllers.search(),
+      controllers.search(peliasConfig),
       postProc.matchLanguage(peliasConfig),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
@@ -79,7 +79,7 @@ function addRoutes(app, peliasConfig) {
     autocomplete: createRouter([
       sanitisers.autocomplete.middleware,
       middleware.selectLanguage(peliasConfig),
-      controllers.search(null, require('../query/autocomplete')),
+      controllers.search(peliasConfig, null, require('../query/autocomplete')),
       postProc.matchLanguage(peliasConfig),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
@@ -95,7 +95,7 @@ function addRoutes(app, peliasConfig) {
       sanitisers.reverse.middleware,
       middleware.calcSize(),
       middleware.selectLanguage(peliasConfig),
-      controllers.search(undefined, reverseQuery),
+      controllers.search(peliasConfig, undefined, reverseQuery),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
@@ -111,7 +111,7 @@ function addRoutes(app, peliasConfig) {
     place: createRouter([
       sanitisers.place.middleware,
       middleware.selectLanguage(peliasConfig),
-      controllers.place(),
+      controllers.place(peliasConfig),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
