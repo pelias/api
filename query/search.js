@@ -2,7 +2,8 @@ var peliasQuery = require('pelias-query'),
     defaults = require('./search_defaults'),
     textParser = require('./text_parser'),
     check = require('check-types'),
-    geolib = require('geolib');
+    geolib = require('geolib'),
+    _ = require('lodash');
 var placeTypes = require('../helper/placeTypes');
 
 // region_a is also an admin field. addressit tries to detect
@@ -10,6 +11,12 @@ var placeTypes = require('../helper/placeTypes');
 // but address it doesn't know about all of them so it helps to search
 // against this with the other admin parts as a fallback
 var adminFields = placeTypes.concat(['region_a']);
+
+var api = require('pelias-config').generate().api;
+if (api && api.query && api.query.search && api.query.search.defaults) {
+  // merge external defaults if available
+  defaults = _.merge({}, defaults, api.query.search.defaults);
+}
 
 //------------------------------
 // general-purpose search query
