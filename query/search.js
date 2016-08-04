@@ -123,8 +123,9 @@ function generateQuery( clean ){
     textParser( clean.parsed_text, vs );
   }
 
-  var q = query.render(vs);
-  console.log(JSON.stringify(q, null, 2));
+  var q = getQuery(vs);
+
+  //console.log(JSON.stringify(q, null, 2));
 
   return q;
 }
