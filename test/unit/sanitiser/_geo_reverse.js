@@ -38,7 +38,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.end();
   });
 
-  test('raw with boundary.circle.radius should add warning about ignored boundary.circle', function(t) {
+  test('raw with boundary.circle.radius shouldn\'t add warning about ignored boundary.circle', function(t) {
     var raw = {
       'point.lat': '12.121212',
       'point.lon': '21.212121',
