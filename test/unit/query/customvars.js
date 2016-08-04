@@ -1,6 +1,5 @@
 var proxyquire = require('proxyquire');
 var text_analyzer = require('pelias-text-analyzer');
-var logger = require('pelias-logger').get('api:controller:search');
 
 var customConfig = {
   generate: function generate() {
@@ -91,8 +90,6 @@ module.exports.tests.autocomplete = function(test, common) {
 
     var query = autocomplete(autocompleteParams);
     query = JSON.parse( JSON.stringify( query ) );
-
-    logger.debug('????', JSON.stringify(query));
 
     t.equal(query.query.bool.must[0].constant_score.query.match['name.default'].boost,
             200,
