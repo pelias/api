@@ -78,7 +78,7 @@ module.exports = {
           'parent.region_a': {
             'analyzer': 'peliasAdmin',
             'boost': 1,
-            'query': 'new york'
+            'query': 'NY'
           }
         }
       }, {
