@@ -1,8 +1,10 @@
 
+
 var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
       singleScalarParameters: require('../sanitiser/_single_scalar_parameters'),
       ids: require('../sanitiser/_ids'),
+      lang: require('../sanitiser/_lang'),
       private: require('../sanitiser/_flag_bool')('private', false)
     };
 

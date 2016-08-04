@@ -9,6 +9,7 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       // depends on the layers and sources sanitisers, must be run after them
       sources_and_layers: require('../sanitiser/_sources_and_layers'),
       size: require('../sanitiser/_size')(/* use defaults*/),
+      lang: require('../sanitiser/_lang'),
       private: require('../sanitiser/_flag_bool')('private', false),
       geo_reverse: require('../sanitiser/_geo_reverse'),
       boundary_country: require('../sanitiser/_boundary_country'),

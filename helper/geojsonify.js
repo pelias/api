@@ -56,7 +56,26 @@ function lookupLayer(src) {
   return src.layer;
 }
 
-function geojsonifyPlaces( docs ){
+function geojsonifyPlaces( docs, lang ){
+  var geojsonifyPlace = function (place) {
+    // something went very wrong
+    if( !place || !place.hasOwnProperty( 'center_point' ) ) {
+      return warning('No doc or center_point property');
+    }
+
+    var output = {};
+
+    addMetaData(place, output);
+    addDetails(place, output, lang);
+    addLabel(place, output);
+
+    // map center_point for GeoJSON to work properly
+    // these should not show up in the final feature properties
+    output.lat = parseFloat(place.center_point.lat);
+    output.lng = parseFloat(place.center_point.lon);
+
+    return output;
+  };
 
   // flatten & expand data for geojson conversion
   var geodata = docs
@@ -83,39 +102,24 @@ function geojsonifyPlaces( docs ){
   return geojson;
 }
 
-function geojsonifyPlace(place) {
-
-  // something went very wrong
-  if( !place || !place.hasOwnProperty( 'center_point' ) ) {
-    return warning('No doc or center_point property');
-  }
-
-  var output = {};
-
-  addMetaData(place, output);
-  addDetails(place, output);
-  addLabel(place, output);
-
-
-  // map center_point for GeoJSON to work properly
-  // these should not show up in the final feature properties
-  output.lat = parseFloat(place.center_point.lat);
-  output.lng = parseFloat(place.center_point.lon);
-
-  return output;
-}
-
 /**
  * Add details properties
  *
  * @param {object} src
  * @param {object} dst
+ * @param {string} lang
  */
-function addDetails(src, dst) {
+function addDetails(src, dst, lang) {
   // map name
-  if( !src.name || !src.name.default ) { return warning(src); }
-  dst.name = src.name.default;
+  if( !src.name ) { return warning(src); }
 
+  if( src.name[lang] ) {
+    dst.name = src.name[lang];
+  } else if (src.name.default) { // fallback
+    dst.name = src.name.default;
+  } else {
+    return warning(src);
+  }
   copyProperties(src, DETAILS_PROPS, dst);
 }
 

@@ -1,6 +1,7 @@
 var url = require('url');
 var extend = require('extend');
 var geojsonify = require('../helper/geojsonify').search;
+var logger = require('pelias-logger').get('api:middleware:geocodeJSON');
 
 /**
  * Returns a middleware function that converts elasticsearch
@@ -16,6 +17,7 @@ function setup(peliasConfig, basePath) {
     config: peliasConfig || require('pelias-config').generate().api,
     basePath: basePath || '/'
   };
+
 
   function middleware(req, res, next) {
     return convertToGeocodeJSON(req, res, next, opts);
@@ -71,8 +73,14 @@ function convertToGeocodeJSON(req, res, next, opts) {
   // response envelope
   res.body.geocoding.timestamp = new Date().getTime();
 
+  var lang;
+  if (req.clean) {
+    lang = req.clean.lang;
+  }
+  lang = lang || 'default';
+
   // convert docs to geojson and merge with geocoding block
-  extend(res.body, geojsonify(res.data || []));
+  extend(res.body, geojsonify(res.data || [], lang ));
 
   next();
 }

@@ -1,16 +1,23 @@
+
 var check = require('check-types');
 var _ = require('lodash');
+var logger = require('pelias-logger').get('api:middleware:localNamingConventions');
 
 var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL', 'CZE'];
+var translations = {};
 
 function setup() {
   var api = require('pelias-config').generate().api;
-  var settings = api.localization;
-  if (settings && settings.flipNumberAndStreetCountries) {
-    var countries = settings.flipNumberAndStreetCountries;
-    flipNumberAndStreetCountries = _.uniq(flipNumberAndStreetCountries.concat(countries));
+  var localization = api.localization;
+  if (localization) {
+    if (localization.flipNumberAndStreetCountries) {
+      var countries = localization.flipNumberAndStreetCountries;
+      flipNumberAndStreetCountries = _.uniq(flipNumberAndStreetCountries.concat(countries));
+    }
+    if (localization.translations) {
+      translations = require(localization.translations);
+    }
   }
-
   return applyLocalNamingConventions;
 }
 
@@ -39,8 +46,40 @@ function applyLocalNamingConventions(req, res, next) {
   })
   .forEach( flipNumberAndStreet );
 
+  var lang;
+  if (req.clean) {
+    lang = req.clean.lang;
+  }
+
+  if( lang && translations[lang] ) {
+    _.forEach(translations[lang], function(names, key) {
+      _.forEach(res.data, function(place) {
+        translateName(place, key, names);
+        translateName(place.parent, key, names);
+      });
+    });
+  }
   next();
 }
+
+
+function translateName(place, key, names) {
+  if( place[key] !== null ) {
+    var name;
+    if (place[key] instanceof Array) {
+      name = place[key][0];
+      if (name && names[name]) {
+        place[key][0] = names[name]; // do the translation
+      }
+    } else {
+      name = place[key];
+      if (name && names[name]) {
+        place[key] = names[name];
+      }
+    }
+  }
+}
+
 
 // flip the housenumber and street name
 // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
@@ -51,6 +90,12 @@ function flipNumberAndStreet(place) {
   // flip street name and housenumber
   if( place.name.default === standard ){
     place.name.default = flipped;
+
+    // flip also other name versions
+    for (var lang in place.name) {
+      var name = place.name[lang].replace(place.address_parts.number, '').trim();
+      place.name[lang] = name + ' ' + place.address_parts.number;
+    }
   }
 }
 

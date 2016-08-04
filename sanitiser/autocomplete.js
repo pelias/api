@@ -6,6 +6,7 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       text: require('../sanitiser/_text'),
       tokenizer: require('../sanitiser/_tokenizer'),
       size: require('../sanitiser/_size')(10, 10, 10),
+      lang: require('../sanitiser/_lang'),
       layers: require('../sanitiser/_targets')('layers', type_mapping.layer_mapping),
       sources: require('../sanitiser/_targets')('sources', type_mapping.source_mapping),
       // depends on the layers and sources sanitisers, must be run after them

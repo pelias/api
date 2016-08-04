@@ -14,5 +14,12 @@
         "port": 9300
       }
     ]
+  },
+  "api" : {
+    "languages": ["en", "default", "fi"],
+    "localization" : {
+      "flipNumberAndStreetCountries": ["FIN"],
+      "translations": "./translations.json"
+    }
   }
 }
