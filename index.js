@@ -2,6 +2,7 @@
 var cluster = require('cluster'),
     app = require('./app'),
     port = ( process.env.PORT || 3100 ),
+    // when pelias/api#601 is done this can be changed to `true`
     multicore = false;
 
 /** cluster webserver across all cores **/
