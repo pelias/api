@@ -10,7 +10,7 @@ var _ = require('lodash');
 // - state
 //
 // Because the address matched, we're not interested in city+state or state, so
-// this component removes that aren't the most granular.  
+// this component removes results that aren't the most granular.
 
 // layers in increasing order of granularity
 var layers = [
