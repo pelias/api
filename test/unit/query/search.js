@@ -159,6 +159,18 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  test('categories filter', function(t) {
+    var query = generate({
+      'text': 'test',
+      'categories': ['retail','food']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_with_category_filtering');
+
+    t.deepEqual(compiled, expected, 'valid search query with category filtering');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {

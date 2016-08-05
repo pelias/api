@@ -1,6 +1,6 @@
 var url = require('url');
 var extend = require('extend');
-var geojsonify = require('../helper/geojsonify').search;
+var geojsonify = require('../helper/geojsonify');
 
 /**
  * Returns a middleware function that converts elasticsearch
@@ -72,7 +72,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
   res.body.geocoding.timestamp = new Date().getTime();
 
   // convert docs to geojson and merge with geocoding block
-  extend(res.body, geojsonify(res.data || []));
+  extend(res.body, geojsonify(req.clean, res.data || []));
 
   next();
 }
