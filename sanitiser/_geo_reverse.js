@@ -15,8 +15,8 @@ module.exports = function sanitize( raw, clean ){
     return raw.hasOwnProperty('boundary.circle.' + field);
   };
 
-  if (['lat', 'lon', 'radius'].some(hasBoundaryCircleField)) {
-    messages.warnings.push('boundary.circle is currently unsupported');
+  if (['lat', 'lon'].some(hasBoundaryCircleField)) {
+    messages.warnings.push('boundary.circle.lat/boundary.circle.lon are currently unsupported');
   }
 
   try {
