@@ -1,34 +1,31 @@
-
-var vs = require('../../../query/search_defaults');
-
 module.exports = {
   'query': {
     'bool': {
       'must': [{
         'match': {
           'name.default': {
-            'query': 'soho grand',
-            'analyzer': 'peliasQueryFullToken',
-            'boost': 1
+            'query': 'test',
+            'boost': 1,
+            'analyzer': 'peliasQueryFullToken'
           }
         }
       }],
       'should': [{
         'match': {
           'phrase.default': {
-            'query': 'soho grand',
+            'query': 'test',
             'analyzer': 'peliasPhrase',
             'type': 'phrase',
-            'slop': 2,
-            'boost': 1
+            'boost': 1,
+            'slop': 2
           }
         }
-      },{
+      }, {
         'function_score': {
           'query': {
             'match': {
               'phrase.default': {
-                'query': 'soho grand',
+                'query': 'test',
                 'analyzer': 'peliasPhrase',
                 'type': 'phrase',
                 'slop': 2,
@@ -48,12 +45,12 @@ module.exports = {
             'weight': 1
           }]
         }
-      },{
+      }, {
         'function_score': {
           'query': {
             'match': {
               'phrase.default': {
-                'query': 'soho grand',
+                'query': 'test',
                 'analyzer': 'peliasPhrase',
                 'type': 'phrase',
                 'slop': 2,
@@ -73,49 +70,17 @@ module.exports = {
             'weight': 2
           }]
         }
-      }, {
-        'match': {
-          'parent.region_a': {
-            'analyzer': 'peliasAdmin',
-            'boost': 1,
-            'query': 'NY'
-          }
-        }
-      }, {
-        'multi_match': {
-            'fields': [
-              'parent.country^1',
-              'parent.region^1',
-              'parent.county^1',
-              'parent.localadmin^1',
-              'parent.locality^1',
-              'parent.borough^1',
-              'parent.neighbourhood^1',
-              'parent.region_a^1'
-            ],
-            'query': 'new york',
-            'analyzer': 'peliasAdmin'
-        }
       }],
-      'filter': [
-        {
-          'terms': {
-            'layer': [
-              'address',
-              'venue',
-              'country',
-              'region',
-              'county',
-              'neighbourhood',
-              'locality',
-              'localadmin'
-            ]
-          }
+      'filter': [{
+        'terms': {
+          'category': ['retail', 'food']
         }
-      ]
+      }]
     }
   },
-  'size': 10,
-  'sort': [ '_score' ],
-  'track_scores': true
+  'size': 20,
+  'track_scores': true,
+  'sort': [
+    '_score'
+  ]
 };

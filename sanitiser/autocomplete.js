@@ -12,6 +12,7 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       sources_and_layers: require('../sanitiser/_sources_and_layers'),
       private: require('../sanitiser/_flag_bool')('private', false),
       geo_autocomplete: require('../sanitiser/_geo_autocomplete'),
+      categories: require('../sanitiser/_categories')
     };
 
 var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };

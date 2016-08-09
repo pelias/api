@@ -1,66 +1,18 @@
 
-var GeoJSON = require('geojson'),
-    extent = require('geojson-extent'),
-    labelGenerator = require('./labelGenerator'),
-    logger = require('pelias-logger').get('api'),
-    type_mapping = require('./type_mapping'),
-    Document = require('pelias-model').Document,
-    _ = require('lodash');
+var GeoJSON = require('geojson');
+var extent = require('geojson-extent');
+var labelGenerator = require('./labelGenerator');
+var logger = require('pelias-logger').get('api');
+var type_mapping = require('./type_mapping');
+var _ = require('lodash');
+var addDetails = require('./geojsonify_place_details');
+var addMetaData = require('./geojsonify_meta_data');
 
-// Properties to be copied
-var DETAILS_PROPS = [
-  'housenumber',
-  'street',
-  'postalcode',
-  'confidence',
-  'distance',
-  'country',
-  'country_gid',
-  'country_a',
-  'macroregion',
-  'macroregion_gid',
-  'macroregion_a',
-  'region',
-  'region_gid',
-  'region_a',
-  'macrocounty',
-  'macrocounty_gid',
-  'macrocounty_a',
-  'county',
-  'county_gid',
-  'county_a',
-  'localadmin',
-  'localadmin_gid',
-  'localadmin_a',
-  'locality',
-  'locality_gid',
-  'locality_a',
-  'borough',
-  'borough_gid',
-  'borough_a',
-  'neighbourhood',
-  'neighbourhood_gid',
-  'bounding_box'
-];
-
-
-function lookupSource(src) {
-  return src.source;
-}
-
-function lookupSourceId(src) {
-  return src.source_id;
-}
-
-function lookupLayer(src) {
-  return src.layer;
-}
-
-function geojsonifyPlaces( docs ){
+function geojsonifyPlaces( params, docs ){
 
   // flatten & expand data for geojson conversion
   var geodata = docs
-    .map(geojsonifyPlace)
+    .map(geojsonifyPlace.bind(null, params))
     .filter( function( doc ){
       return !!doc;
     });
@@ -83,7 +35,7 @@ function geojsonifyPlaces( docs ){
   return geojson;
 }
 
-function geojsonifyPlace(place) {
+function geojsonifyPlace(params, place) {
 
   // something went very wrong
   if( !place || !place.hasOwnProperty( 'center_point' ) ) {
@@ -93,7 +45,8 @@ function geojsonifyPlace(place) {
   var output = {};
 
   addMetaData(place, output);
-  addDetails(place, output);
+  addName(place, output);
+  addDetails(params, place, output);
   addLabel(place, output);
 
 
@@ -106,17 +59,15 @@ function geojsonifyPlace(place) {
 }
 
 /**
- * Add details properties
+ * Validate and add name property
  *
  * @param {object} src
  * @param {object} dst
  */
-function addDetails(src, dst) {
+function addName(src, dst) {
   // map name
   if( !src.name || !src.name.default ) { return warning(src); }
   dst.name = src.name.default;
-
-  copyProperties(src, DETAILS_PROPS, dst);
 }
 
 /**
@@ -207,65 +158,6 @@ function computeBBox(geojson, geojsonExtentPoints) {
 }
 
 /**
- * Copy specified properties from source to dest.
- * Ignore missing properties.
- *
- * @param {object} source
- * @param {[]} props
- * @param {object} dst
- */
-function copyProperties( source, props, dst ) {
-  props.forEach( function ( prop ) {
-
-    if ( source.hasOwnProperty( prop ) ) {
-
-      // array value, take first item in array (at this time only used for admin values)
-      if (source[prop] instanceof Array) {
-        if (source[prop].length === 0) {
-          return;
-        }
-        if (source[prop][0]) {
-          dst[prop] = source[prop][0];
-        }
-      }
-
-      // simple value
-      else {
-        dst[prop] = source[prop];
-      }
-    }
-  });
-}
-
-/**
- * Create a gid from a document
- * @TODO modify all importers to create separate source and layer fields to remove mapping
- *
- * @param {object} src
- */
-function makeGid(src) {
-  var doc = new Document(lookupSource(src), lookupLayer(src), src._id);
-  return doc.getGid();
-}
-
-/**
- * Determine and set place id, type, and source
- *
- * @param {object} src
- * @param {object} dst
- */
-function addMetaData(src, dst) {
-  dst.id = src._id;
-  dst.gid = makeGid(src);
-  dst.layer = lookupLayer(src);
-  dst.source = lookupSource(src);
-  dst.source_id = lookupSourceId(src);
-  if (src.hasOwnProperty('bounding_box')) {
-    dst.bounding_box = src.bounding_box;
-  }
-}
-
-/**
  * emit a warning if the doc format is invalid
  *
  * @note: if you see this error, fix it ASAP!
@@ -276,4 +168,4 @@ function warning( doc ) {
 }
 
 
-module.exports.search = geojsonifyPlaces;
+module.exports = geojsonifyPlaces;
