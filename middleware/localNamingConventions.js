@@ -3,7 +3,7 @@ var check = require('check-types');
 var _ = require('lodash');
 var logger = require('pelias-logger').get('api:middleware:localNamingConventions');
 
-var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL'];
+var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL', 'CZE'];
 var translations = {};
 
 function setup() {
@@ -54,8 +54,8 @@ function applyLocalNamingConventions(req, res, next) {
   if( lang && translations[lang] ) {
     _.forEach(translations[lang], function(names, key) {
       _.forEach(res.data, function(place) {
-	translateName(place, key, names);
-	translateName(place.parent, key, names);
+        translateName(place, key, names);
+        translateName(place.parent, key, names);
       });
     });
   }
@@ -69,12 +69,12 @@ function translateName(place, key, names) {
     if (place[key] instanceof Array) {
       name = place[key][0];
       if (name && names[name]) {
-	place[key][0] = names[name]; // do the translation
+        place[key][0] = names[name]; // do the translation
       }
     } else {
       name = place[key];
       if (name && names[name]) {
-	place[key] = names[name];
+        place[key] = names[name];
       }
     }
   }

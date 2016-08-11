@@ -6,10 +6,10 @@ var customConfig = {
   generate: function generate() {
     return {
       api : {
-	localization : { // expand the set of flipped countries
-	  flipNumberAndStreetCountries : ['NLD'], // Netherlands
-	  translations: './translations.json',
-	}
+        localization : { // expand the set of flipped countries
+          flipNumberAndStreetCountries : ['NLD'], // Netherlands
+          translations: './translations.json',
+        }
       }
     };
   }

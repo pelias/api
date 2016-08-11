@@ -7,14 +7,14 @@ var customConfig = {
   generate: function generate() {
     return {
       api : {
-	query: {
-	  search: {
-	    defaults: {
-	      'ngram:multifield': ['name.*'],
-	      'phrase:multifield': ['name.*']
-	    }
-	  }
-	}
+        query: {
+          search: {
+            defaults: {
+              'ngram:multifield': ['name.*'],
+              'phrase:multifield': ['name.*']
+            }
+          }
+        }
       }
     };
   }

@@ -2,30 +2,18 @@ var vs = require('../../../query/reverse_defaults');
 
 module.exports = {
   'query': {
-    'filtered': {
-      'query': {
-        'bool': {
-          'must': []
+    'bool': {
+      'filter': [{
+        'geo_distance': {
+          'distance': '500km',
+          'distance_type': 'plane',
+          'optimize_bbox': 'indexed',
+          'center_point': {
+            'lat': 0,
+            'lon': 0
+          }
         }
-      },
-      'filter': {
-        'bool': {
-          'must': [
-            {
-              'geo_distance': {
-                'distance': '500km',
-                'distance_type': 'plane',
-                'optimize_bbox': 'indexed',
-                '_cache': true,
-                'center_point': {
-                  'lat': 0,
-                  'lon': 0
-                }
-              }
-            }
-          ]
-        }
-      }
+      }]
     }
   },
   'sort': [

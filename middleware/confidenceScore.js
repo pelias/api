@@ -39,10 +39,10 @@ function setup(peliasConfig) {
     }
     if (peliasConfig.localization) {
       if(peliasConfig.localization.confidenceAdminProperties) {
-	adminProperties = peliasConfig.localization.confidenceAdminProperties;
+        adminProperties = peliasConfig.localization.confidenceAdminProperties;
       }
       if(peliasConfig.localization.confidenceAddressParts) {
-	confidenceAddressParts = peliasConfig.localization.confidenceAddressParts;
+        confidenceAddressParts = peliasConfig.localization.confidenceAddressParts;
       }
       nameWeight = peliasConfig.localization.confidenceNameWeight || nameWeight;
     }
@@ -52,8 +52,8 @@ function setup(peliasConfig) {
 
 function computeScores(req, res, next) {
   // do nothing if no result data set
-  if (check.undefined(req.clean) || check.undefined(res) ||
-      check.undefined(res.data) || check.undefined(res.meta)) {
+  if (!check.assigned(req.clean) || !check.assigned(res) ||
+      !check.assigned(res.data) || !check.assigned(res.meta)) {
     return next();
   }
 
@@ -88,7 +88,8 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     return hit;
   }
 
-  var checkCount = 2 + nameWeight; // name can have extra strong weight
+  var parsedText = req.clean.parsed_text;
+  var checkCount = 1 + nameWeight; // name can have extra strong weight
   hit.confidence = 0;
 
   if (RELATIVE_SCORES) {
@@ -96,13 +97,16 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     hit.confidence += checkDistanceFromMean(hit._score, mean, stdev);
     hit.confidence += computeZScore(hit._score, mean, stdev);
   }
-  hit.confidence += nameWeight*checkName(req.clean.text, req.clean.parsed_text, hit);
-  hit.confidence += checkQueryType(req.clean.parsed_text, hit);
-  hit.confidence += checkAddress(req.clean.parsed_text, hit);
+  hit.confidence += nameWeight*checkName(req.clean.text, parsedText, hit);
+  hit.confidence += checkQueryType(parsedText, hit);
 
-  if(adminProperties && req.clean.parsed_text && req.clean.parsed_text.regions &&
-    req.clean.parsed_text.regions.length>1) {
-    hit.confidence += checkAdmin(req.clean.parsed_text, hit);
+  if (parsedText && check.assigned(parsedText.number) && check.assigned(parsedText.street)) {
+    hit.confidence += checkAddress(parsedText, hit);
+    checkCount++;
+  }
+
+  if(adminProperties && parsedText && parsedText.regions && parsedText.regions.length>1) {
+    hit.confidence += checkAdmin(parsedText, hit);
     checkCount++;
   }
   // TODO: look at categories and location
@@ -122,11 +126,11 @@ function computeConfidenceScore(req, mean, stdev, hit) {
  * @returns {bool}
  */
 function checkForDealBreakers(req, hit) {
-  if (check.undefined(req.clean.parsed_text)) {
+  if (!check.assigned(req.clean.parsed_text)) {
     return false;
   }
 
-  if (check.assigned(req.clean.parsed_text.state) && req.clean.parsed_text.state !== hit.parent.region_a[0]) {
+  if (check.assigned(req.clean.parsed_text.state) && hit.parent.region_a && req.clean.parsed_text.state !== hit.parent.region_a[0]) {
     logger.debug('[confidence][deal-breaker]: state !== region_a');
     return true;
   }
@@ -213,8 +217,8 @@ function checkName(text, parsed_text, hit) {
  */
 function checkQueryType(text, hit) {
   if (check.assigned(text) && check.assigned(text.number) &&
-      (check.undefined(hit.address_parts) ||
-      (check.assigned(hit.address_parts) && check.undefined(hit.address_parts.number)))) {
+      (!check.assigned(hit.address_parts) ||
+      (check.assigned(hit.address_parts) && !check.assigned(hit.address_parts.number)))) {
     return 0;
   }
   return 1;
@@ -231,28 +235,27 @@ function checkQueryType(text, hit) {
 function propMatch(textProp, hitProp, expectEnriched) {
 
   // both missing = match
-  if (check.undefined(textProp) && check.undefined(hitProp)) {
+  if (!check.assigned(textProp) && !check.assigned(hitProp)) {
     if (check.assigned(expectEnriched)) { return 0.5; }
     else { return 0.8; } // no enrichment expected => GOOD
   }
 
   // text has it, result missing
-  if (check.assigned(textProp) && check.undefined(hitProp)) {
+  if (check.assigned(textProp) && !check.assigned(hitProp)) {
     if (check.assigned(expectEnriched)) { return 0.2; }
     else { return 0.4; }
   }
 
   // text missing, result has it
-  if (check.undefined(textProp) && check.assigned(hitProp)) {
+  if (!check.assigned(textProp) && check.assigned(hitProp)) {
     if (check.assigned(expectEnriched)) { return 0.8; }
     else { return 0.5; }
   }
 
   // both present
-
   if (textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) {
-    return 1; //values match
-  }
+      return 1; //values match
+    }
 
   // both present, values differ => BAD regardless of enrichment
   return 0;
@@ -279,31 +282,36 @@ function propMatch(textProp, hitProp, expectEnriched) {
  */
 function checkAddress(text, hit) {
   var res = 0;
+  var checkCount = 0;
 
-  if (check.assigned(text) && check.assigned(text.number) && check.assigned(text.street)) {
-    var checkCount = 0;
+  for(var key in confidenceAddressParts) {
+    var value;
+    var part = confidenceAddressParts[key];
+    var parent = hit[part.parent];
 
-    for(var key in confidenceAddressParts) {
-      var value;
-      var part = confidenceAddressParts[key];
-      var parent = hit[part.parent];
-
-      if(!parent) {
-	value = null;
-      } else {
-	value = parent[part.field];
-	if (Array.isArray(value)) {
-	  value = value[0]; // TODO: check all array values
-	}
-      }
-      res += propMatch(text[key], value, part.enrich);
-      checkCount++;
+    if (!parent) {
+      value = null;
+    } else {
+      value = parent[part.field];
     }
-    res /= checkCount;
+    if (Array.isArray(value)) { // check all array values
+      var count = Math.max(value.length, 1);
+      var maxMatch = 0;
+      for (var i=0; i<count; i++) {
+        value = value[i];
+        var match = propMatch(text[key], value, part.enrich);
+        if (match>maxMatch) {
+          maxMatch=match;
+        }
+      }
+      res += maxMatch;
+    } else {
+      res += propMatch(text[key], value, part.enrich);
+    }
+    checkCount++;
   }
-  else {
-    res = 1;
-  }
+  res /= checkCount;
+
   logger.debug('address match', res );
 
   return res;
@@ -335,17 +343,17 @@ function checkAdmin(text, hit) {
     var prop = hit.parent[key];
     if (prop) {
       if (Array.isArray(prop)) {
-	for(var i=0; i<prop.length; i++) {
-	  var value = prop[i].toLowerCase();
-	  if(regions.indexOf(value) !== -1) {
-	    res = res + 1; // match
-	    break;
-	  }
-	}
+        for(var i=0; i<prop.length; i++) {
+          var value = prop[i].toLowerCase();
+          if(regions.indexOf(value) !== -1) {
+            res = res + 1; // match
+            break;
+          }
+        }
       } else {
-	if( regions.indexOf(prop) !== -1 ) {
-	  res = res + 1; // match
-	}
+        if( regions.indexOf(prop) !== -1 ) {
+          res = res + 1; // match
+        }
       }
     }
   });

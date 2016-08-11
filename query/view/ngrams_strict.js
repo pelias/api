@@ -10,6 +10,11 @@ var peliasQuery = require('pelias-query');
 
 module.exports = function( vs ){
 
+  // validate required params
+  if( !vs.isset('phrase:slop') ){
+    return null;
+  }
+
   var view = peliasQuery.view.ngrams( vs );
 
   if (!view) {
@@ -25,6 +30,7 @@ module.exports = function( vs ){
   }
   target.type = 'phrase';
   target.operator = 'and';
+  target.slop = vs.var('phrase:slop');
 
   return view;
 };

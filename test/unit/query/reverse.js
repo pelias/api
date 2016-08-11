@@ -22,7 +22,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/reverse_standard');
 
-    t.deepEqual(compiled, expected, 'valid reverse query');
+    t.deepEqual(compiled, expected, 'reverse_standard');
     t.end();
   });
 
@@ -38,7 +38,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/reverse_null_island');
 
-    t.deepEqual(compiled, expected, 'valid reverse query');
+    t.deepEqual(compiled, expected, 'reverse_null_island');
     t.end();
   });
 
@@ -54,7 +54,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = '123km';
 
-    t.deepEqual(compiled.query.filtered.filter.bool.must[0].geo_distance.distance, expected, 'distance set to boundary circle radius');
+    t.deepEqual(compiled.query.bool.filter[0].geo_distance.distance, expected, 'distance set to boundary circle radius');
     t.end();
   });
 
@@ -71,9 +71,9 @@ module.exports.tests.query = function(test, common) {
 
     // this should not equal `point.lat` and `point.lon` as it was explitely specified
     var expected = { lat: clean['boundary.circle.lat'], lon: clean['boundary.circle.lon'] };
-    var centroid = compiled.query.filtered.filter.bool.must[0].geo_distance.center_point;
+    var centroid = compiled.query.bool.filter[0].geo_distance.center_point;
 
-    t.deepEqual(centroid, expected, 'boundary.circle/lon overrides point.lat/lon');
+    t.deepEqual(centroid, expected, 'reverse: boundary.circle/lon overrides point.lat/lon');
     t.end();
   });
 
@@ -121,6 +121,23 @@ module.exports.tests.query = function(test, common) {
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/reverse_with_source_filtering');
+
+    t.deepEqual(compiled, expected, 'valid reverse query with source filtering');
+    t.end();
+  });
+
+  test('valid layers filter', function(t) {
+    var query = generate({
+      'point.lat': 29.49136,
+      'point.lon': -82.50622,
+      'boundary.circle.lat': 29.49136,
+      'boundary.circle.lon': -82.50622,
+      'boundary.circle.radius': 500,
+      'layers': ['country']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/reverse_with_layer_filtering');
 
     t.deepEqual(compiled, expected, 'valid reverse query with source filtering');
     t.end();

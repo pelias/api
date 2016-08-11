@@ -17,7 +17,7 @@ module.exports = {
         },
         {
           'terms': {
-            'source': ['test']
+            'layer': ['country']
           }
         }
       ]

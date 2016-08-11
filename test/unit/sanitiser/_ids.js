@@ -69,7 +69,8 @@ module.exports.tests.invalid_ids = function(test, common) {
   test('invalid id: source name invalid', function(t) {
     var raw = { ids: 'invalidsource:venue:23' };
     var clean = {};
-    var expected_error = 'invalidsource is invalid. It must be one of these values - [' + type_mapping.sources.join(', ') + ']';
+    var expected_error = 'invalidsource is invalid. It must be one of these values - [' +
+      Object.keys(type_mapping.source_mapping).join(', ') + ']';
 
     var messages = sanitize(raw, clean);
 
@@ -107,8 +108,40 @@ module.exports.tests.valid_ids = function(test, common) {
     t.end();
   });
 
+test('ids: valid short input (openaddresses)', function(t) {
+    var raw = { ids: 'oa:address:20' };
+    var clean = {};
+
+    var messages = sanitize( raw, clean );
+
+    var expected_ids = [{
+      source: 'openaddresses',
+      layer: 'address',
+      id: '20',
+    }];
+    t.deepEqual( messages.errors, [], ' no errors');
+    t.deepEqual( clean.ids, expected_ids, 'single type value returned');
+    t.end();
+  });
+
   test('ids: valid input (osm)', function(t) {
     var raw = { ids: 'openstreetmap:venue:node:500' };
+    var clean = {};
+    var expected_ids = [{
+      source: 'openstreetmap',
+      layer: 'venue',
+      id: 'node:500',
+    }];
+
+    var messages = sanitize( raw, clean );
+
+    t.deepEqual( messages.errors, [], ' no errors');
+    t.deepEqual( clean.ids, expected_ids, 'osm has node: or way: in id field');
+    t.end();
+  });
+
+  test('ids: valid short input (osm)', function(t) {
+    var raw = { ids: 'osm:venue:node:500' };
     var clean = {};
     var expected_ids = [{
       source: 'openstreetmap',

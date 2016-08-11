@@ -23,6 +23,7 @@ query.sort( peliasQuery.view.sort_distance );
 // non-scoring hard filters
 query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.sources );
+query.filter( peliasQuery.view.layers );
 
 // --------------------------------
 
@@ -37,6 +38,9 @@ function generateQuery( clean ){
 
   // sources
   vs.var( 'sources', clean.sources);
+
+  // layers
+  vs.var( 'layers', clean.layers);
 
   // focus point to score by distance
   if( check.number(clean['point.lat']) &&

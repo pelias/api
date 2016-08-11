@@ -13,7 +13,7 @@ var schemas = {
   },
   'USA': {
     'borough': getFirstProperty(['borough']),
-    'local': getFirstProperty(['locality', 'localadmin']),
+    'local': getFirstProperty(['locality', 'localadmin', 'county']),
     'regional': getUsOrCaState,
     'country': getUSACountryValue
   },

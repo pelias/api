@@ -1,7 +1,7 @@
 var service = { mget: require('../service/mget') };
 var logger = require('pelias-logger').get('api:controller:place');
 
-function setup( backend ){
+function setup( config, backend ){
 
   // allow overriding of dependencies
   backend = backend || require('../src/backend');
@@ -16,7 +16,7 @@ function setup( backend ){
 
     var query = req.clean.ids.map( function(id) {
       return {
-        _index: 'pelias',
+        _index: config.indexName,
         _type: id.layers,
         _id: id.id
       };

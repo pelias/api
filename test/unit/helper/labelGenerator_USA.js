@@ -51,6 +51,25 @@ module.exports.tests.united_states = function(test, common) {
     t.end();
   });
 
+test('county value should be used when there is no localadmin', function(t) {
+    var doc = {
+      'name': 'venue name',
+      'layer': 'venue',
+      'housenumber': 'house number',
+      'street': 'street name',
+      'neighbourhood': 'neighbourhood name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region_a': 'region abbr',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'venue name, county name, region abbr, USA');
+    t.end();
+  });
+
   test('street', function(t) {
     var doc = {
       'name': 'house number street name',

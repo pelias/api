@@ -1,24 +1,27 @@
 {
   "name": "pelias-api",
+  "version": "0.0.0-semantic-release",
   "author": "mapzen",
-  "version": "2.2.0",
   "description": "Pelias API",
   "homepage": "https://github.com/pelias/api",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "npm run unit",
-    "unit": "./bin/units",
+    "audit": "npm shrinkwrap; node node_modules/nsp/bin/nspCLI.js audit-shrinkwrap; rm npm-shrinkwrap.json;",
     "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao",
     "coverage": "node_modules/.bin/istanbul cover test/unit/run.js",
-    "audit": "npm shrinkwrap; node node_modules/nsp/bin/nspCLI.js audit-shrinkwrap; rm npm-shrinkwrap.json;",
     "docs": "./bin/generate-docs",
-    "lint": "jshint ."
+    "lint": "jshint .",
+    "start": "node index.js",
+    "test": "npm run unit",
+    "travis": "npm test",
+    "unit": "./bin/units",
+    "validate": "npm ls",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/pelias/api.git"
+    "url": "https://github.com/pelias/api.git"
   },
   "keywords": [
     "pelias",
@@ -32,9 +35,8 @@
     "node": ">=0.10.26"
   },
   "dependencies": {
-    "async": "^1.5.2",
+    "async": "^2.0.0",
     "check-types": "^7.0.0",
-    "cluster2": "git://github.com/missinglink/cluster2.git#node_zero_twelve",
     "elasticsearch": "^11.0.0",
     "elasticsearch-exceptions": "0.0.4",
     "express": "^4.8.8",
@@ -48,13 +50,12 @@
     "lodash": "^4.5.0",
     "markdown": "0.5.0",
     "morgan": "1.7.0",
-    "pelias-config": "^1.0.1",
-    "pelias-logger": "^0.0.8",
-    "pelias-model": "^4.0.0",
-    "pelias-query": "7.0.1",
-    "pelias-suggester-pipeline": "2.0.4",
-    "pelias-text-analyzer": "^1.0.1",
-    "stats-lite": "1.0.3",
+    "pelias-config": "2.1.0",
+    "pelias-logger": "0.0.8",
+    "pelias-model": "4.1.0",
+    "pelias-query": "8.2.0",
+    "pelias-text-analyzer": "1.2.0",
+    "stats-lite": "2.0.3",
     "through2": "2.0.1",
     "fuzzy.js": "^0.1.0"
   },
@@ -66,12 +67,14 @@
     "nsp": "^2.2.0",
     "precommit-hook": "^3.0.0",
     "proxyquire": "^1.7.7",
+    "source-map": "^0.5.6",
     "tap-dot": "1.0.5",
-    "tape": "^4.5.1"
+    "tape": "^4.5.1",
+    "uglify-js": "^2.6.2",
+    "semantic-release": "^4.3.5"
   },
   "pre-commit": [
     "lint",
-    "validate",
     "test"
   ]
 }
