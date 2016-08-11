@@ -39,7 +39,7 @@
     "languages": ["fi", "default", "sv", "se"],
     "localization" : {
       "flipNumberAndStreetCountries": ["FIN"],
-      "confidenceAdminProperties": ["locality", "neighbourhood"],
+      "confidenceAdminProperties": ["localadmin", "neighbourhood"],
       "confidenceAddressParts": {
         "number": {"parent":"address_parts", "field":"number", "enrich":false},
         "street": {"parent":"address_parts", "field":"street", "enrich":false}
@@ -48,7 +48,7 @@
       "translations": "/opt/pelias/api/translations.json",
       "labelSchemas": {
         "FIN": {
-          "local": ["locality", "region"],
+          "local": ["localadmin", "region"],
           "country": ["country"]
         }
       }
