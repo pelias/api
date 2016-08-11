@@ -45,10 +45,9 @@ function geojsonifyPlace(params, lang, place) {
   var output = {};
 
   addMetaData(place, output);
-  addName(place, output);
+  addName(place, output, lang);
   addDetails(params, place, output);
   addLabel(place, output);
-
 
   // map center_point for GeoJSON to work properly
   // these should not show up in the final feature properties
