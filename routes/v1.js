@@ -7,7 +7,8 @@ var sanitisers = {
   autocomplete: require('../sanitiser/autocomplete'),
   place: require('../sanitiser/place'),
   search: require('../sanitiser/search'),
-  reverse: require('../sanitiser/reverse')
+  reverse: require('../sanitiser/reverse'),
+  nearby: require('../sanitiser/nearby')
 };
 
 /** ----------------------- middleware ------------------------ **/
@@ -108,6 +109,22 @@ function addRoutes(app, peliasConfig) {
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
+    nearby: createRouter([
+      sanitisers.nearby.middleware,
+      middleware.calcSize(),
+      controllers.search(peliasConfig, undefined, reverseQuery),
+      postProc.distances('point.'),
+      // reverse confidence scoring depends on distance from origin
+      //  so it must be calculated first
+      postProc.confidenceScoresReverse(),
+      postProc.dedupe(),
+      postProc.localNamingConventions(),
+      postProc.renamePlacenames(),
+      postProc.parseBoundingBox(),
+      postProc.normalizeParentIds(),
+      postProc.geocodeJSON(peliasConfig, base),
+      postProc.sendJSON
+    ]),
     place: createRouter([
       sanitisers.place.middleware,
       middleware.selectLanguage(peliasConfig),
@@ -137,6 +154,7 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'search',       routers.search );
   app.post( base + 'search',       routers.search );
   app.get ( base + 'reverse',      routers.reverse );
+  app.get ( base + 'nearby',       routers.nearby );
 
 }
 

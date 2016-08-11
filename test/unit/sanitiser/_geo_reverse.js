@@ -16,7 +16,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.equals(clean['boundary.circle.lat'], 12.121212, 'should be set to point.lat');
     t.deepEquals(errorsAndWarnings, {
       errors: [],
-      warnings: ['boundary.circle is currently unsupported']
+      warnings: ['boundary.circle.lat/boundary.circle.lon are currently unsupported']
     }, 'no warnings/errors');
     t.end();
   });
@@ -33,12 +33,12 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.equals(clean['boundary.circle.lon'], 21.212121, 'should be set to point.lon');
     t.deepEquals(errorsAndWarnings, {
       errors: [],
-      warnings: ['boundary.circle is currently unsupported']
+      warnings: ['boundary.circle.lat/boundary.circle.lon are currently unsupported']
     }, 'no warnings/errors');
     t.end();
   });
 
-  test('raw with boundary.circle.radius should add warning about ignored boundary.circle', function(t) {
+  test('raw with boundary.circle.radius shouldn\'t add warning about ignored boundary.circle', function(t) {
     var raw = {
       'point.lat': '12.121212',
       'point.lon': '21.212121',
@@ -50,7 +50,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     // t.equals(clean['boundary.circle.radius'], 12.121212, 'should be set to point.lat')
     t.deepEquals(errorsAndWarnings, {
       errors: [],
-      warnings: ['boundary.circle is currently unsupported']
+      warnings: []
     }, 'no warnings/errors');
     t.end();
   });
