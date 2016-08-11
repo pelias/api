@@ -11,7 +11,7 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       size: require('../sanitiser/_size')(/* use defaults*/),
       private: require('../sanitiser/_flag_bool')('private', false),
       geo_reverse: require('../sanitiser/_geo_reverse'),
-      boundary_country: require('../sanitiser/_boundary_country'),
+      boundary_country: require('../sanitiser/_boundary_country')
     };
 
 var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
