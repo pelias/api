@@ -63,7 +63,7 @@ function addRoutes(app, peliasConfig) {
     search: createRouter([
       sanitisers.search.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig),
+      controllers.search(peliasConfig, undefined, require('../query/search')),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
