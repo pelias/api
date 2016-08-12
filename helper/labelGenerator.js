@@ -47,8 +47,7 @@ function getSchema(country_a) {
 
 }
 
-// helper function that sets a default label for non-US/CA regions
-// this is a very special case
+// helper function that sets a default label for non-US/CA regions and countries
 function getInitialLabel(record) {
   if (isRegion(record.layer) &&
       isGeonamesOrWhosOnFirst(record.source) &&
