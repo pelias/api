@@ -175,14 +175,14 @@ module.exports.tests.default_country = function(test, common) {
     t.end();
   });
 
-  test('country', function(t) {
+  test('country layer labels should only use the `country` field and not the `name`', function(t) {
     var doc = {
-      'name': 'country name',
+      'name': 'source country name',
       'layer': 'country',
       'country_a': 'country code',
-      'country': 'country name'
+      'country': 'hierarchy country name'
     };
-    t.equal(generator(doc),'country name');
+    t.equal(generator(doc),'hierarchy country name');
     t.end();
   });
 

@@ -56,8 +56,18 @@ function getInitialLabel(record) {
     return [];
   }
 
+  if (isCountry(record.layer)) {
+    return [];
+  }
+
   return [record.name];
 
+}
+
+// this can go away once geonames is no longer supported
+// https://github.com/pelias/wof-admin-lookup/issues/49
+function isCountry(layer) {
+  return 'country' === layer;
 }
 
 function isRegion(layer) {
