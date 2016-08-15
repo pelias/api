@@ -181,10 +181,10 @@ module.exports.tests.existing_results = function(test, common) {
     var req = { };
     // the existence of `data` means that there are already results so
     // don't call the backend/query
-    var res = { data: [] };
+    var res = { data: [{}] };
 
     var next = function() {
-      t.deepEqual(res, {data: []});
+      t.deepEqual(res, {data: [{}]});
       t.end();
     };
     controller(req, res, next);
