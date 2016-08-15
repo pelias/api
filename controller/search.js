@@ -20,7 +20,7 @@ function setup( config, backend, query ){
     // do not run controller if there are already results
     // this was added during libpostal integration.  if the libpostal parse/query
     // doesn't return anything then fallback to old search-engine-y behavior
-    if (res && res.hasOwnProperty('data')) {
+    if (res && res.hasOwnProperty('data') && res.data.length > 0) {
       return next();
     }
 
