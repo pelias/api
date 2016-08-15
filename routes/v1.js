@@ -63,7 +63,11 @@ function addRoutes(app, peliasConfig) {
     search: createRouter([
       sanitisers.search.middleware,
       middleware.calcSize(),
+      // 2nd parameter is `backend` which gets initialized internally
+      // 3rd parameter is which query module to use, use fallback/geodisambiguation
+      //  first, then use  if first query didn't return anything 
       controllers.search(peliasConfig, undefined, require('../query/search')),
+      controllers.search(peliasConfig, undefined, require('../query/search_original')),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
