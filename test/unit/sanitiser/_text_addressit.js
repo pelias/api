@@ -1,4 +1,4 @@
-var sanitiser = require('../../../sanitiser/_text_autocomplete');
+var sanitiser = require('../../../sanitiser/_text_addressit');
 var type_mapping = require('../../../helper/type_mapping');
 
 module.exports.tests = {};

@@ -51,7 +51,7 @@ var tests = [
   require('./sanitiser/_sources'),
   require('./sanitiser/_sources_and_layers'),
   require('./sanitiser/_text'),
-  require('./sanitiser/_text_autocomplete'),
+  require('./sanitiser/_text_addressit'),
   require('./sanitiser/_tokenizer'),
   require('./sanitiser/_deprecate_quattroshapes'),
   require('./sanitiser/_categories'),
