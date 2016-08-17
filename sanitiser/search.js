@@ -14,6 +14,7 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
       private: require('../sanitiser/_flag_bool')('private', false),
       geo_search: require('../sanitiser/_geo_search'),
       boundary_country: require('../sanitiser/_boundary_country'),
+      categories: require('../sanitiser/_categories')
     };
 
 var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };

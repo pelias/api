@@ -2,8 +2,8 @@ var peliasQuery = require('pelias-query'),
     defaults = require('./search_defaults'),
     textParser = require('./text_parser'),
     check = require('check-types'),
-    geolib = require('geolib'),
     _ = require('lodash');
+
 var placeTypes = require('../helper/placeTypes');
 
 // region_a is also an admin field. addressit tries to detect
@@ -51,6 +51,8 @@ query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.boundary_rect );
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
+query.filter( peliasQuery.view.categories );
+
 // --------------------------------
 
 /**
@@ -70,6 +72,11 @@ function generateQuery( clean ){
   // layers
   vs.var( 'layers', clean.layers);
 
+  // categories
+  if (clean.categories) {
+    vs.var('input:categories', clean.categories);
+  }
+
   // size
   if( clean.querySize ) {
     vs.var( 'size', clean.querySize );
@@ -81,19 +88,6 @@ function generateQuery( clean ){
     vs.set({
       'focus:point:lat': clean['focus.point.lat'],
       'focus:point:lon': clean['focus.point.lon']
-    });
-  }
-
-  // focus viewport
-  if( check.number(clean['focus.viewport.min_lat']) &&
-      check.number(clean['focus.viewport.max_lat']) &&
-      check.number(clean['focus.viewport.min_lon']) &&
-      check.number(clean['focus.viewport.max_lon']) ) {
-    // calculate the centroid from the viewport box
-    vs.set({
-      'focus:point:lat': clean['focus.viewport.min_lat'] + ( clean['focus.viewport.max_lat'] - clean['focus.viewport.min_lat'] ) / 2,
-      'focus:point:lon': clean['focus.viewport.min_lon'] + ( clean['focus.viewport.max_lon'] - clean['focus.viewport.min_lon'] ) / 2
-      //, 'focus:scale': calculateDiagonalDistance(clean) + 'km'
     });
   }
 
@@ -139,18 +133,6 @@ function generateQuery( clean ){
   }
 
   return query.render( vs );
-}
-
-// return diagonal distance in km, with min=1
-function calculateDiagonalDistance(clean) {
-  var diagonalDistance = geolib.getDistance(
-    { latitude: clean['focus.viewport.min_lat'], longitude: clean['focus.viewport.min_lon'] },
-    { latitude: clean['focus.viewport.max_lat'], longitude: clean['focus.viewport.max_lon'] },
-    1000
-  ) / 1000;
-
-  return Math.max(diagonalDistance, 1);
-
 }
 
 module.exports = generateQuery;

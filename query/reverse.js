@@ -24,6 +24,7 @@ query.sort( peliasQuery.view.sort_distance );
 query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
+query.filter( peliasQuery.view.categories );
 
 // --------------------------------
 
@@ -70,6 +71,11 @@ function generateQuery( clean ){
     vs.set({
       'boundary:country': clean['boundary.country']
     });
+  }
+
+  // categories
+  if (clean.categories) {
+    vs.var('input:categories', clean.categories);
   }
 
   return query.render( vs );
