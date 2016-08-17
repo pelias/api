@@ -13,12 +13,17 @@ module.exports = {
   'USA': {
     'borough': getFirstProperty(['borough']),
     'local': getFirstProperty(['locality', 'localadmin', 'county']),
-    'regional': getUsOrCaState,
+    'regional': getUsOrCaOrAusState,
     'country': getUSACountryValue
+  },
+  'AUS': {
+    'local' : getFirstProperty(['locality', 'localadmin']),
+    'regional' : getUsOrCaOrAusState,
+    'country': getFirstProperty(['country'])
   },
   'CAN': {
     'local': getFirstProperty(['locality']), // no localadmins in CAN
-    'regional': getUsOrCaState,
+    'regional': getUsOrCaOrAusState,
     'country': getFirstProperty(['country'])
   }
 };
@@ -44,7 +49,7 @@ function getFirstProperty(fields) {
 //  the full state name, eg: Pennsylvania, USA and Ontario, CA
 // 2.  otherwise, the state abbreviation should be used, eg: Lancaster, PA, USA and Bruce, ON, CA
 // 3.  if for some reason the abbreviation isn't available, use the full state name
-function getUsOrCaState(record) {
+function getUsOrCaOrAusState(record) {
   if ('region' === record.layer && record.region) {
     // return full state name when state is the most granular piece of info
     return record.region;
