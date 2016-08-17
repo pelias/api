@@ -1,6 +1,6 @@
 var sanitizeAll = require('../sanitiser/sanitizeAll'),
     sanitizers = {
-      text: require('../sanitiser/_text_autocomplete')
+      text: require('../sanitiser/_text_addressit')
     };
 
 var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };

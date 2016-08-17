@@ -9,14 +9,14 @@ module.exports.tests.sanitize = function(test, common) {
     // rather than re-verify the functionality of all the sanitisers, this test just verifies that they
     //  were all called correctly
     var search = proxyquire('../../../sanitiser/search_fallback', {
-      '../sanitiser/_text_autocomplete': function() {
-        called_sanitisers.push('_text_autocomplete');
+      '../sanitiser/_text_addressit': function() {
+        called_sanitisers.push('_text_addressit');
         return { errors: [], warnings: [] };
       }
     });
 
     var expected_sanitisers = [
-      '_text_autocomplete'
+      '_text_addressit'
     ];
 
     var req = {};
@@ -34,14 +34,14 @@ module.exports.tests.sanitize = function(test, common) {
     // rather than re-verify the functionality of all the sanitisers, this test just verifies that they
     //  were all called correctly
     var search = proxyquire('../../../sanitiser/search_fallback', {
-      '../sanitiser/_text_autocomplete': function() {
-        called_sanitisers.push('_text_autocomplete');
+      '../sanitiser/_text_addressit': function() {
+        called_sanitisers.push('_text_addressit');
         return { errors: [], warnings: [] };
       }
     });
 
     var expected_sanitisers = [
-      '_text_autocomplete'
+      '_text_addressit'
     ];
 
     var req = {};
@@ -60,14 +60,14 @@ module.exports.tests.sanitize = function(test, common) {
     // rather than re-verify the functionality of all the sanitisers, this test just verifies that they
     //  were all called correctly
     var search = proxyquire('../../../sanitiser/search_fallback', {
-      '../sanitiser/_text_autocomplete': function() {
-        called_sanitisers.push('_text_autocomplete');
+      '../sanitiser/_text_addressit': function() {
+        called_sanitisers.push('_text_addressit');
         return { errors: [], warnings: [] };
       }
     });
 
     var expected_sanitisers = [
-      '_text_autocomplete'
+      '_text_addressit'
     ];
 
     var req = {};
