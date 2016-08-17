@@ -6,7 +6,7 @@ module.exports.tests.sanitisers = function(test, common) {
   test('check sanitiser list', function (t) {
     var expected = [
       'singleScalarParameters', 'text', 'tokenizer', 'size', 'layers', 'sources',
-      'sources_and_layers', 'private', 'geo_autocomplete', 'categories'
+      'sources_and_layers', 'private', 'geo_autocomplete', 'boundary_country', 'categories'
     ];
     t.deepEqual(Object.keys(autocomplete.sanitiser_list), expected);
     t.end();
