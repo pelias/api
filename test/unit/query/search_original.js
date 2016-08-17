@@ -86,65 +86,62 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
-  // test('valid query with a full valid address', function(t) {
-  //   var query = generate({ text: '123 main st new york ny 10010 US',
-  //     layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
-  //     querySize: 10,
-  //     parsed_text: {
-  //       number: '123',
-  //       street: 'main st',
-  //       state: 'NY',
-  //       country: 'USA',
-  //       postalcode: '10010'
-  //     }
-  //   });
-  //
-  //   var compiled = JSON.parse( JSON.stringify( query ) );
-  //   var expected = require('../fixture/search_full_address');
-  //
-  //   var fs = require('fs');
-  //   fs.writeFileSync('actual.json', JSON.stringify(compiled, null, 2));
-  //   fs.writeFileSync('expected.json', JSON.stringify(expected, null, 2));
-  //
-  //   t.deepEqual(compiled, expected, 'search_full_address');
-  //   t.end();
-  // });
-  //
-  // test('valid query with partial address', function(t) {
-  //   var query = generate({ text: 'soho grand, new york',
-  //     layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
-  //     querySize: 10,
-  //     parsed_text: { name: 'soho grand',
-  //       state: 'NY',
-  //       regions: [ 'soho grand' ],
-  //       admin_parts: 'new york'
-  //     }
-  //   });
-  //
-  //   var compiled = JSON.parse( JSON.stringify( query ) );
-  //   var expected = require('../fixture/search_partial_address');
-  //
-  //   t.deepEqual(compiled, expected, 'search_partial_address');
-  //   t.end();
-  // });
-  //
-  // test('valid query with regions in address', function(t) {
-  //   var query = generate({ text: '1 water st manhattan ny',
-  //     layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
-  //     querySize: 10,
-  //     parsed_text: { number: '1',
-  //       street: 'water st',
-  //       state: 'NY',
-  //       regions: [ 'manhattan' ]
-  //     },
-  //   });
-  //
-  //   var compiled = JSON.parse( JSON.stringify( query ) );
-  //   var expected = require('../fixture/search_regions_address');
-  //
-  //   t.deepEqual(compiled, expected, 'search_regions_address');
-  //   t.end();
-  // });
+  test('valid query with a full valid address', function(t) {
+    var query = generate({ text: '123 main st new york ny 10010 US',
+      layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
+      querySize: 10,
+      parsed_text: {
+        number: '123',
+        street: 'main st',
+        state: 'NY',
+        country: 'USA',
+        postalcode: '10010',
+        regions: [ 'new york' ]
+      }
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_full_address');
+
+    t.deepEqual(compiled, expected, 'search_full_address');
+    t.end();
+  });
+
+  test('valid query with partial address', function(t) {
+    var query = generate({ text: 'soho grand, new york',
+      layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
+      querySize: 10,
+      parsed_text: { name: 'soho grand',
+        state: 'NY',
+        regions: [ 'soho grand' ],
+        admin_parts: 'new york'
+      }
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_partial_address');
+
+    t.deepEqual(compiled, expected, 'search_partial_address');
+    t.end();
+  });
+
+  test('valid query with regions in address', function(t) {
+    var query = generate({ text: '1 water st manhattan ny',
+      layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
+      querySize: 10,
+      parsed_text: { number: '1',
+        street: 'water st',
+        state: 'NY',
+        regions: [ 'manhattan' ]
+      },
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_regions_address');
+
+    t.deepEqual(compiled, expected, 'search_regions_address');
+    t.end();
+  });
 
   test('valid boundary.country search', function(t) {
     var query = generate({
