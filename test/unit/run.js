@@ -60,6 +60,7 @@ var tests = [
   require('./sanitiser/place'),
   require('./sanitiser/reverse'),
   require('./sanitiser/search'),
+  require('./sanitiser/search_fallback'),
   require('./sanitiser/wrap'),
   require('./service/mget'),
   require('./service/search')
