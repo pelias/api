@@ -7,6 +7,7 @@ var sanitisers = {
   autocomplete: require('../sanitiser/autocomplete'),
   place: require('../sanitiser/place'),
   search: require('../sanitiser/search'),
+  search_fallback: require('../sanitiser/search_fallback'),
   reverse: require('../sanitiser/reverse'),
   nearby: require('../sanitiser/nearby')
 };
@@ -65,8 +66,9 @@ function addRoutes(app, peliasConfig) {
       middleware.calcSize(),
       // 2nd parameter is `backend` which gets initialized internally
       // 3rd parameter is which query module to use, use fallback/geodisambiguation
-      //  first, then use  if first query didn't return anything 
+      //  first, then use original search strategy if first query didn't return anything
       controllers.search(peliasConfig, undefined, require('../query/search')),
+      sanitisers.search_fallback.middleware,
       controllers.search(peliasConfig, undefined, require('../query/search_original')),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
