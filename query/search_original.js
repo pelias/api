@@ -1,6 +1,6 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./search_defaults'),
-    textParser = require('./text_parser'),
+    textParser = require('./text_parser_addressit'),
     check = require('check-types');
 
 var placeTypes = require('../helper/placeTypes');
