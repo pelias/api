@@ -22,6 +22,7 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 // mandatory matches
 query.score( views.phrase_first_tokens_only, 'must' );
 query.score( views.ngrams_last_token_only, 'must' );
+query.score( peliasQuery.view.boundary_country, 'must' );
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );
@@ -67,6 +68,13 @@ function generateQuery( clean ){
   // layers
   if( check.array(clean.layers) && clean.layers.length ){
     vs.var( 'layers', clean.layers);
+  }
+
+  // boundary country
+  if( check.string(clean['boundary.country']) ){
+    vs.set({
+      'boundary:country': clean['boundary.country']
+    });
   }
 
   // pass the input tokens to the views so they can choose which tokens
