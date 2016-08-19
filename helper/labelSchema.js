@@ -13,17 +13,17 @@ module.exports = {
   'USA': {
     'borough': getFirstProperty(['borough']),
     'local': getFirstProperty(['locality', 'localadmin', 'county']),
-    'regional': getUsOrCaOrAusState,
+    'regional': getRegionalValue,
     'country': getUSACountryValue
   },
   'AUS': {
     'local' : getFirstProperty(['locality', 'localadmin']),
-    'regional' : getUsOrCaOrAusState,
+    'regional' : getRegionalValue,
     'country': getFirstProperty(['country'])
   },
   'CAN': {
     'local': getFirstProperty(['locality']), // no localadmins in CAN
-    'regional': getUsOrCaOrAusState,
+    'regional': getRegionalValue,
     'country': getFirstProperty(['country'])
   }
 };
@@ -44,12 +44,12 @@ function getFirstProperty(fields) {
 
 }
 
-// this function is exclusively used for figuring out which field to use for US/CA States
-// 1.  if a US/CA state is the most granular bit of info entered, the label should contain
-//  the full state name, eg: Pennsylvania, USA and Ontario, CA
-// 2.  otherwise, the state abbreviation should be used, eg: Lancaster, PA, USA and Bruce, ON, CA
-// 3.  if for some reason the abbreviation isn't available, use the full state name
-function getUsOrCaOrAusState(record) {
+// this function is exclusively used for figuring out which field to use for states/provinces
+// 1.  if a state/province is the most granular bit of info entered, the label should contain
+//  the full state/province name, eg: Pennsylvania, USA and Ontario, CA
+// 2.  otherwise, the state/province abbreviation should be used, eg: Lancaster, PA, USA and Bruce, ON, CA
+// 3.  if the abbreviation isn't available, use the full state/province name
+function getRegionalValue(record) {
   if ('region' === record.layer && record.region) {
     // return full state name when state is the most granular piece of info
     return record.region;
