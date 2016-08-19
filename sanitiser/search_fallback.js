@@ -5,6 +5,7 @@ var sanitizeAll = require('../sanitiser/sanitizeAll'),
 
 var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
 var logger = require('pelias-logger').get('api:controller:search_fallback');
+var logging = require( '../helper/logging' );
 
 // middleware
 module.exports.middleware = function( req, res, next ){
@@ -17,7 +18,8 @@ module.exports.middleware = function( req, res, next ){
 
   // log the query that caused a fallback since libpostal+new-queries didn't return anything
   if (req.path === '/v1/search') {
-    logger.info(req.clean.text);
+    var queryText = logging.isDNT(req) ? '[text removed]' : req.clean.text;
+    logger.info(queryText);
   }
 
   sanitize( req, function( err, clean ){
