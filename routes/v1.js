@@ -26,6 +26,11 @@ var controllers = {
   status: require('../controller/status')
 };
 
+var queries = {
+  libpostal: require('../query/search'),
+  fallback_to_old_prod: require('../query/search_original')
+};
+
 /** ----------------------- controllers ----------------------- **/
 
 var postProc = {
@@ -67,9 +72,9 @@ function addRoutes(app, peliasConfig) {
       // 2nd parameter is `backend` which gets initialized internally
       // 3rd parameter is which query module to use, use fallback/geodisambiguation
       //  first, then use original search strategy if first query didn't return anything
-      controllers.search(peliasConfig, undefined, require('../query/search')),
+      controllers.search(peliasConfig, undefined, queries.libpostal),
       sanitisers.search_fallback.middleware,
-      controllers.search(peliasConfig, undefined, require('../query/search_original')),
+      controllers.search(peliasConfig, undefined, queries.fallback_to_old_prod),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
