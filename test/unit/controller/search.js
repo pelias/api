@@ -171,6 +171,28 @@ module.exports.tests.timeout = function(test, common) {
   });
 };
 
+module.exports.tests.existing_results = function(test, common) {
+  test('res with existing data should not call backend', function(t) {
+    var backend = function() {
+      throw new Error('backend should not have been called');
+    };
+    var controller = setup( fakeDefaultConfig, backend, mockQuery() );
+
+    var req = { };
+    // the existence of `data` means that there are already results so
+    // don't call the backend/query
+    var res = { data: [{}] };
+
+    var next = function() {
+      t.deepEqual(res, {data: [{}]});
+      t.end();
+    };
+    controller(req, res, next);
+
+  });
+
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {

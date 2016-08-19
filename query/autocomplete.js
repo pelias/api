@@ -1,7 +1,7 @@
 
 var peliasQuery = require('pelias-query'),
     defaults = require('./autocomplete_defaults'),
-    textParser = require('./text_parser_autocomplete'),
+    textParser = require('./text_parser_addressit'),
     check = require('check-types');
 
 // additional views (these may be merged in to pelias/query at a later date)

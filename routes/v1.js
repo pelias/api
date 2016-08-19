@@ -7,6 +7,7 @@ var sanitisers = {
   autocomplete: require('../sanitiser/autocomplete'),
   place: require('../sanitiser/place'),
   search: require('../sanitiser/search'),
+  search_fallback: require('../sanitiser/search_fallback'),
   reverse: require('../sanitiser/reverse'),
   nearby: require('../sanitiser/nearby')
 };
@@ -23,6 +24,11 @@ var controllers = {
   place: require('../controller/place'),
   search: require('../controller/search'),
   status: require('../controller/status')
+};
+
+var queries = {
+  libpostal: require('../query/search'),
+  fallback_to_old_prod: require('../query/search_original')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -63,7 +69,12 @@ function addRoutes(app, peliasConfig) {
     search: createRouter([
       sanitisers.search.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig),
+      // 2nd parameter is `backend` which gets initialized internally
+      // 3rd parameter is which query module to use, use fallback/geodisambiguation
+      //  first, then use original search strategy if first query didn't return anything
+      controllers.search(peliasConfig, undefined, queries.libpostal),
+      sanitisers.search_fallback.middleware,
+      controllers.search(peliasConfig, undefined, queries.fallback_to_old_prod),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
