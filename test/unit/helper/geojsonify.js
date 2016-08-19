@@ -58,6 +58,7 @@ module.exports.tests.geojsonify = function(test, common) {
       'postalcode': 'N1 0RW',
       'country_a': 'GBR',
       'country': 'United Kingdom',
+      'dependency': 'dependency name',
       'region': 'Islington',
       'region_a': 'ISL',
       'macroregion': 'England',
@@ -85,6 +86,7 @@ module.exports.tests.geojsonify = function(test, common) {
       },
       'country_a': 'GBR',
       'country': 'United Kingdom',
+      'dependency': 'dependency name',
       'region': 'City And County Of The City Of London',
       'region_a': 'COL',
       'macroregion': 'England',
@@ -108,6 +110,7 @@ module.exports.tests.geojsonify = function(test, common) {
       },
       'country_a': 'USA',
       'country': 'United States',
+      'dependency': 'dependency name',
       'region': 'New York',
       'region_a': 'NY',
       'county': 'New York',
@@ -144,6 +147,7 @@ module.exports.tests.geojsonify = function(test, common) {
           'name': '\'Round Midnight Jazz and Blues Bar',
           'country_a': 'GBR',
           'country': 'United Kingdom',
+          'dependency': 'dependency name',
           'macroregion': 'England',
           'region': 'Islington',
           'region_a': 'ISL',
@@ -179,6 +183,7 @@ module.exports.tests.geojsonify = function(test, common) {
           'name': 'Blues Cafe',
           'country_a': 'GBR',
           'country': 'United Kingdom',
+          'dependency': 'dependency name',
           'macroregion': 'England',
           'region': 'City And County Of The City Of London',
           'region_a': 'COL',
@@ -207,6 +212,7 @@ module.exports.tests.geojsonify = function(test, common) {
           'name': 'Empire State Building',
           'country_a': 'USA',
           'country': 'United States',
+          'dependency': 'dependency name',
           'region': 'New York',
           'region_a': 'NY',
           'county': 'New York',
@@ -266,6 +272,15 @@ module.exports.tests.geojsonify = function(test, common) {
         ],
         'country_a': [
           'USA'
+        ],
+        'dependency': [
+          'dependency name'
+        ],
+        'dependency_gid': [
+          'dependency id'
+        ],
+        'dependency_a': [
+          'dependency abbrevation'
         ],
         'macroregion': [
           'MacroRegion Name'
@@ -341,6 +356,9 @@ module.exports.tests.geojsonify = function(test, common) {
             'country': 'United States',
             'country_gid': '85633793',
             'country_a': 'USA',
+            'dependency': 'dependency name',
+            'dependency_gid': 'dependency id',
+            'dependency_a': 'dependency abbrevation',
             'macroregion': 'MacroRegion Name',
             'macroregion_gid': 'MacroRegion Id',
             'macroregion_a': 'MacroRegion Abbreviation',
