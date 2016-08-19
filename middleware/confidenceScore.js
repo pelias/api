@@ -50,6 +50,57 @@ function setup(peliasConfig) {
   return computeScores;
 }
 
+
+function compareProperty(p1, p2) {
+  if (!p1 || !p2) {
+    return 0;
+  }
+  if (typeof p1 === 'string'){
+    p1 = p1.toLowerCase();
+  }
+  if (typeof p2 === 'string'){
+    p2 = p2.toLowerCase();
+  }
+  return (p1<p2?-1:(p1>p2?1:0));
+}
+
+
+/* Quite heavily fi specific sorting */
+function compareResults(a, b) {
+  if (b.confidence !== a.confidence) {
+    return b.confidence - a.confidence;
+  }
+  var diff;
+  if (a.parent && b.parent) {
+    diff = compareProperty(a.parent.localadmin, b.parent.localadmin);
+    if (diff) {
+      return diff;
+    }
+  }
+  if (a.address_parts && b.address_parts) {
+    diff = compareProperty(a.address_parts.street, b.address_parts.street);
+    if (diff) {
+      return diff;
+    }
+    diff = compareProperty(a.address_parts.number, b.address_parts.number);
+    if (diff) {
+      return diff;
+    }
+    diff = compareProperty(a.address_parts.number, b.address_parts.number);
+    if (diff) {
+      return diff;
+    }
+  }
+  if (a.name && b.name) {
+    diff = compareProperty(a.name.default, b.name.default);
+    if (diff) {
+      return diff;
+    }
+  }
+
+  return 0;
+}
+
 function computeScores(req, res, next) {
   // do nothing if no result data set
   if (!check.assigned(req.clean) || !check.assigned(res) ||
@@ -65,7 +116,7 @@ function computeScores(req, res, next) {
   // loop through data items and determine confidence scores
   res.data = res.data.map(computeConfidenceScore.bind(null, req, mean, stdev));
 
-  res.data.sort(function(a, b) { return(b.confidence - a.confidence); });
+  res.data.sort(compareResults);
 
   next();
 }
