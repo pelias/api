@@ -178,6 +178,27 @@ module.exports = {
                   'query': 'neighbourhood value',
                   'type': 'phrase',
                   'fields': [
+                    'parent.dependency',
+                    'parent.dependency_a'
+                  ]
+                }
+              }
+            ],
+            'filter': {
+              'term': {
+                'layer': 'dependency'
+              }
+            }
+          }
+        },
+        {
+          'bool': {
+            'must': [
+              {
+                'multi_match': {
+                  'query': 'neighbourhood value',
+                  'type': 'phrase',
+                  'fields': [
                     'parent.country',
                     'parent.country_a'
                   ]
@@ -189,6 +210,42 @@ module.exports = {
                 'layer': 'country'
               }
             }
+          }
+        },
+        {
+          'function_score': {
+            'query': null,
+            'max_boost': 20,
+            'functions': [
+              {
+                'field_value_factor': {
+                  'modifier': 'log1p',
+                  'field': 'popularity',
+                  'missing': 1
+                },
+                'weight': 1
+              }
+            ],
+            'score_mode': 'first',
+            'boost_mode': 'replace'
+          }
+        },
+        {
+          'function_score': {
+            'query': null,
+            'max_boost': 20,
+            'functions': [
+              {
+                'field_value_factor': {
+                  'modifier': 'log1p',
+                  'field': 'population',
+                  'missing': 1
+                },
+                'weight': 2
+              }
+            ],
+            'score_mode': 'first',
+            'boost_mode': 'replace'
           }
         }
       ]
