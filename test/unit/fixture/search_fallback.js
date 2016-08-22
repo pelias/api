@@ -49,6 +49,18 @@ module.exports = {
               },
               {
                 'multi_match': {
+                  'query': 'county value',
+                  'type': 'phrase',
+                  'fields': [
+                    'parent.county',
+                    'parent.county_a',
+                    'parent.macrocounty',
+                    'parent.macrocounty_a'
+                  ]
+                }
+              },
+              {
+                'multi_match': {
                   'query': 'state value',
                   'type': 'phrase',
                   'fields': [
@@ -63,7 +75,9 @@ module.exports = {
                   'type': 'phrase',
                   'fields': [
                     'parent.country',
-                    'parent.country_a'
+                    'parent.country_a',
+                    'parent.dependency',
+                    'parent.dependency_a'
                   ]
                 }
               }
@@ -123,6 +137,18 @@ module.exports = {
               },
               {
                 'multi_match': {
+                  'query': 'county value',
+                  'type': 'phrase',
+                  'fields': [
+                    'parent.county',
+                    'parent.county_a',
+                    'parent.macrocounty',
+                    'parent.macrocounty_a'
+                  ]
+                }
+              },
+              {
+                'multi_match': {
                   'query': 'state value',
                   'type': 'phrase',
                   'fields': [
@@ -137,7 +163,9 @@ module.exports = {
                   'type': 'phrase',
                   'fields': [
                     'parent.country',
-                    'parent.country_a'
+                    'parent.country_a',
+                    'parent.dependency',
+                    'parent.dependency_a'
                   ]
                 }
               }
@@ -187,6 +215,18 @@ module.exports = {
               },
               {
                 'multi_match': {
+                  'query': 'county value',
+                  'type': 'phrase',
+                  'fields': [
+                    'parent.county',
+                    'parent.county_a',
+                    'parent.macrocounty',
+                    'parent.macrocounty_a'
+                  ]
+                }
+              },
+              {
+                'multi_match': {
                   'query': 'state value',
                   'type': 'phrase',
                   'fields': [
@@ -201,7 +241,9 @@ module.exports = {
                   'type': 'phrase',
                   'fields': [
                     'parent.country',
-                    'parent.country_a'
+                    'parent.country_a',
+                    'parent.dependency',
+                    'parent.dependency_a'
                   ]
                 }
               }
@@ -241,6 +283,18 @@ module.exports = {
               },
               {
                 'multi_match': {
+                  'query': 'county value',
+                  'type': 'phrase',
+                  'fields': [
+                    'parent.county',
+                    'parent.county_a',
+                    'parent.macrocounty',
+                    'parent.macrocounty_a'
+                  ]
+                }
+              },
+              {
+                'multi_match': {
                   'query': 'state value',
                   'type': 'phrase',
                   'fields': [
@@ -255,7 +309,9 @@ module.exports = {
                   'type': 'phrase',
                   'fields': [
                     'parent.country',
-                    'parent.country_a'
+                    'parent.country_a',
+                    'parent.dependency',
+                    'parent.dependency_a'
                   ]
                 }
               }
@@ -283,6 +339,18 @@ module.exports = {
               },
               {
                 'multi_match': {
+                  'query': 'county value',
+                  'type': 'phrase',
+                  'fields': [
+                    'parent.county',
+                    'parent.county_a',
+                    'parent.macrocounty',
+                    'parent.macrocounty_a'
+                  ]
+                }
+              },
+              {
+                'multi_match': {
                   'query': 'state value',
                   'type': 'phrase',
                   'fields': [
@@ -297,7 +365,9 @@ module.exports = {
                   'type': 'phrase',
                   'fields': [
                     'parent.country',
-                    'parent.country_a'
+                    'parent.country_a',
+                    'parent.dependency',
+                    'parent.dependency_a'
                   ]
                 }
               }
@@ -305,6 +375,52 @@ module.exports = {
             'filter': {
               'term': {
                 'layer': 'locality'
+              }
+            }
+          }
+        },
+        {
+          'bool': {
+            '_name': 'fallback.county',
+            'must': [
+              {
+                'multi_match': {
+                  'query': 'county value',
+                  'type': 'phrase',
+                  'fields': [
+                    'parent.county',
+                    'parent.county_a',
+                    'parent.macrocounty',
+                    'parent.macrocounty_a'
+                  ]
+                }
+              },
+              {
+                'multi_match': {
+                  'query': 'state value',
+                  'type': 'phrase',
+                  'fields': [
+                    'parent.region',
+                    'parent.region_a'
+                  ]
+                }
+              },
+              {
+                'multi_match': {
+                  'query': 'country value',
+                  'type': 'phrase',
+                  'fields': [
+                    'parent.country',
+                    'parent.country_a',
+                    'parent.dependency',
+                    'parent.dependency_a'
+                  ]
+                }
+              }
+            ],
+            'filter': {
+              'term': {
+                'layer': 'county'
               }
             }
           }
@@ -329,7 +445,9 @@ module.exports = {
                   'type': 'phrase',
                   'fields': [
                     'parent.country',
-                    'parent.country_a'
+                    'parent.country_a',
+                    'parent.dependency',
+                    'parent.dependency_a'
                   ]
                 }
               }
@@ -351,7 +469,9 @@ module.exports = {
                   'type': 'phrase',
                   'fields': [
                     'parent.country',
-                    'parent.country_a'
+                    'parent.country_a',
+                    'parent.dependency',
+                    'parent.dependency_a'
                   ]
                 }
               }
@@ -361,6 +481,42 @@ module.exports = {
                 'layer': 'country'
               }
             }
+          }
+        },
+        {
+          'function_score': {
+            'query': null,
+            'max_boost': 20,
+            'functions': [
+              {
+                'field_value_factor': {
+                  'modifier': 'log1p',
+                  'field': 'popularity',
+                  'missing': 1
+                },
+                'weight': 1
+              }
+            ],
+            'score_mode': 'first',
+            'boost_mode': 'replace'
+          }
+        },
+        {
+          'function_score': {
+            'query': null,
+            'max_boost': 20,
+            'functions': [
+              {
+                'field_value_factor': {
+                  'modifier': 'log1p',
+                  'field': 'population',
+                  'missing': 1
+                },
+                'weight': 2
+              }
+            ],
+            'score_mode': 'first',
+            'boost_mode': 'replace'
           }
         }
       ]
