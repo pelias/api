@@ -54,6 +54,13 @@ function setup(peliasConfig) {
 
 
 function compareProperty(p1, p2) {
+  if (Array.isArray(p1)) {
+    p1 = p1[0];
+  }
+  if (Array.isArray(p2)) {
+    p2 = p2[0];
+  }
+
   if (!p1 || !p2) {
     return 0;
   }
@@ -312,7 +319,6 @@ function propMatch(textProp, hitProp, expectEnriched, numeric) {
     var n2 = parseInt(hitProp);
     if (!isNaN(n1) && !isNaN(n2)) {
       var match = 1.0/(1.0 + Math.abs(n1-n2));
-      logger.debug('weighting street number difference', match);
       return match;
     }
   }
