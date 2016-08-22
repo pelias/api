@@ -26,14 +26,10 @@ json.features.should.be.instanceof Array
 should.exist json.geocoding.errors
 json.geocoding.errors.should.eql [ 'missing param \'boundary.circle.radius\'' ]
 
-#? expected warnings
-should.exist json.geocoding.warnings
-json.geocoding.warnings.should.eql [ 'boundary.circle is currently unsupported' ]
-
 #? inputs
 # json.geocoding.query['size'].should.eql 10
-# json.geocoding.query['point.lat'].should.eql 40.744243
-# json.geocoding.query['point.lon'].should.eql -73.990342
-# json.geocoding.query['boundary.circle.lat'].should.eql 40.744243
-# json.geocoding.query['boundary.circle.lon'].should.eql -73.990342
-# should.not.exist json.geocoding.query['boundary.circle.radius']
+json.geocoding.query['point.lat'].should.eql 40.744243
+json.geocoding.query['point.lon'].should.eql -73.990342
+should.not.exist json.geocoding.query['boundary.circle.radius']
+should.not.exist json.geocoding.query['boundary.circle.lat']
+should.not.exist json.geocoding.query['boundary.circle.lon']
