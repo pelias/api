@@ -41,10 +41,11 @@
       "flipNumberAndStreetCountries": ["FIN"],
       "confidenceAdminProperties": ["localadmin", "neighbourhood"],
       "confidenceAddressParts": {
-        "number": {"parent":"address_parts", "field":"number", "enrich":false},
-        "street": {"parent":"address_parts", "field":"street", "enrich":false}
+        "number": {"parent":"address_parts", "field":"number", "enrich":false, "numeric": true},
+        "street": {"parent":"address_parts", "field":"street", "enrich":false, "numeric": false}
       },
-      "confidenceNameWeight" : 1.3,
+      "confidenceNameWeight" : 1.4,
+      "confidenceAdminWeight" : 1.2,
       "translations": "/opt/pelias/api/translations.json",
       "labelSchemas": {
         "FIN": {

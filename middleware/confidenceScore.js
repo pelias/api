@@ -20,15 +20,16 @@ var RELATIVE_SCORES = true;
 
 var languages = ['default'];
 var adminProperties;
-var nameWeight = 1;
+var nameWeight = 1.3;
+var adminWeight = 1.2;
 
 // default configuration for address confidence check
 var confidenceAddressParts = {
-  number: { parent: 'address_parts', field: 'number', enrich: false},
-  street: { parent: 'address_parts', field: 'street', enrich: false},
-  postalcode: { parent: 'address_parts', field: 'zip', enrich: true},
-  state: { parent: 'parent', field: 'region_a', enrich: true},
-  country: { parent: 'parent', field: 'country_a', enrich: true}
+  number: { parent: 'address_parts', field: 'number', enrich: false, numeric: true},
+  street: { parent: 'address_parts', field: 'street', enrich: false, numeric: false},
+  postalcode: { parent: 'address_parts', field: 'zip', enrich: true, numeric: false},
+  state: { parent: 'parent', field: 'region_a', enrich: true, numeric: false},
+  country: { parent: 'parent', field: 'country_a', enrich: true, numeric: false}
 };
 
 function setup(peliasConfig) {
@@ -45,9 +46,69 @@ function setup(peliasConfig) {
         confidenceAddressParts = peliasConfig.localization.confidenceAddressParts;
       }
       nameWeight = peliasConfig.localization.confidenceNameWeight || nameWeight;
+      adminWeight = peliasConfig.localization.confidenceAdminWeight || adminWeight;
     }
   }
   return computeScores;
+}
+
+
+function compareProperty(p1, p2) {
+  if (Array.isArray(p1)) {
+    p1 = p1[0];
+  }
+  if (Array.isArray(p2)) {
+    p2 = p2[0];
+  }
+
+  if (!p1 || !p2) {
+    return 0;
+  }
+  if (typeof p1 === 'string'){
+    p1 = p1.toLowerCase();
+  }
+  if (typeof p2 === 'string'){
+    p2 = p2.toLowerCase();
+  }
+  return (p1<p2?-1:(p1>p2?1:0));
+}
+
+
+/* Quite heavily fi specific sorting */
+function compareResults(a, b) {
+  if (b.confidence !== a.confidence) {
+    return b.confidence - a.confidence;
+  }
+  var diff;
+  if (a.parent && b.parent) {
+    diff = compareProperty(a.parent.localadmin, b.parent.localadmin);
+    if (diff) {
+      return diff;
+    }
+  }
+  if (a.address_parts && b.address_parts) {
+    diff = compareProperty(a.address_parts.street, b.address_parts.street);
+    if (diff) {
+      return diff;
+    }
+
+    var n1 = parseInt(a.address_parts.number);
+    var n2 = parseInt(b.address_parts.number);
+    if (!isNaN(n1) && !isNaN(n2)) {
+      diff = compareProperty(n1, n2);
+      if (diff) {
+        return diff;
+      }
+    }
+  }
+  if (a.name && b.name) {
+    diff = compareProperty(a.name.default, b.name.default);
+    if (diff) {
+      return diff;
+    }
+  }
+
+  return 0;
 }
 
 function computeScores(req, res, next) {
@@ -65,7 +126,7 @@ function computeScores(req, res, next) {
   // loop through data items and determine confidence scores
   res.data = res.data.map(computeConfidenceScore.bind(null, req, mean, stdev));
 
-  res.data.sort(function(a, b) { return(b.confidence - a.confidence); });
+  res.data.sort(compareResults);
 
   next();
 }
@@ -106,8 +167,8 @@ function computeConfidenceScore(req, mean, stdev, hit) {
   }
 
   if(adminProperties && parsedText && parsedText.regions && parsedText.regions.length>1) {
-    hit.confidence += checkAdmin(parsedText, hit);
-    checkCount++;
+    hit.confidence += adminWeight*checkAdmin(parsedText, hit);
+    checkCount += adminWeight;
   }
   // TODO: look at categories and location
 
@@ -232,7 +293,7 @@ function checkQueryType(text, hit) {
  * @param {boolean} expectEnriched
  * @returns {number}
  */
-function propMatch(textProp, hitProp, expectEnriched) {
+function propMatch(textProp, hitProp, expectEnriched, numeric) {
 
   // both missing = match
   if (!check.assigned(textProp) && !check.assigned(hitProp)) {
@@ -253,9 +314,18 @@ function propMatch(textProp, hitProp, expectEnriched) {
   }
 
   // both present
+  if (numeric) {
+    var n1 = parseInt(textProp);
+    var n2 = parseInt(hitProp);
+    if (!isNaN(n1) && !isNaN(n2)) {
+      var match = 1.0/(1.0 + Math.abs(n1-n2));
+      return match;
+    }
+  }
+
   if (textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) {
       return 1; //values match
-    }
+  }
 
   // both present, values differ => BAD regardless of enrichment
   return 0;
@@ -299,14 +369,14 @@ function checkAddress(text, hit) {
       var maxMatch = 0;
       for (var i=0; i<count; i++) {
         value = value[i];
-        var match = propMatch(text[key], value, part.enrich);
+        var match = propMatch(text[key], value, part.enrich, part.numeric);
         if (match>maxMatch) {
           maxMatch=match;
         }
       }
       res += maxMatch;
     } else {
-      res += propMatch(text[key], value, part.enrich);
+      res += propMatch(text[key], value, part.enrich, part.numeric);
     }
     checkCount++;
   }

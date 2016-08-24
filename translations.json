@@ -127,6 +127,27 @@
       "Finland": "Suomi"
     }
   },
+  "default": {
+    "region": {
+      "South Karelia": "Etelä-Karjala",
+      "North Karelia": "Pohjois-Karjala",
+      "Central Finland": "Keski-Suomi",
+      "Southern Ostrobothnia": "Etelä-Pohjanmaa",
+      "Ostrobothnia": "Pohjanmaa",
+      "Central Ostrobothnia": "Keski-Pohjanmaa",
+      "Northern Ostrobothnia": "Pohjois-Pohjanmaa",
+      "Southwest Finland": "Varsinais-Suomi",
+      "Southern Savonia": "Etelä-Savo",
+      "Northern Savonia": "Pohjois-Savo",
+      "Päijänne-Tavastia": "Päijät-Häme",
+      "Tavastia Proper": "Kanta-Häme",
+      "Lapland": "Lappi",
+      "Åland": "Ahvenanmaa"
+    },
+    "country": {
+      "Finland": "Suomi"
+    }
+  },
   "se": {
     "country": {
       "Finland": "Suopma"
