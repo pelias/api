@@ -18,11 +18,14 @@ module.exports.tests.supported_countries = function(test, common) {
     t.notEquals(supported_countries.indexOf('USA'), -1);
     t.notEquals(supported_countries.indexOf('CAN'), -1);
     t.notEquals(supported_countries.indexOf('GBR'), -1);
+    t.notEquals(supported_countries.indexOf('AUS'), -1);
     t.notEquals(supported_countries.indexOf('default'), -1);
+    t.equals(supported_countries.length, 5);
 
     t.equals(Object.keys(schemas.USA).length, 4);
     t.equals(Object.keys(schemas.CAN).length, 3);
     t.equals(Object.keys(schemas.GBR).length, 3);
+    t.equals(Object.keys(schemas.AUS).length, 3);
     t.equals(Object.keys(schemas.default).length, 2);
 
     t.end();
