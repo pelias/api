@@ -7,43 +7,32 @@ var peliasQuery = require('pelias-query'),
 // general-purpose search query
 //------------------------------
 var fallbackQuery = new peliasQuery.layout.FallbackQuery();
-fallbackQuery.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
-fallbackQuery.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
-
 var geodisambiguationQuery = new peliasQuery.layout.GeodisambiguationQuery();
-geodisambiguationQuery.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
-geodisambiguationQuery.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
-
-// mandatory matches
-// query.score( peliasQuery.view.boundary_country, 'must' );
-// query.score( peliasQuery.view.ngrams, 'must' );
 
 // scoring boost
-// query.score( peliasQuery.view.phrase );
-// query.score( peliasQuery.view.focus( peliasQuery.view.phrase ) );
-// query.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
-// query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
+fallbackQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
+fallbackQuery.score( peliasQuery.view.popularity_only_function );
+fallbackQuery.score( peliasQuery.view.population_only_function );
 
-// address components
-// query.score( peliasQuery.view.address('housenumber'), 'must' );
-// query.score( peliasQuery.view.address('street'), 'must' );
-// query.score( peliasQuery.view.address('postcode'), 'must' );
-
-// admin components
-// country_a and region_a are left as matches here because the text-analyzer
-// can sometimes detect them, in which case a query more specific than a
-// multi_match is appropriate.
-// query.score( peliasQuery.view.admin('country_a'), 'must' );
-// query.score( peliasQuery.view.admin('region_a'), 'must' );
-// query.score( peliasQuery.view.admin('locality'), 'must' );
-// query.score( peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin') );
+geodisambiguationQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
+geodisambiguationQuery.score( peliasQuery.view.popularity_only_function );
+geodisambiguationQuery.score( peliasQuery.view.population_only_function );
+// --------------------------------
 
 // non-scoring hard filters
-// query.filter( peliasQuery.view.boundary_circle );
-// query.filter( peliasQuery.view.boundary_rect );
-// query.filter( peliasQuery.view.sources );
-// query.filter( peliasQuery.view.layers );
-// query.filter( peliasQuery.view.categories );
+fallbackQuery.filter( peliasQuery.view.boundary_country );
+fallbackQuery.filter( peliasQuery.view.boundary_circle );
+fallbackQuery.filter( peliasQuery.view.boundary_rect );
+fallbackQuery.filter( peliasQuery.view.sources );
+fallbackQuery.filter( peliasQuery.view.layers );
+fallbackQuery.filter( peliasQuery.view.categories );
+
+geodisambiguationQuery.filter( peliasQuery.view.boundary_country );
+geodisambiguationQuery.filter( peliasQuery.view.boundary_circle );
+geodisambiguationQuery.filter( peliasQuery.view.boundary_rect );
+geodisambiguationQuery.filter( peliasQuery.view.sources );
+geodisambiguationQuery.filter( peliasQuery.view.layers );
+geodisambiguationQuery.filter( peliasQuery.view.categories );
 // --------------------------------
 
 /**
