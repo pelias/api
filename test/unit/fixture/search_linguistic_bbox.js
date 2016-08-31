@@ -54,7 +54,7 @@ module.exports = {
         }
       ],
       'score_mode': 'avg',
-      'boost_mode': 'replace'
+      'boost_mode': 'multiply'
     }
   },
   'size': 10,
