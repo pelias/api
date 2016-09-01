@@ -49,8 +49,7 @@
       "translations": "/opt/pelias/api/translations.json",
       "labelSchemas": {
         "FIN": {
-          "local": ["localadmin", "region"],
-          "country": ["country"]
+          "local": ["localadmin", "region"]
         }
       }
     }
