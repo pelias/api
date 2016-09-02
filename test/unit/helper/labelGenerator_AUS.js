@@ -10,7 +10,7 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-module.exports.tests.default_country = function(test, common) {
+module.exports.tests.australia = function(test, common) {
   test('venue', function(t) {
     var doc = {
       'name': 'venue name',
@@ -24,10 +24,10 @@ module.exports.tests.default_country = function(test, common) {
       'macrocounty': 'macrocounty name',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'country code',
-      'country': 'country name'
+      'country_a': 'AUS',
+      'country': 'Australia'
     };
-    t.equal(generator(doc),'venue name, locality name, country name');
+    t.equal(generator(doc),'venue name, locality name, region name, Australia');
     t.end();
   });
 
@@ -43,10 +43,10 @@ module.exports.tests.default_country = function(test, common) {
       'macrocounty': 'macrocounty name',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'country code',
-      'country': 'country name'
+      'country_a': 'AUS',
+      'country': 'Australia'
     };
-    t.equal(generator(doc),'venue name, localadmin name, country name');
+    t.equal(generator(doc),'venue name, localadmin name, region name, Australia');
     t.end();
   });
 
@@ -63,10 +63,10 @@ module.exports.tests.default_country = function(test, common) {
       'macrocounty': 'macrocounty name',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'country code',
-      'country': 'country name'
+      'country_a': 'AUS',
+      'country': 'Australia'
     };
-    t.equal(generator(doc),'house number street name, locality name, country name');
+    t.equal(generator(doc),'house number street name, locality name, region name, Australia');
     t.end();
   });
 
@@ -81,10 +81,10 @@ module.exports.tests.default_country = function(test, common) {
       'macrocounty': 'macrocounty name',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'country code',
-      'country': 'country name'
+      'country_a': 'AUS',
+      'country': 'Australia'
     };
-    t.equal(generator(doc),'neighbourhood name, locality name, country name');
+    t.equal(generator(doc),'neighbourhood name, locality name, region name, Australia');
     t.end();
   });
 
@@ -98,10 +98,10 @@ module.exports.tests.default_country = function(test, common) {
       'macrocounty': 'macrocounty name',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'country code',
-      'country': 'country name'
+      'country_a': 'AUS',
+      'country': 'Australia'
     };
-    t.equal(generator(doc),'locality name, country name');
+    t.equal(generator(doc),'locality name, region name, Australia');
     t.end();
   });
 
@@ -114,10 +114,10 @@ module.exports.tests.default_country = function(test, common) {
       'macrocounty': 'macrocounty name',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'country code',
-      'country': 'country name'
+      'country_a': 'AUS',
+      'country': 'Australia'
     };
-    t.equal(generator(doc),'localadmin name, country name');
+    t.equal(generator(doc),'localadmin name, region name, Australia');
     t.end();
   });
 
@@ -129,10 +129,10 @@ module.exports.tests.default_country = function(test, common) {
       'macrocounty': 'macrocounty name',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'country code',
-      'country': 'country name'
+      'country_a': 'AUS',
+      'country': 'Australia'
     };
-    t.equal(generator(doc),'county name, country name');
+    t.equal(generator(doc),'county name, region name, Australia');
     t.end();
   });
 
@@ -143,10 +143,10 @@ module.exports.tests.default_country = function(test, common) {
       'macrocounty': 'macrocounty name',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'country code',
-      'country': 'country name'
+      'country_a': 'AUS',
+      'country': 'Australia'
     };
-    t.equal(generator(doc),'macrocounty name, country name');
+    t.equal(generator(doc),'macrocounty name, region name, Australia');
     t.end();
   });
 
@@ -156,10 +156,10 @@ module.exports.tests.default_country = function(test, common) {
       'layer': 'region',
       'region': 'region name',
       'macroregion': 'macroregion name',
-      'country_a': 'country code',
-      'country': 'country name'
+      'country_a': 'AUS',
+      'country': 'Australia'
     };
-    t.equal(generator(doc),'region name, country name');
+    t.equal(generator(doc),'region name, Australia');
     t.end();
   });
 
@@ -168,21 +168,22 @@ module.exports.tests.default_country = function(test, common) {
       'name': 'macroregion name',
       'layer': 'macroregion',
       'macroregion': 'macroregion name',
-      'country_a': 'country code',
-      'country': 'country name'
+      'country_a': 'AUS',
+      'country': 'Australia'
     };
-    t.equal(generator(doc),'macroregion name, country name');
+    t.equal(generator(doc),'macroregion name, Australia');
     t.end();
   });
 
-  test('country layer labels should only use the `country` field and not the `name`', function(t) {
+  test('country', function(t) {
     var doc = {
-      'name': 'source country name',
+      'name': 'Australia',
       'layer': 'country',
-      'country_a': 'country code',
-      'country': 'hierarchy country name'
+      'postalcode': 'postalcode',
+      'country_a': 'AUS',
+      'country': 'Australia'
     };
-    t.equal(generator(doc),'hierarchy country name');
+    t.equal(generator(doc),'Australia');
     t.end();
   });
 
@@ -191,7 +192,7 @@ module.exports.tests.default_country = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('label generator: ' + name, testFunction);
+    return tape('label generator (AUS): ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

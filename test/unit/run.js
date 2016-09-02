@@ -16,6 +16,7 @@ var tests = [
   require('./helper/labelGenerator_examples'),
   require('./helper/labelGenerator_default'),
   require('./helper/labelGenerator_CAN'),
+  require('./helper/labelGenerator_AUS'),
   require('./helper/labelGenerator_GBR'),
   require('./helper/labelGenerator_USA'),
   require('./helper/labelSchema'),
