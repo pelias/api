@@ -1,377 +1,1192 @@
 module.exports = [
   {
     'center_point': {
-      'lon': -76.207456,
-      'lat': 40.039265
+      'lon': -76.293127,
+      'lat': 40.032787
     },
-    'address_parts': {},
     'parent': {
-      'localadmin': ['East Lampeter'],
-      'region_a': ['PA'],
-      'region': ['Pennsylvania'],
-      'locality': ['Smoketown'],
-      'country_a': ['USA'],
-      'county': ['Lancaster County'],
-      'country': ['United States'],
-      'neighbourhood': ['Greenland']
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [
+        null
+      ],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [],
+      'localadmin_id': [
+        '404487183'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [
+        'Lancaster'
+      ],
+      'locality_id': [
+        '101718643'
+      ],
+      'neighbourhood_a': [],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
     },
     'name': {
-      'default': 'East Lampeter High School'
+      'default': 'Hand Junior High School'
     },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'openstreetmap',
+    'source_id': 'node:357289197',
     'category': [
       'education'
     ],
-    '_id': '357321757',
+    'layer': 'venue',
+    '_id': 'node:357289197',
     '_type': 'venue',
-    '_score': 1.2367082,
-    'confidence': 0.879
+    '_score': 0.47265986,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
   },
-  { // same as above, but change the neighbourhood
+  {
     'center_point': {
-      'lon': -77.207456,
-      'lat': 41.039265
+      'lon': -76.32746,
+      'lat': 40.02343
     },
-    'address': {},
     'parent': {
-      'localadmin': 'East Lampeter',
-      'region_a': 'PA',
-      'region': 'Pennsylvania',
-      'locality': 'Smoketown',
-      'country_a': 'USA',
-      'county': 'Lancaster County',
-      'country': 'United States',
-      'neighbourhood': 'Blueland' // ###
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [],
+      'localadmin_id': [
+        '404487185'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [],
+      'locality_id': [],
+      'neighbourhood_a': [],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
     },
     'name': {
-      'default': 'East Lampeter High School'
+      'default': 'Wheatland Junior High School'
     },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'geonames',
+    'source_id': '5219083',
     'category': [
       'education'
     ],
-    '_id': '357321757',
+    'layer': 'venue',
+    '_id': '5219083',
     '_type': 'venue',
-    '_score': 1.2367082,
-    'confidence': 0.879
+    '_score': 0.47265986,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
   },
-  { // same as #1, but change the locality
+  {
     'center_point': {
-      'lon': -73.207456,
-      'lat': 42.039265
+      'lon': -76.30107,
+      'lat': 40.05926
     },
-    'address': {},
     'parent': {
-      'localadmin': 'East Lampeter',
-      'region_a': 'PA',
-      'region': 'Pennsylvania',
-      'locality': 'Firetown', // ###
-      'country_a': 'USA',
-      'county': 'Lancaster County',
-      'country': 'United States',
-      'neighbourhood': 'Greenland'
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [
+        null
+      ],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [
+        'Rossmere'
+      ],
+      'localadmin_id': [
+        '404487183'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [
+        '85846173'
+      ],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [
+        'Lancaster'
+      ],
+      'locality_id': [
+        '101718643'
+      ],
+      'neighbourhood_a': [
+        null
+      ],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
     },
     'name': {
-      'default': 'East Lampeter High School'
+      'default': 'Catholic High School Stadium'
     },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'geonames',
+    'source_id': '5183465',
     'category': [
-      'education'
+      'entertainment',
+      'recreation'
     ],
-    '_id': '357321757',
+    'layer': 'venue',
+    '_id': '5183465',
     '_type': 'venue',
-    '_score': 1.2367082,
-    'confidence': 0.879
+    '_score': 0.47265986,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
   },
-  { // same as #1, but with an additional name
+  {
     'center_point': {
-      'lon': -76.207456,
-      'lat': 40.039265
+      'lon': -76.285474,
+      'lat': 40.048535
     },
-    'address_parts': {},
     'parent': {
-      'localadmin': ['East Lampeter'],
-      'region_a': ['PA'],
-      'region': ['Pennsylvania'],
-      'locality': ['Smoketown'],
-      'country_a': ['USA'],
-      'county': ['Lancaster County'],
-      'country': ['United States'],
-      'neighbourhood': ['Greenland']
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [
+        null
+      ],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [
+        'Grandview Heights'
+      ],
+      'localadmin_id': [
+        '404487183'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [
+        '85822505'
+      ],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [
+        'Lancaster'
+      ],
+      'locality_id': [
+        '101718643'
+      ],
+      'neighbourhood_a': [
+        null
+      ],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
     },
     'name': {
-      'default': 'East Lampeter High School',
-      'alt': 'High School of East Lampeter',
+      'default': 'McCaskey East High School'
     },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'openstreetmap',
+    'source_id': 'node:368338500',
     'category': [
       'education'
     ],
-    '_id': '357321757',
+    'layer': 'venue',
+    '_id': 'node:368338500',
     '_type': 'venue',
-    '_score': 1.2367082,
-    'confidence': 0.879
+    '_score': 0.47265986,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
   },
   {
     'center_point': {
-      'lon': -76.207456,
-      'lat': 40.039265
+      'lon': -76.327063,
+      'lat': 40.031869
+    },
+    'parent': {
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [],
+      'localadmin_id': [
+        '404487185'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [],
+      'locality_id': [],
+      'neighbourhood_a': [],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
+    },
+    'bounding_box': '{\'min_lat\':40.031513,\'max_lat\':40.032233,\'min_lon\':-76.328429,\'max_lon\':-76.326216}',
+    'name': {
+      'default': 'Wheatland Junior High School'
     },
     'address_parts': {},
-    'parent': {
-      'localadmin': ['East Lampeter'],
-      'region_a': ['PA'],
-      'region': ['Pennsylvania'],
-      'locality': ['Smoketown'],
-      'country_a': ['USA'],
-      'county': ['Lancaster County'],
-      'country': ['United States'],
-      'neighbourhood': ['Greenland']
-    },
-    'name': {
-      'default': 'East Lampeter, High-School'
-    },
+    'alpha3': 'USA',
+    'source': 'openstreetmap',
+    'source_id': 'way:84969670',
     'category': [
       'education'
     ],
-    '_id': '357321757',
+    'layer': 'venue',
+    '_id': 'way:84969670',
     '_type': 'venue',
-    '_score': 1.2367082,
-    'confidence': 0.879
+    '_score': 0.47265986,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
   },
   {
     'center_point': {
-      'lon': -76.23246,
-      'lat': 39.99288
+      'lon': -76.29274,
+      'lat': 40.03288
     },
-    'address_parts': {},
     'parent': {
-      'localadmin': ['West Lampeter'],
-      'region_a': ['PA'],
-      'region': ['Pennsylvania'],
-      'locality': ['Lampeter'],
-      'country_a': ['USA'],
-      'county': ['Lancaster County'],
-      'country': ['United States'],
-      'neighbourhood': ['Wheatland Mills']
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [
+        null
+      ],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [],
+      'localadmin_id': [
+        '404487183'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [
+        'Lancaster'
+      ],
+      'locality_id': [
+        '101718643'
+      ],
+      'neighbourhood_a': [],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
     },
     'name': {
-      'default': 'Lampeter-Strasburg High School'
+      'default': 'Hand Junior High School'
     },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'geonames',
+    'source_id': '5192545',
     'category': [
       'education'
     ],
-    '_id': '4559068',
-    '_type': 'geoname',
-    '_score': 1.2367082,
-    'confidence': 0.879
-  },
-  {
-    'center_point': {
-      'lon': -76.20746,
-      'lat': 40.03927
-    },
-    'address_parts': {},
-    'parent': {
-      'localadmin': ['East Lampeter'],
-      'region_a': ['PA'],
-      'region': ['Pennsylvania'],
-      'locality': ['Smoketown'],
-      'country_a': ['USA'],
-      'county': ['Lancaster County'],
-      'country': ['United States'],
-      'neighbourhood': ['Greenland']
-    },
-    'name': {
-      'default': 'East Lampeter High School'
-    },
-    'category': [
-      'education'
-    ],
-    '_id': '5187980',
-    '_type': 'geoname',
-    '_score': 1.2367082,
-    'confidence': 0.879
-  },
-  {
-    'center_point': {
-      'lon': -76.232457,
-      'lat': 39.992877
-    },
-    'address_parts': {},
-    'parent': {
-      'region': ['Pennsylvania'],
-      'locality': ['Lampeter'],
-      'country_a': ['USA'],
-      'county': ['Lancaster County'],
-      'country': ['United States'],
-      'neighbourhood': ['Wheatland Mills'],
-      'localadmin': ['West Lampeter'],
-      'region_a': ['PA']
-    },
-    'name': {
-      'default': 'Lampeter-Strasburg High School'
-    },
-    'category': [
-      'education'
-    ],
-    '_id': '357294404',
+    'layer': 'venue',
+    '_id': '5192545',
     '_type': 'venue',
-    '_score': 1.2367082,
-    'confidence': 0.879
+    '_score': 0.47265986,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
   },
   {
     'center_point': {
-      'lon': -76.207456,
-      'lat': 40.038987
+      'lon': -76.28496,
+      'lat': 40.04732
     },
-    'address_parts': {},
     'parent': {
-      'region': ['Pennsylvania'],
-      'locality': ['Smoketown'],
-      'country_a': ['USA'],
-      'county': ['Lancaster County'],
-      'country': ['United States'],
-      'neighbourhood': ['Greenland'],
-      'localadmin': ['East Lampeter'],
-      'region_a': ['PA']
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [
+        null
+      ],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [
+        'Grandview Heights'
+      ],
+      'localadmin_id': [
+        '404487183'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [
+        '85822505'
+      ],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [
+        'Lancaster'
+      ],
+      'locality_id': [
+        '101718643'
+      ],
+      'neighbourhood_a': [
+        null
+      ],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
     },
     'name': {
-      'default': 'East Lampeter School'
+      'default': 'Lincoln Junior High School'
     },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'geonames',
+    'source_id': '5198085',
     'category': [
       'education'
     ],
-    '_id': '357283977',
+    'layer': 'venue',
+    '_id': '5198085',
     '_type': 'venue',
-    '_score': 1.1036991,
-    'confidence': 0.664
+    '_score': 0.47265986,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
   },
   {
     'center_point': {
-      'lon': -76.20746,
-      'lat': 40.03899
+      'lon': -76.31857,
+      'lat': 40.04204
     },
-    'address_parts': {},
     'parent': {
-      'region': ['Pennsylvania'],
-      'locality': ['Smoketown'],
-      'country_a': ['USA'],
-      'county': ['Lancaster County'],
-      'country': ['United States'],
-      'neighbourhood': ['Greenland'],
-      'localadmin': ['East Lampeter'],
-      'region_a': ['PA']
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [
+        null
+      ],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [],
+      'localadmin_id': [
+        '404487183'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [
+        'Lancaster'
+      ],
+      'locality_id': [
+        '101718643'
+      ],
+      'neighbourhood_a': [],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
     },
     'name': {
-      'default': 'East Lampeter School'
+      'default': 'Reynolds Junior High School'
     },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'geonames',
+    'source_id': '5208101',
     'category': [
       'education'
     ],
-    '_id': '5187966',
-    '_type': 'geoname',
-    '_score': 1.1036991,
-    'confidence': 0.664
-  },
-  {
-    'center_point': {
-      'lon': -94.167445,
-      'lat': 38.762788
-    },
-    'address_parts': {},
-    'parent': {
-      'region': ['Missouri'],
-      'locality': ['Strasburg'],
-      'country_a': ['USA'],
-      'county': ['Cass County'],
-      'country': ['United States'],
-      'localadmin': ['Polk'],
-      'region_a': ['MO']
-    },
-    'name': {
-      'default': 'Strasburg School'
-    },
-    'category': [
-      'education'
-    ],
-    '_id': '358058986',
+    'layer': 'venue',
+    '_id': '5208101',
     '_type': 'venue',
-    '_score': 1.0492544,
-    'confidence': 0.658
+    '_score': 0.47265986,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
   },
   {
     'center_point': {
-      'lon': -78.36317,
-      'lat': 38.98445
-    },
-    'address_parts': {},
-    'name': {
-      'default': 'Strasburg High School'
+      'lon': -76.290392,
+      'lat': 40.048281
     },
     'parent': {
-      'region_a': ['VA'],
-      'region': ['Virginia'],
-      'locality': ['Strasburg'],
-      'country_a': ['USA'],
-      'county': ['Shenandoah County'],
-      'country': ['United States'],
-      'neighbourhood': ['Strasburg Junction']
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [
+        null
+      ],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [
+        'Grandview Heights'
+      ],
+      'localadmin_id': [
+        '404487183'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [
+        '85822505'
+      ],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [
+        'Lancaster'
+      ],
+      'locality_id': [
+        '101718643'
+      ],
+      'neighbourhood_a': [
+        null
+      ],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
     },
+    'bounding_box': '{\'min_lat\':40.047288,\'max_lat\':40.049171,\'min_lon\':-76.291609,\'max_lon\':-76.289314}',
+    'name': {
+      'default': 'McCaskey High School'
+    },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'openstreetmap',
+    'source_id': 'way:161088588',
     'category': [
       'education'
     ],
-    '_id': '4787978',
-    '_type': 'geoname',
-    '_score': 0.9724125,
-    'confidence': 0.649
-  },
-  {
-    'center_point': {
-      'lon': -100.16516,
-      'lat': 46.13427
-    },
-    'address_parts': {},
-    'name': {
-      'default': 'Strasburg High School'
-    },
-    'parent': {
-      'localadmin': ['Strasburg'],
-      'region_a': ['ND'],
-      'region': ['North Dakota'],
-      'locality': ['Strasburg'],
-      'country_a': ['USA'],
-      'county': ['Emmons County'],
-      'country': ['United States']
-    },
-    'category': [
-      'education'
-    ],
-    '_id': '9683163',
-    '_type': 'geoname',
-    '_score': 0.9724125,
-    'confidence': 0.649
-  },
-  {
-    'center_point': {
-      'lon': -81.532392,
-      'lat': 40.597578
-    },
-    'address_parts': {},
-    'name': {
-      'default': 'Strasburg High School'
-    },
-    'parent': {
-      'localadmin': ['Franklin'],
-      'region_a': ['OH'],
-      'region': ['Ohio'],
-      'locality': ['Strasburg'],
-      'country_a': ['USA'],
-      'county': ['Tuscarawas County'],
-      'country': ['United States']
-    },
-    'category': [
-      'education'
-    ],
-    '_id': '356646971',
+    'layer': 'venue',
+    '_id': 'way:161088588',
     '_type': 'venue',
-    '_score': 0.9724125,
-    'confidence': 0.649
+    '_score': 0.47265986,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
+  },
+  {
+    'center_point': {
+      'lon': -76.29051,
+      'lat': 40.04788
+    },
+    'parent': {
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [
+        null
+      ],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [
+        'Grandview Heights'
+      ],
+      'localadmin_id': [
+        '404487183'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [
+        '85822505'
+      ],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [
+        'Lancaster'
+      ],
+      'locality_id': [
+        '101718643'
+      ],
+      'neighbourhood_a': [
+        null
+      ],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
+    },
+    'name': {
+      'default': 'McCaskey High School'
+    },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'geonames',
+    'source_id': '5200263',
+    'category': [
+      'education'
+    ],
+    'layer': 'venue',
+    '_id': '5200263',
+    '_type': 'venue',
+    '_score': 0.47265986,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
+  },
+  {
+    'center_point': {
+      'lon': -76.318983,
+      'lat': 40.042051
+    },
+    'parent': {
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [
+        null
+      ],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [],
+      'localadmin_id': [
+        '404487183'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [
+        'Lancaster'
+      ],
+      'locality_id': [
+        '101718643'
+      ],
+      'neighbourhood_a': [],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
+    },
+    'bounding_box': '{\'min_lat\':40.041542,\'max_lat\':40.042777,\'min_lon\':-76.31963,\'max_lon\':-76.318094}',
+    'name': {
+      'default': 'Reynolds Junior High School'
+    },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'openstreetmap',
+    'source_id': 'way:34212977',
+    'category': [
+      'education'
+    ],
+    'layer': 'venue',
+    '_id': 'way:34212977',
+    '_type': 'venue',
+    '_score': 0.47265986,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
+  },
+  {
+    'center_point': {
+      'lon': -76.284958,
+      'lat': 40.04732
+    },
+    'parent': {
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [
+        null
+      ],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [
+        'Grandview Heights'
+      ],
+      'localadmin_id': [
+        '404487183'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [
+        '85822505'
+      ],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [
+        'Lancaster'
+      ],
+      'locality_id': [
+        '101718643'
+      ],
+      'neighbourhood_a': [
+        null
+      ],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
+    },
+    'name': {
+      'default': 'Lincoln Junior High School'
+    },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'openstreetmap',
+    'source_id': 'node:357330916',
+    'category': [
+      'education'
+    ],
+    'layer': 'venue',
+    '_id': 'node:357330916',
+    '_type': 'venue',
+    '_score': 0.47265986,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
+  },
+  {
+    'center_point': {
+      'lon': -76.280791,
+      'lat': 40.045098
+    },
+    'parent': {
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [
+        null
+      ],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [],
+      'localadmin_id': [
+        '404487183'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [
+        'Lancaster'
+      ],
+      'locality_id': [
+        '101718643'
+      ],
+      'neighbourhood_a': [],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
+    },
+    'name': {
+      'default': 'Lancaster Christian Junior High School'
+    },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'openstreetmap',
+    'source_id': 'node:357330919',
+    'category': [
+      'education'
+    ],
+    'layer': 'venue',
+    '_id': 'node:357330919',
+    '_type': 'venue',
+    '_score': 0.4432487,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
+  },
+  {
+    'center_point': {
+      'lon': -76.28079,
+      'lat': 40.0451
+    },
+    'parent': {
+      'country': [
+        'United States'
+      ],
+      'macrocounty_a': [],
+      'locality_a': [
+        null
+      ],
+      'county': [
+        'Lancaster County'
+      ],
+      'borough_a': [],
+      'borough_id': [],
+      'borough': [],
+      'macroregion': [],
+      'region_a': [
+        'PA'
+      ],
+      'localadmin': [
+        'Lancaster'
+      ],
+      'macrocounty': [],
+      'county_id': [
+        '102081377'
+      ],
+      'neighbourhood': [],
+      'localadmin_id': [
+        '404487183'
+      ],
+      'macroregion_id': [],
+      'neighbourhood_id': [],
+      'country_a': [
+        'USA'
+      ],
+      'macroregion_a': [],
+      'localadmin_a': [
+        null
+      ],
+      'region_id': [
+        '85688481'
+      ],
+      'locality': [
+        'Lancaster'
+      ],
+      'locality_id': [
+        '101718643'
+      ],
+      'neighbourhood_a': [],
+      'region': [
+        'Pennsylvania'
+      ],
+      'macrocounty_id': [],
+      'country_id': [
+        '85633793'
+      ],
+      'county_a': [
+        null
+      ]
+    },
+    'name': {
+      'default': 'Lancaster Christian Junior High School'
+    },
+    'address_parts': {},
+    'alpha3': 'USA',
+    'source': 'geonames',
+    'source_id': '5197082',
+    'category': [
+      'education'
+    ],
+    'layer': 'venue',
+    '_id': '5197082',
+    '_type': 'venue',
+    '_score': 0.4432487,
+    '_matched_queries': [
+      'fallback.venue'
+    ],
+    'confidence': 0.5
   }
 ];
