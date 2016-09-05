@@ -69,8 +69,8 @@ function addRoutes(app, peliasConfig) {
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.matchLanguage(peliasConfig),
-      postProc.dedupe(),
       postProc.localNamingConventions(),
+      postProc.dedupe(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
@@ -84,8 +84,8 @@ function addRoutes(app, peliasConfig) {
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.matchLanguage(peliasConfig),
-      postProc.dedupe(),
       postProc.localNamingConventions(),
+      postProc.dedupe(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
@@ -101,8 +101,8 @@ function addRoutes(app, peliasConfig) {
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),
-      postProc.dedupe(),
       postProc.localNamingConventions(),
+      postProc.dedupe(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
@@ -117,8 +117,8 @@ function addRoutes(app, peliasConfig) {
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),
-      postProc.dedupe(),
       postProc.localNamingConventions(),
+      postProc.dedupe(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
