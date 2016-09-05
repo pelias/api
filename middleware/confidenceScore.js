@@ -15,8 +15,9 @@ var stats = require('stats-lite');
 var logger = require('pelias-logger').get('api');
 var check = require('check-types');
 var _ = require('lodash');
+var fuzzy = require('fuzzy.js');
 
-var RELATIVE_SCORES = true;
+var RELATIVE_SCORES = false;
 
 var languages = ['default'];
 var adminProperties;
@@ -221,6 +222,7 @@ function normalizeName(text) {
   return text.toLowerCase().replace(/[0-9]/g, '').trim();
 }
 
+
 /**
  * Compare text string against configuration defined language versions of a property
  *
@@ -231,15 +233,23 @@ function normalizeName(text) {
 
 function checkLanguageProperty(text, propertyObject) {
   var ltext = normalizeName(text);
+  var fullScore = fuzzy(ltext, ltext).score;
+  var bestScore = 0;
+  var bestName;
+
   for (var lang in propertyObject) {
     if (languages.indexOf(lang) === -1) {
       continue;
     }
-    if (normalizeName(propertyObject[lang]) === ltext) {
-      return true;
+    var score = fuzzy(ltext, normalizeName(propertyObject[lang])).score;
+    if (score > bestScore ) {
+      bestScore = score;
+      bestName = propertyObject[lang];
     }
   }
-  return false;
+  var relScore = bestScore/fullScore;
+  logger.debug('name score', relScore, text, bestName);
+  return relScore;
 }
 
 /**
@@ -254,18 +264,11 @@ function checkLanguageProperty(text, propertyObject) {
 function checkName(text, parsed_text, hit) {
   // parsed_text name should take precedence if available since it's the cleaner name property
   if (check.assigned(parsed_text) && check.assigned(parsed_text.name)) {
-    if (checkLanguageProperty(parsed_text.name, hit.name)) {
-      return 1;
-    }
-  } else {
-    // if no parsed_text check the text value as provided against result's name
-    if (checkLanguageProperty(text, hit.name)) {
-      return 1;
-    }
+    return(checkLanguageProperty(parsed_text.name, hit.name));
   }
 
-  // no matches detected
-  return 0;
+  // if no parsed_text check the text value as provided against result's name
+  return(checkLanguageProperty(text, hit.name));
 }
 
 /**
