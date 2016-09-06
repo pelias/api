@@ -294,20 +294,19 @@ function propMatch(textProp, hitProp, expectEnriched, numeric) {
 
   // both missing = match
   if (!check.assigned(textProp) && !check.assigned(hitProp)) {
-    if (check.assigned(expectEnriched)) { return 0.5; }
-    else { return 0.8; } // no enrichment expected => GOOD
+    if (expectEnriched) { return 0.5; }
+    else { return 1; } // no enrichment expected => GOOD
   }
 
   // text has it, result missing
   if (check.assigned(textProp) && !check.assigned(hitProp)) {
-    if (check.assigned(expectEnriched)) { return 0.2; }
-    else { return 0.4; }
+    if (expectEnriched) { return 0.2; }
+    else { return 0.5; }
   }
 
   // text missing, result has it
   if (!check.assigned(textProp) && check.assigned(hitProp)) {
-    if (check.assigned(expectEnriched)) { return 0.8; }
-    else { return 0.5; }
+    return 1.0;
   }
 
   // both present
