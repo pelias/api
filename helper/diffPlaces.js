@@ -20,7 +20,7 @@ function assertLayerMatch(item1, item2) {
 }
 
 /**
- * Compare the parent.* properties if they exist.
+ * Compare the parent.*_id properties if they exist.
  * Returns false if the objects are the same, and throws
  * an exception with the message 'different' if not.
  *
@@ -64,7 +64,7 @@ function assertParentHierarchyMatch(item1, item2) {
 function assertNameMatch(item1, item2) {
   if (item1.hasOwnProperty('name') && item2.hasOwnProperty('name')) {
     for (var lang in item1.name) {
-      if(item2.name[lang] || lang === 'default') {
+      if(item2.name.hasOwnProperty(lang) || lang === 'default') {
         // do not consider absence of an additional name as a difference
         propMatch(item1.name, item2.name, lang);
       }
@@ -163,9 +163,14 @@ function propMatch(item1, item2, prop) {
  * @returns {string}
  */
 function normalizeString(str) {
-  if (!str) {
+  if (!_.isString(str)) {
+    return str;
+  }
+
+  if (_.isEmpty(str)) {
     return '';
   }
+
   return str.toLowerCase().split(/[ ,-]+/).join(' ');
 }
 
