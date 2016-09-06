@@ -219,7 +219,7 @@ function checkDistanceFromMean(score, mean, stdev) {
 
 // should be improved to handle better complex names such as '5th forest rd'
 function normalizeName(text) {
-  return text.toLowerCase().replace(/[0-9]/g, '').trim();
+  return text.toLowerCase().trim();
 }
 
 
