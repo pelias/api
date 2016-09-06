@@ -165,7 +165,7 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     hit.confidence += checkQueryType(parsedText, hit);
     checkCount += 1;
 */
-  if (parsedText && check.assigned(parsedText.number) && check.assigned(parsedText.street)) {
+  if (parsedText && (check.assigned(parsedText.number) || check.assigned(parsedText.street) || check.assigned(parsedText.postalcode))) {
     hit.confidence += checkAddress(parsedText, hit);
     checkCount++;
   }
