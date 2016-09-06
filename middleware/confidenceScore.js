@@ -21,8 +21,6 @@ var RELATIVE_SCORES = false;
 
 var languages = ['default'];
 var adminProperties;
-var nameWeight = 1.3;
-var adminWeight = 1.2;
 
 // default configuration for address confidence check
 var confidenceAddressParts = {
@@ -46,8 +44,6 @@ function setup(peliasConfig) {
       if(peliasConfig.localization.confidenceAddressParts) {
         confidenceAddressParts = peliasConfig.localization.confidenceAddressParts;
       }
-      nameWeight = peliasConfig.localization.confidenceNameWeight || nameWeight;
-      adminWeight = peliasConfig.localization.confidenceAdminWeight || adminWeight;
     }
   }
   return computeScores;
@@ -152,14 +148,16 @@ function computeConfidenceScore(req, mean, stdev, hit) {
   }
 */
   var parsedText = req.clean.parsed_text;
-  hit.confidence = nameWeight*checkName(req.clean.text, parsedText, hit);
-  var checkCount = nameWeight; // name can have extra strong weight
+  hit.confidence = checkName(req.clean.text, parsedText, hit);
+  var checkCount = 1;
 
-/*  if (RELATIVE_SCORES) {
+/*
+  if (RELATIVE_SCORES) {
     checkCount += 2;
     hit.confidence += checkDistanceFromMean(hit._score, mean, stdev);
     hit.confidence += computeZScore(hit._score, mean, stdev);
-  } */
+  }
+*/
 
 /*
     hit.confidence += checkQueryType(parsedText, hit);
@@ -171,8 +169,8 @@ function computeConfidenceScore(req, mean, stdev, hit) {
   }
 
   if(adminProperties && parsedText && parsedText.regions && parsedText.regions.length>1) {
-    hit.confidence += adminWeight*checkAdmin(parsedText, hit);
-    checkCount += adminWeight;
+    hit.confidence += checkAdmin(parsedText, hit);
+    checkCount++;
   }
   // TODO: look at categories and location
 
