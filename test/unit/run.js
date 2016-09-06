@@ -28,6 +28,7 @@ var tests = [
   require('./middleware/confidenceScoreReverse'),
   require('./middleware/distance'),
   require('./middleware/localNamingConventions'),
+  require('./middleware/translate'),
   require('./middleware/dedupe'),
   require('./middleware/parseBBox'),
   require('./middleware/sendJSON'),
