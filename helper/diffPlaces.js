@@ -11,7 +11,7 @@ var placeTypes = require('./placeTypes');
  * @returns {boolean}
  * @throws {Error}
  */
-function isDiffLayer(item1, item2) {
+function assertLayerMatch(item1, item2) {
   if (item1.layer === item2.layer) {
     return false;
   }
@@ -29,7 +29,7 @@ function isDiffLayer(item1, item2) {
  * @returns {boolean}
  * @throws {Error}
  */
-function isDiffParentHierarchy(item1, item2) {
+function assertParentHierarchyMatch(item1, item2) {
   // if neither object has parent, assume same
   if (!item1.hasOwnProperty('parent') && !item2.hasOwnProperty('parent')) {
     return false;
@@ -61,7 +61,7 @@ function isDiffParentHierarchy(item1, item2) {
  * @returns {boolean}
  * @throws {Error}
  */
-function isDiffName(item1, item2) {
+function assertNameMatch(item1, item2) {
   if (item1.hasOwnProperty('name') && item2.hasOwnProperty('name')) {
     for (var lang in item1.name) {
       if(item2.name[lang] || lang === 'default') {
@@ -85,7 +85,7 @@ function isDiffName(item1, item2) {
  * @returns {boolean}
  * @throws {Error}
  */
-function isDiffAddress(item1, item2) {
+function assertAddressMatch(item1, item2) {
   // if neither record has address, assume same
   if (!item1.hasOwnProperty('address_parts') && !item2.hasOwnProperty('address_parts')) {
     return false;
@@ -119,10 +119,10 @@ function isDiffAddress(item1, item2) {
  */
 function isDifferent(item1, item2) {
   try {
-    isDiffLayer(item1, item2);
-    isDiffParentHierarchy(item1, item2);
-    isDiffName(item1, item2);
-    isDiffAddress(item1, item2);
+    assertLayerMatch(item1, item2);
+    assertParentHierarchyMatch(item1, item2);
+    assertNameMatch(item1, item2);
+    assertAddressMatch(item1, item2);
   }
   catch (err) {
     if (err.message === 'different') {
