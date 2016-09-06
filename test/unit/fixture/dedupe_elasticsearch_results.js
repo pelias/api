@@ -8,37 +8,27 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
       'locality_a': [
         null
       ],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
-      'neighbourhood': [],
       'localadmin_id': [
         '404487183'
       ],
-      'macroregion_id': [],
-      'neighbourhood_id': [],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
@@ -51,11 +41,9 @@ module.exports = [
       'locality_id': [
         '101718643'
       ],
-      'neighbourhood_a': [],
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -91,48 +79,33 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
-      'locality_a': [],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
-      'neighbourhood': [],
       'localadmin_id': [
         '404487185'
       ],
-      'macroregion_id': [],
-      'neighbourhood_id': [],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
       'region_id': [
         '85688481'
       ],
-      'locality': [],
-      'locality_id': [],
-      'neighbourhood_a': [],
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -168,24 +141,18 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
       'locality_a': [
         null
       ],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
@@ -195,14 +162,12 @@ module.exports = [
       'localadmin_id': [
         '404487183'
       ],
-      'macroregion_id': [],
       'neighbourhood_id': [
         '85846173'
       ],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
@@ -221,7 +186,6 @@ module.exports = [
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -258,24 +222,18 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
       'locality_a': [
         null
       ],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
@@ -285,14 +243,12 @@ module.exports = [
       'localadmin_id': [
         '404487183'
       ],
-      'macroregion_id': [],
       'neighbourhood_id': [
         '85822505'
       ],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
@@ -311,7 +267,6 @@ module.exports = [
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -347,48 +302,33 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
-      'locality_a': [],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
-      'neighbourhood': [],
       'localadmin_id': [
         '404487185'
       ],
-      'macroregion_id': [],
-      'neighbourhood_id': [],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
       'region_id': [
         '85688481'
       ],
-      'locality': [],
-      'locality_id': [],
-      'neighbourhood_a': [],
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -425,37 +365,27 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
       'locality_a': [
         null
       ],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
-      'neighbourhood': [],
       'localadmin_id': [
         '404487183'
       ],
-      'macroregion_id': [],
-      'neighbourhood_id': [],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
@@ -468,11 +398,9 @@ module.exports = [
       'locality_id': [
         '101718643'
       ],
-      'neighbourhood_a': [],
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -508,24 +436,18 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
       'locality_a': [
         null
       ],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
@@ -535,14 +457,12 @@ module.exports = [
       'localadmin_id': [
         '404487183'
       ],
-      'macroregion_id': [],
       'neighbourhood_id': [
         '85822505'
       ],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
@@ -561,7 +481,6 @@ module.exports = [
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -597,37 +516,27 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
       'locality_a': [
         null
       ],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
-      'neighbourhood': [],
       'localadmin_id': [
         '404487183'
       ],
-      'macroregion_id': [],
-      'neighbourhood_id': [],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
@@ -640,11 +549,9 @@ module.exports = [
       'locality_id': [
         '101718643'
       ],
-      'neighbourhood_a': [],
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -680,24 +587,18 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
       'locality_a': [
         null
       ],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
@@ -707,14 +608,12 @@ module.exports = [
       'localadmin_id': [
         '404487183'
       ],
-      'macroregion_id': [],
       'neighbourhood_id': [
         '85822505'
       ],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
@@ -733,7 +632,6 @@ module.exports = [
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -770,24 +668,18 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
       'locality_a': [
         null
       ],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
@@ -797,14 +689,12 @@ module.exports = [
       'localadmin_id': [
         '404487183'
       ],
-      'macroregion_id': [],
       'neighbourhood_id': [
         '85822505'
       ],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
@@ -823,7 +713,6 @@ module.exports = [
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -859,37 +748,27 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
       'locality_a': [
         null
       ],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
-      'neighbourhood': [],
       'localadmin_id': [
         '404487183'
       ],
-      'macroregion_id': [],
-      'neighbourhood_id': [],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
@@ -902,11 +781,9 @@ module.exports = [
       'locality_id': [
         '101718643'
       ],
-      'neighbourhood_a': [],
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -943,24 +820,18 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
       'locality_a': [
         null
       ],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
@@ -970,14 +841,12 @@ module.exports = [
       'localadmin_id': [
         '404487183'
       ],
-      'macroregion_id': [],
       'neighbourhood_id': [
         '85822505'
       ],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
@@ -996,7 +865,6 @@ module.exports = [
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -1032,37 +900,27 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
       'locality_a': [
         null
       ],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
-      'neighbourhood': [],
       'localadmin_id': [
         '404487183'
       ],
-      'macroregion_id': [],
-      'neighbourhood_id': [],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
@@ -1075,11 +933,9 @@ module.exports = [
       'locality_id': [
         '101718643'
       ],
-      'neighbourhood_a': [],
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
@@ -1115,37 +971,27 @@ module.exports = [
       'country': [
         'United States'
       ],
-      'macrocounty_a': [],
       'locality_a': [
         null
       ],
       'county': [
         'Lancaster County'
       ],
-      'borough_a': [],
-      'borough_id': [],
-      'borough': [],
-      'macroregion': [],
       'region_a': [
         'PA'
       ],
       'localadmin': [
         'Lancaster'
       ],
-      'macrocounty': [],
       'county_id': [
         '102081377'
       ],
-      'neighbourhood': [],
       'localadmin_id': [
         '404487183'
       ],
-      'macroregion_id': [],
-      'neighbourhood_id': [],
       'country_a': [
         'USA'
       ],
-      'macroregion_a': [],
       'localadmin_a': [
         null
       ],
@@ -1158,11 +1004,9 @@ module.exports = [
       'locality_id': [
         '101718643'
       ],
-      'neighbourhood_a': [],
       'region': [
         'Pennsylvania'
       ],
-      'macrocounty_id': [],
       'country_id': [
         '85633793'
       ],
