@@ -12,6 +12,7 @@ var tests = [
   require('./controller/index'),
   require('./controller/place'),
   require('./controller/search'),
+  require('./helper/diffPlaces'),
   require('./helper/geojsonify'),
   require('./helper/labelGenerator_examples'),
   require('./helper/labelGenerator_default'),
