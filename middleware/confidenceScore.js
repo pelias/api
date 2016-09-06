@@ -15,7 +15,7 @@ var stats = require('stats-lite');
 var logger = require('pelias-logger').get('api');
 var check = require('check-types');
 var _ = require('lodash');
-var fuzzy = require('fuzzy.js');
+var fuzzyMatch = require('../helper/fuzzyMatch');
 
 var RELATIVE_SCORES = false;
 
@@ -144,24 +144,27 @@ function computeScores(req, res, next) {
  * @returns {object}
  */
 function computeConfidenceScore(req, mean, stdev, hit) {
+/*
   var dealBreakers = checkForDealBreakers(req, hit);
   if (dealBreakers) {
     hit.confidence = 0.1;
     return hit;
   }
-
+*/
   var parsedText = req.clean.parsed_text;
-  var checkCount = 1 + nameWeight; // name can have extra strong weight
-  hit.confidence = 0;
+  hit.confidence = nameWeight*checkName(req.clean.text, parsedText, hit);
+  var checkCount = nameWeight; // name can have extra strong weight
 
-  if (RELATIVE_SCORES) {
+/*  if (RELATIVE_SCORES) {
     checkCount += 2;
     hit.confidence += checkDistanceFromMean(hit._score, mean, stdev);
     hit.confidence += computeZScore(hit._score, mean, stdev);
-  }
-  hit.confidence += nameWeight*checkName(req.clean.text, parsedText, hit);
-  hit.confidence += checkQueryType(parsedText, hit);
+  } */
 
+/*
+    hit.confidence += checkQueryType(parsedText, hit);
+    checkCount += 1;
+*/
   if (parsedText && check.assigned(parsedText.number) && check.assigned(parsedText.street)) {
     hit.confidence += checkAddress(parsedText, hit);
     checkCount++;
@@ -216,13 +219,6 @@ function checkDistanceFromMean(score, mean, stdev) {
   return (score - mean) > stdev ? 1 : 0;
 }
 
-
-// should be improved to handle better complex names such as '5th forest rd'
-function normalizeName(text) {
-  return text.toLowerCase().trim();
-}
-
-
 /**
  * Compare text string against configuration defined language versions of a property
  *
@@ -232,9 +228,6 @@ function normalizeName(text) {
  */
 
 function checkLanguageProperty(text, propertyObject) {
-  var ltext = normalizeName(text);
-  var len1 = ltext.length;
-  var baseScore = fuzzy(ltext, ltext).score;
   var bestScore = 0;
   var bestName;
 
@@ -242,15 +235,7 @@ function checkLanguageProperty(text, propertyObject) {
     if (languages.indexOf(lang) === -1) {
       continue;
     }
-    var name = normalizeName(propertyObject[lang]);
-    var len2 = name.length;
-    var score = fuzzy(ltext, name).score;
-    var relScore;
-    if (len1>len2) {
-      relScore = score/baseScore;
-    } else {
-      relScore = score/fuzzy(name, name).score;
-    }
+    var relScore = fuzzyMatch(text, propertyObject[lang]);
     if (relScore > bestScore ) {
       bestScore = relScore;
       bestName = propertyObject[lang];
@@ -335,12 +320,7 @@ function propMatch(textProp, hitProp, expectEnriched, numeric) {
     }
   }
 
-  if (textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) {
-      return 1; //values match
-  }
-
-  // both present, values differ => BAD regardless of enrichment
-  return 0;
+  return fuzzyMatch(textProp.toString(), hitProp.toString());
 }
 
 /**
