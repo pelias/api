@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var placeTypes = require('../helper/placeTypes');
+var placeTypes = require('./placeTypes');
 
 /**
  * Compare the layer properties if they exist.
