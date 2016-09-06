@@ -233,7 +233,8 @@ function normalizeName(text) {
 
 function checkLanguageProperty(text, propertyObject) {
   var ltext = normalizeName(text);
-  var fullScore = fuzzy(ltext, ltext).score;
+  var len1 = ltext.length;
+  var baseScore = fuzzy(ltext, ltext).score;
   var bestScore = 0;
   var bestName;
 
@@ -241,15 +242,23 @@ function checkLanguageProperty(text, propertyObject) {
     if (languages.indexOf(lang) === -1) {
       continue;
     }
-    var score = fuzzy(ltext, normalizeName(propertyObject[lang])).score;
-    if (score > bestScore ) {
-      bestScore = score;
+    var name = normalizeName(propertyObject[lang]);
+    var len2 = name.length;
+    var score = fuzzy(ltext, name).score;
+    var relScore;
+    if (len1>len2) {
+      relScore = score/baseScore;
+    } else {
+      relScore = score/fuzzy(name, name).score;
+    }
+    if (relScore > bestScore ) {
+      bestScore = relScore;
       bestName = propertyObject[lang];
     }
   }
-  var relScore = bestScore/fullScore;
-  logger.debug('name score', relScore, text, bestName);
-  return relScore;
+  logger.debug('name score', bestScore, text, bestName);
+
+  return bestScore;
 }
 
 /**
