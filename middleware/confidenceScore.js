@@ -354,11 +354,10 @@ function checkAddress(text, hit) {
       value = parent[part.field];
     }
     if (Array.isArray(value)) { // check all array values
-      var count = Math.max(value.length, 1);
+      var count = value.length;
       var maxMatch = 0;
       for (var i=0; i<count; i++) {
-        value = value[i];
-        var match = propMatch(text[key], value, part.enrich, part.numeric);
+        var match = propMatch(text[key], value[i], part.enrich, part.numeric);
         if (match>maxMatch) {
           maxMatch=match;
         }
