@@ -41,6 +41,7 @@ var tests = [
   require('./query/reverse'),
   require('./query/search'),
   require('./query/search_original'),
+  require('./query/text_parser'),
   require('./sanitiser/_boundary_country'),
   require('./sanitiser/_flag_bool'),
   require('./sanitiser/_geo_common'),

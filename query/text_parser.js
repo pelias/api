@@ -1,4 +1,5 @@
 var logger = require('pelias-logger').get('api');
+var _ = require('lodash');
 
 // all the address parsing logic
 function addParsedVariablesToQueryVariables( parsed_text, vs ){
@@ -61,6 +62,34 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
     vs.var( 'input:country', parsed_text.country );
   }
 
+  // libpostal sometimes parses addresses with prefix house numbers in places where
+  // the house number is normally postfix incorrectly, for instance:
+  // ```> 1 Grolmanstraße, Berlin, Germany
+  //
+  // Result:
+  //
+  // {
+  //   "house": "1",
+  //   "road": "grolmanstrasse",
+  //   "state": "berlin",
+  //   "country": "germany"
+  // }```
+  //
+  // In libpostal parlance, `house` is just a query term, not the house number.
+  // This special case moves the query term to the house number field if there's a street,
+  // there's no house number, and the query is parseable as an integer, then use the
+  // query as the house number and blank out the query.  
+  if (shouldSetQueryIntoHouseNumber(vs)) {
+    vs.var( 'input:housenumber', vs.var('input:query').toString());
+    vs.unset( 'input:query' );
+  }
+
+}
+
+function shouldSetQueryIntoHouseNumber(vs) {
+  return !vs.isset('input:housenumber') &&
+          vs.isset('input:street') &&
+          /^[0-9]+$/.test(vs.var('input:query').toString());
 }
 
 module.exports = addParsedVariablesToQueryVariables;
