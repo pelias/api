@@ -58,5 +58,18 @@ module.exports = {
     }
   },
   'size': 10,
-  'track_scores': true
+  'track_scores': true,
+  'sort': [
+    {
+      'population': {
+        'order': 'desc'
+      }
+    },
+    {
+      'popularity': {
+        'order': 'desc'
+      }
+    },
+    '_score'
+  ]
 };

@@ -69,7 +69,9 @@ module.exports = {
                           'type': 'phrase',
                           'fields': [
                             'parent.region',
-                            'parent.region_a'
+                            'parent.region_a',
+                            'parent.macroregion',
+                            'parent.macroregion_a'
                           ]
                         }
                       },
@@ -105,6 +107,11 @@ module.exports = {
                       {
                         'match_phrase': {
                           'address_parts.street': 'street value'
+                        }
+                      },
+                      {
+                        'match_phrase': {
+                          'address_parts.zip': 'postalcode value'
                         }
                       },
                       {
@@ -157,7 +164,9 @@ module.exports = {
                           'type': 'phrase',
                           'fields': [
                             'parent.region',
-                            'parent.region_a'
+                            'parent.region_a',
+                            'parent.macroregion',
+                            'parent.macroregion_a'
                           ]
                         }
                       },
@@ -235,7 +244,9 @@ module.exports = {
                           'type': 'phrase',
                           'fields': [
                             'parent.region',
-                            'parent.region_a'
+                            'parent.region_a',
+                            'parent.macroregion',
+                            'parent.macroregion_a'
                           ]
                         }
                       },
@@ -303,7 +314,9 @@ module.exports = {
                           'type': 'phrase',
                           'fields': [
                             'parent.region',
-                            'parent.region_a'
+                            'parent.region_a',
+                            'parent.macroregion',
+                            'parent.macroregion_a'
                           ]
                         }
                       },
@@ -359,7 +372,9 @@ module.exports = {
                           'type': 'phrase',
                           'fields': [
                             'parent.region',
-                            'parent.region_a'
+                            'parent.region_a',
+                            'parent.macroregion',
+                            'parent.macroregion_a'
                           ]
                         }
                       },
@@ -385,8 +400,18 @@ module.exports = {
                 },
                 {
                   'bool': {
-                    '_name': 'fallback.county',
+                    '_name': 'fallback.localadmin',
                     'must': [
+                      {
+                        'multi_match': {
+                          'query': 'city value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.localadmin',
+                            'parent.localadmin_a'
+                          ]
+                        }
+                      },
                       {
                         'multi_match': {
                           'query': 'county value',
@@ -405,7 +430,55 @@ module.exports = {
                           'type': 'phrase',
                           'fields': [
                             'parent.region',
-                            'parent.region_a'
+                            'parent.region_a',
+                            'parent.macroregion',
+                            'parent.macroregion_a'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'country value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.country',
+                            'parent.country_a',
+                            'parent.dependency',
+                            'parent.dependency_a'
+                          ]
+                        }
+                      }
+                    ],
+                    'filter': {
+                      'term': {
+                        'layer': 'localadmin'
+                      }
+                    }
+                  }
+                },
+                {
+                  'bool': {
+                    '_name': 'fallback.county',
+                    'must': [
+                      {
+                        'multi_match': {
+                          'query': 'county value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.county',
+                            'parent.county_a'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'state value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.region',
+                            'parent.region_a',
+                            'parent.macroregion',
+                            'parent.macroregion_a'
                           ]
                         }
                       },
@@ -425,6 +498,52 @@ module.exports = {
                     'filter': {
                       'term': {
                         'layer': 'county'
+                      }
+                    }
+                  }
+                },
+                {
+                  'bool': {
+                    '_name': 'fallback.macrocounty',
+                    'must': [
+                      {
+                        'multi_match': {
+                          'query': 'county value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.macrocounty',
+                            'parent.macrocounty_a'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'state value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.region',
+                            'parent.region_a',
+                            'parent.macroregion',
+                            'parent.macroregion_a'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'country value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.country',
+                            'parent.country_a',
+                            'parent.dependency',
+                            'parent.dependency_a'
+                          ]
+                        }
+                      }
+                    ],
+                    'filter': {
+                      'term': {
+                        'layer': 'macrocounty'
                       }
                     }
                   }
@@ -465,8 +584,18 @@ module.exports = {
                 },
                 {
                   'bool': {
-                    '_name': 'fallback.country',
+                    '_name': 'fallback.macroregion',
                     'must': [
+                      {
+                        'multi_match': {
+                          'query': 'state value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.macroregion',
+                            'parent.macroregion_a'
+                          ]
+                        }
+                      },
                       {
                         'multi_match': {
                           'query': 'country value',
@@ -476,6 +605,50 @@ module.exports = {
                             'parent.country_a',
                             'parent.dependency',
                             'parent.dependency_a'
+                          ]
+                        }
+                      }
+                    ],
+                    'filter': {
+                      'term': {
+                        'layer': 'macroregion'
+                      }
+                    }
+                  }
+                },
+                {
+                  'bool': {
+                    '_name': 'fallback.dependency',
+                    'must': [
+                      {
+                        'multi_match': {
+                          'query': 'country value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.dependency',
+                            'parent.dependency_a'
+                          ]
+                        }
+                      }
+                    ],
+                    'filter': {
+                      'term': {
+                        'layer': 'dependency'
+                      }
+                    }
+                  }
+                },
+                {
+                  'bool': {
+                    '_name': 'fallback.country',
+                    'must': [
+                      {
+                        'multi_match': {
+                          'query': 'country value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.country',
+                            'parent.country_a'
                           ]
                         }
                       }
@@ -521,5 +694,18 @@ module.exports = {
     }
   },
   'size': 20,
-  'track_scores': true
+  'track_scores': true,
+  'sort': [
+    {
+      'population': {
+        'order': 'desc'
+      }
+    },
+    {
+      'popularity': {
+        'order': 'desc'
+      }
+    },
+    '_score'
+  ]
 };
