@@ -47,8 +47,7 @@ function getSchema(country_a) {
 
 }
 
-// helper function that sets a default label for non-US/CA regions
-// this is a very special case
+// helper function that sets a default label for non-US/CA regions and countries
 function getInitialLabel(record) {
   if (isRegion(record.layer) &&
       isGeonamesOrWhosOnFirst(record.source) &&
@@ -56,8 +55,18 @@ function getInitialLabel(record) {
     return [];
   }
 
+  if (isCountry(record.layer)) {
+    return [];
+  }
+
   return [record.name];
 
+}
+
+// this can go away once geonames is no longer supported
+// https://github.com/pelias/wof-admin-lookup/issues/49
+function isCountry(layer) {
+  return 'country' === layer;
 }
 
 function isRegion(layer) {
