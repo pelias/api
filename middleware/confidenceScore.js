@@ -233,9 +233,9 @@ function checkLanguageProperty(text, propertyObject) {
     if (languages.indexOf(lang) === -1) {
       continue;
     }
-    var relScore = fuzzyMatch(text, propertyObject[lang]);
-    if (relScore > bestScore ) {
-      bestScore = relScore;
+    var score = fuzzyMatch(text, propertyObject[lang]);
+    if (score > bestScore ) {
+      bestScore = score;
       bestName = propertyObject[lang];
     }
   }
