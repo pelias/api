@@ -21,6 +21,7 @@
   "api" : {
     "indexName": "pelias",
     "version": "1.0",
+    "sizePadding": 3,
     "query": {
       "search": {
         "defaults": {
@@ -38,14 +39,12 @@
     },
     "languages": ["fi", "default", "sv", "se"],
     "localization" : {
-      "flipNumberAndStreetCountries": ["FIN"],
       "confidenceAdminProperties": ["localadmin", "neighbourhood"],
       "confidenceAddressParts": {
         "number": {"parent":"address_parts", "field":"number", "enrich":false, "numeric": true},
-        "street": {"parent":"address_parts", "field":"street", "enrich":false, "numeric": false}
+        "street": {"parent":"address_parts", "field":"street", "enrich":false, "numeric": false},
+        "postalcode": {"parent":"address_parts", "field":"zip", "enrich":false, "numeric": false}
       },
-      "confidenceNameWeight" : 1.4,
-      "confidenceAdminWeight" : 1.2,
       "translations": "/opt/pelias/api/translations.json",
       "labelSchemas": {
         "FIN": {
