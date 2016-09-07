@@ -134,7 +134,7 @@ module.exports.tests.trimByGranularity = function(test, common) {
     testIt();
   });
 
-  test('all records with fallback.* matched_queries name should retain only venues when they are most granular', function(t) {
+  test('all records with fallback.* matched_queries name should retain only counties when they are most granular', function(t) {
     var req = { clean: {} };
 
     var res = {
@@ -162,7 +162,7 @@ module.exports.tests.trimByGranularity = function(test, common) {
     testIt();
   });
 
-  test('all records with fallback.* matched_queries name should retain only venues when they are most granular', function(t) {
+  test('all records with fallback.* matched_queries name should retain only regions when they are most granular', function(t) {
     var req = { clean: {} };
 
     var res = {
