@@ -22,8 +22,12 @@ module.exports.tests.trimByGranularity = function(test, common) {
         { name: 'address 1', _matched_queries: ['fallback.address'] },
         { name: 'neighbourhood 1', _matched_queries: ['fallback.neighbourhood'] },
         { name: 'locality 1', _matched_queries: ['fallback.locality'] },
+        { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
         { name: 'county 1', _matched_queries: ['fallback.county'] },
+        { name: 'macrocounty 1', _matched_queries: ['fallback.macrocounty'] },
         { name: 'region 1', _matched_queries: ['fallback.region'] },
+        { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
         { name: 'country 1', _matched_queries: ['fallback.country'] },
         { name: 'unknown', _matched_queries: ['fallback.unknown'] }
       ]
@@ -53,8 +57,12 @@ module.exports.tests.trimByGranularity = function(test, common) {
         { name: 'address 2', _matched_queries: ['fallback.address'] },
         { name: 'neighbourhood 1', _matched_queries: ['fallback.neighbourhood'] },
         { name: 'locality 1', _matched_queries: ['fallback.locality'] },
+        { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
         { name: 'county 1', _matched_queries: ['fallback.county'] },
+        { name: 'macrocounty 1', _matched_queries: ['fallback.macrocounty'] },
         { name: 'region 1', _matched_queries: ['fallback.region'] },
+        { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
         { name: 'country 1', _matched_queries: ['fallback.country'] },
         { name: 'unknown', _matched_queries: ['fallback.unknown'] }
       ]
@@ -83,8 +91,12 @@ module.exports.tests.trimByGranularity = function(test, common) {
         { name: 'neighbourhood 1', _matched_queries: ['fallback.neighbourhood'] },
         { name: 'neighbourhood 2', _matched_queries: ['fallback.neighbourhood'] },
         { name: 'locality 1', _matched_queries: ['fallback.locality'] },
+        { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
         { name: 'county 1', _matched_queries: ['fallback.county'] },
+        { name: 'macrocounty 1', _matched_queries: ['fallback.macrocounty'] },
         { name: 'region 1', _matched_queries: ['fallback.region'] },
+        { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
         { name: 'country 1', _matched_queries: ['fallback.country'] },
         { name: 'unknown', _matched_queries: ['fallback.unknown'] }
       ]
@@ -112,8 +124,12 @@ module.exports.tests.trimByGranularity = function(test, common) {
       data: [
         { name: 'locality 1', _matched_queries: ['fallback.locality'] },
         { name: 'locality 2', _matched_queries: ['fallback.locality'] },
+        { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
         { name: 'county 1', _matched_queries: ['fallback.county'] },
+        { name: 'macrocounty 1', _matched_queries: ['fallback.macrocounty'] },
         { name: 'region 1', _matched_queries: ['fallback.region'] },
+        { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
         { name: 'country 1', _matched_queries: ['fallback.country'] },
         { name: 'unknown', _matched_queries: ['fallback.unknown'] }
       ]
@@ -134,6 +150,38 @@ module.exports.tests.trimByGranularity = function(test, common) {
     testIt();
   });
 
+  test('all records with fallback.* matched_queries name should retain only localadmins when they are most granular', function(t) {
+    var req = { clean: {} };
+
+    var res = {
+      data: [
+        { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
+        { name: 'localadmin 2', _matched_queries: ['fallback.localadmin'] },
+        { name: 'county 1', _matched_queries: ['fallback.county'] },
+        { name: 'macrocounty 1', _matched_queries: ['fallback.macrocounty'] },
+        { name: 'region 1', _matched_queries: ['fallback.region'] },
+        { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
+        { name: 'country 1', _matched_queries: ['fallback.country'] },
+        { name: 'unknown', _matched_queries: ['fallback.unknown'] }
+      ]
+    };
+
+    var expected_data = [
+      { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
+      { name: 'localadmin 2', _matched_queries: ['fallback.localadmin'] },
+    ];
+
+    function testIt() {
+      trimByGranularity(req, res, function() {
+        t.deepEquals(res.data, expected_data, 'only localadmin records should be here');
+        t.end();
+      });
+    }
+
+    testIt();
+  });
+
   test('all records with fallback.* matched_queries name should retain only counties when they are most granular', function(t) {
     var req = { clean: {} };
 
@@ -141,7 +189,10 @@ module.exports.tests.trimByGranularity = function(test, common) {
       data: [
         { name: 'county 1', _matched_queries: ['fallback.county'] },
         { name: 'county 2', _matched_queries: ['fallback.county'] },
+        { name: 'macrocounty 1', _matched_queries: ['fallback.macrocounty'] },
         { name: 'region 1', _matched_queries: ['fallback.region'] },
+        { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
         { name: 'country 1', _matched_queries: ['fallback.country'] },
         { name: 'unknown', _matched_queries: ['fallback.unknown'] }
       ]
@@ -162,6 +213,36 @@ module.exports.tests.trimByGranularity = function(test, common) {
     testIt();
   });
 
+  test('all records with fallback.* matched_queries name should retain only macrocounties when they are most granular', function(t) {
+    var req = { clean: {} };
+
+    var res = {
+      data: [
+        { name: 'macrocounty 1', _matched_queries: ['fallback.macrocounty'] },
+        { name: 'macrocounty 2', _matched_queries: ['fallback.macrocounty'] },
+        { name: 'region 1', _matched_queries: ['fallback.region'] },
+        { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
+        { name: 'country 1', _matched_queries: ['fallback.country'] },
+        { name: 'unknown', _matched_queries: ['fallback.unknown'] }
+      ]
+    };
+
+    var expected_data = [
+      { name: 'macrocounty 1', _matched_queries: ['fallback.macrocounty'] },
+      { name: 'macrocounty 2', _matched_queries: ['fallback.macrocounty'] },
+    ];
+
+    function testIt() {
+      trimByGranularity(req, res, function() {
+        t.deepEquals(res.data, expected_data, 'only macrocounty records should be here');
+        t.end();
+      });
+    }
+
+    testIt();
+  });
+
   test('all records with fallback.* matched_queries name should retain only regions when they are most granular', function(t) {
     var req = { clean: {} };
 
@@ -169,6 +250,8 @@ module.exports.tests.trimByGranularity = function(test, common) {
       data: [
         { name: 'region 1', _matched_queries: ['fallback.region'] },
         { name: 'region 2', _matched_queries: ['fallback.region'] },
+        { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
         { name: 'country 1', _matched_queries: ['fallback.country'] },
         { name: 'unknown', _matched_queries: ['fallback.unknown'] }
       ]
@@ -182,6 +265,61 @@ module.exports.tests.trimByGranularity = function(test, common) {
     function testIt() {
       trimByGranularity(req, res, function() {
         t.deepEquals(res.data, expected_data, 'only region records should be here');
+        t.end();
+      });
+    }
+
+    testIt();
+  });
+
+  test('all records with fallback.* matched_queries name should retain only macroregions when they are most granular', function(t) {
+    var req = { clean: {} };
+
+    var res = {
+      data: [
+        { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+        { name: 'macroregion 2', _matched_queries: ['fallback.macroregion'] },
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
+        { name: 'country 1', _matched_queries: ['fallback.country'] },
+        { name: 'unknown', _matched_queries: ['fallback.unknown'] }
+      ]
+    };
+
+    var expected_data = [
+      { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+      { name: 'macroregion 2', _matched_queries: ['fallback.macroregion'] },
+    ];
+
+    function testIt() {
+      trimByGranularity(req, res, function() {
+        t.deepEquals(res.data, expected_data, 'only macroregion records should be here');
+        t.end();
+      });
+    }
+
+    testIt();
+  });
+
+  test('all records with fallback.* matched_queries name should retain only dependencies when they are most granular', function(t) {
+    var req = { clean: {} };
+
+    var res = {
+      data: [
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
+        { name: 'dependency 2', _matched_queries: ['fallback.dependency'] },
+        { name: 'country 1', _matched_queries: ['fallback.country'] },
+        { name: 'unknown', _matched_queries: ['fallback.unknown'] }
+      ]
+    };
+
+    var expected_data = [
+      { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
+      { name: 'dependency 2', _matched_queries: ['fallback.dependency'] },
+    ];
+
+    function testIt() {
+      trimByGranularity(req, res, function() {
+        t.deepEquals(res.data, expected_data, 'only dependency records should be here');
         t.end();
       });
     }
