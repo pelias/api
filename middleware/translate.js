@@ -36,6 +36,11 @@ function translate(req, res, next) {
       });
     });
   }
+
+  _.forEach(res.data, function(place) {
+    translateName(place, lang);
+  });
+
   next();
 }
 
