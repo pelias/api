@@ -1,4 +1,5 @@
 
+
 var geojsonify = require('../../../helper/geojsonify');
 
 module.exports.tests = {};
@@ -6,7 +7,7 @@ module.exports.tests = {};
 module.exports.tests.interface = function(test, common) {
   test('valid interface', function(t) {
     t.equal(typeof geojsonify, 'function', 'search is a function');
-    t.equal(geojsonify.length, 3, 'accepts x arguments');
+    t.equal(geojsonify.length, 2, 'accepts x arguments');
     t.end();
   });
 };
@@ -50,9 +51,8 @@ module.exports.tests.geojsonify = function(test, common) {
         'lat': 51.5337144,
         'lon': -0.1069716
       },
-      'name': {
-        'default': '\'Round Midnight Jazz and Blues Bar'
-      },
+      'name': '\'Round Midnight Jazz and Blues Bar',
+      'label': 'foo',
       'housenumber': '13',
       'street': 'Liverpool Road',
       'postalcode': 'N1 0RW',
@@ -77,9 +77,8 @@ module.exports.tests.geojsonify = function(test, common) {
       'source': 'source2',
       'source_id': 'source_id_2',
       'layer': 'layer2',
-      'name': {
-        'default': 'Blues Cafe'
-      },
+      'name': 'Blues Cafe',
+      'label': 'foo',
       'center_point': {
         'lat': '51.517806',
         'lon': '-0.101795'
@@ -101,9 +100,8 @@ module.exports.tests.geojsonify = function(test, common) {
       'source': 'openstreetmap',
       'source_id': 'source_id_3',
       'layer': 'venue',
-      'name': {
-        'default': 'Empire State Building'
-      },
+      'name': 'Empire State Building',
+      'label': 'bar',
       'center_point': {
         'lat': '40.748432',
         'lon': '-73.985656'
@@ -143,8 +141,8 @@ module.exports.tests.geojsonify = function(test, common) {
           'layer': 'layer1',
           'source': 'source1',
           'source_id': 'source_id_1',
-          'label': '\'Round Midnight Jazz and Blues Bar, test2, England, United Kingdom',
           'name': '\'Round Midnight Jazz and Blues Bar',
+          'label': 'foo',
           'country_a': 'GBR',
           'country': 'United Kingdom',
           'dependency': 'dependency name',
@@ -179,8 +177,8 @@ module.exports.tests.geojsonify = function(test, common) {
           'layer': 'layer2',
           'source': 'source2',
           'source_id': 'source_id_2',
-          'label': 'Blues Cafe, test2, England, United Kingdom',
           'name': 'Blues Cafe',
+          'label': 'foo',
           'country_a': 'GBR',
           'country': 'United Kingdom',
           'dependency': 'dependency name',
@@ -208,8 +206,8 @@ module.exports.tests.geojsonify = function(test, common) {
           'layer': 'venue',
           'source': 'openstreetmap',
           'source_id': 'source_id_3',
-          'label': 'Empire State Building, Manhattan, New York, NY, USA',
           'name': 'Empire State Building',
+          'label': 'bar',
           'country_a': 'USA',
           'country': 'United States',
           'dependency': 'dependency name',
@@ -255,9 +253,7 @@ module.exports.tests.geojsonify = function(test, common) {
           'lon': -73.881319,
           'lat': 40.663303
         },
-        'name': {
-          'default': 'East New York'
-        },
+        'name': 'East New York',
         'source_id': '85816607',
         'category': ['government'],
         '_id': '85816607',
@@ -374,7 +370,6 @@ module.exports.tests.geojsonify = function(test, common) {
             'localadmin_gid': '404521211',
             'locality': 'New York',
             'locality_gid': '85977539',
-            'label': 'East New York, Brooklyn, New York, NY, USA'
           },
           'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
           'geometry': {
@@ -412,9 +407,7 @@ module.exports.tests.categories = function (test, common) {
           'lon': -73.881319,
           'lat': 40.663303
         },
-        'name': {
-          'default': 'East New York'
-        },
+        'name': 'East New York',
         'source_id': '85816607',
         'category': ['government']
       }
@@ -434,7 +427,6 @@ module.exports.tests.categories = function (test, common) {
             'source_id': '85816607',
             'name': 'East New York',
             'category': ['government'],
-            'label': 'East New York'
           },
           'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
           'geometry': {

@@ -31,16 +31,26 @@ function translate(req, res, next) {
   if( lang && translations[lang] ) {
     _.forEach(translations[lang], function(names, key) {
       _.forEach(res.data, function(place) {
-        translateName(place, key, names);
-        translateName(place.parent, key, names);
+        translateProperties(place, key, names);
+        translateProperties(place.parent, key, names);
       });
     });
   }
   next();
 }
 
+function translateName(place, lang) {
+  if( place.name ) {
+    if( place.name[lang] ) {
+      place.name = place.name[lang];
+    } else if (place.name.default) { // fallback
+      place.name = place.name.default;
+    }
+  }
+}
 
-function translateName(place, key, names) {
+
+function translateProperties(place, key, names) {
   if( place[key] !== null ) {
     var name;
     if (place[key] instanceof Array) {
