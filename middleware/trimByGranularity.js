@@ -19,8 +19,12 @@ var layers = [
   'neighbourhood',
   'borough',
   'locality',
+  'localadmin',
   'county',
+  'macrocounty',
   'region',
+  'macroregion',
+  'dependency',
   'country'
 ];
 
