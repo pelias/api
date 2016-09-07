@@ -375,6 +375,18 @@ function checkAddress(text, hit) {
   return res;
 }
 
+/* find best match from an array of values */
+function fuzzyMatchArray(text, array) {
+  var maxMatch = 0;
+  array.forEach( function(text2) {
+    var match = fuzzyMatch(text, text2);
+    if (match>maxMatch) {
+      maxMatch=match;
+    }
+  });
+  return maxMatch;
+}
+
 /**
  * Check admin regions of the parsed text against a result.
  *
@@ -385,43 +397,36 @@ function checkAddress(text, hit) {
  * @returns {number}
  */
 function checkAdmin(text, hit) {
-  var res = 0;
   var regions = [];
   var source = text.regions;
 
   for(var i=1; i<source.length; i++) { // drop 1st entry = actual name or street
-    regions.push(source[i].toLowerCase());
+    regions.push(source[i]);
   }
 
-  // find out maximum count for matching properties
-  var count = Math.min(regions.length, adminProperties.length);
+  // loop trough configured properties to find best match
+  var bestMatch = 0;
 
-  // loop trough configured properties to find a match
+  var updateBest = function(text) {
+    var match = fuzzyMatchArray(text, regions);
+    if (match>bestMatch) {
+      bestMatch = match;
+    }
+  };
+
   adminProperties.forEach( function(key) {
     var prop = hit.parent[key];
     if (prop) {
       if (Array.isArray(prop)) {
-        for(var i=0; i<prop.length; i++) {
-          var value = prop[i].toLowerCase();
-          if(regions.indexOf(value) !== -1) {
-            res = res + 1; // match
-            break;
-          }
-        }
+        prop.forEach(updateBest);
       } else {
-        if( regions.indexOf(prop) !== -1 ) {
-          res = res + 1; // match
-        }
+        updateBest(prop);
       }
     }
   });
+  logger.debug('admin match', bestMatch);
 
-  // set an upper limit; several parent fields can match the same text
-  // e.g. New York, New York (city, state)
-  res = Math.min(res/count, 1.0);
-
-  logger.debug('admin match', res);
-  return res;
+  return bestMatch;
 }
 
 /**
