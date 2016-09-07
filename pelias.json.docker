@@ -39,7 +39,7 @@
     },
     "languages": ["fi", "default", "sv", "se"],
     "localization" : {
-      "confidenceAdminProperties": ["localadmin", "neighbourhood"],
+      "confidenceAdminProperties": ["localadmin", "locality", "neighbourhood"],
       "confidenceAddressParts": {
         "number": {"parent":"address_parts", "field":"number", "enrich":false, "numeric": true},
         "street": {"parent":"address_parts", "field":"street", "enrich":false, "numeric": false},
