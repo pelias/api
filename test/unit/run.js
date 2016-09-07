@@ -33,6 +33,7 @@ var tests = [
   require('./middleware/parseBBox'),
   require('./middleware/sendJSON'),
   require('./middleware/normalizeParentIds'),
+  require('./middleware/trimByGranularity'),
   require('./query/autocomplete'),
   require('./query/autocomplete_defaults'),
   require('./query/search_defaults'),
