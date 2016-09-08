@@ -121,7 +121,8 @@ function generateQuery( clean ){
 
 function getQuery(vs) {
   if (isSingleFieldGeoambiguity(vs) && !hasQueryOrAddress(vs)) {
-    return geodisambiguationQuery.render(vs);
+    // return `undefined` for now until we exorcise the geodisambiguation demons
+    return;
   } else {
     return fallbackQuery.render(vs);
   }

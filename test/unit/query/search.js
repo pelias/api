@@ -150,19 +150,20 @@ module.exports.tests.query = function(test, common) {
 
   });
 
-  test('parsed_text with single admin field should use GeodisambiguationQuery', function(t) {
-    var clean = {
-      parsed_text: {
-        neighbourhood: 'neighbourhood value'
-      }
-    };
+  test('parsed_text with single admin field should return undefined', function(t) {
+    ['neighbourhood', 'borough', 'city', 'county', 'state', 'country'].forEach(function(placeType) {
+        var clean = {
+          parsed_text: {}
+        };
 
-    var query = generate(clean);
+        clean.parsed_text[placeType] = placeType + ' value';
 
-    var compiled = JSON.parse(JSON.stringify(query));
-    var expected = require('../fixture/search_geodisambiguation');
+        var query = generate(clean);
 
-    t.deepEqual(compiled, expected, 'geodisambiguationQuery');
+        t.equals(query, undefined, 'geodisambiguationQuery');
+
+      });
+
     t.end();
 
   });
