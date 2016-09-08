@@ -1,6 +1,3 @@
-
-var check = require('check-types');
-
 function sanitize( req, sanitizers, cb ){
 
   // init an object to store clean
