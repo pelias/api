@@ -45,7 +45,7 @@ var SOURCE_MAPPING = addStandardTargetsToAliases(SOURCES, SOURCE_ALIASES);
  * not going to match any records and will return no results.
  */
 var LAYERS_BY_SOURCE = {
- openstreetmap: [ 'address', 'venue' ],
+ openstreetmap: [ 'address', 'venue', 'street' ],
  openaddresses: [ 'address' ],
  geonames: [ 'country','macroregion', 'region', 'county','localadmin',
   'locality','borough', 'neighbourhood', 'venue' ],
