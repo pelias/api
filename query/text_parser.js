@@ -1,5 +1,4 @@
 var logger = require('pelias-logger').get('api');
-var _ = require('lodash');
 
 // all the address parsing logic
 function addParsedVariablesToQueryVariables( parsed_text, vs ){
@@ -78,7 +77,7 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
   // In libpostal parlance, `house` is just a query term, not the house number.
   // This special case moves the query term to the house number field if there's a street,
   // there's no house number, and the query is parseable as an integer, then use the
-  // query as the house number and blank out the query.  
+  // query as the house number and blank out the query.
   if (shouldSetQueryIntoHouseNumber(vs)) {
     vs.var( 'input:housenumber', vs.var('input:query').toString());
     vs.unset( 'input:query' );
