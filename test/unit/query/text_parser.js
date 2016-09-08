@@ -67,6 +67,93 @@ module.exports.tests.query = function(test, common) {
 
 };
 
+module.exports.tests.housenumber_special_cases = function(test, common) {
+  test('numeric query with street but no number should reassign query to housenumber', function(t) {
+    var parsed_text = {
+      query: '17',
+      // no house number set
+      street: 'street value'
+    };
+    var vs = new VariableStore();
+
+    text_parser(parsed_text, vs);
+
+    t.false(vs.isset('input:query'));
+    t.equals(vs.var('input:housenumber').toString(), '17');
+    t.equals(vs.var('input:street').toString(), 'street value');
+    t.end();
+
+  });
+
+  test('numeric query with street but without number should not change anything', function(t) {
+    var parsed_text = {
+      query: '17',
+      number: 'housenumber value',
+      street: 'street value'
+      // no number or street
+    };
+    var vs = new VariableStore();
+
+    text_parser(parsed_text, vs);
+
+    t.equals(vs.var('input:query').toString(), '17');
+    t.equals(vs.var('input:housenumber').toString(), 'housenumber value');
+    t.equals(vs.var('input:street').toString(), 'street value');
+    t.end();
+
+  });
+
+  test('numeric query with number but without street should not change anything', function(t) {
+    var parsed_text = {
+      query: '17',
+      number: 'number value'
+      // no number or street
+    };
+    var vs = new VariableStore();
+
+    text_parser(parsed_text, vs);
+
+    t.equals(vs.var('input:query').toString(), '17');
+    t.equals(vs.var('input:housenumber').toString(), 'number value');
+    t.false(vs.isset('input:street'));
+    t.end();
+
+  });
+
+  test('numeric query without street or number should not change anything', function(t) {
+    var parsed_text = {
+      query: '17'
+      // no number or street
+    };
+    var vs = new VariableStore();
+
+    text_parser(parsed_text, vs);
+
+    t.equals(vs.var('input:query').toString(), '17');
+    t.false(vs.isset('input:housenumber'));
+    t.false(vs.isset('input:street'));
+    t.end();
+
+  });
+
+  test('non-numeric query with street but no number should not change anything', function(t) {
+    var parsed_text = {
+      query: '13 this is 15 not a number 17',
+      street: 'street value'
+    };
+    var vs = new VariableStore();
+
+    text_parser(parsed_text, vs);
+
+    t.equals(vs.var('input:query').toString(), '13 this is 15 not a number 17');
+    t.false(vs.isset('input:housenumber'));
+    t.equals(vs.var('input:street').toString(), 'street value');
+    t.end();
+
+  });
+
+};
+
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
     return tape('text_parser ' + name, testFunction);
