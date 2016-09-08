@@ -1,12 +1,10 @@
 function sanitize( req, sanitizers, cb ){
+  // init an object to store clean (sanitized) input parameters if not initialized
+  req.clean = req.clean || {};
 
-  // init an object to store clean
-  // (sanitized) input parameters
-  req.clean = {};
-
-  // init errors and warnings arrays
-  req.errors = [];
-  req.warnings = [];
+  // init errors and warnings arrays if not initialized
+  req.errors = req.errors || [];
+  req.warnings = req.warnings || [];
 
   // source of input parameters
   // (in this case from the GET querystring params)
