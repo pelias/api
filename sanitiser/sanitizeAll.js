@@ -7,7 +7,7 @@ function sanitize( req, sanitizers, cb ){
   // (sanitized) input parameters
   req.clean = {};
 
-  // init erros and warnings arrays
+  // init errors and warnings arrays
   req.errors = [];
   req.warnings = [];
 
