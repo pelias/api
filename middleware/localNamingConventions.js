@@ -1,17 +1,9 @@
 var check = require('check-types');
 var _ = require('lodash');
 
-var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL', 'CZE'];
+var flipNumberAndStreetCountries = require('../helper/flipNumberAndStreetCountries');
 
 function setup() {
-  var api = require('pelias-config').generate().api;
-  var localization = api.localization;
-  if (localization) {
-    if (localization.flipNumberAndStreetCountries) {
-      var countries = localization.flipNumberAndStreetCountries;
-      flipNumberAndStreetCountries = _.uniq(flipNumberAndStreetCountries.concat(countries));
-    }
-  }
   return applyLocalNamingConventions;
 }
 

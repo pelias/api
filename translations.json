@@ -125,6 +125,38 @@
     },
     "country": {
       "Finland": "Suomi"
+    },
+    "layer": {
+      "country":"maa",
+      "dependency":"itsehallinto",
+      "region":"maakunta",
+      "localadmin":"kunta",
+      "locality":"kyläkeskus",
+      "neighbourhood":"alue",
+      "address":"osoite",
+      "venue":"paikka",
+      "stop":"pysäkki",
+      "station":"asema",
+      "street":"katu/tie"
+    },
+    "category": {
+      "food": "ravinto",
+      "health": "terveys",
+      "entertainment": "viihde",
+      "accommodation": "majoitus",
+      "recreation": "virkistys",
+      "education": "oppilaitos",
+      "religion": "uskonto",
+      "transport": "kuljetus",
+      "government": "hallinto",
+      "natural": "maantieteellinen"
+    },
+    "geographic": {
+      "north": "pohjoinen",
+      "east": "itäinen",
+      "south": "eteläinen",
+      "west": "läntinen",
+      "center": "keskus"
     }
   },
   "default": {
