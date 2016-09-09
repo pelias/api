@@ -126,18 +126,18 @@
     "country": {
       "Finland": "Suomi"
     },
-    "layer": {
+    "layerName": {
       "country":"maa",
       "dependency":"itsehallinto",
       "region":"maakunta",
       "localadmin":"kunta",
-      "locality":"kyläkeskus",
+      "locality":"taajama",
       "neighbourhood":"alue",
       "address":"osoite",
       "venue":"paikka",
       "stop":"pysäkki",
       "station":"asema",
-      "street":"katu/tie"
+      "street":"katu"
     },
     "category": {
       "food": "ravinto",
@@ -156,7 +156,11 @@
       "east": "itäinen",
       "south": "eteläinen",
       "west": "läntinen",
-      "center": "keskus"
+      "northwest": "luoteinen",
+      "northeast": "koillinen",
+      "southeast": "kaakkoinen",
+      "southwest": "lounainen",
+      "central": "keskinen"
     }
   },
   "default": {
@@ -178,6 +182,42 @@
     },
     "country": {
       "Finland": "Suomi"
+    },
+    "layerName": {
+      "country":"maa",
+      "dependency":"itsehallinto",
+      "region":"maakunta",
+      "localadmin":"kunta",
+      "locality":"taajama",
+      "neighbourhood":"alue",
+      "address":"osoite",
+      "venue":"paikka",
+      "stop":"pysäkki",
+      "station":"asema",
+      "street":"katu"
+    },
+    "category": {
+      "food": "ravinto",
+      "health": "terveys",
+      "entertainment": "viihde",
+      "accommodation": "majoitus",
+      "recreation": "virkistys",
+      "education": "oppilaitos",
+      "religion": "uskonto",
+      "transport": "kuljetus",
+      "government": "hallinto",
+      "natural": "maantieteellinen"
+    },
+    "geographic": {
+      "north": "pohjoinen",
+      "east": "itäinen",
+      "south": "eteläinen",
+      "west": "läntinen",
+      "northwest": "luoteinen",
+      "northeast": "koillinen",
+      "southeast": "kaakkoinen",
+      "southwest": "lounainen",
+      "central": "keskinen"
     }
   },
   "se": {
