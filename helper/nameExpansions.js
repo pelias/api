@@ -1,7 +1,7 @@
-
 var flipNumberAndStreetCountries = require('./flipNumberAndStreetCountries');
 var geolib = require('geolib');
 var _ = require('lodash');
+var logger = require('pelias-logger').get('api:nameExpansions');
 
 var translations = {};
 var api = require('pelias-config').generate().api;
@@ -29,14 +29,14 @@ function expandByAddress(docs) {
     var name;
     if(doc.street) {
       var addr = doc.street;
-      if(doc.number) {
-        if(_.includes(flipNumberAndStreetCountries, doc.country_a)) {
-          addr = addr + ' ' + doc.number;
+      if(doc.housenumber) {
+        if(_.includes(flipNumberAndStreetCountries, doc.country_a[0])) {
+          addr = addr + ' ' + doc.housenumber;
         } else {
-          addr = doc.number + ' ' + addr;
+          addr = doc.housenumber + ' ' + addr;
         }
       }
-      if(doc.name !== addr) {
+      if(doc.name.toLowerCase() !== addr.toLowerCase()) {
         // expand by adding address to the place name
         name = doc.name + ', ' + addr;
       }
@@ -54,7 +54,7 @@ function expandByLayer(docs, lang) {
   var names = [];
 
   docs.forEach(function(doc) {
-    names.push(doc.name + '(' + doc.layer + ')');
+    names.push(doc.name + ' (' + translate(lang, '__layer', doc.layer) + ')');
   });
   return names;
 }
@@ -66,7 +66,7 @@ function expandByLayer(docs, lang) {
  * not obvious if any of the places can be claimed to be in the center. Like here:
  *                *
  *            *        *
- *              *     *
+ *             *     *
  *          *
  *             *          *
  *                *
@@ -82,26 +82,28 @@ function expandByLocation(docs, lang) {
   });
 
   docs.forEach(function(doc) {
-   if(!east) {
-     east=west=north=south=_east=_west=_north=_south=doc;
-   } else {
-     if(doc.lon<west.lon) {
-       _west=west; // second best
-       west=doc;
-     }
-     if(doc.lon>east.lon) {
-       _east=east;
-       east=doc;
-     }
-     if(doc.lat<south.lat) {
-       _south=south;
-       south=doc;
-     }
-     if(doc.lat>north.lat) {
-       _north=north;
-       north=doc;
-     }
-   }
+    logger.debug(doc.center_point.lat, doc.center_point.lon);
+
+    if(!east) {
+      east=west=north=south=_east=_west=_north=_south=doc;
+    } else {
+      if(doc.center_point.lon<west.center_point.lon) {
+        _west=west; // second best
+        west=doc;
+      }
+      if(doc.center_point.lon>east.center_point.lon) {
+        _east=east;
+        east=doc;
+      }
+      if(doc.center_point.lat<south.center_point.lat) {
+        _south=south;
+        south=doc;
+      }
+      if(doc.center_point.lat>north.center_point.lat) {
+        _north=north;
+        north=doc;
+      }
+    }
   });
   var latDiff = north.center_point.lat - south.center_point.lat;
   var lonDiff = east.center_point.lat - south.center_point.lat;
@@ -109,7 +111,8 @@ function expandByLocation(docs, lang) {
   // simple logic will not work near places where the wgs84 angle space wraps
   // these are sparsely populated areas so just skip this extension there
   // instead of doing more complex cyclic math with angles
-  if(east.lon>175 || west.lon<-175 || north.lat>85 || south.lat<-85 || lonDiff>5 || latDiff>5) {
+  if(east.center_point.lon>175 || west.center_point.lon<-175 ||
+     north.center_point.lat>85 || south.center_point.lat<-85 || lonDiff>5 || latDiff>5) {
     return names;
   }
 
@@ -130,24 +133,45 @@ function expandByLocation(docs, lang) {
 
   var expandName = function(doc, label) {
     var i = docs.indexOf(doc);
-    label = translate(lang, 'geographic', label);
+    label = translate(lang, '__geographic', label);
     names[i] = names[i] + ', ' + label;
   };
 
-  if(overThreshold(north, _north, latDiff * 0.1, 'lat')) {
-    expandName(north, 'north');
+  if(overThreshold(north.center_point, _north.center_point, latDiff * 0.1, 'lat')) {
+    if(north===west) {
+      expandName(north, 'northwest');
+    } else if(north===east) {
+      expandName(north, 'northeast');
+    }
+    else {
+      expandName(north, 'north');
+    }
   }
-  if(overThreshold(south, _south, latDiff * 0.1, 'lat')) {
-    expandName(south, 'south');
+  if(overThreshold(south.center_point, _south.center_point, latDiff * 0.1, 'lat')) {
+    if(south===west) {
+      expandName(south, 'southwest');
+    } else if(south===east) {
+      expandName(south, 'southeast');
+    }
+    else {
+      expandName(south, 'south');
+    }
   }
-  if(overThreshold(east, _east, lonDiff * 0.1, 'lon')) {
-    expandName(east, 'east');
+  if(overThreshold(east.center_point, _east.center_point, lonDiff * 0.1, 'lon')) {
+    if(south!==east && north!==east) { // not yet labeled
+      expandName(east, 'east');
+    }
   }
-  if(overThreshold(west, _west, lonDiff * 0.1, 'lon')) {
-    expandName(west, 'west');
+  if(overThreshold(west.center_point, _west.center_point, lonDiff * 0.1, 'lon')) {
+    if(south!==west && north!==west) {
+      expandName(west, 'west');
+    }
   }
 
-  var center = { lon: 0.5*(east.lon + west.lon), lat: 0.5*(north.lat + south.lat) };
+  var center = {
+    lon: 0.5*(east.center_point.lon + west.center_point.lon),
+    lat: 0.5*(north.center_point.lat + south.center_point.lat)
+  };
   var middle, _middle;
   var nearestDist;
 
@@ -177,7 +201,7 @@ function expandByLocation(docs, lang) {
 
     // Don't assign center qualifier if there's another place almost equally close to the center.
     if(_dlon - dlon > 0.1*lonDiff && _dlat - dlat > 0.1*latDiff) {
-      expandName(middle, 'center');
+      expandName(middle, 'central');
     }
   }
   return names;
@@ -188,23 +212,25 @@ function expandByCategory(docs, lang) {
   var categoryTranslations;
 
   if(lang && translations[lang]) {
-    categoryTranslations = translations[lang].category;
+    categoryTranslations = translations[lang].__category;
   }
 
   docs.forEach(function(doc) {
     var name;
-    if(doc.categories) {
+    if(doc.category) {
       var extensions = [];
-      doc.categories.forEach(function(category) {
+      doc.category.forEach(function(category) {
         for(var cat in categoryTranslations) { // use translation defined terms if available
           if(category.search(cat) !== -1) { // partial match, for example 'food' in 'food:chinese'
             category = categoryTranslations[cat];
           }
         }
-        extensions.push(translate(lang, 'category', category));
+        if(extensions.indexOf(category) === -1) { // not yet added
+          extensions.push(category);
+        }
       });
       if(extensions.length) {
-        name = doc.name + ', ' + extensions.join();
+        name = doc.name + ' (' + extensions.join() + ')';
       }
     }
     if(name) {
@@ -216,4 +242,4 @@ function expandByCategory(docs, lang) {
   return names;
 }
 
-module.exports = [expandByAddress, expandByLayer, expandByLocation, expandByCategory];
+module.exports = [expandByAddress, /* expandByLayer, */ expandByLocation, expandByCategory];

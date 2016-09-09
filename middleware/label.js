@@ -1,6 +1,13 @@
 var _ = require('lodash');
 var labelGenerator = require('../helper/labelGenerator');
 var nameExpansions = require('../helper/nameExpansions');
+var logger = require('pelias-logger').get('api:label');
+
+/* A very much client specific option to consider the layer as a separating factor
+   without actually adding it to the name.  The client can display a layer specific
+   icon to make a difference between identical labels
+*/
+var ignoreLayer = false;
 
 function setup() {
   return addLabels;
@@ -34,22 +41,25 @@ function addLabels(req, res, next) {
   while(todo.length>0) {
     var current = []; // indices of the next set of identical labels to process
     current.push(todo.pop()); // order does not matter, just take the last
-    var label = data[current[0]].label;
+    var label = data[current[0]].label.toLowerCase();
+    var layer = data[current[0]].layer;
     var len = todo.length;
     var j = 0; // current index in todo arr
     for (var i=0; i<len; i++) {
       var val = todo[j];
-      if(data[val].label === label) {
-        current.push(val);
-        todo.splice(j, 1);
+      if(data[val].label.toLowerCase() === label) {
+        if(ignoreLayer || data[val].layer === layer) {
+          current.push(val);
+          todo.splice(j, 1);
+        }
       } else {
         j++; // move to next index
       }
     }
 
-    for(var exp = 0; exp < nameExpansions.lenght; exp++) {
+    for(var exp = 0; exp < nameExpansions.length; exp++) {
       len = current.length;
-      if(len < 2 ) { // single item is unique, nothing to do
+       if(len < 2 ) { // single item is unique, nothing to do
         break;
       }
 
@@ -62,20 +72,20 @@ function addLabels(req, res, next) {
 
       // see if that helped - if all still identical, skip the useless expansion
       if (!differentArrayItems(expandedNames)) {
-        continue;
+         continue;
       }
 
       // assign expanded names to docs
       for(var ei=0; ei<current.length; ei++) {
-        data[current[ei]].name = expandedNames[current[ei]];
+        data[current[ei]].name = expandedNames[ei];
       }
 
       // regenerate labels for unique cases and  remove them from current set
       j = 0;
       len=current.length;
       for (var k=0; k<len; k++) {
-        var cj = current[j];
-        if(uniqueArrayItem(expandedNames, cj)) {
+        if(uniqueArrayItem(expandedNames, k)) {
+          var cj = current[j];
           data[cj].label = labelGenerator(data[cj]);
           current.splice(j, 1);
         } else {
@@ -96,8 +106,9 @@ function addLabels(req, res, next) {
 function differentArrayItems(arr) {
   var len = arr.length;
   for(var i=0; i<len; i++) {
+    var str = arr[i].toLowerCase();
     for(var j=i+1; j<len; j++) {
-      if(arr[i] !== arr[j]) {
+      if(str !== arr[j].toLowerCase()) {
         return true;
       }
     }
@@ -107,8 +118,9 @@ function differentArrayItems(arr) {
 }
 
 function uniqueArrayItem(arr, i) {
+  var str = arr[i].toLowerCase();
   for(var j=0; j<arr.length; j++) {
-    if(i !== j && arr[i] === arr[j]) {
+    if(i !== j && str === arr[j].toLowerCase()) {
       return false;
     }
   }
