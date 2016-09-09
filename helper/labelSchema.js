@@ -49,10 +49,12 @@ function getFirstProperty(fields) {
     for (var i = 0; i < fields.length; i++) {
       var fieldValue = record[fields[i]];
 
+      if (Array.isArray(fieldValue)) {
+        fieldValue = fieldValue[0];
+      }
       if (!_.isEmpty(fieldValue)) {
         return fieldValue;
       }
-
     }
 
   };
