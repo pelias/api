@@ -3,14 +3,20 @@ var geolib = require('geolib');
 var _ = require('lodash');
 var logger = require('pelias-logger').get('api:nameExpansions');
 
+var adminExpansions=['neighbourhood', 'locality'];
 var translations = {};
+
 var api = require('pelias-config').generate().api;
 var localization = api.localization;
 if (localization) {
   if (localization.translations) {
     translations = require(localization.translations);
   }
+  if (localization.adminExpansions) {
+    adminExpansions=localization.adminExpansions;
+  }
 }
+
 
 function translate(lang, key, text) {
   if( lang && translations[lang] && translations[lang][key] && translations[lang][key][text] ) {
@@ -39,6 +45,30 @@ function expandByAddress(docs) {
       if(doc.name.toLowerCase() !== addr.toLowerCase()) {
         // expand by adding address to the place name
         name = doc.name + ', ' + addr;
+      }
+    }
+    if(name) {
+      names.push(name);
+    } else {
+      names.push(doc.name);
+    }
+  });
+  return names;
+}
+
+/*
+ * Expand names by adding more parent admin info
+ */
+function expandByAdmin(docs) {
+  var names = [];
+
+  docs.forEach(function(doc) {
+    var name;
+    for (var i=0; i<adminExpansions.length; i++) {
+      var exp = doc[adminExpansions[i]];
+      if (exp && doc.label.search(exp)===-1) {
+        name = doc.name + ', ' + exp;
+        break;
       }
     }
     if(name) {
@@ -242,4 +272,4 @@ function expandByCategory(docs, lang) {
   return names;
 }
 
-module.exports = [expandByAddress, /* expandByLayer, */ expandByLocation, expandByCategory];
+module.exports = [expandByAddress, expandByAdmin, /* expandByLayer, */ expandByLocation, expandByCategory];
