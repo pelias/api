@@ -110,33 +110,42 @@ function expandByLocation(docs, lang) {
   docs.forEach(function(doc) {
     names.push(doc.name);
   });
+  if(docs.length<2) { // Sanitize. Comparisons below will fail for a single doc
+    return;
+  }
 
   docs.forEach(function(doc) {
-    logger.debug(doc.center_point.lat, doc.center_point.lon);
-
     if(!east) {
-      east=west=north=south=_east=_west=_north=_south=doc;
+      east=west=north=south=doc;
     } else {
       if(doc.center_point.lon<west.center_point.lon) {
-        _west=west; // second best
+        _west=west;
         west=doc;
+      } else if(!_west || doc.center_point.lon<_west.center_point.lon) {
+        _west=doc;  // second westmost
       }
       if(doc.center_point.lon>east.center_point.lon) {
         _east=east;
         east=doc;
+      } else if(!_east || doc.center_point.lon>_east.center_point.lon) {
+        _east=doc;
       }
       if(doc.center_point.lat<south.center_point.lat) {
         _south=south;
         south=doc;
+      } else if(!_south || doc.center_point.lat<_south.center_point.lat) {
+        _south=doc;
       }
       if(doc.center_point.lat>north.center_point.lat) {
         _north=north;
         north=doc;
+      } else if(!_north || doc.center_point.lat>_north.center_point.lat) {
+        _north=doc;
       }
     }
   });
   var latDiff = north.center_point.lat - south.center_point.lat;
-  var lonDiff = east.center_point.lat - south.center_point.lat;
+  var lonDiff = east.center_point.lat - west.center_point.lat;
 
   // simple logic will not work near places where the wgs84 angle space wraps
   // these are sparsely populated areas so just skip this extension there
@@ -202,18 +211,24 @@ function expandByLocation(docs, lang) {
     lon: 0.5*(east.center_point.lon + west.center_point.lon),
     lat: 0.5*(north.center_point.lat + south.center_point.lat)
   };
+
   var middle, _middle;
-  var nearestDist;
+  var nearestDist, _nearestDist;
 
   docs.forEach(function(doc) { // find place closest to the center
     var dist = geoDist(center, doc.center_point);
     if(!middle) {
-      middle = _middle = doc;
+      middle = doc;
       nearestDist = dist;
     } else {
       if(dist<nearestDist) {
-        _middle=middle; // second best
+        _middle=middle;
+        _nearestDist=nearestDist;
         middle=doc;
+        nearestDist=dist;
+      } else if(!_middle || dist<_nearestDist) {
+        _middle=doc;
+        _nearestDist=dist;
       }
     }
   });
