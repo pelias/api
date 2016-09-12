@@ -272,4 +272,22 @@ function expandByCategory(docs, lang) {
   return names;
 }
 
-module.exports = [expandByAddress, expandByAdmin, /* expandByLayer, */ expandByLocation, expandByCategory];
+var expansionLib = { expandByAddress: expandByAddress,
+                     expandByAdmin: expandByAdmin,
+                     expandByLayer: expandByLayer,
+                     expandByLocation: expandByLocation,
+                     expandByCategory: expandByCategory
+                   };
+
+var expansions;
+
+if (localization.expansions) { // configure custom list
+  expansions = [];
+  localization.expansions.forEach(function(expansion) {
+    expansions.push(expansionLib(expansion)); // map name to func
+  });
+} else {
+  expansions = [expandByAddress, expandByAdmin, expandByLocation, expandByCategory];
+}
+
+module.exports = expansions;
