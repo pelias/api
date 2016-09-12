@@ -141,6 +141,7 @@
     },
     "__category": {
       "food": "ravinto",
+      "retail": "kauppa",
       "health": "terveys",
       "entertainment": "viihde",
       "accommodation": "majoitus",
@@ -198,6 +199,7 @@
     },
     "__category": {
       "food": "ravinto",
+      "retail": "kauppa",
       "health": "terveys",
       "entertainment": "viihde",
       "accommodation": "majoitus",
