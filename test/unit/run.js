@@ -63,6 +63,7 @@ var tests = [
   require('./sanitiser/autocomplete'),
   require('./sanitiser/place'),
   require('./sanitiser/reverse'),
+  require('./sanitiser/sanitizeAll'),
   require('./sanitiser/search'),
   require('./sanitiser/search_fallback'),
   require('./sanitiser/wrap'),
