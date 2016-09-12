@@ -31,11 +31,18 @@ function setup( config, backend, query ){
     // log clean parameters for stats
     logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
 
+    var query_body = query(req.clean);
+
+    // if there's no query to call ES with, skip the service
+    if (_.isUndefined(query_body)) {
+      return next();
+    }
+
     // backend command
     var cmd = {
       index: config.indexName,
       searchType: 'dfs_query_then_fetch',
-      body: query( req.clean )
+      body: query_body
     };
 
     logger.debug( '[ES req]', cmd );

@@ -1,6 +1,7 @@
 var setup = require('../../../controller/search'),
     mockBackend = require('../mock/backend'),
     mockQuery = require('../mock/query');
+var proxyquire =  require('proxyquire').noCallThru();
 
 module.exports.tests = {};
 
@@ -191,6 +192,32 @@ module.exports.tests.existing_results = function(test, common) {
 
   });
 
+};
+
+module.exports.tests.undefined_query = function(test, common) {
+  test('query returning undefined should not call service', function(t) {
+    // a function that returns undefined
+    var query = function() {
+      return;
+    };
+
+    var search_service_was_called = false;
+
+    var controller = proxyquire('../../../controller/search', {
+      '../service/search': function() {
+        search_service_was_called = true;
+        throw new Error('search service should not have been called');
+      }
+    })(undefined, undefined, query);
+
+    var next = function() {
+      t.notOk(search_service_was_called, 'should have returned before search service was called');
+      t.end();
+    };
+
+    controller({}, {}, next);
+
+  });
 };
 
 module.exports.all = function (tape, common) {
