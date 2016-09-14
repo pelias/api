@@ -17,7 +17,7 @@ function addStandardTargetsToAliases(standard, aliases) {
  */
 
 // a list of all sources
-var SOURCES = ['openstreetmap', 'openaddresses', 'geonames', 'whosonfirst'];
+var SOURCES = ['openstreetmap', 'openaddresses', 'geonames', 'whosonfirst', 'gtfs', 'nlsfi'];
 
 /*
  * A list of alternate names for sources, mostly used to save typing
@@ -26,7 +26,9 @@ var SOURCE_ALIASES = {
   'osm': ['openstreetmap'],
   'oa': ['openaddresses'],
   'gn': ['geonames'],
-  'wof': ['whosonfirst']
+  'wof': ['whosonfirst'],
+  'gtfs': ['gtfs'],
+  'nlsfi': ['nlsfi']
 };
 
 /*
@@ -45,13 +47,15 @@ var SOURCE_MAPPING = addStandardTargetsToAliases(SOURCES, SOURCE_ALIASES);
  * not going to match any records and will return no results.
  */
 var LAYERS_BY_SOURCE = {
- openstreetmap: [ 'address', 'venue' ],
- openaddresses: [ 'address' ],
- geonames: [ 'country','macroregion', 'region', 'county','localadmin',
-  'locality','borough', 'neighbourhood', 'venue' ],
- whosonfirst: [ 'continent', 'country', 'dependency', 'macroregion', 'region',
-   'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
-   'neighbourhood', 'microhood', 'disputed']
+  openstreetmap: [ 'address', 'venue', 'street' ],
+  openaddresses: [ 'address' ],
+  geonames: [ 'country','macroregion', 'region', 'county','localadmin',
+              'locality','borough', 'neighbourhood', 'venue' ],
+  whosonfirst: [ 'continent', 'country', 'dependency', 'macroregion', 'region',
+                 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
+                 'neighbourhood', 'microhood', 'disputed'],
+  nlsfi: [ 'venue', 'stop', 'station' ],
+  gtfs: [ 'stop', 'station' ]
 };
 
 /*
