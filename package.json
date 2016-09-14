@@ -75,7 +75,6 @@
     "semantic-release": "^4.3.5"
   },
   "pre-commit": [
-    "lint",
-    "test"
+    "lint"
   ]
 }
