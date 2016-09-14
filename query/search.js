@@ -120,25 +120,14 @@ function generateQuery( clean ){
 }
 
 function getQuery(vs) {
-  if (isSingleFieldGeoambiguity(vs) && !hasQueryOrAddress(vs)) {
-    // return `undefined` for now until we exorcise the geodisambiguation demons
-    return;
-  } else {
+  if (hasStreet(vs)) {
     return fallbackQuery.render(vs);
   }
 
 }
 
-function isSingleFieldGeoambiguity(vs) {
-  return ['neighbourhood', 'borough', 'locality', 'county', 'region', 'country'].filter(function(layer) {
-    return vs.isset('input:' + layer);
-  }).length === 1;
-}
-
-function hasQueryOrAddress(vs) {
-  return ['housenumber', 'street', 'query', 'category'].filter(function(layer) {
-    return vs.isset('input:' + layer);
-  }).length > 0;
+function hasStreet(vs) {
+  return vs.isset('input:street');
 }
 
 module.exports = generateQuery;
