@@ -21,6 +21,9 @@ function sanitize( raw, clean ){
     // valid text
     clean.text = raw.text;
 
+    // remove anything that may have been parsed before
+    delete clean.parsed_text;
+
     // parse text with query parser
     var parsed_text = parse(clean.text);
     if (check.assigned(parsed_text)) {

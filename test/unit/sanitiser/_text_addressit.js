@@ -79,6 +79,7 @@ module.exports.tests.text_parser = function(test, common) {
       text: 'yugolsavia'
     };
     var clean = {};
+    clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
       text: 'yugolsavia'
@@ -97,6 +98,7 @@ module.exports.tests.text_parser = function(test, common) {
       text: 'small town'
     };
     var clean = {};
+    clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
       text: 'small town'
@@ -115,6 +117,7 @@ module.exports.tests.text_parser = function(test, common) {
       text: '123 main'
     };
     var clean = {};
+    clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
       text: '123 main'
@@ -133,6 +136,7 @@ module.exports.tests.text_parser = function(test, common) {
       text: 'main 123'
     };
     var clean = {};
+    clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
       text: 'main 123'
@@ -151,6 +155,7 @@ module.exports.tests.text_parser = function(test, common) {
       text: 'main particle new york'
     };
     var clean = {};
+    clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
       text: 'main particle new york'
