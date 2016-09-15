@@ -124,6 +124,10 @@ function getQuery(vs) {
     return fallbackQuery.render(vs);
   }
 
+  // returning undefined is a signal to a later step that the addressit-parsed
+  // query should be queried for
+  return undefined;
+
 }
 
 function hasStreet(vs) {
