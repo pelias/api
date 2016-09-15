@@ -296,7 +296,7 @@ var expansionLib = { expandByAddress: expandByAddress,
 
 var expansions;
 
-if (localization.expansions) { // configure custom list
+if (localization && localization.expansions) { // configure custom list
   expansions = [];
   localization.expansions.forEach(function(expansion) {
     expansions.push(expansionLib(expansion)); // map name to func
