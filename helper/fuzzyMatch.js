@@ -97,4 +97,18 @@ function fuzzyMatch(text1, text2) {
   return score;
 }
 
-module.exports = fuzzyMatch;
+/* find best match from an array of values */
+function fuzzyMatchArray(text, array) {
+  var maxMatch = 0;
+  array.forEach( function(text2) {
+    var match = fuzzyMatch(text, text2);
+    if (match>maxMatch) {
+      maxMatch=match;
+    }
+  });
+  return maxMatch;
+}
+
+module.exports = { match: fuzzyMatch,
+                   matchArray: fuzzyMatchArray
+                 };
