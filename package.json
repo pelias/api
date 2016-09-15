@@ -32,7 +32,7 @@
     "url": "https://github.com/pelias/api/issues"
   },
   "engines": {
-    "node": ">=0.10.26"
+    "node": ">=4.0.0"
   },
   "dependencies": {
     "async": "^2.0.0",
