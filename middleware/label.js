@@ -29,7 +29,7 @@ function addLabels(req, res, next) {
 
   // create initial labels
   data.forEach(function(place) {
-    place.label = labelGenerator(place);
+    place.label = labelGenerator(place, req);
   });
 
   // then check duplicates and add details until (hopefully) all unique
@@ -86,7 +86,7 @@ function addLabels(req, res, next) {
       for (var k=0; k<len; k++) {
         if(uniqueArrayItem(expandedNames, k)) {
           var cj = current[j];
-          data[cj].label = labelGenerator(data[cj]);
+          data[cj].label = labelGenerator(data[cj], req);
           current.splice(j, 1);
         } else {
           j++; // next index
@@ -96,7 +96,7 @@ function addLabels(req, res, next) {
 
     // all expansions done. Assign expanded labels although there can be non-unique cases
     for(var li=0; li<current.length; li++) {
-      data[current[li]].label = labelGenerator(data[current[li]]);
+      data[current[li]].label = labelGenerator(data[current[li]], req);
     }
   }
 
