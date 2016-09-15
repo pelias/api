@@ -127,7 +127,7 @@ module.exports.tests.confidenceScore = function(test, common) {
     };
 
     confidenceScore(req, res, function() {});
-    t.equal(res.data[0].confidence, 0.228, 'score was set');
+    t.equal(res.data[0].confidence, 0.276, 'score was set');
     t.end();
   });
 
