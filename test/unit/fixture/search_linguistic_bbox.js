@@ -5,7 +5,26 @@ module.exports = {
         'filtered': {
           'query': {
             'bool': {
-              'should': []
+              'should': [
+                {
+                  'bool': {
+                    '_name': 'fallback.street',
+                    'must': [
+                      {
+                        'match_phrase': {
+                          'address_parts.street': 'street value'
+                        }
+                      }
+                    ],
+                    'should': [],
+                    'filter': {
+                      'term': {
+                        'layer': 'street'
+                      }
+                    }
+                  }
+                }
+              ]
             }
           },
           'filter': {
