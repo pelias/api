@@ -110,8 +110,95 @@ module.exports = {
                         }
                       },
                       {
+                        'multi_match': {
+                          'query': 'neighbourhood value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.neighbourhood',
+                            'parent.neighbourhood_a'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'borough value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.borough',
+                            'parent.borough_a'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'city value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.locality',
+                            'parent.locality_a',
+                            'parent.localadmin',
+                            'parent.localadmin_a'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'county value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.county',
+                            'parent.county_a',
+                            'parent.macrocounty',
+                            'parent.macrocounty_a'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'state value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.region',
+                            'parent.region_a',
+                            'parent.macroregion',
+                            'parent.macroregion_a'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'country value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.country',
+                            'parent.country_a',
+                            'parent.dependency',
+                            'parent.dependency_a'
+                          ]
+                        }
+                      }
+                    ],
+                    'should': [
+                      {
                         'match_phrase': {
                           'address_parts.zip': 'postalcode value'
+                        }
+                      }
+                    ],
+                    'filter': {
+                      'term': {
+                        'layer': 'address'
+                      }
+                    }
+                  }
+                },
+                {
+                  'bool': {
+                    '_name': 'fallback.street',
+                    'must': [
+                      {
+                        'match_phrase': {
+                          'address_parts.street': 'street value'
                         }
                       },
                       {
@@ -183,9 +270,16 @@ module.exports = {
                         }
                       }
                     ],
+                    'should': [
+                      {
+                        'match_phrase': {
+                          'address_parts.zip': 'postalcode value'
+                        }
+                      }
+                    ],
                     'filter': {
                       'term': {
-                        'layer': 'address'
+                        'layer': 'street'
                       }
                     }
                   }
