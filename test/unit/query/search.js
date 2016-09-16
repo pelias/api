@@ -12,15 +12,21 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.query = function(test, common) {
   test('valid search + focus + bbox', function(t) {
-    var query = generate({
-      text: 'test', querySize: 10,
+    var clean = {
+      parsed_text: {
+        street: 'street value'
+      },
+      text: 'test',
+      querySize: 10,
       'focus.point.lat': 29.49136, 'focus.point.lon': -82.50622,
       'boundary.rect.min_lat': 47.47,
       'boundary.rect.max_lon': -61.84,
       'boundary.rect.max_lat': 11.51,
       'boundary.rect.min_lon': -103.16,
       layers: ['test']
-    });
+    };
+
+    var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_bbox');
@@ -30,14 +36,20 @@ module.exports.tests.query = function(test, common) {
   });
 
   test('valid search + bbox', function(t) {
-    var query = generate({
-      text: 'test', querySize: 10,
+    var clean = {
+      parsed_text: {
+        street: 'street value'
+      },
+      text: 'test',
+      querySize: 10,
       'boundary.rect.min_lat': 47.47,
       'boundary.rect.max_lon': -61.84,
       'boundary.rect.max_lat': 11.51,
       'boundary.rect.min_lon': -103.16,
       layers: ['test']
-    });
+    };
+
+    var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_bbox');
@@ -47,10 +59,15 @@ module.exports.tests.query = function(test, common) {
   });
 
   test('valid lingustic-only search', function(t) {
-    var query = generate({
+    var clean = {
+      parsed_text: {
+        street: 'street value'
+      },
       text: 'test', querySize: 10,
       layers: ['test']
-    });
+    };
+
+    var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_only');
@@ -60,11 +77,16 @@ module.exports.tests.query = function(test, common) {
   });
 
   test('search search + focus', function(t) {
-    var query = generate({
+    var clean = {
+      parsed_text: {
+        street: 'street value'
+      },
       text: 'test', querySize: 10,
       'focus.point.lat': 29.49136, 'focus.point.lon': -82.50622,
       layers: ['test']
-    });
+    };
+
+    var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus');
@@ -74,14 +96,19 @@ module.exports.tests.query = function(test, common) {
   });
 
   test('search search + viewport', function(t) {
-    var query = generate({
+    var clean = {
+      parsed_text: {
+        street: 'street value'
+      },
       text: 'test', querySize: 10,
       'focus.viewport.min_lat': 28.49136,
       'focus.viewport.max_lat': 30.49136,
       'focus.viewport.min_lon': -87.50622,
       'focus.viewport.max_lon': -77.50622,
       layers: ['test']
-    });
+    };
+
+    var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_viewport');
@@ -93,14 +120,19 @@ module.exports.tests.query = function(test, common) {
   // viewport scale sizing currently disabled.
   // ref: https://github.com/pelias/api/pull/388
   test('search with viewport diagonal < 1km should set scale to 1km', function(t) {
-    var query = generate({
+    var clean = {
+      parsed_text: {
+        street: 'street value'
+      },
       text: 'test', querySize: 10,
       'focus.viewport.min_lat': 28.49135,
       'focus.viewport.max_lat': 28.49137,
       'focus.viewport.min_lon': -87.50622,
       'focus.viewport.max_lon': -87.50624,
       layers: ['test']
-    });
+    };
+
+    var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_viewport_min_diagonal');
@@ -110,11 +142,16 @@ module.exports.tests.query = function(test, common) {
   });
 
   test('search search + focus on null island', function(t) {
-    var query = generate({
+    var clean = {
+      parsed_text: {
+        street: 'street value'
+      },
       text: 'test', querySize: 10,
       'focus.point.lat': 0, 'focus.point.lon': 0,
       layers: ['test']
-    });
+    };
+
+    var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_null_island');
@@ -169,11 +206,16 @@ module.exports.tests.query = function(test, common) {
   });
 
   test('valid boundary.country search', function(t) {
-    var query = generate({
+    var clean = {
+      parsed_text: {
+        street: 'street value'
+      },
       text: 'test', querySize: 10,
       layers: ['test'],
       'boundary.country': 'ABC'
-    });
+    };
+
+    var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_boundary_country');
@@ -183,10 +225,15 @@ module.exports.tests.query = function(test, common) {
   });
 
   test('valid sources filter', function(t) {
-    var query = generate({
+    var clean = {
+      parsed_text: {
+        street: 'street value'
+      },
       'text': 'test',
       'sources': ['test_source']
-    });
+    };
+
+    var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_with_source_filtering');
@@ -196,10 +243,15 @@ module.exports.tests.query = function(test, common) {
   });
 
   test('categories filter', function(t) {
-    var query = generate({
+    var clean = {
+      parsed_text: {
+        street: 'street value'
+      },
       'text': 'test',
       'categories': ['retail','food']
-    });
+    };
+
+    var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_with_category_filtering');
