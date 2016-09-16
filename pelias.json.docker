@@ -48,7 +48,7 @@
       "translations": "/opt/pelias/api/translations.json",
       "labelSchemas": {
         "FIN": {
-          "local": { "fields": ["locality", "localadmin"], "matchType": "best" }
+          "local": { "fields": ["localadmin", "locality"], "matchType": "best" }
         }
       }
     }
