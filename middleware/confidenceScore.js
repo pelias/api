@@ -21,6 +21,7 @@ var RELATIVE_SCORES = false;
 
 var languages = ['default'];
 var adminProperties;
+var minConfidence=0, relativeMinConfidence;
 
 // default configuration for address confidence check
 var confidenceAddressParts = {
@@ -37,12 +38,17 @@ function setup(peliasConfig) {
     if (peliasConfig.languages) {
       languages = _.uniq(languages.concat(peliasConfig.languages));
     }
-    if (peliasConfig.localization) {
-      if(peliasConfig.localization.confidenceAdminProperties) {
-        adminProperties = peliasConfig.localization.confidenceAdminProperties;
+    if(peliasConfig.minConfidence) {
+      minConfidence = peliasConfig.minConfidence;
+    }
+    relativeMinConfidence = peliasConfig.relativeMinConfidence;
+    var localization = peliasConfig.localization;
+    if (localization) {
+      if(localization.confidenceAdminProperties) {
+        adminProperties = localization.confidenceAdminProperties;
       }
-      if(peliasConfig.localization.confidenceAddressParts) {
-        confidenceAddressParts = peliasConfig.localization.confidenceAddressParts;
+      if(localization.confidenceAddressParts) {
+        confidenceAddressParts = localization.confidenceAddressParts;
       }
     }
   }
@@ -111,7 +117,7 @@ function compareResults(a, b) {
 function computeScores(req, res, next) {
   // do nothing if no result data set
   if (!check.assigned(req.clean) || !check.assigned(res) ||
-      !check.assigned(res.data) || !check.assigned(res.meta)) {
+      !check.assigned(res.data) || res.data.length===0 || !check.assigned(res.meta)) {
     return next();
   }
 
@@ -124,6 +130,15 @@ function computeScores(req, res, next) {
   res.data = res.data.map(computeConfidenceScore.bind(null, req, mean, stdev));
 
   res.data.sort(compareResults);
+
+  var bestConfidence = res.data[0].confidence;
+  var limit = minConfidence;
+  if(relativeMinConfidence) {
+    limit = Math.max(limit, relativeMinConfidence * bestConfidence);
+  }
+  res.data = res.data.filter(function(doc) {
+    return(doc.confidence>limit);
+  });
 
   next();
 }

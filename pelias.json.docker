@@ -22,6 +22,8 @@
     "indexName": "pelias",
     "version": "1.0",
     "sizePadding": 3,
+    "minConfidence": 0.1,
+    "relativeMinConfidence": 0.4,
     "query": {
       "search": {
         "defaults": {
