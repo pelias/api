@@ -20,6 +20,7 @@ module.exports.tests.trimByGranularity = function(test, common) {
         { name: 'venue 1', _matched_queries: ['fallback.venue'] },
         { name: 'venue 2', _matched_queries: ['fallback.venue'] },
         { name: 'address 1', _matched_queries: ['fallback.address'] },
+        { name: 'street 1', _matched_queries: ['fallback.street'] },
         { name: 'neighbourhood 1', _matched_queries: ['fallback.neighbourhood'] },
         { name: 'locality 1', _matched_queries: ['fallback.locality'] },
         { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
@@ -55,6 +56,7 @@ module.exports.tests.trimByGranularity = function(test, common) {
       data: [
         { name: 'address 1', _matched_queries: ['fallback.address'] },
         { name: 'address 2', _matched_queries: ['fallback.address'] },
+        { name: 'street 1', _matched_queries: ['fallback.street'] },
         { name: 'neighbourhood 1', _matched_queries: ['fallback.neighbourhood'] },
         { name: 'locality 1', _matched_queries: ['fallback.locality'] },
         { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
@@ -76,6 +78,41 @@ module.exports.tests.trimByGranularity = function(test, common) {
     function testIt() {
       trimByGranularity(req, res, function() {
         t.deepEquals(res.data, expected_data, 'only address records should be here');
+        t.end();
+      });
+    }
+
+    testIt();
+  });
+
+  test('all records with fallback.* matched_queries name should retain only streets when they are most granular', function(t) {
+    var req = { clean: {} };
+
+    var res = {
+      data: [
+        { name: 'street 1', _matched_queries: ['fallback.street'] },
+        { name: 'street 2', _matched_queries: ['fallback.street'] },
+        { name: 'neighbourhood 1', _matched_queries: ['fallback.neighbourhood'] },
+        { name: 'locality 1', _matched_queries: ['fallback.locality'] },
+        { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
+        { name: 'county 1', _matched_queries: ['fallback.county'] },
+        { name: 'macrocounty 1', _matched_queries: ['fallback.macrocounty'] },
+        { name: 'region 1', _matched_queries: ['fallback.region'] },
+        { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
+        { name: 'country 1', _matched_queries: ['fallback.country'] },
+        { name: 'unknown', _matched_queries: ['fallback.unknown'] }
+      ]
+    };
+
+    var expected_data = [
+      { name: 'street 1', _matched_queries: ['fallback.street'] },
+      { name: 'street 2', _matched_queries: ['fallback.street'] },
+    ];
+
+    function testIt() {
+      trimByGranularity(req, res, function() {
+        t.deepEquals(res.data, expected_data, 'only street records should be here');
         t.end();
       });
     }
