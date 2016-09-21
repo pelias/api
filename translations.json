@@ -125,6 +125,43 @@
     },
     "country": {
       "Finland": "Suomi"
+    },
+    "__layer": {
+      "country":"maa",
+      "dependency":"itsehallinto",
+      "region":"maakunta",
+      "localadmin":"kunta",
+      "locality":"taajama",
+      "neighbourhood":"alue",
+      "address":"osoite",
+      "venue":"paikka",
+      "stop":"pysäkki",
+      "station":"asema",
+      "street":"katu"
+    },
+    "__category": {
+      "food": "ravinto",
+      "retail": "kauppa",
+      "health": "terveys",
+      "entertainment": "viihde",
+      "accommodation": "majoitus",
+      "recreation": "virkistys",
+      "education": "oppilaitos",
+      "religion": "uskonto",
+      "transport": "liikenne",
+      "government": "hallinto",
+      "natural": "maantieteellinen"
+    },
+    "__geographic": {
+      "north": "pohjoinen",
+      "east": "itäinen",
+      "south": "eteläinen",
+      "west": "läntinen",
+      "northwest": "luoteinen",
+      "northeast": "koillinen",
+      "southeast": "kaakkoinen",
+      "southwest": "lounainen",
+      "central": "keskinen"
     }
   },
   "default": {
@@ -146,6 +183,43 @@
     },
     "country": {
       "Finland": "Suomi"
+    },
+    "__layer": {
+      "country":"maa",
+      "dependency":"itsehallinto",
+      "region":"maakunta",
+      "localadmin":"kunta",
+      "locality":"taajama",
+      "neighbourhood":"alue",
+      "address":"osoite",
+      "venue":"paikka",
+      "stop":"pysäkki",
+      "station":"asema",
+      "street":"katu"
+    },
+    "__category": {
+      "food": "ravinto",
+      "retail": "kauppa",
+      "health": "terveys",
+      "entertainment": "viihde",
+      "accommodation": "majoitus",
+      "recreation": "virkistys",
+      "education": "oppilaitos",
+      "religion": "uskonto",
+      "transport": "liikenne",
+      "government": "hallinto",
+      "natural": "maantieteellinen"
+    },
+    "__geographic": {
+      "north": "pohjoinen",
+      "east": "itäinen",
+      "south": "eteläinen",
+      "west": "läntinen",
+      "northwest": "luoteinen",
+      "northeast": "koillinen",
+      "southeast": "kaakkoinen",
+      "southwest": "lounainen",
+      "central": "keskinen"
     }
   },
   "se": {

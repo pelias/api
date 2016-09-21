@@ -1,20 +1,7 @@
 
 var proxyquire = require('proxyquire');
 var _ = require('lodash');
-
-var customConfig = {
-  generate: function generate() {
-    return {
-      api : {
-        localization : { // expand the set of flipped countries
-          flipNumberAndStreetCountries : ['NLD'], // Netherlands
-          translations: './translations.json',
-        }
-      }
-    };
-  }
-};
-var localNamingConventions = proxyquire('../../../middleware/localNamingConventions', { 'pelias-config': customConfig });
+var localNamingConventions = require('../../../middleware/localNamingConventions');
 
 module.exports.tests = {};
 
@@ -58,26 +45,6 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
     }
   };
 
-  var nlAddress = {
-    '_id': 'test3',
-    '_type': 'test',
-    'name': { 'default': '117 Keizersgracht' },
-    'center_point': { 'lon': 4.887545, 'lat': 52.376795 },
-    'address_parts': {
-       'zip': '1015',
-       'number': '117',
-       'street': 'Keizersgracht'
-    },
-    'parent': {
-      'region': ['Amsterdam'],
-      'locality': ['Amsterdam'],
-      'country_a': ['NLD'],
-      'county': ['Noord-Holland'],
-      'country': ['Netherlands'],
-      'neighbourhood': ['Grachtengordel-West']
-    }
-  };
-
   var unknownCountryAddress = {
     '_id': 'test4',
     '_type': 'test',
@@ -92,7 +59,7 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
   };
 
   var req = {},
-      res = { data: [ ukAddress, deAddress, nlAddress, unknownCountryAddress ] },
+      res = { data: [ ukAddress, deAddress, unknownCountryAddress ] },
       middleware = localNamingConventions();
 
   test('flipNumberAndStreet', function(t) {
@@ -106,76 +73,13 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
       // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
       t.equal( res.data[1].name.default, 'Grolmanstraße 23', 'flipped name' );
 
-      // NLD address should have the housenumber and street name flipped, too
-      // this definition comes from pelias configuration
-      t.equal( res.data[2].name.default, 'Keizersgracht 117', 'flipped name' );
-
       // addresses without a known country (either due to missing data or admin lookup
       // being disabled), don't have the name flipped
-      t.equal( res.data[3].name.default, '123 Main Street', 'standard name');
+      t.equal( res.data[2].name.default, '123 Main Street', 'standard name');
 
       t.end();
     });
   });
-};
-
-
-
-module.exports.tests.translateNames = function(test, common) {
-
-  var translationAddress = {
-    '_id': 'test5',
-    '_type': 'test',
-    'name': { 'default': 'München', 'de': 'München', 'en': 'Munich' },
-    'center_point': { 'lon': 11.58646, 'lat': 48.13679},
-    'parent': {
-      'region': ['Bayern'],
-      'locality': ['München'],
-      'country_a': ['DEU'],
-      'country': ['Germany']
-    }
-  };
-  var address2 = _.cloneDeep(translationAddress);
-  var address3 = _.cloneDeep(translationAddress);
-
-  var req = {clean: { text: 'München', lang:'en' }},
-      res = { data: [ translationAddress ] },
-      middleware = localNamingConventions();
-
-  test('translate to English', function(t) {
-
-    middleware( req, res, function next(){
-      t.equal( res.data[0].parent.locality[0], 'Munich', 'locality translated to English' );
-      t.equal( res.data[0].parent.region[0], 'Bavaria', 'region translated to English' );
-      t.equal( res.data[0].parent.country[0], 'Germany', 'country in English' );
-      t.end();
-    });
-  });
-
-  var req2 = {clean: { text: 'München', lang:'de' }},
-      res2 = { data: [ address2 ] };
-
-  test('translate to German', function(t) {
-    middleware( req2, res2, function next(){
-      t.equal( res2.data[0].parent.locality[0], 'München', 'locality in German' );
-      t.equal( res2.data[0].parent.region[0], 'Bayern', 'region in German' );
-      t.equal( res2.data[0].parent.country[0], 'Deutschland', 'country translated to German' );
-      t.end();
-    });
-  });
-
-  var req3 = {clean: { text: 'München' }}, // no lang param at all
-      res3 = { data: [ address3 ] };
-
-  test('no translation', function(t) {
-    middleware( req3, res3, function next(){
-      t.equal( res3.data[0].parent.locality[0], 'München', 'locality in original language' );
-      t.equal( res3.data[0].parent.region[0], 'Bayern', 'region in original language' );
-      t.equal( res3.data[0].parent.country[0], 'Germany', 'country in original language' );
-      t.end();
-    });
-  });
-
 };
 
 module.exports.all = function (tape, common) {

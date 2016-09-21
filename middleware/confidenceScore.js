@@ -15,13 +15,12 @@ var stats = require('stats-lite');
 var logger = require('pelias-logger').get('api');
 var check = require('check-types');
 var _ = require('lodash');
+var fuzzyMatch = require('../helper/fuzzyMatch');
 
-var RELATIVE_SCORES = true;
+var RELATIVE_SCORES = false;
 
 var languages = ['default'];
 var adminProperties;
-var nameWeight = 1.3;
-var adminWeight = 1.2;
 
 // default configuration for address confidence check
 var confidenceAddressParts = {
@@ -45,8 +44,6 @@ function setup(peliasConfig) {
       if(peliasConfig.localization.confidenceAddressParts) {
         confidenceAddressParts = peliasConfig.localization.confidenceAddressParts;
       }
-      nameWeight = peliasConfig.localization.confidenceNameWeight || nameWeight;
-      adminWeight = peliasConfig.localization.confidenceAdminWeight || adminWeight;
     }
   }
   return computeScores;
@@ -143,32 +140,37 @@ function computeScores(req, res, next) {
  * @returns {object}
  */
 function computeConfidenceScore(req, mean, stdev, hit) {
+/*
   var dealBreakers = checkForDealBreakers(req, hit);
   if (dealBreakers) {
     hit.confidence = 0.1;
     return hit;
   }
-
+*/
   var parsedText = req.clean.parsed_text;
-  var checkCount = 1 + nameWeight; // name can have extra strong weight
-  hit.confidence = 0;
+  hit.confidence = checkName(req.clean.text, parsedText, hit);
+  var checkCount = 1;
 
+/*
   if (RELATIVE_SCORES) {
     checkCount += 2;
     hit.confidence += checkDistanceFromMean(hit._score, mean, stdev);
     hit.confidence += computeZScore(hit._score, mean, stdev);
   }
-  hit.confidence += nameWeight*checkName(req.clean.text, parsedText, hit);
-  hit.confidence += checkQueryType(parsedText, hit);
+*/
 
-  if (parsedText && check.assigned(parsedText.number) && check.assigned(parsedText.street)) {
+/*
+    hit.confidence += checkQueryType(parsedText, hit);
+    checkCount += 1;
+*/
+  if (parsedText && (check.assigned(parsedText.number) || check.assigned(parsedText.street) || check.assigned(parsedText.postalcode))) {
     hit.confidence += checkAddress(parsedText, hit);
     checkCount++;
   }
 
   if(adminProperties && parsedText && parsedText.regions && parsedText.regions.length>1) {
-    hit.confidence += adminWeight*checkAdmin(parsedText, hit);
-    checkCount += adminWeight;
+    hit.confidence += checkAdmin(parsedText, hit);
+    checkCount++;
   }
   // TODO: look at categories and location
 
@@ -215,12 +217,6 @@ function checkDistanceFromMean(score, mean, stdev) {
   return (score - mean) > stdev ? 1 : 0;
 }
 
-
-// should be improved to handle better complex names such as '5th forest rd'
-function normalizeName(text) {
-  return text.toLowerCase().replace(/[0-9]/g, '').trim();
-}
-
 /**
  * Compare text string against configuration defined language versions of a property
  *
@@ -230,16 +226,22 @@ function normalizeName(text) {
  */
 
 function checkLanguageProperty(text, propertyObject) {
-  var ltext = normalizeName(text);
+  var bestScore = 0;
+  var bestName;
+
   for (var lang in propertyObject) {
     if (languages.indexOf(lang) === -1) {
       continue;
     }
-    if (normalizeName(propertyObject[lang]) === ltext) {
-      return true;
+    var score = fuzzyMatch(text, propertyObject[lang]);
+    if (score > bestScore ) {
+      bestScore = score;
+      bestName = propertyObject[lang];
     }
   }
-  return false;
+  logger.debug('name score', bestScore, text, bestName);
+
+  return bestScore;
 }
 
 /**
@@ -254,18 +256,11 @@ function checkLanguageProperty(text, propertyObject) {
 function checkName(text, parsed_text, hit) {
   // parsed_text name should take precedence if available since it's the cleaner name property
   if (check.assigned(parsed_text) && check.assigned(parsed_text.name)) {
-    if (checkLanguageProperty(parsed_text.name, hit.name)) {
-      return 1;
-    }
-  } else {
-    // if no parsed_text check the text value as provided against result's name
-    if (checkLanguageProperty(text, hit.name)) {
-      return 1;
-    }
+    return(checkLanguageProperty(parsed_text.name, hit.name));
   }
 
-  // no matches detected
-  return 0;
+  // if no parsed_text check the text value as provided against result's name
+  return(checkLanguageProperty(text, hit.name));
 }
 
 /**
@@ -297,20 +292,19 @@ function propMatch(textProp, hitProp, expectEnriched, numeric) {
 
   // both missing = match
   if (!check.assigned(textProp) && !check.assigned(hitProp)) {
-    if (check.assigned(expectEnriched)) { return 0.5; }
-    else { return 0.8; } // no enrichment expected => GOOD
+    if (expectEnriched) { return 0.5; }
+    else { return 1; } // no enrichment expected => GOOD
   }
 
   // text has it, result missing
   if (check.assigned(textProp) && !check.assigned(hitProp)) {
-    if (check.assigned(expectEnriched)) { return 0.2; }
-    else { return 0.4; }
+    if (expectEnriched) { return 0.2; }
+    else { return 0.5; }
   }
 
   // text missing, result has it
   if (!check.assigned(textProp) && check.assigned(hitProp)) {
-    if (check.assigned(expectEnriched)) { return 0.8; }
-    else { return 0.5; }
+    return 1.0;
   }
 
   // both present
@@ -323,12 +317,7 @@ function propMatch(textProp, hitProp, expectEnriched, numeric) {
     }
   }
 
-  if (textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) {
-      return 1; //values match
-  }
-
-  // both present, values differ => BAD regardless of enrichment
-  return 0;
+  return fuzzyMatch(textProp.toString(), hitProp.toString());
 }
 
 /**
@@ -365,11 +354,10 @@ function checkAddress(text, hit) {
       value = parent[part.field];
     }
     if (Array.isArray(value)) { // check all array values
-      var count = Math.max(value.length, 1);
+      var count = value.length;
       var maxMatch = 0;
       for (var i=0; i<count; i++) {
-        value = value[i];
-        var match = propMatch(text[key], value, part.enrich, part.numeric);
+        var match = propMatch(text[key], value[i], part.enrich, part.numeric);
         if (match>maxMatch) {
           maxMatch=match;
         }
@@ -387,6 +375,18 @@ function checkAddress(text, hit) {
   return res;
 }
 
+/* find best match from an array of values */
+function fuzzyMatchArray(text, array) {
+  var maxMatch = 0;
+  array.forEach( function(text2) {
+    var match = fuzzyMatch(text, text2);
+    if (match>maxMatch) {
+      maxMatch=match;
+    }
+  });
+  return maxMatch;
+}
+
 /**
  * Check admin regions of the parsed text against a result.
  *
@@ -397,43 +397,36 @@ function checkAddress(text, hit) {
  * @returns {number}
  */
 function checkAdmin(text, hit) {
-  var res = 0;
   var regions = [];
   var source = text.regions;
 
   for(var i=1; i<source.length; i++) { // drop 1st entry = actual name or street
-    regions.push(source[i].toLowerCase());
+    regions.push(source[i]);
   }
 
-  // find out maximum count for matching properties
-  var count = Math.min(regions.length, adminProperties.length);
+  // loop trough configured properties to find best match
+  var bestMatch = 0;
 
-  // loop trough configured properties to find a match
+  var updateBest = function(text) {
+    var match = fuzzyMatchArray(text, regions);
+    if (match>bestMatch) {
+      bestMatch = match;
+    }
+  };
+
   adminProperties.forEach( function(key) {
     var prop = hit.parent[key];
     if (prop) {
       if (Array.isArray(prop)) {
-        for(var i=0; i<prop.length; i++) {
-          var value = prop[i].toLowerCase();
-          if(regions.indexOf(value) !== -1) {
-            res = res + 1; // match
-            break;
-          }
-        }
+        prop.forEach(updateBest);
       } else {
-        if( regions.indexOf(prop) !== -1 ) {
-          res = res + 1; // match
-        }
+        updateBest(prop);
       }
     }
   });
+  logger.debug('admin match', bestMatch);
 
-  // set an upper limit; several parent fields can match the same text
-  // e.g. New York, New York (city, state)
-  res = Math.min(res/count, 1.0);
-
-  logger.debug('admin match', res);
-  return res;
+  return bestMatch;
 }
 
 /**

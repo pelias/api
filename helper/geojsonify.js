@@ -1,18 +1,17 @@
 
 var GeoJSON = require('geojson');
 var extent = require('geojson-extent');
-var labelGenerator = require('./labelGenerator');
 var logger = require('pelias-logger').get('api');
 var type_mapping = require('./type_mapping');
 var _ = require('lodash');
 var addDetails = require('./geojsonify_place_details');
 var addMetaData = require('./geojsonify_meta_data');
 
-function geojsonifyPlaces( params, docs, lang ){
+function geojsonifyPlaces( params, docs ){
 
   // flatten & expand data for geojson conversion
   var geodata = docs
-      .map(geojsonifyPlace.bind(null, params, lang))
+      .map(geojsonifyPlace.bind(null, params))
       .filter( function( doc ){
       return !!doc;
     });
@@ -35,7 +34,7 @@ function geojsonifyPlaces( params, docs, lang ){
   return geojson;
 }
 
-function geojsonifyPlace(params, lang, place) {
+function geojsonifyPlace(params, place) {
 
   // something went very wrong
   if( !place || !place.hasOwnProperty( 'center_point' ) ) {
@@ -45,7 +44,7 @@ function geojsonifyPlace(params, lang, place) {
   var output = {};
 
   addMetaData(place, output);
-  addName(place, output, lang);
+  addName(place, output);
   addDetails(params, place, output);
   addLabel(place, output);
 
@@ -62,20 +61,12 @@ function geojsonifyPlace(params, lang, place) {
  *
  * @param {object} src
  * @param {object} dst
- * @param {string} lang
  */
 
-function addName(src, dst, lang) {
+function addName(src, dst) {
   // map name
   if( !src.name ) { return warning(src); }
-
-  if( src.name[lang] ) {
-    dst.name = src.name[lang];
-  } else if (src.name.default) { // fallback
-    dst.name = src.name.default;
-  } else {
-    return warning(src);
-  }
+  dst.name = src.name;
 }
 
 /**
@@ -85,7 +76,9 @@ function addName(src, dst, lang) {
  * @param {object} dst
  */
 function addLabel(src, dst) {
-  dst.label = labelGenerator(dst);
+  if(src.label) {
+    dst.label = src.label;
+  }
 }
 
 /**

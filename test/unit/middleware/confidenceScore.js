@@ -94,7 +94,7 @@ module.exports.tests.confidenceScore = function(test, common) {
     };
 
     confidenceScore(req, res, function() {});
-    t.equal(res.data[0].confidence, 0.535, 'score was set');
+    t.equal(res.data[0].confidence, 1, 'score was set');
     t.end();
   });
 
@@ -127,7 +127,7 @@ module.exports.tests.confidenceScore = function(test, common) {
     };
 
     confidenceScore(req, res, function() {});
-    t.equal(res.data[0].confidence, 0.06, 'score was set');
+    t.equal(res.data[0].confidence, 0.276, 'score was set');
     t.end();
   });
 
@@ -163,8 +163,8 @@ module.exports.tests.confidenceScore = function(test, common) {
     };
 
     confidenceScore(req, res, function() {});
-    t.equal(res.data[0].confidence, 0.535, 'Internationalized name contributed in scoring');
-    t.equal(res.data[1].confidence, 0.233, 'Do not consider name versions excluded from configuration');
+    t.equal(res.data[0].confidence, 1, 'Internationalized name contributed in scoring');
+    t.equal(res.data[1].confidence, 0.1, 'Do not consider name versions excluded from configuration');
 
     t.end();
   });
