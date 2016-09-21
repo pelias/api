@@ -1,10 +1,8 @@
-
-function setup(){
-  return query;
-}
-
 function query( clean ){
   return clean;
 }
 
-module.exports = setup;
+module.exports = {
+  query: query,
+  query_type: 'mock'
+};

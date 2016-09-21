@@ -10,6 +10,11 @@ function setup( config, backend, query ){
   backend = backend || require('../src/backend');
   query = query || require('../query/search');
 
+  // verify that we don't let an old style query object slip through the cracks here
+  if (typeof query !== 'object' || !query.hasOwnProperty('query_type')) {
+    throw new Error('Search queries must return an object with query and query_type');
+  }
+
   function controller( req, res, next ){
     // do not run controller when a request
     // validation error has occurred.
@@ -31,7 +36,7 @@ function setup( config, backend, query ){
     // log clean parameters for stats
     logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
 
-    var query_body = query(req.clean);
+    var query_body = query.query(req.clean);
 
     // if there's no query to call ES with, skip the service
     if (_.isUndefined(query_body)) {
@@ -61,7 +66,9 @@ function setup( config, backend, query ){
       // set response data
       else {
         res.data = docs;
-        res.meta = meta;
+        res.meta = meta || {};
+        // store the query_type for subsequent middleware
+        res.meta.query_type = query.query_type;
       }
       logger.debug('[ES response]', docs);
       next();

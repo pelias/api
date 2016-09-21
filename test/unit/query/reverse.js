@@ -1,10 +1,24 @@
-var generate = require('../../../query/reverse');
+var query = require('../../../query/reverse');
+var generate = query.query;
 
 module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
   test('valid interface', function(t) {
-    t.equal(typeof generate, 'function', 'valid function');
+    t.equal(typeof query, 'object', 'valid query object');
+    t.end();
+  });
+  test('valid interface', function(t) {
+    t.true(query.hasOwnProperty('query'), 'query is valid function');
+    t.true(query.hasOwnProperty('query_type'), 'query is valid function');
+    t.end();
+  });
+  test('valid interface', function(t) {
+    t.equal(typeof query.query, 'function', 'valid function');
+    t.end();
+  });
+  test('valid interface', function(t) {
+    t.equal(typeof query.query_type, 'string', 'valid query_type');
     t.end();
   });
 };

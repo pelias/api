@@ -128,4 +128,8 @@ function generateQuery( clean ){
   return query.render( vs );
 }
 
-module.exports = generateQuery;
+
+module.exports = {
+  query: generateQuery,
+  query_type: 'original'
+};

@@ -134,4 +134,8 @@ function hasStreet(vs) {
   return vs.isset('input:street');
 }
 
-module.exports = generateQuery;
+module.exports = {
+  query: generateQuery,
+  // this could later be set to disambiguation when appropriate
+  query_type: 'fallback'
+};
