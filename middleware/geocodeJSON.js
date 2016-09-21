@@ -1,6 +1,7 @@
 var url = require('url');
 var extend = require('extend');
 var geojsonify = require('../helper/geojsonify');
+var _ = require('lodash');
 
 /**
  * Returns a middleware function that converts elasticsearch
@@ -79,7 +80,8 @@ function convertToGeocodeJSON(req, res, next, opts) {
 
 function addMessages(req, msgType, geocoding) {
   if (req.hasOwnProperty(msgType) && req[msgType].length) {
-    geocoding[msgType] = req[msgType];
+    // cleanup arrays to make sure there are no duplicates
+    geocoding[msgType] = _.uniq(req[msgType]);
   }
 }
 
