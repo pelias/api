@@ -1,60 +1,44 @@
 /**
  *
- *Basic confidence score should be computed and returned for each item in the results.
+ * Basic confidence score should be computed and returned for each item in the results.
  * The score should range between 0-1, and take into consideration as many factors as possible.
  *
  * Some factors to consider:
  *
  * - number of results from ES
- * - score of item within the range of highest-lowest scores from ES (within the returned set)
- * - linguistic match of query
- * - detection (or specification) of query type. i.e. an address shouldn't match an admin address.
+ * - fallback status (aka layer match between expected and actual)
  */
 
-var stats = require('stats-lite');
-var logger = require('pelias-logger').get('api');
 var check = require('check-types');
 
-var RELATIVE_SCORES = true;
-
-function setup(peliasConfig) {
-  if (check.assigned(peliasConfig)) {
-    RELATIVE_SCORES = peliasConfig.hasOwnProperty('relativeScores') ? peliasConfig.relativeScores : true;
-  }
+function setup() {
   return computeScores;
 }
 
 function computeScores(req, res, next) {
-  // do nothing if no result data set or if query is not of the original variety
+  // do nothing if no result data set or if the query is not of the fallback variety
+  // later add disambiguation to this list
   if (check.undefined(req.clean) || check.undefined(res) ||
       check.undefined(res.data) || check.undefined(res.meta) ||
-      res.meta.query_type !== 'original') {
+      res.meta.query_type !== 'fallback') {
     return next();
   }
 
-  // compute standard deviation and mean from all scores
-  var scores = res.meta.scores;
-  var stdev = computeStandardDeviation(scores);
-  var mean = stats.mean(scores);
-
   // loop through data items and determine confidence scores
-  res.data = res.data.map(computeConfidenceScore.bind(null, req, mean, stdev));
+  res.data = res.data.map(computeConfidenceScore.bind(null, req));
 
   next();
 }
 
 /**
  * Check all types of things to determine how confident we are that this result
- * is correct. Score is based on overall score distribution in the result set
- * as well as how closely the result matches the text parameters.
+ * is correct.
  *
  * @param {object} req
- * @param {number} mean
- * @param {number} stdev
  * @param {object} hit
  * @returns {object}
  */
-function computeConfidenceScore(req, mean, stdev, hit) {
+function computeConfidenceScore(req, hit) {
   var dealBreakers = checkForDealBreakers(req, hit);
   if (dealBreakers) {
     hit.confidence = 0.5;
