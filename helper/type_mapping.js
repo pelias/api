@@ -51,7 +51,7 @@ var LAYERS_BY_SOURCE = {
   'locality','borough', 'neighbourhood', 'venue' ],
  whosonfirst: [ 'continent', 'country', 'dependency', 'macroregion', 'region',
    'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
-   'neighbourhood', 'microhood', 'disputed']
+   'neighbourhood', 'microhood', 'disputed', 'venue']
 };
 
 /*
@@ -60,7 +60,9 @@ var LAYERS_BY_SOURCE = {
  * may have layers that mean the same thing but have a different name
  */
 var LAYER_ALIASES = {
-  'coarse': LAYERS_BY_SOURCE.whosonfirst
+  'coarse': [ 'continent', 'country', 'dependency', 'macroregion', 'region',
+   'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
+   'neighbourhood', 'microhood', 'disputed']
 };
 
 // create a list of all layers by combining each entry from LAYERS_BY_SOURCE
