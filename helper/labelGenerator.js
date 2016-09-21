@@ -1,7 +1,7 @@
 var _ = require('lodash'),
     schemas = require('./labelSchema');
 
-module.exports = function( record ){
+module.exports = function( record, req ){
   var schema = getSchema(record.country_a);
 
   // in virtually all cases, this will be the `name` field
@@ -10,7 +10,7 @@ module.exports = function( record ){
   // iterate the schema
   for (var field in schema) {
     var valueFunction = schema[field];
-    labelParts.push(valueFunction(record));
+    labelParts.push(valueFunction(record, req));
   }
 
   // retain only things that are truthy

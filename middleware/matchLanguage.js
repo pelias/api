@@ -14,7 +14,7 @@
  *  3. Peliasconfig 'languages' list order
  */
 
-var fuzzyMatch = require('../helper/fuzzyMatch');
+var fuzzy = require('../helper/fuzzyMatch');
 var logger = require('pelias-logger').get('api');
 var languages = ['default'];
 var languageMatchThreshold = 0.7;
@@ -63,7 +63,7 @@ function matchLanguage(req, res, next) {
 
   var matchLang = function(lang) { // compute matching score
     var name2 = removeNumbers(names[lang]);
-    return fuzzyMatch(name, name2);
+    return fuzzy.match(name, name2);
   };
 
   var updateBest = function(lang, score) {

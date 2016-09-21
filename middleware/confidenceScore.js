@@ -15,7 +15,7 @@ var stats = require('stats-lite');
 var logger = require('pelias-logger').get('api');
 var check = require('check-types');
 var _ = require('lodash');
-var fuzzyMatch = require('../helper/fuzzyMatch');
+var fuzzy = require('../helper/fuzzyMatch');
 
 var RELATIVE_SCORES = false;
 
@@ -233,7 +233,7 @@ function checkLanguageProperty(text, propertyObject) {
     if (languages.indexOf(lang) === -1) {
       continue;
     }
-    var score = fuzzyMatch(text, propertyObject[lang]);
+    var score = fuzzy.match(text, propertyObject[lang]);
     if (score > bestScore ) {
       bestScore = score;
       bestName = propertyObject[lang];
@@ -317,7 +317,7 @@ function propMatch(textProp, hitProp, expectEnriched, numeric) {
     }
   }
 
-  return fuzzyMatch(textProp.toString(), hitProp.toString());
+  return fuzzy.match(textProp.toString(), hitProp.toString());
 }
 
 /**
@@ -375,17 +375,6 @@ function checkAddress(text, hit) {
   return res;
 }
 
-/* find best match from an array of values */
-function fuzzyMatchArray(text, array) {
-  var maxMatch = 0;
-  array.forEach( function(text2) {
-    var match = fuzzyMatch(text, text2);
-    if (match>maxMatch) {
-      maxMatch=match;
-    }
-  });
-  return maxMatch;
-}
 
 /**
  * Check admin regions of the parsed text against a result.
@@ -408,7 +397,7 @@ function checkAdmin(text, hit) {
   var bestMatch = 0;
 
   var updateBest = function(text) {
-    var match = fuzzyMatchArray(text, regions);
+    var match = fuzzy.matchArray(text, regions);
     if (match>bestMatch) {
       bestMatch = match;
     }
