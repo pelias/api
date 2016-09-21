@@ -10,6 +10,7 @@
  */
 
 var check = require('check-types');
+var logger = require('pelias-logger').get('api-confidence');
 
 function setup() {
   return computeScores;
@@ -39,217 +40,79 @@ function computeScores(req, res, next) {
  * @returns {object}
  */
 function computeConfidenceScore(req, hit) {
-  var dealBreakers = checkForDealBreakers(req, hit);
-  if (dealBreakers) {
-    hit.confidence = 0.5;
+
+  // if parsed text doesn't exist, which it never should, just assign a low confidence and move on
+  if (!req.clean.hasOwnProperty('parsed_text')) {
+    hit.confidence = 0.1;
+    hit.match_type = 'unknown';
     return hit;
   }
 
-  var checkCount = 3;
-  hit.confidence = 0;
+  // start with a confidence level of 1 because we trust ES queries to be accurate
+  hit.confidence = 1.0;
 
-  if (RELATIVE_SCORES) {
-    checkCount += 2;
-    hit.confidence += checkDistanceFromMean(hit._score, mean, stdev);
-    hit.confidence += computeZScore(hit._score, mean, stdev);
-  }
-  hit.confidence += checkName(req.clean.text, req.clean.parsed_text, hit);
-  hit.confidence += checkQueryType(req.clean.parsed_text, hit);
-  hit.confidence += checkAddress(req.clean.parsed_text, hit);
+  // in the case of fallback there might be deductions
+  hit.confidence *= checkFallbackLevel(req, hit);
 
-  // TODO: look at categories and location
-
-  hit.confidence /= checkCount;
+  // truncate the precision
   hit.confidence = Number((hit.confidence).toFixed(3));
 
   return hit;
 }
 
-/*
- * Check for clearly mismatching properties in a result
- * zip code and state (region) are currently checked if present
- *
- * @param {object|undefined} text
- * @param {object} hit
- * @returns {bool}
- */
-function checkForDealBreakers(req, hit) {
-  if (check.undefined(req.clean.parsed_text)) {
-    return false;
+function checkFallbackLevel(req, hit) {
+  if (checkFallbackOccurred(req, hit)) {
+    hit.match_type = 'fallback';
+
+    // if we know a fallback occurred, deduct points based on layer granularity
+    switch (hit.layer) {
+      case 'venue':
+      case 'address':
+        logger.warn('Fallback scenarios should not result in address or venue records!', req.clean.parsed_text);
+        return 0.8;
+      case 'street':
+        return 0.8;
+      case 'locality':
+      case 'borough':
+      case 'neighbourhood':
+        return 0.6;
+      case 'macrocounty':
+      case 'county':
+      case 'localadmin':
+        return 0.4;
+      case 'region':
+        return 0.3;
+      case 'country':
+      case 'dependency':
+      case 'macroregion':
+        return 0.1;
+      default:
+        return 0.1;
+    }
   }
 
-  if (check.assigned(req.clean.parsed_text.state) && hit.parent.region_a && req.clean.parsed_text.state !== hit.parent.region_a[0]) {
-    logger.debug('[confidence][deal-breaker]: state !== region_a');
-    return true;
-  }
-
-  if (check.assigned(req.clean.parsed_text.postalcode) && check.assigned(hit.address_parts) &&
-      req.clean.parsed_text.postalcode !== hit.address_parts.zip) {
-    return true;
-  }
+  hit.match_type = 'exact';
+  return 1.0;
 }
 
-/**
- * Check how statistically significant the score of this result is
- * given mean and standard deviation
- *
- * @param {number} score
- * @param {number} mean
- * @param {number} stdev
- * @returns {number}
- */
-function checkDistanceFromMean(score, mean, stdev) {
-  return (score - mean) > stdev ? 1 : 0;
+function checkFallbackOccurred(req, hit) {
+  // at this time we only do this for address queries, so keep this simple
+  // TODO: add other layer checks once we start handling disambiguation
+
+  return (requestedAddress(req) && hit.layer !== 'address') ||
+         (requestedStreet(req) && hit.layer !== 'street');
 }
 
-/**
- * Compare text string or name component of parsed_text against
- * default name in result
- *
- * @param {string} text
- * @param {object|undefined} parsed_text
- * @param {object} hit
- * @returns {number}
- */
-function checkName(text, parsed_text, hit) {
-  // parsed_text name should take precedence if available since it's the cleaner name property
-  if (check.assigned(parsed_text) && check.assigned(parsed_text.name) &&
-    hit.name.default.toLowerCase() === parsed_text.name.toLowerCase()) {
-    return 1;
-  }
-
-  // if no parsed_text check the text value as provided against result's default name
-  if (hit.name.default.toLowerCase() === text.toLowerCase()) {
-    return 1;
-  }
-
-  // if no matches detected, don't judge too harshly since it was a longshot anyway
-  return 0.7;
+function requestedAddress(req) {
+  // house number and street name were specified
+  return req.clean.parsed_text.hasOwnProperty('number') &&
+         req.clean.parsed_text.hasOwnProperty('street');
 }
 
-/**
- * text being set indicates the query was for an address
- * check if house number was specified and found in result
- *
- * @param {object|undefined} text
- * @param {object} hit
- * @returns {number}
- */
-function checkQueryType(text, hit) {
-  if (check.assigned(text) && check.assigned(text.number) &&
-      (check.undefined(hit.address_parts) ||
-      (check.assigned(hit.address_parts) && check.undefined(hit.address_parts.number)))) {
-    return 0;
-  }
-  return 1;
+function requestedStreet(req) {
+  // only street name was specified
+  return !req.clean.parsed_text.hasOwnProperty('number') &&
+          req.clean.parsed_text.hasOwnProperty('street');
 }
-
-/**
- * Determine the quality of the property match
- *
- * @param {string|number|undefined|null} textProp
- * @param {string|number|undefined|null} hitProp
- * @param {boolean} expectEnriched
- * @returns {number}
- */
-function propMatch(textProp, hitProp, expectEnriched) {
-
-  // both missing, but expect to have enriched value in result => BAD
-  if (check.undefined(textProp) && check.undefined(hitProp) && check.assigned(expectEnriched)) { return 0; }
-
-  // both missing, and no enrichment expected => GOOD
-  if (check.undefined(textProp) && check.undefined(hitProp)) { return 1; }
-
-  // text has it, result doesn't => BAD
-  if (check.assigned(textProp) && check.undefined(hitProp)) { return 0; }
-
-  // text missing, result has it, and enrichment is expected => GOOD
-  if (check.undefined(textProp) && check.assigned(hitProp) && check.assigned(expectEnriched)) { return 1; }
-
-  // text missing, result has it, enrichment not desired => 50/50
-  if (check.undefined(textProp) && check.assigned(hitProp)) { return 0.5; }
-
-  // both present, values match => GREAT
-  if (check.assigned(textProp) && check.assigned(hitProp) &&
-      textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) { return 1; }
-
-  // ¯\_(ツ)_/¯
-  return 0.7;
-}
-
-/**
- * Check various parts of the parsed text address
- * against the results
- *
- * @param {object} text
- * @param {string|number} [text.number]
- * @param {string} [text.street]
- * @param {string} [text.postalcode]
- * @param {string} [text.state]
- * @param {string} [text.country]
- * @param {object} hit
- * @param {object} [hit.address_parts]
- * @param {string|number} [hit.address_parts.number]
- * @param {string} [hit.address_parts.street]
- * @param {string|number} [hit.address_parts.zip]
- * @param {Array} [hit.parent.region_a]
- * @param {Array} [hit.parent.country_a]
- * @returns {number}
- */
-function checkAddress(text, hit) {
-  var checkCount = 5;
-  var res = 0;
-
-  if (check.assigned(text) && check.assigned(text.number) && check.assigned(text.street)) {
-    res += propMatch(text.number, (hit.address_parts ? hit.address_parts.number : null), false);
-    res += propMatch(text.street, (hit.address_parts ? hit.address_parts.street : null), false);
-    res += propMatch(text.postalcode, (hit.address_parts ? hit.address_parts.zip: null), true);
-    res += propMatch(text.state, (hit.parent.region_a ? hit.parent.region_a[0] : null), true);
-    res += propMatch(text.country, (hit.parent.country_a ? hit.parent.country_a[0] :null), true);
-
-    res /= checkCount;
-  }
-  else {
-    res = 1;
-  }
-
-  return res;
-}
-
-/**
- * z-scores have an effective range of -3.00 to +3.00.
- * An average z-score is ZERO.
- * A negative z-score indicates that the item/element is below
- * average and a positive z-score means that the item/element
- * in above average. When teachers say they are going to "curve"
- * the test, they do this by computing z-scores for the students' test scores.
- *
- * @param {number} score
- * @param {number} mean
- * @param {number} stdev
- * @returns {number}
- */
-function computeZScore(score, mean, stdev) {
-  if (stdev < 0.01) {
-    return 0;
-  }
-  // because the effective range of z-scores is -3.00 to +3.00
-  // add 10 to ensure a positive value, and then divide by 10+3+3
-  // to further normalize to %-like result
-  return (((score - mean) / (stdev)) + 10) / 16;
-}
-
-/**
- * Computes standard deviation given an array of values
- *
- * @param {Array} scores
- * @returns {number}
- */
-function computeStandardDeviation(scores) {
-  var stdev = stats.stdev(scores);
-  // if stdev is low, just consider it 0
-  return (stdev < 0.01) ? 0 : stdev;
-}
-
 
 module.exports = setup;
