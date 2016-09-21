@@ -8,6 +8,7 @@ var DETAILS_PROPS = [
   { name: 'street',            type: 'string' },
   { name: 'postalcode',        type: 'string' },
   { name: 'confidence',        type: 'default' },
+  { name: 'match_type',        type: 'string' },
   { name: 'distance',          type: 'default' },
   { name: 'country',           type: 'string' },
   { name: 'country_gid',       type: 'string' },
