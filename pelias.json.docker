@@ -39,7 +39,7 @@
         }
       }
     },
-    "languages": ["fi", "default", "sv", "se"],
+    "languages": ["fi", "default", "sv", "en", "se"],
     "localization" : {
       "confidenceAdminProperties": ["localadmin", "locality", "neighbourhood"],
       "confidenceAddressParts": {
