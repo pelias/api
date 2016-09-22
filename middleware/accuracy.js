@@ -9,9 +9,9 @@
 
 var check = require('check-types');
 
-var accuracyLevel_point = 'point';
-var accuracyLevel_interpolated = 'interpolated';
-var accuracyLevel_centroid = 'centroid';
+var accuracyLevelPoint = 'point';
+var accuracyLevelInterpolated = 'interpolated';
+var accuracyLevelCentroid = 'centroid';
 
 
 function setup() {
@@ -43,11 +43,11 @@ function computeAccuracyLevelForResult(hit) {
   switch (hit.layer) {
     case 'venue':
     case 'address':
-      hit.accuracy = accuracyLevel_point;
+      hit.accuracy = accuracyLevelPoint;
       break;
     // this means it's a street or admin area
     default:
-      hit.accuracy = accuracyLevel_centroid;
+      hit.accuracy = accuracyLevelCentroid;
       break;
   }
 
