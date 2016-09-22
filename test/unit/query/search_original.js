@@ -1,24 +1,10 @@
-var query = require('../../../query/search_original');
-var generate = query.query;
+var generate = require('../../../query/search_original');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
   test('valid interface', function(t) {
-    t.equal(typeof query, 'object', 'valid query object');
-    t.end();
-  });
-  test('valid interface', function(t) {
-    t.true(query.hasOwnProperty('query'), 'query is valid function');
-    t.true(query.hasOwnProperty('query_type'), 'query is valid function');
-    t.end();
-  });
-  test('valid interface', function(t) {
-    t.equal(typeof query.query, 'function', 'valid function');
-    t.end();
-  });
-  test('valid interface', function(t) {
-    t.equal(typeof query.query_type, 'string', 'valid query_type');
+    t.equal(typeof generate, 'function', 'valid function');
     t.end();
   });
 };
@@ -38,7 +24,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_bbox_original');
 
-    t.deepEqual(compiled, expected, 'search_linguistic_focus_bbox');
+    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_linguistic_focus_bbox');
     t.end();
   });
 
@@ -55,7 +42,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_bbox_original');
 
-    t.deepEqual(compiled, expected, 'search_linguistic_bbox');
+    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_linguistic_bbox');
     t.end();
   });
 
@@ -68,7 +56,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_only_original');
 
-    t.deepEqual(compiled, expected, 'search_linguistic_only');
+    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_linguistic_only');
     t.end();
   });
 
@@ -82,7 +71,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_original');
 
-    t.deepEqual(compiled, expected, 'search_linguistic_focus');
+    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_linguistic_focus');
     t.end();
   });
 
@@ -96,7 +86,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_null_island_original');
 
-    t.deepEqual(compiled, expected, 'search_linguistic_focus_null_island');
+    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_linguistic_focus_null_island');
     t.end();
   });
 
@@ -117,7 +108,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_full_address_original');
 
-    t.deepEqual(compiled, expected, 'search_full_address');
+    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_full_address');
     t.end();
   });
 
@@ -135,7 +127,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_partial_address_original');
 
-    t.deepEqual(compiled, expected, 'search_partial_address');
+    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_partial_address');
     t.end();
   });
 
@@ -147,13 +140,14 @@ module.exports.tests.query = function(test, common) {
         street: 'water st',
         state: 'NY',
         regions: [ 'manhattan' ]
-      },
+      }
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_regions_address_original');
 
-    t.deepEqual(compiled, expected, 'search_regions_address');
+    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_regions_address');
     t.end();
   });
 
@@ -167,7 +161,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_boundary_country_original');
 
-    t.deepEqual(compiled, expected, 'search: valid boundary.country query');
+    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search: valid boundary.country query');
     t.end();
   });
 
@@ -180,7 +175,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_with_source_filtering_original');
 
-    t.deepEqual(compiled, expected, 'search: valid search query with source filtering');
+    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search: valid search query with source filtering');
     t.end();
   });
 
@@ -193,7 +189,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_with_category_filtering_original');
 
-    t.deepEqual(compiled, expected, 'valid search query with category filtering');
+    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.body, expected, 'valid search query with category filtering');
     t.end();
   });
 };

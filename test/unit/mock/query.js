@@ -4,7 +4,10 @@ function setup(){
 }
 
 function query( clean ){
-  return clean;
+  return {
+    type: 'mock',
+    body: clean
+  };
 }
 
 module.exports = setup;

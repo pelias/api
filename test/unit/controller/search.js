@@ -1,6 +1,6 @@
 var setup = require('../../../controller/search'),
     mockBackend = require('../mock/backend'),
-    mockQuery = require('../mock/search_query');
+    mockQuery = require('../mock/query');
 var proxyquire =  require('proxyquire').noCallThru();
 
 module.exports.tests = {};
@@ -90,7 +90,7 @@ module.exports.tests.functional_success = function(test, common) {
         searchType: 'dfs_query_then_fetch'
       }, 'correct backend command');
     });
-    var controller = setup(fakeDefaultConfig, backend, mockQuery);
+    var controller = setup(fakeDefaultConfig, backend, mockQuery());
     var res = {
       status: function (code) {
         t.equal(code, 200, 'status set');
@@ -126,7 +126,7 @@ module.exports.tests.functional_success = function(test, common) {
         searchType: 'dfs_query_then_fetch'
       }, 'correct backend command');
     });
-    var controller = setup(fakeCustomizedConfig, backend, mockQuery);
+    var controller = setup(fakeCustomizedConfig, backend, mockQuery());
     var res = {
       status: function (code) {
         t.equal(code, 200, 'status set');
@@ -148,7 +148,7 @@ module.exports.tests.functional_failure = function(test, common) {
     var backend = mockBackend( 'client/search/fail/1', function( cmd ){
       t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias', searchType: 'dfs_query_then_fetch' }, 'correct backend command');
     });
-    var controller = setup( fakeDefaultConfig, backend, mockQuery );
+    var controller = setup( fakeDefaultConfig, backend, mockQuery() );
     var req = { clean: { a: 'b' }, errors: [], warnings: [] };
     var next = function(){
       t.equal(req.errors[0],'a backend error occurred');
@@ -163,7 +163,7 @@ module.exports.tests.timeout = function(test, common) {
     var backend = mockBackend( 'client/search/timeout/1', function( cmd ){
       t.deepEqual(cmd, { body: { a: 'b' }, index: 'pelias', searchType: 'dfs_query_then_fetch' }, 'correct backend command');
     });
-    var controller = setup( fakeDefaultConfig, backend, mockQuery );
+    var controller = setup( fakeDefaultConfig, backend, mockQuery() );
     var req = { clean: { a: 'b' }, errors: [], warnings: [] };
     var next = function(){
       t.equal(req.errors[0],'Request Timeout after 5000ms');
@@ -178,7 +178,7 @@ module.exports.tests.existing_results = function(test, common) {
     var backend = function() {
       throw new Error('backend should not have been called');
     };
-    var controller = setup( fakeDefaultConfig, backend, mockQuery );
+    var controller = setup( fakeDefaultConfig, backend, mockQuery() );
 
     var req = { };
     // the existence of `data` means that there are already results so
@@ -198,10 +198,7 @@ module.exports.tests.existing_results = function(test, common) {
 module.exports.tests.undefined_query = function(test, common) {
   test('query returning undefined should not call service', function(t) {
     // a function that returns undefined
-    var query = {
-      query: function () { return; },
-      query_type: 'empty'
-    };
+    var query = function () { return; };
 
     var search_service_was_called = false;
 

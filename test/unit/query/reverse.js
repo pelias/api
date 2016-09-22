@@ -1,24 +1,10 @@
-var query = require('../../../query/reverse');
-var generate = query.query;
+var generate = require('../../../query/reverse');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
   test('valid interface', function(t) {
-    t.equal(typeof query, 'object', 'valid query object');
-    t.end();
-  });
-  test('valid interface', function(t) {
-    t.true(query.hasOwnProperty('query'), 'query is valid function');
-    t.true(query.hasOwnProperty('query_type'), 'query is valid function');
-    t.end();
-  });
-  test('valid interface', function(t) {
-    t.equal(typeof query.query, 'function', 'valid function');
-    t.end();
-  });
-  test('valid interface', function(t) {
-    t.equal(typeof query.query_type, 'string', 'valid query_type');
+    t.equal(typeof generate, 'function', 'valid function');
     t.end();
   });
 };
@@ -36,7 +22,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/reverse_standard');
 
-    t.deepEqual(compiled, expected, 'reverse_standard');
+    t.deepEqual(compiled.type, 'reverse', 'query type set');
+    t.deepEqual(compiled.body, expected, 'reverse_standard');
     t.end();
   });
 
@@ -52,7 +39,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/reverse_null_island');
 
-    t.deepEqual(compiled, expected, 'reverse_null_island');
+    t.deepEqual(compiled.type, 'reverse', 'query type set');
+    t.deepEqual(compiled.body, expected, 'reverse_null_island');
     t.end();
   });
 
@@ -68,7 +56,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = '123km';
 
-    t.deepEqual(compiled.query.bool.filter[0].geo_distance.distance, expected, 'distance set to boundary circle radius');
+    t.deepEqual(compiled.type, 'reverse', 'query type set');
+    t.deepEqual(compiled.body.query.bool.filter[0].geo_distance.distance, expected, 'distance set to boundary circle radius');
     t.end();
   });
 
@@ -85,8 +74,9 @@ module.exports.tests.query = function(test, common) {
 
     // this should not equal `point.lat` and `point.lon` as it was explitely specified
     var expected = { lat: clean['boundary.circle.lat'], lon: clean['boundary.circle.lon'] };
-    var centroid = compiled.query.bool.filter[0].geo_distance.center_point;
+    var centroid = compiled.body.query.bool.filter[0].geo_distance.center_point;
 
+    t.deepEqual(compiled.type, 'reverse', 'query type set');
     t.deepEqual(centroid, expected, 'reverse: boundary.circle/lon overrides point.lat/lon');
     t.end();
   });
@@ -101,7 +91,7 @@ module.exports.tests.query = function(test, common) {
       });
 
       var compiled = JSON.parse( JSON.stringify( query ) );
-      t.equal( compiled.size, expected[index], 'valid reverse query for size: '+ size);
+      t.equal( compiled.body.size, expected[index], 'valid reverse query for size: '+ size);
     });
     t.end();
   });
@@ -119,7 +109,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/reverse_with_boundary_country');
 
-    t.deepEqual(compiled, expected, 'valid reverse query with boundary.country');
+    t.deepEqual(compiled.type, 'reverse', 'query type set');
+    t.deepEqual(compiled.body, expected, 'valid reverse query with boundary.country');
     t.end();
   });
 
@@ -136,7 +127,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/reverse_with_source_filtering');
 
-    t.deepEqual(compiled, expected, 'valid reverse query with source filtering');
+    t.deepEqual(compiled.type, 'reverse', 'query type set');
+    t.deepEqual(compiled.body, expected, 'valid reverse query with source filtering');
     t.end();
   });
 
@@ -153,7 +145,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/reverse_with_layer_filtering');
 
-    t.deepEqual(compiled, expected, 'valid reverse query with source filtering');
+    t.deepEqual(compiled.type, 'reverse', 'query type set');
+    t.deepEqual(compiled.body, expected, 'valid reverse query with source filtering');
     t.end();
   });
 };
