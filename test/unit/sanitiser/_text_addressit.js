@@ -19,13 +19,67 @@ module.exports.tests.text_parser = function(test, common) {
     t.end();
   });
 
-  var queries = [
-    { name: 'soho', admin_parts: 'new york' },
-    { name: 'chelsea', admin_parts: 'london' },
-    { name: '123 main', admin_parts: 'new york' }
+  var usQueries = [
+    { name: 'soho', admin_parts: 'new york', state: 'NY' },
+    { name: '123 main', admin_parts: 'new york', state: 'NY' }
   ];
 
-  queries.forEach(function (query) {
+  usQueries.forEach(function (query) {
+    test('naive parsing ' + query, function(t) {
+      var raw = {
+        text: query.name + ', ' + query.admin_parts
+      };
+      var clean = {};
+
+      var expected_clean = {
+        text: query.name + ', ' + query.admin_parts,
+        parsed_text: {
+          name: query.name,
+          regions: [ query.name ],
+          admin_parts: query.admin_parts,
+          state: query.state
+        }
+      };
+
+      var messages = sanitiser(raw, clean);
+
+      t.deepEqual(messages, { errors: [], warnings: [] } );
+      t.deepEqual(clean, expected_clean);
+      t.end();
+
+    });
+
+    test('naive parsing ' + query + ' without spaces', function(t) {
+      var raw = {
+        text: query.name + ',' + query.admin_parts
+      };
+      var clean = {};
+
+      var expected_clean = {
+        text: query.name + ',' + query.admin_parts,
+        parsed_text: {
+          name: query.name,
+          regions: [ query.name ],
+          admin_parts: query.admin_parts,
+          state: query.state
+        }
+      };
+
+      var messages = sanitiser(raw, clean);
+
+      t.deepEqual(messages, { errors: [], warnings: [] } );
+      t.deepEqual(clean, expected_clean);
+      t.end();
+
+    });
+
+  });
+
+  var nonUSQueries = [
+    { name: 'chelsea', admin_parts: 'london' },
+  ];
+
+  nonUSQueries.forEach(function (query) {
     test('naive parsing ' + query, function(t) {
       var raw = {
         text: query.name + ', ' + query.admin_parts
@@ -158,7 +212,11 @@ module.exports.tests.text_parser = function(test, common) {
     clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
-      text: 'main particle new york'
+      text: 'main particle new york',
+      parsed_text: {
+        regions: [ 'main particle' ],
+        state: 'NY'
+      }
     };
 
     var messages = sanitiser(raw, clean);
