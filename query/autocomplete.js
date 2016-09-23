@@ -114,7 +114,10 @@ function generateQuery( clean ){
     textParser( clean.parsed_text, vs );
   }
 
-  return query.render( vs );
+  return {
+    type: 'autocomplete',
+    body: query.render(vs)
+  };
 }
 
 module.exports = generateQuery;

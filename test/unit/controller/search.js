@@ -47,7 +47,8 @@ module.exports.tests.functional_success = function(test, common) {
   }];
 
   var expectedMeta = {
-    scores: [10, 20]
+    scores: [10, 20],
+    query_type: 'mock'
   };
 
   var expectedData = [
@@ -197,9 +198,7 @@ module.exports.tests.existing_results = function(test, common) {
 module.exports.tests.undefined_query = function(test, common) {
   test('query returning undefined should not call service', function(t) {
     // a function that returns undefined
-    var query = function() {
-      return;
-    };
+    var query = function () { return; };
 
     var search_service_was_called = false;
 

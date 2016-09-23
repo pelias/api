@@ -31,10 +31,10 @@ function setup( config, backend, query ){
     // log clean parameters for stats
     logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
 
-    var query_body = query(req.clean);
+    var renderedQuery = query(req.clean);
 
     // if there's no query to call ES with, skip the service
-    if (_.isUndefined(query_body)) {
+    if (_.isUndefined(renderedQuery)) {
       return next();
     }
 
@@ -42,7 +42,7 @@ function setup( config, backend, query ){
     var cmd = {
       index: config.indexName,
       searchType: 'dfs_query_then_fetch',
-      body: query_body
+      body: renderedQuery.body
     };
 
     logger.debug( '[ES req]', cmd );
@@ -61,7 +61,9 @@ function setup( config, backend, query ){
       // set response data
       else {
         res.data = docs;
-        res.meta = meta;
+        res.meta = meta || {};
+        // store the query_type for subsequent middleware
+        res.meta.query_type = renderedQuery.type;
       }
       logger.debug('[ES response]', docs);
       next();

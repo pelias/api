@@ -121,7 +121,10 @@ function generateQuery( clean ){
 
 function getQuery(vs) {
   if (hasStreet(vs)) {
-    return fallbackQuery.render(vs);
+    return {
+      type: 'fallback',
+      body: fallbackQuery.render(vs)
+    };
   }
 
   // returning undefined is a signal to a later step that the addressit-parsed

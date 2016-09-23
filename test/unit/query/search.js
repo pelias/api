@@ -31,7 +31,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_bbox');
 
-    t.deepEqual(compiled, expected, 'search_linguistic_focus_bbox');
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_linguistic_focus_bbox');
     t.end();
   });
 
@@ -54,7 +55,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_bbox');
 
-    t.deepEqual(compiled, expected, 'search_linguistic_bbox');
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_linguistic_bbox');
     t.end();
   });
 
@@ -72,7 +74,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_only');
 
-    t.deepEqual(compiled, expected, 'search_linguistic_only');
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_linguistic_only');
     t.end();
   });
 
@@ -91,7 +94,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus');
 
-    t.deepEqual(compiled, expected, 'search_linguistic_focus');
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_linguistic_focus');
     t.end();
   });
 
@@ -113,7 +117,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_viewport');
 
-    t.deepEqual(compiled, expected, 'search_linguistic_viewport');
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_linguistic_viewport');
     t.end();
   });
 
@@ -137,7 +142,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_viewport_min_diagonal');
 
-    t.deepEqual(compiled, expected, 'valid search query');
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'valid search query');
     t.end();
   });
 
@@ -156,7 +162,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_null_island');
 
-    t.deepEqual(compiled, expected, 'search_linguistic_focus_null_island');
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_linguistic_focus_null_island');
     t.end();
   });
 
@@ -182,7 +189,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse(JSON.stringify(query));
     var expected = require('../fixture/search_fallback');
 
-    t.deepEqual(compiled, expected, 'fallbackQuery');
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'fallbackQuery');
     t.end();
 
   });
@@ -220,7 +228,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_boundary_country');
 
-    t.deepEqual(compiled, expected, 'search: valid boundary.country query');
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search: valid boundary.country query');
     t.end();
   });
 
@@ -238,7 +247,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_with_source_filtering');
 
-    t.deepEqual(compiled, expected, 'search: valid search query with source filtering');
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search: valid search query with source filtering');
     t.end();
   });
 
@@ -256,7 +266,8 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_with_category_filtering');
 
-    t.deepEqual(compiled, expected, 'valid search query with category filtering');
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'valid search query with category filtering');
     t.end();
   });
 };

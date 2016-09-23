@@ -1,4 +1,4 @@
-var confidenceScore = require('../../../middleware/confidenceScore')();
+var confidenceScore = require('../../../middleware/confidenceScoreFallback')();
 
 module.exports.tests = {};
 
@@ -89,16 +89,16 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'original'
+        query_type: 'fallback'
       }
     };
 
     confidenceScore(req, res, function() {});
-    t.equal(res.data[0].confidence, 0.6, 'score was set');
+    t.equal(res.data[0].confidence, 0.1, 'score was set');
     t.end();
   });
 
-  test('undefined region fields should be handled gracefully', function(t) {
+  test('no fallback addresses should have max score', function(t) {
     var req = {
       clean: {
         text: '123 Main St, City, NM',
@@ -114,48 +114,12 @@ module.exports.tests.confidenceScore = function(test, common) {
         _score: 10,
         found: true,
         value: 1,
+        layer: 'address',
         center_point: { lat: 100.1, lon: -50.5 },
         name: { default: 'test name1' },
         parent: {
           country: ['country1'],
-          region: undefined,
-          region_a: undefined,
-          county: ['city1']
-        }
-      }],
-      meta: {
-        scores: [10],
-        query_type: 'original'
-      }
-    };
-
-    confidenceScore(req, res, function() {});
-    t.equal(res.data[0].confidence, 0.28, 'score was set');
-    t.end();
-  });
-
-  test('should only work for original query_type', function(t) {
-    var req = {
-      clean: {
-        text: '123 Main St, City, NM',
-        parsed_text: {
-          number: 123,
-          street: 'Main St',
-          state: 'NM'
-        }
-      }
-    };
-    var res = {
-      data: [{
-        _score: 10,
-        found: true,
-        value: 1,
-        center_point: { lat: 100.1, lon: -50.5 },
-        name: { default: 'test name1' },
-        parent: {
-          country: ['country1'],
-          region: undefined,
-          region_a: undefined,
+          region: ['region1'],
           county: ['city1']
         }
       }],
@@ -166,7 +130,111 @@ module.exports.tests.confidenceScore = function(test, common) {
     };
 
     confidenceScore(req, res, function() {});
-    t.false(res.data[0].hasOwnProperty('confidence'), 'score was not set');
+    t.equal(res.data[0].confidence, 1.0, 'max score was set');
+    t.end();
+  });
+
+  test('no fallback street query should have max score', function(t) {
+    var req = {
+      clean: {
+        text: 'Main St, City, NM',
+        parsed_text: {
+          street: 'Main St',
+          state: 'NM'
+        }
+      }
+    };
+    var res = {
+      data: [{
+        _score: 10,
+        found: true,
+        value: 1,
+        layer: 'street',
+        center_point: { lat: 100.1, lon: -50.5 },
+        name: { default: 'test name1' },
+        parent: {
+          country: ['country1'],
+          region: ['region1'],
+          county: ['city1']
+        }
+      }],
+      meta: {
+        scores: [10],
+        query_type: 'fallback'
+      }
+    };
+
+    confidenceScore(req, res, function() {});
+    t.equal(res.data[0].confidence, 1.0, 'max score was set');
+    t.end();
+  });
+
+  test('fallback to locality should have score deduction', function(t) {
+    var req = {
+      clean: {
+        text: '123 Main St, City, NM',
+        parsed_text: {
+          number: 123,
+          street: 'Main St',
+          state: 'NM'
+        }
+      }
+    };
+    var res = {
+      data: [{
+        _score: 10,
+        found: true,
+        value: 1,
+        layer: 'locality',
+        center_point: { lat: 100.1, lon: -50.5 },
+        name: { default: 'test name1' },
+        parent: {
+          country: ['country1']
+        }
+      }],
+      meta: {
+        scores: [10],
+        query_type: 'fallback'
+      }
+    };
+
+    confidenceScore(req, res, function() {});
+    t.equal(res.data[0].confidence, 0.6, 'score was set');
+    t.end();
+  });
+
+  test('fallback to country should have score deduction', function(t) {
+    var req = {
+      clean: {
+        text: '123 Main St, City, NM, USA',
+        parsed_text: {
+          number: 123,
+          street: 'Main St',
+          state: 'NM',
+          country: 'USA'
+        }
+      }
+    };
+    var res = {
+      data: [{
+        _score: 10,
+        found: true,
+        value: 1,
+        layer: 'country',
+        center_point: { lat: 100.1, lon: -50.5 },
+        name: { default: 'test name1' },
+        parent: {
+          country: ['country1']
+        }
+      }],
+      meta: {
+        scores: [10],
+        query_type: 'fallback'
+      }
+    };
+
+    confidenceScore(req, res, function() {});
+    t.equal(res.data[0].confidence, 0.1, 'score was set');
     t.end();
   });
 };
