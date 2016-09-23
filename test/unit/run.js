@@ -25,6 +25,7 @@ var tests = [
   require('./helper/type_mapping'),
   require('./helper/sizeCalculator'),
   require('./middleware/access_log'),
+  require('./middleware/accuracy'),
   require('./middleware/confidenceScore'),
   require('./middleware/confidenceScoreFallback'),
   require('./middleware/confidenceScoreReverse'),

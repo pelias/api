@@ -42,3 +42,4 @@ json.geocoding.query.parsed_text['admin_parts'].should.eql "ny"
 
 json.features[0].properties.confidence.should.eql 1
 json.features[0].properties.match_type.should.eql "exact"
+json.features[0].properties.accuracy.should.eql "point"

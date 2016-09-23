@@ -39,6 +39,7 @@ var postProc = {
   confidenceScores: require('../middleware/confidenceScore'),
   confidenceScoresFallback: require('../middleware/confidenceScoreFallback'),
   confidenceScoresReverse: require('../middleware/confidenceScoreReverse'),
+  accuracy: require('../middleware/accuracy'),
   dedupe: require('../middleware/dedupe'),
   localNamingConventions: require('../middleware/localNamingConventions'),
   renamePlacenames: require('../middleware/renamePlacenames'),
@@ -81,6 +82,7 @@ function addRoutes(app, peliasConfig) {
       postProc.confidenceScores(peliasConfig),
       postProc.confidenceScoresFallback(),
       postProc.dedupe(),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
@@ -94,6 +96,7 @@ function addRoutes(app, peliasConfig) {
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.dedupe(),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
@@ -110,6 +113,7 @@ function addRoutes(app, peliasConfig) {
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),
       postProc.dedupe(),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
@@ -126,6 +130,7 @@ function addRoutes(app, peliasConfig) {
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),
       postProc.dedupe(),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
@@ -136,6 +141,7 @@ function addRoutes(app, peliasConfig) {
     place: createRouter([
       sanitisers.place.middleware,
       controllers.place(peliasConfig),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
