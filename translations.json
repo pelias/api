@@ -104,6 +104,43 @@
       "Kainuu":"Kajanaland",
       "Lappi":"Lappland",
       "Ahvenanmaa":"Åland"
+    },
+    "__layer": {
+      "country":"land",
+      "dependency":"självstyrelse",
+      "region":"provins",
+      "localadmin":"kommun",
+      "locality":"lokalitet",
+      "neighbourhood":"grannskap",
+      "address":"adress",
+      "venue":"plats",
+      "stop":"hållplats",
+      "station":"station",
+      "street":"gata"
+    },
+    "__category": {
+      "food": "mat",
+      "retail": "handeln",
+      "health": "hälsa",
+      "entertainment": "underhållning",
+      "accommodation": "hotell",
+      "recreation": "rekreation",
+      "education": "utbildning",
+      "religion": "religion",
+      "transport": "transport",
+      "government": "regering",
+      "natural": "natur"
+    },
+    "__geographic": {
+      "north": "norra",
+      "east": "östra",
+      "south": "södra",
+      "west": "västra",
+      "northwest": "nordvästra",
+      "northeast": "nordöstra",
+      "southeast": "sydöstra",
+      "southwest": "sydvästra",
+      "central": "central"
     }
   },
   "fi": {
