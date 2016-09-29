@@ -73,6 +73,17 @@ test('valid combination', function(t) {
     t.end();
   });
 
+  test('valid combination: wof venues', function(t) {
+    var raw = {};
+    var clean = { sources: ['whosonfirst'], layers: ['venue'] };
+
+    var messages = sanitize(raw, clean);
+
+    t.equal(messages.errors.length, 0, 'should return no errors');
+    t.equal(messages.warnings.length, 0, 'should return no warnings');
+    t.end();
+  });
+
   test('valid combination because of multiple sources', function(t) {
     var raw = {};
     var clean = { sources: ['openstreetmap', 'openaddresses'], layers: ['venue'] };
