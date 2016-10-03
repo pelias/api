@@ -32,7 +32,7 @@ function expandByAddress(docs) {
   var names = [];
 
   docs.forEach(function(doc) {
-    var name;
+    var name = doc.expandedName || doc.name;
     if(doc.street) {
       var addr = doc.street;
       if(doc.housenumber) {
@@ -44,14 +44,10 @@ function expandByAddress(docs) {
       }
       if(doc.name.toLowerCase() !== addr.toLowerCase()) {
         // expand by adding address to the place name
-        name = doc.name + ', ' + addr;
+        name = name + ', ' + addr;
       }
     }
-    if(name) {
-      names.push(name);
-    } else {
-      names.push(doc.name);
-    }
+    names.push(name);
   });
   return names;
 }
@@ -63,7 +59,7 @@ function expandByAdmin(docs) {
   var names = [];
 
   docs.forEach(function(doc) {
-    var name;
+    var name = doc.expandedName || doc.name;
     for (var i=0; i<adminExpansions.length; i++) {
       var exp = doc[adminExpansions[i]];
       if (exp && doc.label.search(exp)===-1) {
@@ -71,11 +67,7 @@ function expandByAdmin(docs) {
         break;
       }
     }
-    if(name) {
-      names.push(name);
-    } else {
-      names.push(doc.name);
-    }
+    names.push(name);
   });
   return names;
 }
@@ -84,7 +76,8 @@ function expandByLayer(docs, lang) {
   var names = [];
 
   docs.forEach(function(doc) {
-    names.push(doc.name + ' (' + translate(lang, '__layer', doc.layer) + ')');
+    var name = doc.expandedName || doc.name;
+    names.push(name + ' (' + translate(lang, '__layer', doc.layer) + ')');
   });
   return names;
 }
@@ -108,7 +101,7 @@ function expandByLocation(docs, lang) {
 
   // initialize with default names
   docs.forEach(function(doc) {
-    names.push(doc.name);
+    names.push(doc.expandedName || doc.name);
   });
   if(docs.length<2) { // Sanitize. Comparisons below will fail for a single doc
     return;
@@ -261,7 +254,7 @@ function expandByCategory(docs, lang) {
   }
 
   docs.forEach(function(doc) {
-    var name;
+    var name  = doc.expandedName || doc.name;
     if(doc.category) {
       var extensions = [];
       doc.category.forEach(function(category) {
@@ -275,14 +268,10 @@ function expandByCategory(docs, lang) {
         }
       });
       if(extensions.length) {
-        name = doc.name + ' (' + extensions.join() + ')';
+        name += ' (' + extensions.join(', ') + ')';
       }
     }
-    if(name) {
-      names.push(name);
-    } else {
-      names.push(doc.name);
-    }
+    names.push(name);
   });
   return names;
 }

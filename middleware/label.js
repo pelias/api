@@ -77,7 +77,7 @@ function addLabels(req, res, next) {
 
       // assign expanded names to docs
       for(var ei=0; ei<current.length; ei++) {
-        data[current[ei]].name = expandedNames[ei];
+        data[current[ei]].expandedName = expandedNames[ei];
       }
 
       // regenerate labels for unique cases and  remove them from current set
