@@ -72,6 +72,9 @@ function matchLanguage(req, res, next) {
   };
 
   for(var lang in names) {
+    if(languages.indexOf(lang)===-1) {
+      continue; // accept only configured languages
+    }
     var score = matchLang(lang);
     if (score > bestScore ) {
       updateBest(lang, score);
