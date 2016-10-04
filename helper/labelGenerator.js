@@ -59,6 +59,10 @@ function getInitialLabel(record) {
     return [];
   }
 
+  if (record.expandedName) {
+    return [record.expandedName];
+  }
+
   return [record.name];
 
 }

@@ -72,6 +72,9 @@ function matchLanguage(req, res, next) {
   };
 
   for(var lang in names) {
+    if(languages.indexOf(lang)===-1) {
+      continue; // accept only configured languages
+    }
     var score = matchLang(lang);
     if (score > bestScore ) {
       updateBest(lang, score);
@@ -93,8 +96,11 @@ function matchLanguage(req, res, next) {
   }
   // change lang if best hit is good enough
   if (bestLang && bestScore > languageMatchThreshold) {
-    // logger.debug('Best match by lang ' + bestLang );
-    req.clean.lang = bestLang;
+    if(bestLang!=='default') { // 'default' is not a language which can be used for translations
+
+      // logger.debug('Best match by lang ' + bestLang );
+      req.clean.lang = bestLang;
+    }
   }
   next();
 }
