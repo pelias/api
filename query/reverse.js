@@ -71,7 +71,10 @@ function generateQuery( clean ){
     vs.var('input:categories', clean.categories);
   }
 
-  return query.render( vs );
+  return {
+    type: 'reverse',
+    body: query.render(vs)
+  };
 }
 
 module.exports = generateQuery;

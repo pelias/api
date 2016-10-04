@@ -46,7 +46,8 @@ module.exports.tests.confidenceScore = function(test, common) {
         }
       }],
       meta: {
-        scores: [10]
+        scores: [10],
+        query_type: 'original'
       }
     };
 
@@ -86,7 +87,10 @@ module.exports.tests.confidenceScore = function(test, common) {
           county: ['city2']
         }
       }],
-      meta: {scores: [10]}
+      meta: {
+        scores: [10],
+        query_type: 'original'
+      }
     };
 
     confidenceScore(req, res, function() {});
@@ -119,11 +123,50 @@ module.exports.tests.confidenceScore = function(test, common) {
           county: ['city1']
         }
       }],
-      meta: {scores: [10]}
+      meta: {
+        scores: [10],
+        query_type: 'original'
+      }
     };
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 0.28, 'score was set');
+    t.end();
+  });
+
+  test('should only work for original query_type', function(t) {
+    var req = {
+      clean: {
+        text: '123 Main St, City, NM',
+        parsed_text: {
+          number: 123,
+          street: 'Main St',
+          state: 'NM'
+        }
+      }
+    };
+    var res = {
+      data: [{
+        _score: 10,
+        found: true,
+        value: 1,
+        center_point: { lat: 100.1, lon: -50.5 },
+        name: { default: 'test name1' },
+        parent: {
+          country: ['country1'],
+          region: undefined,
+          region_a: undefined,
+          county: ['city1']
+        }
+      }],
+      meta: {
+        scores: [10],
+        query_type: 'fallback'
+      }
+    };
+
+    confidenceScore(req, res, function() {});
+    t.false(res.data[0].hasOwnProperty('confidence'), 'score was not set');
     t.end();
   });
 };

@@ -1,42 +1,18 @@
-
 var logger = require('pelias-logger').get('api');
-var placeTypes = require('../helper/placeTypes');
-
-/*
-This list should only contain admin fields we are comfortable matching in the case
-when we can't identify parts of an address. This shouldn't contain fields like country_a
-or postalcode because we should only try to match those when we're sure that's what they are.
- */
-var adminFields = placeTypes.concat([
-  'region_a'
-]);
-
-/**
-  @todo: refactor me
-**/
 
 // all the address parsing logic
 function addParsedVariablesToQueryVariables( parsed_text, vs ){
-
-  // is it a street address?
-  var isStreetAddress = parsed_text.hasOwnProperty('number') && parsed_text.hasOwnProperty('street');
-  if( isStreetAddress ){
-    vs.var( 'input:name', parsed_text.number + ' ' + parsed_text.street );
-  }
-
-  // ?
-  else if( parsed_text.admin_parts ) {
-    vs.var( 'input:name', parsed_text.name );
-  }
-
-  // ?
-  else {
-    logger.warn( 'chaos monkey asks: what happens now?' );
-    logger.warn( parsed_text );
-    try{ throw new Error(); } catch(e){ logger.warn( e.stack ); } // print a stack trace
-  }
-
   // ==== add parsed matches [address components] ====
+
+  // query - Mexitaly, Sunoco, Lowes
+  if (parsed_text.hasOwnProperty('query')) {
+    vs.var('input:query', parsed_text.query);
+  }
+
+  // categories - restaurants, hotels, bars
+  if (parsed_text.hasOwnProperty('category')) {
+    vs.var('input:category', parsed_text.category);
+  }
 
   // house number
   if( parsed_text.hasOwnProperty('number') ){
@@ -48,6 +24,16 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
     vs.var( 'input:street', parsed_text.street );
   }
 
+  // neighbourhood
+  if (parsed_text.hasOwnProperty('neighbourhood')) {
+    vs.var( 'input:neighbourhood', parsed_text.neighbourhood);
+  }
+
+  // borough
+  if (parsed_text.hasOwnProperty('borough')) {
+    vs.var( 'input:borough', parsed_text.borough);
+  }
+
   // postal code
   if( parsed_text.hasOwnProperty('postalcode') ){
     vs.var( 'input:postcode', parsed_text.postalcode );
@@ -57,43 +43,52 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
 
   // city
   if( parsed_text.hasOwnProperty('city') ){
-    vs.var( 'input:county', parsed_text.city );
+    vs.var( 'input:locality', parsed_text.city );
+  }
+
+  // county
+  if( parsed_text.hasOwnProperty('county') ){
+    vs.var( 'input:county', parsed_text.county );
   }
 
   // state
   if( parsed_text.hasOwnProperty('state') ){
-    vs.var( 'input:region_a', parsed_text.state );
+    vs.var( 'input:region', parsed_text.state );
   }
 
   // country
   if( parsed_text.hasOwnProperty('country') ){
-    vs.var( 'input:country_a', parsed_text.country );
+    vs.var( 'input:country', parsed_text.country );
   }
 
-  // ==== deal with the 'leftover' components ====
-  // @todo: clean up this code
-
-  // a concept called 'leftovers' which is just 'admin_parts' /or 'regions'.
-  var leftoversString = '';
-  if( parsed_text.hasOwnProperty('admin_parts') ){
-    leftoversString = parsed_text.admin_parts;
+  // libpostal sometimes parses addresses with prefix house numbers in places where
+  // the house number is normally postfix incorrectly, for instance:
+  // ```> 1 Grolmanstraße, Berlin, Germany
+  //
+  // Result:
+  //
+  // {
+  //   "house": "1",
+  //   "road": "grolmanstrasse",
+  //   "state": "berlin",
+  //   "country": "germany"
+  // }```
+  //
+  // In libpostal parlance, `house` is just a query term, not the house number.
+  // This special case moves the query term to the house number field if there's a street,
+  // there's no house number, and the query is parseable as an integer, then use the
+  // query as the house number and blank out the query.
+  if (shouldSetQueryIntoHouseNumber(vs)) {
+    vs.var( 'input:housenumber', vs.var('input:query').toString());
+    vs.unset( 'input:query' );
   }
-  else if( parsed_text.hasOwnProperty('regions') ){
-    leftoversString = parsed_text.regions.join(' ');
-  }
 
-  // if we have 'leftovers' then assign them to any fields which
-  // currently don't have a value assigned.
-  if( leftoversString.length ){
+}
 
-    // cycle through fields and set fields which
-    // are still currently unset
-    adminFields.forEach( function( key ){
-      if( !vs.isset( 'input:' + key ) ){
-        vs.var( 'input:' + key, leftoversString );
-      }
-    });
-  }
+function shouldSetQueryIntoHouseNumber(vs) {
+  return !vs.isset('input:housenumber') &&
+          vs.isset('input:street') &&
+          /^[0-9]+$/.test(vs.var('input:query').toString());
 }
 
 module.exports = addParsedVariablesToQueryVariables;
