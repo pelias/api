@@ -1,133 +1,83 @@
 module.exports = {
   'query': {
-    'bool': {
-      'must': [
-        {
-          'match': {
-            'name.default': {
-              'analyzer': 'peliasQueryFullToken',
-              'boost': 1,
-              'query': 'test'
-            }
-          }
-        }
-      ],
-      'should': [
-        {
-          'match': {
-            'phrase.default': {
-              'analyzer': 'peliasPhrase',
-              'type': 'phrase',
-              'boost': 1,
-              'slop': 2,
-              'query': 'test'
-            }
-          }
-        },
-        {
-          'function_score': {
-            'query': {
-              'match': {
-                'phrase.default': {
-                  'analyzer': 'peliasPhrase',
-                  'type': 'phrase',
-                  'boost': 1,
-                  'slop': 2,
-                  'query': 'test'
-                }
-              }
-            },
-            'functions': [
-              {
-                'weight': 2,
-                'linear': {
-                  'center_point': {
-                    'origin': {
-                      'lat': 29.49136,
-                      'lon': -82.50622
-                    },
-                    'offset': '0km',
-                    'scale': '50km',
-                    'decay': 0.5
+    'function_score': {
+      'query': {
+        'filtered': {
+          'query': {
+            'bool': {
+              'should': [
+                {
+                  'bool': {
+                    '_name': 'fallback.street',
+                    'must': [
+                      {
+                        'match_phrase': {
+                          'address_parts.street': 'street value'
+                        }
+                      }
+                    ],
+                    'should': [],
+                    'filter': {
+                      'term': {
+                        'layer': 'street'
+                      }
+                    }
                   }
                 }
-              }
-            ],
-            'score_mode': 'avg',
-            'boost_mode': 'replace'
+              ]
+            }
+          },
+          'filter': {
+            'bool': {
+              'must': [
+                {
+                  'terms': {
+                    'layer': [
+                      'test'
+                    ]
+                  }
+                }
+              ]
+            }
           }
+        }
+      },
+      'max_boost': 20,
+      'functions': [
+        {
+          'field_value_factor': {
+            'modifier': 'log1p',
+            'field': 'popularity',
+            'missing': 1
+          },
+          'weight': 1
         },
         {
-          'function_score': {
-            'query': {
-              'match': {
-                'phrase.default': {
-                  'analyzer': 'peliasPhrase',
-                  'type': 'phrase',
-                  'boost': 1,
-                  'slop': 2,
-                  'query': 'test'
-                }
-              }
-            },
-            'max_boost': 20,
-            'functions': [
-              {
-                'field_value_factor': {
-                  'modifier': 'log1p',
-                  'field': 'popularity',
-                  'missing': 1
-                },
-                'weight': 1
-              }
-            ],
-            'score_mode': 'first',
-            'boost_mode': 'replace'
-          }
-        },
-        {
-          'function_score': {
-            'query': {
-              'match': {
-                'phrase.default': {
-                  'analyzer': 'peliasPhrase',
-                  'type': 'phrase',
-                  'boost': 1,
-                  'slop': 2,
-                  'query': 'test'
-                }
-              }
-            },
-            'max_boost': 20,
-            'functions': [
-              {
-                'field_value_factor': {
-                  'modifier': 'log1p',
-                  'field': 'population',
-                  'missing': 1
-                },
-                'weight': 2
-              }
-            ],
-            'score_mode': 'first',
-            'boost_mode': 'replace'
-          }
+          'field_value_factor': {
+            'modifier': 'log1p',
+            'field': 'population',
+            'missing': 1
+          },
+          'weight': 2
         }
       ],
-      'filter': [
-        {
-          'terms': {
-            'layer': [
-              'test'
-            ]
-          }
-        }
-      ]
+      'score_mode': 'avg',
+      'boost_mode': 'multiply'
     }
   },
   'size': 10,
   'track_scores': true,
   'sort': [
+    {
+      'population': {
+        'order': 'desc'
+      }
+    },
+    {
+      'popularity': {
+        'order': 'desc'
+      }
+    },
     '_score'
   ]
 };

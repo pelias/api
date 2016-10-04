@@ -1,5 +1,5 @@
 var check = require('check-types'),
-    text_analyzer = require('pelias-text-analyzer');
+  text_analyzer = require('pelias-text-analyzer');
 
 // validate texts, convert types and apply defaults
 function sanitize( raw, clean ){
@@ -8,13 +8,14 @@ function sanitize( raw, clean ){
   var messages = { errors: [], warnings: [] };
 
   // invalid input 'text'
+  // must call `!check.nonEmptyString` since `check.emptyString` returns
+  //  `false` for `undefined` and `null`
   if( !check.nonEmptyString( raw.text ) ){
     messages.errors.push('invalid param \'text\': text length, must be >0');
   }
 
   // valid input 'text'
   else {
-
     // valid text
     clean.text = raw.text;
 

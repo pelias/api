@@ -7,6 +7,7 @@ var sanitisers = {
   autocomplete: require('../sanitiser/autocomplete'),
   place: require('../sanitiser/place'),
   search: require('../sanitiser/search'),
+  search_fallback: require('../sanitiser/search_fallback'),
   reverse: require('../sanitiser/reverse'),
   nearby: require('../sanitiser/nearby')
 };
@@ -25,12 +26,20 @@ var controllers = {
   status: require('../controller/status')
 };
 
+var queries = {
+  libpostal: require('../query/search'),
+  fallback_to_old_prod: require('../query/search_original')
+};
+
 /** ----------------------- controllers ----------------------- **/
 
 var postProc = {
+  trimByGranularity: require('../middleware/trimByGranularity'),
   distances: require('../middleware/distance'),
   confidenceScores: require('../middleware/confidenceScore'),
+  confidenceScoresFallback: require('../middleware/confidenceScoreFallback'),
   confidenceScoresReverse: require('../middleware/confidenceScoreReverse'),
+  accuracy: require('../middleware/accuracy'),
   dedupe: require('../middleware/dedupe'),
   localNamingConventions: require('../middleware/localNamingConventions'),
   renamePlacenames: require('../middleware/renamePlacenames'),
@@ -62,10 +71,18 @@ function addRoutes(app, peliasConfig) {
     search: createRouter([
       sanitisers.search.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig),
+      // 2nd parameter is `backend` which gets initialized internally
+      // 3rd parameter is which query module to use, use fallback/geodisambiguation
+      //  first, then use original search strategy if first query didn't return anything
+      controllers.search(peliasConfig, undefined, queries.libpostal),
+      sanitisers.search_fallback.middleware,
+      controllers.search(peliasConfig, undefined, queries.fallback_to_old_prod),
+      postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
+      postProc.confidenceScoresFallback(),
       postProc.dedupe(),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
@@ -79,6 +96,7 @@ function addRoutes(app, peliasConfig) {
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.dedupe(),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
@@ -95,6 +113,7 @@ function addRoutes(app, peliasConfig) {
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),
       postProc.dedupe(),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
@@ -111,6 +130,7 @@ function addRoutes(app, peliasConfig) {
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),
       postProc.dedupe(),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
@@ -121,6 +141,7 @@ function addRoutes(app, peliasConfig) {
     place: createRouter([
       sanitisers.place.middleware,
       controllers.place(peliasConfig),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
