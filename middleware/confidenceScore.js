@@ -162,10 +162,9 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     return hit;
   }
 */
+  var checkCount = 0;
   var parsedText = req.clean.parsed_text;
-  hit.confidence = checkName(req.clean.text, parsedText, hit);
-  var checkCount = 1;
-
+  hit.confidence = 0;
 /*
   if (RELATIVE_SCORES) {
     checkCount += 2;
@@ -178,15 +177,30 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     hit.confidence += checkQueryType(parsedText, hit);
     checkCount += 1;
 */
+  var addressParsed;
   if (parsedText && (check.assigned(parsedText.number) || check.assigned(parsedText.street) || check.assigned(parsedText.postalcode))) {
     hit.confidence += checkAddress(parsedText, hit);
+    addressParsed = true;
+    checkCount++;
+  }
+
+  // Do not check name if address is parsed but parsed name is missing
+  // comparing unparsed search string against plain name gives bad scores even when the match is perfect
+  if(!addressParsed || check.assigned(parsedText.name)) {
+    hit.confidence = checkName(req.clean.text, parsedText, hit);
     checkCount++;
   }
 
   if(adminProperties && parsedText && parsedText.regions && parsedText.regions.length>1) {
-    hit.confidence += checkAdmin(parsedText, hit);
+    hit.confidence += checkRegions(parsedText, hit);
     checkCount++;
   }
+
+  if(adminProperties && parsedText && (parsedText.city || parsedText.query)) {
+    hit.confidence += checkCity(parsedText.city || parsedText.query, hit);
+    checkCount++;
+  }
+
   // TODO: look at categories and location
 
   hit.confidence /= checkCount;
@@ -400,7 +414,7 @@ function checkAddress(text, hit) {
  * @param {object} [hit.parent]
  * @returns {number}
  */
-function checkAdmin(text, hit) {
+function checkRegions(text, hit) {
   var regions = [];
   var source = text.regions;
 
@@ -429,6 +443,41 @@ function checkAdmin(text, hit) {
     }
   });
   logger.debug('admin match', bestMatch);
+
+  return bestMatch;
+}
+
+/**
+ * Check city of the parsed text against a result.
+ *
+ * @param {string} text
+ * @param {object} hit
+ * @param {object} [hit.parent]
+ * @returns {number}
+ */
+function checkCity(text, hit) {
+
+  // loop trough configured properties to find best match
+  var bestMatch = 0;
+
+  var updateBest = function(value) {
+    var match = fuzzy.match(text, value);
+    if (match>bestMatch) {
+      bestMatch = match;
+    }
+  };
+
+  adminProperties.forEach( function(key) {
+    var prop = hit.parent[key];
+    if (prop) {
+      if (Array.isArray(prop)) {
+        prop.forEach(updateBest);
+      } else {
+        updateBest(prop);
+      }
+    }
+  });
+  logger.debug('city match', bestMatch);
 
   return bestMatch;
 }
