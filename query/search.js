@@ -1,14 +1,7 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./search_defaults'),
     textParser = require('./text_parser'),
-    check = require('check-types'),
-    _ = require('lodash');
-
-var api = require('pelias-config').generate().api;
-if (api && api.query && api.query.search && api.query.search.defaults) {
-  // merge external defaults if available
-  defaults = _.merge({}, defaults, api.query.search.defaults);
-}
+    check = require('check-types');
 
 //------------------------------
 // general-purpose search query

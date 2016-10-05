@@ -127,11 +127,13 @@ function assertLocationMatch(item1, item2) {
 
   if(item1._type !== 'address' || item2._type !== 'address') {
     /* in explicit address case, location difference is most likely a data error */
-    var p1 = { latitude: item1.center_point.lat, longitude: item1.center_point.lon };
-    var p2 = { latitude: item2.center_point.lat, longitude: item2.center_point.lon };
-    var distance = geolib.getDistance( p1, p2 );
-    if( distance > minDistance) {
-      throw new Error('different');
+    if(item1.center_point && item2.center_point) {
+      var p1 = { latitude: item1.center_point.lat, longitude: item1.center_point.lon };
+      var p2 = { latitude: item2.center_point.lat, longitude: item2.center_point.lon };
+      var distance = geolib.getDistance( p1, p2 );
+      if( distance > minDistance) {
+        throw new Error('different');
+      }
     }
   }
   return false;

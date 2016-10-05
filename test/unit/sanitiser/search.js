@@ -86,14 +86,14 @@ module.exports.tests.sanitize = function(test, common) {
       '_single_scalar_parameters',
       '_text',
       '_size',
+      '_lang',
       '_targets/layers',
       '_targets/sources',
       '_sources_and_layers',
       '_flag_bool',
       '_geo_search',
       '_boundary_country',
-      '_categories',
-      '_lang'
+      '_categories'
     ];
 
     var req = {};
