@@ -1,4 +1,4 @@
-var sanitiser = require('../../../sanitizer/_text_addressit');
+var sanitizer = require('../../../sanitizer/_text_addressit');
 var type_mapping = require('../../../helper/type_mapping');
 
 module.exports.tests = {};
@@ -11,7 +11,7 @@ module.exports.tests.text_parser = function(test, common) {
     var clean = {
     };
 
-    var messages = sanitiser(raw, clean);
+    var messages = sanitizer(raw, clean);
 
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
@@ -41,7 +41,7 @@ module.exports.tests.text_parser = function(test, common) {
         }
       };
 
-      var messages = sanitiser(raw, clean);
+      var messages = sanitizer(raw, clean);
 
       t.deepEqual(messages, { errors: [], warnings: [] } );
       t.deepEqual(clean, expected_clean);
@@ -65,7 +65,7 @@ module.exports.tests.text_parser = function(test, common) {
         }
       };
 
-      var messages = sanitiser(raw, clean);
+      var messages = sanitizer(raw, clean);
 
       t.deepEqual(messages, { errors: [], warnings: [] } );
       t.deepEqual(clean, expected_clean);
@@ -95,7 +95,7 @@ module.exports.tests.text_parser = function(test, common) {
         }
       };
 
-      var messages = sanitiser(raw, clean);
+      var messages = sanitizer(raw, clean);
 
       t.deepEqual(messages, { errors: [], warnings: [] } );
       t.deepEqual(clean, expected_clean);
@@ -118,7 +118,7 @@ module.exports.tests.text_parser = function(test, common) {
         }
       };
 
-      var messages = sanitiser(raw, clean);
+      var messages = sanitizer(raw, clean);
 
       t.deepEqual(messages, { errors: [], warnings: [] } );
       t.deepEqual(clean, expected_clean);
@@ -139,7 +139,7 @@ module.exports.tests.text_parser = function(test, common) {
       text: 'yugolsavia'
     };
 
-    var messages = sanitiser(raw, clean);
+    var messages = sanitizer(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -158,7 +158,7 @@ module.exports.tests.text_parser = function(test, common) {
       text: 'small town'
     };
 
-    var messages = sanitiser(raw, clean);
+    var messages = sanitizer(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -177,7 +177,7 @@ module.exports.tests.text_parser = function(test, common) {
       text: '123 main'
     };
 
-    var messages = sanitiser(raw, clean);
+    var messages = sanitizer(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -196,7 +196,7 @@ module.exports.tests.text_parser = function(test, common) {
       text: 'main 123'
     };
 
-    var messages = sanitiser(raw, clean);
+    var messages = sanitizer(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -219,7 +219,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    var messages = sanitiser(raw, clean);
+    var messages = sanitizer(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -243,7 +243,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    var messages = sanitiser(raw, clean);
+    var messages = sanitizer(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -268,7 +268,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    var messages = sanitiser(raw, clean);
+    var messages = sanitizer(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -293,7 +293,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    var messages = sanitiser(raw, clean);
+    var messages = sanitizer(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -318,7 +318,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    var messages = sanitiser(raw, clean);
+    var messages = sanitizer(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -330,7 +330,7 @@ module.exports.tests.text_parser = function(test, common) {
 
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape('SANITISER _text: ' + name, testFunction);
+    return tape('sanitizeR _text: ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
