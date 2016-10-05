@@ -13,21 +13,23 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-// functionally test service 
+// functionally test service
 module.exports.tests.functional_success = function(test, common) {
 
   var expected = [
     {
       _id: 'myid1', _type: 'mytype1',
       _score: 10,
+      _matched_queries: ['query 1', 'query 2'],
       value: 1,
       center_point: { lat: 100.1, lon: -50.5 },
       name: { default: 'test name1' },
       parent: { country: ['country1'], region: ['state1'], county: ['city1'] }
-    }, 
+    },
     {
       _id: 'myid2', _type: 'mytype2',
       _score: 20,
+      _matched_queries: ['query 3'],
       value: 2,
       center_point: { lat: 100.2, lon: -51.5 },
       name: { default: 'test name2' },

@@ -50,7 +50,8 @@ module.exports.tests.confidenceScore = function(test, common) {
         }
       }],
       meta: {
-        scores: [10]
+        scores: [10],
+        query_type: 'original'
       }
     };
 
@@ -90,7 +91,10 @@ module.exports.tests.confidenceScore = function(test, common) {
           county: ['city2']
         }
       }],
-      meta: {scores: [10]}
+      meta: {
+        scores: [10],
+        query_type: 'original'
+      }
     };
 
     confidenceScore(req, res, function() {});
@@ -123,7 +127,10 @@ module.exports.tests.confidenceScore = function(test, common) {
           county: ['city1']
         }
       }],
-      meta: {scores: [10]}
+      meta: {
+        scores: [10],
+        query_type: 'original'
+      }
     };
 
     confidenceScore(req, res, function() {});
@@ -192,7 +199,6 @@ module.exports.tests.confidenceScore = function(test, common) {
     t.equal(res.data[0].name.default, 'rank me first', 'results are sorted by confidence score');
     t.end();
   });
-
 };
 
 module.exports.all = function (tape, common) {
