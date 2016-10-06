@@ -4,6 +4,38 @@ var extend = require('extend');
 var _      = require('lodash');
 var logger = require('pelias-logger').get('api');
 
+
+// don't throw away useful parsing from libpostal
+function addressFromLibpostal(parsed_text, fromLibpostal, text) {
+  if(check.undefined(parsed_text.street) && check.assigned(fromLibpostal.street) && check.assigned(fromLibpostal.number)) {
+    text = text.toLowerCase();
+    var restoreMap = { 'ä':'ae', 'ö':'oe', 'å':'aa' };
+    var street = fromLibpostal.street;
+
+    _.forEach(restoreMap, function(xx, c) {
+      if(text.indexOf(c) !== -1 ) {
+        street = street.replace(new RegExp(xx, 'g'), c);
+      }
+    });
+    logger.debug('RESTORED', fromLibpostal.street, street);
+    if(text.indexOf(street) !== -1) { // wow, succeeded
+      parsed_text.street = street;
+      parsed_text.number = fromLibpostal.number;
+
+      if(check.assigned(parsed_text.name)) {
+        if(parsed_text.name.indexOf(street)!==-1) {
+          // skip the name if it is the same as the address
+          parsed_text.name = undefined;
+        }
+      }
+    }
+  }
+  if(check.undefined(parsed_text.postalcode) && check.assigned(fromLibpostal.postalcode)) {
+    parsed_text.postalcode = fromLibpostal.postalcode;
+  }
+}
+
+
 // validate texts, convert types and apply defaults
 function sanitize( raw, clean ){
 
@@ -22,11 +54,16 @@ function sanitize( raw, clean ){
     clean.text = raw.text;
 
     // remove anything that may have been parsed before
-    delete clean.parsed_text;
+    var fromLibpostal = clean.parsed_text;
+    clean.parsed_text = null;
 
     // parse text with query parser
     var parsed_text = parse(clean.text);
+
     if (check.assigned(parsed_text)) {
+      if(check.assigned(fromLibpostal)) { // use the libpostal parsed street address if available
+        addressFromLibpostal(parsed_text, fromLibpostal, clean.text);
+      }
       clean.parsed_text = parsed_text;
     }
   }
@@ -36,8 +73,6 @@ function sanitize( raw, clean ){
 
 // export function
 module.exports = sanitize;
-
-
 
 // this is the addressit functionality from https://github.com/pelias/text-analyzer/blob/master/src/addressItParser.js
 var DELIM = ',';
