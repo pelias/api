@@ -3,6 +3,10 @@ var peliasQuery = require('pelias-query'),
     textParser = require('./text_parser'),
     check = require('check-types');
 
+// change this when fallback querying performs well
+// (i.e. when alla street numbers are interpolated)
+var USE_FALLBACK_QUERY = false;
+
 //------------------------------
 // general-purpose search query
 //------------------------------
@@ -120,7 +124,7 @@ function generateQuery( clean ){
 }
 
 function getQuery(vs) {
-  if (hasStreet(vs)) {
+  if (USE_FALLBACK_QUERY && hasStreet(vs)) {
     return {
       type: 'fallback',
       body: fallbackQuery.render(vs)
