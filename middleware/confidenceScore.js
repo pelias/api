@@ -187,7 +187,7 @@ function computeConfidenceScore(req, mean, stdev, hit) {
   // Do not check name if address is parsed but parsed name is missing
   // comparing unparsed search string against plain name gives bad scores even when the match is perfect
   if(!addressParsed || check.assigned(parsedText.name)) {
-    hit.confidence = checkName(req.clean.text, parsedText, hit);
+    hit.confidence += checkName(req.clean.text, parsedText, hit);
     checkCount++;
   }
 
