@@ -338,10 +338,14 @@ function propMatch(textProp, hitProp, expectEnriched, numeric) {
 
   // both present
   if (numeric) {
+    if(textProp === hitProp) {
+      // handle exact match before dropping all but numeric part
+      return 1.0;
+    }
     var n1 = parseInt(textProp);
     var n2 = parseInt(hitProp);
     if (!isNaN(n1) && !isNaN(n2)) {
-      var match = 1.0/(1.0 + Math.abs(n1-n2));
+      var match = 0.9/(1.0 + Math.abs(n1-n2));
       return match;
     }
   }
