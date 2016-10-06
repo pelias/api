@@ -204,7 +204,6 @@ function computeConfidenceScore(req, mean, stdev, hit) {
   // TODO: look at categories and location
 
   hit.confidence /= checkCount;
-  hit.confidence = Number((hit.confidence).toFixed(3));
 
   return hit;
 }
