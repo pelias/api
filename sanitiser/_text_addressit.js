@@ -5,19 +5,20 @@ var _      = require('lodash');
 var logger = require('pelias-logger').get('api');
 
 
-// don't throw away useful parsing from libpostal
+// don't throw away useful parsing information from libpostal
+// if street name and number are known, they shoudl be included in the query
 function addressFromLibpostal(parsed_text, fromLibpostal, text) {
-  if(check.undefined(parsed_text.street) && check.assigned(fromLibpostal.street) && check.assigned(fromLibpostal.number)) {
+  var street = fromLibpostal.street;
+
+  if(check.undefined(parsed_text.street) && check.assigned(street) && check.assigned(fromLibpostal.number)) {
     text = text.toLowerCase();
     var restoreMap = { 'ä':'ae', 'ö':'oe', 'å':'aa' };
-    var street = fromLibpostal.street;
 
     _.forEach(restoreMap, function(xx, c) {
       if(text.indexOf(c) !== -1 ) {
         street = street.replace(new RegExp(xx, 'g'), c);
       }
     });
-    logger.debug('RESTORED', fromLibpostal.street, street);
     if(text.indexOf(street) !== -1) { // wow, succeeded
       parsed_text.street = street;
       parsed_text.number = fromLibpostal.number;
@@ -61,7 +62,11 @@ function sanitize( raw, clean ){
     var parsed_text = parse(clean.text);
 
     if (check.assigned(parsed_text)) {
-      if(check.assigned(fromLibpostal)) { // use the libpostal parsed street address if available
+      // use the libpostal parsed street address if available, unless
+      // there's a reason to believe that libpostal has failed in parsing
+      // NOTE!! This may change when libpostal parsing improves
+      // try reqularly using libpostal parsing also when query field is set.
+      if(check.assigned(fromLibpostal) && check.undefined(fromLibpostal.query)) {
         addressFromLibpostal(parsed_text, fromLibpostal, clean.text);
       }
       clean.parsed_text = parsed_text;
