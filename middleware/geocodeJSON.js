@@ -15,8 +15,7 @@ function setup(peliasConfig, basePath, labelGenerator) {
 
   var opts = {
     config: peliasConfig || require('pelias-config').generate().api,
-    basePath: basePath || '/',
-    labelGenerator: labelGenerator || require('../helper/labelGenerator')
+    basePath: basePath || '/'
   };
 
   function middleware(req, res, next) {
@@ -74,7 +73,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
   res.body.geocoding.timestamp = new Date().getTime();
 
   // convert docs to geojson and merge with geocoding block
-  extend(res.body, geojsonify(req.clean, res.data || [], opts.labelGenerator));
+  extend(res.body, geojsonify(req.clean, res.data || [] ));
 
   next();
 }

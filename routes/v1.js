@@ -46,7 +46,8 @@ var postProc = {
   geocodeJSON: require('../middleware/geocodeJSON'),
   sendJSON: require('../middleware/sendJSON'),
   parseBoundingBox: require('../middleware/parseBBox'),
-  normalizeParentIds: require('../middleware/normalizeParentIds')
+  normalizeParentIds: require('../middleware/normalizeParentIds'),
+  assignLabels: require('../middleware/assignLabels')
 };
 
 /**
@@ -88,6 +89,7 @@ function addRoutes(app, peliasConfig) {
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
       postProc.geocodeJSON(peliasConfig, base),
+      postProc.assignLabels(require('pelias-labels')),
       postProc.sendJSON
     ]),
     autocomplete: createRouter([
@@ -102,6 +104,7 @@ function addRoutes(app, peliasConfig) {
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
       postProc.geocodeJSON(peliasConfig, base),
+      postProc.assignLabels(require('pelias-labels')),
       postProc.sendJSON
     ]),
     reverse: createRouter([
@@ -119,6 +122,7 @@ function addRoutes(app, peliasConfig) {
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
       postProc.geocodeJSON(peliasConfig, base),
+      postProc.assignLabels(require('pelias-labels')),
       postProc.sendJSON
     ]),
     nearby: createRouter([
@@ -136,6 +140,7 @@ function addRoutes(app, peliasConfig) {
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
       postProc.geocodeJSON(peliasConfig, base),
+      postProc.assignLabels(require('pelias-labels')),
       postProc.sendJSON
     ]),
     place: createRouter([
@@ -147,6 +152,7 @@ function addRoutes(app, peliasConfig) {
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
       postProc.geocodeJSON(peliasConfig, base),
+      postProc.assignLabels(require('pelias-labels')),
       postProc.sendJSON
     ]),
     status: createRouter([

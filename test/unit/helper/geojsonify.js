@@ -28,12 +28,8 @@ module.exports.tests.earth = function(test, common) {
       }
     }];
 
-    var labelGenerator = function(doc) {
-      return 'label for 6295630';
-    };
-
     t.doesNotThrow(function(){
-      geojsonify( {}, earth, labelGenerator );
+      geojsonify( {}, earth );
     });
     t.end();
   });
@@ -147,7 +143,6 @@ module.exports.tests.geojsonify = function(test, common) {
             'layer': 'layer1',
             'source': 'source1',
             'source_id': 'source_id_1',
-            'label': 'label for id1',
             'name': '\'Round Midnight Jazz and Blues Bar',
             'country_a': 'GBR',
             'country': 'United Kingdom',
@@ -183,7 +178,6 @@ module.exports.tests.geojsonify = function(test, common) {
             'layer': 'layer2',
             'source': 'source2',
             'source_id': 'source_id_2',
-            'label': 'label for id2',
             'name': 'Blues Cafe',
             'country_a': 'GBR',
             'country': 'United Kingdom',
@@ -212,7 +206,6 @@ module.exports.tests.geojsonify = function(test, common) {
             'layer': 'venue',
             'source': 'openstreetmap',
             'source_id': 'source_id_3',
-            'label': 'label for node:34633854',
             'name': 'Empire State Building',
             'country_a': 'USA',
             'country': 'United States',
@@ -232,20 +225,7 @@ module.exports.tests.geojsonify = function(test, common) {
       ]
     };
 
-    var labelGenerator = function(doc) {
-      if (doc.id === 'id1') {
-        return 'label for id1';
-      }
-      if (doc.id === 'id2') {
-        return 'label for id2';
-      }
-      if (doc.id === 'node:34633854') {
-        return 'label for node:34633854';
-      }
-
-    };
-
-    var json = geojsonify( {categories: 'foo'}, input, labelGenerator );
+    var json = geojsonify( {categories: 'foo'}, input );
 
     t.deepEqual(json, expected, 'all docs mapped');
     t.end();
@@ -389,8 +369,7 @@ module.exports.tests.geojsonify = function(test, common) {
             'county_gid': '102082361',
             'localadmin_gid': '404521211',
             'locality': 'New York',
-            'locality_gid': '85977539',
-            'label': 'label for 85816607'
+            'locality_gid': '85977539'
           },
           'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
           'geometry': {
@@ -404,13 +383,7 @@ module.exports.tests.geojsonify = function(test, common) {
       ]
     };
 
-    var labelGenerator = function(doc) {
-      if (doc.id === '85816607') {
-        return 'label for 85816607';
-      }
-    };
-
-    var json = geojsonify( {categories: 'foo'}, input, labelGenerator );
+    var json = geojsonify( {categories: 'foo'}, input );
 
     t.deepEqual(json, expected, 'all wanted properties exposed');
     t.end();
@@ -455,8 +428,7 @@ module.exports.tests.categories = function (test, common) {
             'source': 'whosonfirst',
             'source_id': '85816607',
             'name': 'East New York',
-            'category': ['government'],
-            'label': 'label for 85816607'
+            'category': ['government']
           },
           'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
           'geometry': {
@@ -470,13 +442,7 @@ module.exports.tests.categories = function (test, common) {
       ]
     };
 
-    var labelGenerator = function(doc) {
-      if (doc.id === '85816607') {
-        return 'label for 85816607';
-      }
-    };
-
-    var json = geojsonify( {categories: 'foo'}, input, labelGenerator );
+    var json = geojsonify( {categories: 'foo'}, input );
 
     t.deepEqual(json, expected, 'all wanted properties exposed');
     t.end();
