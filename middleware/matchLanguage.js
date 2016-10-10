@@ -47,11 +47,17 @@ function matchLanguage(req, res, next) {
   var currentLang = req.clean.lang; // default preference
 
   var name; // searched name
-  if (req.clean.parsed_text && req.clean.parsed_text.name) {
-    name = req.clean.parsed_text.name;
-  } else {
+  if (req.clean.parsed_text) {
+    if(req.clean.parsed_text.name) {
+      name = req.clean.parsed_text.name;
+    } else {
+      name = req.clean.parsed_text.street;
+    }
+  }
+  if(!name) {
     name = req.clean.text;
   }
+
   // fix street/number order problem by stripping the number part
   name = removeNumbers(name);
 
