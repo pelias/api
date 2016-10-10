@@ -1,6 +1,6 @@
 function setup(labelGenerator) {
   function middleware(req, res, next) {
-    return assignLabel(req, res, next, labelGenerator);
+    return assignLabel(req, res, next, labelGenerator || require('pelias-labels'));
   }
 
   return middleware;

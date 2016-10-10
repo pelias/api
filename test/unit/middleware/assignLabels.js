@@ -1,3 +1,5 @@
+var proxyquire =  require('proxyquire').noCallThru();
+
 module.exports.tests = {};
 
 module.exports.tests.serialization = function(test, common) {
@@ -80,6 +82,47 @@ module.exports.tests.serialization = function(test, common) {
             properties: {
               id: 2,
               label: 'label 2'
+            }
+          }
+        ]
+      }
+    };
+
+    assignLabels({}, input, function () {
+      t.deepEqual(input, expected);
+      t.end();
+    });
+
+  });
+
+  test('no explicit labelGenerator supplied should use pelias-labels module', function(t) {
+    var assignLabels = proxyquire('../../../middleware/assignLabels', {
+      'pelias-labels': function(properties) {
+        if (properties.id === 1) {
+          return 'label 1';
+        }
+      }
+    })();
+
+    var input = {
+      body: {
+        features: [
+          {
+            properties: {
+              id: 1
+            }
+          }
+        ]
+      }
+    };
+
+    var expected = {
+      body: {
+        features: [
+          {
+            properties: {
+              id: 1,
+              label: 'label 1'
             }
           }
         ]
