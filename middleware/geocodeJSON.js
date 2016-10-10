@@ -11,7 +11,7 @@ var _ = require('lodash');
  * @param {string} [basePath]
  * @returns {middleware}
  */
-function setup(peliasConfig, basePath, labelGenerator) {
+function setup(peliasConfig, basePath) {
 
   var opts = {
     config: peliasConfig || require('pelias-config').generate().api,
