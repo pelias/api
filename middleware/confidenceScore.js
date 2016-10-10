@@ -162,9 +162,6 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     return hit;
   }
 */
-  var checkCount = 0;
-  var parsedText = req.clean.parsed_text;
-  hit.confidence = 0;
 /*
   if (RELATIVE_SCORES) {
     checkCount += 2;
@@ -177,28 +174,37 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     hit.confidence += checkQueryType(parsedText, hit);
     checkCount += 1;
 */
-  var addressParsed;
-  if (parsedText && (check.assigned(parsedText.number) || check.assigned(parsedText.street) || check.assigned(parsedText.postalcode))) {
-    hit.confidence += checkAddress(parsedText, hit);
-    addressParsed = true;
-    checkCount++;
-  }
 
-  // Do not check name if address is parsed but parsed name is missing
-  // comparing unparsed search string against plain name gives bad scores even when the match is perfect
-  if(!addressParsed || check.assigned(parsedText.name)) {
-    hit.confidence += checkName(req.clean.text, parsedText, hit);
-    checkCount++;
-  }
+  var parsedText = req.clean.parsed_text;
 
-  if(adminProperties && parsedText && parsedText.regions && parsedText.regions.length>1) {
-    hit.confidence += checkRegions(parsedText, hit);
-    checkCount++;
-  }
+  // compare parsed name/street (or raw text) against configured language versions of name and possibly street
+  hit.confidence = checkName(req.clean.text, parsedText, hit);
+  logger.debug('Final name score', hit.confidence);
+  var checkCount = 1;
 
-  if(adminProperties && parsedText && (parsedText.city || parsedText.query)) {
-    hit.confidence += checkCity(parsedText.city || parsedText.query, hit);
-    checkCount++;
+  if (parsedText) {
+    var hasAddress;
+    // first compare address if parsed text has any elements for it
+    for(var key in confidenceAddressParts) {
+
+      if(check.assigned(parsedText[key])) {
+        hasAddress = true;
+      }
+    }
+    if(hasAddress) {
+      hit.confidence += checkAddress(parsedText, hit);
+      checkCount++;
+    }
+
+    if(adminProperties && parsedText.regions && parsedText.regions.length>1) {
+      hit.confidence += checkRegions(parsedText, hit);
+      checkCount++;
+    }
+
+    if(adminProperties && parsedText.city) {
+      hit.confidence += checkCity(parsedText.city, hit);
+      checkCount++;
+    }
   }
 
   // TODO: look at categories and location
@@ -275,6 +281,7 @@ function checkLanguageProperty(text, propertyObject) {
 /**
  * Compare text string or name component of parsed_text against
  * default name in result
+ * Note: consider also street here as it often stores searched name
  *
  * @param {string} text
  * @param {object|undefined} parsed_text
@@ -282,13 +289,39 @@ function checkLanguageProperty(text, propertyObject) {
  * @returns {number}
  */
 function checkName(text, parsed_text, hit) {
+  var score;
+
+  var checkParsed = function(parsed, hit) {
+    var _score = checkLanguageProperty(parsed, hit.name);
+    if (check.undefined(score) || _score>score) {
+        score=_score;
+    }
+    // check also street property
+    if(check.assigned(hit.address_parts) && check.assigned(hit.address_parts.street)) {
+      _score = propMatchArray(parsed, hit.address_parts.street);
+      if (check.undefined(score) || _score>score) {
+        score=_score;
+      }
+    }
+  };
+
   // parsed_text name should take precedence if available since it's the cleaner name property
-  if (check.assigned(parsed_text) && check.assigned(parsed_text.name)) {
-    return(checkLanguageProperty(parsed_text.name, hit.name));
+  if (check.assigned(parsed_text)) {
+    if(check.assigned(parsed_text.name)) {
+      checkParsed(parsed_text.name, hit);
+    }
+    if(check.assigned(parsed_text.street)) {
+      checkParsed(parsed_text.street, hit);
+    }
   }
 
-  // if no parsed_text check the text value as provided against result's name
-  return(checkLanguageProperty(text, hit.name));
+  if (check.assigned(score)) {
+    return(score);
+  }
+  // if no parsed_text check the full unparsed text value
+  checkParsed(text, hit);
+
+  return(score);
 }
 
 /**
@@ -352,6 +385,24 @@ function propMatch(textProp, hitProp, expectEnriched, numeric) {
   return fuzzy.match(textProp.toString(), hitProp.toString());
 }
 
+// array wrapper for function above
+function propMatchArray(text, hitProp, expectEnriched, numeric) {
+  if (Array.isArray(hitProp)) { // check all array values
+    var count = hitProp.length;
+    var maxMatch = 0;
+    for (var i=0; i<count; i++) {
+      var match = propMatch(text, hitProp[i], expectEnriched, numeric);
+      if (match>maxMatch) {
+        maxMatch=match;
+      }
+    }
+    return maxMatch;
+  } else {
+    return propMatch(text, hitProp, expectEnriched, numeric);
+  }
+}
+
+
 /**
  * Check various parts of the parsed text address
  * against the results
@@ -385,19 +436,14 @@ function checkAddress(text, hit) {
     } else {
       value = parent[part.field];
     }
-    if (Array.isArray(value)) { // check all array values
-      var count = value.length;
-      var maxMatch = 0;
-      for (var i=0; i<count; i++) {
-        var match = propMatch(text[key], value[i], part.enrich, part.numeric);
-        if (match>maxMatch) {
-          maxMatch=match;
-        }
+    var score = propMatchArray(text[key], value, part.enrich, part.numeric);
+    if(key==='street' && text[key]) { // special case: proper version can be stored in the name
+      var _score = checkLanguageProperty(text[key], hit.name);
+      if(_score>score) {
+        score = score;
       }
-      res += maxMatch;
-    } else {
-      res += propMatch(text[key], value, part.enrich, part.numeric);
     }
+    res += score;
     checkCount++;
   }
   res /= checkCount;
@@ -405,6 +451,43 @@ function checkAddress(text, hit) {
   logger.debug('address match', res );
 
   return res;
+}
+
+
+/**
+ * Check admin properties against parsed values
+ *
+ * @param {values} text/array
+ * @param {object} hit
+ * @param {object} [hit.parent]
+ * @returns {number}
+ */
+function checkAdmin(values, hit) {
+  if (!Array.isArray(values)) {
+    values = [values];
+  }
+
+  // loop trough configured properties to find best match
+  var bestMatch = 0;
+
+  var updateBest = function(text) {
+    var match = fuzzy.matchArray(text, values);
+    if (match>bestMatch) {
+      bestMatch = match;
+    }
+  };
+
+  adminProperties.forEach( function(key) {
+    var prop = hit.parent[key];
+    if (prop) {
+      if (Array.isArray(prop)) {
+        prop.forEach(updateBest);
+      } else {
+        updateBest(prop);
+      }
+    }
+  });
+  return bestMatch;
 }
 
 
@@ -425,26 +508,7 @@ function checkRegions(text, hit) {
     regions.push(source[i]);
   }
 
-  // loop trough configured properties to find best match
-  var bestMatch = 0;
-
-  var updateBest = function(text) {
-    var match = fuzzy.matchArray(text, regions);
-    if (match>bestMatch) {
-      bestMatch = match;
-    }
-  };
-
-  adminProperties.forEach( function(key) {
-    var prop = hit.parent[key];
-    if (prop) {
-      if (Array.isArray(prop)) {
-        prop.forEach(updateBest);
-      } else {
-        updateBest(prop);
-      }
-    }
-  });
+  var bestMatch = checkAdmin(regions, hit);
   logger.debug('admin match', bestMatch);
 
   return bestMatch;
@@ -453,33 +517,14 @@ function checkRegions(text, hit) {
 /**
  * Check city of the parsed text against a result.
  *
- * @param {string} text
+ * @param {string} city
  * @param {object} hit
  * @param {object} [hit.parent]
  * @returns {number}
  */
-function checkCity(text, hit) {
+function checkCity(city, hit) {
 
-  // loop trough configured properties to find best match
-  var bestMatch = 0;
-
-  var updateBest = function(value) {
-    var match = fuzzy.match(text, value);
-    if (match>bestMatch) {
-      bestMatch = match;
-    }
-  };
-
-  adminProperties.forEach( function(key) {
-    var prop = hit.parent[key];
-    if (prop) {
-      if (Array.isArray(prop)) {
-        prop.forEach(updateBest);
-      } else {
-        updateBest(prop);
-      }
-    }
-  });
+  var bestMatch = checkAdmin(city, hit);
   logger.debug('city match', bestMatch);
 
   return bestMatch;
