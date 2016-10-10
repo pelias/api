@@ -69,7 +69,8 @@ module.exports.tests.geojsonify = function(test, common) {
         'category': [
           'food',
           'nightlife'
-        ]
+        ],
+        'label': 'label for id id1'
       },
       {
         '_id': 'id2',
@@ -93,7 +94,8 @@ module.exports.tests.geojsonify = function(test, common) {
         'county': 'Smithfield',
         'localadmin': 'test1',
         'locality': 'test2',
-        'neighbourhood': 'test3'
+        'neighbourhood': 'test3',
+        'label': 'label for id id2'
       },
       {
         '_id': 'node:34633854',
@@ -120,7 +122,8 @@ module.exports.tests.geojsonify = function(test, common) {
         'category': [
           'tourism',
           'transport'
-        ]
+        ],
+        'label': 'label for id node:34633854'
       }
     ];
 
@@ -160,7 +163,8 @@ module.exports.tests.geojsonify = function(test, common) {
             'category': [
               'food',
               'nightlife'
-            ]
+            ],
+            'label': 'label for id id1'
           }
         },
         {
@@ -188,7 +192,8 @@ module.exports.tests.geojsonify = function(test, common) {
             'county': 'Smithfield',
             'localadmin': 'test1',
             'locality': 'test2',
-            'neighbourhood': 'test3'
+            'neighbourhood': 'test3',
+            'label': 'label for id id2'
           }
         },
         {
@@ -219,7 +224,8 @@ module.exports.tests.geojsonify = function(test, common) {
             'category': [
               'tourism',
               'transport'
-            ]
+            ],
+            'label': 'label for id node:34633854'
           }
         }
       ]
@@ -330,7 +336,8 @@ module.exports.tests.geojsonify = function(test, common) {
           null
         ],
         'neighbourhood': [],
-        'neighbourhood_gid': []
+        'neighbourhood_gid': [],
+        'label': 'label for id 85816607'
       }
     ];
 
@@ -369,7 +376,8 @@ module.exports.tests.geojsonify = function(test, common) {
             'county_gid': '102082361',
             'localadmin_gid': '404521211',
             'locality': 'New York',
-            'locality_gid': '85977539'
+            'locality_gid': '85977539',
+            'label': 'label for id 85816607'
           },
           'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
           'geometry': {
@@ -411,7 +419,8 @@ module.exports.tests.categories = function (test, common) {
           'default': 'East New York'
         },
         'source_id': '85816607',
-        'category': ['government']
+        'category': ['government'],
+        'label': 'label for id 85816607'
       }
     ];
 
@@ -428,7 +437,8 @@ module.exports.tests.categories = function (test, common) {
             'source': 'whosonfirst',
             'source_id': '85816607',
             'name': 'East New York',
-            'category': ['government']
+            'category': ['government'],
+            'label': 'label for id 85816607'
           },
           'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
           'geometry': {

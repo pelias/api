@@ -9,12 +9,12 @@ function setup(labelGenerator) {
 function assignLabel(req, res, next, labelGenerator) {
 
   // do nothing if there's nothing to process
-  if (!res || !res.body || !res.body.features) {
+  if (!res || !res.data) {
     return next();
   }
 
-  res.body.features.forEach(function (feature) {
-    feature.properties.label = labelGenerator(feature.properties);
+  res.data.forEach(function (result) {
+    result.label = labelGenerator(result.parent);
   });
 
   next();

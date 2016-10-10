@@ -15,7 +15,7 @@ module.exports.tests.serialization = function(test, common) {
 
   });
 
-  test('res without body should not throw an exception', function(t) {
+  test('res without data should not throw an exception', function(t) {
     var assignLabels = require('../../../middleware/assignLabels')(function(){});
 
     function testIt() {
@@ -27,24 +27,12 @@ module.exports.tests.serialization = function(test, common) {
 
   });
 
-  test('res.body without features should not throw an exception', function(t) {
-    var assignLabels = require('../../../middleware/assignLabels')(function(){});
-
-    function testIt() {
-      assignLabels({ body: {} }, {}, function() {});
-    }
-
-    t.doesNotThrow(testIt, 'an exception should not have been thrown');
-    t.end();
-
-  });
-
   test('labels should be assigned to all results', function(t) {
-    var labelGenerator = function(properties) {
-      if (properties.id === 1) {
+    var labelGenerator = function(result) {
+      if (result.id === 1) {
         return 'label 1';
       }
-      if (properties.id === 2) {
+      if (result.id === 2) {
         return 'label 2';
       }
 
@@ -53,39 +41,35 @@ module.exports.tests.serialization = function(test, common) {
     var assignLabels = require('../../../middleware/assignLabels')(labelGenerator);
 
     var input = {
-      body: {
-        features: [
-          {
-            properties: {
-              id: 1
-            }
-          },
-          {
-            properties: {
-              id: 2
-            }
+      data: [
+        {
+          parent: {
+            id: 1
           }
-        ]
-      }
+        },
+        {
+          parent: {
+            id: 2
+          }
+        }
+      ]
     };
 
     var expected = {
-      body: {
-        features: [
-          {
-            properties: {
-              id: 1,
-              label: 'label 1'
-            }
+      data: [
+        {
+          parent: {
+            id: 1
           },
-          {
-            properties: {
-              id: 2,
-              label: 'label 2'
-            }
-          }
-        ]
-      }
+          label: 'label 1'
+        },
+        {
+          parent: {
+            id: 2
+          },
+          label: 'label 2'
+        }
+      ]
     };
 
     assignLabels({}, input, function () {
@@ -97,36 +81,32 @@ module.exports.tests.serialization = function(test, common) {
 
   test('no explicit labelGenerator supplied should use pelias-labels module', function(t) {
     var assignLabels = proxyquire('../../../middleware/assignLabels', {
-      'pelias-labels': function(properties) {
-        if (properties.id === 1) {
+      'pelias-labels': function(result) {
+        if (result.id === 1) {
           return 'label 1';
         }
       }
     })();
 
     var input = {
-      body: {
-        features: [
-          {
-            properties: {
-              id: 1
-            }
+      data: [
+        {
+          parent: {
+            id: 1
           }
-        ]
-      }
+        }
+      ]
     };
 
     var expected = {
-      body: {
-        features: [
-          {
-            properties: {
-              id: 1,
-              label: 'label 1'
-            }
-          }
-        ]
-      }
+      data: [
+        {
+          parent: {
+            id: 1
+          },
+          label: 'label 1'
+        }
+      ]
     };
 
     assignLabels({}, input, function () {

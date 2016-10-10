@@ -88,8 +88,8 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
-      postProc.geocodeJSON(peliasConfig, base),
       postProc.assignLabels(require('pelias-labels')),
+      postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     autocomplete: createRouter([
