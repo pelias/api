@@ -33,6 +33,9 @@ function translate(req, res, next) {
       _.forEach(res.data, function(place) {
         translateProperties(place, key, names);
         translateProperties(place.parent, key, names);
+        if(place.address_parts) {
+          translateProperties(place.address_parts, key, names);
+        }
       });
     });
   }
