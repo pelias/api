@@ -48,6 +48,86 @@ types.forEach( function( type, i1 ){
   });
 });
 
+client.index(
+  {
+    index: config.indexName,
+    type: 'address',
+    id: 'way:265038872',
+    body: {
+      'center_point': {
+        'lon': -73.990425,
+        'lat': 40.744131
+      },
+      'parent': {
+        'country': [
+          'United States'
+        ],
+        'neighbourhood_id': [
+          '85869245'
+        ],
+        'country_a': [
+          'USA'
+        ],
+        'locality_a': [
+          null
+        ],
+        'region_id': [
+          '85688543'
+        ],
+        'county': [
+          'New York County'
+        ],
+        'borough_a': [
+          null
+        ],
+        'borough_id': [
+          '421205771'
+        ],
+        'locality': [
+          'New York'
+        ],
+        'borough': [
+          'Manhattan'
+        ],
+        'region_a': [
+          'NY'
+        ],
+        'county_id': [
+          '102081863'
+        ],
+        'locality_id': [
+          '85977539'
+        ],
+        'neighbourhood_a': [
+          null
+        ],
+        'neighbourhood': [
+          'Flatiron District'
+        ],
+        'region': [
+          'New York'
+        ],
+        'country_id': [
+          '85633793'
+        ],
+        'county_a': [
+          null
+        ]
+      },
+      'name': {'default': '30 West 26th Street'},
+      'address_parts': {
+        'zip': '10010',
+        'number': '30',
+        'street': 'West 26th Street'
+      },
+      'alpha3': 'USA',
+      'source': 'openstreetmap',
+      'source_id': 'way:265038872',
+      'layer': 'address'
+    }
+  }
+);
+
 // call refresh so the index merges the changes
 actions.push( function( done ){
   client.indices.refresh( { index: config.indexName }, done);

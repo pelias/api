@@ -1,6 +1,7 @@
 var setup = require('../../../controller/search'),
     mockBackend = require('../mock/backend'),
     mockQuery = require('../mock/query');
+var proxyquire =  require('proxyquire').noCallThru();
 
 module.exports.tests = {};
 
@@ -46,7 +47,8 @@ module.exports.tests.functional_success = function(test, common) {
   }];
 
   var expectedMeta = {
-    scores: [10, 20]
+    scores: [10, 20],
+    query_type: 'mock'
   };
 
   var expectedData = [
@@ -54,6 +56,7 @@ module.exports.tests.functional_success = function(test, common) {
       _id: 'myid1',
       _score: 10,
       _type: 'mytype1',
+      _matched_queries: ['query 1', 'query 2'],
       parent: {
         country: ['country1'],
         region: ['state1'],
@@ -67,6 +70,7 @@ module.exports.tests.functional_success = function(test, common) {
       _id: 'myid2',
       _score: 20,
       _type: 'mytype2',
+      _matched_queries: ['query 3'],
       parent: {
         country: ['country2'],
         region: ['state2'],
@@ -166,6 +170,52 @@ module.exports.tests.timeout = function(test, common) {
       t.end();
     };
     controller(req, undefined, next );
+  });
+};
+
+module.exports.tests.existing_results = function(test, common) {
+  test('res with existing data should not call backend', function(t) {
+    var backend = function() {
+      throw new Error('backend should not have been called');
+    };
+    var controller = setup( fakeDefaultConfig, backend, mockQuery() );
+
+    var req = { };
+    // the existence of `data` means that there are already results so
+    // don't call the backend/query
+    var res = { data: [{}] };
+
+    var next = function() {
+      t.deepEqual(res, {data: [{}]});
+      t.end();
+    };
+    controller(req, res, next);
+
+  });
+
+};
+
+module.exports.tests.undefined_query = function(test, common) {
+  test('query returning undefined should not call service', function(t) {
+    // a function that returns undefined
+    var query = function () { return; };
+
+    var search_service_was_called = false;
+
+    var controller = proxyquire('../../../controller/search', {
+      '../service/search': function() {
+        search_service_was_called = true;
+        throw new Error('search service should not have been called');
+      }
+    })(undefined, undefined, query);
+
+    var next = function() {
+      t.notOk(search_service_was_called, 'should have returned before search service was called');
+      t.end();
+    };
+
+    controller({}, {}, next);
+
   });
 };
 

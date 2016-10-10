@@ -25,9 +25,10 @@ function setup(peliasConfig) {
 }
 
 function computeScores(req, res, next) {
-  // do nothing if no result data set
+  // do nothing if no result data set or if query is not of the original variety
   if (check.undefined(req.clean) || check.undefined(res) ||
-      check.undefined(res.data) || check.undefined(res.meta)) {
+      check.undefined(res.data) || check.undefined(res.meta) ||
+      res.meta.query_type !== 'original') {
     return next();
   }
 

@@ -17,6 +17,13 @@ function setup( config, backend, query ){
       return next();
     }
 
+    // do not run controller if there are already results
+    // this was added during libpostal integration.  if the libpostal parse/query
+    // doesn't return anything then fallback to old search-engine-y behavior
+    if (res && res.hasOwnProperty('data') && res.data.length > 0) {
+      return next();
+    }
+
     var cleanOutput = _.cloneDeep(req.clean);
     if (logging.isDNT(req)) {
       cleanOutput = logging.removeFields(cleanOutput);
@@ -24,11 +31,18 @@ function setup( config, backend, query ){
     // log clean parameters for stats
     logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
 
+    var renderedQuery = query(req.clean);
+
+    // if there's no query to call ES with, skip the service
+    if (_.isUndefined(renderedQuery)) {
+      return next();
+    }
+
     // backend command
     var cmd = {
       index: config.indexName,
       searchType: 'dfs_query_then_fetch',
-      body: query( req.clean )
+      body: renderedQuery.body
     };
 
     logger.debug( '[ES req]', cmd );
@@ -47,7 +61,9 @@ function setup( config, backend, query ){
       // set response data
       else {
         res.data = docs;
-        res.meta = meta;
+        res.meta = meta || {};
+        // store the query_type for subsequent middleware
+        res.meta.query_type = renderedQuery.type;
       }
       logger.debug('[ES response]', docs);
       next();
