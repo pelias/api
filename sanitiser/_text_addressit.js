@@ -5,36 +5,77 @@ var _      = require('lodash');
 var logger = require('pelias-logger').get('api');
 
 
-// don't throw away useful parsing information from libpostal
-// if street name and number are known, they shoudl be included in the query
-function addressFromLibpostal(parsed_text, fromLibpostal, text) {
-  var street = fromLibpostal.street;
+// original query cannot handle libpostal's scandic letter conversion ä -> ae
+// So try restoring the strings. Simple method below works for 99% of cases
 
-  if(check.undefined(parsed_text.street) && check.assigned(street) && check.assigned(fromLibpostal.number)) {
-    text = text.toLowerCase();
-    var restoreMap = { 'ä':'ae', 'ö':'oe', 'å':'aa' };
+function restoreParsed(parsed, text) {
+  var restoreMap = { 'ä':'ae', 'ö':'oe', 'å':'aa' };
 
-    _.forEach(restoreMap, function(xx, c) {
-      if(text.indexOf(c) !== -1 ) {
-        street = street.replace(new RegExp(xx, 'g'), c);
-      }
-    });
-    if(text.indexOf(street) !== -1) { // wow, succeeded
-      parsed_text.street = street;
-      parsed_text.number = fromLibpostal.number;
+  _.forEach(restoreMap, function(xx, c) {
+    if(text.indexOf(c) !== -1 ) {
+      parsed = parsed.replace(new RegExp(xx, 'g'), c);
+    }
+  });
+  // see if restored string is part of original text
+  if(text.indexOf(parsed) !== -1) { // yeah, succeeded
+    return parsed;
+  }
+  return null;
+}
 
-      if(check.assigned(parsed_text.name)) {
-        if(parsed_text.name.indexOf(street)!==-1) {
-          // skip the name if it is the same as the address
-          parsed_text.name = undefined;
+
+function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
+
+  // if 'query' part is set, libpostal has probably failed in parsing
+  // NOTE!! This may change when libpostal parsing improves
+  // try reqularly using libpostal parsing also when query field is set.
+  if(check.undefined(fromLibpostal.query)) {
+
+    if(check.assigned(fromLibpostal.street)) {
+      var street = restoreParsed(fromLibpostal.street, text);
+      if(street) {
+        parsedText.street = street;
+        /*
+        if(check.assigned(parsedText.name)) {
+          if(parsedText.name.indexOf(street)!==-1) {
+            parsedText.name = undefined;
+          }
         }
+        */
+      }
+    }
+
+    if(check.assigned(fromLibpostal.city)) {
+      var city = restoreParsed(fromLibpostal.city, text);
+
+      if(city) {
+        parsedText.city = city;
+        parsedText.regions = parsedText.regions || [];
+        parsedText.regions.push(city);
+      }
+    }
+
+    if(check.assigned(fromLibpostal.neighbourhood)) {
+      var nbrh = restoreParsed(fromLibpostal.neighbourhood, text);
+
+      if(nbrh) {
+        parsedText.regions = parsedText.regions || [];
+        parsedText.regions.push(nbrh);
       }
     }
   }
-  if(check.undefined(parsed_text.postalcode) && check.assigned(fromLibpostal.postalcode)) {
-    parsed_text.postalcode = fromLibpostal.postalcode;
+
+  // assume that numbers are always parsed correctly
+
+  if(check.assigned(fromLibpostal.number)) {
+    parsedText.number = fromLibpostal.number;
+  }
+
+  if(check.assigned(fromLibpostal.postalcode)) {
+    parsedText.postalcode = fromLibpostal.postalcode;
   }
 }
+
 
 
 // validate texts, convert types and apply defaults
@@ -50,7 +91,6 @@ function sanitize( raw, clean ){
 
   // valid input 'text'
   else {
-
     // valid text
     clean.text = raw.text;
 
@@ -61,14 +101,13 @@ function sanitize( raw, clean ){
     // parse text with query parser
     var parsed_text = parse(clean.text);
 
+    // use the libpostal parsed address components if available
+    if(check.assigned(fromLibpostal)) {
+      parsed_text = parsed_text || {};
+      assignValidLibpostalParsing(parsed_text, fromLibpostal, clean.text.toLowerCase());
+    }
+
     if (check.assigned(parsed_text)) {
-      // use the libpostal parsed street address if available, unless
-      // there's a reason to believe that libpostal has failed in parsing
-      // NOTE!! This may change when libpostal parsing improves
-      // try reqularly using libpostal parsing also when query field is set.
-      if(check.assigned(fromLibpostal) && check.undefined(fromLibpostal.query)) {
-        addressFromLibpostal(parsed_text, fromLibpostal, clean.text);
-      }
       clean.parsed_text = parsed_text;
     }
   }
