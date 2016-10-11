@@ -1,3 +1,4 @@
+
 /**
  *
  * Basic confidence score should be computed and returned for each item in the results.
@@ -25,11 +26,11 @@ var minConfidence=0, relativeMinConfidence;
 
 // default configuration for address confidence check
 var confidenceAddressParts = {
-  number: { parent: 'address_parts', field: 'number', enrich: false, numeric: true},
-  street: { parent: 'address_parts', field: 'street', enrich: false, numeric: false},
-  postalcode: { parent: 'address_parts', field: 'zip', enrich: true, numeric: false},
-  state: { parent: 'parent', field: 'region_a', enrich: true, numeric: false},
-  country: { parent: 'parent', field: 'country_a', enrich: true, numeric: false}
+  number: { parent: 'address_parts', field: 'number', enrich: false, numeric: true, weight: 1 },
+  street: { parent: 'address_parts', field: 'street', enrich: true, numeric: false, weight: 2 },
+  postalcode: { parent: 'address_parts', field: 'zip', enrich: true, numeric: false, weight: 3 },
+  state: { parent: 'parent', field: 'region_a', enrich: true, numeric: false, weight: 4},
+  country: { parent: 'parent', field: 'country_a', enrich: true, numeric: false, weight:5 }
 };
 
 function setup(peliasConfig) {
@@ -175,41 +176,64 @@ function computeConfidenceScore(req, mean, stdev, hit) {
     checkCount += 1;
 */
 
+  hit.confidence = 0;
+  var checkCount = 0;
   var parsedText = req.clean.parsed_text;
-
-  // compare parsed name/street (or raw text) against configured language versions of name and possibly street
-  hit.confidence = checkName(req.clean.text, parsedText, hit);
-  logger.debug('Final name score', hit.confidence);
-  var checkCount = 1;
+  var doAddressCheck;
+  var adminConfidence;
 
   if (parsedText) {
-    var hasAddress;
     // first compare address if parsed text has any elements for it
     for(var key in confidenceAddressParts) {
-
       if(check.assigned(parsedText[key])) {
-        hasAddress = true;
+        doAddressCheck = true;
       }
     }
-    if(hasAddress) {
+    if(doAddressCheck) {
       hit.confidence += checkAddress(parsedText, hit);
       checkCount++;
     }
 
-    if(adminProperties && parsedText.regions && parsedText.regions.length>1) {
-      hit.confidence += checkRegions(parsedText, hit);
-      checkCount++;
-    }
-
-    if(adminProperties && parsedText.city) {
-      hit.confidence += checkCity(parsedText.city, hit);
-      checkCount++;
+    if(adminProperties && parsedText.regions && parsedText.regions.length) {
+      adminConfidence = checkRegions(parsedText, hit);
     }
   }
 
+  // compare parsed name (or raw text) against configured language
+  // versions of name and possibly street
+  var doNameCheck=true;
+  if(doAddressCheck && parsedText.street) {
+    // address check already done
+    // do not rescore name if it duplicates the address
+    var name1 = parsedText.street;
+    var name2 = name1;
+
+    if(check.assigned(parsedText.number)) {
+      name1 = name1 + ' ' + parsedText.number;
+      name2 = parsedText.number + ' ' + name2;
+    }
+    var input = parsedText.name || req.clean.text.toLowerCase();
+
+    if(input === name1 || input === name2) {
+      doNameCheck=false;
+      logger.debug(' @ skip name check');
+    }
+  }
+  if(doNameCheck) {
+    hit.confidence += checkName(req.clean.text, parsedText, hit);
+    checkCount++;
+  }
+
+  // keep admin scoring proportion constant 50%
+  // regardless of count of finer scores
+  if(check.assigned(adminConfidence)) {
+    hit.confidence += checkCount*adminConfidence;
+    checkCount*=2;
+  }
   // TODO: look at categories and location
 
   hit.confidence /= checkCount;
+  logger.debug('### confidence', hit.confidence);
 
   return hit;
 }
@@ -259,7 +283,7 @@ function checkDistanceFromMean(score, mean, stdev) {
  * @returns {bool}
  */
 
-function checkLanguageProperty(text, propertyObject) {
+function checkLanguageProperty(text, propertyObject, stripNumbers) {
   var bestScore = 0;
   var bestName;
 
@@ -267,7 +291,14 @@ function checkLanguageProperty(text, propertyObject) {
     if (languages.indexOf(lang) === -1) {
       continue;
     }
-    var score = fuzzy.match(text, propertyObject[lang]);
+    var score;
+
+    if(stripNumbers) {
+      score = fuzzy.match(text, propertyObject[lang].replace(/[0-9]/g, '').trim());
+    } else {
+      score = fuzzy.match(text, propertyObject[lang]);
+    }
+
     if (score > bestScore ) {
       bestScore = score;
       bestName = propertyObject[lang];
@@ -289,39 +320,27 @@ function checkLanguageProperty(text, propertyObject) {
  * @returns {number}
  */
 function checkName(text, parsed_text, hit) {
-  var score;
 
   var checkParsed = function(parsed, hit) {
-    var _score = checkLanguageProperty(parsed, hit.name);
-    if (check.undefined(score) || _score>score) {
-        score=_score;
-    }
+    var score = checkLanguageProperty(parsed, hit.name);
+
     // check also street property
     if(check.assigned(hit.address_parts) && check.assigned(hit.address_parts.street)) {
-      _score = propMatchArray(parsed, hit.address_parts.street);
-      if (check.undefined(score) || _score>score) {
+      var _score = propMatchArray(parsed, hit.address_parts.street, true);
+      if (_score>score) {
         score=_score;
       }
     }
+    return score;
   };
 
   // parsed_text name should take precedence if available since it's the cleaner name property
-  if (check.assigned(parsed_text)) {
-    if(check.assigned(parsed_text.name)) {
-      checkParsed(parsed_text.name, hit);
-    }
-    if(check.assigned(parsed_text.street)) {
-      checkParsed(parsed_text.street, hit);
-    }
+  if (check.assigned(parsed_text) && check.assigned(parsed_text.name)) {
+    return(checkParsed(parsed_text.name, hit));
   }
 
-  if (check.assigned(score)) {
-    return(score);
-  }
   // if no parsed_text check the full unparsed text value
-  checkParsed(text, hit);
-
-  return(score);
+  return(checkParsed(text, hit));
 }
 
 /**
@@ -365,6 +384,7 @@ function propMatch(textProp, hitProp, expectEnriched, numeric) {
 
   // text missing, result has it
   if (!check.assigned(textProp) && check.assigned(hitProp)) {
+    if (!expectEnriched) { return 0.5; } // enrichment not desired
     return 1.0;
   }
 
@@ -431,24 +451,29 @@ function checkAddress(text, hit) {
     var part = confidenceAddressParts[key];
     var parent = hit[part.parent];
 
+    if(!text[key] && part.enrich) { // do not score unless enrichment is undesired
+      continue;
+    }
+
     if (!parent) {
       value = null;
     } else {
       value = parent[part.field];
     }
     var score = propMatchArray(text[key], value, part.enrich, part.numeric);
+
     if(key==='street' && text[key]) { // special case: proper version can be stored in the name
-      var _score = checkLanguageProperty(text[key], hit.name);
+      var _score = checkLanguageProperty(text[key], hit.name, true);
       if(_score>score) {
-        score = score;
+        score = _score;
       }
     }
-    res += score;
-    checkCount++;
+    res += score*part.weight;
+    checkCount += part.weight;
   }
   res /= checkCount;
 
-  logger.debug('address match', res );
+  logger.debug('address match', res);
 
   return res;
 }
@@ -508,7 +533,7 @@ function checkRegions(text, hit) {
     regions.push(source[i]);
   }
 
-  var bestMatch = checkAdmin(regions, hit);
+  var bestMatch = checkAdmin(text.regions, hit);
   logger.debug('admin match', bestMatch);
 
   return bestMatch;
