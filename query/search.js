@@ -59,7 +59,7 @@ function generateQuery( clean ){
 
   // size
   if( clean.querySize ) {
-    vs.var( 'size', clean.querySize );
+    vs.var( 'size', 100 );
   }
 
   // focus point
