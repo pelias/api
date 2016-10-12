@@ -249,6 +249,57 @@ test('county value should be used when there is no localadmin', function(t) {
     t.end();
   });
 
+  test('dependency layer should use full name instead of abbreviation', function(t) {
+    var doc = {
+      'name': 'dependency name',
+      'layer': 'dependency',
+      'dependency_a': 'dependency abbr',
+      'dependency': 'dependency name',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'dependency name', 'dependency should be used');
+    t.end();
+
+  });
+
+  test('dependency abbreviation should be used instead of dependency name or country and skip region', function(t) {
+    var doc = {
+      'name': 'locality name',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'dependency_a': 'dependency abbr',
+      'dependency': 'dependency name',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'locality name, dependency abbr', 'dependency_a should be used');
+    t.end();
+
+  });
+
+  test('dependency name should be used instead of country when dep abbr is unavailable and skip region', function(t) {
+    var doc = {
+      'name': 'locality name',
+      'locality': 'locality name',
+      'localadmin': 'localadmin name',
+      'county': 'county name',
+      'macrocounty': 'macrocounty name',
+      'region': 'region name',
+      'macroregion': 'macroregion name',
+      'dependency': 'dependency name',
+      'country_a': 'USA',
+      'country': 'United States'
+    };
+    t.equal(generator(doc),'locality name, dependency name', 'dependency should be used');
+    t.end();
+
+  });
+
 };
 
 module.exports.all = function (tape, common) {
