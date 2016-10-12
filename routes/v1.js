@@ -38,7 +38,7 @@ var postProc = {
   matchLanguage: require('../middleware/matchLanguage'),
   trimByGranularity: require('../middleware/trimByGranularity'),
   distances: require('../middleware/distance'),
-  confidenceScores: require('../middleware/confidenceScore'),
+  confidenceScores: require('../middleware/confidenceScoreDT'),
   confidenceScoresFallback: require('../middleware/confidenceScoreFallback'),
   confidenceScoresReverse: require('../middleware/confidenceScoreReverse'),
   accuracy: require('../middleware/accuracy'),

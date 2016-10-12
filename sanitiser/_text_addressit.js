@@ -50,8 +50,10 @@ function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
 
       if(city) {
         parsedText.city = city;
-        parsedText.regions = parsedText.regions || [];
-        parsedText.regions.push(city);
+        parsedText.regions = parsedText.regions || ['']; // 1st entry is the name and will be dropped
+        if(parsedText.regions.indexOf(city)===-1) {
+          parsedText.regions.push(city);
+        }
       }
     }
 
@@ -59,8 +61,10 @@ function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
       var nbrh = restoreParsed(fromLibpostal.neighbourhood, text);
 
       if(nbrh) {
-        parsedText.regions = parsedText.regions || [];
-        parsedText.regions.push(nbrh);
+        parsedText.regions = parsedText.regions || [''];
+        if(parsedText.regions.indexOf(nbrh)===-1) {
+          parsedText.regions.push(nbrh);
+        }
       }
     }
   }
