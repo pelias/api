@@ -27,7 +27,7 @@ var minConfidence=0, relativeMinConfidence;
 // default configuration for address confidence check
 var confidenceAddressParts = {
   number: { parent: 'address_parts', field: 'number', enrich: false, numeric: true, weight: 1 },
-  street: { parent: 'address_parts', field: 'street', enrich: true, numeric: false, weight: 2 },
+  street: { parent: 'address_parts', field: 'street', enrich: false, numeric: false, weight: 2 },
   postalcode: { parent: 'address_parts', field: 'zip', enrich: true, numeric: false, weight: 3 },
   state: { parent: 'parent', field: 'region_a', enrich: true, numeric: false, weight: 4},
   country: { parent: 'parent', field: 'country_a', enrich: true, numeric: false, weight:5 }
