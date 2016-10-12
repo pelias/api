@@ -79,7 +79,7 @@ module.exports = {
       'boost_mode': 'multiply'
     }
   },
-  'size': 10,
+  'size': 50,
   'track_scores': true,
   'sort': [
     {
