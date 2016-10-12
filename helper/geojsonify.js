@@ -7,11 +7,11 @@ var _ = require('lodash');
 var addDetails = require('./geojsonify_place_details');
 var addMetaData = require('./geojsonify_meta_data');
 
-function geojsonifyPlaces( params, docs, labelGenerator ){
+function geojsonifyPlaces( params, docs ){
 
   // flatten & expand data for geojson conversion
   var geodata = docs
-    .map(geojsonifyPlace.bind(null, params, labelGenerator))
+    .map(geojsonifyPlace.bind(null, params))
     .filter( function( doc ){
       return !!doc;
     });
@@ -34,7 +34,7 @@ function geojsonifyPlaces( params, docs, labelGenerator ){
   return geojson;
 }
 
-function geojsonifyPlace(params, labelGenerator, place) {
+function geojsonifyPlace(params, place) {
 
   // something went very wrong
   if( !place || !place.hasOwnProperty( 'center_point' ) ) {

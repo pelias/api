@@ -6,7 +6,7 @@ module.exports.tests = {};
 module.exports.tests.interface = function(test, common) {
   test('valid interface', function(t) {
     t.equal(typeof geojsonify, 'function', 'geojsonify is a function');
-    t.equal(geojsonify.length, 3, 'accepts x arguments');
+    t.equal(geojsonify.length, 2, 'accepts x arguments');
     t.end();
   });
 };
