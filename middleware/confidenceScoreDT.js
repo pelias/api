@@ -12,7 +12,7 @@ var _ = require('lodash');
 var fuzzy = require('../helper/fuzzyMatch');
 var languages = ['default'];
 
-var adminProperties;
+var adminWeights;
 var minConfidence=0, relativeMinConfidence;
 
 // default configuration for address confidence check
@@ -35,8 +35,8 @@ function setup(peliasConfig) {
     relativeMinConfidence = peliasConfig.relativeMinConfidence;
     var localization = peliasConfig.localization;
     if (localization) {
-      if(localization.confidenceAdminProperties) {
-        adminProperties = localization.confidenceAdminProperties;
+      if(localization.confidenceAdminWeights) {
+        adminWeights = localization.confidenceAdminWeights;
       }
       if(localization.confidenceAddressParts) {
         confidenceAddressParts = localization.confidenceAddressParts;
@@ -354,26 +354,29 @@ function checkAdmin(values, hit) {
   }
 
   // loop trough configured properties to find best match
-  var bestMatch = 0;
+  var sum=0, weightSum=0;
 
-  var updateBest = function(text) {
-    var match = fuzzy.matchArray(text, values);
-    if (match>bestMatch) {
-      bestMatch = match;
-    }
-  };
-
-  adminProperties.forEach( function(key) {
-    var prop = hit.parent[key];
-    if (prop) {
-      if (Array.isArray(prop)) {
-        prop.forEach(updateBest);
-      } else {
-        updateBest(prop);
+  values.forEach(function(value) {
+    var best=0, weight = 1;
+    for(var key in adminWeights) {
+      var prop = hit.parent[key];
+      if (prop) {
+        var match;
+        if ( Array.isArray(prop) ) {
+          match = fuzzy.matchArray(value, prop);
+        } else {
+          match = fuzzy.match(value, prop);
+        }
+        if(match>best) {
+          best = match;
+          weight = adminWeights[key];
+        }
       }
     }
+    sum += weight*best;
+    weightSum += weight;
   });
-  return bestMatch;
+  return sum/weightSum;
 }
 
 
