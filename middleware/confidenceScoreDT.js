@@ -156,8 +156,6 @@ function computeConfidenceScore(req, hit) {
   hit.confidence = 0;
   var checkCount = 0;
   var parsedText = req.clean.parsed_text;
-  var doAddressCheck;
-  var adminConfidence;
 
   // first compare address parts one by one
   if (parsedText) {
