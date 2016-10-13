@@ -29,7 +29,10 @@
         "defaults": {
           "ngram:analyzer": "peliasIndexOneEdgeGram",
           "ngram:multifield": ["name.*"],
-          "phrase:multifield": ["name.*"]
+          "phrase:multifield": ["name.*"],
+          "address:housenumber:boost": 0.1,
+          "address:street:boost": 1,
+          "admin:localadmin:boost": 20
         }
       },
       "autocomplete": {
@@ -41,11 +44,17 @@
     },
     "languages": ["fi", "default", "sv", "en", "se"],
     "localization" : {
-      "confidenceAdminProperties": ["localadmin", "locality", "neighbourhood"],
+        "confidenceAdminWeights": {
+        "localadmin": 1,
+        "locality": 0.2,
+        "neighbourhood": 0.2,
+        "region": 0.2,
+        "country": 0.1
+      },
       "confidenceAddressParts": {
-        "number": {"parent":"address_parts", "field":"number", "enrich":false, "numeric": true},
-        "street": {"parent":"address_parts", "field":"street", "enrich":false, "numeric": false},
-        "postalcode": {"parent":"address_parts", "field":"zip", "enrich":false, "numeric": false}
+	"number": {"parent":"address_parts", "field":"number", "numeric": true, "weight": 0.5},
+        "street": {"parent":"address_parts", "field":"street", "numeric": false, "weight": 2},
+        "postalcode": {"parent":"address_parts", "field":"zip", "numeric": false, "weight": 1}
       },
       "translations": "/opt/pelias/api/translations.json",
       "labelSchemas": {
