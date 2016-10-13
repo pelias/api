@@ -1,4 +1,5 @@
 
+
 /**
  *
  * Basic confidence score should be computed and returned for each item in the results.
@@ -171,12 +172,23 @@ function computeConfidenceScore(req, hit) {
   hit.confidence += checkName(req.clean.text, parsedText, hit);
   checkCount++;
 
-  if(adminProperties && parsedText && parsedText.regions && parsedText.regions.length>1) {
-    // keep admin scoring proportion constant 50%
-    // regardless of count of finer scores
-    // so, score is max 0.5 if city is all wrong
-    hit.confidence += checkCount*checkRegions(parsedText, hit);
-    checkCount*=2;
+  if(adminWeights) {
+    var adminConf;
+    if(parsedText && parsedText.regions && parsedText.regions.length>1) {
+      // keep admin scoring proportion constant 50%
+      // regardless of count of finer scores
+      // so, score is max 0.5 if city is all wrong
+      hit.confidence += checkCount*checkRegions(parsedText, hit);
+      checkCount*=2;
+    } else if(hit.confidence<1) {
+      // Text could not be parsed, and does not match any document perfectly.
+      // There is a chance that text contains admin info like small city without
+      // comma separation (libpostal misses those), or name is formatted loosely
+      // 'tampereen keskustori'. So check raw text against admin areas
+      var weight = 1 - hit.confidence; // leftover from name match
+      hit.confidence += weight*checkAdmin(req.clean.text, hit);
+      checkCount+=weight;
+    }
   }
 
   // TODO: look at categories
