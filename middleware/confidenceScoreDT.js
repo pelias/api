@@ -394,7 +394,7 @@ function checkRegions(text, hit) {
     regions.push(source[i]);
   }
 
-  var bestMatch = checkAdmin(text.regions, hit);
+  var bestMatch = checkAdmin(regions, hit);
   logger.debug('admin match', bestMatch);
 
   return bestMatch;
