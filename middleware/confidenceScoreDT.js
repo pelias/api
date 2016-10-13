@@ -167,23 +167,9 @@ function computeConfidenceScore(req, hit) {
     }
   }
 
-  // compare parsed name (or raw text) against configured language
-  // versions of name and possibly street
-  var doNameCheck=true;
-  if(parsedText && parsedText.street && parsedText.number) {
-    // do not rescore name if it duplicates the address
-    var names = namesFromAddress(parsedText.street, parsedText.number);
-    var input = parsedText.name || req.clean.text.toLowerCase();
-
-    if(input === names[0] || input === names[1]) {
-      doNameCheck=false;
-      logger.debug(' @ skip name check');
-    }
-  }
-  if(doNameCheck) {
-    hit.confidence += checkName(req.clean.text, parsedText, hit);
-    checkCount++;
-  }
+  // compare parsed name (or raw text) against configured language versions of name
+  hit.confidence += checkName(req.clean.text, parsedText, hit);
+  checkCount++;
 
   if(adminProperties && parsedText && parsedText.regions && parsedText.regions.length>1) {
     // keep admin scoring proportion constant 50%
