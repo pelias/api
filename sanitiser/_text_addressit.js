@@ -72,6 +72,11 @@ function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
   if(check.assigned(fromLibpostal.postalcode)) {
     parsedText.postalcode = fromLibpostal.postalcode;
   }
+
+  // remove postalcode from city name
+  if(check.assigned(parsedText.postalcode) && check.assigned(parsedText.admin_parts) ) {
+    parsedText.admin_parts = parsedText.admin_parts.replace(parsedText.postalcode, '');
+  }
 }
 
 
