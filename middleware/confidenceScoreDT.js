@@ -233,27 +233,13 @@ function checkLanguageProperty(text, propertyObject, stripNumbers) {
  */
 function checkName(text, parsed_text, hit) {
 
-  var checkParsed = function(parsed, hit) {
-    var score = checkLanguageProperty(parsed, hit.name);
-
-    // check also street property
-    if(check.assigned(hit.address_parts) && check.assigned(hit.address_parts.street)) {
-      var names = namesFromAddress(hit.address_parts.street, hit.address_parts.number);
-      var _score = propMatchArray(parsed, names);
-      if (_score>score) {
-        score=_score;
-      }
-    }
-    return score;
-  };
-
   // parsed_text name should take precedence if available since it's the cleaner name property
   if (check.assigned(parsed_text) && check.assigned(parsed_text.name)) {
-    return(checkParsed(parsed_text.name, hit));
+    return(checkLanguageProperty(parsed_text.name, hit.name));
   }
 
   // if no parsed_text check the full unparsed text value
-  return(checkParsed(text, hit));
+  return(checkLanguageProperty(text, hit.name));
 }
 
 /**
