@@ -144,7 +144,7 @@ function parse(query) {
     // perform full address parsing
     // except on queries so short they obviously can't contain an address
     if (query.length > 3) {
-      return parser( query );
+      return parser( query.toLowerCase() );
     }
   };
 
