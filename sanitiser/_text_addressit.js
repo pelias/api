@@ -35,13 +35,6 @@ function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
       var street = restoreParsed(fromLibpostal.street, text);
       if(street) {
         parsedText.street = street;
-        /*
-        if(check.assigned(parsedText.name)) {
-          if(parsedText.name.indexOf(street)!==-1) {
-            parsedText.name = undefined;
-          }
-        }
-        */
       }
     }
 
@@ -53,6 +46,7 @@ function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
         parsedText.regions = parsedText.regions || ['']; // 1st entry is the name and will be dropped
         if(parsedText.regions.indexOf(city)===-1) {
           parsedText.regions.push(city);
+          parsedText.admin_parts = (parsedText.admin_parts?parsedText.admin_parts+' ,'+city:city);
         }
       }
     }
@@ -64,11 +58,11 @@ function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
         parsedText.regions = parsedText.regions || [''];
         if(parsedText.regions.indexOf(nbrh)===-1) {
           parsedText.regions.push(nbrh);
+          parsedText.admin_parts = (parsedText.admin_parts?parsedText.admin_parts+' ,'+nbrh:nbrh);
         }
       }
     }
   }
-
   // assume that numbers are always parsed correctly
 
   if(check.assigned(fromLibpostal.number)) {
