@@ -343,19 +343,8 @@ function propMatchArray(text, hitProp, numeric) {
  * against the results
  *
  * @param {object} text
- * @param {string|number} [text.number]
- * @param {string} [text.street]
- * @param {string} [text.postalcode]
- * @param {string} [text.state]
- * @param {string} [text.country]
  * @param {object} hit
- * @param {object} [hit.address_parts]
- * @param {string|number} [hit.address_parts.number]
- * @param {string} [hit.address_parts.street]
- * @param {string|number} [hit.address_parts.zip]
- * @param {Array} [hit.parent.region_a]
- * @param {Array} [hit.parent.country_a]
- * @returns {number}
+ * @param {string} key
  */
 function checkAddressPart(text, hit, key) {
   var value;
