@@ -26,6 +26,7 @@
     "relativeMinConfidence": 0.4,
     "query": {
       "search": {
+        "disableFallback": true,
         "defaults": {
           "ngram:analyzer": "peliasIndexOneEdgeGram",
           "ngram:multifield": ["name.*"],
