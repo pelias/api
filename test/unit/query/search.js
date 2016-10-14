@@ -1,6 +1,5 @@
 var generate = require('../../../query/search');
 var fs = require('fs');
-var logger = require('pelias-logger').get('searchtest');
 
 module.exports.tests = {};
 
@@ -28,10 +27,7 @@ module.exports.tests.query = function(test, common) {
     };
 
     var query = generate(clean);
-    
-    var sq = JSON.stringify( query );
-    logger.debug(sq);
-    var compiled = JSON.parse( sq );
+    var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_bbox');
 
     t.deepEqual(compiled.type, 'fallback', 'query type set');

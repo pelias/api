@@ -32,7 +32,7 @@
     "url": "https://github.com/pelias/api/issues"
   },
   "engines": {
-    "node": ">=0.10.26"
+    "node": ">=4.0.0"
   },
   "dependencies": {
     "addressit": "1.4.0",
@@ -41,7 +41,7 @@
     "elasticsearch": "^11.0.0",
     "elasticsearch-exceptions": "0.0.4",
     "express": "^4.8.8",
-    "express-http-proxy": "^0.7.0",
+    "express-http-proxy": "^0.10.0",
     "extend": "3.0.0",
     "geojson": "^0.4.0",
     "geojson-extent": "^0.3.1",
