@@ -20,7 +20,7 @@ var customConfig = {
   }
 };
 
-var generate = proxyquire('../../../query/search',  { 'pelias-config': customConfig });
+var generate = proxyquire('../../../query/search_original',  { 'pelias-config': customConfig });
 
 module.exports.tests = {};
 
@@ -44,7 +44,7 @@ module.exports.tests.query = function(test, common) {
 
     var expected = require('../fixture/search_custom_query');
 
-    t.deepEqual(compiled, expected, 'valid multiphrase search query');
+    t.deepEqual(compiled.body, expected, 'valid multiphrase search query');
     t.end();
   });
 };
