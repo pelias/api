@@ -27,6 +27,7 @@ var tests = [
   require('./middleware/access_log'),
   require('./middleware/accuracy'),
   require('./middleware/confidenceScore'),
+  require('./middleware/confidenceScoreDT'),
   require('./middleware/confidenceScoreFallback'),
   require('./middleware/confidenceScoreReverse'),
   require('./middleware/distance'),
