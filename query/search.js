@@ -1,58 +1,44 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./search_defaults'),
     textParser = require('./text_parser'),
-    check = require('check-types'),
-    _ = require('lodash');
+    check = require('check-types');
 
-var placeTypes = require('../helper/placeTypes');
-
-// region_a is also an admin field. addressit tries to detect
-// region_a, in which case we use a match query specifically for it.
-// but address it doesn't know about all of them so it helps to search
-// against this with the other admin parts as a fallback
-var adminFields = placeTypes.concat(['region_a']);
-
+var USE_FALLBACK_QUERY = true;
 var api = require('pelias-config').generate().api;
-if (api && api.query && api.query.search && api.query.search.defaults) {
-  // merge external defaults if available
-  defaults = _.merge({}, defaults, api.query.search.defaults);
+if (api && api.query && api.query.search && api.query.search.disableFallback) {
+  USE_FALLBACK_QUERY = false;
 }
 
 //------------------------------
 // general-purpose search query
 //------------------------------
-var query = new peliasQuery.layout.FilteredBooleanQuery();
-
-// mandatory matches
-query.score( peliasQuery.view.boundary_country, 'must' );
-query.score( peliasQuery.view.ngrams, 'must' );
+var fallbackQuery = new peliasQuery.layout.FallbackQuery();
+var geodisambiguationQuery = new peliasQuery.layout.GeodisambiguationQuery();
 
 // scoring boost
-query.score( peliasQuery.view.phrase );
-query.score( peliasQuery.view.focus( peliasQuery.view.phrase ) );
-query.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
-query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
+fallbackQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
+fallbackQuery.score( peliasQuery.view.popularity_only_function );
+fallbackQuery.score( peliasQuery.view.population_only_function );
 
-// address components
-query.score( peliasQuery.view.address('housenumber') );
-query.score( peliasQuery.view.address('street') );
-query.score( peliasQuery.view.address('postcode') );
-
-// admin components
-// country_a and region_a are left as matches here because the text-analyzer
-// can sometimes detect them, in which case a query more specific than a
-// multi_match is appropriate.
-query.score( peliasQuery.view.admin('country_a') );
-query.score( peliasQuery.view.admin('region_a') );
-query.score( peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin') );
+geodisambiguationQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
+geodisambiguationQuery.score( peliasQuery.view.popularity_only_function );
+geodisambiguationQuery.score( peliasQuery.view.population_only_function );
+// --------------------------------
 
 // non-scoring hard filters
-query.filter( peliasQuery.view.boundary_circle );
-query.filter( peliasQuery.view.boundary_rect );
-query.filter( peliasQuery.view.sources );
-query.filter( peliasQuery.view.layers );
-query.filter( peliasQuery.view.categories );
+fallbackQuery.filter( peliasQuery.view.boundary_country );
+fallbackQuery.filter( peliasQuery.view.boundary_circle );
+fallbackQuery.filter( peliasQuery.view.boundary_rect );
+fallbackQuery.filter( peliasQuery.view.sources );
+fallbackQuery.filter( peliasQuery.view.layers );
+fallbackQuery.filter( peliasQuery.view.categories );
 
+geodisambiguationQuery.filter( peliasQuery.view.boundary_country );
+geodisambiguationQuery.filter( peliasQuery.view.boundary_circle );
+geodisambiguationQuery.filter( peliasQuery.view.boundary_rect );
+geodisambiguationQuery.filter( peliasQuery.view.sources );
+geodisambiguationQuery.filter( peliasQuery.view.layers );
+geodisambiguationQuery.filter( peliasQuery.view.categories );
 // --------------------------------
 
 /**
@@ -79,7 +65,7 @@ function generateQuery( clean ){
 
   // size
   if( clean.querySize ) {
-    vs.var( 'size', clean.querySize );
+    vs.var( 'size', 50 );
   }
 
   // focus point
@@ -132,7 +118,29 @@ function generateQuery( clean ){
     textParser( clean.parsed_text, vs );
   }
 
-  return query.render( vs );
+  var q = getQuery(vs);
+
+  //console.log(JSON.stringify(q, null, 2));
+
+  return q;
+}
+
+function getQuery(vs) {
+  if (USE_FALLBACK_QUERY && hasStreet(vs)) {
+    return {
+      type: 'fallback',
+      body: fallbackQuery.render(vs)
+    };
+  }
+
+  // returning undefined is a signal to a later step that the addressit-parsed
+  // query should be queried for
+  return undefined;
+
+}
+
+function hasStreet(vs) {
+  return vs.isset('input:street');
 }
 
 module.exports = generateQuery;

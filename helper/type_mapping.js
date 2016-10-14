@@ -47,13 +47,13 @@ var SOURCE_MAPPING = addStandardTargetsToAliases(SOURCES, SOURCE_ALIASES);
  * not going to match any records and will return no results.
  */
 var LAYERS_BY_SOURCE = {
-  openstreetmap: [ 'address', 'venue', 'street' ],
-  openaddresses: [ 'address' ],
-  geonames: [ 'country','macroregion', 'region', 'county','localadmin',
-              'locality','borough', 'neighbourhood', 'venue' ],
-  whosonfirst: [ 'continent', 'country', 'dependency', 'macroregion', 'region',
-                 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
-                 'neighbourhood', 'microhood', 'disputed'],
+ openstreetmap: [ 'address', 'venue', 'street' ],
+ openaddresses: [ 'address' ],
+ geonames: [ 'country','macroregion', 'region', 'county','localadmin',
+  'locality','borough', 'neighbourhood', 'venue' ],
+ whosonfirst: [ 'continent', 'country', 'dependency', 'macroregion', 'region',
+   'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
+   'neighbourhood', 'microhood', 'disputed', 'venue'],
   nlsfi: [ 'venue', 'stop', 'station' ],
   gtfs: [ 'stop', 'station' ]
 };
@@ -64,7 +64,9 @@ var LAYERS_BY_SOURCE = {
  * may have layers that mean the same thing but have a different name
  */
 var LAYER_ALIASES = {
-  'coarse': LAYERS_BY_SOURCE.whosonfirst
+  'coarse': [ 'continent', 'country', 'dependency', 'macroregion', 'region',
+   'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
+   'neighbourhood', 'microhood', 'disputed']
 };
 
 // create a list of all layers by combining each entry from LAYERS_BY_SOURCE

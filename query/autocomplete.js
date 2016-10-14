@@ -1,7 +1,7 @@
 
 var peliasQuery = require('pelias-query'),
     defaults = require('./autocomplete_defaults'),
-    textParser = require('./text_parser'),
+    textParser = require('./text_parser_addressit'),
     check = require('check-types'),
     _ = require('lodash');
 
@@ -121,7 +121,10 @@ function generateQuery( clean ){
     textParser( clean.parsed_text, vs );
   }
 
-  return query.render( vs );
+  return {
+    type: 'autocomplete',
+    body: query.render(vs)
+  };
 }
 
 module.exports = generateQuery;

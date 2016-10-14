@@ -11,6 +11,7 @@ responses['client/search/ok/1'] = function( cmd, cb ){
     _id: 'myid1',
     _type: 'mytype1',
     _score: 10,
+    matched_queries: ['query 1', 'query 2'],
     _source: {
       value: 1,
       center_point: { lat: 100.1, lon: -50.5 },
@@ -21,6 +22,7 @@ responses['client/search/ok/1'] = function( cmd, cb ){
     _id: 'myid2',
     _type: 'mytype2',
     _score: 20,
+    matched_queries: ['query 3'],
     _source: {
       value: 2,
       center_point: { lat: 100.2, lon: -51.5 },
