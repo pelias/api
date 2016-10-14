@@ -43,10 +43,10 @@ function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
 
       if(city) {
         parsedText.city = city;
-        parsedText.regions = parsedText.regions || ['']; // 1st entry is the name and will be dropped
+        parsedText.regions = parsedText.regions || [];
         if(parsedText.regions.indexOf(city)===-1) {
           parsedText.regions.push(city);
-          parsedText.admin_parts = (parsedText.admin_parts?parsedText.admin_parts+' ,'+city:city);
+          parsedText.admin_parts = (parsedText.admin_parts?parsedText.admin_parts+', '+city:city);
         }
       }
     }
@@ -55,10 +55,10 @@ function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
       var nbrh = restoreParsed(fromLibpostal.neighbourhood, text);
 
       if(nbrh) {
-        parsedText.regions = parsedText.regions || [''];
+        parsedText.regions = parsedText.regions || [];
         if(parsedText.regions.indexOf(nbrh)===-1) {
           parsedText.regions.push(nbrh);
-          parsedText.admin_parts = (parsedText.admin_parts?parsedText.admin_parts+' ,'+nbrh:nbrh);
+          parsedText.admin_parts = (parsedText.admin_parts?parsedText.admin_parts+', '+nbrh:nbrh);
         }
       }
     }
@@ -187,6 +187,15 @@ function parse(query) {
     return null;
   }
 
-  return parsed_text;
+  // addressit puts 1st parsed part (venue or street name) to regions[0]
+  // that is never desirable so drop the first item from regions
+  if(parsed_text.regions) {
+    if(parsed_text.regions.length>1) {
+      parsed_text.regions = parsed_text.regions.slice(1);
+    } else {
+      delete parsed_text.regions;
+    }
+  }
 
+  return parsed_text;
 }
