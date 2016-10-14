@@ -1,3 +1,4 @@
+
 var check = require('check-types');
 var parser = require('addressit');
 var extend = require('extend');
@@ -11,9 +12,11 @@ var api = require('pelias-config').generate().api;
 // FOr example, 'Suomi' in regions array would currently drop confidence
 // scores because WOF defines only international country names (Finland)
 var filteredRegions;
+var cleanRegions;
 
-if (api && api.localization && api.localization.filteredRegions) {
-  filteredRegions=api.localization.filteredRegions;
+if (api && api.localization) {
+  filteredRegions = api.localization.filteredRegions;
+  cleanRegions = api.localization.cleanRegions;
 }
 
 
@@ -111,7 +114,7 @@ function sanitize( raw, clean ){
 
     // remove anything that may have been parsed before
     var fromLibpostal = clean.parsed_text;
-    clean.parsed_text = null;
+    delete clean.parsed_text;
 
     // parse text with query parser
     var parsed_text = parse(clean.text);
@@ -122,7 +125,7 @@ function sanitize( raw, clean ){
       assignValidLibpostalParsing(parsed_text, fromLibpostal, clean.text.toLowerCase());
     }
 
-    if (check.assigned(parsed_text)) {
+    if (check.assigned(parsed_text) && Object.keys(parsed_text).length > 0) {
       clean.parsed_text = parsed_text;
     }
   }
@@ -161,7 +164,7 @@ function parse(query) {
     // perform full address parsing
     // except on queries so short they obviously can't contain an address
     if (query.length > 3) {
-      return parser( query.toLowerCase() );
+      return parser( query );
     }
   };
 
@@ -201,9 +204,12 @@ function parse(query) {
 
   // addressit puts 1st parsed part (venue or street name) to regions[0].
   // That is never desirable so drop the first item
-  if(parsed_text.regions) {
+  if(cleanRegions && parsed_text.regions) {
     if(parsed_text.regions.length>1) {
       parsed_text.regions = parsed_text.regions.slice(1);
+      for (var i in parsed_text.regions) {
+        parsed_text.regions[i] = parsed_text.regions[i].toLowerCase();
+      }
     } else {
       delete parsed_text.regions;
     }

@@ -58,6 +58,7 @@
         "postalcode": {"parent":"address_parts", "field":"zip", "numeric": false, "weight": 1}
       },
       "filteredRegions": ["suomi", "finland"],
+      "cleanRegions": true,
       "translations": "/opt/pelias/api/translations.json",
       "labelSchemas": {
         "FIN": {
