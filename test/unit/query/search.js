@@ -27,7 +27,6 @@ module.exports.tests.query = function(test, common) {
     };
 
     var query = generate(clean);
-
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_bbox');
 

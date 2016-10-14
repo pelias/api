@@ -21,7 +21,7 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.sanitizers = function(test, common) {
   test('check sanitizer list', function (t) {
-    var expected = ['singleScalarParameters', 'ids', 'private' ];
+    var expected = ['singleScalarParameters', 'ids', 'lang', 'private' ];
     t.deepEqual(Object.keys(place.sanitizer_list), expected);
     t.end();
   });

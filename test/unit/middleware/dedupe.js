@@ -16,7 +16,7 @@ module.exports.tests.dedupe = function(test, common) {
       data: data
     };
 
-    var expectedCount = 8;
+    var expectedCount = 9;
     dedupe(req, res, function () {
       t.equal(res.data.length, expectedCount, 'results have fewer items than before');
       t.end();

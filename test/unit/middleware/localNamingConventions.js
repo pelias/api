@@ -1,19 +1,7 @@
 
 var proxyquire = require('proxyquire');
-
-var customConfig = {
-  generate: function generate() {
-    return {
-      api : {
-	localization : { // expand the set of flipped countries
-	  flipNumberAndStreetCountries : ['NLD'] // Netherlands
-	}
-      }
-    };
-  }
-};
-
-var localNamingConventions = proxyquire('../../../middleware/localNamingConventions', { 'pelias-config': customConfig });
+var _ = require('lodash');
+var localNamingConventions = require('../../../middleware/localNamingConventions');
 
 module.exports.tests = {};
 
@@ -57,26 +45,6 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
     }
   };
 
-  var nlAddress = {
-    '_id': 'test3',
-    '_type': 'test',
-    'name': { 'default': '117 Keizersgracht' },
-    'center_point': { 'lon': 4.887545, 'lat': 52.376795 },
-    'address_parts': {
-       'zip': '1015',
-       'number': '117',
-       'street': 'Keizersgracht'
-    },
-    'parent': {
-      'region': ['Amsterdam'],
-      'locality': ['Amsterdam'],
-      'country_a': ['NLD'],
-      'county': ['Noord-Holland'],
-      'country': ['Netherlands'],
-      'neighbourhood': ['Grachtengordel-West']
-    }
-  };
-
   var unknownCountryAddress = {
     '_id': 'test4',
     '_type': 'test',
@@ -91,7 +59,7 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
   };
 
   var req = {},
-      res = { data: [ ukAddress, deAddress, nlAddress, unknownCountryAddress ] },
+      res = { data: [ ukAddress, deAddress, unknownCountryAddress ] },
       middleware = localNamingConventions();
 
   test('flipNumberAndStreet', function(t) {
@@ -105,18 +73,13 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
       // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
       t.equal( res.data[1].name.default, 'Grolmanstraße 23', 'flipped name' );
 
-      // NLD address should have the housenumber and street name flipped, too
-      // this definition comes from pelias configuration
-      t.equal( res.data[2].name.default, 'Keizersgracht 117', 'flipped name' );
-
       // addresses without a known country (either due to missing data or admin lookup
       // being disabled), don't have the name flipped
-      t.equal( res.data[3].name.default, '123 Main Street', 'standard name');
+      t.equal( res.data[2].name.default, '123 Main Street', 'standard name');
 
       t.end();
     });
   });
-
 };
 
 module.exports.all = function (tape, common) {

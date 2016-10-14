@@ -1,5 +1,8 @@
 {
   "esclient": {
+    "apiVersion": "2.x",
+    "keepAlive": true,
+    "requestTimeout": "120000",
     "hosts": [
       {
         "env": "production",
@@ -14,5 +17,54 @@
         "port": 9300
       }
     ]
+  },
+  "api" : {
+    "indexName": "pelias",
+    "version": "1.0",
+    "sizePadding": 3,
+    "minConfidence": 0.1,
+    "relativeMinConfidence": 0.4,
+    "query": {
+      "search": {
+        "disableFallback": true,
+        "defaults": {
+          "ngram:analyzer": "peliasIndexOneEdgeGram",
+          "ngram:multifield": ["name.*"],
+          "phrase:multifield": ["name.*"],
+          "address:housenumber:boost": 0.1,
+          "address:street:boost": 1,
+          "admin:localadmin:boost": 20
+        }
+      },
+      "autocomplete": {
+        "defaults": {
+          "ngram:multifield": ["name.*"],
+          "phrase:multifield": ["name.*"]
+        }
+      }
+    },
+    "languages": ["fi", "default", "sv", "en", "se"],
+    "localization" : {
+        "confidenceAdminWeights": {
+        "localadmin": 1,
+        "locality": 0.2,
+        "neighbourhood": 0.2,
+        "region": 0.2,
+        "country": 0.1
+      },
+      "confidenceAddressParts": {
+	"number": {"parent":"address_parts", "field":"number", "numeric": true, "weight": 0.5},
+        "street": {"parent":"address_parts", "field":"street", "numeric": false, "weight": 2},
+        "postalcode": {"parent":"address_parts", "field":"zip", "numeric": false, "weight": 1}
+      },
+      "filteredRegions": ["suomi", "finland"],
+      "cleanRegions": true,
+      "translations": "/opt/pelias/api/translations.json",
+      "labelSchemas": {
+        "FIN": {
+          "local": { "fields": ["localadmin", "locality"], "matchType": "best" }
+        }
+      }
+    }
   }
 }

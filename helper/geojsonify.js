@@ -1,7 +1,6 @@
 
 var GeoJSON = require('geojson');
 var extent = require('geojson-extent');
-var labelGenerator = require('./labelGenerator');
 var logger = require('pelias-logger').get('api');
 var type_mapping = require('./type_mapping');
 var _ = require('lodash');
@@ -12,8 +11,8 @@ function geojsonifyPlaces( params, docs ){
 
   // flatten & expand data for geojson conversion
   var geodata = docs
-    .map(geojsonifyPlace.bind(null, params))
-    .filter( function( doc ){
+      .map(geojsonifyPlace.bind(null, params))
+      .filter( function( doc ){
       return !!doc;
     });
 
@@ -49,7 +48,6 @@ function geojsonifyPlace(params, place) {
   addDetails(params, place, output);
   addLabel(place, output);
 
-
   // map center_point for GeoJSON to work properly
   // these should not show up in the final feature properties
   output.lat = parseFloat(place.center_point.lat);
@@ -64,10 +62,11 @@ function geojsonifyPlace(params, place) {
  * @param {object} src
  * @param {object} dst
  */
+
 function addName(src, dst) {
   // map name
-  if( !src.name || !src.name.default ) { return warning(src); }
-  dst.name = src.name.default;
+  if( !src.name ) { return warning(src); }
+  dst.name = src.name;
 }
 
 /**
@@ -77,7 +76,9 @@ function addName(src, dst) {
  * @param {object} dst
  */
 function addLabel(src, dst) {
-  dst.label = labelGenerator(dst);
+  if(src.label) {
+    dst.label = src.label;
+  }
 }
 
 /**

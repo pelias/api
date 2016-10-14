@@ -75,6 +75,10 @@ module.exports.tests.sanitize = function(test, common) {
         called_sanitizers.push('_categories');
         return { errors: [], warnings: [] };
       },
+      '../sanitiser/_lang': function() {
+        called_sanitizers.push('_lang');
+        return { errors: [], warnings: [] };
+      }
     });
 
     var expected_sanitizers = [
