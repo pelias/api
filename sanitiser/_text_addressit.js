@@ -4,6 +4,18 @@ var extend = require('extend');
 var _      = require('lodash');
 var logger = require('pelias-logger').get('api');
 
+var api = require('pelias-config').generate().api;
+
+// List of values which should not be included in parsed regions array.
+// Usually this includes country name(s) in a national setup.
+// FOr example, 'Suomi' in regions array would currently drop confidence
+// scores because WOF defines only international country names (Finland)
+var filteredRegions;
+
+if (api && api.localization && api.localization.filteredRegions) {
+  filteredRegions=api.localization.filteredRegions;
+}
+
 
 // original query cannot handle libpostal's scandic letter conversion ä -> ae
 // So try restoring the strings. Simple method below works for 99% of cases
@@ -187,12 +199,22 @@ function parse(query) {
     return null;
   }
 
-  // addressit puts 1st parsed part (venue or street name) to regions[0]
-  // that is never desirable so drop the first item from regions
+  // addressit puts 1st parsed part (venue or street name) to regions[0].
+  // That is never desirable so drop the first item
   if(parsed_text.regions) {
     if(parsed_text.regions.length>1) {
       parsed_text.regions = parsed_text.regions.slice(1);
     } else {
+      delete parsed_text.regions;
+    }
+  }
+
+  // remove undesired region values
+  if(parsed_text.regions && filteredRegions) {
+    parsed_text.regions = parsed_text.regions.filter(function(value) {
+      return(filteredRegions.indexOf(value)===-1);
+    });
+    if(parsed_text.regions.length===0) {
       delete parsed_text.regions;
     }
   }
