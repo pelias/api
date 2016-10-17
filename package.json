@@ -52,7 +52,7 @@
     "markdown": "0.5.0",
     "morgan": "1.7.0",
     "pelias-categories": "1.0.0",
-    "pelias-config": "2.1.0",
+    "pelias-config": "2.3.0",
     "pelias-logger": "0.0.8",
     "pelias-model": "4.2.0",
     "pelias-query": "8.6.0",
