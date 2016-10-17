@@ -18,12 +18,16 @@
       }
     ]
   },
+  "logger": {
+    "level": ["error", "warning"]
+  },
   "api" : {
     "indexName": "pelias",
     "version": "1.0",
-    "sizePadding": 3,
-    "minConfidence": 0.1,
-    "relativeMinConfidence": 0.4,
+    "textAnalyzer": "libpostal",
+    "sizePadding": 6,
+    "minConfidence": 0.2,
+    "relativeMinConfidence": 0.55,
     "query": {
       "search": {
         "disableFallback": true,
