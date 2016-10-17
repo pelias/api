@@ -41,7 +41,7 @@ function dedupeResults(req, res, next) {
           hit: hit.name.default + ' ' + hit.source + ':' + hit._id
         });
         // replace previous dupe item with current hit
-        uniqueResults.splice(dupeIndex, 1, hit);
+        uniqueResults[dupeIndex] = hit;
       }
       // if not preferred over existing, just log and move on
       else {
