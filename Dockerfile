@@ -1,4 +1,4 @@
-FROM node:0.12
+FROM node:4.6
 MAINTAINER Pelias
 
 ENV PORT=8080
