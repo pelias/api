@@ -9,6 +9,7 @@ module.exports = {
                 {
                   'bool': {
                     '_name': 'fallback.street',
+                    'boost': 5,
                     'must': [
                       {
                         'match_phrase': {
@@ -93,16 +94,6 @@ module.exports = {
   'size': 50,
   'track_scores': true,
   'sort': [
-    {
-      'population': {
-        'order': 'desc'
-      }
-    },
-    {
-      'popularity': {
-        'order': 'desc'
-      }
-    },
     '_score'
   ]
 };
