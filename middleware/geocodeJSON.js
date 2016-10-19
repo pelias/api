@@ -43,7 +43,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
 
   // REQUIRED. A semver.org compliant version number. Describes the version of
   // the GeocodeJSON spec that is implemented by this instance.
-  res.body.geocoding.version = '0.1';
+  res.body.geocoding.version = '0.2';
 
   // OPTIONAL. Default: null. The attribution of the data. In case of multiple sources,
   // and then multiple attributions, can be an object with one key by source.
