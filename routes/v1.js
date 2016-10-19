@@ -103,8 +103,8 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
-      postProc.geocodeJSON(peliasConfig, base),
       postProc.assignLabels(),
+      postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     reverse: createRouter([
@@ -121,8 +121,8 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
-      postProc.geocodeJSON(peliasConfig, base),
       postProc.assignLabels(),
+      postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     nearby: createRouter([
@@ -139,8 +139,8 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
-      postProc.geocodeJSON(peliasConfig, base),
       postProc.assignLabels(),
+      postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     place: createRouter([
@@ -151,8 +151,8 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
-      postProc.geocodeJSON(peliasConfig, base),
       postProc.assignLabels(),
+      postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     status: createRouter([
