@@ -16,6 +16,8 @@ See the [Mapzen Search documentation](https://mapzen.com/documentation/search/).
 
 ## Install Dependencies
 
+Note: Pelias requires Node.js v4 or newer
+
 ```bash
 npm install
 ```
