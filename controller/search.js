@@ -49,7 +49,6 @@ function setup( apiConfig, esclient, query, should_execute ){
     // elasticsearch command
     const cmd = {
       index: apiConfig.indexName,
-      searchType: 'dfs_query_then_fetch',
       body: renderedQuery.body
     };
 
