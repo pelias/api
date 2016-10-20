@@ -189,6 +189,26 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled.body, expected, 'autocomplete: valid boundary.country query');
     t.end();
   });
+
+  test('autocomplete + bbox around San Francisco', function(t) {
+    var query = generate({
+      text: 'test',
+      'boundary.rect.max_lat': 37.83239,
+      'boundary.rect.max_lon': -122.35698,
+      'boundary.rect.min_lat': 37.70808,
+      'boundary.rect.min_lon': -122.51489,
+      tokens: ['test'],
+      tokens_complete: [],
+      tokens_incomplete: ['test']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_linguistic_bbox_san_francisco');
+
+    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_focus_null_island');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {

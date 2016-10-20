@@ -53,6 +53,7 @@
     "morgan": "1.7.0",
     "pelias-categories": "1.1.0",
     "pelias-config": "2.3.0",
+    "pelias-labels": "1.4.0",
     "pelias-logger": "0.1.0",
     "pelias-model": "4.3.0",
     "pelias-query": "8.8.0",
