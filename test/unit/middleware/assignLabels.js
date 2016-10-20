@@ -43,14 +43,10 @@ module.exports.tests.serialization = function(test, common) {
     var input = {
       data: [
         {
-          parent: {
-            id: 1
-          }
+          id: 1
         },
         {
-          parent: {
-            id: 2
-          }
+          id: 2
         }
       ]
     };
@@ -58,15 +54,11 @@ module.exports.tests.serialization = function(test, common) {
     var expected = {
       data: [
         {
-          parent: {
-            id: 1
-          },
+          id: 1,
           label: 'label 1'
         },
         {
-          parent: {
-            id: 2
-          },
+          id: 2,
           label: 'label 2'
         }
       ]
@@ -91,9 +83,7 @@ module.exports.tests.serialization = function(test, common) {
     var input = {
       data: [
         {
-          parent: {
-            id: 1
-          }
+          id: 1
         }
       ]
     };
@@ -101,9 +91,7 @@ module.exports.tests.serialization = function(test, common) {
     var expected = {
       data: [
         {
-          parent: {
-            id: 1
-          },
+          id: 1,
           label: 'label 1'
         }
       ]

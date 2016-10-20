@@ -16,7 +16,7 @@ function assignLabel(req, res, next, labelGenerator) {
   }
 
   res.data.forEach(function (result) {
-    result.label = labelGenerator(result.parent);
+    result.label = labelGenerator(result);
   });
 
   next();
