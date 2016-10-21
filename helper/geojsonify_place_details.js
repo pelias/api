@@ -41,6 +41,7 @@ var DETAILS_PROPS = [
   { name: 'neighbourhood',     type: 'string' },
   { name: 'neighbourhood_gid', type: 'string' },
   { name: 'bounding_box',      type: 'default' },
+  { name: 'label',             type: 'string' },
   { name: 'category',          type: 'array',     condition: checkCategoryParam }
 ];
 

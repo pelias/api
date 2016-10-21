@@ -35,25 +35,19 @@ function dedupeNameAndFirstLabelElement(labelParts) {
   }
 
   return labelParts;
-
 }
 
 function getSchema(country_a) {
-  if (country_a && country_a.length && schemas[country_a]) {
-    return schemas[country_a];
+  if (!_.isEmpty(schemas[country_a])) {
+    return schemas[country_a[0]];
   }
 
   return schemas.default;
 
 }
 
-// helper function that sets a default label for non-US/CA regions and countries
+// helper function that sets a default label
 function getInitialLabel(record) {
-  if (isRegion(record.layer) &&
-      isGeonamesOrWhosOnFirst(record.source) &&
-      isUSAOrCAN(record.country_a)) {
-    return [];
-  }
 
   if (isCountry(record.layer)) {
     return [];
@@ -71,17 +65,4 @@ function getInitialLabel(record) {
 // https://github.com/pelias/wof-admin-lookup/issues/49
 function isCountry(layer) {
   return 'country' === layer;
-}
-
-function isRegion(layer) {
-  return 'region' === layer;
-}
-
-function isUSAOrCAN(country_a) {
-  return 'USA' === country_a || 'CAN' === country_a;
-}
-
-function isGeonamesOrWhosOnFirst(source) {
-  return 'geonames' === source || 'whosonfirst' === source;
-
 }

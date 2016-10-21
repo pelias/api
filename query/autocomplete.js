@@ -56,6 +56,7 @@ query.score( peliasQuery.view.population( views.pop_subquery ) );
 // non-scoring hard filters
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
+query.filter( peliasQuery.view.boundary_rect );
 
 // --------------------------------
 
@@ -113,6 +114,19 @@ function generateQuery( clean ){
     vs.set({
       'focus:point:lat': clean['focus.point.lat'],
       'focus:point:lon': clean['focus.point.lon']
+    });
+  }
+
+  // boundary rect
+  if( check.number(clean['boundary.rect.min_lat']) &&
+      check.number(clean['boundary.rect.max_lat']) &&
+      check.number(clean['boundary.rect.min_lon']) &&
+      check.number(clean['boundary.rect.max_lon']) ){
+    vs.set({
+      'boundary:rect:top': clean['boundary.rect.max_lat'],
+      'boundary:rect:right': clean['boundary.rect.max_lon'],
+      'boundary:rect:bottom': clean['boundary.rect.min_lat'],
+      'boundary:rect:left': clean['boundary.rect.min_lon']
     });
   }
 

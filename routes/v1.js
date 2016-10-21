@@ -46,12 +46,12 @@ var postProc = {
   dedupe: require('../middleware/dedupe'),
   localNamingConventions: require('../middleware/localNamingConventions'),
   translate: require('../middleware/translate'),
-  label: require('../middleware/label'),
   renamePlacenames: require('../middleware/renamePlacenames'),
   geocodeJSON: require('../middleware/geocodeJSON'),
   sendJSON: require('../middleware/sendJSON'),
   parseBoundingBox: require('../middleware/parseBBox'),
-  normalizeParentIds: require('../middleware/normalizeParentIds')
+  normalizeParentIds: require('../middleware/normalizeParentIds'),
+  assignLabels: require('../middleware/label')
 };
 
 /**
@@ -92,9 +92,9 @@ function addRoutes(app, peliasConfig) {
       postProc.accuracy(),
       postProc.translate(),
       postProc.renamePlacenames(),
-      postProc.label(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
+      postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
@@ -110,9 +110,9 @@ function addRoutes(app, peliasConfig) {
       postProc.accuracy(),
       postProc.translate(),
       postProc.renamePlacenames(),
-      postProc.label(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
+      postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
@@ -130,28 +130,29 @@ function addRoutes(app, peliasConfig) {
       postProc.localNamingConventions(),
       postProc.translate(),
       postProc.renamePlacenames(),
-      postProc.label(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
+      postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     nearby: createRouter([
       sanitizers.nearby.middleware,
       middleware.calcSize(),
+      middleware.selectLanguage(peliasConfig),
       controllers.search(peliasConfig, undefined, reverseQuery),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),
+      postProc.dedupe(),
       postProc.accuracy(),
       postProc.localNamingConventions(),
-      postProc.dedupe(),
       postProc.translate(),
       postProc.renamePlacenames(),
-      postProc.label(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
+      postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
@@ -163,9 +164,9 @@ function addRoutes(app, peliasConfig) {
       postProc.localNamingConventions(),
       postProc.translate(),
       postProc.renamePlacenames(),
-      postProc.label(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
+      postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
