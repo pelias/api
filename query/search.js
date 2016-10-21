@@ -1,8 +1,7 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./search_defaults'),
     textParser = require('./text_parser'),
-    check = require('check-types'),
-    _ = require('lodash');
+    check = require('check-types');
 
 //------------------------------
 // general-purpose search query
