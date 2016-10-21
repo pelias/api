@@ -1,7 +1,8 @@
 var peliasQuery = require('pelias-query'),
     defaults = require('./search_defaults'),
     textParser = require('./text_parser'),
-    check = require('check-types');
+    check = require('check-types'),
+    _ = require('lodash');
 
 //------------------------------
 // general-purpose search query
@@ -120,7 +121,7 @@ function generateQuery( clean ){
 }
 
 function getQuery(vs) {
-  if (hasStreet(vs)) {
+  if (hasStreet(vs) || isCityStateOnly(vs)) {
     return {
       type: 'fallback',
       body: fallbackQuery.render(vs)
@@ -135,6 +136,19 @@ function getQuery(vs) {
 
 function hasStreet(vs) {
   return vs.isset('input:street');
+}
+
+function isCityStateOnly(vs) {
+  var isSet = function(layer) {
+    return vs.isset('input:' + layer);
+  };
+
+  var allowedFields = ['locality', 'region'];
+  var disallowedFields = ['query', 'category', 'housenumber', 'street',
+                          'neighbourhood', 'borough', 'postcode', 'county', 'country'];
+
+  return allowedFields.every(isSet) && !disallowedFields.some(isSet);
+
 }
 
 module.exports = generateQuery;

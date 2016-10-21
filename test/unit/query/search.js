@@ -270,6 +270,64 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled.body, expected, 'valid search query with category filtering');
     t.end();
   });
+
+};
+
+module.exports.tests.city_state = function(test, common) {
+  test('only city and state set should return query', function(t) {
+    var clean = {
+      parsed_text: {
+        'city': 'city value',
+        'state': 'state value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.notEqual(query, undefined, 'should not have returned undefined');
+    t.end();
+
+  });
+
+  test('city- OR state-only should return undefined', function(t) {
+    ['city', 'state'].forEach(function(placeType) {
+      var clean = {
+        parsed_text: {}
+      };
+
+      clean.parsed_text[placeType] = placeType + ' value';
+
+      var query = generate(clean);
+
+      t.equals(query, undefined, 'should have returned undefined');
+
+    });
+
+    t.end();
+
+  });
+
+  test('city and state with at least one other input: field should return undefined', function(t) {
+    ['query', 'category', 'number', 'neighbourhood', 'borough', 'postalcode', 'county', 'country'].forEach(function(placeType) {
+      var clean = {
+        parsed_text: {
+          'city': 'city value',
+          'state': 'state value'
+        }
+      };
+
+      clean.parsed_text[placeType] = placeType + ' value';
+
+      var query = generate(clean);
+
+      t.equals(query, undefined, 'should have returned undefined');
+
+    });
+
+    t.end();
+
+  });
+
 };
 
 module.exports.all = function (tape, common) {
