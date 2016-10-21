@@ -1,5 +1,6 @@
 var logger = require('pelias-logger').get('api');
 var _ = require('lodash');
+var isDifferent = require('../helper/diffPlaces').isDifferent;
 
 function setup() {
   return dedupeResults;
@@ -15,11 +16,41 @@ function dedupeResults(req, res, next) {
   var uniqueResults = [];
 
   _.some(res.data, function (hit) {
-    if (uniqueResults.length === 0 || _.every(uniqueResults, isDifferent.bind(null, hit)) ) {
+
+    if (_.isEmpty(uniqueResults)) {
       uniqueResults.push(hit);
     }
     else {
-      logger.info('[dupe]', { query: req.clean.text, hit: hit.name.default });
+      // if there are multiple items in results, loop through them to find a dupe
+      // save off the index of the dupe if found
+      var dupeIndex = uniqueResults.findIndex(function (elem, index, array) {
+        return !isDifferent(elem, hit);
+      });
+
+      // if a dupe is not found, just add to results and move on
+      if (dupeIndex === -1) {
+        uniqueResults.push(hit);
+      }
+      // if dupe was found, we need to check which of the records is preferred
+      // since the order in which Elasticsearch returns identical text matches is arbitrary
+      // of course, if the new one is preferred we should replace previous with new
+      else if (isPreferred(uniqueResults[dupeIndex], hit)) {
+        logger.info('[dupe][replacing]', {
+          query: req.clean.text,
+          previous: uniqueResults[dupeIndex].source,
+          hit: hit.name.default + ' ' + hit.source + ':' + hit._id
+        });
+        // replace previous dupe item with current hit
+        uniqueResults[dupeIndex] = hit;
+      }
+      // if not preferred over existing, just log and move on
+      else {
+        logger.info('[dupe][skipping]', {
+          query: req.clean.text,
+          previous: uniqueResults[dupeIndex].source,
+          hit: hit.name.default + ' ' + hit.source + ':' + hit._id
+        });
+      }
     }
 
     // stop looping when requested size has been reached in uniqueResults
@@ -31,89 +62,19 @@ function dedupeResults(req, res, next) {
   next();
 }
 
-/**
- * @param {object} item1
- * @param {object} item2
- * @returns {boolean}
- * @throws {Error}
- */
-function isDifferent(item1, item2) {
-  try {
-    if (item1.hasOwnProperty('parent') && item2.hasOwnProperty('parent')) {
-      propMatch(item1.parent, item2.parent, 'region_a');
-      propMatch(item1.parent, item2.parent, 'country');
-      propMatch(item1.parent, item2.parent, 'locality');
-      propMatch(item1.parent, item2.parent, 'neighbourhood');
-    }
-    else if (item1.parent !== item2.parent) {
-      throw new Error('different');
-    }
+function isPreferred(existing, candidateReplacement) {
+  // NOTE: we are assuming here that the layer for both records is the same
 
-    if (item1.hasOwnProperty('name') && item2.hasOwnProperty('name')) {
-      for (var lang in item1.name) {
-        if(item2.name[lang] || lang === 'default') {
-          // do not consider absence of an additional name as a difference
-          propMatch(item1.name, item2.name, lang);
-        }
-      }
-    }
-    else {
-      propMatch(item1, item2, 'name');
-    }
+  //bind the trumps function to the data items to keep the rest of the function clean
+  var trumpsFunc = trumps.bind(null, existing, candidateReplacement);
 
-    if (item1.hasOwnProperty('address_parts') && item2.hasOwnProperty('address_parts')) {
-      propMatch(item1.address_parts, item2.address_parts, 'number');
-      propMatch(item1.address_parts, item2.address_parts, 'street');
-      propMatch(item1.address_parts, item2.address_parts, 'zip');
-    }
-    else if (item1.address_parts !== item2.address_parts) {
-      throw new Error('different');
-    }
-  }
-  catch (err) {
-    if (err.message === 'different') {
-      return true;
-    }
-    throw err;
-  }
-
-  return false;
+  return trumpsFunc('geonames', 'whosonfirst') || // WOF has bbox and is generally preferred
+         trumpsFunc('openstreetmap', 'openaddresses') || // addresses are better in OA
+         trumpsFunc('whosonfirst', 'openstreetmap'); // venues are better in OSM, at this time
 }
 
-/**
- * Throw exception if properties are different
- *
- * @param {object} item1
- * @param {object} item2
- * @param {string} prop
- * @throws {Error}
- */
-function propMatch(item1, item2, prop) {
-  var prop1 = item1[prop];
-  var prop2 = item2[prop];
-
-  // in the case the property is an array (currently only in parent schema)
-  // simply take the 1st item. this will change in the near future to support multiple hierarchies
-  if (_.isArray(prop1)) { prop1 = prop1[0]; }
-  if (_.isArray(prop2)) { prop2 = prop2[0]; }
-
-  if (normalizeString(prop1) !== normalizeString(prop2)) {
-    throw new Error('different');
-  }
+function trumps(existing, candidateReplacement, loserSource, winnerSource) {
+  return existing.source === loserSource && candidateReplacement.source === winnerSource;
 }
-
-/**
- * Remove punctuation and lowercase
- *
- * @param {string} str
- * @returns {string}
- */
-function normalizeString(str) {
-  if (!str) {
-    return '';
-  }
-  return str.toLowerCase().split(/[ ,-]+/).join(' ');
-}
-
 
 module.exports = setup;

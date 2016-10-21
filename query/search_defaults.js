@@ -92,6 +92,9 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'population:field': 'population',
   'population:modifier': 'log1p',
   'population:max_boost': 20,
-  'population:weight': 2
+  'population:weight': 2,
+
+  'boost:address': 10,
+  'boost:street': 5
 
 });

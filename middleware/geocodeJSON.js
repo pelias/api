@@ -1,6 +1,7 @@
 var url = require('url');
 var extend = require('extend');
 var geojsonify = require('../helper/geojsonify');
+var _ = require('lodash');
 
 /**
  * Returns a middleware function that converts elasticsearch
@@ -42,7 +43,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
 
   // REQUIRED. A semver.org compliant version number. Describes the version of
   // the GeocodeJSON spec that is implemented by this instance.
-  res.body.geocoding.version = '0.1';
+  res.body.geocoding.version = '0.2';
 
   // OPTIONAL. Default: null. The attribution of the data. In case of multiple sources,
   // and then multiple attributions, can be an object with one key by source.
@@ -79,7 +80,8 @@ function convertToGeocodeJSON(req, res, next, opts) {
 
 function addMessages(req, msgType, geocoding) {
   if (req.hasOwnProperty(msgType) && req[msgType].length) {
-    geocoding[msgType] = req[msgType];
+    // cleanup arrays to make sure there are no duplicates
+    geocoding[msgType] = _.uniq(req[msgType]);
   }
 }
 

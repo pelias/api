@@ -2,13 +2,14 @@ var express = require('express');
 var Router = require('express').Router;
 var reverseQuery = require('../query/reverse');
 
-/** ----------------------- sanitisers ----------------------- **/
-var sanitisers = {
-  autocomplete: require('../sanitiser/autocomplete'),
-  place: require('../sanitiser/place'),
-  search: require('../sanitiser/search'),
-  reverse: require('../sanitiser/reverse'),
-  nearby: require('../sanitiser/nearby')
+/** ----------------------- sanitizers ----------------------- **/
+var sanitizers = {
+  autocomplete: require('../sanitizer/autocomplete'),
+  place: require('../sanitizer/place'),
+  search: require('../sanitizer/search'),
+  search_fallback: require('../sanitizer/search_fallback'),
+  reverse: require('../sanitizer/reverse'),
+  nearby: require('../sanitizer/nearby')
 };
 
 /** ----------------------- middleware ------------------------ **/
@@ -25,19 +26,28 @@ var controllers = {
   status: require('../controller/status')
 };
 
+var queries = {
+  libpostal: require('../query/search'),
+  fallback_to_old_prod: require('../query/search_original')
+};
+
 /** ----------------------- controllers ----------------------- **/
 
 var postProc = {
+  trimByGranularity: require('../middleware/trimByGranularity'),
   distances: require('../middleware/distance'),
   confidenceScores: require('../middleware/confidenceScore'),
+  confidenceScoresFallback: require('../middleware/confidenceScoreFallback'),
   confidenceScoresReverse: require('../middleware/confidenceScoreReverse'),
+  accuracy: require('../middleware/accuracy'),
   dedupe: require('../middleware/dedupe'),
   localNamingConventions: require('../middleware/localNamingConventions'),
   renamePlacenames: require('../middleware/renamePlacenames'),
   geocodeJSON: require('../middleware/geocodeJSON'),
   sendJSON: require('../middleware/sendJSON'),
   parseBoundingBox: require('../middleware/parseBBox'),
-  normalizeParentIds: require('../middleware/normalizeParentIds')
+  normalizeParentIds: require('../middleware/normalizeParentIds'),
+  assignLabels: require('../middleware/assignLabels')
 };
 
 /**
@@ -60,34 +70,45 @@ function addRoutes(app, peliasConfig) {
       controllers.mdToHTML(peliasConfig, './public/attribution.md')
     ]),
     search: createRouter([
-      sanitisers.search.middleware,
+      sanitizers.search.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig),
+      // 2nd parameter is `backend` which gets initialized internally
+      // 3rd parameter is which query module to use, use fallback/geodisambiguation
+      //  first, then use original search strategy if first query didn't return anything
+      controllers.search(peliasConfig, undefined, queries.libpostal),
+      sanitizers.search_fallback.middleware,
+      controllers.search(peliasConfig, undefined, queries.fallback_to_old_prod),
+      postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
+      postProc.confidenceScoresFallback(),
       postProc.dedupe(),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
+      postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     autocomplete: createRouter([
-      sanitisers.autocomplete.middleware,
+      sanitizers.autocomplete.middleware,
       controllers.search(peliasConfig, null, require('../query/autocomplete')),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.dedupe(),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
+      postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     reverse: createRouter([
-      sanitisers.reverse.middleware,
+      sanitizers.reverse.middleware,
       middleware.calcSize(),
       controllers.search(peliasConfig, undefined, reverseQuery),
       postProc.distances('point.'),
@@ -95,15 +116,17 @@ function addRoutes(app, peliasConfig) {
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),
       postProc.dedupe(),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
+      postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     nearby: createRouter([
-      sanitisers.nearby.middleware,
+      sanitizers.nearby.middleware,
       middleware.calcSize(),
       controllers.search(peliasConfig, undefined, reverseQuery),
       postProc.distances('point.'),
@@ -111,20 +134,24 @@ function addRoutes(app, peliasConfig) {
       //  so it must be calculated first
       postProc.confidenceScoresReverse(),
       postProc.dedupe(),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
+      postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
     place: createRouter([
-      sanitisers.place.middleware,
+      sanitizers.place.middleware,
       controllers.place(peliasConfig),
+      postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
+      postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),

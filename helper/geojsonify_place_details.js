@@ -8,10 +8,15 @@ var DETAILS_PROPS = [
   { name: 'street',            type: 'string' },
   { name: 'postalcode',        type: 'string' },
   { name: 'confidence',        type: 'default' },
+  { name: 'match_type',        type: 'string' },
   { name: 'distance',          type: 'default' },
+  { name: 'accuracy',          type: 'string' },
   { name: 'country',           type: 'string' },
   { name: 'country_gid',       type: 'string' },
   { name: 'country_a',         type: 'string' },
+  { name: 'dependency',        type: 'string' },
+  { name: 'dependency_gid',    type: 'string' },
+  { name: 'dependency_a',      type: 'string' },
   { name: 'macroregion',       type: 'string' },
   { name: 'macroregion_gid',   type: 'string' },
   { name: 'macroregion_a',     type: 'string' },
@@ -36,6 +41,7 @@ var DETAILS_PROPS = [
   { name: 'neighbourhood',     type: 'string' },
   { name: 'neighbourhood_gid', type: 'string' },
   { name: 'bounding_box',      type: 'default' },
+  { name: 'label',             type: 'string' },
   { name: 'category',          type: 'array',     condition: checkCategoryParam }
 ];
 

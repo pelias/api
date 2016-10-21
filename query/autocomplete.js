@@ -1,7 +1,7 @@
 
 var peliasQuery = require('pelias-query'),
     defaults = require('./autocomplete_defaults'),
-    textParser = require('./text_parser'),
+    textParser = require('./text_parser_addressit'),
     check = require('check-types'),
     _ = require('lodash');
 
@@ -29,6 +29,7 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 // mandatory matches
 query.score( views.phrase_first_tokens_only, 'must' );
 query.score( views.ngrams_last_token_only, 'must' );
+query.score( peliasQuery.view.boundary_country, 'must' );
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );
@@ -55,6 +56,7 @@ query.score( peliasQuery.view.population( views.pop_subquery ) );
 // non-scoring hard filters
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
+query.filter( peliasQuery.view.boundary_rect );
 
 // --------------------------------
 
@@ -74,6 +76,13 @@ function generateQuery( clean ){
   // layers
   if( check.array(clean.layers) && clean.layers.length ){
     vs.var( 'layers', clean.layers);
+  }
+
+  // boundary country
+  if( check.string(clean['boundary.country']) ){
+    vs.set({
+      'boundary:country': clean['boundary.country']
+    });
   }
 
   // pass the input tokens to the views so they can choose which tokens
@@ -108,12 +117,28 @@ function generateQuery( clean ){
     });
   }
 
+  // boundary rect
+  if( check.number(clean['boundary.rect.min_lat']) &&
+      check.number(clean['boundary.rect.max_lat']) &&
+      check.number(clean['boundary.rect.min_lon']) &&
+      check.number(clean['boundary.rect.max_lon']) ){
+    vs.set({
+      'boundary:rect:top': clean['boundary.rect.max_lat'],
+      'boundary:rect:right': clean['boundary.rect.max_lon'],
+      'boundary:rect:bottom': clean['boundary.rect.min_lat'],
+      'boundary:rect:left': clean['boundary.rect.min_lon']
+    });
+  }
+
   // run the address parser
   if( clean.parsed_text ){
     textParser( clean.parsed_text, vs );
   }
 
-  return query.render( vs );
+  return {
+    type: 'autocomplete',
+    body: query.render(vs)
+  };
 }
 
 module.exports = generateQuery;

@@ -1,7 +1,6 @@
 
 var GeoJSON = require('geojson');
 var extent = require('geojson-extent');
-var labelGenerator = require('./labelGenerator');
 var logger = require('pelias-logger').get('api');
 var type_mapping = require('./type_mapping');
 var _ = require('lodash');
@@ -47,8 +46,6 @@ function geojsonifyPlace(params, place) {
   addMetaData(place, output);
   addName(place, output);
   addDetails(params, place, output);
-  addLabel(place, output);
-
 
   // map center_point for GeoJSON to work properly
   // these should not show up in the final feature properties
@@ -68,16 +65,6 @@ function addName(src, dst) {
   // map name
   if( !src.name || !src.name.default ) { return warning(src); }
   dst.name = src.name.default;
-}
-
-/**
- * Add region-specific label string
- *
- * @param {object} src
- * @param {object} dst
- */
-function addLabel(src, dst) {
-  dst.label = labelGenerator(dst);
 }
 
 /**
