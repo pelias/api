@@ -289,6 +289,22 @@ module.exports.tests.city_state = function(test, common) {
 
   });
 
+  test('only city, state, and country set should return query', function(t) {
+    var clean = {
+      parsed_text: {
+        'city': 'city value',
+        'state': 'state value',
+        'country': 'country value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.notEqual(query, undefined, 'should not have returned undefined');
+    t.end();
+
+  });
+
   test('city- OR state-only should return undefined', function(t) {
     ['city', 'state'].forEach(function(placeType) {
       var clean = {
@@ -308,7 +324,7 @@ module.exports.tests.city_state = function(test, common) {
   });
 
   test('city and state with at least one other input: field should return undefined', function(t) {
-    ['query', 'category', 'number', 'neighbourhood', 'borough', 'postalcode', 'county', 'country'].forEach(function(placeType) {
+    ['query', 'category', 'number', 'neighbourhood', 'borough', 'postalcode', 'county'].forEach(function(placeType) {
       var clean = {
         parsed_text: {
           'city': 'city value',

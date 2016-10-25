@@ -144,7 +144,7 @@ function isCityStateOnly(vs) {
 
   var allowedFields = ['locality', 'region'];
   var disallowedFields = ['query', 'category', 'housenumber', 'street',
-                          'neighbourhood', 'borough', 'postcode', 'county', 'country'];
+                          'neighbourhood', 'borough', 'postcode', 'county'];
 
   return allowedFields.every(isSet) && !disallowedFields.some(isSet);
 
