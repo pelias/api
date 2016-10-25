@@ -120,7 +120,7 @@ function generateQuery( clean ){
 }
 
 function getQuery(vs) {
-  if (hasStreet(vs) || isCityStateOnly(vs)) {
+  if (hasStreet(vs) || isCityStateOnlyWithOptionalCountry(vs)) {
     return {
       type: 'fallback',
       body: fallbackQuery.render(vs)
@@ -137,7 +137,7 @@ function hasStreet(vs) {
   return vs.isset('input:street');
 }
 
-function isCityStateOnly(vs) {
+function isCityStateOnlyWithOptionalCountry(vs) {
   var isSet = function(layer) {
     return vs.isset('input:' + layer);
   };
