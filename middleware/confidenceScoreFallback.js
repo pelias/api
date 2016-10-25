@@ -89,6 +89,7 @@ function checkFallbackLevel(req, hit) {
       default:
         return 0.1;
     }
+
   }
 
   hit.match_type = 'exact';
@@ -96,11 +97,9 @@ function checkFallbackLevel(req, hit) {
 }
 
 function checkFallbackOccurred(req, hit) {
-  // at this time we only do this for address queries, so keep this simple
-  // TODO: add other layer checks once we start handling disambiguation
-
   return (requestedAddress(req) && hit.layer !== 'address') ||
-         (requestedStreet(req) && hit.layer !== 'street');
+         (requestedStreet(req) && hit.layer !== 'street') ||
+         (requestedCity(req) && hit.layer !== 'locality');
 }
 
 function requestedAddress(req) {
@@ -113,6 +112,10 @@ function requestedStreet(req) {
   // only street name was specified
   return !req.clean.parsed_text.hasOwnProperty('number') &&
           req.clean.parsed_text.hasOwnProperty('street');
+}
+
+function requestedCity(req) {
+  return req.clean.parsed_text.hasOwnProperty('city');
 }
 
 module.exports = setup;
