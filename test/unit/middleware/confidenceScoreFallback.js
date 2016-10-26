@@ -203,6 +203,40 @@ module.exports.tests.confidenceScore = function(test, common) {
     t.end();
   });
 
+  test('fallback to localadmin should have score deduction', function(t) {
+    var req = {
+      clean: {
+        text: '123 Main St, City, NM',
+        parsed_text: {
+          number: 123,
+          street: 'Main St',
+          state: 'NM'
+        }
+      }
+    };
+    var res = {
+      data: [{
+        _score: 10,
+        found: true,
+        value: 1,
+        layer: 'localadmin',
+        center_point: { lat: 100.1, lon: -50.5 },
+        name: { default: 'test name1' },
+        parent: {
+          country: ['country1']
+        }
+      }],
+      meta: {
+        scores: [10],
+        query_type: 'fallback'
+      }
+    };
+
+    confidenceScore(req, res, function() {});
+    t.equal(res.data[0].confidence, 0.6, 'score was set');
+    t.end();
+  });
+
   test('fallback to country should have score deduction', function(t) {
     var req = {
       clean: {
@@ -250,6 +284,29 @@ module.exports.tests.confidenceScore = function(test, common) {
     var res = {
       data: [{
         layer: 'locality'
+      }],
+      meta: {
+        query_type: 'fallback'
+      }
+    };
+
+    confidenceScore(req, res, function() {});
+    t.equal(res.data[0].confidence, 1.0, 'score was set');
+    t.end();
+  });
+
+  test('city input granularity with localadmin result should set score to 1.0', function(t) {
+    var req = {
+      clean: {
+        parsed_text: {
+          city: 'city name',
+          state: 'state name'
+        }
+      }
+    };
+    var res = {
+      data: [{
+        layer: 'localadmin'
       }],
       meta: {
         query_type: 'fallback'

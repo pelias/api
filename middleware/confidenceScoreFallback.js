@@ -72,13 +72,13 @@ function checkFallbackLevel(req, hit) {
         return 0.8;
       case 'street':
         return 0.8;
+      case 'localadmin':
       case 'locality':
       case 'borough':
       case 'neighbourhood':
         return 0.6;
       case 'macrocounty':
       case 'county':
-      case 'localadmin':
         return 0.4;
       case 'region':
         return 0.3;
@@ -99,7 +99,7 @@ function checkFallbackLevel(req, hit) {
 function checkFallbackOccurred(req, hit) {
   return (requestedAddress(req) && hit.layer !== 'address') ||
          (requestedStreet(req) && hit.layer !== 'street') ||
-         (requestedCity(req) && hit.layer !== 'locality');
+         (requestedCity(req) && hit.layer !== 'locality' && hit.layer !== 'localadmin');
 }
 
 function requestedAddress(req) {
