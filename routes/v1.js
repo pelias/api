@@ -8,6 +8,7 @@ var sanitizers = {
   place: require('../sanitizer/place'),
   search: require('../sanitizer/search'),
   search_fallback: require('../sanitizer/search_fallback'),
+  component: require('../sanitizer/component'),
   reverse: require('../sanitizer/reverse'),
   nearby: require('../sanitizer/nearby')
 };
@@ -28,13 +29,15 @@ var controllers = {
 
 var queries = {
   libpostal: require('../query/search'),
-  fallback_to_old_prod: require('../query/search_original')
+  fallback_to_old_prod: require('../query/search_original'),
+  component: require('../query/search_component')
 };
 
 /** ----------------------- controllers ----------------------- **/
 
 var postProc = {
   trimByGranularity: require('../middleware/trimByGranularity'),
+  trimByGranularityComponent: require('../middleware/trimByGranularityComponent'),
   distances: require('../middleware/distance'),
   confidenceScores: require('../middleware/confidenceScore'),
   confidenceScoresFallback: require('../middleware/confidenceScoreFallback'),
@@ -89,6 +92,28 @@ function addRoutes(app, peliasConfig) {
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
       postProc.assignLabels(),
+      postProc.geocodeJSON(peliasConfig, base),
+      postProc.sendJSON
+    ]),
+    component: createRouter([
+      sanitizers.component.middleware,
+      middleware.calcSize(),
+      // 2nd parameter is `backend` which gets initialized internally
+      // 3rd parameter is which query module to use, use fallback/geodisambiguation
+      //  first, then use original search strategy if first query didn't return anything
+      controllers.search(peliasConfig, undefined, queries.component),
+      // sanitizers.search_fallback.middleware,
+      // controllers.search(peliasConfig, undefined, queries.fallback_to_old_prod),
+      postProc.trimByGranularityComponent(),
+      postProc.distances('focus.point.'),
+      postProc.confidenceScores(peliasConfig),
+      postProc.confidenceScoresFallback(),
+      postProc.dedupe(),
+      postProc.accuracy(),
+      postProc.localNamingConventions(),
+      postProc.renamePlacenames(),
+      postProc.parseBoundingBox(),
+      postProc.normalizeParentIds(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
@@ -172,6 +197,7 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'autocomplete', routers.autocomplete );
   app.get ( base + 'search',       routers.search );
   app.post( base + 'search',       routers.search );
+  app.get ( base + 'component',    routers.component );
   app.get ( base + 'reverse',      routers.reverse );
   app.get ( base + 'nearby',       routers.nearby );
 
