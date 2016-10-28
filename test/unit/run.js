@@ -33,6 +33,7 @@ var tests = [
   require('./middleware/trimByGranularityComponent'),
   require('./query/autocomplete'),
   require('./query/autocomplete_defaults'),
+  require('./query/component_geocoding'),
   require('./query/search_defaults'),
   require('./query/reverse_defaults'),
   require('./query/reverse'),

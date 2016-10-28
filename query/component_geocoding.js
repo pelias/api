@@ -40,11 +40,6 @@ function generateQuery( clean ){
   // layers
   vs.var( 'layers', clean.layers);
 
-  // categories
-  if (clean.categories) {
-    vs.var('input:categories', clean.categories);
-  }
-
   // size
   if( clean.querySize ) {
     vs.var( 'size', clean.querySize );

@@ -1,4 +1,4 @@
-var generate = require('../../../query/component');
+var generate = require('../../../query/component_geocoding');
 var fs = require('fs');
 
 module.exports.tests = {};
@@ -29,7 +29,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_focus_bbox');
+    var expected = require('../fixture/component_geocoding/linguistic_focus_bbox');
 
     t.deepEqual(compiled.type, 'fallback', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_focus_bbox');
@@ -53,7 +53,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_bbox');
+    var expected = require('../fixture/component_geocoding/linguistic_bbox');
 
     t.deepEqual(compiled.type, 'fallback', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_bbox');
@@ -72,7 +72,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_only');
+    var expected = require('../fixture/component_geocoding/linguistic_only');
 
     t.deepEqual(compiled.type, 'fallback', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_only');
@@ -92,7 +92,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_focus');
+    var expected = require('../fixture/component_geocoding/linguistic_focus');
 
     t.deepEqual(compiled.type, 'fallback', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_focus');
@@ -115,7 +115,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_viewport');
+    var expected = require('../fixture/component_geocoding/linguistic_viewport');
 
     t.deepEqual(compiled.type, 'fallback', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_viewport');
@@ -140,7 +140,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_viewport_min_diagonal');
+    var expected = require('../fixture/component_geocoding/linguistic_viewport_min_diagonal');
 
     t.deepEqual(compiled.type, 'fallback', 'query type set');
     t.deepEqual(compiled.body, expected, 'valid search query');
@@ -160,7 +160,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_focus_null_island');
+    var expected = require('../fixture/component_geocoding/linguistic_focus_null_island');
 
     t.deepEqual(compiled.type, 'fallback', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_focus_null_island');
@@ -187,28 +187,10 @@ module.exports.tests.query = function(test, common) {
     var query = generate(clean);
 
     var compiled = JSON.parse(JSON.stringify(query));
-    var expected = require('../fixture/search_fallback');
+    var expected = require('../fixture/component_geocoding/fallback');
 
     t.deepEqual(compiled.type, 'fallback', 'query type set');
     t.deepEqual(compiled.body, expected, 'fallbackQuery');
-    t.end();
-
-  });
-
-  test('parsed_text with single admin field should return undefined', function(t) {
-    ['neighbourhood', 'borough', 'city', 'county', 'state', 'country'].forEach(function(placeType) {
-        var clean = {
-          parsed_text: {}
-        };
-
-        clean.parsed_text[placeType] = placeType + ' value';
-
-        var query = generate(clean);
-
-        t.equals(query, undefined, 'geodisambiguationQuery');
-
-      });
-
     t.end();
 
   });
@@ -226,7 +208,7 @@ module.exports.tests.query = function(test, common) {
     var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_boundary_country');
+    var expected = require('../fixture/component_geocoding/boundary_country');
 
     t.deepEqual(compiled.type, 'fallback', 'query type set');
     t.deepEqual(compiled.body, expected, 'search: valid boundary.country query');
@@ -245,36 +227,18 @@ module.exports.tests.query = function(test, common) {
     var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_with_source_filtering');
+    var expected = require('../fixture/component_geocoding/with_source_filtering');
 
     t.deepEqual(compiled.type, 'fallback', 'query type set');
     t.deepEqual(compiled.body, expected, 'search: valid search query with source filtering');
     t.end();
   });
 
-  test('categories filter', function(t) {
-    var clean = {
-      parsed_text: {
-        street: 'street value'
-      },
-      'text': 'test',
-      'categories': ['retail','food']
-    };
-
-    var query = generate(clean);
-
-    var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_with_category_filtering');
-
-    t.deepEqual(compiled.type, 'fallback', 'query type set');
-    t.deepEqual(compiled.body, expected, 'valid search query with category filtering');
-    t.end();
-  });
 };
 
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape('search query ' + name, testFunction);
+    return tape('component_geocoding query ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
