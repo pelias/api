@@ -59,7 +59,7 @@ var tests = [
   require('./sanitizer/nearby'),
   require('./src/backend'),
   require('./sanitizer/autocomplete'),
-  require('./sanitizer/component'),
+  require('./sanitizer/component_geocoding'),
   require('./sanitizer/place'),
   require('./sanitizer/reverse'),
   require('./sanitizer/sanitizeAll'),

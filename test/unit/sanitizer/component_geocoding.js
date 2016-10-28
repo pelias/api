@@ -8,7 +8,7 @@ module.exports.tests.sanitize = function(test, common) {
 
     // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
     //  were all called correctly
-    var search = proxyquire('../../../sanitizer/component', {
+    var search = proxyquire('../../../sanitizer/component_geocoding', {
       '../sanitizer/_deprecate_quattroshapes': function() {
         called_sanitizers.push('_deprecate_quattroshapes');
         return { errors: [], warnings: [] };

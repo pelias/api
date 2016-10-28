@@ -8,7 +8,7 @@ var sanitizers = {
   place: require('../sanitizer/place'),
   search: require('../sanitizer/search'),
   search_fallback: require('../sanitizer/search_fallback'),
-  component: require('../sanitizer/component'),
+  component_geocoding: require('../sanitizer/component_geocoding'),
   reverse: require('../sanitizer/reverse'),
   nearby: require('../sanitizer/nearby')
 };
@@ -30,7 +30,7 @@ var controllers = {
 var queries = {
   libpostal: require('../query/search'),
   fallback_to_old_prod: require('../query/search_original'),
-  component: require('../query/search_component')
+  component_geocoding: require('../query/component_geocoding')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -96,14 +96,9 @@ function addRoutes(app, peliasConfig) {
       postProc.sendJSON
     ]),
     component: createRouter([
-      sanitizers.component.middleware,
+      sanitizers.component_geocoding.middleware,
       middleware.calcSize(),
-      // 2nd parameter is `backend` which gets initialized internally
-      // 3rd parameter is which query module to use, use fallback/geodisambiguation
-      //  first, then use original search strategy if first query didn't return anything
-      controllers.search(peliasConfig, undefined, queries.component),
-      // sanitizers.search_fallback.middleware,
-      // controllers.search(peliasConfig, undefined, queries.fallback_to_old_prod),
+      controllers.search(peliasConfig, undefined, queries.component_geocoding),
       postProc.trimByGranularityComponent(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
