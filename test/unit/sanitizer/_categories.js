@@ -61,7 +61,7 @@ module.exports.tests.valid_categories = function(test, common) {
   var validCategories = {
     isValidCategory: function (cat) {
       isValidCategoryCalled++;
-      return ['food','health','financial','education','government'].indexOf(cat) !== -1; }
+      return ['food','health','financial','education','government'].includes(cat); }
   };
 
   test('single category', function(t) {
@@ -113,7 +113,7 @@ module.exports.tests.invalid_categories = function(test, common) {
   var validCategories = {
     isValidCategory: function (cat) {
       isValidCategoryCalled++;
-      return ['food','health','financial','education','government'].indexOf(cat) !== -1; }
+      return ['food','health','financial','education','government'].includes(cat); }
   };
 
   test('garbage category', function(t) {

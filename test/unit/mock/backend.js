@@ -76,7 +76,7 @@ function setup( key, cmdCb ){
       client: {
         mget: function( cmd, cb ){
           if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
-          return responses[key.indexOf('mget') === -1 ? 'client/mget/ok/1' : key].apply( this, arguments );
+          return responses[key.includes('mget') ? key : 'client/mget/ok/1'].apply( this, arguments );
         },
         suggest: function( cmd, cb ){
           if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }

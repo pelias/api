@@ -34,7 +34,7 @@ module.exports.tests.sanitize = function(test, common) {
 
       },
       '../sanitizer/_targets': function(type) {
-        if (['layers', 'sources'].indexOf(type) !== -1) {
+        if (['layers', 'sources'].includes(type)) {
           return function() {
             called_sanitizers.push('_targets/' + type);
             return { errors: [], warnings: [] };

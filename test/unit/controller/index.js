@@ -58,7 +58,7 @@ module.exports.tests.info_html = function(test, common) {
     var res = { send: function( content ){
       t.equal(typeof content, 'string', 'returns string');
       t.assert(content.indexOf(style) === 0, 'style set');
-      t.assert(content.indexOf(mockText) !== -1, 'file content added');
+      t.true(content.includes(mockText), 'file content added');
       t.end();
     }};
     controller( req, res );
