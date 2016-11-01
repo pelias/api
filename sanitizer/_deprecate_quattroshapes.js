@@ -18,7 +18,7 @@ function sanitize( raw, clean, opts ) {
   if( raw.hasOwnProperty('sources') ){
 
     var sources = raw.sources.split(',');
-    if (_.includes(sources, 'quattroshapes') || _.includes(sources, 'qs')) {
+    if (sources.includes('quattroshapes') || sources.includes('qs')) {
 
       // emit a warning message so users can transition.
       messages.warnings.push('You are using Quattroshapes as a data source in this query. ' +

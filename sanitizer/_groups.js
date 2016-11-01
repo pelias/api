@@ -1,5 +1,3 @@
-var _ = require('lodash');
-
 /*
  * Specify an object and array of keys to check.
  * An error will be thrown if at least one, but not all of them are specified
@@ -10,7 +8,10 @@ var _ = require('lodash');
  * returns true if all are present, false if none are present, throws an exception otherwise
  */
 function optional_group(object, keys) {
-  var contained_in_object = _.includes.bind(null, Object.keys(object));
+  var object_properties = Object.keys(object);
+  var contained_in_object = function(key_to_check) {
+    return object_properties.includes(key_to_check);
+  };
 
   if (keys.every(contained_in_object)) {
     return true;
@@ -26,7 +27,10 @@ function optional_group(object, keys) {
  * An error will be thrown if any of the keys are missing from the object
  */
 function required_group(object, keys) {
-  var contained_in_object = _.includes.bind(null, Object.keys(object));
+  var object_properties = Object.keys(object);
+  var contained_in_object = function(key_to_check) {
+    return object_properties.includes(key_to_check);
+  };
 
   if (keys.every(contained_in_object)) {
     return true;

@@ -15,7 +15,7 @@ function sanitize( raw, clean ){
     clean.sources.forEach(function(source) {
       var layers_for_source = type_mapping.layers_by_source[source];
       clean.layers.forEach(function(layer) {
-        if (_.includes(layers_for_source, layer)) {
+        if (layers_for_source.includes(layer)) {
           at_least_one_valid_combination = true;
         } else {
           var message = 'You have specified both the `sources` and `layers` ' +

@@ -1,6 +1,4 @@
-
-var _ = require('lodash'),
-    check = require('check-types');
+var check = require('check-types');
 
 var DEFAULT_DETAILS_BOOL = true;
 
@@ -22,7 +20,7 @@ function sanitize( raw, clean ){
 // be lenient with 'truthy' values
 function isTruthy(val) {
   if( check.string( val ) ){
-    return _.includes( ['true', '1'], val );
+    return ['true', '1'].includes( val );
   }
 
   return val === 1 || val === true;

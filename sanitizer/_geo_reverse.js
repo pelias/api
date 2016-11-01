@@ -30,7 +30,7 @@ module.exports = function sanitize( raw, clean ){
     // if no radius was passed, set the default
     if ( _.isUndefined( raw['boundary.circle.radius'] ) ) {
       // the default is small unless layers other than venue or address were explicitly specified
-      if (clean.layers && clean.layers.length > 0 && !_.includes(clean.layers, 'venue') && !_.includes(clean.layers, 'address')) {
+      if (clean.layers && clean.layers.length > 0 && !clean.layers.includes('venue') && !clean.layers.includes('address')) {
         raw['boundary.circle.radius'] = defaults['boundary:circle:radius:coarse'];
       } else {
         raw['boundary.circle.radius'] = defaults['boundary:circle:radius'];

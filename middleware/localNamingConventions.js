@@ -28,7 +28,7 @@ function applyLocalNamingConventions(req, res, next) {
 
     // relevant for some countries
     var flip = place.parent.country_a.some(function(country) {
-      return _.includes(flipNumberAndStreetCountries, country);
+      return flipNumberAndStreetCountries.includes(country);
     });
     if (!flip){ return false; }
     if( !place.hasOwnProperty('address_parts') ){ return false; }
