@@ -120,7 +120,7 @@ function generateQuery( clean ){
 }
 
 function getQuery(vs) {
-  if (hasStreet(vs)) {
+  if (hasStreet(vs) || isCityStateOnlyWithOptionalCountry(vs)) {
     return {
       type: 'fallback',
       body: fallbackQuery.render(vs)
@@ -135,6 +135,19 @@ function getQuery(vs) {
 
 function hasStreet(vs) {
   return vs.isset('input:street');
+}
+
+function isCityStateOnlyWithOptionalCountry(vs) {
+  var isSet = function(layer) {
+    return vs.isset('input:' + layer);
+  };
+
+  var allowedFields = ['locality', 'region'];
+  var disallowedFields = ['query', 'category', 'housenumber', 'street',
+                          'neighbourhood', 'borough', 'postcode', 'county'];
+
+  return allowedFields.every(isSet) && !disallowedFields.some(isSet);
+
 }
 
 module.exports = generateQuery;
