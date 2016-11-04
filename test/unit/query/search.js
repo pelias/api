@@ -445,6 +445,19 @@ module.exports.tests.city_state = function(test, common) {
 
   });
 
+  test('county/region(state) should return a query', function(t) {
+    var clean = {
+      parsed_text: {
+        county: 'county value',
+        state: 'state value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.ok(query, 'should return a query');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {

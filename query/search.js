@@ -120,7 +120,7 @@ function generateQuery( clean ){
 }
 
 function getQuery(vs) {
-  if (hasStreet(vs) || isCityStateOnlyWithOptionalCountry(vs)) {
+  if (hasStreet(vs) || isCountyRegion(vs) || isCityStateOnlyWithOptionalCountry(vs)) {
     return {
       type: 'fallback',
       body: fallbackQuery.render(vs)
@@ -130,11 +130,22 @@ function getQuery(vs) {
   // returning undefined is a signal to a later step that the addressit-parsed
   // query should be queried for
   return undefined;
-
 }
 
 function hasStreet(vs) {
   return vs.isset('input:street');
+}
+
+function isCountyRegion(vs) {
+  var isSet = function(layer) {
+    return vs.isset('input:' + layer);
+  };
+
+  var allowedFields = ['county', 'region'];
+  var disallowedFields = ['query', 'category', 'housenumber', 'street',
+                          'neighbourhood', 'borough', 'postcode', 'locality'];
+
+  return allowedFields.every(isSet) && !disallowedFields.some(isSet);
 }
 
 function isCityStateOnlyWithOptionalCountry(vs) {
