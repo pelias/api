@@ -39,6 +39,12 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
     vs.var( 'input:postcode', parsed_text.postalcode );
   }
 
+
+  // island
+  if( parsed_text.hasOwnProperty('island') ){
+    vs.var( 'input:island', parsed_text.island );
+  }
+
   // ==== add parsed matches [admin components] ====
 
   // city
@@ -83,12 +89,24 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
     vs.unset( 'input:query' );
   }
 
+
+  if (shouldTreatIslandAsCounty(vs)) {
+    vs.var( 'input:county', vs.var('input:island').toString());
+    vs.unset('input:island');
+  }
 }
 
 function shouldSetQueryIntoHouseNumber(vs) {
   return !vs.isset('input:housenumber') &&
           vs.isset('input:street') &&
           /^[0-9]+$/.test(vs.var('input:query').toString());
+}
+
+function shouldTreatIslandAsCounty(vs) {
+  return vs.isset('input:island') &&
+    vs.isset('input:region') &&
+    !vs.isset('input:county') &&
+    vs.var('input:region').toString() === 'hawaii';
 }
 
 module.exports = addParsedVariablesToQueryVariables;
