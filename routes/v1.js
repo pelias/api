@@ -109,6 +109,7 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
+      postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
