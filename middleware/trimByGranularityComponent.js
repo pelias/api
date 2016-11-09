@@ -1,4 +1,4 @@
-var _ = require('lodash');
+const _ = require('lodash');
 
 // This middleware component trims the results array by granularity when
 // FallbackQuery was used.  FallbackQuery is used for inputs like
@@ -13,7 +13,7 @@ var _ = require('lodash');
 // this component removes results that aren't the most granular.
 
 // layers in increasing order of granularity
-var layers = [
+const layers = [
   'venue',
   'street',
   'address',

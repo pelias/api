@@ -1,6 +1,6 @@
-var _ = require('lodash');
+const _ = require('lodash');
 
-var fields = ['query', 'address', 'neighbourhood', 'city',
+const fields = ['query', 'address', 'neighbourhood', 'city',
     'county', 'state', 'postalcode', 'country'];
 
 function normalizeWhitespaceToSingleSpace(val) {
@@ -10,7 +10,7 @@ function normalizeWhitespaceToSingleSpace(val) {
 function sanitize( raw, clean ){
 
   // error & warning messages
-  var messages = { errors: [], warnings: [] };
+  const messages = { errors: [], warnings: [] };
 
   // collect all the valid values into a single object
   clean.parsed_text = fields.reduce( (o, f) => {
