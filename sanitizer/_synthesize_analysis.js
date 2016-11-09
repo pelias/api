@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const fields = ['query', 'address', 'neighbourhood', 'city',
+const fields = ['query', 'address', 'neighbourhood', 'borough', 'city',
     'county', 'state', 'postalcode', 'country'];
 
 function normalizeWhitespaceToSingleSpace(val) {
@@ -24,7 +24,7 @@ function sanitize( raw, clean ){
 
   if (_.isEmpty(Object.keys(clean.parsed_text))) {
     messages.errors.push('at least one of the following fields is required: ' +
-      'query, address, neighbourhood, city, county, state, postalcode, country');
+      'query, address, neighbourhood, borough, city, county, state, postalcode, country');
   }
 
   return messages;

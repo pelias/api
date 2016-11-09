@@ -9,6 +9,7 @@ module.exports.tests.text_parser = function(test, common) {
       query: ' \t query \t value \t ',
       address: ' \t address \t value \t ',
       neighbourhood: ' \t neighbourhood \t value \t ',
+      borough: ' \t borough \t value \t ',
       city: ' \t city \t value \t ',
       county: ' \t county \t value \t ',
       state: ' \t state \t value \t ',
@@ -23,6 +24,7 @@ module.exports.tests.text_parser = function(test, common) {
         query: 'query value',
         address: 'address value',
         neighbourhood: 'neighbourhood value',
+        borough: 'borough value',
         city: 'city value',
         county: 'county value',
         state: 'state value',
@@ -50,6 +52,7 @@ module.exports.tests.text_parser = function(test, common) {
       query: getInvalidValue(),
       address: getInvalidValue(),
       neighbourhood: getInvalidValue(),
+      borough: getInvalidValue(),
       city: getInvalidValue(),
       county: getInvalidValue(),
       state: getInvalidValue(),
@@ -67,7 +70,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, ['at least one of the following fields is required: ' +
-      'query, address, neighbourhood, city, county, state, postalcode, country'], 'no errors');
+      'query, address, neighbourhood, borough, city, county, state, postalcode, country'], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
     t.end();
 
@@ -84,7 +87,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, ['at least one of the following fields is required: ' +
-      'query, address, neighbourhood, city, county, state, postalcode, country'], 'no errors');
+      'query, address, neighbourhood, borough, city, county, state, postalcode, country'], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
     t.end();
 
