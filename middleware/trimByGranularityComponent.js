@@ -40,13 +40,13 @@ function isFallbackQuery(results) {
 }
 
 function hasRecordsAtLayers(results, layer) {
-  return results.some(function(result) {
+  return results.some( (result) => {
     return result._matched_queries[0] === 'fallback.' + layer;
   });
 }
 
 function retainRecordsAtLayers(results, layer) {
-  return results.filter(function(result) {
+  return results.filter( (result) => {
     return result._matched_queries[0] === 'fallback.' + layer;
   });
 }
@@ -61,7 +61,7 @@ function setup() {
 
    // start at the most granular possible layer.  if there are results at a layer
    // then remove everything not at that layer.
-   layers.forEach(function(layer) {
+   layers.forEach( (layer) => {
      if (hasRecordsAtLayers(res.data, layer )) {
        res.data = retainRecordsAtLayers(res.data, layer);
      }

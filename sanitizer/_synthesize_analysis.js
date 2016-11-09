@@ -13,7 +13,7 @@ function sanitize( raw, clean ){
   var messages = { errors: [], warnings: [] };
 
   // collect all the valid values into a single object
-  clean.parsed_text = fields.reduce(function(o, f) {
+  clean.parsed_text = fields.reduce( (o, f) => {
     if (_.isString(raw[f]) && !_.isEmpty(_.trim(raw[f]))) {
       o[f] = normalizeWhitespaceToSingleSpace(raw[f]);
     }
