@@ -13,6 +13,11 @@ const _ = require('lodash');
 // this component removes results that aren't the most granular.
 
 // layers in increasing order of granularity
+// some places where this list differs in order from trimByGranularity:
+// - because house number and street are in a single field, street hits must be considered
+//   more important than addresses due to how ES matches
+// - country outranks dependency, this was done to ensure that "country=United States" doesn't
+//   bump up US dependencies containing "United States" above the country
 const layers = [
   'venue',
   'street',
@@ -25,8 +30,8 @@ const layers = [
   'macrocounty',
   'region',
   'macroregion',
-  'dependency',
-  'country'
+  'country',
+  'dependency'
 ];
 
 // this helper method returns `true` if every result has a matched_query

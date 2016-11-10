@@ -337,38 +337,12 @@ module.exports.tests.trimByGranularity = function(test, common) {
     testIt();
   });
 
-  test('all records with fallback.* matched_queries name should retain only dependencies when they are most granular', function(t) {
+  test('all records with fallback.* matched_queries name should retain countries over dependencies', function(t) {
     var req = { clean: {} };
 
     var res = {
       data: [
         { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
-        { name: 'dependency 2', _matched_queries: ['fallback.dependency'] },
-        { name: 'country 1', _matched_queries: ['fallback.country'] },
-        { name: 'unknown', _matched_queries: ['fallback.unknown'] }
-      ]
-    };
-
-    var expected_data = [
-      { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
-      { name: 'dependency 2', _matched_queries: ['fallback.dependency'] },
-    ];
-
-    function testIt() {
-      trimByGranularity(req, res, function() {
-        t.deepEquals(res.data, expected_data, 'only dependency records should be here');
-        t.end();
-      });
-    }
-
-    testIt();
-  });
-
-  test('all records with fallback.* matched_queries name should retain only countries when they are most granular', function(t) {
-    var req = { clean: {} };
-
-    var res = {
-      data: [
         { name: 'country 1', _matched_queries: ['fallback.country'] },
         { name: 'country 2', _matched_queries: ['fallback.country'] },
         { name: 'unknown', _matched_queries: ['fallback.unknown'] }
@@ -383,6 +357,32 @@ module.exports.tests.trimByGranularity = function(test, common) {
     function testIt() {
       trimByGranularity(req, res, function() {
         t.deepEquals(res.data, expected_data, 'only country records should be here');
+        t.end();
+      });
+    }
+
+    testIt();
+  });
+
+  test('all records with fallback.* matched_queries name should retain only dependencies when they are most granular', function(t) {
+    var req = { clean: {} };
+
+    var res = {
+      data: [
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
+        { name: 'dependency 2', _matched_queries: ['fallback.dependency'] },
+        { name: 'unknown', _matched_queries: ['fallback.unknown'] }
+      ]
+    };
+
+    var expected_data = [
+      { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
+      { name: 'dependency 2', _matched_queries: ['fallback.dependency'] },
+    ];
+
+    function testIt() {
+      trimByGranularity(req, res, function() {
+        t.deepEquals(res.data, expected_data, 'only dependency records should be here');
         t.end();
       });
     }
