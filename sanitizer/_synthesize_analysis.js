@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
-const fields = ['query', 'address', 'neighbourhood', 'borough', 'city',
-    'county', 'state', 'postalcode', 'country'];
+const fields = ['address', 'neighbourhood', 'borough', 'city', 'county',
+  'state', 'postalcode', 'country'];
 
 function normalizeWhitespaceToSingleSpace(val) {
   return _.replace(_.trim(val), /\s+/g, ' ');
@@ -23,8 +23,8 @@ function sanitize( raw, clean ){
   }, {});
 
   if (_.isEmpty(Object.keys(clean.parsed_text))) {
-    messages.errors.push('at least one of the following fields is required: ' +
-      'query, address, neighbourhood, borough, city, county, state, postalcode, country');
+    messages.errors.push(
+      `at least one of the following fields is required: ${fields.join(', ')}`);
   }
 
   return messages;
