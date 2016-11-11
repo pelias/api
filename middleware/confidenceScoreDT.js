@@ -72,7 +72,7 @@ function compareResults(a, b) {
     return b.confidence - a.confidence;
   }
   if (a.distance !== b.distance) {  // focus point defined
-    return b.distance - a.distance;
+    return a.distance - b.distance;
   }
   var diff;
   if (a.parent && b.parent) {
