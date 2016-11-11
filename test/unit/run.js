@@ -46,6 +46,7 @@ var tests = [
   require('./sanitizer/_geo_reverse'),
   require('./sanitizer/_groups'),
   require('./sanitizer/_ids'),
+  require('./sanitizer/_iso2_to_iso3'),
   require('./sanitizer/_layers'),
   require('./sanitizer/_single_scalar_parameters'),
   require('./sanitizer/_size'),
