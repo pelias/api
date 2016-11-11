@@ -7,6 +7,11 @@ function normalizeWhitespaceToSingleSpace(val) {
   return _.replace(_.trim(val), /\s+/g, ' ');
 }
 
+function isPostalCodeOnly(parsed_text) {
+  return Object.keys(parsed_text).length === 1 &&
+          parsed_text.hasOwnProperty('postalcode');
+}
+
 function sanitize( raw, clean ){
 
   // error & warning messages
@@ -22,7 +27,10 @@ function sanitize( raw, clean ){
 
   }, {});
 
-  if (_.isEmpty(Object.keys(clean.parsed_text))) {
+  if (isPostalCodeOnly(clean.parsed_text)) {
+    messages.errors.push('postalcode-only inputs are not supported');
+  }
+  else if (_.isEmpty(Object.keys(clean.parsed_text))) {
     messages.errors.push(
       `at least one of the following fields is required: ${fields.join(', ')}`);
   }

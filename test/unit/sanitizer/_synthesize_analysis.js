@@ -91,6 +91,28 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
+  test('postalcode-only parsed_text should return error', function(t) {
+    const raw = {
+      postalcode: 'postalcode value'
+    };
+
+    const clean = {};
+
+    const expected_clean = {
+      parsed_text: {
+        postalcode: 'postalcode value'
+      }
+    };
+
+    const messages = sanitizer(raw, clean);
+
+    t.deepEquals(clean, expected_clean);
+    t.deepEquals(messages.errors, ['postalcode-only inputs are not supported'], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+    t.end();
+
+  });
+
 };
 
 module.exports.all = function (tape, common) {
