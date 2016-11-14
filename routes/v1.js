@@ -193,7 +193,7 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'autocomplete', routers.autocomplete );
   app.get ( base + 'search',       routers.search );
   app.post( base + 'search',       routers.search );
-  app.get ( base + 'component',    routers.component );
+  app.get ( base + 'beta/component',    routers.component );
   app.get ( base + 'reverse',      routers.reverse );
   app.get ( base + 'nearby',       routers.nearby );
 
