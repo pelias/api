@@ -157,6 +157,37 @@ module.exports.tests.housenumber_special_cases = function(test, common) {
 
 };
 
+module.exports.tests.islands = function(test, common) {
+  test('island normally left untouched', function(t) {
+    var parsed_text = {
+      island: 'an island',
+      state: 'somewhere'
+    };
+    var vs = new VariableStore();
+
+    text_parser(parsed_text, vs);
+
+    t.equals(vs.var('input:island').toString(), 'an island');
+    t.equals(vs.var('input:region').toString(), 'somewhere');
+    t.end();
+  });
+
+  test('islands in hawaii should have island changed to county', function(t) {
+    var parsed_text = {
+      island: 'maui',
+      state: 'hawaii'
+    };
+    var vs = new VariableStore();
+
+    text_parser(parsed_text, vs);
+
+    t.equals(vs.var('input:county').toString(), 'maui');
+    t.false(vs.isset('input:island'));
+    t.equals(vs.var('input:region').toString(), 'hawaii');
+    t.end();
+  });
+};
+
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
     return tape('text_parser ' + name, testFunction);
