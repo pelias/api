@@ -73,7 +73,7 @@
     "tap-dot": "1.0.5",
     "tape": "^4.5.1",
     "uglify-js": "^2.6.2",
-    "semantic-release": "^4.3.5"
+    "semantic-release": "^6.3.2"
   },
   "pre-commit": [
     "lint",
