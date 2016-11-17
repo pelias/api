@@ -8,6 +8,7 @@ var sanitizers = {
   place: require('../sanitizer/place'),
   search: require('../sanitizer/search'),
   search_fallback: require('../sanitizer/search_fallback'),
+  component_geocoding: require('../sanitizer/component_geocoding'),
   reverse: require('../sanitizer/reverse'),
   nearby: require('../sanitizer/nearby')
 };
@@ -28,13 +29,15 @@ var controllers = {
 
 var queries = {
   libpostal: require('../query/search'),
-  fallback_to_old_prod: require('../query/search_original')
+  fallback_to_old_prod: require('../query/search_original'),
+  component_geocoding: require('../query/component_geocoding')
 };
 
 /** ----------------------- controllers ----------------------- **/
 
 var postProc = {
   trimByGranularity: require('../middleware/trimByGranularity'),
+  trimByGranularityComponent: require('../middleware/trimByGranularityComponent'),
   distances: require('../middleware/distance'),
   confidenceScores: require('../middleware/confidenceScore'),
   confidenceScoresFallback: require('../middleware/confidenceScoreFallback'),
@@ -79,6 +82,24 @@ function addRoutes(app, peliasConfig) {
       sanitizers.search_fallback.middleware,
       controllers.search(peliasConfig, undefined, queries.fallback_to_old_prod),
       postProc.trimByGranularity(),
+      postProc.distances('focus.point.'),
+      postProc.confidenceScores(peliasConfig),
+      postProc.confidenceScoresFallback(),
+      postProc.dedupe(),
+      postProc.accuracy(),
+      postProc.localNamingConventions(),
+      postProc.renamePlacenames(),
+      postProc.parseBoundingBox(),
+      postProc.normalizeParentIds(),
+      postProc.assignLabels(),
+      postProc.geocodeJSON(peliasConfig, base),
+      postProc.sendJSON
+    ]),
+    component: createRouter([
+      sanitizers.component_geocoding.middleware,
+      middleware.calcSize(),
+      controllers.search(peliasConfig, undefined, queries.component_geocoding),
+      postProc.trimByGranularityComponent(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.confidenceScoresFallback(),
@@ -172,6 +193,7 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'autocomplete', routers.autocomplete );
   app.get ( base + 'search',       routers.search );
   app.post( base + 'search',       routers.search );
+  app.get ( base + 'beta/component',    routers.component );
   app.get ( base + 'reverse',      routers.reverse );
   app.get ( base + 'nearby',       routers.nearby );
 
