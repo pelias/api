@@ -22,6 +22,7 @@ module.exports.tests.trimByGranularity = function(test, common) {
         { name: 'street 1', _matched_queries: ['fallback.street'] },
         { name: 'address 1', _matched_queries: ['fallback.address'] },
         { name: 'neighbourhood 1', _matched_queries: ['fallback.neighbourhood'] },
+        { name: 'borough 1', _matched_queries: ['fallback.borough'] },
         { name: 'locality 1', _matched_queries: ['fallback.locality'] },
         { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
         { name: 'county 1', _matched_queries: ['fallback.county'] },
@@ -58,6 +59,7 @@ module.exports.tests.trimByGranularity = function(test, common) {
         { name: 'street 2', _matched_queries: ['fallback.street'] },
         { name: 'address 1', _matched_queries: ['fallback.address'] },
         { name: 'neighbourhood 1', _matched_queries: ['fallback.neighbourhood'] },
+        { name: 'borough 1', _matched_queries: ['fallback.borough'] },
         { name: 'locality 1', _matched_queries: ['fallback.locality'] },
         { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
         { name: 'county 1', _matched_queries: ['fallback.county'] },
@@ -93,6 +95,7 @@ module.exports.tests.trimByGranularity = function(test, common) {
         { name: 'address 1', _matched_queries: ['fallback.address'] },
         { name: 'address 2', _matched_queries: ['fallback.address'] },
         { name: 'neighbourhood 1', _matched_queries: ['fallback.neighbourhood'] },
+        { name: 'borough 1', _matched_queries: ['fallback.borough'] },
         { name: 'locality 1', _matched_queries: ['fallback.locality'] },
         { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
         { name: 'county 1', _matched_queries: ['fallback.county'] },
@@ -127,6 +130,7 @@ module.exports.tests.trimByGranularity = function(test, common) {
       data: [
         { name: 'neighbourhood 1', _matched_queries: ['fallback.neighbourhood'] },
         { name: 'neighbourhood 2', _matched_queries: ['fallback.neighbourhood'] },
+        { name: 'borough 1', _matched_queries: ['fallback.borough'] },
         { name: 'locality 1', _matched_queries: ['fallback.locality'] },
         { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
         { name: 'county 1', _matched_queries: ['fallback.county'] },
@@ -147,6 +151,89 @@ module.exports.tests.trimByGranularity = function(test, common) {
     function testIt() {
       trimByGranularity(req, res, function() {
         t.deepEquals(res.data, expected_data, 'only neighbourhood records should be here');
+        t.end();
+      });
+    }
+
+    testIt();
+  });
+
+  test('all records with fallback.* matched_queries name should retain only boroughs when they are most granular', function(t) {
+    var req = {
+      clean: {
+        parsed_text: {
+          borough: 'borough value'
+        }
+      }
+    };
+
+    var res = {
+      data: [
+        { name: 'borough 1', _matched_queries: ['fallback.borough'] },
+        { name: 'borough 2', _matched_queries: ['fallback.borough'] },
+        { name: 'locality 1', _matched_queries: ['fallback.locality'] },
+        { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
+        { name: 'county 1', _matched_queries: ['fallback.county'] },
+        { name: 'macrocounty 1', _matched_queries: ['fallback.macrocounty'] },
+        { name: 'region 1', _matched_queries: ['fallback.region'] },
+        { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
+        { name: 'country 1', _matched_queries: ['fallback.country'] },
+        { name: 'unknown', _matched_queries: ['fallback.unknown'] }
+      ]
+    };
+
+    var expected_data = [
+      { name: 'borough 1', _matched_queries: ['fallback.borough'] },
+      { name: 'borough 2', _matched_queries: ['fallback.borough'] },
+    ];
+
+    function testIt() {
+      trimByGranularity(req, res, function() {
+        t.deepEquals(res.data, expected_data, 'only borough records should be here');
+        t.end();
+      });
+    }
+
+    testIt();
+  });
+
+  test('if req.parsed_text has city but not borough then borough and city results should be returned', function(t) {
+    var req = {
+      clean: {
+        parsed_text: {
+          city: 'city value'
+        }
+      }
+    };
+
+    var res = {
+      data: [
+        { name: 'borough 1', _matched_queries: ['fallback.borough'] },
+        { name: 'borough 2', _matched_queries: ['fallback.borough'] },
+        { name: 'locality 1', _matched_queries: ['fallback.locality'] },
+        { name: 'locality 2', _matched_queries: ['fallback.locality'] },
+        { name: 'localadmin 1', _matched_queries: ['fallback.localadmin'] },
+        { name: 'county 1', _matched_queries: ['fallback.county'] },
+        { name: 'macrocounty 1', _matched_queries: ['fallback.macrocounty'] },
+        { name: 'region 1', _matched_queries: ['fallback.region'] },
+        { name: 'macroregion 1', _matched_queries: ['fallback.macroregion'] },
+        { name: 'dependency 1', _matched_queries: ['fallback.dependency'] },
+        { name: 'country 1', _matched_queries: ['fallback.country'] },
+        { name: 'unknown', _matched_queries: ['fallback.unknown'] }
+      ]
+    };
+
+    var expected_data = [
+      { name: 'borough 1', _matched_queries: ['fallback.borough'] },
+      { name: 'borough 2', _matched_queries: ['fallback.borough'] },
+      { name: 'locality 1', _matched_queries: ['fallback.locality'] },
+      { name: 'locality 2', _matched_queries: ['fallback.locality'] }
+    ];
+
+    function testIt() {
+      trimByGranularity(req, res, function() {
+        t.deepEquals(res.data, expected_data, 'only borough/locality records should be here');
         t.end();
       });
     }
