@@ -447,6 +447,164 @@ module.exports.tests.city_state = function(test, common) {
 
 };
 
+module.exports.tests.city_country = function(test, common) {
+  test('only city and country set should return query', function(t) {
+    var clean = {
+      parsed_text: {
+        'city': 'city value',
+        'country': 'country value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.notEqual(query, undefined, 'should not have returned undefined');
+    t.end();
+
+  });
+
+  test('city-only should return undefined', function(t) {
+    var clean = {
+      parsed_text: {
+        city: 'city value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.equals(query, undefined, 'should have returned undefined');
+    t.end();
+
+  });
+
+  test('country-only should return undefined', function(t) {
+    var clean = {
+      parsed_text: {
+        country: 'country value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.equals(query, undefined, 'should have returned undefined');
+    t.end();
+
+  });
+
+  test('city/country with query should return undefined', function(t) {
+    var clean = {
+      parsed_text: {
+        city: 'city value',
+        country: 'country value',
+        query: 'query value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.equals(query, undefined, 'should have returned undefined');
+    t.end();
+
+  });
+
+  test('city/country with category should return undefined', function(t) {
+    var clean = {
+      parsed_text: {
+        city: 'city value',
+        country: 'country value',
+        category: 'category value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.equals(query, undefined, 'should have returned undefined');
+    t.end();
+
+  });
+
+  test('city/country with number should return undefined', function(t) {
+    var clean = {
+      parsed_text: {
+        city: 'city value',
+        country: 'country value',
+        number: 'number value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.equals(query, undefined, 'should have returned undefined');
+    t.end();
+
+  });
+
+  test('city/country with neighbourhood should return undefined', function(t) {
+    var clean = {
+      parsed_text: {
+        city: 'city value',
+        country: 'country value',
+        neighbourhood: 'neighbourhood value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.equals(query, undefined, 'should have returned undefined');
+    t.end();
+
+  });
+
+  test('city/country with borough should return undefined', function(t) {
+    var clean = {
+      parsed_text: {
+        city: 'city value',
+        country: 'country value',
+        borough: 'borough value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.equals(query, undefined, 'should have returned undefined');
+    t.end();
+
+  });
+
+  test('city/country with postalcode should return undefined', function(t) {
+    var clean = {
+      parsed_text: {
+        city: 'city value',
+        country: 'country value',
+        postalcode: 'postalcode value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.equals(query, undefined, 'should have returned undefined');
+    t.end();
+
+  });
+
+  test('city/country with county should return undefined', function(t) {
+    var clean = {
+      parsed_text: {
+        city: 'city value',
+        country: 'country value',
+        county: 'county value'
+      }
+    };
+
+    var query = generate(clean);
+
+    t.equals(query, undefined, 'should have returned undefined');
+    t.end();
+
+  });
+
+};
+
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
     return tape('search query ' + name, testFunction);
