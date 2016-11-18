@@ -34,9 +34,7 @@ function sanitize(raw, clean) {
 }
 
 function containsIsoCode(isoCode) {
-  return iso3166.list().some(function(row) {
-    return row.alpha2 === isoCode || row.alpha3 === isoCode;
-  });
+  return iso3166.is2(isoCode) || iso3166.is3(isoCode);
 }
 
 module.exports = sanitize;

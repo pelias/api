@@ -53,11 +53,11 @@
     "morgan": "1.7.0",
     "pelias-categories": "1.1.0",
     "pelias-config": "2.3.1",
-    "pelias-labels": "1.5.0",
+    "pelias-labels": "1.5.1",
     "pelias-logger": "0.1.0",
     "pelias-model": "4.3.0",
-    "pelias-query": "8.8.0",
-    "pelias-text-analyzer": "1.5.0",
+    "pelias-query": "8.9.0",
+    "pelias-text-analyzer": "1.6.0",
     "stats-lite": "2.0.3",
     "through2": "2.0.1"
   },
@@ -73,7 +73,7 @@
     "tap-dot": "1.0.5",
     "tape": "^4.5.1",
     "uglify-js": "^2.6.2",
-    "semantic-release": "^4.3.5"
+    "semantic-release": "^6.3.2"
   },
   "pre-commit": [
     "lint",

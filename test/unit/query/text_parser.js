@@ -21,6 +21,7 @@ module.exports.tests.query = function(test, common) {
     t.false(vs.isset('input:category'));
     t.false(vs.isset('input:housenumber'));
     t.false(vs.isset('input:street'));
+    t.false(vs.isset('input:address'));
     t.false(vs.isset('input:neighbourhood'));
     t.false(vs.isset('input:borough'));
     t.false(vs.isset('input:postcode'));
@@ -38,6 +39,7 @@ module.exports.tests.query = function(test, common) {
       category: 'category value',
       number: 'number value',
       street: 'street value',
+      address: 'address value',
       neighbourhood: 'neighbourhood value',
       borough: 'borough value',
       postalcode: 'postalcode value',
@@ -54,6 +56,7 @@ module.exports.tests.query = function(test, common) {
     t.equals(vs.var('input:category').toString(), 'category value');
     t.equals(vs.var('input:housenumber').toString(), 'number value');
     t.equals(vs.var('input:street').toString(), 'street value');
+    t.equals(vs.var('input:address').toString(), 'address value');
     t.equals(vs.var('input:neighbourhood').toString(), 'neighbourhood value');
     t.equals(vs.var('input:borough').toString(), 'borough value');
     t.equals(vs.var('input:postcode').toString(), 'postalcode value');
