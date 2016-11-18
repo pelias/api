@@ -10,9 +10,9 @@ module.exports.tests.text_parser = function(test, common) {
       address: ' \t address \t value \t ',
       neighbourhood: ' \t neighbourhood \t value \t ',
       borough: ' \t borough \t value \t ',
-      city: ' \t city \t value \t ',
+      locality: ' \t locality \t value \t ',
       county: ' \t county \t value \t ',
-      state: ' \t state \t value \t ',
+      region: ' \t region \t value \t ',
       postalcode: ' \t postalcode \t value \t ',
       country: ' \t country \t value \t '
     };
@@ -24,9 +24,9 @@ module.exports.tests.text_parser = function(test, common) {
         address: 'address value',
         neighbourhood: 'neighbourhood value',
         borough: 'borough value',
-        city: 'city value',
+        city: 'locality value',
         county: 'county value',
-        state: 'state value',
+        state: 'region value',
         postalcode: 'postalcode value',
         country: 'country value'
       }
@@ -51,9 +51,9 @@ module.exports.tests.text_parser = function(test, common) {
       address: getInvalidValue(),
       neighbourhood: getInvalidValue(),
       borough: getInvalidValue(),
-      city: getInvalidValue(),
+      locality: getInvalidValue(),
       county: getInvalidValue(),
-      state: getInvalidValue(),
+      region: getInvalidValue(),
       postalcode: getInvalidValue(),
       country: getInvalidValue()
     };
@@ -68,7 +68,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, ['at least one of the following fields is required: ' +
-      'address, neighbourhood, borough, city, county, state, postalcode, country'], 'no errors');
+      'address, neighbourhood, borough, locality, county, region, postalcode, country'], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
     t.end();
 
@@ -85,7 +85,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, ['at least one of the following fields is required: ' +
-      'address, neighbourhood, borough, city, county, state, postalcode, country'], 'no errors');
+      'address, neighbourhood, borough, locality, county, region, postalcode, country'], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
     t.end();
 
