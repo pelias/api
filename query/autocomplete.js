@@ -45,6 +45,30 @@ query.score( views.boost_exact_matches );
 query.score( views.focus_selected_layers( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.pop_subquery ) );
 query.score( peliasQuery.view.population( views.pop_subquery ) );
+query.score( function() { return {
+  terms: {
+    layer: [ "country", "region", "locality", "localadmin", "county", "borough"],
+    boost: 3
+  }
+} });
+
+query.score( function() { return {
+    bool: {
+      must: [{
+        terms: {
+          source: [ "whosonfirst"],
+          boost: 1.1
+        }
+      },
+      {
+        terms: {
+          layer: [ "country", "region", "locality", "localadmin", "county", "borough"],
+        }
+      }
+      ]
+    }
+  };
+});
 
 // non-scoring hard filters
 query.filter( peliasQuery.view.sources );
@@ -128,9 +152,13 @@ function generateQuery( clean ){
     textParser( clean.parsed_text, vs );
   }
 
+  var q = query.render(vs);
+
+  console.log(JSON.stringify(q, null, 2));
+
   return {
     type: 'autocomplete',
-    body: query.render(vs)
+    body: q
   };
 }
 

@@ -25,6 +25,32 @@ query.score( peliasQuery.view.phrase );
 query.score( peliasQuery.view.focus( peliasQuery.view.phrase ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
 query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
+query.score( function() { return {
+  query: {
+    terms: {
+      layer: [ "country", "region", "locality", "localadmin", "borough"],
+      boost: 5
+    }
+  }
+} });
+
+query.score( function() { return {
+  query: {
+    terms: {
+      layer: [ "county"],
+      boost: 3
+    }
+  }
+} });
+
+query.score( function() { return {
+  query: {
+    terms: {
+      source: [ "whosonfirst"],
+      boost: 3
+    }
+  }
+} });
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );
@@ -125,9 +151,13 @@ function generateQuery( clean ){
     textParser( clean.parsed_text, vs );
   }
 
+  var q = query.render(vs);
+
+  console.log(JSON.stringify(q, null, 2));
+
   return {
     type: 'original',
-    body: query.render(vs)
+    body: q
   };
 }
 
