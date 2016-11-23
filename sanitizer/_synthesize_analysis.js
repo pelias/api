@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const text_analyzer = require('pelias-text-analyzer');
 
 const fields = {
   'address': 'address',
@@ -18,6 +19,15 @@ function normalizeWhitespaceToSingleSpace(val) {
 function isPostalCodeOnly(parsed_text) {
   return Object.keys(parsed_text).length === 1 &&
           parsed_text.hasOwnProperty('postalcode');
+}
+
+function getHouseNumberField(analyzed_address) {
+  for (var field of ['number', 'postalcode']) {
+    if (analyzed_address.hasOwnProperty(field)) {
+      return field;
+    }
+  }
+
 }
 
 function sanitize( raw, clean ){
@@ -41,6 +51,24 @@ function sanitize( raw, clean ){
   else if (_.isEmpty(Object.keys(clean.parsed_text))) {
     messages.errors.push(
       `at least one of the following fields is required: ${Object.keys(fields).join(', ')}`);
+  }
+
+  if (clean.parsed_text.hasOwnProperty('address')) {
+    var analyzed_address = text_analyzer.parse(clean.parsed_text.address);
+
+    const house_number_field = getHouseNumberField(analyzed_address);
+
+    if (house_number_field) {
+      clean.parsed_text.number = analyzed_address[house_number_field];
+
+      clean.parsed_text.street = _.trim(_.replace(clean.parsed_text.address, clean.parsed_text.number, ''));
+      delete clean.parsed_text.address;
+
+    } else {
+      clean.parsed_text.street = clean.parsed_text.address;
+      delete clean.parsed_text.address;
+    }
+
   }
 
   return messages;
