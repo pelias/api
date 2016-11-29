@@ -14,7 +14,6 @@ module.exports.tests.query = function(test, common) {
   test('valid search + focus + bbox', function(t) {
     var clean = {
       parsed_text: {
-        street: 'street value'
       },
       text: 'test',
       querySize: 10,
@@ -39,7 +38,6 @@ module.exports.tests.query = function(test, common) {
   test('valid search + bbox', function(t) {
     var clean = {
       parsed_text: {
-        street: 'street value'
       },
       text: 'test',
       querySize: 10,
@@ -63,7 +61,6 @@ module.exports.tests.query = function(test, common) {
   test('valid lingustic-only search', function(t) {
     var clean = {
       parsed_text: {
-        street: 'street value'
       },
       text: 'test', querySize: 10,
       layers: ['test']
@@ -82,7 +79,6 @@ module.exports.tests.query = function(test, common) {
   test('search search + focus', function(t) {
     var clean = {
       parsed_text: {
-        street: 'street value'
       },
       text: 'test', querySize: 10,
       'focus.point.lat': 29.49136, 'focus.point.lon': -82.50622,
@@ -102,7 +98,6 @@ module.exports.tests.query = function(test, common) {
   test('search search + viewport', function(t) {
     var clean = {
       parsed_text: {
-        street: 'street value'
       },
       text: 'test', querySize: 10,
       'focus.viewport.min_lat': 28.49136,
@@ -127,7 +122,6 @@ module.exports.tests.query = function(test, common) {
   test('search with viewport diagonal < 1km should set scale to 1km', function(t) {
     var clean = {
       parsed_text: {
-        street: 'street value'
       },
       text: 'test', querySize: 10,
       'focus.viewport.min_lat': 28.49135,
@@ -150,7 +144,6 @@ module.exports.tests.query = function(test, common) {
   test('search search + focus on null island', function(t) {
     var clean = {
       parsed_text: {
-        street: 'street value'
       },
       text: 'test', querySize: 10,
       'focus.point.lat': 0, 'focus.point.lon': 0,
@@ -198,7 +191,6 @@ module.exports.tests.query = function(test, common) {
   test('valid boundary.country search', function(t) {
     var clean = {
       parsed_text: {
-        street: 'street value'
       },
       text: 'test', querySize: 10,
       layers: ['test'],
@@ -218,7 +210,6 @@ module.exports.tests.query = function(test, common) {
   test('valid sources filter', function(t) {
     var clean = {
       parsed_text: {
-        street: 'street value'
       },
       'text': 'test',
       'sources': ['test_source']
