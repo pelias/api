@@ -6,21 +6,21 @@ var peliasQuery = require('pelias-query'),
 //------------------------------
 // general-purpose search query
 //------------------------------
-var componentQuery = new peliasQuery.layout.ComponentFallbackQuery();
+var structuredQuery = new peliasQuery.layout.ComponentFallbackQuery();
 
 // scoring boost
-componentQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
-componentQuery.score( peliasQuery.view.popularity_only_function );
-componentQuery.score( peliasQuery.view.population_only_function );
+structuredQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
+structuredQuery.score( peliasQuery.view.popularity_only_function );
+structuredQuery.score( peliasQuery.view.population_only_function );
 // --------------------------------
 
 // non-scoring hard filters
-componentQuery.filter( peliasQuery.view.boundary_country );
-componentQuery.filter( peliasQuery.view.boundary_circle );
-componentQuery.filter( peliasQuery.view.boundary_rect );
-componentQuery.filter( peliasQuery.view.sources );
-componentQuery.filter( peliasQuery.view.layers );
-componentQuery.filter( peliasQuery.view.categories );
+structuredQuery.filter( peliasQuery.view.boundary_country );
+structuredQuery.filter( peliasQuery.view.boundary_circle );
+structuredQuery.filter( peliasQuery.view.boundary_rect );
+structuredQuery.filter( peliasQuery.view.sources );
+structuredQuery.filter( peliasQuery.view.layers );
+structuredQuery.filter( peliasQuery.view.categories );
 // --------------------------------
 
 /**
@@ -105,7 +105,7 @@ function generateQuery( clean ){
 function getQuery(vs) {
   return {
     type: 'fallback',
-    body: componentQuery.render(vs)
+    body: structuredQuery.render(vs)
   };
 }
 
