@@ -56,7 +56,7 @@
     "pelias-labels": "1.5.1",
     "pelias-logger": "0.1.0",
     "pelias-model": "4.3.0",
-    "pelias-query": "pelias/query#5338af9",
+    "pelias-query": "8.10.0",
     "pelias-text-analyzer": "1.6.0",
     "stats-lite": "2.0.3",
     "through2": "2.0.1"
