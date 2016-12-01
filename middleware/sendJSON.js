@@ -1,6 +1,7 @@
 var check = require('check-types'),
     es = require('elasticsearch'),
     exceptions = require('elasticsearch-exceptions/lib/exceptions/SupportedExceptions');
+const logger = require('pelias-logger').get('api');
 
 // create a list of regular expressions to match against.
 // note: list created when the server starts up; for performance reasons.
@@ -59,6 +60,8 @@ function sendJSONResponse(req, res, next) {
       }
     });
   }
+
+  logger.info('status code', statusCode);
 
   // respond
   return res.status(statusCode).json(res.body);

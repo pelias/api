@@ -7,6 +7,8 @@ function middleware(err, req, res, next) {
   var error = (err && err.message) ? err.message : err;
 
   if( res.statusCode < 400 ){ res.status(500); }
+  logger.info('status code', res.statusCode);
+
   res.json({ error: typeof error === 'string' ? error : 'internal server error' });
 }
 
