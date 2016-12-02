@@ -26,7 +26,8 @@ var layers = [
   'region',
   'macroregion',
   'dependency',
-  'country'
+  'country',
+  'continent'
 ];
 
 // this helper method returns `true` if every result has a matched_query

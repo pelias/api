@@ -1,4 +1,5 @@
 module.exports = [
+  'continent',
   'country',
   'dependency',
   'macroregion',

@@ -32,7 +32,8 @@ const layers = [
   'region',
   'macroregion',
   'country',
-  'dependency'
+  'dependency',
+  'continent'
 ];
 
 // these layers are strictly used to drive one special case:
@@ -55,7 +56,8 @@ const explicit_borough_layers = [
   'region',
   'macroregion',
   'country',
-  'dependency'
+  'dependency',
+  'continent'
 ];
 
 // this helper method returns `true` if every result has a matched_query
