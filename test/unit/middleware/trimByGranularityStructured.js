@@ -1,4 +1,4 @@
-var trimByGranularity = require('../../../middleware/trimByGranularityComponent')();
+var trimByGranularity = require('../../../middleware/trimByGranularityStructured')();
 
 module.exports.tests = {};
 

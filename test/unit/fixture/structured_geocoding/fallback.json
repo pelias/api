@@ -101,7 +101,7 @@
                         "layer": "address"
                       }
                     },
-                    "boost": 50
+                    "boost": 10
                   }
                 },
                 {
@@ -194,7 +194,7 @@
                         "layer": "street"
                       }
                     },
-                    "boost": 100
+                    "boost": 5
                   }
                 },
                 {
