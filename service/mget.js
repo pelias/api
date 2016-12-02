@@ -11,7 +11,7 @@
 
 **/
 
-var peliasLogger = require( 'pelias-logger' ).get( 'api' );
+var logger = require( 'pelias-logger' ).get( 'api' );
 
 function service( backend, query, cb ){
 
@@ -24,8 +24,17 @@ function service( backend, query, cb ){
 
   // query new backend
   backend().client.mget( cmd, function( err, data ){
+
+    // log total ms elasticsearch reported the query took to execute
+    if( data && data.took ){
+      logger.verbose( 'time elasticsearch reported:', data.took / 1000 );
+    }
+
     // handle backend errors
-    if( err ){ return cb( err ); }
+    if( err ){
+      logger.error( 'backend error', err );
+      return cb( err );
+    }
 
     // map returned documents
     var docs = [];
