@@ -1,5 +1,5 @@
 var service = { mget: require('../service/mget') };
-var logger = require('pelias-logger').get('api:controller:place');
+var logger = require('pelias-logger').get('api');
 
 function setup( config, backend ){
 

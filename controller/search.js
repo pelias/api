@@ -1,7 +1,7 @@
 var _ = require('lodash');
 
 var service = { search: require('../service/search') };
-var logger = require('pelias-logger').get('api:controller:search');
+var logger = require('pelias-logger').get('api');
 var logging = require( '../helper/logging' );
 
 function setup( config, backend, query ){

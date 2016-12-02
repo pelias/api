@@ -5,7 +5,7 @@
 
 **/
 
-var peliasLogger = require( 'pelias-logger' ).get( 'service/search' );
+var peliasLogger = require( 'pelias-logger' ).get( 'api' );
 
 function service( backend, cmd, cb ){
 

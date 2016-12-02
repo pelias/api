@@ -11,7 +11,7 @@
 
 **/
 
-var peliasLogger = require( 'pelias-logger' ).get( 'service/mget' );
+var peliasLogger = require( 'pelias-logger' ).get( 'api' );
 
 function service( backend, query, cb ){
 
