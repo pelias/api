@@ -1,4 +1,4 @@
-var logger = require( 'pelias-logger' ).get( 'middleware-500' );
+var logger = require( 'pelias-logger' ).get( 'api' );
 
 // handle application errors
 function middleware(err, req, res, next) {
