@@ -18,6 +18,11 @@ module.exports.tests.single_scalar_parameters = function(test, common) {
       ],
       warnings: []
     });
+
+    // erroneous params should be deleted to avoid middleware errors
+    t.false(raw.arrayParameter1);
+    t.false(raw.arrayParameter2);
+
     t.end();
   });
 
@@ -36,6 +41,10 @@ module.exports.tests.single_scalar_parameters = function(test, common) {
       ],
       warnings: []
     });
+
+    // erroneous params should be deleted to avoid middleware errors
+    t.false(raw.objectParameter1);
+    t.false(raw.objectParameter2);
     t.end();
   });
 

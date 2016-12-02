@@ -82,8 +82,8 @@ module.exports.tests.sanitize = function(test, common) {
     });
 
     var expected_sanitizers = [
-      '_deprecate_quattroshapes',
       '_single_scalar_parameters',
+      '_deprecate_quattroshapes',
       '_synthesize_analysis',
       '_iso2_to_iso3',
       '_size',
