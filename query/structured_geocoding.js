@@ -6,7 +6,7 @@ var peliasQuery = require('pelias-query'),
 //------------------------------
 // general-purpose search query
 //------------------------------
-var structuredQuery = new peliasQuery.layout.ComponentFallbackQuery();
+var structuredQuery = new peliasQuery.layout.StructuredFallbackQuery();
 
 // scoring boost
 structuredQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
