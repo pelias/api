@@ -183,19 +183,19 @@ function addRoutes(app, peliasConfig) {
 
 
   // static data endpoints
-  app.get ( base,                  routers.index );
-  app.get ( base + 'attribution',  routers.attribution );
-  app.get (        '/attribution', routers.attribution );
-  app.get (        '/status',      routers.status );
+  app.get ( base,                          routers.index );
+  app.get ( base + 'attribution',          routers.attribution );
+  app.get (        '/attribution',         routers.attribution );
+  app.get (        '/status',              routers.status );
 
   // backend dependent endpoints
-  app.get ( base + 'place',        routers.place );
-  app.get ( base + 'autocomplete', routers.autocomplete );
-  app.get ( base + 'search',       routers.search );
-  app.post( base + 'search',       routers.search );
+  app.get ( base + 'place',                routers.place );
+  app.get ( base + 'autocomplete',         routers.autocomplete );
+  app.get ( base + 'search',               routers.search );
+  app.post( base + 'search',               routers.search );
   app.get ( base + 'search/structured',    routers.structured );
-  app.get ( base + 'reverse',      routers.reverse );
-  app.get ( base + 'nearby',       routers.nearby );
+  app.get ( base + 'reverse',              routers.reverse );
+  app.get ( base + 'nearby',               routers.nearby );
 
 }
 
