@@ -10,7 +10,7 @@
  */
 
 var check = require('check-types');
-var logger = require('pelias-logger').get('api-confidence');
+var logger = require('pelias-logger').get('api');
 
 function setup() {
   return computeScores;
