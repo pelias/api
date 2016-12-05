@@ -22,8 +22,8 @@ const _ = require('lodash');
 //   supplied we want to retain borough=Manhattan and city=Manhattan results
 const layers = [
   'venue',
-  'street',
   'address',
+  'street',
   'neighbourhood',
   ['borough', 'locality'],
   'localadmin',
@@ -44,8 +44,8 @@ const layers = [
 // city=Manhattan
 const explicit_borough_layers = [
   'venue',
-  'street',
   'address',
+  'street',
   'neighbourhood',
   'borough',
   'locality',

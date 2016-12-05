@@ -4,7 +4,7 @@ var sanitizeAll = require('../sanitizer/sanitizeAll'),
     };
 
 var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
-var logger = require('pelias-logger').get('api:controller:search_fallback');
+var logger = require('pelias-logger').get('api');
 var logging = require( '../helper/logging' );
 
 // middleware

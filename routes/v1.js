@@ -8,7 +8,7 @@ var sanitizers = {
   place: require('../sanitizer/place'),
   search: require('../sanitizer/search'),
   search_fallback: require('../sanitizer/search_fallback'),
-  component_geocoding: require('../sanitizer/component_geocoding'),
+  structured_geocoding: require('../sanitizer/structured_geocoding'),
   reverse: require('../sanitizer/reverse'),
   nearby: require('../sanitizer/nearby')
 };
@@ -30,14 +30,14 @@ var controllers = {
 var queries = {
   libpostal: require('../query/search'),
   fallback_to_old_prod: require('../query/search_original'),
-  component_geocoding: require('../query/component_geocoding')
+  structured_geocoding: require('../query/structured_geocoding')
 };
 
 /** ----------------------- controllers ----------------------- **/
 
 var postProc = {
   trimByGranularity: require('../middleware/trimByGranularity'),
-  trimByGranularityComponent: require('../middleware/trimByGranularityComponent'),
+  trimByGranularityStructured: require('../middleware/trimByGranularityStructured'),
   distances: require('../middleware/distance'),
   confidenceScores: require('../middleware/confidenceScore'),
   confidenceScoresFallback: require('../middleware/confidenceScoreFallback'),
@@ -95,11 +95,11 @@ function addRoutes(app, peliasConfig) {
       postProc.geocodeJSON(peliasConfig, base),
       postProc.sendJSON
     ]),
-    component: createRouter([
-      sanitizers.component_geocoding.middleware,
+    structured: createRouter([
+      sanitizers.structured_geocoding.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig, undefined, queries.component_geocoding),
-      postProc.trimByGranularityComponent(),
+      controllers.search(peliasConfig, undefined, queries.structured_geocoding),
+      postProc.trimByGranularityStructured(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.confidenceScoresFallback(),
@@ -183,19 +183,19 @@ function addRoutes(app, peliasConfig) {
 
 
   // static data endpoints
-  app.get ( base,                  routers.index );
-  app.get ( base + 'attribution',  routers.attribution );
-  app.get (        '/attribution', routers.attribution );
-  app.get (        '/status',      routers.status );
+  app.get ( base,                          routers.index );
+  app.get ( base + 'attribution',          routers.attribution );
+  app.get (        '/attribution',         routers.attribution );
+  app.get (        '/status',              routers.status );
 
   // backend dependent endpoints
-  app.get ( base + 'place',        routers.place );
-  app.get ( base + 'autocomplete', routers.autocomplete );
-  app.get ( base + 'search',       routers.search );
-  app.post( base + 'search',       routers.search );
-  app.get ( base + 'beta/component',    routers.component );
-  app.get ( base + 'reverse',      routers.reverse );
-  app.get ( base + 'nearby',       routers.nearby );
+  app.get ( base + 'place',                routers.place );
+  app.get ( base + 'autocomplete',         routers.autocomplete );
+  app.get ( base + 'search',               routers.search );
+  app.post( base + 'search',               routers.search );
+  app.get ( base + 'search/structured',    routers.structured );
+  app.get ( base + 'reverse',              routers.reverse );
+  app.get ( base + 'nearby',               routers.nearby );
 
 }
 
