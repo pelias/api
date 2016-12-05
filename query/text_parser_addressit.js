@@ -31,9 +31,7 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
 
   // ?
   else {
-    logger.warn( 'chaos monkey asks: what happens now?' );
-    logger.warn( parsed_text );
-    try{ throw new Error(); } catch(e){ logger.warn( e.stack ); } // print a stack trace
+    logger.warn( 'chaos monkey asks: what happens now?', parsed_text );
   }
 
   // ==== add parsed matches [address components] ====
