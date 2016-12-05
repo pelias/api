@@ -59,7 +59,7 @@
     "pelias-query": "8.11.0",
     "pelias-text-analyzer": "1.6.0",
     "stats-lite": "2.0.3",
-    "through2": "2.0.1"
+    "through2": "^2.0.3"
   },
   "devDependencies": {
     "ciao": "^0.6.0",
