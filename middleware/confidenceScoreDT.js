@@ -71,6 +71,9 @@ function compareResults(a, b) {
   if (b.confidence !== a.confidence) {
     return b.confidence - a.confidence;
   }
+  if (a.distance !== b.distance) {  // focus point defined
+    return a.distance - b.distance;
+  }
   var diff;
   if (a.parent && b.parent) {
     diff = compareProperty(a.parent.localadmin, b.parent.localadmin);
