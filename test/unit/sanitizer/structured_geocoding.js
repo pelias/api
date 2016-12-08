@@ -8,7 +8,7 @@ module.exports.tests.sanitize = function(test, common) {
 
     // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
     //  were all called correctly
-    var search = proxyquire('../../../sanitizer/search', {
+    var search = proxyquire('../../../sanitizer/structured_geocoding', {
       '../sanitizer/_deprecate_quattroshapes': function() {
         called_sanitizers.push('_deprecate_quattroshapes');
         return { errors: [], warnings: [] };
@@ -17,8 +17,8 @@ module.exports.tests.sanitize = function(test, common) {
         called_sanitizers.push('_single_scalar_parameters');
         return { errors: [], warnings: [] };
       },
-      '../sanitizer/_text': function() {
-        called_sanitizers.push('_text');
+      '../sanitizer/_synthesize_analysis': function() {
+        called_sanitizers.push('_synthesize_analysis');
         return { errors: [], warnings: [] };
       },
       '../sanitizer/_iso2_to_iso3': function() {
@@ -79,16 +79,12 @@ module.exports.tests.sanitize = function(test, common) {
         called_sanitizers.push('_categories');
         return { errors: [], warnings: [] };
       },
-      '../sanitiser/_lang': function() {
-        called_sanitizers.push('_lang');
-        return { errors: [], warnings: [] };
-      }
     });
 
     var expected_sanitizers = [
       '_single_scalar_parameters',
       '_deprecate_quattroshapes',
-      '_text',
+      '_synthesize_analysis',
       '_iso2_to_iso3',
       '_size',
       '_targets/layers',
@@ -113,7 +109,7 @@ module.exports.tests.sanitize = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /search ' + name, testFunction);
+    return tape('SANTIZE /structured ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

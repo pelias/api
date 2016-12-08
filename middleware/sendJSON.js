@@ -1,5 +1,6 @@
 var check = require('check-types'),
     es = require('elasticsearch'),
+    logger = require( 'pelias-logger' ).get( 'api' ),
     exceptions = require('elasticsearch-exceptions/lib/exceptions/SupportedExceptions');
 
 // create a list of regular expressions to match against.
@@ -42,7 +43,10 @@ function sendJSONResponse(req, res, next) {
         if( err instanceof es.errors.RequestTimeout ){ statusCode = Math.max( statusCode, 408 ); }
         else if( err instanceof es.errors.NoConnections ){ statusCode = Math.max( statusCode, 502 ); }
         else if( err instanceof es.errors.ConnectionFault ){ statusCode = Math.max( statusCode, 502 ); }
-        else { statusCode = Math.max( statusCode, 500 ); }
+        else {
+          logger.warn( 'unknown geocoding error object:', err.constructor.name, err );
+          statusCode = Math.max( statusCode, 500 );
+        }
 
       /*
         some elasticsearch errors are only returned as strings (not instances of Error).
@@ -55,7 +59,10 @@ function sendJSONResponse(req, res, next) {
             statusCode = Math.max( statusCode, 500 );
             break; // break on first match
           }
+          logger.warn( 'unknown geocoding error string:', err );
         }
+      } else {
+        logger.warn( 'unknown geocoding error type:', typeof err, err );
       }
     });
   }

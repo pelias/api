@@ -1,6 +1,6 @@
 
-#> set size
-path: '/v1/reverse?point.lat=1&point.lon=1&parameter[idx]=value'
+#> define two sources
+path: '/v1/reverse?point.lat=1&point.lon=1&sources=A&sources=B'
 
 #? 200 ok
 response.statusCode.should.be.equal 400
@@ -27,4 +27,4 @@ should.not.exist json.geocoding.warnings
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ '\'parameter\' parameter must be a scalar' ]
+json.geocoding.errors.should.eql [ '\'sources\' parameter can only have one value' ]

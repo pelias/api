@@ -10,8 +10,10 @@ function sanitize( raw, clean ){
   Object.keys(raw).forEach(function(key) {
     if (_.isArray(raw[key])) {
       messages.errors.push('\'' + key + '\' parameter can only have one value');
+      delete raw[key];
     } else if (_.isObject(raw[key])) {
       messages.errors.push('\'' + key + '\' parameter must be a scalar');
+      delete raw[key];
     }
 
   });
