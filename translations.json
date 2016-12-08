@@ -5393,7 +5393,12 @@
       "wilderness area":"ödemarksområde",
       "hiking area":"utflyktsområde",
       "national boundary mark":"riksråröse",
-      "boundary mark":"råröse"
+      "boundary mark":"råröse",
+      "tram stop": "spårvagnsstop",
+      "subway station": "tunnelbanestation",
+      "bus stop": "busshållplats",
+      "ferry pier": "färjan kaj",
+      "train stop": "järnvägsstation"
     },
     "__geographic": {
       "north": "norra",
@@ -5511,7 +5516,12 @@
       "wilderness area":"erämaa-alue",
       "hiking area":"retkeilyalue",
       "national boundary mark":"valtakunnan rajapyykki",
-      "boundary mark":"rajapyykki"
+      "boundary mark":"rajapyykki",
+      "tram stop": "raitiovaunupysäkki",
+      "subway station": "metroasema",
+      "bus stop": "bussipysäkki",
+      "ferry pier": "lauttalaituri",
+      "train stop": "junapysäkki"
     },
     "__geographic": {
       "north": "pohjoinen",
