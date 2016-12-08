@@ -26,6 +26,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     const expected_clean = {
       parsed_text: {
+        query: 'query value',
         neighbourhood: 'neighbourhood value',
         borough: 'borough value',
         city: 'locality value',
@@ -58,6 +59,7 @@ module.exports.tests.text_parser = function(test, common) {
     }
 
     const raw = {
+      query: getInvalidValue(),
       address: getInvalidValue(),
       neighbourhood: getInvalidValue(),
       borough: getInvalidValue(),
@@ -78,7 +80,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, ['at least one of the following fields is required: ' +
-      'address, neighbourhood, borough, locality, county, region, postalcode, country'], 'no errors');
+      'query, address, neighbourhood, borough, locality, county, region, postalcode, country'], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
     t.end();
 
@@ -101,7 +103,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, ['at least one of the following fields is required: ' +
-      'address, neighbourhood, borough, locality, county, region, postalcode, country'], 'no errors');
+      'query, address, neighbourhood, borough, locality, county, region, postalcode, country'], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
     t.end();
 
