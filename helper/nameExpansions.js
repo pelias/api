@@ -62,6 +62,9 @@ function expandByAdmin(docs) {
     var name = doc.expandedName || doc.name;
     for (var i=0; i<adminExpansions.length; i++) {
       var exp = doc[adminExpansions[i]];
+      if (_.isArray(exp)) {
+        exp = exp[0];
+      }
       if (exp && doc.label.search(exp)===-1) {
         name = doc.name + ', ' + exp;
         break;

@@ -33,12 +33,9 @@ json.geocoding.query['text'].should.eql '30 w 26th st, ny'
 json.geocoding.query['size'].should.eql 10
 
 #? address parsing
-json.geocoding.query.parsed_text['name'].should.eql '30 w 26th st'
 json.geocoding.query.parsed_text['number'].should.eql '30'
 json.geocoding.query.parsed_text['street'].should.eql 'w 26th st'
 json.geocoding.query.parsed_text['state'].should.eql 'NY'
-json.geocoding.query.parsed_text['regions'].should.eql []
-json.geocoding.query.parsed_text['admin_parts'].should.eql "ny"
 
 json.features[0].properties.confidence.should.eql 1
 json.features[0].properties.match_type.should.eql "exact"

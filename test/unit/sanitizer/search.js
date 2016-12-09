@@ -21,6 +21,10 @@ module.exports.tests.sanitize = function(test, common) {
         called_sanitizers.push('_text');
         return { errors: [], warnings: [] };
       },
+      '../sanitizer/_iso2_to_iso3': function() {
+        called_sanitizers.push('_iso2_to_iso3');
+        return { errors: [], warnings: [] };
+      },
       '../sanitizer/_size': function() {
         if (arguments.length === 0) {
           return function() {
@@ -82,9 +86,10 @@ module.exports.tests.sanitize = function(test, common) {
     });
 
     var expected_sanitizers = [
-      '_deprecate_quattroshapes',
       '_single_scalar_parameters',
+      '_deprecate_quattroshapes',
       '_text',
+      '_iso2_to_iso3',
       '_size',
       '_targets/layers',
       '_targets/sources',

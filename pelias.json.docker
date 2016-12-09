@@ -1,8 +1,8 @@
 {
   "esclient": {
-    "apiVersion": "2.x",
+    "apiVersion": "2.3",
     "keepAlive": true,
-    "requestTimeout": "120000",
+    "requestTimeout": "5000",
     "hosts": [
       {
         "env": "production",
@@ -26,8 +26,8 @@
     "version": "1.0",
     "textAnalyzer": "libpostal",
     "sizePadding": 6,
-    "minConfidence": 0.2,
-    "relativeMinConfidence": 0.55,
+    "minConfidence": 0.1,
+    "relativeMinConfidence": 0.3,
     "query": {
       "search": {
         "disableFallback": true,

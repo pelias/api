@@ -10,7 +10,7 @@
  */
 
 var check = require('check-types');
-var logger = require('pelias-logger').get('api-confidence');
+var logger = require('pelias-logger').get('api');
 
 function setup() {
   return computeScores;
@@ -72,13 +72,13 @@ function checkFallbackLevel(req, hit) {
         return 0.8;
       case 'street':
         return 0.8;
+      case 'localadmin':
       case 'locality':
       case 'borough':
       case 'neighbourhood':
         return 0.6;
       case 'macrocounty':
       case 'county':
-      case 'localadmin':
         return 0.4;
       case 'region':
         return 0.3;
@@ -89,6 +89,7 @@ function checkFallbackLevel(req, hit) {
       default:
         return 0.1;
     }
+
   }
 
   hit.match_type = 'exact';
@@ -96,11 +97,9 @@ function checkFallbackLevel(req, hit) {
 }
 
 function checkFallbackOccurred(req, hit) {
-  // at this time we only do this for address queries, so keep this simple
-  // TODO: add other layer checks once we start handling disambiguation
-
   return (requestedAddress(req) && hit.layer !== 'address') ||
-         (requestedStreet(req) && hit.layer !== 'street');
+         (requestedStreet(req) && hit.layer !== 'street') ||
+         (requestedCity(req) && hit.layer !== 'locality' && hit.layer !== 'localadmin');
 }
 
 function requestedAddress(req) {
@@ -113,6 +112,10 @@ function requestedStreet(req) {
   // only street name was specified
   return !req.clean.parsed_text.hasOwnProperty('number') &&
           req.clean.parsed_text.hasOwnProperty('street');
+}
+
+function requestedCity(req) {
+  return req.clean.parsed_text.hasOwnProperty('city');
 }
 
 module.exports = setup;

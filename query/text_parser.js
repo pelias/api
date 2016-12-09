@@ -14,6 +14,10 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
     vs.var('input:category', parsed_text.category);
   }
 
+  if (parsed_text.hasOwnProperty('address')) {
+    vs.var( 'input:address', parsed_text.address );
+  }
+
   // house number
   if( parsed_text.hasOwnProperty('number') ){
     vs.var( 'input:housenumber', parsed_text.number );
