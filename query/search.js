@@ -1,7 +1,10 @@
-var peliasQuery = require('pelias-query'),
-    defaults = require('./search_defaults'),
-    textParser = require('./text_parser'),
-    check = require('check-types');
+'use strict';
+
+const peliasQuery = require('pelias-query');
+const defaults = require('./search_defaults');
+const textParser = require('./text_parser');
+const check = require('check-types');
+const logger = require('pelias-logger').get('api');
 
 //------------------------------
 // general-purpose search query
@@ -41,25 +44,35 @@ geodisambiguationQuery.filter( peliasQuery.view.categories );
 **/
 function generateQuery( clean ){
 
-  var vs = new peliasQuery.Vars( defaults );
+  const vs = new peliasQuery.Vars( defaults );
+
+  let logStr = '[query:search] [parser:libpostal] ';
 
   // input text
   vs.var( 'input:name', clean.text );
 
   // sources
-  vs.var( 'sources', clean.sources);
+  if( check.array(clean.sources) && clean.sources.length ) {
+    vs.var( 'sources', clean.sources);
+    logStr += '[param:sources] ';
+  }
 
   // layers
-  vs.var( 'layers', clean.layers);
+  if( check.array(clean.layers) && clean.layers.length ) {
+    vs.var('layers', clean.layers);
+    logStr += '[param:layers] ';
+  }
 
   // categories
   if (clean.categories) {
     vs.var('input:categories', clean.categories);
+    logStr += '[param:categories] ';
   }
 
   // size
   if( clean.querySize ) {
     vs.var( 'size', clean.querySize );
+    logStr += '[param:querySize] ';
   }
 
   // focus point
@@ -69,6 +82,7 @@ function generateQuery( clean ){
       'focus:point:lat': clean['focus.point.lat'],
       'focus:point:lon': clean['focus.point.lon']
     });
+    logStr += '[param:focus_point] ';
   }
 
   // boundary rect
@@ -82,6 +96,7 @@ function generateQuery( clean ){
       'boundary:rect:bottom': clean['boundary.rect.min_lat'],
       'boundary:rect:left': clean['boundary.rect.min_lon']
     });
+    logStr += '[param:boundary_rect] ';
   }
 
   // boundary circle
@@ -98,6 +113,7 @@ function generateQuery( clean ){
         'boundary:circle:radius': Math.round( clean['boundary.circle.radius'] ) + 'km'
       });
     }
+    logStr += '[param:boundary_circle] ';
   }
 
   // boundary country
@@ -105,6 +121,7 @@ function generateQuery( clean ){
     vs.set({
       'boundary:country': clean['boundary.country']
     });
+    logStr += '[param:boundary_country] ';
   }
 
   // run the address parser
@@ -115,6 +132,13 @@ function generateQuery( clean ){
   var q = getQuery(vs);
 
   //console.log(JSON.stringify(q, null, 2));
+
+  if (q !== undefined) {
+    logger.info(logStr);
+  }
+  else {
+    logger.info('[parser:libpostal] query type not supported');
+  }
 
   return q;
 }
