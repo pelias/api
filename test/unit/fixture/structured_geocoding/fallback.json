@@ -15,7 +15,8 @@
                           "query": "query value",
                           "type": "phrase",
                           "fields": [
-                            "phrase.default"
+                            "phrase.default",
+                            "category"
                           ]
                         }
                       },
