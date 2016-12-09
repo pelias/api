@@ -5394,10 +5394,10 @@
       "hiking area":"utflyktsområde",
       "national boundary mark":"riksråröse",
       "boundary mark":"råröse",
-      "tram stop": "spårvagnsstop",
+      "tram stop": "spårvagnshållplats",
       "subway station": "tunnelbanestation",
       "bus stop": "busshållplats",
-      "ferry pier": "färjan kaj",
+      "ferry pier": "färjekaj",
       "train stop": "järnvägsstation"
     },
     "__geographic": {
