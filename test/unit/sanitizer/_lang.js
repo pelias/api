@@ -1,4 +1,4 @@
-var sanitize = require('../../../sanitiser/_lang');
+var sanitize = require('../../../sanitizer/_lang');
 
 module.exports.tests = {};
 

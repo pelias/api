@@ -3,7 +3,7 @@ var sanitizeAll = require('../sanitizer/sanitizeAll'),
     sanitizers = {
       singleScalarParameters: require('../sanitizer/_single_scalar_parameters'),
       ids: require('../sanitizer/_ids'),
-      lang: require('../sanitiser/_lang'),
+      lang: require('../sanitizer/_lang'),
       private: require('../sanitizer/_flag_bool')('private', false)
     };
 
