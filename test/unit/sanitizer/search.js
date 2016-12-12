@@ -25,6 +25,10 @@ module.exports.tests.sanitize = function(test, common) {
         called_sanitizers.push('_iso2_to_iso3');
         return { errors: [], warnings: [] };
       },
+      '../sanitizer/_mount_saint_fort_standardizer': function() {
+        called_sanitizers.push('_mount_saint_fort_standardizer');
+        return { errors: [], warnings: [] };
+      },
       '../sanitizer/_size': function() {
         if (arguments.length === 0) {
           return function() {
@@ -86,6 +90,7 @@ module.exports.tests.sanitize = function(test, common) {
       '_deprecate_quattroshapes',
       '_text',
       '_iso2_to_iso3',
+      '_mount_saint_fort_standardizer',
       '_size',
       '_targets/layers',
       '_targets/sources',
