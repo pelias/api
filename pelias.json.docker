@@ -63,6 +63,7 @@
       },
       "filteredRegions": ["suomi", "finland"],
       "cleanRegions": true,
+      "postalCodeValidator": "^[0-9]{5}$",
       "translations": "/opt/pelias/api/translations.json",
       "labelSchemas": {
         "FIN": {
