@@ -76,7 +76,7 @@ function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
     if(check.assigned(fromLibpostal.neighbourhood)) {
       var nbrh = restoreParsed(fromLibpostal.neighbourhood, text);
 
-      if(nbrh) {
+      if(nbrh && parsedText.name !== nbrh) { // don't add same string to both name and admin parts
         parsedText.regions = parsedText.regions || [];
         if(parsedText.regions.indexOf(nbrh)===-1) {
           parsedText.regions.push(nbrh);
