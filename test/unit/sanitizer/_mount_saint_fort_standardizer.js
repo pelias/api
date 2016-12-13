@@ -56,7 +56,7 @@ module.exports.tests.text_parser = function(test, common) {
         query: 'saint query value',
         neighbourhood: 'saint neighbourhood value',
         borough: 'saint borough value',
-        city: 'saint city saint value saint',
+        city: 'SainT city sAiNt value saInt',
         county: 'saint county value',
         state: 'saint state value',
         postalcode: 'saint postalcode value',
@@ -94,7 +94,7 @@ module.exports.tests.text_parser = function(test, common) {
         query: 'sainte query value',
         neighbourhood: 'sainte neighbourhood value',
         borough: 'sainte borough value',
-        city: 'sainte city sainte value sainte',
+        city: 'SaintE city sAinTe value saINte',
         county: 'sainte county value',
         state: 'sainte state value',
         postalcode: 'sainte postalcode value',
@@ -132,7 +132,7 @@ module.exports.tests.text_parser = function(test, common) {
         query: 'ft query value',
         neighbourhood: 'ft neighbourhood value',
         borough: 'ft borough value',
-        city: 'ft city ft value ft',
+        city: 'Ft city ft value fT',
         county: 'ft county value',
         state: 'ft state value',
         postalcode: 'ft postalcode value',
@@ -170,7 +170,7 @@ module.exports.tests.text_parser = function(test, common) {
         query: 'mt query value',
         neighbourhood: 'mt neighbourhood value',
         borough: 'mt borough value',
-        city: 'mt city mt value mt',
+        city: 'Mt city mt value mT',
         county: 'mt county value',
         state: 'mt state value',
         postalcode: 'mt postalcode value',
@@ -205,13 +205,61 @@ module.exports.tests.text_parser = function(test, common) {
 
     const clean = {
       parsed_text: {
-        city: 'mt. ft. saint sainte'
+        city: 'mt. ft saint sainte mt ft.'
       }
     };
 
     const expected_clean = {
       parsed_text: {
-        city: 'mount fort st ste'
+        city: 'mount fort st ste mount fort'
+      }
+    };
+
+    const messages = sanitizer(raw, clean);
+
+    t.deepEquals(clean, expected_clean);
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+    t.end();
+
+  });
+
+  test('period word boundary on \'mt.\' should replace with a space', function(t) {
+    const raw = {};
+
+    const clean = {
+      parsed_text: {
+        city: 'mt.city'
+      }
+    };
+
+    const expected_clean = {
+      parsed_text: {
+        city: 'mount city'
+      }
+    };
+
+    const messages = sanitizer(raw, clean);
+
+    t.deepEquals(clean, expected_clean);
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+    t.end();
+
+  });
+
+  test('period word boundary on \'ft.\' should replace with a space', function(t) {
+    const raw = {};
+
+    const clean = {
+      parsed_text: {
+        city: 'ft.city'
+      }
+    };
+
+    const expected_clean = {
+      parsed_text: {
+        city: 'fort city'
       }
     };
 
