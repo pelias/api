@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const sanitizer = require('../../../sanitizer/_mount_saint_fort_standardizer');
+const sanitizer = require('../../../sanitizer/_city_name_standardizer');
 
 module.exports.tests = {};
 
@@ -276,7 +276,7 @@ module.exports.tests.text_parser = function(test, common) {
 
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape('sanitizer _mount_saint_fort_standardizer: ' + name, testFunction);
+    return tape('sanitizer _city_name_standardizer: ' + name, testFunction);
   }
 
   for( const testCase in module.exports.tests ){

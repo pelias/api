@@ -25,8 +25,8 @@ module.exports.tests.sanitize = function(test, common) {
         called_sanitizers.push('_iso2_to_iso3');
         return { errors: [], warnings: [] };
       },
-      '../sanitizer/_mount_saint_fort_standardizer': function() {
-        called_sanitizers.push('_mount_saint_fort_standardizer');
+      '../sanitizer/_city_name_standardizer': function() {
+        called_sanitizers.push('_city_name_standardizer');
         return { errors: [], warnings: [] };
       },
       '../sanitizer/_size': function() {
@@ -90,7 +90,7 @@ module.exports.tests.sanitize = function(test, common) {
       '_deprecate_quattroshapes',
       '_synthesize_analysis',
       '_iso2_to_iso3',
-      '_mount_saint_fort_standardizer',
+      '_city_name_standardizer',
       '_size',
       '_targets/layers',
       '_targets/sources',
