@@ -33,8 +33,7 @@ function sanitize(raw, clean) {
     // 2.  transliterate 'saint'->'st', etc
     const transliterated = periods_removed.replace(mountSaintFort, transliterate);
 
-    // 3.  whitespace-normalize by replacing much whitespace with a space and trimming
-    //     duplicate whitespace can be introduced when removing periods
+    // 3.  reduce whitespace sequences that can occur when removing periods down to a single space
     const whitespace_normalized = _.trimEnd(transliterated.replace(/\s+/, ' '));
 
     clean.parsed_text.city = whitespace_normalized;
