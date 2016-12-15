@@ -2,7 +2,7 @@
   "esclient": {
     "apiVersion": "2.3",
     "keepAlive": true,
-    "requestTimeout": "5000",
+    "requestTimeout": "20000",
     "hosts": [
       {
         "env": "production",
@@ -26,8 +26,8 @@
     "version": "1.0",
     "textAnalyzer": "libpostal",
     "sizePadding": 6,
-    "minConfidence": 0.1,
-    "relativeMinConfidence": 0.3,
+    "minConfidence": 0.2,
+    "relativeMinConfidence": 0.4,
     "query": {
       "search": {
         "disableFallback": true,
@@ -63,6 +63,7 @@
       },
       "filteredRegions": ["suomi", "finland"],
       "cleanRegions": true,
+      "postalCodeValidator": "^[0-9]{5}$",
       "translations": "/opt/pelias/api/translations.json",
       "labelSchemas": {
         "FIN": {

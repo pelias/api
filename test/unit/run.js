@@ -55,7 +55,7 @@ var tests = [
   require('./sanitizer/_layers'),
   require('./sanitizer/_single_scalar_parameters'),
   require('./sanitizer/_size'),
-  require('./sanitiser/_lang'),
+  require('./sanitizer/_lang'),
   require('./sanitizer/_sources'),
   require('./sanitizer/_sources_and_layers'),
   require('./sanitizer/_synthesize_analysis'),

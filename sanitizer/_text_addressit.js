@@ -13,10 +13,17 @@ var api = require('pelias-config').generate().api;
 // scores because WOF defines only international country names (Finland)
 var filteredRegions;
 var cleanRegions;
+var postalCodeValidator = function(code) { return true; }; // default = accept everything
 
 if (api && api.localization) {
   filteredRegions = api.localization.filteredRegions;
   cleanRegions = api.localization.cleanRegions;
+  if(api.localization.postalCodeValidator) {
+    var regexp = new RegExp(api.localization.postalCodeValidator);
+    postalCodeValidator = function(code) {
+      return regexp.test(code);
+    };
+  }
 }
 
 
@@ -69,7 +76,7 @@ function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
     if(check.assigned(fromLibpostal.neighbourhood)) {
       var nbrh = restoreParsed(fromLibpostal.neighbourhood, text);
 
-      if(nbrh) {
+      if(nbrh && parsedText.name !== nbrh) { // don't add same string to both name and admin parts
         parsedText.regions = parsedText.regions || [];
         if(parsedText.regions.indexOf(nbrh)===-1) {
           parsedText.regions.push(nbrh);
@@ -78,13 +85,13 @@ function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
       }
     }
   }
-  // assume that numbers are always parsed correctly
-
+  // assume that sreet numbers are always parsed correctly
   if(check.assigned(fromLibpostal.number)) {
     parsedText.number = fromLibpostal.number;
   }
 
-  if(check.assigned(fromLibpostal.postalcode)) {
+  // validate postalcode
+  if(check.assigned(fromLibpostal.postalcode) && postalCodeValidator(fromLibpostal.postalcode)) {
     parsedText.postalcode = fromLibpostal.postalcode;
   }
 
