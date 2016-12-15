@@ -19,8 +19,8 @@ if (api && api.localization) {
   filteredRegions = api.localization.filteredRegions;
   cleanRegions = api.localization.cleanRegions;
   if(api.localization.postalCodeValidator) {
+    var regexp = new RegExp(api.localization.postalCodeValidator);
     postalCodeValidator = function(code) {
-      var regexp = new RegExp(api.localization.postalCodeValidator);
       return regexp.test(code);
     };
   }
