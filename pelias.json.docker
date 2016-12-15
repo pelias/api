@@ -2,7 +2,7 @@
   "esclient": {
     "apiVersion": "2.3",
     "keepAlive": true,
-    "requestTimeout": "5000",
+    "requestTimeout": "20000",
     "hosts": [
       {
         "env": "production",
