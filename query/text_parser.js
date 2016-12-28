@@ -1,67 +1,68 @@
 var logger = require('pelias-logger').get('api');
+var _ = require('lodash');
 
 // all the address parsing logic
 function addParsedVariablesToQueryVariables( parsed_text, vs ){
   // ==== add parsed matches [address components] ====
 
   // query - Mexitaly, Sunoco, Lowes
-  if (parsed_text.hasOwnProperty('query')) {
+  if ( ! _.isEmpty(parsed_text.query) ) {
     vs.var('input:query', parsed_text.query);
   }
 
   // categories - restaurants, hotels, bars
-  if (parsed_text.hasOwnProperty('category')) {
+  if ( ! _.isEmpty(parsed_text.category) ) {
     vs.var('input:category', parsed_text.category);
   }
 
-  if (parsed_text.hasOwnProperty('address')) {
+  if ( ! _.isEmpty(parsed_text.address) ) {
     vs.var( 'input:address', parsed_text.address );
   }
 
   // house number
-  if( parsed_text.hasOwnProperty('number') ){
+  if( ! _.isEmpty(parsed_text.number) ){
     vs.var( 'input:housenumber', parsed_text.number );
   }
 
   // street name
-  if( parsed_text.hasOwnProperty('street') ){
+  if( ! _.isEmpty(parsed_text.street) ){
     vs.var( 'input:street', parsed_text.street );
   }
 
   // neighbourhood
-  if (parsed_text.hasOwnProperty('neighbourhood')) {
+  if ( ! _.isEmpty(parsed_text.neighbourhood) ) {
     vs.var( 'input:neighbourhood', parsed_text.neighbourhood);
   }
 
   // borough
-  if (parsed_text.hasOwnProperty('borough')) {
+  if ( ! _.isEmpty(parsed_text.borough) ) {
     vs.var( 'input:borough', parsed_text.borough);
   }
 
   // postal code
-  if( parsed_text.hasOwnProperty('postalcode') ){
+  if( ! _.isEmpty(parsed_text.postalcode) ){
     vs.var( 'input:postcode', parsed_text.postalcode );
   }
 
   // ==== add parsed matches [admin components] ====
 
   // city
-  if( parsed_text.hasOwnProperty('city') ){
+  if( ! _.isEmpty(parsed_text.city) ){
     vs.var( 'input:locality', parsed_text.city );
   }
 
   // county
-  if( parsed_text.hasOwnProperty('county') ){
+  if( ! _.isEmpty(parsed_text.county) ){
     vs.var( 'input:county', parsed_text.county );
   }
 
   // state
-  if( parsed_text.hasOwnProperty('state') ){
+  if( ! _.isEmpty(parsed_text.state) ){
     vs.var( 'input:region', parsed_text.state );
   }
 
   // country
-  if( parsed_text.hasOwnProperty('country') ){
+  if( ! _.isEmpty(parsed_text.country) ){
     vs.var( 'input:country', parsed_text.country );
   }
 

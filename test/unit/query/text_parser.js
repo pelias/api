@@ -157,6 +157,48 @@ module.exports.tests.housenumber_special_cases = function(test, common) {
 
 };
 
+module.exports.tests.empty_values = function(test, common) {
+  test('empty string values not set', function (t) {
+    var parsed_text = {
+      query: '',
+      category: '',
+      number: '',
+      street: '',
+      address: '',
+      neighbourhood: '',
+      borough: '',
+      postalcode: '',
+      city: '',
+      county: '',
+      state: '',
+      country: ''
+    };
+    var vs = new VariableStore();
+
+    function testIt() {
+      text_parser(parsed_text, vs);
+    }
+
+    t.doesNotThrow(testIt, 'exception should not be thrown');
+
+    t.false(vs.isset('input:query'));
+    t.false(vs.isset('input:category'));
+    t.false(vs.isset('input:housenumber'));
+    t.false(vs.isset('input:street'));
+    t.false(vs.isset('input:address'));
+    t.false(vs.isset('input:neighbourhood'));
+    t.false(vs.isset('input:borough'));
+    t.false(vs.isset('input:postcode'));
+    t.false(vs.isset('input:locality'));
+    t.false(vs.isset('input:county'));
+    t.false(vs.isset('input:region'));
+    t.false(vs.isset('input:country'));
+    t.end();
+
+  });
+
+};
+
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
     return tape('text_parser ' + name, testFunction);
