@@ -48,6 +48,7 @@ var tests = [
   require('./sanitizer/_ids'),
   require('./sanitizer/_iso2_to_iso3'),
   require('./sanitizer/_layers'),
+  require('./sanitizer/_city_name_standardizer'),
   require('./sanitizer/_single_scalar_parameters'),
   require('./sanitizer/_size'),
   require('./sanitizer/_sources'),
