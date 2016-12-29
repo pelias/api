@@ -106,7 +106,7 @@ function matchLanguage(req, res, next) {
   // change lang if best hit is good enough
   if (bestLang && bestScore > languageMatchThreshold) {
     if (languageMap[bestLang]) {
-      req.clean.matchLang = bestLang;
+      req.clean.matched = bestLang;
       bestLang = languageMap[bestLang]; // map fake languages such as 'local' to real language
     }
     req.clean.lang = bestLang;
