@@ -1,3 +1,4 @@
+
 /**
  *  Modify language preference by actual search results.
  *
@@ -17,6 +18,7 @@
 var fuzzy = require('../helper/fuzzyMatch');
 var logger = require('pelias-logger').get('api');
 var languages = ['default'];
+var languageMap = {};
 var languageMatchThreshold = 0.7;
 
 function setup(peliasConfig) {
@@ -24,6 +26,7 @@ function setup(peliasConfig) {
 
   if(peliasConfig) {
     languages = peliasConfig.languages || languages;
+    languageMap = peliasConfig.languageMap || languageMap;
     languageMatchThreshold = peliasConfig.languageMatchThreshold || languageMatchThreshold;
   }
   return matchLanguage;
@@ -102,11 +105,11 @@ function matchLanguage(req, res, next) {
   }
   // change lang if best hit is good enough
   if (bestLang && bestScore > languageMatchThreshold) {
-    if(bestLang!=='default') { // 'default' is not a language which can be used for translations
-
-      // logger.debug('Best match by lang ' + bestLang );
-      req.clean.lang = bestLang;
+    if (languageMap[bestLang]) {
+      req.clean.matchLang = bestLang;
+      bestLang = languageMap[bestLang]; // map fake languages such as 'local' to real language
     }
+    req.clean.lang = bestLang;
   }
   next();
 }
