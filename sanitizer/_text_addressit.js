@@ -14,6 +14,7 @@ var api = require('pelias-config').generate().api;
 var filteredRegions;
 var cleanRegions;
 var postalCodeValidator = function(code) { return true; }; // default = accept everything
+var streetNumberValidator = function(code) { return true; };
 
 if (api && api.localization) {
   filteredRegions = api.localization.filteredRegions;
@@ -21,6 +22,12 @@ if (api && api.localization) {
   if(api.localization.postalCodeValidator) {
     var regexp = new RegExp(api.localization.postalCodeValidator);
     postalCodeValidator = function(code) {
+      return regexp.test(code);
+    };
+  }
+  if(api.localization.streetNumberValidator) {
+    var regexp = new RegExp(api.localization.streetNumberValidator);
+    streetNumberValidator = function(code) {
       return regexp.test(code);
     };
   }
@@ -85,8 +92,8 @@ function assignValidLibpostalParsing(parsedText, fromLibpostal, text) {
       }
     }
   }
-  // assume that sreet numbers are always parsed correctly
-  if(check.assigned(fromLibpostal.number)) {
+  // validate street number
+  if(check.assigned(fromLibpostal.number) && streetNumberValidator(fromLibpostal.number)) {
     parsedText.number = fromLibpostal.number;
   }
 
