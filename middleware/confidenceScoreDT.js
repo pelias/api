@@ -168,11 +168,11 @@ function computeConfidenceScore(req, hit) {
 
     if(parsedText && parsedText.regions) {
       adminConfidence = checkAdmin(parsedText.regions, hit);
-      logger.debug('admin confidence', adminConfidence);
 
       // Keep admin scoring proportion constant 50% regardless of the
       // count of finer score factors. Score is max 0.5 if city is all wrong
-      hit.confidence = (hit.confidence + weightSum*adminConfidence)/(2*weightSum);
+      hit.confidence += weightSum*adminConfidence;
+      weightSum *= 2;
     } else if(hit.confidence<1 && countWords(req.clean.text)>1) {
 
       // Text could not be parsed, and does not match any document perfectly.
@@ -180,10 +180,14 @@ function computeConfidenceScore(req, hit) {
       // comma separation (libpostal misses those), or name is formatted loosely
       // 'tampereen keskustori'. So check raw text against admin areas
       adminConfidence = checkAdmin(req.clean.text, hit);
-      logger.debug('admin confidence', adminConfidence);
       hit.confidence += (1 - hit.confidence)*adminConfidence; // leftover from name match
     }
+    if(adminConfidence) {
+      logger.debug('admin confidence', adminConfidence);
+    }
   }
+
+  hit.confidence /= weightSum; // normalize
 
   // TODO: look at categories
   logger.debug('### confidence', hit.confidence);
