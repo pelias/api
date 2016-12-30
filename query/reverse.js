@@ -1,9 +1,13 @@
-var peliasQuery = require('pelias-query'),
-    defaults = require('./reverse_defaults'),
-    check = require('check-types'),
-    _ = require('lodash');
+'use strict';
 
-var api = require('pelias-config').generate().api;
+const peliasQuery = require('pelias-query');
+const check = require('check-types');
+const logger = require('pelias-logger').get('api');
+const _ = require('lodash');
+
+var defaults = require('./reverse_defaults');
+
+const api = require('pelias-config').generate().api;
 if (api && api.query && api.query.reverse && api.query.reverse.defaults) {
   // merge external defaults if available
   defaults = _.merge({}, defaults, api.query.reverse.defaults);
@@ -30,18 +34,27 @@ query.filter( peliasQuery.view.categories );
 
 function generateQuery( clean ){
 
-  var vs = new peliasQuery.Vars( defaults );
+  const vs = new peliasQuery.Vars( defaults );
+
+  let logStr = '[query:reverse] ';
 
   // set size
   if( clean.querySize ){
     vs.var( 'size', clean.querySize);
+    logStr += '[param:querySize] ';
   }
 
   // sources
-  vs.var( 'sources', clean.sources);
+  if( check.array(clean.sources) && clean.sources.length ) {
+    vs.var('sources', clean.sources);
+    logStr += '[param:sources] ';
+  }
 
   // layers
-  vs.var( 'layers', clean.layers);
+  if( check.array(clean.layers) && clean.layers.length ) {
+    vs.var( 'layers', clean.layers);
+    logStr += '[param:layers] ';
+  }
 
   // focus point to score by distance
   if( check.number(clean['point.lat']) &&
@@ -50,6 +63,7 @@ function generateQuery( clean ){
       'focus:point:lat': clean['point.lat'],
       'focus:point:lon': clean['point.lon']
     });
+    logStr += '[param:focus_point] ';
   }
 
   // bounding circle
@@ -64,6 +78,7 @@ function generateQuery( clean ){
       'boundary:circle:lon': clean['boundary.circle.lon'],
       'boundary:circle:radius': clean['boundary.circle.radius'] + 'km'
     });
+    logStr += '[param:boundary_circle] ';
   }
 
   // boundary country
@@ -71,12 +86,16 @@ function generateQuery( clean ){
     vs.set({
       'boundary:country': clean['boundary.country']
     });
+    logStr += '[param:boundary_country] ';
   }
 
   // categories
   if (clean.categories) {
     vs.var('input:categories', clean.categories);
+    logStr += '[param:categories] ';
   }
+
+  logger.info(logStr);
 
   return {
     type: 'reverse',
