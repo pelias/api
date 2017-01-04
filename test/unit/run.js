@@ -9,6 +9,7 @@ var common = {
 };
 
 var tests = [
+  require('./app'),
   require('./controller/index'),
   require('./controller/place'),
   require('./controller/search'),
@@ -61,6 +62,7 @@ var tests = [
   require('./sanitizer/_categories'),
   require('./sanitizer/nearby'),
   require('./src/backend'),
+  require('./src/configValidation'),
   require('./sanitizer/autocomplete'),
   require('./sanitizer/structured_geocoding'),
   require('./sanitizer/place'),
