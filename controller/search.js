@@ -64,6 +64,9 @@ function setup( config, backend, query ){
         res.meta = meta || {};
         // store the query_type for subsequent middleware
         res.meta.query_type = renderedQuery.type;
+
+        logger.info(`[controller:search] [queryType:${renderedQuery.type}] [es_result_count:` +
+          (res.data && res.data.length ? res.data.length : 0));
       }
       logger.debug('[ES response]', docs);
       next();

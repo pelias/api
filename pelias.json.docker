@@ -47,7 +47,34 @@
         }
       }
     },
-    "languages": ["fi", "default", "sv", "en", "se"],
+    "languages": [
+      "fi",
+      "default",
+      "sv",
+      "en",
+      "se",
+      "local",
+      "alternative",
+      "international",
+      "national",
+      "official",
+      "old",
+      "regional",
+      "short",
+      "sorting"
+    ],
+    "languageMap": {
+      "default":"fi",
+      "local":"fi",
+      "alternative":"fi",
+      "international":"fi",
+      "national":"fi",
+      "official":"fi",
+      "old":"fi",
+      "regional":"fi",
+      "short":"fi",
+      "sorting":"fi"
+    },
     "localization" : {
         "confidenceAdminWeights": {
         "localadmin": 1,
@@ -64,7 +91,12 @@
       "filteredRegions": ["suomi", "finland"],
       "cleanRegions": true,
       "postalCodeValidator": "^[0-9]{5}$",
+      "streetNumberValidator": "^[0-9]+\\s*[A-Za-z]{0,1}$",
       "translations": "/opt/pelias/api/translations.json",
+      "equalCharMap": {
+        "é":"e",
+        "'":""
+      },
       "labelSchemas": {
         "FIN": {
           "local": { "fields": ["localadmin", "locality"], "matchType": "best" }

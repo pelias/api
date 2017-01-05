@@ -1,5 +1,6 @@
 var _ = require('lodash'),
     schemas = require('./labelSchema');
+var logger = require('pelias-logger').get('api:labelgenerator');
 
 module.exports = function( record, req ){
   var schema = getSchema(record.country_a);
@@ -57,8 +58,11 @@ function getInitialLabel(record) {
     return [record.expandedName];
   }
 
-  return [record.name];
+  if (record.altName && record.altName !== record.name && record.name.indexOf(record.altName)===-1) {
+    return [record.name +' ('+ record.altName +')'];
+  }
 
+  return [record.name];
 }
 
 // this can go away once geonames is no longer supported

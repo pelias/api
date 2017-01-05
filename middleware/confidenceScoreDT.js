@@ -9,7 +9,7 @@ var check = require('check-types');
 var _ = require('lodash');
 var fuzzy = require('../helper/fuzzyMatch');
 var languages = ['default'];
-
+var equalCharMap = {}, equalRegex = {};
 var adminWeights;
 var minConfidence=0, relativeMinConfidence;
 
@@ -39,9 +39,24 @@ function setup(peliasConfig) {
       if(localization.confidenceAddressParts) {
         confidenceAddressParts = localization.confidenceAddressParts;
       }
+      if(localization.equalCharMap) {
+        equalCharMap = localization.equalCharMap;
+        for(var c in equalCharMap) {
+          equalRegex[c] = new RegExp(c, 'gi');
+        }
+      }
     }
   }
   return computeScores;
+}
+
+
+// map chars which are considered equal in scoring
+function normalize(s) {
+  for(var c in equalCharMap) {
+    s = s.replace(equalRegex[c], equalCharMap[c]);
+  }
+  return s;
 }
 
 
@@ -168,11 +183,11 @@ function computeConfidenceScore(req, hit) {
 
     if(parsedText && parsedText.regions) {
       adminConfidence = checkAdmin(parsedText.regions, hit);
-      logger.debug('admin confidence', adminConfidence);
 
       // Keep admin scoring proportion constant 50% regardless of the
       // count of finer score factors. Score is max 0.5 if city is all wrong
-      hit.confidence = (hit.confidence + weightSum*adminConfidence)/(2*weightSum);
+      hit.confidence += weightSum*adminConfidence;
+      weightSum *= 2;
     } else if(hit.confidence<1 && countWords(req.clean.text)>1) {
 
       // Text could not be parsed, and does not match any document perfectly.
@@ -180,10 +195,14 @@ function computeConfidenceScore(req, hit) {
       // comma separation (libpostal misses those), or name is formatted loosely
       // 'tampereen keskustori'. So check raw text against admin areas
       adminConfidence = checkAdmin(req.clean.text, hit);
-      logger.debug('admin confidence', adminConfidence);
       hit.confidence += (1 - hit.confidence)*adminConfidence; // leftover from name match
     }
+    if(adminConfidence) {
+      logger.debug('admin confidence', adminConfidence);
+    }
   }
+
+  hit.confidence /= weightSum; // normalize
 
   // TODO: look at categories
   logger.debug('### confidence', hit.confidence);
@@ -204,17 +223,18 @@ function checkLanguageProperty(text, propertyObject, stripNumbers) {
   var bestScore = 0;
   var bestName;
 
+  text = normalize(text);
+
   for (var lang in propertyObject) {
     if (languages.indexOf(lang) === -1) {
       continue;
     }
     var score;
-
+    var text2 = normalize(propertyObject[lang]);
     if(stripNumbers) {
-      score = fuzzy.match(text, propertyObject[lang].replace(/[0-9]/g, '').trim());
-    } else {
-      score = fuzzy.match(text, propertyObject[lang]);
+      text2 = text2.replace(/[0-9]/g, '').trim();
     }
+    score = fuzzy.match(text, text2);
 
     if (score >= bestScore ) {
       bestScore = score;
@@ -276,7 +296,7 @@ function propMatch(textProp, hitProp, numeric) {
     }
   }
 
-  return fuzzy.match(textProp.toString(), hitProp.toString());
+  return fuzzy.match(normalize(textProp.toString()), normalize(hitProp.toString()));
 }
 
 // array wrapper for function above
@@ -353,9 +373,13 @@ function checkAdmin(values, hit) {
       if (prop) {
         var match;
         if ( Array.isArray(prop) ) {
-          match = fuzzy.matchArray(value, prop);
+          var nProp = [];
+          for(var i in prop) {
+            nProp.push(normalize(prop[i]));
+          }
+          match = fuzzy.matchArray(normalize(value), nProp);
         } else {
-          match = fuzzy.match(value, prop);
+          match = fuzzy.match(normalize(value), normalize(prop));
         }
         if(match>best) {
           best = match;
