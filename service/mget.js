@@ -23,7 +23,7 @@ function service( backend, query, cb ){
   };
 
   // query new backend
-  backend().client.mget( cmd, function( err, data ){
+  backend.client.mget( cmd, function( err, data ){
 
     // log total ms elasticsearch reported the query took to execute
     if( data && data.took ){

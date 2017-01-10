@@ -10,7 +10,7 @@ var logger = require( 'pelias-logger' ).get( 'api' );
 function service( backend, cmd, cb ){
 
   // query new backend
-  backend().client.search( cmd, function( err, data ){
+  backend.client.search( cmd, function( err, data ){
 
     // log total ms elasticsearch reported the query took to execute
     if( data && data.took ){

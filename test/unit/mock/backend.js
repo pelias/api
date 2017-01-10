@@ -89,7 +89,7 @@ function setup( key, cmdCb ){
       }
     };
   }
-  return backend;
+  return backend();
 }
 
 function mgetEnvelope( options ){

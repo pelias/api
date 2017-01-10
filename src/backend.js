@@ -1,14 +1,5 @@
-var config = require( 'pelias-config' ).generate().esclient;
-var Backend = require('geopipes-elasticsearch-backend'),
-    client = require('elasticsearch').Client(config),
-    backends = {};
+const config = require( 'pelias-config' ).generate().esclient;
+const Backend = require('geopipes-elasticsearch-backend');
+const client = require('elasticsearch').Client(config);
 
-function getBackend( index, type ){
-  var key = ( index + ':' + type );
-  if( !backends[key] ){
-    backends[key] = new Backend( client, index, type );
-  }
-  return backends[key];
-}
-
-module.exports = getBackend;
+module.exports = new Backend(client);
