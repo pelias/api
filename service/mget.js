@@ -32,7 +32,7 @@ function service( backend, query, cb ){
 
     // handle backend errors
     if( err ){
-      logger.error( 'backend error', err );
+      logger.error( `backend error ${err}`);
       return cb( err );
     }
 
