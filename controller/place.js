@@ -25,8 +25,6 @@ function setup( config, backend ){
     logger.debug( '[ES req]', query );
 
     service.mget( backend, query, function( err, docs ) {
-      console.log('err:' + err);
-
       // error handler
       if( err ){
         req.errors.push( err );
