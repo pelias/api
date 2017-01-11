@@ -1,5 +1,5 @@
 #!/bin/bash
-ORG=hsldevcom
+ORG=uberguru
 DOCKER_IMAGE=pelias-api
 
 # Set these environment variables

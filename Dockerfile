@@ -44,4 +44,6 @@ RUN npm install \
 
 ADD pelias.json.docker pelias.json
 
-CMD npm start
+ADD run.sh /usr/local/bin/
+
+CMD /usr/local/bin/run.sh
