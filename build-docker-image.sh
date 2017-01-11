@@ -1,5 +1,5 @@
 #!/bin/bash
-ORG=hsldevcomu
+ORG=hsldevcom
 DOCKER_IMAGE=pelias-api
 
 # Set these environment variables
