@@ -15,7 +15,7 @@ var logger = require( 'pelias-logger' ).get( 'api' ),
   "interpolation": {
     "client": {
       "adapter": "http",
-      "host": "http://interpolation.wiz.co.nz"
+      "host": "http://localhost:4444"
     }
   }
 
