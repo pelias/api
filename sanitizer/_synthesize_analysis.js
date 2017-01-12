@@ -2,7 +2,7 @@ const _ = require('lodash');
 const text_analyzer = require('pelias-text-analyzer');
 
 const fields = {
-  'query': 'query',
+  'venue': 'query',
   'address': 'address',
   'neighbourhood': 'neighbourhood',
   'borough': 'borough',
