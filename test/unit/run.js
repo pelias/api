@@ -25,6 +25,7 @@ var tests = [
   require('./middleware/confidenceScoreFallback'),
   require('./middleware/confidenceScoreReverse'),
   require('./middleware/distance'),
+  require('./middleware/interpolate'),
   require('./middleware/localNamingConventions'),
   require('./middleware/dedupe'),
   require('./middleware/parseBBox'),

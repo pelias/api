@@ -1,7 +1,7 @@
 
 var async = require('async');
-var service = require('../service/interpolation')();
 var logger = require( 'pelias-logger' ).get( 'api' );
+var service = require('../service/interpolation');
 
 /**
 example response from interpolation web service:
@@ -22,7 +22,9 @@ example response from interpolation web service:
 **/
 
 function setup() {
-  return function middleware(req, res, next) {
+
+  var transport = service.search();
+  var middleware = function(req, res, next) {
 
     // no-op, user did not request an address
     if( !isAddressQuery( req ) ){
@@ -30,7 +32,7 @@ function setup() {
     }
 
     // bind parsed_text variables to function call
-    var bound = interpolate.bind( null, req.clean.parsed_text );
+    var bound = interpolate.bind( transport, req.clean.parsed_text );
 
     // perform interpolations asynchronously for all relevant hits
     var timer = (new Date()).getTime();
@@ -46,6 +48,9 @@ function setup() {
       next();
     });
   };
+
+  middleware.transport = transport;
+  return middleware;
 }
 
 function interpolate( parsed_text, hit, cb ){
@@ -62,7 +67,7 @@ function interpolate( parsed_text, hit, cb ){
   var street = hit.address_parts.street || parsed_text.street;
 
   // query interpolation service
-  service.query( coord, number, street, function( err, data ){
+  this.query( coord, number, street, function( err, data ){
 
     // an error occurred
     // note: leave this hit unmodified
@@ -94,12 +99,15 @@ function interpolate( parsed_text, hit, cb ){
 
       // -- source --
       var source = 'mixed';
-      if( data.properties.source === 'osm' ){ source = 'openstreetmap'; }
-      else if( data.properties.source === 'oa' ){ source = 'openaddresses'; }
+      if( data.properties.source === 'OSM' ){ source = 'openstreetmap'; }
+      else if( data.properties.source === 'OA' ){ source = 'openaddresses'; }
       hit.source = source;
 
       // -- source_id --
-      hit.source_id = 'derived:'+ hit.source_id;
+      // note: interpolated values have no source_id
+      if( hit.hasOwnProperty( 'source_id' ) ){
+        hit.source_id = hit.source_id;
+      }
 
       // -- address_parts --
       hit.address_parts.number = data.properties.number;
