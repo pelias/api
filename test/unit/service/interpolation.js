@@ -97,12 +97,11 @@ module.exports.tests.factory = function(test, common) {
 // null transport
 module.exports.tests.NullTransport = function(test, common) {
 
-  test('http adapter', function(t) {
-    var config = {};
+  test('null transport', function(t) {
 
     // adapter is driven by config
     var tmpfile = tmp.tmpNameSync({ postfix: '.json' });
-    fs.writeFileSync( tmpfile, JSON.stringify( config ), { encoding: 'utf8' } );
+    fs.writeFileSync( tmpfile, '{}', { encoding: 'utf8' } );
     process.env.PELIAS_CONFIG = tmpfile;
     var adapter = setup();
     delete process.env.PELIAS_CONFIG;
