@@ -55,12 +55,13 @@ RequireTransport.prototype.query = function( coord, number, street, cb ){
 
   allows the api to be used via a remote web service
 **/
-function HttpTransport( host ){
+function HttpTransport( host, settings ){
   this.query = function( coord, number, street, cb ){
     request
       .get( host + '/search/geojson' )
       .set( 'Accept', 'application/json' )
       .query({ lat: coord.lat, lon: coord.lon, number: number, street: street })
+      .timeout( settings && settings.timeout || 1000 )
       .end( function( err, res ){
         if( err || !res ){ return cb( err ); }
         if( 200 !== res.status ){ return cb( 'non 200 status' ); }
@@ -96,6 +97,9 @@ module.exports.search = function setup(){
     // http adapter
     if( 'http' === settings.adapter && settings.hasOwnProperty('host') ){
       logger.info( 'interpolation: using http transport:', settings.host );
+      if( settings.hasOwnProperty('timeout') ){
+        return new HttpTransport( settings.host, { timeout: parseInt( settings.timeout, 10 ) } );
+      }
       return new HttpTransport( settings.host );
     }
 
