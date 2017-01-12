@@ -72,7 +72,8 @@ var tests = [
   require('./sanitizer/search_fallback'),
   require('./sanitizer/wrap'),
   require('./service/mget'),
-  require('./service/search')
+  require('./service/search'),
+  require('./service/interpolation')
 ];
 
 tests.map(function(t) {

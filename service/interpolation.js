@@ -1,13 +1,37 @@
 
-var logger = require( 'pelias-logger' ).get( 'api' );
+var logger = require( 'pelias-logger' ).get( 'api' ),
+    request = require( 'superagent' ),
+    peliasConfig = require( 'pelias-config' );
 
 /**
 
-  street address interpolation service
+  street address interpolation service client
 
-  see: https://github.com/pelias/interpolation
+  this file provides several different 'transports' which can be used to access the interpolation
+  service, either directly from disk or via a network connnection.
+
+  the exported method for this module checks pelias-config for a configuration block such as:
+
+  "interpolation": {
+    "client": {
+      "adapter": "http",
+      "host": "http://interpolation.wiz.co.nz"
+    }
+  }
+
+  for more info on running the service see: https://github.com/pelias/interpolation
 
 **/
+
+/**
+  NullTransport
+
+  disables the service completely
+**/
+function NullTransport(){}
+NullTransport.prototype.query = function( coord, number, street, cb ){
+  cb(); // no-op
+};
 
 /**
   RequireTransport
@@ -16,14 +40,14 @@ var logger = require( 'pelias-logger' ).get( 'api' );
 **/
 function RequireTransport( addressDbPath, streetDbPath ){
   try {
-    var lib = require('pelias-interpolation');
+    var lib = require('pelias-interpolation'); // lazy load dependency
     this.query = lib.api.search( addressDbPath, streetDbPath );
   } catch( e ){
     logger.error( 'RequireTransport: failed to connect to interpolation service' );
   }
 }
 RequireTransport.prototype.query = function( coord, number, street, cb ){
-  throw new Error( 'transport not connected' );
+  throw new Error( 'interpolation: transport not connected' );
 };
 
 /**
@@ -32,7 +56,6 @@ RequireTransport.prototype.query = function( coord, number, street, cb ){
   allows the api to be used via a remote web service
 **/
 function HttpTransport( host ){
-  var request = require('superagent');
   this.query = function( coord, number, street, cb ){
     request
       .get( host + '/search/geojson' )
@@ -40,12 +63,13 @@ function HttpTransport( host ){
       .query({ lat: coord.lat, lon: coord.lon, number: number, street: street })
       .end( function( err, res ){
         if( err || !res ){ return cb( err ); }
+        if( 200 !== res.status ){ return cb( 'non 200 status' ); }
         return cb( null, res.body );
       });
   };
 }
 HttpTransport.prototype.query = function( coord, number, street, cb ){
-  throw new Error( 'transport not connected' );
+  throw new Error( 'interpolation: transport not connected' );
 };
 
 /**
@@ -53,6 +77,38 @@ HttpTransport.prototype.query = function( coord, number, street, cb ){
 
   allows instantiation of transport depending on configuration and preference
 **/
-module.exports = function setup(){
-  return new HttpTransport( 'http://interpolation.wiz.co.nz' );
+module.exports.search = function setup(){
+
+  // user config
+  var config = peliasConfig.generate();
+
+  // ensure config variables set correctly
+  if( !config.hasOwnProperty('interpolation') || !config.interpolation.hasOwnProperty('client') ){
+    logger.warn( 'interpolation: configuration not found' );
+  }
+
+  // valid configuration found
+  else {
+
+    // get adapter settings from config
+    var settings = config.interpolation.client;
+
+    // http adapter
+    if( 'http' === settings.adapter && settings.hasOwnProperty('host') ){
+      logger.info( 'interpolation: using http transport:', settings.host );
+      return new HttpTransport( settings.host );
+    }
+
+    // require adapter
+    else if( 'require' === settings.adapter ){
+      if( settings.hasOwnProperty('streetdb') && settings.hasOwnProperty('addressdb') ){
+        logger.info( 'interpolation: using require transport' );
+        return new RequireTransport( settings.addressdb, settings.streetdb );
+      }
+    }
+  }
+
+  // default adapter
+  logger.info( 'interpolation: using null transport' );
+  return new NullTransport();
 };
