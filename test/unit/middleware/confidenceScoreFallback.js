@@ -95,6 +95,7 @@ module.exports.tests.confidenceScore = function(test, common) {
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 0.1, 'score was set');
+    t.equal(res.data[0].match_type, 'unknown', 'exact match indicated');
     t.end();
   });
 
@@ -105,6 +106,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         parsed_text: {
           number: 123,
           street: 'Main St',
+          city: 'City',
           state: 'NM'
         }
       }
@@ -131,6 +133,7 @@ module.exports.tests.confidenceScore = function(test, common) {
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 1.0, 'max score was set');
+    t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
     t.end();
   });
 
@@ -166,10 +169,78 @@ module.exports.tests.confidenceScore = function(test, common) {
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 1.0, 'max score was set');
+    t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
     t.end();
   });
 
-  test('fallback to locality should have score deduction', function(t) {
+  test('no fallback state query should have max score', function(t) {
+    var req = {
+      clean: {
+        text: 'Region Name, Country',
+        parsed_text: {
+          state: 'Region Name',
+          country: 'Country'
+        }
+      }
+    };
+    var res = {
+      data: [{
+        _score: 10,
+        found: true,
+        value: 1,
+        layer: 'region',
+        center_point: { lat: 100.1, lon: -50.5 },
+        name: { default: 'Region Name' },
+        parent: {
+          country: ['country1']
+        }
+      }],
+      meta: {
+        scores: [10],
+        query_type: 'fallback'
+      }
+    };
+
+    confidenceScore(req, res, function() {});
+    t.equal(res.data[0].confidence, 1.0, 'max score was set');
+    t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
+    t.end();
+  });
+
+  test('no fallback country query should have max score', function(t) {
+    var req = {
+      clean: {
+        text: 'Country Name',
+        parsed_text: {
+          country: 'Country Name'
+        }
+      }
+    };
+    var res = {
+      data: [{
+        _score: 10,
+        found: true,
+        value: 1,
+        layer: 'country',
+        center_point: { lat: 100.1, lon: -50.5 },
+        name: { default: 'test name1' },
+        parent: {
+          country: ['country1']
+        }
+      }],
+      meta: {
+        scores: [10],
+        query_type: 'fallback'
+      }
+    };
+
+    confidenceScore(req, res, function() {});
+    t.equal(res.data[0].confidence, 1.0, 'max score was set');
+    t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
+    t.end();
+  });
+
+  test('fallback to locality when searching for address should have score deduction', function(t) {
     var req = {
       clean: {
         text: '123 Main St, City, NM',
@@ -200,6 +271,7 @@ module.exports.tests.confidenceScore = function(test, common) {
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 0.6, 'score was set');
+    t.equal(res.data[0].match_type, 'fallback', 'fallback match indicated');
     t.end();
   });
 
@@ -234,6 +306,7 @@ module.exports.tests.confidenceScore = function(test, common) {
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 0.6, 'score was set');
+    t.equal(res.data[0].match_type, 'fallback', 'fallback match indicated');
     t.end();
   });
 
@@ -269,6 +342,7 @@ module.exports.tests.confidenceScore = function(test, common) {
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 0.1, 'score was set');
+    t.equal(res.data[0].match_type, 'fallback', 'fallback match indicated');
     t.end();
   });
 
@@ -292,6 +366,7 @@ module.exports.tests.confidenceScore = function(test, common) {
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 1.0, 'score was set');
+    t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
     t.end();
   });
 
@@ -315,6 +390,7 @@ module.exports.tests.confidenceScore = function(test, common) {
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 1.0, 'score was set');
+    t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
     t.end();
   });
 
@@ -338,6 +414,7 @@ module.exports.tests.confidenceScore = function(test, common) {
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 0.3, 'score was set');
+    t.equal(res.data[0].match_type, 'fallback', 'fallback match indicated');
     t.end();
   });
 
@@ -362,6 +439,7 @@ module.exports.tests.confidenceScore = function(test, common) {
 
     confidenceScore(req, res, function() {});
     t.equal(res.data[0].confidence, 0.1, 'score was set');
+    t.equal(res.data[0].match_type, 'fallback', 'fallback match indicated');
     t.end();
   });
 
