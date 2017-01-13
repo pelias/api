@@ -1,5 +1,4 @@
 var Router = require('express').Router;
-var reverseQuery = require('../query/reverse');
 
 const config = require( 'pelias-config' ).generate();
 const esclient = require('elasticsearch').Client(config.esclient);
@@ -32,7 +31,9 @@ var controllers = {
 var queries = {
   libpostal: require('../query/search'),
   fallback_to_old_prod: require('../query/search_original'),
-  structured_geocoding: require('../query/structured_geocoding')
+  structured_geocoding: require('../query/structured_geocoding'),
+  reverse: require('../query/reverse'),
+  autocomplete: require('../query/autocomplete')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -116,7 +117,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     autocomplete: createRouter([
       sanitizers.autocomplete.middleware,
-      controllers.search(peliasConfig, esclient, require('../query/autocomplete')),
+      controllers.search(peliasConfig, esclient, queries.autocomplete),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.dedupe(),
@@ -132,7 +133,7 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitizers.reverse.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig, esclient, reverseQuery),
+      controllers.search(peliasConfig, esclient, queries.reverse),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
@@ -150,7 +151,7 @@ function addRoutes(app, peliasConfig) {
     nearby: createRouter([
       sanitizers.nearby.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig, esclient, reverseQuery),
+      controllers.search(peliasConfig, esclient, queries.reverse),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
