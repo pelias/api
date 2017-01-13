@@ -1,7 +1,7 @@
 var service = { mget: require('../service/mget') };
 var logger = require('pelias-logger').get('api');
 
-function setup( config, backend ){
+function setup( config, esclient ){
   function controller( req, res, next ){
 
     // do not run controller when a request
@@ -20,7 +20,7 @@ function setup( config, backend ){
 
     logger.debug( '[ES req]', query );
 
-    service.mget( backend, query, function( err, docs ) {
+    service.mget( esclient, query, function( err, docs ) {
       // error handler
       if( err ){
         req.errors.push( err );

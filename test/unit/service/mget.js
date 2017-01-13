@@ -79,7 +79,7 @@ module.exports.tests.functional_failure = function(test, common) {
           get: () => {
             return {
               error: (msg) => {
-                t.equal(msg, 'backend error a backend error occurred');
+                t.equal(msg, 'elasticsearch error an elasticsearch error occurred');
               }
             };
           }
@@ -88,7 +88,7 @@ module.exports.tests.functional_failure = function(test, common) {
       });
 
       service( backend, [ query ], function(err, data) {
-        t.equal(err, 'a backend error occurred','error passed to errorHandler');
+        t.equal(err, 'an elasticsearch error occurred','error passed to errorHandler');
         t.equal(data, undefined, 'data is undefined');
       });
     });

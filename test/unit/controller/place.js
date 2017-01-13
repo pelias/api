@@ -110,7 +110,7 @@ module.exports.tests.functional_failure = function(test, common) {
     var controller = setup( fakeDefaultConfig, backend );
     var req = { clean: { ids: [ {'id' : 123, layers: [ 'b' ] } ] }, errors: [], warnings: [] };
     var next = function( message ){
-      t.equal(req.errors[0],'a backend error occurred','error passed to errorHandler');
+      t.equal(req.errors[0],'an elasticsearch error occurred','error passed to errorHandler');
       t.end();
     };
     controller(req, undefined, next );

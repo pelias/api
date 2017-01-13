@@ -11,8 +11,8 @@ var common = {
 var tests = [
   require('./app'),
   require('./controller/index'),
-  // require('./controller/place'),
-  // require('./controller/search'),
+  require('./controller/place'),
+  require('./controller/search'),
   require('./helper/diffPlaces'),
   require('./helper/geojsonify'),
   require('./helper/logging'),
@@ -61,7 +61,6 @@ var tests = [
   require('./sanitizer/_deprecate_quattroshapes'),
   require('./sanitizer/_categories'),
   require('./sanitizer/nearby'),
-  require('./src/backend'),
   require('./src/configValidation'),
   require('./sanitizer/autocomplete'),
   require('./sanitizer/structured_geocoding'),

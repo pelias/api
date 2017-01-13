@@ -4,7 +4,7 @@ var service = { search: require('../service/search') };
 var logger = require('pelias-logger').get('api');
 var logging = require( '../helper/logging' );
 
-function setup( config, backend, query ){
+function setup( config, esclient, query ){
   function controller( req, res, next ){
     // do not run controller when a request
     // validation error has occurred.
@@ -33,7 +33,7 @@ function setup( config, backend, query ){
       return next();
     }
 
-    // backend command
+    // elasticsearch command
     var cmd = {
       index: config.indexName,
       searchType: 'dfs_query_then_fetch',
@@ -42,8 +42,8 @@ function setup( config, backend, query ){
 
     logger.debug( '[ES req]', cmd );
 
-    // query backend
-    service.search( backend, cmd, function( err, docs, meta ){
+    // query elasticsearch
+    service.search( esclient, cmd, function( err, docs, meta ){
 
       // error handler
       if( err ){

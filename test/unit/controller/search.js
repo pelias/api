@@ -151,7 +151,7 @@ module.exports.tests.functional_failure = function(test, common) {
     var controller = setup( fakeDefaultConfig, backend, mockQuery() );
     var req = { clean: { a: 'b' }, errors: [], warnings: [] };
     var next = function(){
-      t.equal(req.errors[0],'a backend error occurred');
+      t.equal(req.errors[0],'an elasticsearch error occurred');
       t.end();
     };
     controller(req, undefined, next );
