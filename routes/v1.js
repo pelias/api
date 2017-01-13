@@ -1,5 +1,6 @@
 var Router = require('express').Router;
 var reverseQuery = require('../query/reverse');
+var backend = require('../src/backend');
 
 /** ----------------------- sanitizers ----------------------- **/
 var sanitizers = {
@@ -77,9 +78,9 @@ function addRoutes(app, peliasConfig) {
       // 2nd parameter is `backend` which gets initialized internally
       // 3rd parameter is which query module to use, use fallback/geodisambiguation
       //  first, then use original search strategy if first query didn't return anything
-      controllers.search(peliasConfig, undefined, queries.libpostal),
+      controllers.search(peliasConfig, backend, queries.libpostal),
       sanitizers.search_fallback.middleware,
-      controllers.search(peliasConfig, undefined, queries.fallback_to_old_prod),
+      controllers.search(peliasConfig, backend, queries.fallback_to_old_prod),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
@@ -97,7 +98,7 @@ function addRoutes(app, peliasConfig) {
     structured: createRouter([
       sanitizers.structured_geocoding.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig, undefined, queries.structured_geocoding),
+      controllers.search(peliasConfig, backend, queries.structured_geocoding),
       postProc.trimByGranularityStructured(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
@@ -114,7 +115,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     autocomplete: createRouter([
       sanitizers.autocomplete.middleware,
-      controllers.search(peliasConfig, null, require('../query/autocomplete')),
+      controllers.search(peliasConfig, backend, require('../query/autocomplete')),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig),
       postProc.dedupe(),
@@ -130,7 +131,7 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitizers.reverse.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig, undefined, reverseQuery),
+      controllers.search(peliasConfig, backend, reverseQuery),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
@@ -148,7 +149,7 @@ function addRoutes(app, peliasConfig) {
     nearby: createRouter([
       sanitizers.nearby.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig, undefined, reverseQuery),
+      controllers.search(peliasConfig, backend, reverseQuery),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
@@ -165,7 +166,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     place: createRouter([
       sanitizers.place.middleware,
-      controllers.place(peliasConfig),
+      controllers.place(peliasConfig, backend),
       postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),

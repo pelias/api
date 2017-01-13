@@ -2,10 +2,6 @@ var service = { mget: require('../service/mget') };
 var logger = require('pelias-logger').get('api');
 
 function setup( config, backend ){
-
-  // allow overriding of dependencies
-  backend = backend || require('../src/backend');
-
   function controller( req, res, next ){
 
     // do not run controller when a request

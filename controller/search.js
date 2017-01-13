@@ -5,11 +5,6 @@ var logger = require('pelias-logger').get('api');
 var logging = require( '../helper/logging' );
 
 function setup( config, backend, query ){
-
-  // allow overriding of dependencies
-  backend = backend || require('../src/backend');
-  query = query || require('../query/search');
-
   function controller( req, res, next ){
     // do not run controller when a request
     // validation error has occurred.
