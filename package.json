@@ -46,7 +46,6 @@
     "geojson": "^0.4.0",
     "geojson-extent": "^0.3.1",
     "geolib": "^2.0.18",
-    "geopipes-elasticsearch-backend": "^0.2.0",
     "iso3166-1": "^0.2.3",
     "joi": "^10.1.0",
     "lodash": "^4.5.0",
