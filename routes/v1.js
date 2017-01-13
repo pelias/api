@@ -1,4 +1,3 @@
-var express = require('express');
 var Router = require('express').Router;
 var reverseQuery = require('../query/reverse');
 
