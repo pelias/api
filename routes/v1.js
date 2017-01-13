@@ -1,8 +1,5 @@
 var Router = require('express').Router;
 
-const config = require( 'pelias-config' ).generate();
-const esclient = require('elasticsearch').Client(config.esclient);
-
 /** ----------------------- sanitizers ----------------------- **/
 var sanitizers = {
   autocomplete: require('../sanitizer/autocomplete'),
@@ -63,6 +60,7 @@ var postProc = {
  * @param {object} peliasConfig
  */
 function addRoutes(app, peliasConfig) {
+  const esclient = require('elasticsearch').Client(peliasConfig.esclient);
 
   var base = '/v1/';
 
