@@ -149,7 +149,8 @@ module.exports.tests.hit = function(test, common) {
         layer: 'street',
         center_point: { lat: 1, lon: 1 },
         address_parts: { street: 'sesame rd' },
-        name: { default: 'street name' }
+        name: { default: 'street name' },
+        source_id: '123456'
       }
     ]};
 
@@ -180,7 +181,8 @@ module.exports.tests.hit = function(test, common) {
           center_point: { lat: 22.2, lon: -33.3 },
           address_parts: { street: 'sesame rd', number: '100A' },
           name: { default: '100A street name' },
-          source: 'openstreetmap'
+          source: 'openstreetmap',
+          source_id: 'way:111111'
         }
       ]});
       t.end();

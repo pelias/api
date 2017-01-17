@@ -105,8 +105,9 @@ function interpolate( parsed_text, hit, cb ){
 
       // -- source_id --
       // note: interpolated values have no source_id
-      if( hit.hasOwnProperty( 'source_id' ) ){
-        hit.source_id = hit.source_id;
+      delete hit.source_id; // remove original street source_id
+      if( data.properties.hasOwnProperty( 'source_id' ) ){
+        hit.source_id = data.properties.source_id;
       }
 
       // -- address_parts --
