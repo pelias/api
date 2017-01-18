@@ -1,3 +1,4 @@
+
 var express = require('express');
 var Router = require('express').Router;
 var reverseQuery = require('../query/reverse');
@@ -15,7 +16,8 @@ var sanitizers = {
 
 /** ----------------------- middleware ------------------------ **/
 var middleware = {
-  calcSize: require('../middleware/sizeCalculator')
+  calcSize: require('../middleware/sizeCalculator'),
+  selectLanguage: require('../middleware/languageSelector')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -36,21 +38,23 @@ var queries = {
 /** ----------------------- controllers ----------------------- **/
 
 var postProc = {
+  matchLanguage: require('../middleware/matchLanguage'),
   trimByGranularity: require('../middleware/trimByGranularity'),
   trimByGranularityStructured: require('../middleware/trimByGranularityStructured'),
   distances: require('../middleware/distance'),
-  confidenceScores: require('../middleware/confidenceScore'),
+  confidenceScores: require('../middleware/confidenceScoreDT'),
   confidenceScoresFallback: require('../middleware/confidenceScoreFallback'),
   confidenceScoresReverse: require('../middleware/confidenceScoreReverse'),
   accuracy: require('../middleware/accuracy'),
   dedupe: require('../middleware/dedupe'),
   localNamingConventions: require('../middleware/localNamingConventions'),
+  translate: require('../middleware/translate'),
   renamePlacenames: require('../middleware/renamePlacenames'),
   geocodeJSON: require('../middleware/geocodeJSON'),
   sendJSON: require('../middleware/sendJSON'),
   parseBoundingBox: require('../middleware/parseBBox'),
   normalizeParentIds: require('../middleware/normalizeParentIds'),
-  assignLabels: require('../middleware/assignLabels')
+  assignLabels: require('../middleware/label')
 };
 
 /**
@@ -75,6 +79,7 @@ function addRoutes(app, peliasConfig) {
     search: createRouter([
       sanitizers.search.middleware,
       middleware.calcSize(),
+      middleware.selectLanguage(peliasConfig),
       // 2nd parameter is `backend` which gets initialized internally
       // 3rd parameter is which query module to use, use fallback/geodisambiguation
       //  first, then use original search strategy if first query didn't return anything
@@ -83,11 +88,12 @@ function addRoutes(app, peliasConfig) {
       controllers.search(peliasConfig, undefined, queries.fallback_to_old_prod),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
+      postProc.localNamingConventions(),
       postProc.confidenceScores(peliasConfig),
-      postProc.confidenceScoresFallback(),
+      postProc.matchLanguage(peliasConfig),
       postProc.dedupe(),
       postProc.accuracy(),
-      postProc.localNamingConventions(),
+      postProc.translate(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
@@ -115,12 +121,15 @@ function addRoutes(app, peliasConfig) {
     ]),
     autocomplete: createRouter([
       sanitizers.autocomplete.middleware,
+      middleware.selectLanguage(peliasConfig),
       controllers.search(peliasConfig, null, require('../query/autocomplete')),
       postProc.distances('focus.point.'),
+      postProc.localNamingConventions(),
       postProc.confidenceScores(peliasConfig),
+      postProc.matchLanguage(peliasConfig),
       postProc.dedupe(),
       postProc.accuracy(),
-      postProc.localNamingConventions(),
+      postProc.translate(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
@@ -131,6 +140,7 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitizers.reverse.middleware,
       middleware.calcSize(),
+      middleware.selectLanguage(peliasConfig),
       controllers.search(peliasConfig, undefined, reverseQuery),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
@@ -139,6 +149,7 @@ function addRoutes(app, peliasConfig) {
       postProc.dedupe(),
       postProc.accuracy(),
       postProc.localNamingConventions(),
+      postProc.translate(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
@@ -149,6 +160,7 @@ function addRoutes(app, peliasConfig) {
     nearby: createRouter([
       sanitizers.nearby.middleware,
       middleware.calcSize(),
+      middleware.selectLanguage(peliasConfig),
       controllers.search(peliasConfig, undefined, reverseQuery),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
@@ -157,6 +169,7 @@ function addRoutes(app, peliasConfig) {
       postProc.dedupe(),
       postProc.accuracy(),
       postProc.localNamingConventions(),
+      postProc.translate(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
@@ -166,9 +179,11 @@ function addRoutes(app, peliasConfig) {
     ]),
     place: createRouter([
       sanitizers.place.middleware,
+      middleware.selectLanguage(peliasConfig),
       controllers.place(peliasConfig),
       postProc.accuracy(),
       postProc.localNamingConventions(),
+      postProc.translate(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),

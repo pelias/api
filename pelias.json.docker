@@ -1,5 +1,8 @@
 {
   "esclient": {
+    "apiVersion": "2.3",
+    "keepAlive": true,
+    "requestTimeout": "20000",
     "hosts": [
       {
         "env": "production",
@@ -14,5 +17,91 @@
         "port": 9300
       }
     ]
+  },
+  "logger": {
+    "level": ["error", "warning"]
+  },
+  "api" : {
+    "indexName": "pelias",
+    "version": "1.0",
+    "textAnalyzer": "libpostal",
+    "sizePadding": 6,
+    "minConfidence": 0.2,
+    "relativeMinConfidence": 0.4,
+    "query": {
+      "search": {
+        "disableFallback": true,
+        "defaults": {
+          "ngram:analyzer": "peliasIndexOneEdgeGram",
+          "ngram:multifield": ["name.*"],
+          "phrase:multifield": ["name.*"],
+          "address:housenumber:boost": 0.1,
+          "address:street:boost": 1,
+          "admin:localadmin:boost": 20
+        }
+      },
+      "autocomplete": {
+        "defaults": {
+          "ngram:multifield": ["name.*"],
+          "phrase:multifield": ["name.*"]
+        }
+      }
+    },
+    "languages": [
+      "fi",
+      "default",
+      "sv",
+      "en",
+      "se",
+      "local",
+      "alternative",
+      "international",
+      "national",
+      "official",
+      "old",
+      "regional",
+      "short",
+      "sorting"
+    ],
+    "languageMap": {
+      "default":"fi",
+      "local":"fi",
+      "alternative":"fi",
+      "international":"fi",
+      "national":"fi",
+      "official":"fi",
+      "old":"fi",
+      "regional":"fi",
+      "short":"fi",
+      "sorting":"fi"
+    },
+    "localization" : {
+        "confidenceAdminWeights": {
+        "localadmin": 1,
+        "locality": 0.2,
+        "neighbourhood": 0.2,
+        "region": 0.2,
+        "country": 0.1
+      },
+      "confidenceAddressParts": {
+	"number": {"parent":"address_parts", "field":"number", "numeric": true, "weight": 0.5},
+        "street": {"parent":"address_parts", "field":"street", "numeric": false, "weight": 2},
+        "postalcode": {"parent":"address_parts", "field":"zip", "numeric": false, "weight": 1}
+      },
+      "filteredRegions": ["suomi", "finland"],
+      "cleanRegions": true,
+      "postalCodeValidator": "^[0-9]{5}$",
+      "streetNumberValidator": "^[0-9]+\\s*[A-Za-z]{0,1}$",
+      "translations": "/opt/pelias/api/translations.json",
+      "equalCharMap": {
+        "é":"e",
+        "'":""
+      },
+      "labelSchemas": {
+        "FIN": {
+          "local": { "fields": ["localadmin", "locality"], "matchType": "best" }
+        }
+      }
+    }
   }
 }

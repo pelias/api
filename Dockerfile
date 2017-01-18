@@ -1,28 +1,49 @@
 FROM node:4.6.0
 MAINTAINER Pelias
 
-EXPOSE 3100
-LABEL io.openshift.expose-services 3100:http
+ENV PORT=8080
+EXPOSE ${PORT}
+
+# install libpostal
+RUN apt-get update
+RUN echo 'APT::Acquire::Retries "20";' >> /etc/apt/apt.conf
+RUN apt-get install -y --no-install-recommends git curl libsnappy-dev autoconf automake libtool pkg-config
+
+RUN mkdir -p /mnt/data/libpostal
+
+RUN git clone https://github.com/openvenues/libpostal \
+  && cd libpostal \
+  && ./bootstrap.sh \
+  && ./configure --datadir=/mnt/data/libpostal \
+  && make \
+  && make install \
+  && ldconfig
+
+# use our extended query module until it gets merged upstream
+ENV QUERY=/opt/pelias/query
+WORKDIR ${QUERY}
+RUN git clone --single-branch https://github.com/HSLdevcom/query.git \
+  && cd query \
+  && npm install \
+  && npm link
 
 # Where the app is built and run inside the docker fs
-ENV WORK=/opt/pelias
+ENV WORK=/opt/pelias/api
 
 # Used indirectly for saving npm logs etc.
-ENV HOME=/opt/pelias
+ENV HOME=/opt/pelias/api
 
 WORKDIR ${WORK}
 ADD . ${WORK}
 
-# Build and set permissions for arbitary non-root user
-RUN npm install && \
-  npm test && \
-  chmod -R a+rwX .
+# Build and set permissions for arbitrary non-root user
+RUN npm install \
+  && npm link pelias-query \
+  && npm test \
+  && chmod -R a+rwX .
 
 ADD pelias.json.docker pelias.json
 
-# Don't run as root, because there's no reason to (https://docs.docker.com/engine/articles/dockerfile_best-practices/#user).
-# This also reveals permission problems on local Docker.
-RUN chown -R 9999:9999 ${WORK}
-USER 9999
+ADD run.sh /usr/local/bin/
 
-CMD npm start
+CMD /usr/local/bin/run.sh

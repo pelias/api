@@ -1,10 +1,12 @@
 'use strict';
 
 const peliasQuery = require('pelias-query');
-const defaults = require('./search_defaults');
 const textParser = require('./text_parser_addressit');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
+const _ = require('lodash');
+
+var defaults = require('./search_defaults');
 
 var placeTypes = require('../helper/placeTypes');
 
@@ -13,6 +15,12 @@ var placeTypes = require('../helper/placeTypes');
 // but address it doesn't know about all of them so it helps to search
 // against this with the other admin parts as a fallback
 var adminFields = placeTypes.concat(['region_a']);
+
+const api = require('pelias-config').generate().api;
+if (api && api.query && api.query.search && api.query.search.defaults) {
+  // merge external defaults if available
+  defaults = _.merge({}, defaults, api.query.search.defaults);
+}
 
 //------------------------------
 // general-purpose search query

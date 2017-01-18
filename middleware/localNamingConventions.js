@@ -1,16 +1,9 @@
 var check = require('check-types');
 var _ = require('lodash');
 
-var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL', 'CZE'];
+var flipNumberAndStreetCountries = require('../helper/flipNumberAndStreetCountries');
 
 function setup() {
-  var api = require('pelias-config').generate().api;
-  var settings = api.localization;
-  if (settings && settings.flipNumberAndStreetCountries) {
-    var countries = settings.flipNumberAndStreetCountries;
-    flipNumberAndStreetCountries = _.uniq(flipNumberAndStreetCountries.concat(countries));
-  }
-
   return applyLocalNamingConventions;
 }
 
@@ -42,6 +35,7 @@ function applyLocalNamingConventions(req, res, next) {
   next();
 }
 
+
 // flip the housenumber and street name
 // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
 function flipNumberAndStreet(place) {
@@ -51,6 +45,12 @@ function flipNumberAndStreet(place) {
   // flip street name and housenumber
   if( place.name.default === standard ){
     place.name.default = flipped;
+
+    // flip also other name versions
+    for (var lang in place.name) {
+      var name = place.name[lang].replace(place.address_parts.number, '').trim();
+      place.name[lang] = name + ' ' + place.address_parts.number;
+    }
   }
 }
 

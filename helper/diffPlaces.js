@@ -1,5 +1,12 @@
 var _ = require('lodash');
 var placeTypes = require('./placeTypes');
+var geolib = require('geolib');
+var minDistance = 200; // meters
+
+var api = require('pelias-config').generate().api;
+if (api && api.dedupeDistanceThreshold) {
+  minDistance = api.dedupeDistanceThreshold;
+}
 
 /**
  * Compare the layer properties if they exist.
@@ -95,18 +102,41 @@ function assertAddressMatch(item1, item2) {
   if (item1.hasOwnProperty('address_parts') && item2.hasOwnProperty('address_parts')) {
     propMatch(item1.address_parts, item2.address_parts, 'number');
     propMatch(item1.address_parts, item2.address_parts, 'street');
-
-    // only compare zip if both records have it, otherwise just ignore and assume it's the same
-    // since by this time we've already compared parent hierarchies
-    if (item1.address_parts.hasOwnProperty('zip') && item2.address_parts.hasOwnProperty('zip')) {
-      propMatch(item1.address_parts, item2.address_parts, 'zip');
-    }
+    propMatch(item1.address_parts, item2.address_parts, 'zip');
 
     return false;
   }
 
   // one has address and the other doesn't, different!
   throw new Error('different');
+}
+
+
+
+/**
+ * Compare the geographic locations
+ * Returns false if the objects are close enough, and throws
+ * an exception with the message 'different' if not.
+ *
+ * @param {object} item1
+ * @param {object} item2
+ * @returns {boolean}
+ * @throws {Error}
+ */
+function assertLocationMatch(item1, item2) {
+
+  if(item1._type !== 'address' || item2._type !== 'address') {
+    /* in explicit address case, location difference is most likely a data error */
+    if(item1.center_point && item2.center_point) {
+      var p1 = { latitude: item1.center_point.lat, longitude: item1.center_point.lon };
+      var p2 = { latitude: item2.center_point.lat, longitude: item2.center_point.lon };
+      var distance = geolib.getDistance( p1, p2 );
+      if( distance > minDistance) {
+        throw new Error('different');
+      }
+    }
+  }
+  return false;
 }
 
 /**
@@ -123,6 +153,7 @@ function isDifferent(item1, item2) {
     assertParentHierarchyMatch(item1, item2);
     assertNameMatch(item1, item2);
     assertAddressMatch(item1, item2);
+    assertLocationMatch(item1, item2);
   }
   catch (err) {
     if (err.message === 'different') {
@@ -150,6 +181,12 @@ function propMatch(item1, item2, prop) {
   // simply take the 1st item. this will change in the near future to support multiple hierarchies
   if (_.isArray(prop1)) { prop1 = prop1[0]; }
   if (_.isArray(prop2)) { prop2 = prop2[0]; }
+
+  // do not consider absence of information as a difference,
+  // if a more complete document (item1) is already included.
+  if(_.isUndefined(prop2)) {
+    return;
+  }
 
   if (normalizeString(prop1) !== normalizeString(prop2)) {
     throw new Error('different');

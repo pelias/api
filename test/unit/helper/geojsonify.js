@@ -146,7 +146,9 @@ module.exports.tests.geojsonify = function(test, common) {
             'layer': 'layer1',
             'source': 'source1',
             'source_id': 'source_id_1',
-            'name': '\'Round Midnight Jazz and Blues Bar',
+            'name': {
+              'default':  '\'Round Midnight Jazz and Blues Bar'
+            },
             'country_a': 'GBR',
             'country': 'United Kingdom',
             'dependency': 'dependency name',
@@ -182,7 +184,9 @@ module.exports.tests.geojsonify = function(test, common) {
             'layer': 'layer2',
             'source': 'source2',
             'source_id': 'source_id_2',
-            'name': 'Blues Cafe',
+            'name': {
+              'default': 'Blues Cafe'
+            },
             'country_a': 'GBR',
             'country': 'United Kingdom',
             'dependency': 'dependency name',
@@ -211,7 +215,9 @@ module.exports.tests.geojsonify = function(test, common) {
             'layer': 'venue',
             'source': 'openstreetmap',
             'source_id': 'source_id_3',
-            'name': 'Empire State Building',
+            'name': {
+              'default': 'Empire State Building'
+            },
             'country_a': 'USA',
             'country': 'United States',
             'dependency': 'dependency name',
@@ -353,7 +359,9 @@ module.exports.tests.geojsonify = function(test, common) {
             'layer': 'neighbourhood',
             'source': 'whosonfirst',
             'source_id': '85816607',
-            'name': 'East New York',
+            'name': {
+              'default': 'East New York'
+            },
             'category': ['government'],
             'confidence': 0.888,
             'country': 'United States',
@@ -436,7 +444,9 @@ module.exports.tests.categories = function (test, common) {
             'layer': 'neighbourhood',
             'source': 'whosonfirst',
             'source_id': '85816607',
-            'name': 'East New York',
+            'name':  {
+              'default': 'East New York'
+            },
             'category': ['government'],
             'label': 'label for id 85816607'
           },

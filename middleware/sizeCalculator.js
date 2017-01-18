@@ -7,7 +7,13 @@ var SIZE_PADDING = 2;
  * incorporating padding for dedupe process
  */
 function setup() {
- return function setQuerySize(req, res, next) {
+
+  var api = require('pelias-config').generate().api;
+  if (api.sizePadding) {
+    SIZE_PADDING = api.sizePadding;
+  }
+
+  return function setQuerySize(req, res, next) {
    if (_.isUndefined(req.clean) || _.isUndefined(req.clean.size)) {
      return next();
    }

@@ -1,10 +1,12 @@
 'use strict';
 
 const peliasQuery = require('pelias-query');
-const defaults = require('./autocomplete_defaults');
 const textParser = require('./text_parser_addressit');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
+const _ = require('lodash');
+
+var defaults = require('./autocomplete_defaults');
 
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
@@ -15,6 +17,12 @@ var views = {
   pop_subquery:               require('./view/pop_subquery'),
   boost_exact_matches:        require('./view/boost_exact_matches')
 };
+
+const api = require('pelias-config').generate().api;
+if (api && api.query && api.query.autocomplete && api.query.autocomplete.defaults) {
+  // merge external defaults if available
+  defaults = _.merge({}, defaults, api.query.autocomplete.defaults);
+}
 
 //------------------------------
 // autocomplete query

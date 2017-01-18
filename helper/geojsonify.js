@@ -11,8 +11,8 @@ function geojsonifyPlaces( params, docs ){
 
   // flatten & expand data for geojson conversion
   var geodata = docs
-    .map(geojsonifyPlace.bind(null, params))
-    .filter( function( doc ){
+      .map(geojsonifyPlace.bind(null, params))
+      .filter( function( doc ){
       return !!doc;
     });
 
@@ -61,10 +61,11 @@ function geojsonifyPlace(params, place) {
  * @param {object} src
  * @param {object} dst
  */
+
 function addName(src, dst) {
   // map name
-  if( !src.name || !src.name.default ) { return warning(src); }
-  dst.name = src.name.default;
+  if( !src.name ) { return warning(src); }
+  dst.name = src.name;
 }
 
 /**

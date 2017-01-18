@@ -1,9 +1,17 @@
 'use strict';
 
 const peliasQuery = require('pelias-query');
-const defaults = require('./reverse_defaults');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
+const _ = require('lodash');
+
+var defaults = require('./reverse_defaults');
+
+const api = require('pelias-config').generate().api;
+if (api && api.query && api.query.reverse && api.query.reverse.defaults) {
+  // merge external defaults if available
+  defaults = _.merge({}, defaults, api.query.reverse.defaults);
+}
 
 //------------------------------
 // reverse geocode query

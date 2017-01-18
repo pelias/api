@@ -6,6 +6,12 @@ const textParser = require('./text_parser');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
 
+var USE_FALLBACK_QUERY = true;
+var api = require('pelias-config').generate().api;
+if (api && api.query && api.query.search && api.query.search.disableFallback) {
+  USE_FALLBACK_QUERY = false;
+}
+
 //------------------------------
 // general-purpose search query
 //------------------------------
@@ -144,7 +150,7 @@ function generateQuery( clean ){
 }
 
 function getQuery(vs) {
-  if (hasStreet(vs) || isCityStateOnlyWithOptionalCountry(vs) || isCityCountryOnly(vs)) {
+  if (USE_FALLBACK_QUERY && (hasStreet(vs) || isCityStateOnlyWithOptionalCountry(vs) || isCityCountryOnly(vs))) {
     return {
       type: 'fallback',
       body: fallbackQuery.render(vs)
