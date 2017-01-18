@@ -39,10 +39,10 @@ function setup( config, esclient, query ){
     logger.debug( '[ES req]', cmd );
 
     // options for retry
-    // default number of retries to 3 (seems reasonable)
+    // maxRetries is from the ES client which defaults to 3
     // factor of 1 means that each retry attempt will esclient requestTimeout
     const operationOptions = {
-      retries: _.get(esclient, 'transport.maxRetries', 3),
+      retries: _.get(esclient, 'transport.maxRetries'),
       factor: 1,
       minTimeout: _.get(esclient, 'transport.requestTimeout')
     };
