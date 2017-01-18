@@ -1,8 +1,11 @@
+'use strict';
+
 var _ = require('lodash');
 
 var service = { search: require('../service/search') };
 var logger = require('pelias-logger').get('api');
 var logging = require( '../helper/logging' );
+const retry = require('retry');
 
 function setup( config, esclient, query ){
   function controller( req, res, next ){
@@ -33,6 +36,23 @@ function setup( config, esclient, query ){
       return next();
     }
 
+    logger.debug( '[ES req]', cmd );
+
+    // options for retry
+    // default number of retries to 3 (seems reasonable)
+    // factor of 1 means that each retry attempt will esclient requestTimeout
+    const operationOptions = {
+      retries: _.get(esclient, 'transport.maxRetries', 3),
+      factor: 1,
+      minTimeout: _.get(esclient, 'transport.requestTimeout')
+    };
+
+    // prepend the config timeout since the total number of attempts is maxRetries+1
+    const timeouts = [operationOptions.minTimeout].concat(retry.timeouts(operationOptions));
+
+    // setup a new operation
+    const operation = retry.operation(operationOptions);
+
     // elasticsearch command
     var cmd = {
       index: config.indexName,
@@ -40,31 +60,44 @@ function setup( config, esclient, query ){
       body: renderedQuery.body
     };
 
-    logger.debug( '[ES req]', cmd );
-
-    // query elasticsearch
-    service.search( esclient, cmd, function( err, docs, meta ){
-
-      // error handler
-      if( err ){
-        if (_.isObject(err) && err.message) {
-          req.errors.push( err.message );
-        } else {
-          req.errors.push( err );
+    operation.attempt((currentAttempt) => {
+      // query elasticsearch
+      service.search( esclient, cmd, function( err, docs, meta ){
+        // returns true if the operation should be attempted again
+        // (handles bookkeeping of maxRetries)
+        if (operation.retry(err)) {
+          logger.info('request timed out, retrying');
+          return;
         }
-      }
-      // set response data
-      else {
-        res.data = docs;
-        res.meta = meta || {};
-        // store the query_type for subsequent middleware
-        res.meta.query_type = renderedQuery.type;
 
-        logger.info(`[controller:search] [queryType:${renderedQuery.type}] [es_result_count:` +
-          (res.data && res.data.length ? res.data.length : 0));
-      }
-      logger.debug('[ES response]', docs);
-      next();
+        // error handler
+        if( err ){
+          if (_.isObject(err) && err.message) {
+            req.errors.push( err.message );
+          } else {
+            req.errors.push( err );
+          }
+        }
+        // set response data
+        else {
+          // log that a retry was successful
+          // most requests succeed on first attempt so this declutters log files
+          if (currentAttempt > 1) {
+            logger.info(`succeeded on retry ${currentAttempt-1}`);
+          }
+
+          res.data = docs;
+          res.meta = meta || {};
+          // store the query_type for subsequent middleware
+          res.meta.query_type = renderedQuery.type;
+
+          logger.info(`[controller:search] [queryType:${renderedQuery.type}] [es_result_count:` +
+            (res.data && res.data.length ? res.data.length : 0));
+        }
+        logger.debug('[ES response]', docs);
+        next();
+      });
+
     });
 
   }
