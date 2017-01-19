@@ -93,8 +93,13 @@ function setup( apiConfig, esclient, query ){
           // store the query_type for subsequent middleware
           res.meta.query_type = renderedQuery.type;
 
-          logger.info(`[controller:search] [queryType:${renderedQuery.type}] [es_result_count:` +
-            _.get(res, 'data', []).length + ']');
+          const messageParts = [
+            '[controller:search]',
+            `[queryType:${renderedQuery.type}]`,
+            `[es_result_count:${_.get(res, 'data', []).length}]`
+          ];
+
+          logger.info(messageParts.join(' '));
         }
         logger.debug('[ES response]', docs);
         next();
