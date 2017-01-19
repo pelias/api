@@ -8,6 +8,10 @@ var logging = require( '../helper/logging' );
 const retry = require('retry');
 
 function setup( apiConfig, esclient, query ){
+  function isRequestTimeout(err) {
+    return _.get(err, 'status') === 408;
+  }
+
   function controller( req, res, next ){
     // do not run controller when a request
     // validation error has occurred.
@@ -62,7 +66,8 @@ function setup( apiConfig, esclient, query ){
       searchService( esclient, cmd, function( err, docs, meta ){
         // returns true if the operation should be attempted again
         // (handles bookkeeping of maxRetries)
-        if (operation.retry(err)) {
+        // only consider for status 408 (request timeout)
+        if (isRequestTimeout(err) && operation.retry(err)) {
           logger.info('request timed out, retrying');
           return;
         }
