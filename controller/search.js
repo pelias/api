@@ -47,9 +47,6 @@ function setup( apiConfig, esclient, query ){
       minTimeout: _.get(esclient, 'transport.requestTimeout')
     };
 
-    // prepend the config timeout since the total number of attempts is maxRetries+1
-    const timeouts = [operationOptions.minTimeout].concat(retry.timeouts(operationOptions));
-
     // setup a new operation
     const operation = retry.operation(operationOptions);
 
