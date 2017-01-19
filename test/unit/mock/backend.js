@@ -1,8 +1,5 @@
 
 var responses = {};
-responses['client/suggest/ok/1'] = function( cmd, cb ){
-  return cb( undefined, suggestEnvelope([ { score: 1, text: 'mocktype:mockid1' } ], [ { score: 2, text: 'mocktype:mockid2' } ]) );
-};
 responses['client/suggest/fail/1'] = function( cmd, cb ){
   return cb( 'an elasticsearch error occurred' );
 };

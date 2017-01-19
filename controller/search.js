@@ -1,10 +1,10 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
-var searchService = require('../service/search');
-var logger = require('pelias-logger').get('api');
-var logging = require( '../helper/logging' );
+const searchService = require('../service/search');
+const logger = require('pelias-logger').get('api');
+const logging = require( '../helper/logging' );
 const retry = require('retry');
 
 function setup( apiConfig, esclient, query ){
@@ -68,7 +68,7 @@ function setup( apiConfig, esclient, query ){
         // (handles bookkeeping of maxRetries)
         // only consider for status 408 (request timeout)
         if (isRequestTimeout(err) && operation.retry(err)) {
-          logger.info('request timed out, retrying');
+          logger.info(`request timed out on attempt ${currentAttempt}, retrying`);
           return;
         }
 
@@ -94,7 +94,7 @@ function setup( apiConfig, esclient, query ){
           res.meta.query_type = renderedQuery.type;
 
           logger.info(`[controller:search] [queryType:${renderedQuery.type}] [es_result_count:` +
-            (res.data && res.data.length ? res.data.length : 0) + ']');
+            _.get(res, 'data', []).length + ']');
         }
         logger.debug('[ES response]', docs);
         next();
