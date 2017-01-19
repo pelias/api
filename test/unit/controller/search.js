@@ -173,6 +173,29 @@ module.exports.tests.timeout = function(test, common) {
   });
 };
 
+module.exports.tests.existing_errors = function(test, common) {
+  test('req with errors should not call backend', function(t) {
+    var esclient = function() {
+      throw new Error('esclient should not have been called');
+    };
+    var controller = setup( fakeDefaultConfig, esclient, mockQuery() );
+
+    // the existence of `errors` means that a sanitizer detected an error,
+    //  so don't call the esclient
+    var req = {
+      errors: ['error']
+    };
+    var res = { };
+
+    t.doesNotThrow(() => {
+      controller(req, res, () => {});
+    });
+    t.end();
+
+  });
+
+};
+
 module.exports.tests.existing_results = function(test, common) {
   test('res with existing data should not call backend', function(t) {
     var backend = function() {

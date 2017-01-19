@@ -11,14 +11,14 @@ function setup( apiConfig, esclient, query ){
   function controller( req, res, next ){
     // do not run controller when a request
     // validation error has occurred.
-    if( req.errors && req.errors.length ){
+    if (_.get(req, 'errors', []).length > 0) {
       return next();
     }
 
     // do not run controller if there are already results
     // this was added during libpostal integration.  if the libpostal parse/query
     // doesn't return anything then fallback to old search-engine-y behavior
-    if (res && res.hasOwnProperty('data') && res.data.length > 0) {
+    if (_.get(res, 'data', []).length > 0) {
       return next();
     }
 
