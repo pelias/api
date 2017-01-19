@@ -94,7 +94,7 @@ function setup( apiConfig, esclient, query ){
           res.meta.query_type = renderedQuery.type;
 
           logger.info(`[controller:search] [queryType:${renderedQuery.type}] [es_result_count:` +
-            (res.data && res.data.length ? res.data.length : 0));
+            (res.data && res.data.length ? res.data.length : 0) + ']');
         }
         logger.debug('[ES response]', docs);
         next();
