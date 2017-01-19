@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 
-var service = { search: require('../service/search') };
+var searchService = require('../service/search');
 var logger = require('pelias-logger').get('api');
 var logging = require( '../helper/logging' );
 const retry = require('retry');
@@ -62,7 +62,7 @@ function setup( apiConfig, esclient, query ){
 
     operation.attempt((currentAttempt) => {
       // query elasticsearch
-      service.search( esclient, cmd, function( err, docs, meta ){
+      searchService( esclient, cmd, function( err, docs, meta ){
         // returns true if the operation should be attempted again
         // (handles bookkeeping of maxRetries)
         if (operation.retry(err)) {
