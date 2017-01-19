@@ -1,4 +1,5 @@
 var Router = require('express').Router;
+var elasticsearch = require('elasticsearch');
 
 /** ----------------------- sanitizers ----------------------- **/
 var sanitizers = {
@@ -60,7 +61,7 @@ var postProc = {
  * @param {object} peliasConfig
  */
 function addRoutes(app, peliasConfig) {
-  const esclient = require('elasticsearch').Client(peliasConfig.esclient);
+  const esclient = elasticsearch.Client(peliasConfig.esclient);
 
   var base = '/v1/';
 
