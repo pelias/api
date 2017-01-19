@@ -7,7 +7,7 @@ var logger = require('pelias-logger').get('api');
 var logging = require( '../helper/logging' );
 const retry = require('retry');
 
-function setup( config, esclient, query ){
+function setup( apiConfig, esclient, query ){
   function controller( req, res, next ){
     // do not run controller when a request
     // validation error has occurred.
@@ -55,7 +55,7 @@ function setup( config, esclient, query ){
 
     // elasticsearch command
     var cmd = {
-      index: config.indexName,
+      index: apiConfig.indexName,
       searchType: 'dfs_query_then_fetch',
       body: renderedQuery.body
     };

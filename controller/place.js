@@ -1,7 +1,7 @@
 var service = { mget: require('../service/mget') };
 var logger = require('pelias-logger').get('api');
 
-function setup( config, esclient ){
+function setup( apiConfig, esclient ){
   function controller( req, res, next ){
 
     // do not run controller when a request
@@ -12,7 +12,7 @@ function setup( config, esclient ){
 
     var query = req.clean.ids.map( function(id) {
       return {
-        _index: config.indexName,
+        _index: apiConfig.indexName,
         _type: id.layers,
         _id: id.id
       };
