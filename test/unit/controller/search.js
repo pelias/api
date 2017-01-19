@@ -317,6 +317,47 @@ module.exports.tests.timeout = function(test, common) {
 
   });
 
+  test('string error should not retry and be logged as-is', (t) => {
+    const config = {
+      indexName: 'indexName value',
+      requestRetries: 17
+    };
+    const esclient = 'this is the esclient';
+    const query = () => {
+      return { };
+    };
+
+    let searchServiceCallCount = 0;
+
+    const stringTypeError = 'this is an error string';
+
+    // a controller that validates the esclient and cmd that was passed to the search service
+    const controller = proxyquire('../../../controller/search', {
+      '../service/search': (esclient, cmd, callback) => {
+        // not that the searchService got called
+        searchServiceCallCount++;
+
+        callback(stringTypeError);
+      }
+    })(config, esclient, query);
+
+    const req = { clean: { }, errors: [], warnings: [] };
+    const res = {};
+
+    var next = function() {
+      t.equal(searchServiceCallCount, 1);
+      t.deepEqual(req, {
+        clean: {},
+        errors: [stringTypeError],
+        warnings: []
+      });
+      t.end();
+    };
+
+    controller(req, res, next);
+
+  });
+
 };
 
 module.exports.tests.existing_errors = function(test, common) {
