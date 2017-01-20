@@ -1,9 +1,7 @@
 'use strict';
 
-var setup = require('../../../controller/search'),
-    mockBackend = require('../mock/backend'),
-    mockQuery = require('../mock/query');
-var proxyquire =  require('proxyquire').noCallThru();
+const setup = require('../../../controller/search');
+const proxyquire =  require('proxyquire').noCallThru();
 
 module.exports.tests = {};
 
@@ -62,7 +60,7 @@ module.exports.tests.success = function(test, common) {
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
 
-    var next = function() {
+    const next = () => {
       t.deepEqual(req, {
         clean: {},
         errors: [],
@@ -126,7 +124,7 @@ module.exports.tests.success = function(test, common) {
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
 
-    var next = function() {
+    const next = () => {
       t.deepEqual(req, {
         clean: {},
         errors: [],
@@ -190,7 +188,7 @@ module.exports.tests.success = function(test, common) {
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
 
-    var next = function() {
+    const next = () => {
       t.deepEqual(req, {
         clean: {},
         errors: [],
@@ -270,7 +268,7 @@ module.exports.tests.success = function(test, common) {
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
 
-    var next = function() {
+    const next = () => {
       t.deepEqual(req, {
         clean: {},
         errors: [],
@@ -348,7 +346,7 @@ module.exports.tests.timeout = function(test, common) {
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
 
-    var next = function() {
+    const next = () => {
       t.equal(searchServiceCallCount, 3+1);
 
       t.ok(infoMesssages.indexOf('request timed out on attempt 1, retrying') !== -1);
@@ -399,7 +397,7 @@ module.exports.tests.timeout = function(test, common) {
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
 
-    var next = function() {
+    const next = () => {
       t.equal(searchServiceCallCount, 17+1);
       t.end();
     };
@@ -439,7 +437,7 @@ module.exports.tests.timeout = function(test, common) {
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
 
-    var next = function() {
+    const next = () => {
       t.equal(searchServiceCallCount, 1);
       t.deepEqual(req, {
         clean: {},
@@ -480,7 +478,7 @@ module.exports.tests.timeout = function(test, common) {
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
 
-    var next = function() {
+    const next = () => {
       t.equal(searchServiceCallCount, 1);
       t.deepEqual(req, {
         clean: {},
@@ -498,17 +496,20 @@ module.exports.tests.timeout = function(test, common) {
 
 module.exports.tests.existing_errors = function(test, common) {
   test('req with errors should not call backend', function(t) {
-    var esclient = function() {
+    const esclient = () => {
       throw new Error('esclient should not have been called');
     };
-    var controller = setup( {}, esclient, mockQuery() );
+    const query = () => {
+      throw new Error('query should not have been called');
+    };
+    const controller = setup( {}, esclient, query );
 
     // the existence of `errors` means that a sanitizer detected an error,
     //  so don't call the esclient
-    var req = {
+    const req = {
       errors: ['error']
     };
-    var res = { };
+    const res = { };
 
     t.doesNotThrow(() => {
       controller(req, res, () => {});
@@ -521,17 +522,20 @@ module.exports.tests.existing_errors = function(test, common) {
 
 module.exports.tests.existing_results = function(test, common) {
   test('res with existing data should not call backend', function(t) {
-    var esclient = function() {
-      throw new Error('backend should not have been called');
+    const esclient = () => {
+      throw new Error('esclient should not have been called');
     };
-    var controller = setup( {}, esclient, mockQuery() );
+    const query = () => {
+      throw new Error('query should not have been called');
+    };
+    const controller = setup( {}, esclient, query );
 
-    var req = { };
+    const req = { };
     // the existence of `data` means that there are already results so
     // don't call the backend/query
-    var res = { data: [{}] };
+    const res = { data: [{}] };
 
-    var next = function() {
+    const next = function() {
       t.deepEqual(res, {data: [{}]});
       t.end();
     };
@@ -544,18 +548,20 @@ module.exports.tests.existing_results = function(test, common) {
 module.exports.tests.undefined_query = function(test, common) {
   test('query returning undefined should not call service', function(t) {
     // a function that returns undefined
-    var query = function () { return; };
+    const query = () => {
+      return undefined;
+    };
 
-    var search_service_was_called = false;
+    let search_service_was_called = false;
 
-    var controller = proxyquire('../../../controller/search', {
+    const controller = proxyquire('../../../controller/search', {
       '../service/search': function() {
         search_service_was_called = true;
         throw new Error('search service should not have been called');
       }
     })(undefined, undefined, query);
 
-    var next = function() {
+    const next = () => {
       t.notOk(search_service_was_called, 'should have returned before search service was called');
       t.end();
     };
@@ -571,7 +577,7 @@ module.exports.all = function (tape, common) {
     return tape('GET /search ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for( const testCase in module.exports.tests ){
     module.exports.tests[testCase](test, common);
   }
 };
