@@ -137,7 +137,7 @@ module.exports.tests.error_conditions = (test, common) => {
     const res = {};
 
     const next = () => {
-      t.deepEqual(req.errors, [nonTimeoutError]);
+      t.deepEqual(req.errors, [nonTimeoutError.message]);
       t.deepEqual(req.warnings, []);
       t.deepEquals(res.data, undefined);
       t.end();
@@ -209,7 +209,7 @@ module.exports.tests.timeout = function(test, common) {
       t.ok(infoMesssages.indexOf('request timed out on attempt 2, retrying') !== -1);
       t.ok(infoMesssages.indexOf('request timed out on attempt 3, retrying') !== -1);
 
-      t.deepEqual(req.errors, [timeoutError]);
+      t.deepEqual(req.errors, [timeoutError.message]);
       t.deepEqual(res, {});
       t.end();
     };
@@ -306,7 +306,7 @@ module.exports.tests.timeout = function(test, common) {
 
     const next = () => {
       t.equal(searchServiceCallCount, 1);
-      t.deepEqual(req.errors, [nonTimeoutError]);
+      t.deepEqual(req.errors, [nonTimeoutError.message]);
       t.end();
     };
 

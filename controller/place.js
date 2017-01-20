@@ -55,7 +55,11 @@ function setup( apiConfig, esclient ){
 
         // error handler
         if( err ){
-          req.errors.push( err );
+          if (_.isObject(err) && err.message) {
+            req.errors.push( err.message );
+          } else {
+            req.errors.push( err );
+          }
         }
         // set response data
         else {
