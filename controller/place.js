@@ -33,7 +33,7 @@ function setup( apiConfig, esclient ){
     // setup a new operation
     const operation = retry.operation(operationOptions);
 
-    const query = req.clean.ids.map( function(id) {
+    const cmd = req.clean.ids.map( function(id) {
       return {
         _index: apiConfig.indexName,
         _type: id.layers,
@@ -41,10 +41,10 @@ function setup( apiConfig, esclient ){
       };
     });
 
-    logger.debug( '[ES req]', query );
+    logger.debug( '[ES req]', cmd );
 
     operation.attempt((currentAttempt) => {
-      mgetService( esclient, query, function( err, docs ) {
+      mgetService( esclient, cmd, function( err, docs ) {
         // returns true if the operation should be attempted again
         // (handles bookkeeping of maxRetries)
         // only consider for status 408 (request timeout)
