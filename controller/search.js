@@ -26,21 +26,19 @@ function setup( apiConfig, esclient, query ){
       return next();
     }
 
-    var cleanOutput = _.cloneDeep(req.clean);
+    let cleanOutput = _.cloneDeep(req.clean);
     if (logging.isDNT(req)) {
       cleanOutput = logging.removeFields(cleanOutput);
     }
     // log clean parameters for stats
     logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
 
-    var renderedQuery = query(req.clean);
+    const renderedQuery = query(req.clean);
 
     // if there's no query to call ES with, skip the service
     if (_.isUndefined(renderedQuery)) {
       return next();
     }
-
-    logger.debug( '[ES req]', cmd );
 
     // options for retry
     // maxRetries is from the API config with default of 3
@@ -55,11 +53,13 @@ function setup( apiConfig, esclient, query ){
     const operation = retry.operation(operationOptions);
 
     // elasticsearch command
-    var cmd = {
+    const cmd = {
       index: apiConfig.indexName,
       searchType: 'dfs_query_then_fetch',
       body: renderedQuery.body
     };
+
+    logger.debug( '[ES req]', cmd );
 
     operation.attempt((currentAttempt) => {
       // query elasticsearch
