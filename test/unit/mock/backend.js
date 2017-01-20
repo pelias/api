@@ -1,8 +1,5 @@
 
 var responses = {};
-responses['client/suggest/fail/1'] = function( cmd, cb ){
-  return cb( 'an elasticsearch error occurred' );
-};
 responses['client/search/ok/1'] = function( cmd, cb ){
   return cb( undefined, searchEnvelope([{
     _id: 'myid1',
