@@ -8,6 +8,14 @@ const logging = require( '../helper/logging' );
 const retry = require('retry');
 
 function setup( apiConfig, esclient, query ){
+  function requestHasErrors(request) {
+    return _.get(request, 'errors', []).length > 0;
+  }
+
+  function responseHasData(response) {
+    return _.get(response, 'data', []).length > 0;
+  }
+
   function isRequestTimeout(err) {
     return _.get(err, 'status') === 408;
   }
@@ -15,14 +23,14 @@ function setup( apiConfig, esclient, query ){
   function controller( req, res, next ){
     // do not run controller when a request
     // validation error has occurred.
-    if (_.get(req, 'errors', []).length > 0) {
+    if (requestHasErrors(req)) {
       return next();
     }
 
     // do not run controller if there are already results
     // this was added during libpostal integration.  if the libpostal parse/query
     // doesn't return anything then fallback to old search-engine-y behavior
-    if (_.get(res, 'data', []).length > 0) {
+    if (responseHasData(res)) {
       return next();
     }
 
