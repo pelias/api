@@ -6,15 +6,15 @@ const retry = require('retry');
 const mgetService = require('../service/mget');
 const logger = require('pelias-logger').get('api');
 
+function requestHasErrors(request) {
+  return _.get(request, 'errors', []).length > 0;
+}
+
+function isRequestTimeout(err) {
+  return _.get(err, 'status') === 408;
+}
+
 function setup( apiConfig, esclient ){
-  function requestHasErrors(request) {
-    return _.get(request, 'errors', []).length > 0;
-  }
-
-  function isRequestTimeout(err) {
-    return _.get(err, 'status') === 408;
-  }
-
   function controller( req, res, next ){
     // do not run controller when a request validation error has occurred.
     if (requestHasErrors(req)){
