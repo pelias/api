@@ -16,7 +16,8 @@ module.exports.tests.completely_valid = function(test, common) {
         relativeScores: true,
         localization: {
           flipNumberAndStreetCountries: ['ABC', 'DEF']
-        }
+        },
+        requestRetries: 19
       },
       esclient: {
         requestTimeout: 17
@@ -318,6 +319,65 @@ module.exports.tests.api_validation = function(test, common) {
 
   });
 
+  test('config with non-number api.requestRetries should throw error', function(t) {
+    [null, 'string', {}, [], false].forEach((value) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          requestRetries: value
+        },
+        esclient: {}
+      };
+
+      t.throws(function() {
+        configValidation.validate(config);
+      }, /"requestRetries" must be a number/, 'api.requestRetries should be a number');
+    });
+
+    t.end();
+
+  });
+
+  test('config with non-integer api.requestRetries should throw error', function(t) {
+    var config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value',
+        requestRetries: 17.3
+      },
+      esclient: {}
+    };
+
+    t.throws(function() {
+      configValidation.validate(config);
+    }, /"requestRetries" must be an integer/, 'api.requestRetries should be an integer');
+
+    t.end();
+
+  });
+
+  test('config with negative api.requestRetries should throw error', function(t) {
+    var config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value',
+        requestRetries: -1
+      },
+      esclient: {}
+    };
+
+    t.throws(function() {
+      configValidation.validate(config);
+    }, /"requestRetries" must be larger than or equal to 0/, 'api.requestRetries must be positive');
+
+    t.end();
+
+  });
+
 };
 
 module.exports.tests.esclient_validation = function(test, common) {
@@ -358,7 +418,7 @@ module.exports.tests.esclient_validation = function(test, common) {
 
   });
 
-  test('config with non-integer esclient.requestTimeout should throw error', function(t) {
+  test('config with non-number esclient.requestTimeout should throw error', function(t) {
     [null, 'string', {}, [], false].forEach((value) => {
       var config = {
         api: {

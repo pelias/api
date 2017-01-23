@@ -22,6 +22,7 @@ const schema = Joi.object().keys({
     legacyUrl: Joi.string(),
     accessLog: Joi.string(),
     relativeScores: Joi.boolean(),
+    requestRetries: Joi.number().integer().min(0),
     localization: Joi.object().keys({
       flipNumberAndStreetCountries: Joi.array().items(Joi.string().regex(/^[A-Z]{3}$/))
     }).unknown(false)
