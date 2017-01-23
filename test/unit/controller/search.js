@@ -495,7 +495,7 @@ module.exports.tests.timeout = function(test, common) {
 };
 
 module.exports.tests.existing_errors = function(test, common) {
-  test('req with errors should not call backend', function(t) {
+  test('req with errors should not call esclient or query', function(t) {
     const esclient = () => {
       throw new Error('esclient should not have been called');
     };
@@ -521,7 +521,7 @@ module.exports.tests.existing_errors = function(test, common) {
 };
 
 module.exports.tests.existing_results = function(test, common) {
-  test('res with existing data should not call backend', function(t) {
+  test('res with existing data should not call esclient or query', function(t) {
     const esclient = () => {
       throw new Error('esclient should not have been called');
     };
@@ -532,7 +532,7 @@ module.exports.tests.existing_results = function(test, common) {
 
     const req = { };
     // the existence of `data` means that there are already results so
-    // don't call the backend/query
+    // don't call esclient or query
     const res = { data: [{}] };
 
     const next = function() {
