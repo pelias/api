@@ -13,7 +13,7 @@ ENV HOME=/opt/pelias
 WORKDIR ${WORK}
 ADD . ${WORK}
 
-# Build and set permissions for arbitary non-root user
+# Build and set permissions for arbitrary non-root user
 RUN npm install && \
   npm test && \
   chmod -R a+rwX .

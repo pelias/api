@@ -25,6 +25,7 @@ var tests = [
   require('./middleware/confidenceScoreFallback'),
   require('./middleware/confidenceScoreReverse'),
   require('./middleware/distance'),
+  require('./middleware/interpolate'),
   require('./middleware/localNamingConventions'),
   require('./middleware/dedupe'),
   require('./middleware/parseBBox'),
@@ -72,7 +73,8 @@ var tests = [
   require('./sanitizer/search_fallback'),
   require('./sanitizer/wrap'),
   require('./service/mget'),
-  require('./service/search')
+  require('./service/search'),
+  require('./service/interpolation')
 ];
 
 tests.map(function(t) {
