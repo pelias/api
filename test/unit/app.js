@@ -4,12 +4,16 @@ const proxyquire = require('proxyquire').noCallThru();
 
 module.exports.tests = {};
 
-module.exports.tests.invalid_configuration = function(test, common) {
-  test('configuration validation throwing error should rethrow', function(t) {
-    t.throws(function() {
+module.exports.tests.invalid_configuration = (test, common) => {
+  test('configuration validation throwing error should rethrow', (t) => {
+    t.throws(() => {
       proxyquire('../../app', {
-        './src/configValidation': {
-          validate: () => {
+        './schema': 'this is the schema',
+        'pelias-config': {
+          generate: (schema) => {
+            // the schema passed to generate should be the require'd schema
+            t.equals(schema, 'this is the schema');
+
             throw Error('config is not valid');
           }
         }
@@ -23,7 +27,7 @@ module.exports.tests.invalid_configuration = function(test, common) {
 
 };
 
-module.exports.all = function (tape, common) {
+module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {
     return tape('app: ' + name, testFunction);
