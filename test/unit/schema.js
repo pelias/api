@@ -1,11 +1,20 @@
 'use strict';
 
-const configValidation = require('../../../src/configValidation');
+const Joi = require('joi');
+const schema = require('../../schema');
+
+function validate(config) {
+  Joi.validate(config, schema, (err, value) => {
+    if (err) {
+      throw new Error(err.details[0].message);
+    }
+  });
+}
 
 module.exports.tests = {};
 
-module.exports.tests.completely_valid = function(test, common) {
-  test('all valid configuration elements should not throw error', function(t) {
+module.exports.tests.completely_valid = (test, common) => {
+  test('all valid configuration elements should not throw error', (t) => {
     var config = {
       api: {
         version: 'version value',
@@ -24,15 +33,12 @@ module.exports.tests.completely_valid = function(test, common) {
       }
     };
 
-    t.doesNotThrow(function() {
-      configValidation.validate(config);
-    });
-
+    t.doesNotThrow(validate.bind(config));
     t.end();
 
   });
 
-  test('basic valid configurtaion should not throw error', function(t) {
+  test('basic valid configuration should not throw error', (t) => {
     var config = {
       api: {
         version: 'version value',
@@ -44,30 +50,25 @@ module.exports.tests.completely_valid = function(test, common) {
       }
     };
 
-    t.doesNotThrow(function() {
-      configValidation.validate(config);
-    });
-
+    t.doesNotThrow(validate.bind(config));
     t.end();
 
   });
 
 };
 
-module.exports.tests.api_validation = function(test, common) {
-  test('config without api should throw error', function(t) {
+module.exports.tests.api_validation = (test, common) => {
+  test('config without api should throw error', (t) => {
     var config = {
       esclient: {}
     };
 
-    t.throws(function() {
-      configValidation.validate(config);
-    }, /"api" is required/, 'api should exist');
+    t.throws(validate.bind(null, config), /"api" is required/, 'api should exist');
     t.end();
 
   });
 
-  test('config without unknown field in api should not throw error', function(t) {
+  test('config without unknown field in api should not throw error', (t) => {
     var config = {
       api: {
         version: 'version value',
@@ -78,14 +79,12 @@ module.exports.tests.api_validation = function(test, common) {
       esclient: {}
     };
 
-    t.doesNotThrow(function() {
-      configValidation.validate(config);
-    }, 'unknown properties should be allowed');
+    t.doesNotThrow(validate.bind(null, config), 'unknown properties should be allowed');
     t.end();
 
   });
 
-  test('non-string api.version should throw error', function(t) {
+  test('non-string api.version should throw error', (t) => {
     [null, 17, {}, [], true].forEach((value) => {
       var config = {
         api: {
@@ -96,16 +95,15 @@ module.exports.tests.api_validation = function(test, common) {
         esclient: {}
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /"version" must be a string/);
+      t.throws(validate.bind(null, config), /"version" must be a string/);
+
     });
 
     t.end();
 
   });
 
-  test('non-string api.indexName should throw error', function(t) {
+  test('non-string api.indexName should throw error', (t) => {
     [null, 17, {}, [], true].forEach((value) => {
       var config = {
         api: {
@@ -116,16 +114,15 @@ module.exports.tests.api_validation = function(test, common) {
         esclient: {}
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /"indexName" must be a string/);
+      t.throws(validate.bind(null, config), /"indexName" must be a string/);
+
     });
 
     t.end();
 
   });
 
-  test('non-string api.host should throw error', function(t) {
+  test('non-string api.host should throw error', (t) => {
     [null, 17, {}, [], true].forEach((value) => {
       var config = {
         api: {
@@ -136,16 +133,15 @@ module.exports.tests.api_validation = function(test, common) {
         esclient: {}
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /"host" must be a string/);
+      t.throws(validate.bind(null, config), /"host" must be a string/);
+
     });
 
     t.end();
 
   });
 
-  test('non-string api.legacyUrl should throw error', function(t) {
+  test('non-string api.legacyUrl should throw error', (t) => {
     [null, 17, {}, [], true].forEach((value) => {
       var config = {
         api: {
@@ -157,16 +153,15 @@ module.exports.tests.api_validation = function(test, common) {
         esclient: {}
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /"legacyUrl" must be a string/);
+      t.throws(validate.bind(null, config), /"legacyUrl" must be a string/);
+
     });
 
     t.end();
 
   });
 
-  test('non-string api.accessLog should throw error', function(t) {
+  test('non-string api.accessLog should throw error', (t) => {
     [null, 17, {}, [], true].forEach((value) => {
       var config = {
         api: {
@@ -178,16 +173,15 @@ module.exports.tests.api_validation = function(test, common) {
         esclient: {}
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /"accessLog" must be a string/);
+      t.throws(validate.bind(null, config), /"accessLog" must be a string/);
+
     });
 
     t.end();
 
   });
 
-  test('non-boolean api.relativeScores should throw error', function(t) {
+  test('non-boolean api.relativeScores should throw error', (t) => {
     [null, 17, {}, [], 'string'].forEach((value) => {
       var config = {
         api: {
@@ -199,16 +193,15 @@ module.exports.tests.api_validation = function(test, common) {
         esclient: {}
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /"relativeScores" must be a boolean/);
+      t.throws(validate.bind(null, config), /"relativeScores" must be a boolean/);
+
     });
 
     t.end();
 
   });
 
-  test('non-object api.localization should throw error', function(t) {
+  test('non-object api.localization should throw error', (t) => {
     [null, 17, false, [], 'string'].forEach((value) => {
       var config = {
         api: {
@@ -220,16 +213,15 @@ module.exports.tests.api_validation = function(test, common) {
         esclient: {}
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /"localization" must be an object/);
+      t.throws(validate.bind(null, config), /"localization" must be an object/);
+
     });
 
     t.end();
 
   });
 
-  test('unknown properties in api.localization should throw error', function(t) {
+  test('unknown properties in api.localization should throw error', (t) => {
     var config = {
       api: {
         version: 'version value',
@@ -242,15 +234,13 @@ module.exports.tests.api_validation = function(test, common) {
       esclient: {}
     };
 
-    t.throws(function() {
-      configValidation.validate(config);
-    }, /"unknown_property" is not allowed/);
+    t.throws(validate.bind(null, config), /"unknown_property" is not allowed/);
 
     t.end();
 
   });
 
-  test('non-array api.localization.flipNumberAndStreetCountries should throw error', function(t) {
+  test('non-array api.localization.flipNumberAndStreetCountries should throw error', (t) => {
     [null, 17, {}, false, 'string'].forEach((value) => {
       var config = {
         api: {
@@ -264,16 +254,17 @@ module.exports.tests.api_validation = function(test, common) {
         esclient: {}
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /"flipNumberAndStreetCountries" must be an array/);
+      t.throws(
+        validate.bind(null, config),
+        /"flipNumberAndStreetCountries" must be an array/);
+
     });
 
     t.end();
 
   });
 
-  test('non-string api.localization.flipNumberAndStreetCountries elements should throw error', function(t) {
+  test('non-string api.localization.flipNumberAndStreetCountries elements should throw error', (t) => {
     [null, 17, {}, false, []].forEach((value) => {
       var config = {
         api: {
@@ -287,16 +278,15 @@ module.exports.tests.api_validation = function(test, common) {
         esclient: {}
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /"0" must be a string/);
+      t.throws(validate.bind(null, config), /"0" must be a string/);
+
     });
 
     t.end();
 
   });
 
-  test('non-3-char api.localization.flipNumberAndStreetCountries elements should throw error', function(t) {
+  test('non-3-char api.localization.flipNumberAndStreetCountries elements should throw error', (t) => {
     ['AB', 'ABCD'].forEach((value) => {
       var config = {
         api: {
@@ -310,16 +300,14 @@ module.exports.tests.api_validation = function(test, common) {
         esclient: {}
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /fails to match the required pattern/);
+      t.throws(validate.bind(null, config), /fails to match the required pattern/);
     });
 
     t.end();
 
   });
 
-  test('config with non-number api.requestRetries should throw error', function(t) {
+  test('config with non-number api.requestRetries should throw error', (t) => {
     [null, 'string', {}, [], false].forEach((value) => {
       var config = {
         api: {
@@ -331,16 +319,17 @@ module.exports.tests.api_validation = function(test, common) {
         esclient: {}
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /"requestRetries" must be a number/, 'api.requestRetries should be a number');
+      t.throws(
+        validate.bind(null, config),
+        /"requestRetries" must be a number/, 'api.requestRetries should be a number');
+
     });
 
     t.end();
 
   });
 
-  test('config with non-integer api.requestRetries should throw error', function(t) {
+  test('config with non-integer api.requestRetries should throw error', (t) => {
     var config = {
       api: {
         version: 'version value',
@@ -351,15 +340,15 @@ module.exports.tests.api_validation = function(test, common) {
       esclient: {}
     };
 
-    t.throws(function() {
-      configValidation.validate(config);
-    }, /"requestRetries" must be an integer/, 'api.requestRetries should be an integer');
+    t.throws(
+      validate.bind(null, config),
+      /"requestRetries" must be an integer/, 'api.requestRetries should be an integer');
 
     t.end();
 
   });
 
-  test('config with negative api.requestRetries should throw error', function(t) {
+  test('config with negative api.requestRetries should throw error', (t) => {
     var config = {
       api: {
         version: 'version value',
@@ -370,9 +359,9 @@ module.exports.tests.api_validation = function(test, common) {
       esclient: {}
     };
 
-    t.throws(function() {
-      configValidation.validate(config);
-    }, /"requestRetries" must be larger than or equal to 0/, 'api.requestRetries must be positive');
+    t.throws(
+      validate.bind(null, config),
+      /"requestRetries" must be larger than or equal to 0/, 'api.requestRetries must be positive');
 
     t.end();
 
@@ -380,8 +369,8 @@ module.exports.tests.api_validation = function(test, common) {
 
 };
 
-module.exports.tests.esclient_validation = function(test, common) {
-  test('config without esclient should throw error', function(t) {
+module.exports.tests.esclient_validation = (test, common) => {
+  test('config without esclient should throw error', (t) => {
     var config = {
       api: {
         version: 'version value',
@@ -390,14 +379,14 @@ module.exports.tests.esclient_validation = function(test, common) {
       }
     };
 
-    t.throws(function() {
-      configValidation.validate(config);
-    }, /"esclient" is required/, 'esclient should exist');
+    t.throws(
+      validate.bind(null, config),
+      /"esclient" is required/, 'esclient should exist');
     t.end();
 
   });
 
-  test('config with non-object esclient should throw error', function(t) {
+  test('config with non-object esclient should throw error', (t) => {
     [null, 17, [], 'string', true].forEach((value) => {
       var config = {
         api: {
@@ -408,9 +397,9 @@ module.exports.tests.esclient_validation = function(test, common) {
         esclient: value
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /"esclient" must be an object/, 'esclient should be an object');
+      t.throws(
+        validate.bind(null, config),
+        /"esclient" must be an object/, 'esclient should be an object');
 
     });
 
@@ -418,7 +407,7 @@ module.exports.tests.esclient_validation = function(test, common) {
 
   });
 
-  test('config with non-number esclient.requestTimeout should throw error', function(t) {
+  test('config with non-number esclient.requestTimeout should throw error', (t) => {
     [null, 'string', {}, [], false].forEach((value) => {
       var config = {
         api: {
@@ -431,16 +420,17 @@ module.exports.tests.esclient_validation = function(test, common) {
         }
       };
 
-      t.throws(function() {
-        configValidation.validate(config);
-      }, /"requestTimeout" must be a number/, 'esclient.requestTimeout should be a number');
+      t.throws(
+        validate.bind(null, config),
+        /"requestTimeout" must be a number/, 'esclient.requestTimeout should be a number');
+
     });
 
     t.end();
 
   });
 
-  test('config with non-integer esclient.requestTimeout should throw error', function(t) {
+  test('config with non-integer esclient.requestTimeout should throw error', (t) => {
     var config = {
       api: {
         version: 'version value',
@@ -452,15 +442,15 @@ module.exports.tests.esclient_validation = function(test, common) {
       }
     };
 
-    t.throws(function() {
-      configValidation.validate(config);
-    }, /"requestTimeout" must be an integer/, 'esclient.requestTimeout should be an integer');
+    t.throws(
+      validate.bind(null, config),
+    /"requestTimeout" must be an integer/, 'esclient.requestTimeout should be an integer');
 
     t.end();
 
   });
 
-  test('config with negative esclient.requestTimeout should throw error', function(t) {
+  test('config with negative esclient.requestTimeout should throw error', (t) => {
     var config = {
       api: {
         version: 'version value',
@@ -472,9 +462,9 @@ module.exports.tests.esclient_validation = function(test, common) {
       }
     };
 
-    t.throws(function() {
-      configValidation.validate(config);
-    }, /"requestTimeout" must be larger than or equal to 0/, 'esclient.requestTimeout must be positive');
+    t.throws(
+      validate.bind(null, config),
+      /"requestTimeout" must be larger than or equal to 0/, 'esclient.requestTimeout must be positive');
 
     t.end();
 
@@ -482,7 +472,7 @@ module.exports.tests.esclient_validation = function(test, common) {
 
 };
 
-module.exports.all = function (tape, common) {
+module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {
     return tape('configValidation: ' + name, testFunction);
