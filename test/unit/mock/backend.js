@@ -1,11 +1,5 @@
 
 var responses = {};
-responses['client/suggest/ok/1'] = function( cmd, cb ){
-  return cb( undefined, suggestEnvelope([ { score: 1, text: 'mocktype:mockid1' } ], [ { score: 2, text: 'mocktype:mockid2' } ]) );
-};
-responses['client/suggest/fail/1'] = function( cmd, cb ){
-  return cb( 'a backend error occurred' );
-};
 responses['client/search/ok/1'] = function( cmd, cb ){
   return cb( undefined, searchEnvelope([{
     _id: 'myid1',
@@ -32,15 +26,7 @@ responses['client/search/ok/1'] = function( cmd, cb ){
   }]));
 };
 responses['client/search/fail/1'] = function( cmd, cb ){
-  return cb( 'a backend error occurred' );
-};
-
-responses['client/search/timeout/1'] = function( cmd, cb) {
-  // timeout errors are objects
-  return cb({
-    status: 408,
-    message: 'Request Timeout after 5000ms'
-  });
+  return cb( 'an elasticsearch error occurred' );
 };
 
 responses['client/mget/ok/1'] = function( cmd, cb ){
@@ -73,23 +59,21 @@ responses['client/mget/fail/1'] = responses['client/search/fail/1'];
 function setup( key, cmdCb ){
   function backend( a, b ){
     return {
-      client: {
-        mget: function( cmd, cb ){
-          if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
-          return responses[key.indexOf('mget') === -1 ? 'client/mget/ok/1' : key].apply( this, arguments );
-        },
-        suggest: function( cmd, cb ){
-          if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
-          return responses[key].apply( this, arguments );
-        },
-        search: function( cmd, cb ){
-          if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
-          return responses[key].apply( this, arguments );
-        }
+      mget: function( cmd, cb ){
+        if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
+        return responses[key.indexOf('mget') === -1 ? 'client/mget/ok/1' : key].apply( this, arguments );
+      },
+      suggest: function( cmd, cb ){
+        if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
+        return responses[key].apply( this, arguments );
+      },
+      search: function( cmd, cb ){
+        if( 'function' === typeof cmdCb ){ cmdCb( cmd ); }
+        return responses[key].apply( this, arguments );
       }
     };
   }
-  return backend;
+  return backend();
 }
 
 function mgetEnvelope( options ){

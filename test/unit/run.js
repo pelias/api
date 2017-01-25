@@ -62,7 +62,6 @@ var tests = [
   require('./sanitizer/_deprecate_quattroshapes'),
   require('./sanitizer/_categories'),
   require('./sanitizer/nearby'),
-  require('./src/backend'),
   require('./src/configValidation'),
   require('./sanitizer/autocomplete'),
   require('./sanitizer/structured_geocoding'),

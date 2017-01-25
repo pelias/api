@@ -23,7 +23,7 @@ var legacy = require('./routes/legacy');
 legacy.addRoutes(app, peliasConfig.api);
 
 var v1 = require('./routes/v1');
-v1.addRoutes(app, peliasConfig.api);
+v1.addRoutes(app, peliasConfig);
 
 /** ----------------------- error middleware ----------------------- **/
 

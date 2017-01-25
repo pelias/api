@@ -1,6 +1,8 @@
 
-var setup = require('../../../service/search'),
+var service = require('../../../service/search'),
     mockBackend = require('../mock/backend');
+
+const proxyquire = require('proxyquire').noCallThru();
 
 var example_valid_es_query = { body: { a: 'b' }, index: 'pelias' };
 
@@ -8,7 +10,16 @@ module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
   test('valid interface', function(t) {
-    t.equal(typeof setup, 'function', 'setup is a function');
+    var service = proxyquire('../../../service/mget', {
+      'pelias-logger': {
+        get: (section) => {
+          t.equal(section, 'api');
+        }
+      }
+
+    });
+
+    t.equal(typeof service, 'function', 'service is a function');
     t.end();
   });
 };
@@ -45,7 +56,7 @@ module.exports.tests.functional_success = function(test, common) {
     var backend = mockBackend( 'client/search/ok/1', function( cmd ){
       t.deepEqual(cmd, example_valid_es_query, 'no change to the command');
     });
-    setup( backend, example_valid_es_query, function(err, data, meta) {
+    service( backend, example_valid_es_query, function(err, data, meta) {
       t.true(Array.isArray(data), 'returns an array');
       data.forEach(function(d) {
         t.true(typeof d === 'object', 'valid object');
@@ -71,8 +82,22 @@ module.exports.tests.functional_failure = function(test, common) {
       t.notDeepEqual(cmd, example_valid_es_query, 'incorrect backend command');
     });
     invalid_queries.forEach(function(query) {
-      setup( backend, [ query ], function(err, data) {
-        t.equal(err, 'a backend error occurred','error passed to errorHandler');
+      // mock out pelias-logger so we can assert what's being logged
+      var service = proxyquire('../../../service/search', {
+        'pelias-logger': {
+          get: () => {
+            return {
+              error: (msg) => {
+                t.equal(msg, 'elasticsearch error an elasticsearch error occurred');
+              }
+            };
+          }
+        }
+
+      });
+
+      service( backend, [ query ], function(err, data) {
+        t.equal(err, 'an elasticsearch error occurred','error passed to errorHandler');
         t.equal(data, undefined, 'data is undefined');
       });
     });
