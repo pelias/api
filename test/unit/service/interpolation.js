@@ -1,6 +1,7 @@
 
 var fs = require('fs'),
     tmp = require('tmp'),
+    proxyquire = require('proxyquire'),
     setup = require('../../../service/interpolation').search;
 
 module.exports.tests = {};
@@ -36,6 +37,8 @@ module.exports.tests.factory = function(test, common) {
   });
 
   test('require adapter', function(t) {
+    const errorMessages = [];
+
     var config = { interpolation: { client: {
       adapter: 'require',
       addressdb: '/tmp/address.db',
@@ -46,13 +49,25 @@ module.exports.tests.factory = function(test, common) {
     var tmpfile = tmp.tmpNameSync({ postfix: '.json' });
     fs.writeFileSync( tmpfile, JSON.stringify( config ), { encoding: 'utf8' } );
     process.env.PELIAS_CONFIG = tmpfile;
-    var adapter = setup();
+
+    var adapter = proxyquire('../../../service/interpolation', {
+      'pelias-logger': {
+        get: () => {
+          return {
+            error: (msg) => { errorMessages.push(msg); },
+            info: (msg) => {}
+          };
+        }
+      }
+    }).search();
+
     delete process.env.PELIAS_CONFIG;
 
     t.equal(adapter.constructor.name, 'RequireTransport', 'RequireTransport');
     t.equal(typeof adapter, 'object', 'adapter is an object');
     t.equal(typeof adapter.query, 'function', 'query is a function');
     t.equal(adapter.query.length, 4, 'query function signature');
+    t.deepEquals(errorMessages, ['RequireTransport: failed to connect to interpolation service']);
     t.end();
   });
 
