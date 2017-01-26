@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  *
  * Basic confidence score should be computed and returned for each item in the results.
@@ -11,6 +13,7 @@
 
 var check = require('check-types');
 var logger = require('pelias-logger').get('api');
+const _ = require('lodash');
 
 function setup() {
   return computeScores;
@@ -67,8 +70,9 @@ function checkFallbackLevel(req, hit) {
     // if we know a fallback occurred, deduct points based on layer granularity
     switch (hit.layer) {
       case 'venue':
-      case 'address':
         logger.warn('Fallback scenarios should not result in address or venue records!', req.clean.parsed_text);
+        return 0.8;
+      case 'address':
         return 0.8;
       case 'street':
         return 0.8;
@@ -96,26 +100,121 @@ function checkFallbackLevel(req, hit) {
   return 1.0;
 }
 
+/**
+ * In parsed_text we might find any of the following properties:
+ *   query
+ *   number
+ *   street
+ *   neighbourhood
+ *   borough
+ *   city
+ *   county
+ *   state
+ *   postalcode
+ *   country
+ *
+ * They do not map 1:1 to our layers so the following somewhat complicated
+ * mapping structure is needed to set clear rules for comparing what was requested
+ * by the query and what has been received as a result to determine if a fallback occurred.
+ */
+const fallbackRules = [
+  {
+    name: 'venue',
+    notSet: [],
+    set: ['query'],
+    expectedLayers: ['venue']
+  },
+  {
+    name: 'address',
+    notSet: ['query'],
+    set: ['number', 'street'],
+    expectedLayers: ['address']
+  },
+  {
+    name: 'street',
+    notSet: ['query', 'number'],
+    set: ['street'],
+    expectedLayers: ['street']
+  },
+  {
+    name: 'neighbourhood',
+    notSet: ['query', 'number', 'street'],
+    set: ['neighbourhood'],
+    expectedLayers: ['neighbourhood']
+  },
+  {
+    name: 'borough',
+    notSet: ['query', 'number', 'street', 'neighbourhood'],
+    set: ['borough'],
+    expectedLayers: ['borough']
+  },
+  {
+    name: 'city',
+    notSet: ['query', 'number', 'street', 'neighbourhood', 'borough'],
+    set: ['city'],
+    expectedLayers: ['borough', 'locality', 'localadmin']
+  },
+  {
+    name: 'county',
+    notSet: ['query', 'number', 'street', 'neighbourhood', 'borough', 'city'],
+    set: ['county'],
+    expectedLayers: ['county']
+  },
+  {
+    name: 'state',
+    notSet: ['query', 'number', 'street', 'neighbourhood', 'borough', 'city', 'county'],
+    set: ['state'],
+    expectedLayers: ['region']
+  },
+  {
+    name: 'country',
+    notSet: ['query', 'number', 'street', 'neighbourhood', 'borough', 'city', 'county', 'state'],
+    set: ['country'],
+    expectedLayers: ['country']
+  }
+];
+
 function checkFallbackOccurred(req, hit) {
-  return (requestedAddress(req) && hit.layer !== 'address') ||
-         (requestedStreet(req) && hit.layer !== 'street') ||
-         (requestedCity(req) && hit.layer !== 'locality' && hit.layer !== 'localadmin');
+
+  // short-circuit after finding the first fallback scenario
+  const res = _.find(fallbackRules, (rule) => {
+
+    return (
+      // verify that more granular properties are not set
+      notSet(req.clean.parsed_text, rule.notSet) &&
+      // verify that expected property is set
+      areSet(req.clean.parsed_text, rule.set) &&
+      // verify that expected layer(s) was not returned
+      rule.expectedLayers.indexOf(hit.layer) === -1
+    );
+  });
+
+  return !!res;
 }
 
-function requestedAddress(req) {
-  // house number and street name were specified
-  return req.clean.parsed_text.hasOwnProperty('number') &&
-         req.clean.parsed_text.hasOwnProperty('street');
+function notSet(parsed_text, notSet) {
+  if (notSet.length === 0) {
+    return true;
+  }
+
+  return (
+    _.every(notSet, (prop) => {
+      return !_.get(parsed_text, prop, false);
+    })
+  );
 }
 
-function requestedStreet(req) {
-  // only street name was specified
-  return !req.clean.parsed_text.hasOwnProperty('number') &&
-          req.clean.parsed_text.hasOwnProperty('street');
-}
+function areSet(parsed_text, areSet) {
+  if (areSet.length === 0) {
+    logger.warn('Expected properties in fallbackRules should never be empty');
+    return true;
+  }
 
-function requestedCity(req) {
-  return req.clean.parsed_text.hasOwnProperty('city');
+  return (
+    _.every(areSet, (prop) => {
+      return _.get(parsed_text, prop, false);
+    })
+  );
 }
 
 module.exports = setup;
