@@ -107,6 +107,70 @@ module.exports.tests.sanitize = function(test, common) {
 
   });
 
+  test('req.clean.text should be logged when isDNT=false', (t) => {
+    const infoLog = [];
+
+    const search = proxyquire('../../../sanitizer/search_fallback', {
+      'pelias-logger': {
+        get: () => {
+          return {
+            info: (msg) => {
+              infoLog.push(msg);
+            }
+          };
+        }
+      },
+      '../helper/logging': {
+        isDNT: () => { return false; }
+      }
+    });
+
+    const req = {
+      path: '/v1/search',
+      clean: {
+        text: 'this is the query text'
+      }
+    };
+
+    search.middleware(req, undefined, () => {
+      t.deepEquals(infoLog, [`fallback queryText: ${req.clean.text}`]);
+      t.end();
+    });
+
+  });
+
+  test('req.clean.text should not be logged when isDNT=true', (t) => {
+    const infoLog = [];
+
+    const search = proxyquire('../../../sanitizer/search_fallback', {
+      'pelias-logger': {
+        get: () => {
+          return {
+            info: (msg) => {
+              infoLog.push(msg);
+            }
+          };
+        }
+      },
+      '../helper/logging': {
+        isDNT: () => { return true; }
+      }
+    });
+
+    const req = {
+      path: '/v1/search',
+      clean: {
+        text: 'this is the query text'
+      }
+    };
+
+    search.middleware(req, undefined, () => {
+      t.deepEquals(infoLog, ['fallback queryText: [text removed]']);
+      t.end();
+    });
+
+  });
+
 };
 
 module.exports.all = function (tape, common) {

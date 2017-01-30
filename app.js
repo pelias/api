@@ -1,10 +1,7 @@
 
 var app = require('express')();
 
-var peliasConfig = require( 'pelias-config' ).generate();
-
-// validate the configuration before attempting to load the app
-require('./src/configValidation').validate(peliasConfig);
+var peliasConfig = require( 'pelias-config' ).generate(require('./schema'));
 
 if( peliasConfig.api.accessLog ){
   app.use( require( './middleware/access_log' ).createAccessLogger( peliasConfig.api.accessLog ) );
@@ -23,7 +20,7 @@ var legacy = require('./routes/legacy');
 legacy.addRoutes(app, peliasConfig.api);
 
 var v1 = require('./routes/v1');
-v1.addRoutes(app, peliasConfig.api);
+v1.addRoutes(app, peliasConfig);
 
 /** ----------------------- error middleware ----------------------- **/
 
