@@ -51,6 +51,7 @@
     "lodash": "^4.5.0",
     "markdown": "0.5.0",
     "morgan": "1.7.0",
+    "node-postal": "0.3.0",
     "pelias-categories": "1.1.0",
     "pelias-config": "2.7.1",
     "pelias-labels": "1.5.1",
