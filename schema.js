@@ -14,7 +14,7 @@ const Joi = require('joi');
 // * api.relativeScores (boolean)
 // * api.legacyUrl (string)
 // * api.localization (flipNumberAndStreetCountries is array of 3 character strings)
-const schema = Joi.object().keys({
+module.exports = Joi.object().keys({
   api: Joi.object().keys({
     version: Joi.string(),
     indexName: Joi.string(),
@@ -22,6 +22,7 @@ const schema = Joi.object().keys({
     legacyUrl: Joi.string(),
     accessLog: Joi.string(),
     relativeScores: Joi.boolean(),
+    requestRetries: Joi.number().integer().min(0),
     localization: Joi.object().keys({
       flipNumberAndStreetCountries: Joi.array().items(Joi.string().regex(/^[A-Z]{3}$/))
     }).unknown(false)
@@ -31,14 +32,3 @@ const schema = Joi.object().keys({
     requestTimeout: Joi.number().integer().min(0)
   }).unknown(true)
 }).requiredKeys('api', 'esclient').unknown(true);
-
-module.exports = {
-  validate: function validate(config) {
-    Joi.validate(config, schema, (err) => {
-      if (err) {
-        throw new Error(err.details[0].message);
-      }
-    });
-  }
-
-};

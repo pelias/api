@@ -1,5 +1,7 @@
 var parseBBox = require('../../../middleware/parseBBox')();
 
+const proxyquire = require('proxyquire').noCallThru();
+
 module.exports.tests = {};
 
 module.exports.tests.computeDistance = function(test, common) {
@@ -45,6 +47,20 @@ module.exports.tests.computeDistance = function(test, common) {
         {}
       ]
     };
+
+    const parseBBox = proxyquire('../../../middleware/parseBBox', {
+      'pelias-logger': {
+        get: () => {
+          return {
+            error: (msg1, msg2) => {
+              t.equals(msg1, 'Invalid bounding_box json string:');
+              t.deepEquals(msg2, { bounding_box: 'garbage json' });
+            }
+          };
+
+        }
+      }
+    })();
 
     parseBBox({}, res, function () {
       t.deepEquals(res, expected, 'correct bounding_box');
