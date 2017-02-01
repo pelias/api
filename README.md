@@ -7,7 +7,7 @@
 
 This is the API server for the Pelias project. It's the service that runs to process user HTTP requests and return results as GeoJSON by querying Elasticsearch.
 
-[https://npmjs.org/package/pelias-api](https://npmjs.org/package/pelias-api)
+[![NPM](https://nodei.co/npm/pelias-api.png?downloads=true&stars=true)](https://nodei.co/npm/pelias-api)
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/pelias/api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
