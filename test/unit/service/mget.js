@@ -1,13 +1,9 @@
-
-var service = require('../../../service/mget'),
-    mockBackend = require('../mock/backend');
-
 const proxyquire = require('proxyquire').noCallThru();
 
 module.exports.tests = {};
 
-module.exports.tests.interface = function(test, common) {
-  test('valid interface', function(t) {
+module.exports.tests.interface = (test, common) => {
+  test('valid interface', (t) => {
     var service = proxyquire('../../../service/mget', {
       'pelias-logger': {
         get: (section) => {
@@ -22,82 +18,243 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-// functionally test service
-module.exports.tests.functional_success = function(test, common) {
+module.exports.tests.error_conditions = (test, common) => {
+  test('esclient.mget returning error should log and pass it on', (t) => {
+    const errorMessages = [];
 
-  var expected = [
-    {
-      _id: 'myid1', _type: 'mytype1',
-      value: 1,
-      center_point: { lat: 100.1, lon: -50.5 },
-      name: { default: 'test name1' },
-      parent: { country: ['country1'], region: ['state1'], county: ['city1'] }
-    },
-    {
-      _id: 'myid2', _type: 'mytype2',
-      value: 2,
-      center_point: { lat: 100.2, lon: -51.5 },
-      name: { default: 'test name2' },
-      parent: { country: ['country2'], region: ['state2'], county: ['city2'] }
-    }
-  ];
-
-  test('valid query', function(t) {
-    var backend = mockBackend( 'client/mget/ok/1', function( cmd ){
-      t.deepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'a' } ] } }, 'correct backend command');
+    const service = proxyquire('../../../service/mget', {
+      'pelias-logger': {
+        get: () => {
+          return {
+            error: (msg) => {
+              errorMessages.push(msg);
+            }
+          };
+        }
+      }
     });
-    service( backend, [ { _id: 123, _index: 'pelias', _type: 'a' } ], function(err, data) {
-      t.true(Array.isArray(data), 'returns an array');
-      data.forEach(function(d) {
-        t.true(typeof d === 'object', 'valid object');
-      });
-      t.deepEqual(data, expected, 'values correctly mapped');
+
+    const expectedCmd = {
+      body: {
+        docs: 'this is the query'
+      }
+    };
+
+    const esclient = {
+      mget: (cmd, callback) => {
+        t.deepEquals(cmd, expectedCmd);
+
+        const err = 'this is an error';
+        const data = {
+          docs: [
+            {
+              found: true,
+              _id: 'doc id',
+              _type: 'doc type',
+              _source: {}
+            }
+          ]
+        };
+
+        callback('this is an error', data);
+
+      }
+    };
+
+    const next = (err, docs) => {
+      t.equals(err, 'this is an error', 'err should have been passed on');
+      t.equals(docs, undefined);
+
+      t.ok(errorMessages.find((msg) => {
+        return msg === `elasticsearch error ${err}`;
+      }));
       t.end();
-    });
-  });
+    };
 
+    service(esclient, 'this is the query', next);
+
+  });
 };
 
-// functionally test service
-module.exports.tests.functional_failure = function(test, common) {
+module.exports.tests.success_conditions = (test, common) => {
+  test('esclient.mget returning data.docs should filter and map', (t) => {
+    const errorMessages = [];
 
-  test('invalid query', function(t) {
-    var invalid_queries = [
-      { _id: 123, _index: 'pelias' },
-      { _id: 123, _type: 'a' },
-      { _index: 'pelias', _type: 'a' },
-      { }
+    const service = proxyquire('../../../service/mget', {
+      'pelias-logger': {
+        get: () => {
+          return {
+            error: (msg) => {
+              errorMessages.push(msg);
+            }
+          };
+        }
+      }
+    });
+
+    const expectedCmd = {
+      body: {
+        docs: 'this is the query'
+      }
+    };
+
+    const esclient = {
+      mget: (cmd, callback) => {
+        t.deepEquals(cmd, expectedCmd);
+
+        const data = {
+          docs: [
+            {
+              found: true,
+              _id: 'doc id 1',
+              _type: 'doc type 1',
+              _source: {
+                random_key: 'value 1'
+              }
+            },
+            {
+              found: false,
+              _id: 'doc id 2',
+              _type: 'doc type 2',
+              _source: {}
+            },
+            {
+              found: true,
+              _id: 'doc id 3',
+              _type: 'doc type 3',
+              _source: {
+                random_key: 'value 3'
+              }
+            }
+          ]
+        };
+
+        callback(undefined, data);
+
+      }
+    };
+
+    const expectedDocs = [
+      {
+        _id: 'doc id 1',
+        _type: 'doc type 1',
+        random_key: 'value 1'
+      },
+      {
+        _id: 'doc id 3',
+        _type: 'doc type 3',
+        random_key: 'value 3'
+      }
+
     ];
 
-    var backend = mockBackend( 'client/mget/fail/1', function( cmd ){
-      t.notDeepEqual(cmd, { body: { docs: [ { _id: 123, _index: 'pelias', _type: 'a' } ] } }, 'incorrect backend command');
-    });
-    invalid_queries.forEach(function(query) {
-      // mock out pelias-logger so we can assert what's being logged
-      var service = proxyquire('../../../service/mget', {
-        'pelias-logger': {
-          get: () => {
-            return {
-              error: (msg) => {
-                t.equal(msg, 'elasticsearch error an elasticsearch error occurred');
-              }
-            };
-          }
+    const next = (err, docs) => {
+      t.equals(err, null);
+      t.deepEquals(docs, expectedDocs);
+
+      t.equals(errorMessages.length, 0, 'no errors should have been logged');
+      t.end();
+    };
+
+    service(esclient, 'this is the query', next);
+
+  });
+
+  test('esclient.mget callback with falsy data should return empty array', (t) => {
+    const errorMessages = [];
+
+    const service = proxyquire('../../../service/mget', {
+      'pelias-logger': {
+        get: () => {
+          return {
+            error: (msg) => {
+              errorMessages.push(msg);
+            }
+          };
         }
-
-      });
-
-      service( backend, [ query ], function(err, data) {
-        t.equal(err, 'an elasticsearch error occurred','error passed to errorHandler');
-        t.equal(data, undefined, 'data is undefined');
-      });
+      }
     });
-    t.end();
+
+    const expectedCmd = {
+      body: {
+        docs: 'this is the query'
+      }
+    };
+
+    const esclient = {
+      mget: (cmd, callback) => {
+        t.deepEquals(cmd, expectedCmd);
+
+        callback(undefined, undefined);
+
+      }
+    };
+
+    const expectedDocs = [];
+
+    const next = (err, docs) => {
+      t.equals(err, null);
+      t.deepEquals(docs, expectedDocs);
+
+      t.equals(errorMessages.length, 0, 'no errors should have been logged');
+      t.end();
+    };
+
+    service(esclient, 'this is the query', next);
+
+  });
+
+  test('esclient.mget callback with non-array data.docs should return empty array', (t) => {
+    const errorMessages = [];
+
+    const service = proxyquire('../../../service/mget', {
+      'pelias-logger': {
+        get: () => {
+          return {
+            error: (msg) => {
+              errorMessages.push(msg);
+            }
+          };
+        }
+      }
+    });
+
+    const expectedCmd = {
+      body: {
+        docs: 'this is the query'
+      }
+    };
+
+    const esclient = {
+      mget: (cmd, callback) => {
+        t.deepEquals(cmd, expectedCmd);
+
+        const data = {
+          docs: 'this isn\'t an array'
+        };
+
+        callback(undefined, data);
+
+      }
+    };
+
+    const expectedDocs = [];
+
+    const next = (err, docs) => {
+      t.equals(err, null);
+      t.deepEquals(docs, expectedDocs);
+
+      t.equals(errorMessages.length, 0, 'no errors should have been logged');
+      t.end();
+    };
+
+    service(esclient, 'this is the query', next);
+
   });
 
 };
 
-module.exports.all = function (tape, common) {
+module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {
     return tape('SERVICE /mget ' + name, testFunction);
