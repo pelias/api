@@ -55,7 +55,7 @@
     "pelias-config": "2.7.1",
     "pelias-labels": "1.5.1",
     "pelias-logger": "0.1.0",
-    "pelias-model": "git://github.com/pelias/model.git#add-postalcode",
+    "pelias-model": "4.5.0",
     "pelias-query": "git://github.com/pelias/query.git#add-postalcodes",
     "pelias-text-analyzer": "1.7.0",
     "retry": "^0.10.1",
