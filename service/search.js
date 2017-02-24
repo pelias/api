@@ -30,7 +30,6 @@ function service( esclient, cmd, cb ){
     };
 
     if( data && data.hits && data.hits.total && Array.isArray(data.hits.hits)){
-
       docs = data.hits.hits.map( function( hit ){
 
         meta.scores.push(hit._score);
