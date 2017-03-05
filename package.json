@@ -59,7 +59,7 @@
     "pelias-query": "8.12.0",
     "pelias-text-analyzer": "1.7.1",
     "retry": "^0.10.1",
-    "stats-lite": "2.0.3",
+    "stats-lite": "2.0.4",
     "superagent": "^3.2.1",
     "through2": "^2.0.3"
   },
