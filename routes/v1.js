@@ -60,9 +60,6 @@ var postProc = {
   assignLabels: require('../middleware/assignLabels')
 };
 
-// make configurable to return do-nothing service if PIP URL not set
-const pipService = require('../service/pointinpolygon')('http://localhost:3102');
-
 // predicates that drive whether controller/search runs
 const hasData = require('../controller/predicates/has_data');
 const hasErrors = require('../controller/predicates/has_errors');
@@ -79,6 +76,9 @@ const hasDataOrErrors = any(hasData, hasErrors);
  */
 function addRoutes(app, peliasConfig) {
   const esclient = elasticsearch.Client(peliasConfig.esclient);
+
+  const isPipServiceEnabled = require('../controller/predicates/is_pip_service_enabled')(peliasConfig.api.pipService);
+  const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
 
   var base = '/v1/';
 
@@ -151,8 +151,23 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitizers.reverse.middleware,
       middleware.calcSize(),
-      controllers.coarse_reverse(pipService, all(isCoarseReverse, not(hasErrors))),
-      controllers.search(peliasConfig.api, esclient, queries.reverse, not(any(hasDataOrErrors, isCoarseReverse))),
+      controllers.coarse_reverse(pipService,
+        all(
+          not(hasErrors), isPipServiceEnabled, isCoarseReverse
+        )
+      ),
+      controllers.search(peliasConfig.api, esclient, queries.reverse,
+        // execute under the following conditions:
+        // - there are no errors or data
+        // - request is not coarse OR pip service is disabled
+        all(
+          not(hasDataOrErrors),
+          any(
+            not(isCoarseReverse),
+            not(isPipServiceEnabled)
+          )
+        )
+      ),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first

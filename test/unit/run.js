@@ -18,6 +18,7 @@ var tests = [
   require('./controller/predicates/has_data'),
   require('./controller/predicates/has_errors'),
   require('./controller/predicates/is_coarse_reverse'),
+  require('./controller/predicates/is_pip_service_enabled'),
   require('./helper/diffPlaces'),
   require('./helper/geojsonify'),
   require('./helper/logging'),

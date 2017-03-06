@@ -17,6 +17,26 @@ module.exports.tests.interface = (test, common) => {
   });
 };
 
+module.exports.tests.do_nothing_service = (test, common) => {
+  test('undefined PiP uri should return service that logs fact that PiP service is not available', (t) => {
+    const logger = require('pelias-mock-logger')();
+
+    const service = proxyquire('../../../service/pointinpolygon', {
+      'pelias-logger': logger
+    })();
+
+    service({ lat: 12.121212, lon: 21.212121 }, (err) => {
+      t.deepEquals(logger.getWarnMessages(), [
+        'point-in-polygon service disabled'
+      ]);
+      t.equals(err, 'point-in-polygon service disabled, unable to resolve {"lat":12.121212,"lon":21.212121}');
+      t.end();
+    });
+
+  });
+
+};
+
 module.exports.tests.success = (test, common) => {
   test('lat and lon should be passed to server', (t) => {
     const pipServer = require('express')();
@@ -28,12 +48,21 @@ module.exports.tests.success = (test, common) => {
     });
 
     const server = pipServer.listen();
+    const port = server.address().port;
 
-    const service = setup(`http://localhost:${server.address().port}`);
+    const logger = require('pelias-mock-logger')();
+
+    const service = proxyquire('../../../service/pointinpolygon', {
+      'pelias-logger': logger
+    })(`http://localhost:${port}`);
 
     service({ lat: 12.121212, lon: 21.212121}, (err, results) => {
       t.notOk(err);
       t.deepEquals(results, { field: 'value' });
+
+      t.ok(logger.isInfoMessage(`using point-in-polygon service at http://localhost:${port}`));
+      t.notOk(logger.hasErrorMessages());
+      
       t.end();
 
       server.close();
