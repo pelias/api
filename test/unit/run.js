@@ -11,9 +11,13 @@ var common = {
 var tests = [
   require('./app'),
   require('./schema'),
+  require('./controller/coarse_reverse'),
   require('./controller/index'),
   require('./controller/place'),
   require('./controller/search'),
+  require('./controller/predicates/has_data'),
+  require('./controller/predicates/has_errors'),
+  require('./controller/predicates/is_coarse_reverse'),
   require('./helper/diffPlaces'),
   require('./helper/geojsonify'),
   require('./helper/logging'),
@@ -73,7 +77,8 @@ var tests = [
   require('./sanitizer/wrap'),
   require('./service/mget'),
   require('./service/search'),
-  require('./service/interpolation')
+  require('./service/interpolation'),
+  require('./service/pointinpolygon')
 ];
 
 tests.map(function(t) {

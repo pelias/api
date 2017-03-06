@@ -1,6 +1,10 @@
 var Router = require('express').Router;
 var elasticsearch = require('elasticsearch');
 
+const all = require('predicates').all;
+const any = require('predicates').any;
+const not = require('predicates').not;
+
 /** ----------------------- sanitizers ----------------------- **/
 var sanitizers = {
   autocomplete: require('../sanitizer/autocomplete'),
@@ -20,6 +24,7 @@ var middleware = {
 /** ----------------------- controllers ----------------------- **/
 
 var controllers = {
+  coarse_reverse: require('../controller/coarse_reverse'),
   mdToHTML: require('../controller/markdownToHtml'),
   place: require('../controller/place'),
   search: require('../controller/search'),
@@ -55,6 +60,17 @@ var postProc = {
   assignLabels: require('../middleware/assignLabels')
 };
 
+// make configurable to return do-nothing service if PIP URL not set
+const pipService = require('../service/pointinpolygon')('http://localhost:3102');
+
+// predicates that drive whether controller/search runs
+const hasData = require('../controller/predicates/has_data');
+const hasErrors = require('../controller/predicates/has_errors');
+const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
+
+// shorthand for standard early-exit conditions
+const hasDataOrErrors = any(hasData, hasErrors);
+
 /**
  * Append routes to app
  *
@@ -80,9 +96,9 @@ function addRoutes(app, peliasConfig) {
       middleware.calcSize(),
       // 3rd parameter is which query module to use, use fallback/geodisambiguation
       //  first, then use original search strategy if first query didn't return anything
-      controllers.search(peliasConfig.api, esclient, queries.libpostal),
+      controllers.search(peliasConfig.api, esclient, queries.libpostal, not(hasDataOrErrors)),
       sanitizers.search_fallback.middleware,
-      controllers.search(peliasConfig.api, esclient, queries.fallback_to_old_prod),
+      controllers.search(peliasConfig.api, esclient, queries.fallback_to_old_prod, not(hasDataOrErrors)),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
@@ -101,7 +117,7 @@ function addRoutes(app, peliasConfig) {
     structured: createRouter([
       sanitizers.structured_geocoding.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig.api, esclient, queries.structured_geocoding),
+      controllers.search(peliasConfig.api, esclient, queries.structured_geocoding, not(hasDataOrErrors)),
       postProc.trimByGranularityStructured(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
@@ -119,7 +135,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     autocomplete: createRouter([
       sanitizers.autocomplete.middleware,
-      controllers.search(peliasConfig.api, esclient, queries.autocomplete),
+      controllers.search(peliasConfig.api, esclient, queries.autocomplete, not(hasDataOrErrors)),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
       postProc.dedupe(),
@@ -135,7 +151,8 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitizers.reverse.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig.api, esclient, queries.reverse),
+      controllers.coarse_reverse(pipService, all(isCoarseReverse, not(hasErrors))),
+      controllers.search(peliasConfig.api, esclient, queries.reverse, not(any(hasDataOrErrors, isCoarseReverse))),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
@@ -153,7 +170,7 @@ function addRoutes(app, peliasConfig) {
     nearby: createRouter([
       sanitizers.nearby.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig.api, esclient, queries.reverse),
+      controllers.search(peliasConfig.api, esclient, queries.reverse, not(hasDataOrErrors)),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
