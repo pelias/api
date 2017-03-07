@@ -80,6 +80,12 @@ function setup( apiConfig, esclient, query ){
           return;
         }
 
+        // if execution has gotten this far then one of three things happened:
+        // - the request didn't time out
+        // - maxRetries has been hit so we're giving up
+        // - another error occurred
+        // in either case, handle the error or results
+
         // error handler
         if( err ){
           if (_.isObject(err) && err.message) {
