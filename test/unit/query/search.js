@@ -603,6 +603,25 @@ module.exports.tests.city_country = function(test, common) {
 
   });
 
+  test('valid postalcode only search', function(t) {
+    var clean = {
+      parsed_text: {
+        postalcode: '90210'
+      },
+      text: '90210'
+    };
+
+    var query = generate(clean);
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_fallback_postalcode_only');
+
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_fallback_postalcode_only');
+    t.end();
+  });
+
+
 };
 
 module.exports.all = function (tape, common) {
