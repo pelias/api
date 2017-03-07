@@ -80,6 +80,21 @@ function addRoutes(app, peliasConfig) {
   const isPipServiceEnabled = require('../controller/predicates/is_pip_service_enabled')(peliasConfig.api.pipService);
   const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
 
+  const coarse_reverse_should_execute = all(
+    not(hasErrors), isPipServiceEnabled, isCoarseReverse
+  );
+
+  // execute under the following conditions:
+  // - there are no errors or data
+  // - request is not coarse OR pip service is disabled
+  const original_reverse_should_execute = all(
+    not(hasDataOrErrors),
+    any(
+      not(isCoarseReverse),
+      not(isPipServiceEnabled)
+    )
+  );
+
   var base = '/v1/';
 
   /** ------------------------- routers ------------------------- **/
@@ -151,23 +166,8 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitizers.reverse.middleware,
       middleware.calcSize(),
-      controllers.coarse_reverse(pipService,
-        all(
-          not(hasErrors), isPipServiceEnabled, isCoarseReverse
-        )
-      ),
-      controllers.search(peliasConfig.api, esclient, queries.reverse,
-        // execute under the following conditions:
-        // - there are no errors or data
-        // - request is not coarse OR pip service is disabled
-        all(
-          not(hasDataOrErrors),
-          any(
-            not(isCoarseReverse),
-            not(isPipServiceEnabled)
-          )
-        )
-      ),
+      controllers.coarse_reverse(pipService, coarse_reverse_should_execute),
+      controllers.search(peliasConfig.api, esclient, queries.reverse, original_reverse_should_execute),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
