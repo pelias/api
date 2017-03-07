@@ -19,6 +19,7 @@ var layers = [
   'street',
   'neighbourhood',
   'borough',
+  'postalcode',
   'locality',
   'localadmin',
   'county',

@@ -8,5 +8,6 @@ module.exports = [
   'localadmin',
   'locality',
   'borough',
-  'neighbourhood'
+  'neighbourhood',
+  'postalcode'
 ];

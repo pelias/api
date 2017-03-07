@@ -7,6 +7,7 @@ var DETAILS_PROPS = [
   { name: 'housenumber',       type: 'string' },
   { name: 'street',            type: 'string' },
   { name: 'postalcode',        type: 'string' },
+  { name: 'postalcode_gid',    type: 'string' },
   { name: 'confidence',        type: 'default' },
   { name: 'match_type',        type: 'string' },
   { name: 'distance',          type: 'default' },

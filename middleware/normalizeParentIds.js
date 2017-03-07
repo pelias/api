@@ -49,6 +49,10 @@ function normalizeParentIds(place) {
  * @return {string}
  */
 function makeNewId(placeType, id) {
+  if (!id) {
+    return;
+  }
+
   var doc = new Document('whosonfirst', placeType, id);
   return doc.getGid();
 }
