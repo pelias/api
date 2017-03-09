@@ -32,6 +32,7 @@ The API ships with several convenience commands (runnable via `npm`):
   * `npm run ciao`: run functional tests (this requires that the server be running)
   * `npm run docs`: generate API documentation
   * `npm run coverage`: generate code coverage reports
+  * `npm run config`: dump the configuration to the command line, which is useful for debugging configuration issues
 
 ## pelias-config
 The API recognizes the following properties under the top-level `api` key in your `pelias.json` config file:
@@ -95,5 +96,3 @@ Travis tests every release against Node.js versions `4` and `6`.
 We rely on semantic-release and Greenkeeper to maintain our module and dependency versions.
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/pelias/api.svg)](https://greenkeeper.io/)
-
-

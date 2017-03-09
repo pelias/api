@@ -17,7 +17,8 @@
     "travis": "npm test",
     "unit": "./bin/units",
     "validate": "npm ls",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "config": "node -e \"console.log(JSON.stringify(require( 'pelias-config' ).generate(require('./schema')), null, 2))\""
   },
   "repository": {
     "type": "git",
