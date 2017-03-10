@@ -195,6 +195,75 @@ module.exports = {
                 },
                 {
                   'bool': {
+                    '_name': 'fallback.postalcode',
+                    'must': [
+                      {
+                        'multi_match': {
+                          'query': 'postalcode value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.postalcode'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'city value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.locality',
+                            'parent.locality_a',
+                            'parent.localadmin',
+                            'parent.localadmin_a'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'county value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.county',
+                            'parent.county_a',
+                            'parent.macrocounty',
+                            'parent.macrocounty_a'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'state value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.region',
+                            'parent.region_a',
+                            'parent.macroregion',
+                            'parent.macroregion_a'
+                          ]
+                        }
+                      },
+                      {
+                        'multi_match': {
+                          'query': 'country value',
+                          'type': 'phrase',
+                          'fields': [
+                            'parent.country',
+                            'parent.country_a',
+                            'parent.dependency',
+                            'parent.dependency_a'
+                          ]
+                        }
+                      }
+                    ],
+                    'filter': {
+                      'term': {
+                        'layer': 'postalcode'
+                      }
+                    }
+                  }
+                },
+                {
+                  'bool': {
                     '_name': 'fallback.street',
                     'boost': 5,
                     'must': [

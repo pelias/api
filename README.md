@@ -7,8 +7,9 @@
 
 This is the API server for the Pelias project. It's the service that runs to process user HTTP requests and return results as GeoJSON by querying Elasticsearch.
 
+[![NPM](https://nodei.co/npm/pelias-api.png?downloads=true&stars=true)](https://nodei.co/npm/pelias-api)
+
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/pelias/api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/pelias/api.png?branch=master)](https://travis-ci.org/pelias/api)
 
 ## Documentation
 
@@ -31,6 +32,7 @@ The API ships with several convenience commands (runnable via `npm`):
   * `npm run ciao`: run functional tests (this requires that the server be running)
   * `npm run docs`: generate API documentation
   * `npm run coverage`: generate code coverage reports
+  * `npm run config`: dump the configuration to the command line, which is useful for debugging configuration issues
 
 ## pelias-config
 The API recognizes the following properties under the top-level `api` key in your `pelias.json` config file:
@@ -81,3 +83,16 @@ $ curl localhost:9200/pelias/_count?pretty
   ...
 }
 ```
+
+### Continuous Integration
+
+Travis tests every release against Node.js versions `4` and `6`.
+
+[![Build Status](https://travis-ci.org/pelias/api.png?branch=master)](https://travis-ci.org/pelias/api)
+
+
+### Versioning
+
+We rely on semantic-release and Greenkeeper to maintain our module and dependency versions.
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/pelias/api.svg)](https://greenkeeper.io/)
