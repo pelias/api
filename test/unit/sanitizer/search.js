@@ -83,6 +83,10 @@ module.exports.tests.sanitize = function(test, common) {
         called_sanitizers.push('_categories');
         return { errors: [], warnings: [] };
       },
+      '../sanitizer/_debug': function() {
+        called_sanitizers.push('_debug');
+        return { errors: [], warnings: [] };
+      }
     });
 
     var expected_sanitizers = [
@@ -98,7 +102,8 @@ module.exports.tests.sanitize = function(test, common) {
       '_flag_bool',
       '_geo_search',
       '_boundary_country',
-      '_categories'
+      '_categories',
+      '_debug'
     ];
 
     var req = {};

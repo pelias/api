@@ -44,6 +44,7 @@ var tests = [
   require('./query/structured_geocoding'),
   require('./query/text_parser'),
   require('./sanitizer/_boundary_country'),
+  require('./sanitizer/_debug'),
   require('./sanitizer/_flag_bool'),
   require('./sanitizer/_geo_common'),
   require('./sanitizer/_geo_reverse'),
