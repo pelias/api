@@ -53,7 +53,7 @@ module.exports.tests.false_conditions = (test, common) => {
   });
 
   test('request with layers just "address" or "venue" return false', (t) => {
-    ['address', 'venue'].forEach((non_coarse_layer) => {
+    ['address', 'street', 'venue'].forEach((non_coarse_layer) => {
       const req = {
         clean: {
           layers: [non_coarse_layer]
@@ -69,7 +69,7 @@ module.exports.tests.false_conditions = (test, common) => {
   });
 
   test('request with layers containing "address" or "venue" and a coarse layer should return false', (t) => {
-    ['address', 'venue'].forEach((non_coarse_layer) => {
+    ['address', 'street', 'venue'].forEach((non_coarse_layer) => {
       const req = {
         clean: {
           layers: [_.sample(coarse_layers), non_coarse_layer]
