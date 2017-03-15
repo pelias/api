@@ -163,7 +163,7 @@ function getQuery(params, vs) {
 }
 
 function forceLibpostal(params) {
-  return _.isSet(params, 'force_libpostal');
+  return _.get(params, 'force_libpostal', false);
 }
 
 function hasStreet(vs) {
