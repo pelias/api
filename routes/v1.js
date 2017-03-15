@@ -61,12 +61,12 @@ var postProc = {
 };
 
 // predicates that drive whether controller/search runs
-const hasData = require('../controller/predicates/has_data');
-const hasErrors = require('../controller/predicates/has_errors');
+const hasResponseData = require('../controller/predicates/has_response_data');
+const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
 
 // shorthand for standard early-exit conditions
-const hasDataOrErrors = any(hasData, hasErrors);
+const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
 
 /**
  * Append routes to app
@@ -81,14 +81,14 @@ function addRoutes(app, peliasConfig) {
   const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
 
   const coarse_reverse_should_execute = all(
-    not(hasErrors), isPipServiceEnabled, isCoarseReverse
+    not(hasRequestErrors), isPipServiceEnabled, isCoarseReverse
   );
 
   // execute under the following conditions:
   // - there are no errors or data
   // - request is not coarse OR pip service is disabled
   const original_reverse_should_execute = all(
-    not(hasDataOrErrors),
+    not(hasResponseDataOrRequestErrors),
     any(
       not(isCoarseReverse),
       not(isPipServiceEnabled)
@@ -111,9 +111,9 @@ function addRoutes(app, peliasConfig) {
       middleware.calcSize(),
       // 3rd parameter is which query module to use, use fallback/geodisambiguation
       //  first, then use original search strategy if first query didn't return anything
-      controllers.search(peliasConfig.api, esclient, queries.libpostal, not(hasDataOrErrors)),
+      controllers.search(peliasConfig.api, esclient, queries.libpostal, not(hasResponseDataOrRequestErrors)),
       sanitizers.search_fallback.middleware,
-      controllers.search(peliasConfig.api, esclient, queries.fallback_to_old_prod, not(hasDataOrErrors)),
+      controllers.search(peliasConfig.api, esclient, queries.fallback_to_old_prod, not(hasResponseDataOrRequestErrors)),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
@@ -132,7 +132,7 @@ function addRoutes(app, peliasConfig) {
     structured: createRouter([
       sanitizers.structured_geocoding.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig.api, esclient, queries.structured_geocoding, not(hasDataOrErrors)),
+      controllers.search(peliasConfig.api, esclient, queries.structured_geocoding, not(hasResponseDataOrRequestErrors)),
       postProc.trimByGranularityStructured(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
@@ -150,7 +150,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     autocomplete: createRouter([
       sanitizers.autocomplete.middleware,
-      controllers.search(peliasConfig.api, esclient, queries.autocomplete, not(hasDataOrErrors)),
+      controllers.search(peliasConfig.api, esclient, queries.autocomplete, not(hasResponseDataOrRequestErrors)),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
       postProc.dedupe(),
@@ -185,7 +185,7 @@ function addRoutes(app, peliasConfig) {
     nearby: createRouter([
       sanitizers.nearby.middleware,
       middleware.calcSize(),
-      controllers.search(peliasConfig.api, esclient, queries.reverse, not(hasDataOrErrors)),
+      controllers.search(peliasConfig.api, esclient, queries.reverse, not(hasResponseDataOrRequestErrors)),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first

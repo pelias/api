@@ -1,13 +1,13 @@
 'use strict';
 
 const _ = require('lodash');
-const has_data = require('../../../../controller/predicates/has_data');
+const has_response_data = require('../../../../controller/predicates/has_response_data');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.equal(typeof has_data, 'function', 'has_data is a function');
+    t.equal(typeof has_response_data, 'function', 'has_response_data is a function');
     t.end();
   });
 };
@@ -19,7 +19,7 @@ module.exports.tests.true_conditions = (test, common) => {
       data: [1]
     };
 
-    t.ok(has_data(req, res));
+    t.ok(has_response_data(req, res));
     t.end();
 
   });
@@ -31,7 +31,7 @@ module.exports.tests.false_conditions = (test, common) => {
     const req = {};
     const res = {};
 
-    t.notOk(has_data(req, res));
+    t.notOk(has_response_data(req, res));
     t.end();
 
   });
@@ -42,7 +42,7 @@ module.exports.tests.false_conditions = (test, common) => {
       data: []
     };
 
-    t.notOk(has_data(req, res));
+    t.notOk(has_response_data(req, res));
     t.end();
 
   });
@@ -51,7 +51,7 @@ module.exports.tests.false_conditions = (test, common) => {
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`GET /has_data ${name}`, testFunction);
+    return tape(`GET /has_response_data ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){
