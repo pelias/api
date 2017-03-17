@@ -1,6 +1,6 @@
 'use strict';
 
-const setup = require('../../../controller/search');
+const setup = require('../../../controller/place');
 const proxyquire =  require('proxyquire').noCallThru();
 
 module.exports.tests = {};
