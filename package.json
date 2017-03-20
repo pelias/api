@@ -67,7 +67,7 @@
     "through2": "^2.0.3"
   },
   "devDependencies": {
-    "ciao": "git://github.com/missinglink/ciao.git#sync",
+    "ciao": "^1.0.0",
     "difflet": "^1.0.1",
     "istanbul": "^0.4.2",
     "jshint": "^2.5.6",
