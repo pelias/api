@@ -20,6 +20,14 @@ module.exports.tests.defaults = function(test, common) {
 
     middleware(req, {}, function () {
       t.deepEqual( req.language, DEFAULTS, '$req.language set' );
+
+      t.deepEqual( req.clean.lang, {
+        defaulted: req.language.defaulted,
+        iso6391: req.language.iso6391,
+        iso6393: req.language.iso6393,
+        name: req.language.name
+      }, '$req.clean.lang set' );
+
       t.end();
     });
   });
@@ -34,6 +42,14 @@ module.exports.tests.invalid = function(test, common) {
 
     middleware(req, {}, function () {
       t.deepEqual( req.language, DEFAULTS, '$req.language set' );
+
+      t.deepEqual( req.clean.lang, {
+        defaulted: req.language.defaulted,
+        iso6391: req.language.iso6391,
+        iso6393: req.language.iso6393,
+        name: req.language.name
+      }, '$req.clean.lang set' );
+
       t.end();
     });
   });
@@ -59,6 +75,14 @@ module.exports.tests.valid = function(test, common) {
 
     middleware(req, {}, function () {
       t.deepEqual( req.language, expected, '$req.language set' );
+
+      t.deepEqual( req.clean.lang, {
+        defaulted: req.language.defaulted,
+        iso6391: req.language.iso6391,
+        iso6393: req.language.iso6393,
+        name: req.language.name
+      }, '$req.clean.lang set' );
+
       t.end();
     });
   });
