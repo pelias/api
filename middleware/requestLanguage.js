@@ -1,10 +1,10 @@
 
 /**
   this middleware is responsible for negotiating HTTP locales for incoming
-  browser requests by reading 'Accept-Language' request headers.
+  browser requests by reading the querystring param 'lang' or 'Accept-Language' request headers.
 
   the preferred language will then be available on the $req object:
-  eg. for 'Accept-Language: fr':
+  eg. for '?lang=fr' or 'Accept-Language: fr':
   ```
   console.log( req.language );
 
@@ -53,8 +53,11 @@ const allLocales = new locale.Locales( Object.keys( language ) );
 // return the middleware
 module.exports = function middleware( req, res, next ){
 
+  // input language, either from query param or header
+  var input = ( req.query && req.query.lang ) || ( req.headers && req.headers['accept-language'] );
+
   // parse request & choose best locale
-  var locales = new locale.Locales( req.headers['accept-language'] || '' );
+  var locales = new locale.Locales( input || '' );
   var best = locales.best( allLocales );
 
   // set $req.language property
