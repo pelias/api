@@ -188,6 +188,24 @@ module.exports.tests.query = function(test, common) {
 
   });
 
+  test('parsed_text with all fields should use FallbackQuery', function(t) {
+    var clean = {
+      parsed_text: {
+        postalcode: 'postalcode value'
+      }
+    };
+
+    var query = generate(clean);
+
+    var compiled = JSON.parse(JSON.stringify(query));
+    var expected = require('../fixture/structured_geocoding/postalcode_only');
+
+    t.deepEqual(compiled.type, 'fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'structured postalcode only');
+    t.end();
+
+  });
+
   test('valid boundary.country search', function(t) {
     var clean = {
       parsed_text: {
