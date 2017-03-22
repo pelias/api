@@ -28,6 +28,33 @@ module.exports.tests.defaults = function(test, common) {
         name: req.language.name
       }, '$req.clean.lang set' );
 
+      t.deepEqual( req.warnings, []);
+
+      t.end();
+    });
+  });
+  test('both querystring & header invalid', function(t) {
+
+    var req = {
+      headers: { 'accept-language': 'foobar' },
+      query: { 'lang': 'foobar' }
+    };
+
+    middleware(req, {}, function () {
+      t.deepEqual( req.language, DEFAULTS, '$req.language set' );
+
+      t.deepEqual( req.clean.lang, {
+        defaulted: req.language.defaulted,
+        iso6391: req.language.iso6391,
+        iso6393: req.language.iso6393,
+        name: req.language.name
+      }, '$req.clean.lang set' );
+
+      t.deepEqual( req.warnings, [
+        'invalid language provided via querystring',
+        'invalid language provided via header'
+      ]);
+
       t.end();
     });
   });
@@ -50,6 +77,10 @@ module.exports.tests.invalid = function(test, common) {
         name: req.language.name
       }, '$req.clean.lang set' );
 
+      t.deepEqual( req.warnings, [
+        'invalid language provided via header'
+      ]);
+
       t.end();
     });
   });
@@ -68,6 +99,10 @@ module.exports.tests.invalid = function(test, common) {
         iso6393: req.language.iso6393,
         name: req.language.name
       }, '$req.clean.lang set' );
+
+      t.deepEqual( req.warnings, [
+        'invalid language provided via querystring'
+      ]);
 
       t.end();
     });
@@ -102,6 +137,8 @@ module.exports.tests.valid = function(test, common) {
         name: req.language.name
       }, '$req.clean.lang set' );
 
+      t.deepEqual( req.warnings, []);
+
       t.end();
     });
   });
@@ -132,6 +169,8 @@ module.exports.tests.valid = function(test, common) {
         name: req.language.name
       }, '$req.clean.lang set' );
 
+      t.deepEqual( req.warnings, []);
+
       t.end();
     });
   });
@@ -155,6 +194,16 @@ module.exports.tests.valid = function(test, common) {
 
     middleware(req, {}, function () {
       t.deepEqual( req.language, expected, '$req.language set' );
+
+      t.deepEqual( req.clean.lang, {
+        defaulted: req.language.defaulted,
+        iso6391: req.language.iso6391,
+        iso6393: req.language.iso6393,
+        name: req.language.name
+      }, '$req.clean.lang set' );
+
+      t.deepEqual( req.warnings, []);
+
       t.end();
     });
   });
@@ -177,6 +226,16 @@ module.exports.tests.valid = function(test, common) {
 
     middleware(req, {}, function () {
       t.deepEqual( req.language, expected, '$req.language set' );
+
+      t.deepEqual( req.clean.lang, {
+        defaulted: req.language.defaulted,
+        iso6391: req.language.iso6391,
+        iso6393: req.language.iso6393,
+        name: req.language.name
+      }, '$req.clean.lang set' );
+
+      t.deepEqual( req.warnings, []);
+
       t.end();
     });
   });
@@ -210,6 +269,43 @@ module.exports.tests.precedence = function(test, common) {
         iso6393: req.language.iso6393,
         name: req.language.name
       }, '$req.clean.lang set' );
+
+      t.deepEqual( req.warnings, []);
+
+      t.end();
+    });
+  });
+  test('precedence: invalid querystring but valid header', function(t) {
+
+    var req = {
+      headers: { 'accept-language': 'fr' },
+      query: { 'lang': 'foobar' }
+    };
+
+    var expected = {
+      defaulted: false,
+      iso6391: 'fr',
+      iso6392B: 'fre',
+      iso6392T: 'fra',
+      iso6393: 'fra',
+      name: 'French',
+      scope: 'individual',
+      type: 'living'
+    };
+
+    middleware(req, {}, function () {
+      t.deepEqual( req.language, expected, '$req.language set' );
+
+      t.deepEqual( req.clean.lang, {
+        defaulted: req.language.defaulted,
+        iso6391: req.language.iso6391,
+        iso6393: req.language.iso6393,
+        name: req.language.name
+      }, '$req.clean.lang set' );
+
+      t.deepEqual( req.warnings, [
+        'invalid language provided via querystring'
+      ]);
 
       t.end();
     });

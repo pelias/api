@@ -1,4 +1,6 @@
 
+const _ = require('lodash');
+
 /**
   this middleware is responsible for negotiating HTTP locales for incoming
   browser requests by reading the querystring param 'lang' or 'Accept-Language' request headers.
@@ -53,19 +55,46 @@ const allLocales = new locale.Locales( Object.keys( language ) );
 // return the middleware
 module.exports = function middleware( req, res, next ){
 
-  // input language, either from query param or header
-  var input = ( req.query && req.query.lang ) || ( req.headers && req.headers['accept-language'] );
+  // init an object to store clean (sanitized) input parameters if not initialized
+  req.clean = req.clean || {};
 
-  // parse request & choose best locale
-  var locales = new locale.Locales( input || '' );
-  var best = locales.best( allLocales );
+  // init warnings array if not initialized
+  req.warnings = req.warnings || [];
+
+  // set defaults
+  var lang = language.en;
+  var isDefault = true;
+  var locales, best;
+
+  // input language via query param
+  if( isDefault && req.query && req.query.lang ){
+    locales = new locale.Locales( req.query.lang );
+    best = locales.best( allLocales );
+    if( best.defaulted ){
+      req.warnings.push( 'invalid language provided via querystring' );
+    } else {
+      lang = language[ best.language ];
+      isDefault = false;
+    }
+  }
+
+  // input language via request headers
+  if( isDefault && req.headers && req.headers['accept-language'] ){
+    locales = new locale.Locales( req.headers['accept-language'] );
+    best = locales.best( allLocales );
+    if( best.defaulted ){
+      req.warnings.push( 'invalid language provided via header' );
+    } else {
+      lang = language[ best.language ];
+      isDefault = false;
+    }
+  }
 
   // set $req.language property
-  req.language = language[ best.language ] || language.en;
-  req.language.defaulted = best.defaulted;
+  req.language = _.clone( lang );
+  req.language.defaulted = isDefault;
 
   // set $req.clean property in order to print language info in response header
-  req.clean = req.clean || {};
   req.clean.lang = {
     name: req.language.name,
     iso6391: req.language.iso6391,
