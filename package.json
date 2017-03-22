@@ -18,7 +18,8 @@
     "unit": "./bin/units",
     "validate": "npm ls",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "config": "node -e \"console.log(JSON.stringify(require( 'pelias-config' ).generate(require('./schema')), null, 2))\""
+    "config": "node -e \"console.log(JSON.stringify(require( 'pelias-config' ).generate(require('./schema')), null, 2))\"",
+    "check-dependencies": "node_modules/.bin/npm-check --production"
   },
   "repository": {
     "type": "git",
@@ -68,11 +69,17 @@
     "superagent": "^3.2.1",
     "through2": "^2.0.3"
   },
+  "optionalDependencies": {
+    "pelias-interpolation": "*"
+  },
   "devDependencies": {
     "ciao": "^1.0.0",
+    "depcheck": "^0.6.7",
+    "dependency-check": "^2.8.0",
     "difflet": "^1.0.1",
     "istanbul": "^0.4.2",
     "jshint": "^2.5.6",
+    "npm-check": "^5.4.0",
     "nsp": "^2.2.0",
     "precommit-hook": "^3.0.0",
     "proxyquire": "^1.7.10",
@@ -87,6 +94,7 @@
   "pre-commit": [
     "lint",
     "validate",
-    "test"
+    "test",
+    "check-dependencies"
   ]
 }
