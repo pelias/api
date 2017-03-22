@@ -18,7 +18,8 @@ var sanitizers = {
 
 /** ----------------------- middleware ------------------------ **/
 var middleware = {
-  calcSize: require('../middleware/sizeCalculator')
+  calcSize: require('../middleware/sizeCalculator'),
+  requestLanguage: require('../middleware/requestLanguage')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -108,6 +109,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     search: createRouter([
       sanitizers.search.middleware,
+      middleware.requestLanguage,
       middleware.calcSize(),
       // 3rd parameter is which query module to use, use fallback/geodisambiguation
       //  first, then use original search strategy if first query didn't return anything
@@ -131,6 +133,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     structured: createRouter([
       sanitizers.structured_geocoding.middleware,
+      middleware.requestLanguage,
       middleware.calcSize(),
       controllers.search(peliasConfig.api, esclient, queries.structured_geocoding, not(hasResponseDataOrRequestErrors)),
       postProc.trimByGranularityStructured(),
@@ -150,6 +153,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     autocomplete: createRouter([
       sanitizers.autocomplete.middleware,
+      middleware.requestLanguage,
       controllers.search(peliasConfig.api, esclient, queries.autocomplete, not(hasResponseDataOrRequestErrors)),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
@@ -165,6 +169,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     reverse: createRouter([
       sanitizers.reverse.middleware,
+      middleware.requestLanguage,
       middleware.calcSize(),
       controllers.coarse_reverse(pipService, coarse_reverse_should_execute),
       controllers.search(peliasConfig.api, esclient, queries.reverse, original_reverse_should_execute),
@@ -184,6 +189,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     nearby: createRouter([
       sanitizers.nearby.middleware,
+      middleware.requestLanguage,
       middleware.calcSize(),
       controllers.search(peliasConfig.api, esclient, queries.reverse, not(hasResponseDataOrRequestErrors)),
       postProc.distances('point.'),
@@ -202,6 +208,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     place: createRouter([
       sanitizers.place.middleware,
+      middleware.requestLanguage,
       controllers.place(peliasConfig.api, esclient),
       postProc.accuracy(),
       postProc.localNamingConventions(),
