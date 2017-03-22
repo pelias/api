@@ -14,7 +14,7 @@
     "lint": "jshint .",
     "start": "node index.js",
     "test": "npm run unit",
-    "travis": "npm test",
+    "travis": "npm run check-dependencies && npm test",
     "unit": "./bin/units",
     "validate": "npm ls",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
