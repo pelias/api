@@ -26,7 +26,7 @@ json.features.should.be.instanceof Array
 should.not.exist json.geocoding.errors
 
 #? expected warnings
-should.not.exist json.geocoding.warnings
+json.geocoding.warnings.should.eql [ 'invalid language provided via querystring' ]
 
 #? language
 json.geocoding.query['lang'].should.eql {
