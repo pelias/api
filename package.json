@@ -58,7 +58,7 @@
     "pelias-logger": "0.1.0",
     "pelias-mock-logger": "^1.0.1",
     "pelias-model": "4.5.1",
-    "pelias-query": "8.13.0",
+    "pelias-query": "8.14.0",
     "pelias-text-analyzer": "1.7.2",
     "predicates": "^1.0.1",
     "retry": "^0.10.1",
@@ -67,7 +67,7 @@
     "through2": "^2.0.3"
   },
   "devDependencies": {
-    "ciao": "^0.6.0",
+    "ciao": "^1.0.0",
     "difflet": "^1.0.1",
     "istanbul": "^0.4.2",
     "jshint": "^2.5.6",

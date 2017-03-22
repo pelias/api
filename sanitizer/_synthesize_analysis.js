@@ -50,10 +50,7 @@ function sanitize( raw, clean ){
 
   }, {});
 
-  if (isPostalCodeOnly(clean.parsed_text)) {
-    messages.errors.push('postalcode-only inputs are not supported');
-  }
-  else if (_.isEmpty(Object.keys(clean.parsed_text))) {
+  if (_.isEmpty(Object.keys(clean.parsed_text))) {
     messages.errors.push(
       `at least one of the following fields is required: ${Object.keys(fields).join(', ')}`);
   }
