@@ -1,5 +1,6 @@
 
 const _ = require('lodash');
+const logger = require( 'pelias-logger' ).get( 'api' );
 
 /**
   this middleware is responsible for negotiating HTTP locales for incoming
@@ -63,36 +64,35 @@ module.exports = function middleware( req, res, next ){
 
   // set defaults
   var lang = language.en;
-  var isDefault = true;
-  var locales, best;
+  var locales, best, via = 'default';
 
   // input language via query param
-  if( isDefault && req.query && req.query.lang ){
+  if( via === 'default' && req.query && req.query.lang ){
     locales = new locale.Locales( req.query.lang );
     best = locales.best( allLocales );
     if( best.defaulted ){
       req.warnings.push( 'invalid language provided via querystring' );
     } else {
       lang = language[ best.language ];
-      isDefault = false;
+      via = 'querystring';
     }
   }
 
   // input language via request headers
-  if( isDefault && req.headers && req.headers['accept-language'] ){
+  if( via === 'default' && req.headers && req.headers['accept-language'] ){
     locales = new locale.Locales( req.headers['accept-language'] );
     best = locales.best( allLocales );
     if( best.defaulted ){
       req.warnings.push( 'invalid language provided via header' );
     } else {
       lang = language[ best.language ];
-      isDefault = false;
+      via = 'header';
     }
   }
 
   // set $req.language property
   req.language = _.clone( lang );
-  req.language.defaulted = isDefault;
+  req.language.defaulted = ( via === 'default' );
 
   // set $req.clean property in order to print language info in response header
   req.clean.lang = {
@@ -101,6 +101,9 @@ module.exports = function middleware( req, res, next ){
     iso6393: req.language.iso6393,
     defaulted: req.language.defaulted
   };
+
+  // logging
+  logger.info( '[lang] \'%s\' via \'%s\'', lang.iso6391, via );
 
   next();
 };
