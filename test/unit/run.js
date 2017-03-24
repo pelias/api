@@ -39,6 +39,7 @@ var tests = [
   require('./middleware/normalizeParentIds'),
   require('./middleware/trimByGranularity'),
   require('./middleware/trimByGranularityStructured'),
+  require('./middleware/requestLanguage'),
   require('./query/autocomplete'),
   require('./query/autocomplete_defaults'),
   require('./query/search_defaults'),
