@@ -74,8 +74,6 @@
   },
   "devDependencies": {
     "ciao": "^1.0.0",
-    "depcheck": "^0.6.7",
-    "dependency-check": "^2.8.0",
     "difflet": "^1.0.1",
     "istanbul": "^0.4.2",
     "jshint": "^2.5.6",
