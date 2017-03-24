@@ -19,7 +19,7 @@
     "validate": "npm ls",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "config": "node -e \"console.log(JSON.stringify(require( 'pelias-config' ).generate(require('./schema')), null, 2))\"",
-    "check-dependencies": "node_modules/.bin/npm-check --production --update"
+    "check-dependencies": "node_modules/.bin/npm-check --production"
   },
   "repository": {
     "type": "git",
