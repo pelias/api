@@ -16,8 +16,8 @@ var _ = require('lodash');
 var layers = [
   'venue',
   'address',
-  'address_partial',
   'street',
+  'address_partial',
   'street_partial',
   'neighbourhood',
   'borough',
@@ -35,7 +35,7 @@ var layers = [
 // this helper method returns `true` if every result has a matched_query
 //  starting with `fallback.`
 function isFallbackQuery(results) {
-  return results.every(function(result) {
+  return results.every(function (result) {
     return result.hasOwnProperty('_matched_queries') &&
             !_.isEmpty(result._matched_queries) &&
             _.startsWith(result._matched_queries[0], 'fallback.');
