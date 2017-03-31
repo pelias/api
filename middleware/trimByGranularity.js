@@ -16,7 +16,9 @@ var _ = require('lodash');
 var layers = [
   'venue',
   'address',
+  'address_partial',
   'street',
+  'street_partial',
   'neighbourhood',
   'borough',
   'postalcode',
