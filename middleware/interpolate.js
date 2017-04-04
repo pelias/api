@@ -43,6 +43,13 @@ function setup() {
         res.data = results;
       }
 
+      // sort the results to ensure that addresses show up higher than street centroids      
+      res.data = res.data.sort((a, b) => {
+        if (a.layer === 'address' && b.layer !== 'address') { return -1; }
+        if (a.layer !== 'address' && b.layer === 'address') { return 1; }
+        return 0;
+      });
+
       // log the execution time, continue
       logger.info( '[interpolation] [took]', (new Date()).getTime() - timer, 'ms' );
       next();
