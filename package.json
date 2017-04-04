@@ -61,7 +61,7 @@
     "pelias-mock-logger": "^1.0.1",
     "pelias-model": "4.5.1",
     "pelias-query": "git://github.com/pelias/query.git#optional-locality",
-    "pelias-text-analyzer": "git://github.com/pelias/text-analyzer.git#dual-postalcodes",
+    "pelias-text-analyzer": "1.7.2",
     "predicates": "^1.0.1",
     "retry": "^0.10.1",
     "request": "^2.79.0",
