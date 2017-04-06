@@ -50,7 +50,7 @@ module.exports.tests.factory = function(test, common) {
     t.equal(adapter.constructor.name, 'NullTransport', 'NullTransport');
     t.equal(typeof adapter, 'object', 'adapter is an object');
     t.equal(typeof adapter.query, 'function', 'query is a function');
-    t.equal(adapter.query.length, 4, 'query function signature');
+    t.equal(adapter.query.length, 2, 'query function signature');
     t.end();
   });
 
@@ -67,7 +67,7 @@ module.exports.tests.factory = function(test, common) {
     t.equal(adapter.constructor.name, 'NullTransport', 'NullTransport');
     t.equal(typeof adapter, 'object', 'adapter is an object');
     t.equal(typeof adapter.query, 'function', 'query is a function');
-    t.equal(adapter.query.length, 4, 'query function signature');
+    t.equal(adapter.query.length, 2, 'query function signature');
     t.end();
   });
 
@@ -86,7 +86,7 @@ module.exports.tests.NullTransport = function(test, common) {
     delete process.env.PELIAS_CONFIG;
 
     // test null transport performs a no-op
-    adapter.query( null, null, null, function( err, res ){
+    adapter.query( null, function( err, res ){
       t.equal(err, undefined, 'no-op');
       t.equal(res, undefined, 'no-op');
       t.end();
