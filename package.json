@@ -57,7 +57,7 @@
     "pelias-categories": "1.2.0",
     "pelias-config": "2.8.0",
     "pelias-labels": "1.6.0",
-    "pelias-logger": "0.1.0",
+    "pelias-logger": "0.2.0",
     "pelias-mock-logger": "^1.0.1",
     "pelias-model": "4.6.0",
     "pelias-query": "8.15.0",
