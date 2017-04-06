@@ -1,20 +1,16 @@
 sudo: false
 language: node_js
-cache:
-  directories:
-    - node_modules
 notifications:
   email: false
 node_js:
   - 4
   - 6
 matrix:
-    fast_finish: true
-    allow_failures:
+  fast_finish: true
 env:
   global:
     - CXX=g++-4.8
-script: "npm run travis"
+script: npm run travis
 addons:
   apt:
     sources:
@@ -22,7 +18,7 @@ addons:
     packages:
       - g++-4.8
 before_install:
-  - npm i -g npm@^2.0.0
+  - npm i -g npm@^3.0.0
 before_script:
   - npm prune
 after_success:

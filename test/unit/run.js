@@ -30,6 +30,7 @@ var tests = [
   require('./middleware/confidenceScore'),
   require('./middleware/confidenceScoreFallback'),
   require('./middleware/confidenceScoreReverse'),
+  require('./middleware/changeLanguage'),
   require('./middleware/distance'),
   require('./middleware/interpolate'),
   require('./middleware/localNamingConventions'),
@@ -80,7 +81,8 @@ var tests = [
   require('./service/mget'),
   require('./service/search'),
   require('./service/interpolation'),
-  require('./service/pointinpolygon')
+  require('./service/pointinpolygon'),
+  require('./service/language')
 ];
 
 tests.map(function(t) {

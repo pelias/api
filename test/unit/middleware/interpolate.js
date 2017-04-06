@@ -190,6 +190,82 @@ module.exports.tests.hit = function(test, common) {
   });
 };
 
+// check the service is called and response mapped correctly
+module.exports.tests.hit = function(test, common) {
+  test('hit', function(t) {
+
+    var req = { clean: {
+      parsed_text: {
+        number: '1',
+        street: 'sesame st'
+      }}
+    };
+    var res = { data: [
+      {
+        layer: 'street',
+        center_point: { lat: 1, lon: 1 },
+        address_parts: { street: 'sesame rd' },
+        name: { default: 'street name' },
+        source_id: '123456'
+      },
+      {
+        layer: 'street',
+        center_point: { lat: 2, lon: 2 },
+        address_parts: { street: 'sesame rd' },
+        name: { default: 'street name' },
+        source_id: '654321'
+      }
+    ]};
+
+    var middleware = load();
+
+    // mock out the transport
+    middleware.transport.query = function mock(coord, number, street, cb) {
+      if (coord.lat === 2) {
+        t.deepEqual(coord, res.data[1].center_point);
+        t.deepEqual(number, req.clean.parsed_text.number);
+        t.deepEqual(street, res.data[1].address_parts.street);
+        t.equal(typeof cb, 'function');
+        return cb(null, {
+          properties: {
+            number: '100A',
+            source: 'OSM',
+            source_id: 'way:111111',
+            lat: 22.2,
+            lon: -33.3,
+          }
+        });
+      }
+      else {
+        return cb('miss');
+      }
+    };
+
+    middleware(req, res, function(){
+      t.deepEqual( res, { data: [
+        {
+          layer: 'address',
+          match_type: 'interpolated',
+          center_point: { lat: 22.2, lon: -33.3 },
+          address_parts: { street: 'sesame rd', number: '100A' },
+          name: { default: '100A street name' },
+          source: 'openstreetmap',
+          source_id: 'way:111111'
+        },
+        {
+          layer: 'street',
+          center_point: { lat: 1, lon: 1 },
+          address_parts: { street: 'sesame rd' },
+          name: { default: 'street name' },
+          source_id: '123456'
+        }
+      ]});
+      t.end();
+    });
+  });
+};
+
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
