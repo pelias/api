@@ -29,7 +29,7 @@ var logger = require( 'pelias-logger' ).get( 'api' ),
   disables the service completely
 **/
 function NullTransport(){}
-NullTransport.prototype.query = function( coord, number, street, cb ){
+NullTransport.prototype.query = function( ids, cb ){
   cb(); // no-op
 };
 
