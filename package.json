@@ -59,7 +59,7 @@
     "pelias-labels": "1.6.0",
     "pelias-logger": "0.1.0",
     "pelias-mock-logger": "^1.0.1",
-    "pelias-model": "4.5.1",
+    "pelias-model": "4.6.0",
     "pelias-query": "8.14.0",
     "pelias-text-analyzer": "1.7.3",
     "predicates": "^1.0.1",
