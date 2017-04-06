@@ -15,6 +15,8 @@ function setup() {
       return next();
     }
 
+    console.log(JSON.stringify(res.data, null, 2));
+    
     res.data = res.data.map(normalizeParentIds);
 
     next();
@@ -32,7 +34,16 @@ function normalizeParentIds(place) {
   if (place) {
     placeTypes.forEach(function (placeType) {
       if (place[placeType] && place[placeType].length > 0 && place[placeType][0]) {
-        place[placeType + '_gid'] = [ makeNewId(placeType, place[placeType + '_gid']) ];
+        var source = 'whosonfirst';
+
+        // looking forward to the day we can remove all geonames specific hacks, but until then...
+        // geonames sometimes has its own ids in the parent hierarchy, so it's dangerous to assume that 
+        // it's always WOF ids and hardcode to that
+        if (place.source === 'geonames' && place.source_id === place[placeType + '_gid'][0]) {
+          source = place.source;
+        }
+        
+        place[placeType + '_gid'] = [ makeNewId(source, placeType, place[placeType + '_gid']) ];
       }
     });
   }
@@ -48,12 +59,12 @@ function normalizeParentIds(place) {
  * @param {number} id
  * @return {string}
  */
-function makeNewId(placeType, id) {
+function makeNewId(source, placeType, id) {
   if (!id) {
     return;
   }
 
-  var doc = new Document('whosonfirst', placeType, id);
+  var doc = new Document(source, placeType, id);
   return doc.getGid();
 }
 
