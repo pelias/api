@@ -14,11 +14,12 @@
     "lint": "jshint .",
     "start": "node index.js",
     "test": "npm run unit",
-    "travis": "npm test",
+    "travis": "npm run check-dependencies && npm test",
     "unit": "./bin/units",
     "validate": "npm ls",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "config": "node -e \"console.log(JSON.stringify(require( 'pelias-config' ).generate(require('./schema')), null, 2))\""
+    "config": "node -e \"console.log(JSON.stringify(require( 'pelias-config' ).generate(require('./schema')), null, 2))\"",
+    "check-dependencies": "node_modules/.bin/npm-check --production --ignore pelias-interpolation"
   },
   "repository": {
     "type": "git",
@@ -74,6 +75,7 @@
     "difflet": "^1.0.1",
     "istanbul": "^0.4.2",
     "jshint": "^2.5.6",
+    "npm-check": "^5.4.0",
     "nsp": "^2.2.0",
     "precommit-hook": "^3.0.0",
     "proxyquire": "^1.7.10",
@@ -87,6 +89,7 @@
   "pre-commit": [
     "lint",
     "validate",
-    "test"
+    "test",
+    "check-dependencies"
   ]
 }
