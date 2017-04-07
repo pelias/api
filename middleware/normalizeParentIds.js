@@ -15,8 +15,6 @@ function setup() {
       return next();
     }
 
-    console.log(JSON.stringify(res.data, null, 2));
-    
     res.data = res.data.map(normalizeParentIds);
 
     next();
