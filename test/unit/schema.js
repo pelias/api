@@ -367,6 +367,86 @@ module.exports.tests.api_validation = (test, common) => {
 
   });
 
+  test('non-string api.pipService should throw error', (t) => {
+    [null, 17, {}, [], true].forEach((value) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          pipService: value
+        },
+        esclient: {}
+      };
+
+      t.throws(validate.bind(null, config), /"pipService" must be a string/);
+
+    });
+
+    t.end();
+
+  });
+
+  test('non-URI-formatted api.pipService should throw error', (t) => {
+    ['this is not a URI'].forEach((value) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          pipService: value
+        },
+        esclient: {}
+      };
+
+      t.throws(validate.bind(null, config), /"pipService" must be a valid uri/);
+
+    });
+
+    t.end();
+
+  });
+
+  test('non-http/https api.pipService should throw error', (t) => {
+    ['ftp', 'git', 'unknown'].forEach((scheme) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          pipService: `${scheme}://localhost`
+        },
+        esclient: {}
+      };
+
+      t.throws(validate.bind(null, config), /"pipService" must be a valid uri/);
+
+    });
+
+    t.end();
+
+  });
+
+  test('http/https api.pipService should not throw error', (t) => {
+    ['http', 'https'].forEach((scheme) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          pipService: `${scheme}://localhost`
+        },
+        esclient: {}
+      };
+
+      t.doesNotThrow(validate.bind(null, config), `${scheme} should be allowed`);
+
+    });
+
+    t.end();
+
+  });
+
 };
 
 module.exports.tests.esclient_validation = (test, common) => {

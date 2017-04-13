@@ -131,7 +131,7 @@ module.exports.tests.text_parser = function(test, common) {
     const messages = sanitizer(raw, clean);
 
     t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, ['postalcode-only inputs are not supported'], 'no errors');
+    t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
     t.end();
 

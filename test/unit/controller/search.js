@@ -55,7 +55,7 @@ module.exports.tests.success = function(test, common) {
           };
         }
       }
-    })(config, esclient, query);
+    })(config, esclient, query, () => { return true; });
 
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
@@ -119,7 +119,7 @@ module.exports.tests.success = function(test, common) {
           };
         }
       }
-    })(config, esclient, query);
+    })(config, esclient, query, () => { return true; });
 
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
@@ -183,7 +183,7 @@ module.exports.tests.success = function(test, common) {
           };
         }
       }
-    })(config, esclient, query);
+    })(config, esclient, query, () => { return true; });
 
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
@@ -263,7 +263,7 @@ module.exports.tests.success = function(test, common) {
           };
         }
       }
-    })(config, esclient, query);
+    })(config, esclient, query, () => { return true; });
 
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
@@ -341,7 +341,7 @@ module.exports.tests.timeout = function(test, common) {
           };
         }
       }
-    })(config, esclient, query);
+    })(config, esclient, query, () => { return true; });
 
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
@@ -392,7 +392,7 @@ module.exports.tests.timeout = function(test, common) {
 
         callback(timeoutError);
       }
-    })(config, esclient, query);
+    })(config, esclient, query, () => { return true; });
 
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
@@ -432,7 +432,7 @@ module.exports.tests.timeout = function(test, common) {
 
         callback(nonTimeoutError);
       }
-    })(config, esclient, query);
+    })(config, esclient, query, () => { return true; });
 
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
@@ -473,7 +473,7 @@ module.exports.tests.timeout = function(test, common) {
 
         callback(stringTypeError);
       }
-    })(config, esclient, query);
+    })(config, esclient, query, () => { return true; });
 
     const req = { clean: { }, errors: [], warnings: [] };
     const res = {};
@@ -494,49 +494,21 @@ module.exports.tests.timeout = function(test, common) {
 
 };
 
-module.exports.tests.existing_errors = function(test, common) {
-  test('req with errors should not call esclient or query', function(t) {
+module.exports.tests.should_execute = (test, common) => {
+  test('should_execute returning false and empty req.errors should call next', (t) => {
     const esclient = () => {
       throw new Error('esclient should not have been called');
     };
     const query = () => {
       throw new Error('query should not have been called');
     };
-    const controller = setup( {}, esclient, query );
-
-    // the existence of `errors` means that a sanitizer detected an error,
-    //  so don't call the esclient
-    const req = {
-      errors: ['error']
-    };
-    const res = { };
-
-    t.doesNotThrow(() => {
-      controller(req, res, () => {});
-    });
-    t.end();
-
-  });
-
-};
-
-module.exports.tests.existing_results = function(test, common) {
-  test('res with existing data should not call esclient or query', function(t) {
-    const esclient = () => {
-      throw new Error('esclient should not have been called');
-    };
-    const query = () => {
-      throw new Error('query should not have been called');
-    };
-    const controller = setup( {}, esclient, query );
+    const controller = setup( {}, esclient, query, () => { return false; } );
 
     const req = { };
-    // the existence of `data` means that there are already results so
-    // don't call esclient or query
-    const res = { data: [{}] };
+    const res = { };
 
-    const next = function() {
-      t.deepEqual(res, {data: [{}]});
+    const next = () => {
+      t.deepEqual(res, { });
       t.end();
     };
     controller(req, res, next);
@@ -559,7 +531,7 @@ module.exports.tests.undefined_query = function(test, common) {
         search_service_was_called = true;
         throw new Error('search service should not have been called');
       }
-    })(undefined, undefined, query);
+    })(undefined, undefined, query, () => { return true; });
 
     const next = () => {
       t.notOk(search_service_was_called, 'should have returned before search service was called');

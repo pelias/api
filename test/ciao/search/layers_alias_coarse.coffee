@@ -44,5 +44,6 @@ json.geocoding.query.layers.should.eql [ "continent",
   "borough",
   "neighbourhood",
   "microhood",
-  "disputed"
+  "disputed",
+  "postalcode"
 ]

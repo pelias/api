@@ -11,9 +11,14 @@ var common = {
 var tests = [
   require('./app'),
   require('./schema'),
+  require('./controller/coarse_reverse'),
   require('./controller/index'),
   require('./controller/place'),
   require('./controller/search'),
+  require('./controller/predicates/has_response_data'),
+  require('./controller/predicates/has_request_errors'),
+  require('./controller/predicates/is_coarse_reverse'),
+  require('./controller/predicates/is_pip_service_enabled'),
   require('./helper/diffPlaces'),
   require('./helper/geojsonify'),
   require('./helper/logging'),
@@ -25,6 +30,7 @@ var tests = [
   require('./middleware/confidenceScore'),
   require('./middleware/confidenceScoreFallback'),
   require('./middleware/confidenceScoreReverse'),
+  require('./middleware/changeLanguage'),
   require('./middleware/distance'),
   require('./middleware/interpolate'),
   require('./middleware/localNamingConventions'),
@@ -34,6 +40,7 @@ var tests = [
   require('./middleware/normalizeParentIds'),
   require('./middleware/trimByGranularity'),
   require('./middleware/trimByGranularityStructured'),
+  require('./middleware/requestLanguage'),
   require('./query/autocomplete'),
   require('./query/autocomplete_defaults'),
   require('./query/search_defaults'),
@@ -73,7 +80,9 @@ var tests = [
   require('./sanitizer/wrap'),
   require('./service/mget'),
   require('./service/search'),
-  require('./service/interpolation')
+  require('./service/interpolation'),
+  require('./service/pointinpolygon'),
+  require('./service/language')
 ];
 
 tests.map(function(t) {
