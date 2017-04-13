@@ -2,39 +2,30 @@ module.exports = {
   'query': {
     'function_score': {
       'query': {
-        'filtered': {
-          'query': {
-            'bool': {
-              'should': [
-                {
-                  'bool': {
-                    '_name': 'fallback.postalcode',
-                    'must': [
-                      {
-                        'multi_match': {
-                          'query': 'postalcode value',
-                          'type': 'phrase',
-                          'fields': [
-                            'parent.postalcode'
-                          ]
-                        }
-                      }
-                    ],
-                    'filter': {
-                      'term': {
-                        'layer': 'postalcode'
-                      }
+        'bool': {
+          'should': [
+            {
+              'bool': {
+                '_name': 'fallback.postalcode',
+                'must': [
+                  {
+                    'multi_match': {
+                      'query': 'postalcode value',
+                      'type': 'phrase',
+                      'fields': [
+                        'parent.postalcode'
+                      ]
                     }
                   }
+                ],
+                'filter': {
+                  'term': {
+                    'layer': 'postalcode'
+                  }
                 }
-              ]
+              }
             }
-          },
-          'filter': {
-            'bool': {
-              'must': []
-            }
-          }
+          ]
         }
       },
       'max_boost': 20,
