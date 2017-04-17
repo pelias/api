@@ -64,7 +64,7 @@ module.exports.tests.failure_conditions = (test, common) => {
 
   });
 
-  test('server returning non-200/404 response should log error and return no results', (t) => {
+  test('server returning non-200 response should log error and return no results', (t) => {
     const placeholderServer = express();
     placeholderServer.get('/search', (req, res, next) => {
       res.status(400).send('a bad request was made');
@@ -92,10 +92,11 @@ module.exports.tests.failure_conditions = (test, common) => {
 
   });
 
-  test('server returning 404 statusCode should log debug message and return no error or results', (t) => {
+  test('server returning 404 statusCode should be treated the same as other statusCodes', (t) => {
+    // at one point placeholder treated 0 results as a 404 instead of just an unparseable input
     const placeholderServer = express();
     placeholderServer.get('/search', (req, res, next) => {
-      res.status(404).send('no results found');
+      res.status(404).send('resource not found');
     });
 
     const server = placeholderServer.listen();
@@ -108,9 +109,10 @@ module.exports.tests.failure_conditions = (test, common) => {
     })(`http://localhost:${port}`);
 
     service.search('search text', 'search lang', (err, results) => {
-      t.notOk(err);
-      t.deepEquals(results, [], 'should return an empty array');
-      t.ok(logger.isDebugMessage('returned 0 results for \'search text\''));
+      t.equals(err, `http://localhost:${port}/search?text=search%20text&lang=search%20lang returned status 404: resource not found`);
+      t.notOk(results);
+      t.ok(logger.isErrorMessage(`http://localhost:${port}/search?text=search%20text&lang=search%20lang ` +
+        `returned status 404: resource not found`));
       t.end();
 
       server.close();
