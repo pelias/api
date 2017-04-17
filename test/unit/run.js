@@ -14,11 +14,13 @@ var tests = [
   require('./controller/coarse_reverse'),
   require('./controller/index'),
   require('./controller/place'),
+  require('./controller/placeholder'),
   require('./controller/search'),
   require('./controller/predicates/has_response_data'),
   require('./controller/predicates/has_request_errors'),
+  require('./controller/predicates/is_admin_only_analysis'),
   require('./controller/predicates/is_coarse_reverse'),
-  require('./controller/predicates/is_pip_service_enabled'),
+  require('./controller/predicates/is_service_enabled'),
   require('./helper/diffPlaces'),
   require('./helper/geojsonify'),
   require('./helper/logging'),
@@ -81,6 +83,7 @@ var tests = [
   require('./service/mget'),
   require('./service/search'),
   require('./service/interpolation'),
+  require('./service/placeholder'),
   require('./service/pointinpolygon'),
   require('./service/language')
 ];

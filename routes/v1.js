@@ -28,6 +28,7 @@ var controllers = {
   coarse_reverse: require('../controller/coarse_reverse'),
   mdToHTML: require('../controller/markdownToHtml'),
   place: require('../controller/place'),
+  placeholder: require('../controller/placeholder'),
   search: require('../controller/search'),
   status: require('../controller/status')
 };
@@ -66,6 +67,7 @@ var postProc = {
 const hasResponseData = require('../controller/predicates/has_response_data');
 const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
+const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_analysis');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
@@ -79,11 +81,18 @@ const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
 function addRoutes(app, peliasConfig) {
   const esclient = elasticsearch.Client(peliasConfig.esclient);
 
-  const isPipServiceEnabled = require('../controller/predicates/is_pip_service_enabled')(peliasConfig.api.pipService);
+  const isPipServiceEnabled = require('../controller/predicates/is_service_enabled')(peliasConfig.api.pipService);
+  const isPlaceholderServiceEnabled = require('../controller/predicates/is_service_enabled')(peliasConfig.api.placeholderService);
+
   const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
+  const placeholderService = require('../service/placeholder')('http://localhost:3000/parser');
 
   const coarse_reverse_should_execute = all(
     not(hasRequestErrors), isPipServiceEnabled, isCoarseReverse
+  );
+
+  const placeholderShouldExecute = all(
+    not(hasResponseDataOrRequestErrors), isPlaceholderServiceEnabled, isAdminOnlyAnalysis
   );
 
   // execute under the following conditions:
@@ -112,6 +121,7 @@ function addRoutes(app, peliasConfig) {
       sanitizers.search.middleware,
       middleware.requestLanguage,
       middleware.calcSize(),
+      controllers.placeholder(placeholderService, placeholderShouldExecute),
       // 3rd parameter is which query module to use, use fallback/geodisambiguation
       //  first, then use original search strategy if first query didn't return anything
       controllers.search(peliasConfig.api, esclient, queries.libpostal, not(hasResponseDataOrRequestErrors)),
@@ -143,7 +153,7 @@ function addRoutes(app, peliasConfig) {
       postProc.confidenceScores(peliasConfig.api),
       postProc.confidenceScoresFallback(),
       postProc.interpolate(),
-      postProc.dedupe(),      
+      postProc.dedupe(),
       postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
