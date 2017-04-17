@@ -2,32 +2,28 @@ module.exports = {
   'query': {
     'function_score': {
       'query': {
-        'filtered': {
-          'query': {
-            'bool': {
-              'should': [
-                {
-                  'bool': {
-                    '_name': 'fallback.street',
-                    'boost': 5,
-                    'must': [
-                      {
-                        'match_phrase': {
-                          'address_parts.street': 'street value'
-                        }
-                      }
-                    ],
-                    'should': [],
-                    'filter': {
-                      'term': {
-                        'layer': 'street'
-                      }
+        'bool': {
+          'should': [
+            {
+              'bool': {
+                '_name': 'fallback.street',
+                'boost': 5,
+                'must': [
+                  {
+                    'match_phrase': {
+                      'address_parts.street': 'street value'
                     }
                   }
+                ],
+                'should': [],
+                'filter': {
+                  'term': {
+                    'layer': 'street'
+                  }
                 }
-              ]
+              }
             }
-          },
+          ],
           'filter': {
             'bool': {
               'must': [
