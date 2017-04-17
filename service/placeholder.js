@@ -37,14 +37,8 @@ module.exports = function setup(url) {
                   return callback(`${encodeURI(requestUrl)} could not parse response: ${data}`);
                 }
               }
-              else if (response.statusCode === 404) {
-                // placeholder returns a 404 when no results are found which
-                // should be handled differently since it's technically not an error
-                logger.debug(`returned 0 results for '${text}'`);
-                return callback(null, []);
-              }
               else {
-                // otherwise there was a non-200/404 status so handle generically
+                // otherwise there was a non-200 status so handle generically
                 logger.error(`${encodeURI(requestUrl)} returned status ${response.statusCode}: ${data}`);
                 return callback(`${encodeURI(requestUrl)} returned status ${response.statusCode}: ${data}`);
               }
