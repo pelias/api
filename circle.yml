@@ -4,6 +4,14 @@ machine:
   node:
     version: 0.12.2
 
+general:
+  artifacts:
+    - "./coverage"
+
+test:
+  post:
+    - npm run coverage
+
 deployment:
   dev:
     branch: master
