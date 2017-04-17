@@ -447,6 +447,86 @@ module.exports.tests.api_validation = (test, common) => {
 
   });
 
+  test('non-string api.placeholderService should throw error', (t) => {
+    [null, 17, {}, [], true].forEach((value) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          placeholderService: value
+        },
+        esclient: {}
+      };
+
+      t.throws(validate.bind(null, config), /"placeholderService" must be a string/);
+
+    });
+
+    t.end();
+
+  });
+
+  test('non-URI-formatted api.placeholderService should throw error', (t) => {
+    ['this is not a URI'].forEach((value) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          placeholderService: value
+        },
+        esclient: {}
+      };
+
+      t.throws(validate.bind(null, config), /"placeholderService" must be a valid uri/);
+
+    });
+
+    t.end();
+
+  });
+
+  test('non-http/https api.placeholderService should throw error', (t) => {
+    ['ftp', 'git', 'unknown'].forEach((scheme) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          placeholderService: `${scheme}://localhost`
+        },
+        esclient: {}
+      };
+
+      t.throws(validate.bind(null, config), /"placeholderService" must be a valid uri/);
+
+    });
+
+    t.end();
+
+  });
+
+  test('http/https api.placeholderService should not throw error', (t) => {
+    ['http', 'https'].forEach((scheme) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          placeholderService: `${scheme}://localhost`
+        },
+        esclient: {}
+      };
+
+      t.doesNotThrow(validate.bind(null, config), `${scheme} should be allowed`);
+
+    });
+
+    t.end();
+
+  });
+
 };
 
 module.exports.tests.esclient_validation = (test, common) => {

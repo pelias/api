@@ -26,7 +26,8 @@ module.exports = Joi.object().keys({
     localization: Joi.object().keys({
       flipNumberAndStreetCountries: Joi.array().items(Joi.string().regex(/^[A-Z]{3}$/))
     }).unknown(false),
-    pipService: Joi.string().uri({ scheme: /https?/ })
+    pipService: Joi.string().uri({ scheme: /https?/ }),
+    placeholderService: Joi.string().uri({ scheme: /https?/ })
 
   }).requiredKeys('version', 'indexName', 'host').unknown(true),
   esclient: Joi.object().keys({
