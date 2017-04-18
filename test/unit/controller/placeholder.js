@@ -49,7 +49,7 @@ module.exports.tests.success = function(test, common) {
     let placeholderService_was_called = false;
 
     const placeholderService = {
-      search: (text, language, callback) => {
+      search: (text, language, do_not_track, callback) => {
         t.equals(text, 'query value');
         t.equals(language, 'language value');
         placeholderService_was_called = true;
@@ -206,7 +206,7 @@ module.exports.tests.success = function(test, common) {
     ];
 
     const placeholderService = {
-      search: (text, language, callback) => {
+      search: (text, language, do_not_track, callback) => {
         t.equals(text, 'query value');
         t.equals(language, 'language value');
         placeholderService_was_called = true;
@@ -359,6 +359,89 @@ module.exports.tests.success = function(test, common) {
     controller(req, res, () => {
       t.ok(placeholderService_was_called);
       t.deepEquals(res, expected_res);
+      t.end();
+    });
+
+  });
+
+};
+
+module.exports.tests.do_not_track = function(test, common) {
+  test('do_not_track enabled should pass header with `true` value to service', (t) => {
+    let placeholderService_was_called = false;
+
+    const placeholderService = {
+      search: (text, language, do_not_track, callback) => {
+        t.ok(do_not_track, 'should be true');
+        placeholderService_was_called = true;
+        callback(null, []);
+      }
+    };
+
+    const should_execute = (req, res) => {
+      return true;
+    };
+
+    const controller = proxyquire('../../../controller/placeholder', {
+      '../helper/logging': {
+        isDNT: (req) => {
+          return true;
+        }
+      }
+    })(placeholderService, should_execute);
+
+    const req = {
+      clean: {
+        text: 'query value',
+        lang: {
+          iso6393: 'language value'
+        }
+      }
+    };
+    const res = { b: 2 };
+
+    controller(req, res, () => {
+      t.ok(placeholderService_was_called);
+      t.end();
+    });
+
+  });
+
+  test('do_not_track disabled should pass header with `false` value to service', (t) => {
+    let placeholderService_was_called = false;
+
+    const placeholderService = {
+      search: (text, language, do_not_track, callback) => {
+        t.notOk(do_not_track, 'should be false');
+        placeholderService_was_called = true;
+        callback(null, []);
+      }
+    };
+
+    const should_execute = (req, res) => {
+      return true;
+    };
+
+    const controller = proxyquire('../../../controller/placeholder', {
+      '../helper/logging': {
+        isDNT: (req) => {
+          return false;
+        }
+      }
+    })(placeholderService, should_execute);
+
+    const req = {
+      clean: {
+        text: 'query value',
+        lang: {
+          iso6393: 'language value'
+        }
+      }
+    };
+    const res = { b: 2 };
+
+    controller(req, res, () => {
+      t.ok(placeholderService_was_called);
       t.end();
     });
 
