@@ -26,7 +26,7 @@ module.exports.tests.do_nothing_service = (test, common) => {
       'pelias-logger': logger
     })();
 
-    service.search('search text', 'search lang', (err) => {
+    service.search('search text', 'search lang', false, (err) => {
       t.deepEquals(logger.getWarnMessages(), [
         'placeholder service disabled'
       ]);
@@ -52,7 +52,7 @@ module.exports.tests.failure_conditions = (test, common) => {
       'pelias-logger': logger
     })(`http://localhost:${port}`);
 
-    service.search('search text', 'search lang', (err, results) => {
+    service.search('search text', 'search lang', false, (err, results) => {
       t.equals(err.code, 'ECONNREFUSED');
       t.notOk(results);
       t.ok(logger.isErrorMessage(/ECONNREFUSED/), 'there should be a connection refused error message');
@@ -79,7 +79,7 @@ module.exports.tests.failure_conditions = (test, common) => {
       'pelias-logger': logger
     })(`http://localhost:${port}`);
 
-    service.search('search text', 'search lang', (err, results) => {
+    service.search('search text', 'search lang', false, (err, results) => {
       t.equals(err, `http://localhost:${port}/search?text=search%20text&lang=search%20lang returned status 400: a bad request was made`);
       t.notOk(results);
       t.ok(logger.isErrorMessage(`http://localhost:${port}/search?text=search%20text&lang=search%20lang ` +
@@ -108,7 +108,7 @@ module.exports.tests.failure_conditions = (test, common) => {
       'pelias-logger': logger
     })(`http://localhost:${port}`);
 
-    service.search('search text', 'search lang', (err, results) => {
+    service.search('search text', 'search lang', false, (err, results) => {
       t.equals(err, `http://localhost:${port}/search?text=search%20text&lang=search%20lang returned status 404: resource not found`);
       t.notOk(results);
       t.ok(logger.isErrorMessage(`http://localhost:${port}/search?text=search%20text&lang=search%20lang ` +
@@ -136,7 +136,7 @@ module.exports.tests.failure_conditions = (test, common) => {
       'pelias-logger': logger
     })(`http://localhost:${port}`);
 
-    service.search('search text', 'search lang', (err, results) => {
+    service.search('search text', 'search lang', false, (err, results) => {
       t.equals(err, `http://localhost:${port}/search?text=search%20text&lang=search%20lang ` +
         `could not parse response: this is not parseable as JSON`);
       t.notOk(results, 'should return undefined');
@@ -170,7 +170,7 @@ module.exports.tests.success_conditions = (test, common) => {
       'pelias-logger': logger
     })(`http://localhost:${port}`);
 
-    service.search('search text', 'search lang', (err, results) => {
+    service.search('search text', 'search lang', false, (err, results) => {
       t.notOk(err, 'should be no error');
       t.deepEquals(results, [1, 2, 3]);
       t.notOk(logger.hasErrorMessages());
@@ -179,6 +179,62 @@ module.exports.tests.success_conditions = (test, common) => {
       server.close();
 
     });
+
+  });
+
+};
+
+module.exports.tests.do_not_track_header = (test, common) => {
+  test('true do_not_track value should be passed in \'DNT\' header', (t) => {
+    const placeholderServer = express();
+    placeholderServer.get('/search', (req, res, next) => {
+      t.equals(req.headers.dnt, '1');
+      res.status(200).send([]);
+    });
+
+    const server = placeholderServer.listen();
+    const port = server.address().port;
+
+    const logger = require('pelias-mock-logger')();
+
+    const service = proxyquire('../../../service/placeholder', {
+      'pelias-logger': logger
+    })(`http://localhost:${port}`);
+
+    service.search('search text', 'search lang', true, (err, results) => {
+      t.deepEquals(results, []);
+      server.close();
+    });
+
+    t.end();
+
+  });
+
+  test('false do_not_track value should not pass a \'DNT\' header', (t) => {
+    [true, false].forEach((do_not_track) => {
+      const placeholderServer = express();
+      placeholderServer.get('/search', (req, res, next) => {
+        t.notOk(req.headers.hasOwnProperty('DNT'));
+        res.status(200).send([]);
+      });
+
+      const server = placeholderServer.listen();
+      const port = server.address().port;
+
+      const logger = require('pelias-mock-logger')();
+
+      const service = proxyquire('../../../service/placeholder', {
+        'pelias-logger': logger
+      })(`http://localhost:${port}`);
+
+      service.search('search text', 'search lang', false, (err, results) => {
+        t.deepEquals(results, []);
+        server.close();
+      });
+
+    });
+
+    t.end();
 
   });
 

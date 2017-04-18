@@ -56,7 +56,7 @@ function setup(placeholderService, should_execute) {
       return next();
     }
 
-    placeholderService.search(req.clean.text, req.clean.lang.iso6393, (err, results) => {
+    placeholderService.search(req.clean.text, req.clean.lang.iso6393, logging.isDNT(req), (err, results) => {
       res.meta = {};
       res.data = _.flatten(results.map((result) => {
         return synthesizeDocs(result);
