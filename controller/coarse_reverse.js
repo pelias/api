@@ -1,6 +1,7 @@
 const logger = require('pelias-logger').get('coarse_reverse');
 const _ = require('lodash');
 const Document = require('pelias-model').Document;
+const isDNT = require('../helper/logging').isDNT;
 
 const granularities = [
   'neighbourhood',
@@ -88,7 +89,7 @@ function setup(service, should_execute) {
       lon: req.clean['point.lon']
     };
 
-    service(centroid, (err, results) => {
+    service(centroid, isDNT(req), (err, results) => {
       // if there's an error, log it and bail
       if (err) {
         logger.error(err);
