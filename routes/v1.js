@@ -85,7 +85,7 @@ function addRoutes(app, peliasConfig) {
   const isPlaceholderServiceEnabled = require('../controller/predicates/is_service_enabled')(peliasConfig.api.placeholderService);
 
   const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
-  const placeholderService = require('../service/placeholder')('http://localhost:3000/parser');
+  const placeholderService = require('../service/placeholder')(peliasConfig.api.placeholderService);
 
   const coarse_reverse_should_execute = all(
     not(hasRequestErrors), isPipServiceEnabled, isCoarseReverse
