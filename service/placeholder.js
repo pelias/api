@@ -19,11 +19,15 @@ module.exports = function setup(url) {
   logger.info(`using placeholder service at ${url}`);
   return {
     search: (text, lang, do_not_track, callback) => {
-      const requestUrl = `${url}/search?text=${text}&lang=${lang}`;
+      const requestUrl = `${url}/search`;
 
       const options = {
         method: 'GET',
-        url: requestUrl
+        url: requestUrl,
+        qs: {
+          text: text,
+          lang: lang
+        }
       };
 
       if (do_not_track) {
@@ -40,22 +44,35 @@ module.exports = function setup(url) {
             try {
               const parsed = JSON.parse(data);
               return callback(null, parsed);
+              
             }
             catch (err) {
-              logger.error(`${encodeURI(requestUrl)} could not parse response: ${data}`);
-              return callback(`${encodeURI(requestUrl)} could not parse response: ${data}`);
+              if (do_not_track) {
+                logger.error(`${requestUrl} could not parse response: ${data}`);
+                return callback(`${requestUrl} could not parse response: ${data}`);
+              } else {
+                logger.error(`${response.request.href} could not parse response: ${data}`);
+                return callback(`${response.request.href} could not parse response: ${data}`);
+              }
+
             }
           }
           else {
             // otherwise there was a non-200 status so handle generically
-            logger.error(`${encodeURI(requestUrl)} returned status ${response.statusCode}: ${data}`);
-            return callback(`${encodeURI(requestUrl)} returned status ${response.statusCode}: ${data}`);
+            if (do_not_track) {
+              logger.error(`${requestUrl} returned status ${response.statusCode}: ${data}`);
+              return callback(`${requestUrl} returned status ${response.statusCode}: ${data}`);
+            } else {
+              logger.error(`${response.request.href} returned status ${response.statusCode}: ${data}`);
+              return callback(`${response.request.href} returned status ${response.statusCode}: ${data}`);
+            }
+
           }
         }));
 
       })
       .on('error', (err) => {
-        logger.error(JSON.stringify(err));
+        logger.error(`${requestUrl}: ${JSON.stringify(err)}`);
         callback(err);
       });
 

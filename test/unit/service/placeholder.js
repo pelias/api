@@ -64,6 +64,31 @@ module.exports.tests.failure_conditions = (test, common) => {
 
   });
 
+  test('server returning error should log it sanitized and return no results', (t) => {
+    const server = express().listen();
+    const port = server.address().port;
+
+    // immediately close the server so to ensure an error response
+    server.close();
+
+    const logger = require('pelias-mock-logger')();
+
+    const service = proxyquire('../../../service/placeholder', {
+      'pelias-logger': logger
+    })(`http://localhost:${port}`);
+
+    service.search('search text', 'search lang', false, (err, results) => {
+      t.equals(err.code, 'ECONNREFUSED');
+      t.notOk(results);
+      t.ok(logger.isErrorMessage(/ECONNREFUSED/), 'there should be a connection refused error message');
+      t.end();
+
+      server.close();
+
+    });
+
+  });
+
   test('server returning non-200 response should log error and return no results', (t) => {
     const placeholderServer = express();
     placeholderServer.get('/search', (req, res, next) => {
@@ -83,6 +108,34 @@ module.exports.tests.failure_conditions = (test, common) => {
       t.equals(err, `http://localhost:${port}/search?text=search%20text&lang=search%20lang returned status 400: a bad request was made`);
       t.notOk(results);
       t.ok(logger.isErrorMessage(`http://localhost:${port}/search?text=search%20text&lang=search%20lang ` +
+        `returned status 400: a bad request was made`));
+      t.end();
+
+      server.close();
+
+    });
+
+  });
+
+  test('server returning non-200 response should log sanitized error when do_not_track and return no results', (t) => {
+    const placeholderServer = express();
+    placeholderServer.get('/search', (req, res, next) => {
+      res.status(400).send('a bad request was made');
+    });
+
+    const server = placeholderServer.listen();
+    const port = server.address().port;
+
+    const logger = require('pelias-mock-logger')();
+
+    const service = proxyquire('../../../service/placeholder', {
+      'pelias-logger': logger
+    })(`http://localhost:${port}`);
+
+    service.search('search text', 'search lang', true, (err, results) => {
+      t.equals(err, `http://localhost:${port}/search returned status 400: a bad request was made`);
+      t.notOk(results);
+      t.ok(logger.isErrorMessage(`http://localhost:${port}/search ` +
         `returned status 400: a bad request was made`));
       t.end();
 
@@ -141,6 +194,35 @@ module.exports.tests.failure_conditions = (test, common) => {
         `could not parse response: this is not parseable as JSON`);
       t.notOk(results, 'should return undefined');
       t.ok(logger.isErrorMessage(`http://localhost:${port}/search?text=search%20text&lang=search%20lang ` +
+        `could not parse response: this is not parseable as JSON`));
+      t.end();
+
+      server.close();
+
+    });
+
+  });
+
+  test('server returning 200 statusCode but with non-JSON response should log sanitized error and return undefined', (t) => {
+    const placeholderServer = express();
+    placeholderServer.get('/search', (req, res, next) => {
+      res.status(200).send('this is not parseable as JSON');
+    });
+
+    const server = placeholderServer.listen();
+    const port = server.address().port;
+
+    const logger = require('pelias-mock-logger')();
+
+    const service = proxyquire('../../../service/placeholder', {
+      'pelias-logger': logger
+    })(`http://localhost:${port}`);
+
+    service.search('search text', 'search lang', true, (err, results) => {
+      t.equals(err, `http://localhost:${port}/search ` +
+        `could not parse response: this is not parseable as JSON`);
+      t.notOk(results, 'should return undefined');
+      t.ok(logger.isErrorMessage(`http://localhost:${port}/search ` +
         `could not parse response: this is not parseable as JSON`));
       t.end();
 
