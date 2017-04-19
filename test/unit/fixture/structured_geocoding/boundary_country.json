@@ -2,8 +2,12 @@
   "query": {
     "function_score": {
       "query": {
-        "bool": {
-          "should": [],
+        "filtered": {
+          "query": {
+            "bool": {
+              "should": []
+            }
+          },
           "filter": {
             "bool": {
               "must": [
