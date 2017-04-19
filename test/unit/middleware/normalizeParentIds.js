@@ -77,6 +77,112 @@ module.exports.tests.interface = function(test, common) {
     });
 
   });
+
+  test('Geonames ids do not override parent hierarchy with WOF equivalents', function(t) {
+
+    var input = {
+      data: [{
+        'parent': {
+          'country_id': [ '85633793' ],
+          'country': [ 'United States' ],
+          'country_a': [ 'USA' ],
+          'region_id': [ '85688579' ],
+          'region': [ 'Mississippi' ],
+          'region_a': [ 'MS' ]
+        },
+        'source': 'geonames',
+        'source_id': '4436296',
+        'layer': 'region',
+        'country': [ 'United States' ],
+        'country_a': [ 'USA' ],
+        'country_gid': [ '85633793' ],
+        'region': [ 'Mississippi' ],
+        'region_a': [ 'MS' ],
+        'region_gid': [ '85688579' ]
+      }]
+    };
+
+    var expected = {
+      data: [{
+        'parent': {
+          'country_id': [ '85633793' ],
+          'country': [ 'United States' ],
+          'country_a': [ 'USA' ],
+          'region_id': [ '85688579' ],
+          'region': [ 'Mississippi' ],
+          'region_a': [ 'MS' ]
+        },
+        'layer': 'region',
+        'source': 'geonames',
+        'source_id': '4436296',
+        'country': ['United States'],
+        'country_gid': ['whosonfirst:country:85633793'],
+        'country_a': ['USA'],
+        'region': ['Mississippi'],
+        'region_gid': ['whosonfirst:region:85688579'],
+        'region_a': ['MS']
+      }]
+    };
+
+    normalizer({}, input, function () {
+      t.deepEqual(input, expected);
+      t.end();
+    });
+
+  });
+
+  test('Geonames ids do not override parent hierarchy with WOF equivalents', function(t) {
+
+    var input = {
+      data: [{
+        'parent': {
+          'country_id': [ '85633793' ],
+          'country': [ 'United States' ],
+          'country_a': ['USA'],
+          'region_id': [ '4436296' ],
+          'region': [ 'Mississippi' ],
+          'region_a': [ 'MS' ]
+        },
+        'source': 'geonames',
+        'source_id': '4436296',
+        'layer': 'region',
+        'country': [ 'United States' ],
+        'country_a': [ 'USA' ],
+        'country_gid': ['85633793'],
+        'region': [ 'Mississippi' ],
+        'region_a': [ 'MS' ],
+        'region_gid': [ '4436296' ]
+      }]
+    };
+
+    var expected = {
+      data: [{
+        'parent': {
+          'country_id': [ '85633793' ],
+          'country': [ 'United States' ],
+          'country_a': [ 'USA' ],
+          'region_id': [ '4436296' ],
+          'region': [ 'Mississippi' ],
+          'region_a': [ 'MS' ]
+        },
+        'layer': 'region',
+        'source': 'geonames',
+        'source_id': '4436296',
+        'country': ['United States'],
+        'country_gid': ['whosonfirst:country:85633793'],
+        'country_a': ['USA'],
+        'region': ['Mississippi'],
+        'region_gid': ['geonames:region:4436296'],
+        'region_a': ['MS']
+      }]
+    };
+
+    normalizer({}, input, function () {
+      t.deepEqual(input, expected);
+      t.end();
+    });
+
+  });
 };
 
 module.exports.all = function (tape, common) {
