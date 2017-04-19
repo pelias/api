@@ -449,6 +449,102 @@ module.exports.tests.do_not_track = function(test, common) {
 
 };
 
+module.exports.tests.error_conditions = (test, common) => {
+  test('service return error string should add to req.errors', (t) => {
+    const placeholderService = {
+      search: (text, language, do_not_track, callback) => {
+        callback('placeholder service error', []);
+      }
+    };
+
+    const should_execute = (req, res) => {
+      return true;
+    };
+
+    const controller = placeholder(placeholderService, should_execute);
+
+    const req = {
+      clean: {
+        text: 'query value',
+        lang: {
+          iso6393: 'language value'
+        }
+      },
+      errors: []
+    };
+    const res = {};
+
+    controller(req, res, () => {
+      t.deepEquals(req.errors, ['placeholder service error']);
+      t.end();
+    });
+
+  });
+
+  test('service return error object should add message to req.errors', (t) => {
+    const placeholderService = {
+      search: (text, language, do_not_track, callback) => {
+        callback(Error('placeholder service error'), []);
+      }
+    };
+
+    const should_execute = (req, res) => {
+      return true;
+    };
+
+    const controller = placeholder(placeholderService, should_execute);
+
+    const req = {
+      clean: {
+        text: 'query value',
+        lang: {
+          iso6393: 'language value'
+        }
+      },
+      errors: []
+    };
+    const res = {};
+
+    controller(req, res, () => {
+      t.deepEquals(req.errors, ['placeholder service error']);
+      t.end();
+    });
+
+  });
+
+  test('service return error object should add stringified error to req.errors', (t) => {
+    const placeholderService = {
+      search: (text, language, do_not_track, callback) => {
+        callback({ error_key: 'error_value' }, []);
+      }
+    };
+
+    const should_execute = (req, res) => {
+      return true;
+    };
+
+    const controller = placeholder(placeholderService, should_execute);
+
+    const req = {
+      clean: {
+        text: 'query value',
+        lang: {
+          iso6393: 'language value'
+        }
+      },
+      errors: []
+    };
+    const res = {};
+
+    controller(req, res, () => {
+      t.deepEquals(req.errors, [{ error_key: 'error_value' }]);
+      t.end();
+    });
+
+  });
+
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {

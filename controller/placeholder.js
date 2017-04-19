@@ -57,10 +57,19 @@ function setup(placeholderService, should_execute) {
     }
 
     placeholderService.search(req.clean.text, req.clean.lang.iso6393, logging.isDNT(req), (err, results) => {
-      res.meta = {};
-      res.data = _.flatten(results.map((result) => {
-        return synthesizeDocs(result);
-      }));
+      if (err) {
+        if (_.isObject(err) && err.message) {
+          req.errors.push( err.message );
+        } else {
+          req.errors.push( err );
+        }
+
+      } else {
+        res.meta = {};
+        res.data = _.flatten(results.map((result) => {
+          return synthesizeDocs(result);
+        }));
+      }
 
       return next();
     });
