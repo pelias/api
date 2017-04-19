@@ -87,6 +87,8 @@ function setup(service, should_execute) {
       lat: req.clean['point.lat'],
       lon: req.clean['point.lon']
     };
+    
+    logger.info('[controller:coarse_reverse]');
 
     service(centroid, (err, results) => {
       // if there's an error, log it and bail
