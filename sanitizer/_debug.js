@@ -1,8 +1,9 @@
 
-var _ = require('lodash'),
-    check = require('check-types');
+'use strict';
 
-var DEFAULT_DETAILS_BOOL = true;
+const _ = require('lodash');
+
+var DEFAULT_FORCE_LIBPOSTAL = false;
 
 // validate inputs, convert types and apply defaults
 function sanitize( raw, clean ){
@@ -10,19 +11,15 @@ function sanitize( raw, clean ){
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  if( !check.undefined( raw.details ) ){
-    clean.details = isTruthy( raw.details );
-  } else {
-    clean.details = DEFAULT_DETAILS_BOOL;
-  }
+  clean.force_libpostal = isTruthy(_.get(raw, 'debug:force_libpostal', false));
 
   return messages;
 }
 
 // be lenient with 'truthy' values
 function isTruthy(val) {
-  if( check.string( val ) ){
-    return _.includes( ['true', '1'], val );
+  if( _.isString( val ) ){
+    return _.includes( ['true', '1', 'yes', 'y'], val );
   }
 
   return val === 1 || val === true;

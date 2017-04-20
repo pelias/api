@@ -5,6 +5,7 @@ const defaults = require('./search_defaults');
 const textParser = require('./text_parser');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
+const _ = require('lodash');
 
 //------------------------------
 // general-purpose search query
@@ -129,7 +130,7 @@ function generateQuery( clean ){
     textParser( clean.parsed_text, vs );
   }
 
-  var q = getQuery(vs);
+  var q = getQuery(clean, vs);
 
   //console.log(JSON.stringify(q, null, 2));
 
@@ -143,8 +144,9 @@ function generateQuery( clean ){
   return q;
 }
 
-function getQuery(vs) {
-  if (hasStreet(vs) ||
+function getQuery(params, vs) {
+  if (forceLibpostal(params) ||
+      hasStreet(vs) ||
       isCityStateOnlyWithOptionalCountry(vs) ||
       isCityCountryOnly(vs) ||
       isPostalCodeOnly(vs)) {
@@ -158,6 +160,10 @@ function getQuery(vs) {
   // query should be queried for
   return undefined;
 
+}
+
+function forceLibpostal(params) {
+  return _.get(params, 'force_libpostal', false);
 }
 
 function hasStreet(vs) {
