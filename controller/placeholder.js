@@ -6,48 +6,86 @@ const logger = require('pelias-logger').get('api');
 const logging = require( '../helper/logging' );
 const Document = require('pelias-model').Document;
 
+function createDocWithoutLineage(result) {
+  const doc = new Document('whosonfirst', result.placetype, result.id.toString());
+  doc.setName('default', result.name);
+  doc.setCentroid( { lat: result.geom.lat, lon: result.geom.lon } );
+
+  const parsedBoundingBox = result.geom.bbox.split(',').map(parseFloat);
+  doc.setBoundingBox({
+    upperLeft: {
+      lat: parsedBoundingBox[3],
+      lon: parsedBoundingBox[0]
+    },
+    lowerRight: {
+      lat: parsedBoundingBox[1],
+      lon: parsedBoundingBox[2]
+    }
+  });
+
+  const esDoc = doc.toESDocument();
+  esDoc.data._id = esDoc._id;
+  esDoc.data._type = esDoc._type;
+
+  return esDoc.data;
+
+}
+
 function synthesizeDocs(result) {
-  return result.lineage.map((hierarchy) => {
-    const doc = new Document('whosonfirst', result.placetype, result.id.toString());
-    doc.setName('default', result.name);
-    doc.setCentroid( { lat: result.geom.lat, lon: result.geom.lon } );
+  const doc = new Document('whosonfirst', result.placetype, result.id.toString());
+  doc.setName('default', result.name);
+  doc.setCentroid( { lat: result.geom.lat, lon: result.geom.lon } );
 
-    const parsedBoundingBox = result.geom.bbox.split(',').map(parseFloat);
-    doc.setBoundingBox({
-      upperLeft: {
-        lat: parsedBoundingBox[3],
-        lon: parsedBoundingBox[0]
-      },
-      lowerRight: {
-        lat: parsedBoundingBox[1],
-        lon: parsedBoundingBox[2]
-      }
-    });
+  const parsedBoundingBox = result.geom.bbox.split(',').map(parseFloat);
+  doc.setBoundingBox({
+    upperLeft: {
+      lat: parsedBoundingBox[3],
+      lon: parsedBoundingBox[0]
+    },
+    lowerRight: {
+      lat: parsedBoundingBox[1],
+      lon: parsedBoundingBox[2]
+    }
+  });
 
-    Object.keys(hierarchy)
-      .filter(doc.isSupportedParent)
-      .filter((placetype) => { return !_.isEmpty(_.trim(hierarchy[placetype].name)); } )
-      .forEach((placetype) => {
-        if (hierarchy[placetype].hasOwnProperty('abbr') && placetype === 'country') {
-          doc.setAlpha3(hierarchy[placetype].abbr);
-        }
-
-        doc.addParent(
-          placetype,
-          hierarchy[placetype].name,
-          hierarchy[placetype].id.toString(),
-          hierarchy[placetype].abbr);
-
-    });
-
+  if (_.isEmpty(result.lineage)) {
+    // there are no hierarchies so just return what's been assembled so far
     const esDoc = doc.toESDocument();
     esDoc.data._id = esDoc._id;
     esDoc.data._type = esDoc._type;
 
     return esDoc.data;
 
-  });
+  } else {
+    return result.lineage.map((hierarchy) => {
+      // clear out the effects of the last hierarchy array (this effectively clones the base Document)
+      doc.clearAlpha3().clearAllParents();
 
+      Object.keys(hierarchy)
+        .filter(doc.isSupportedParent)
+        .filter((placetype) => { return !_.isEmpty(_.trim(hierarchy[placetype].name)); } )
+        .forEach((placetype) => {
+          if (hierarchy[placetype].hasOwnProperty('abbr') && placetype === 'country') {
+            doc.setAlpha3(hierarchy[placetype].abbr);
+          }
+
+          doc.addParent(
+            placetype,
+            hierarchy[placetype].name,
+            hierarchy[placetype].id.toString(),
+            hierarchy[placetype].abbr);
+
+      });
+
+      const esDoc = doc.toESDocument();
+      esDoc.data._id = esDoc._id;
+      esDoc.data._type = esDoc._type;
+
+      return esDoc.data;
+
+    });
+
+  }
 }
 
 function setup(placeholderService, should_execute) {
@@ -67,6 +105,10 @@ function setup(placeholderService, should_execute) {
       } else {
         res.meta = {};
         res.data = _.flatten(results.map((result) => {
+          if (_.isEmpty(result.lineage)) {
+            return createDocWithoutLineage(result);
+          }
+
           return synthesizeDocs(result);
         }));
       }
