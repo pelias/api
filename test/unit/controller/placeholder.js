@@ -92,7 +92,8 @@ module.exports.tests.success = function(test, common) {
           {
             country: {
               id: 1,
-              name: 'country name 1'
+              name: 'country name 1',
+              abbr: 'ABC'
             },
             dependency: {
               id: 2,
@@ -250,6 +251,7 @@ module.exports.tests.success = function(test, common) {
           phrase: {
             'default': 'name 1'
           },
+          alpha3: 'ABC',
           parent: {
             neighbourhood: ['neighbourhood name 1'],
             neighbourhood_id: ['10'],
@@ -280,7 +282,7 @@ module.exports.tests.success = function(test, common) {
             dependency_a: [null],
             country: ['country name 1'],
             country_id: ['1'],
-            country_a: [null]
+            country_a: ['ABC']
           }
         },
         {
@@ -358,6 +360,77 @@ module.exports.tests.success = function(test, common) {
 
     controller(req, res, () => {
       t.ok(placeholderService_was_called);
+      t.deepEquals(res, expected_res);
+      t.end();
+    });
+
+  });
+
+  test('results with no lineage should no set any parent fields', (t) => {
+    const placeholder_response = [
+      {
+        id: 123,
+        name: 'name 1',
+        placetype: 'neighbourhood',
+        geom: {
+          area: 12.34,
+          bbox: '21.212121,12.121212,31.313131,13.131313',
+          lat: 14.141414,
+          lon: 41.414141
+        }
+      }
+    ];
+
+    const placeholderService = {
+      search: (text, language, do_not_track, callback) => {
+        t.equals(text, 'query value');
+        t.equals(language, 'language value');
+        callback(null, placeholder_response);
+      }
+    };
+
+    const should_execute = (req, res) => {
+      return true;
+    };
+
+    const controller = placeholder(placeholderService, should_execute);
+
+    const req = {
+      clean: {
+        text: 'query value',
+        lang: {
+          iso6393: 'language value'
+        }
+      }
+    };
+    const res = { };
+
+    const expected_res = {
+      meta: {},
+      data: [
+        {
+          _id: '123',
+          _type: 'neighbourhood',
+          layer: 'neighbourhood',
+          source: 'whosonfirst',
+          source_id: '123',
+          center_point: {
+            lat: 14.141414,
+            lon: 41.414141
+          },
+          bounding_box: '{"min_lat":12.121212,"max_lat":13.131313,"min_lon":21.212121,"max_lon":31.313131}',
+          name: {
+            'default': 'name 1'
+          },
+          phrase: {
+            'default': 'name 1'
+          },
+          parent: { }
+        }
+      ]
+    };
+
+    controller(req, res, () => {
       t.deepEquals(res, expected_res);
       t.end();
     });
