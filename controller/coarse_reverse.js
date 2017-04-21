@@ -92,6 +92,7 @@ function setup(service, should_execute) {
     service(centroid, isDNT(req), (err, results) => {
       // if there's an error, log it and bail
       if (err) {
+        logger.info(`[controller:coarse_reverse][error]`);
         logger.error(err);
         return next();
       }
@@ -100,6 +101,8 @@ function setup(service, should_execute) {
       const finest_granularity_requested = granularities.findIndex((granularity) => {
         return req.clean.layers.indexOf(granularity) !== -1;
       });
+
+      logger.info(`[controller:coarse_reverse][queryType:pip][result_count:${Object.keys(results).length}]`);
 
       // now remove everything from the response that is more granular than the
       // most granular layer requested.  that is, if req.clean.layers=['county'],
