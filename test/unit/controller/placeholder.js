@@ -437,6 +437,140 @@ module.exports.tests.success = function(test, common) {
 
   });
 
+  test('result without geom.bbox should leave bounding_box undefined', (t) => {
+    const placeholder_response = [
+      {
+        id: 123,
+        name: 'name 1',
+        placetype: 'neighbourhood',
+        geom: {
+          area: 12.34,
+          lat: 14.141414,
+          lon: 41.414141
+        }
+      }
+    ];
+
+    const placeholderService = {
+      search: (text, language, do_not_track, callback) => {
+        t.equals(text, 'query value');
+        t.equals(language, 'language value');
+        callback(null, placeholder_response);
+      }
+    };
+
+    const should_execute = (req, res) => {
+      return true;
+    };
+
+    const controller = placeholder(placeholderService, should_execute);
+
+    const req = {
+      clean: {
+        text: 'query value',
+        lang: {
+          iso6393: 'language value'
+        }
+      }
+    };
+    const res = { };
+
+    const expected_res = {
+      meta: {},
+      data: [
+        {
+          _id: '123',
+          _type: 'neighbourhood',
+          layer: 'neighbourhood',
+          source: 'whosonfirst',
+          source_id: '123',
+          center_point: {
+            lat: 14.141414,
+            lon: 41.414141
+          },
+          name: {
+            'default': 'name 1'
+          },
+          phrase: {
+            'default': 'name 1'
+          },
+          parent: { }
+        }
+      ]
+    };
+
+    controller(req, res, () => {
+      t.deepEquals(res, expected_res);
+      t.end();
+    });
+
+  });
+
+  test('result without geom.lat/geom.lon should leave centroid undefined', (t) => {
+    const placeholder_response = [
+      {
+        id: 123,
+        name: 'name 1',
+        placetype: 'neighbourhood',
+        geom: {
+          area: 12.34,
+          bbox: '21.212121,12.121212,31.313131,13.131313'
+        }
+      }
+    ];
+
+    const placeholderService = {
+      search: (text, language, do_not_track, callback) => {
+        t.equals(text, 'query value');
+        t.equals(language, 'language value');
+        callback(null, placeholder_response);
+      }
+    };
+
+    const should_execute = (req, res) => {
+      return true;
+    };
+
+    const controller = placeholder(placeholderService, should_execute);
+
+    const req = {
+      clean: {
+        text: 'query value',
+        lang: {
+          iso6393: 'language value'
+        }
+      }
+    };
+    const res = { };
+
+    const expected_res = {
+      meta: {},
+      data: [
+        {
+          _id: '123',
+          _type: 'neighbourhood',
+          layer: 'neighbourhood',
+          source: 'whosonfirst',
+          source_id: '123',
+          bounding_box: '{"min_lat":12.121212,"max_lat":13.131313,"min_lon":21.212121,"max_lon":31.313131}',
+          name: {
+            'default': 'name 1'
+          },
+          phrase: {
+            'default': 'name 1'
+          },
+          parent: { }
+        }
+      ]
+    };
+
+    controller(req, res, () => {
+      t.deepEquals(res, expected_res);
+      t.end();
+    });
+
+  });
+
 };
 
 module.exports.tests.do_not_track = function(test, common) {

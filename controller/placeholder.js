@@ -6,47 +6,35 @@ const logger = require('pelias-logger').get('api');
 const logging = require( '../helper/logging' );
 const Document = require('pelias-model').Document;
 
-function createDocWithoutLineage(result) {
-  const doc = new Document('whosonfirst', result.placetype, result.id.toString());
-  doc.setName('default', result.name);
-  doc.setCentroid( { lat: result.geom.lat, lon: result.geom.lon } );
+const boundingBoxRegex = /^-?\d+\.\d+,-?\d+\.\d+,-?\d+\.\d+,-?\d+\.\d+$/;
 
-  const parsedBoundingBox = result.geom.bbox.split(',').map(parseFloat);
-  doc.setBoundingBox({
-    upperLeft: {
-      lat: parsedBoundingBox[3],
-      lon: parsedBoundingBox[0]
-    },
-    lowerRight: {
-      lat: parsedBoundingBox[1],
-      lon: parsedBoundingBox[2]
-    }
-  });
-
-  const esDoc = doc.toESDocument();
-  esDoc.data._id = esDoc._id;
-  esDoc.data._type = esDoc._type;
-
-  return esDoc.data;
-
+function validBoundingBox(bbox) {
+  return boundingBoxRegex.test(bbox);
 }
 
 function synthesizeDocs(result) {
   const doc = new Document('whosonfirst', result.placetype, result.id.toString());
   doc.setName('default', result.name);
-  doc.setCentroid( { lat: result.geom.lat, lon: result.geom.lon } );
 
-  const parsedBoundingBox = result.geom.bbox.split(',').map(parseFloat);
-  doc.setBoundingBox({
-    upperLeft: {
-      lat: parsedBoundingBox[3],
-      lon: parsedBoundingBox[0]
-    },
-    lowerRight: {
-      lat: parsedBoundingBox[1],
-      lon: parsedBoundingBox[2]
-    }
-  });
+  // only assign centroid if both lat and lon are finite numbers
+  if (_.conformsTo(result.geom, { 'lat': _.isFinite, 'lon': _.isFinite } )) {
+    doc.setCentroid( { lat: result.geom.lat, lon: result.geom.lon } );
+  }
+
+  // lodash conformsTo verifies that an object has a property with a certain format
+  if (_.conformsTo(result.geom, { 'bbox': validBoundingBox } )) {
+    const parsedBoundingBox = result.geom.bbox.split(',').map(parseFloat);
+    doc.setBoundingBox({
+      upperLeft: {
+        lat: parsedBoundingBox[3],
+        lon: parsedBoundingBox[0]
+      },
+      lowerRight: {
+        lat: parsedBoundingBox[1],
+        lon: parsedBoundingBox[2]
+      }
+    });
+  }
 
   if (_.isEmpty(result.lineage)) {
     // there are no hierarchies so just return what's been assembled so far
@@ -106,7 +94,7 @@ function setup(placeholderService, should_execute) {
         res.meta = {};
         res.data = _.flatten(results.map((result) => {
           if (_.isEmpty(result.lineage)) {
-            return createDocWithoutLineage(result);
+            return synthesizeDocs(result);
           }
 
           return synthesizeDocs(result);
