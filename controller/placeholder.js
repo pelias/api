@@ -6,10 +6,14 @@ const logger = require('pelias-logger').get('api');
 const logging = require( '../helper/logging' );
 const Document = require('pelias-model').Document;
 
-const boundingBoxRegex = /^-?\d+\.\d+,-?\d+\.\d+,-?\d+\.\d+,-?\d+\.\d+$/;
-
+// returns true if all 4 ,-delimited (max) substrings are parseable as numbers
+// '12.12,21.21,13.13,31.31' returns true
+// '12.12,21.21,13.13,blah'  returns false
 function validBoundingBox(bbox) {
-  return boundingBoxRegex.test(bbox);
+  return bbox.
+    split(',', 4).
+    map(_.toNumber).
+    every(_.isFinite);
 }
 
 function synthesizeDocs(result) {
@@ -23,7 +27,7 @@ function synthesizeDocs(result) {
 
   // lodash conformsTo verifies that an object has a property with a certain format
   if (_.conformsTo(result.geom, { 'bbox': validBoundingBox } )) {
-    const parsedBoundingBox = result.geom.bbox.split(',').map(parseFloat);
+    const parsedBoundingBox = result.geom.bbox.split(',').map(_.toNumber);
     doc.setBoundingBox({
       upperLeft: {
         lat: parsedBoundingBox[3],
@@ -78,12 +82,14 @@ function synthesizeDocs(result) {
 
 function setup(placeholderService, should_execute) {
   function controller( req, res, next ){
+    // bail early if req/res don't pass conditions for execution
     if (!should_execute(req, res)) {
       return next();
     }
 
     placeholderService.search(req.clean.text, req.clean.lang.iso6393, logging.isDNT(req), (err, results) => {
       if (err) {
+        // bubble up an error if one occurred
         if (_.isObject(err) && err.message) {
           req.errors.push( err.message );
         } else {
@@ -91,14 +97,9 @@ function setup(placeholderService, should_execute) {
         }
 
       } else {
+        // otherwise convert results to ES docs
         res.meta = {};
-        res.data = _.flatten(results.map((result) => {
-          if (_.isEmpty(result.lineage)) {
-            return synthesizeDocs(result);
-          }
-
-          return synthesizeDocs(result);
-        }));
+        res.data = _.flatten(results.map(synthesizeDocs));
       }
 
       return next();
