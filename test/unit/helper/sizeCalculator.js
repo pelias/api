@@ -25,7 +25,7 @@ module.exports.tests.valid = function(test, common) {
   test('size=0', function (t) {
     setup(0);
     calcSize(req, {}, function () {
-      t.equal(req.clean.querySize, 1);
+      t.equal(req.clean.querySize, 20);
       t.end();
     });
   });
@@ -33,7 +33,7 @@ module.exports.tests.valid = function(test, common) {
   test('size=1', function (t) {
     setup(1);
     calcSize(req, {}, function () {
-      t.equal(req.clean.querySize, 1);
+      t.equal(req.clean.querySize, 20);
       t.end();
     });
   });
@@ -42,6 +42,14 @@ module.exports.tests.valid = function(test, common) {
     setup(10);
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 20);
+      t.end();
+    });
+  });
+
+  test('size=20', function (t) {
+    setup(20);
+    calcSize(req, {}, function () {
+      t.equal(req.clean.querySize, 40);
       t.end();
     });
   });
