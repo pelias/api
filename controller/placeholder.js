@@ -7,13 +7,14 @@ const logging = require( '../helper/logging' );
 const Document = require('pelias-model').Document;
 
 // returns true if all 4 ,-delimited (max) substrings are parseable as numbers
-// '12.12,21.21,13.13,31.31' returns true
-// '12.12,21.21,13.13,blah'  returns false
+// '12.12,21.21,13.13,31.31'       returns true
+// '12.12,21.21,13.13,blah'        returns false
+// '12.12,21.21,13.13,31.31,blah'  returns false
 function validBoundingBox(bbox) {
   return bbox.
-    split(',', 4).
+    split(',').
     map(_.toNumber).
-    every(_.isFinite);
+    filter(_.isFinite).length === 4;
 }
 
 function synthesizeDocs(result) {
