@@ -88,7 +88,7 @@ function setup(placeholderService, should_execute) {
       return next();
     }
 
-    placeholderService.search(req.clean.text, req.clean.lang.iso6393, logging.isDNT(req), (err, results) => {
+    placeholderService(req, (err, results) => {
       if (err) {
         // bubble up an error if one occurred
         if (_.isObject(err) && err.message) {
