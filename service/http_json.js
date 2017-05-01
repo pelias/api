@@ -32,7 +32,7 @@ module.exports = function setup(serviceConfig) {
       method: 'GET',
       url: serviceConfig.getUrl(req),
       qs: serviceConfig.getParameters(req),
-      headers: serviceConfig.getHeaders(req)
+      headers: serviceConfig.getHeaders(req) || {}
     };
 
     const do_not_track = isDNT(req);

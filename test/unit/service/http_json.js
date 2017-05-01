@@ -422,6 +422,50 @@ module.exports.tests.success_conditions = (test, common) => {
 
   });
 
+  test('getHeaders returning undefined should use empty headers object', (t) => {
+    const webServer = express();
+    webServer.get('/some_endpoint', (req, res, next) => {
+      t.equals(req.headers.dnt, '1');
+
+      t.deepEquals(req.query, { param1: 'param1 value', param2: 'param2 value' });
+
+      res.status(200).send('[1, 2, 3]');
+    });
+
+    const server = webServer.listen();
+    const port = server.address().port;
+
+    const logger = require('pelias-mock-logger')();
+
+    const serviceConfig = {
+      getName: () => { return 'foo'; },
+      getBaseUrl: () => { return `http://localhost:${port}`; },
+      getUrl: (req) => { return `http://localhost:${port}/some_endpoint`; },
+      getParameters: (req) => { return { param1: 'param1 value', param2: 'param2 value' }; },
+      getHeaders: (req) => { }
+    };
+
+    const service = proxyquire('../../../service/http_json', {
+      'pelias-logger': logger,
+      '../helper/logging': {
+        isDNT: () => { return true; }
+      }
+    })(serviceConfig);
+
+    t.ok(logger.isInfoMessage(new RegExp(`using foo service at http://localhost:${port}`)));
+
+    service({}, (err, results) => {
+      t.notOk(err, 'should be no error');
+      t.deepEquals(results, [1, 2, 3]);
+      t.notOk(logger.hasErrorMessages());
+      t.end();
+
+      server.close();
+
+    });
+
+  });
+
 };
 
 module.exports.all = (tape, common) => {
