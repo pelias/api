@@ -80,6 +80,7 @@ var tests = [
   require('./sanitizer/search'),
   require('./sanitizer/search_fallback'),
   require('./sanitizer/wrap'),
+  require('./service/http_json'),
   require('./service/mget'),
   require('./service/search'),
   require('./service/interpolation'),
