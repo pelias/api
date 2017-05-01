@@ -72,6 +72,8 @@ const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_anal
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
 
+const PlaceHolder = require('../service/configurations/placeholder');
+
 /**
  * Append routes to app
  *
@@ -85,7 +87,9 @@ function addRoutes(app, peliasConfig) {
   const isPlaceholderServiceEnabled = require('../controller/predicates/is_service_enabled')(peliasConfig.api.placeholderService);
 
   const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
-  const placeholderService = require('../service/placeholder')(peliasConfig.api.placeholderService);
+
+  const placeholderService = require('../service/http_json')(
+    new PlaceHolder(peliasConfig.api.placeholderService));
 
   const coarse_reverse_should_execute = all(
     not(hasRequestErrors), isPipServiceEnabled, isCoarseReverse

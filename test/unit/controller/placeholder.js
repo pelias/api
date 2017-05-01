@@ -13,14 +13,12 @@ module.exports.tests.interface = (test, common) => {
   });
 };
 
-module.exports.tests.should_execute_failure = function(test, common) {
+module.exports.tests.should_execute_failure = (test, common) => {
   test('should_execute returning false should return without calling service', (t) => {
     let placeholderService_was_called = false;
 
-    const placeholderService = {
-      search: () => {
-        placeholderService_was_called = true;
-      }
+    const placeholderService = () => {
+      placeholderService_was_called = true;
     };
 
     const should_execute = (req, res) => {
@@ -44,17 +42,14 @@ module.exports.tests.should_execute_failure = function(test, common) {
 
 };
 
-module.exports.tests.success = function(test, common) {
+module.exports.tests.success = (test, common) => {
   test('should_execute returning true should call service', (t) => {
     let placeholderService_was_called = false;
 
-    const placeholderService = {
-      search: (text, language, do_not_track, callback) => {
-        t.equals(text, 'query value');
-        t.equals(language, 'language value');
-        placeholderService_was_called = true;
-        callback(null, []);
-      }
+    const placeholderService = (req, callback) => {
+      t.deepEqual(req, { param1: 'param1 value' });
+      placeholderService_was_called = true;
+      callback(null, []);
     };
 
     const should_execute = (req, res) => {
@@ -63,14 +58,7 @@ module.exports.tests.success = function(test, common) {
 
     const controller = placeholder(placeholderService, should_execute);
 
-    const req = {
-      clean: {
-        text: 'query value',
-        lang: {
-          iso6393: 'language value'
-        }
-      }
-    };
+    const req = { param1: 'param1 value' };
     const res = { b: 2 };
 
     controller(req, res, () => {
@@ -206,13 +194,10 @@ module.exports.tests.success = function(test, common) {
       }
     ];
 
-    const placeholderService = {
-      search: (text, language, do_not_track, callback) => {
-        t.equals(text, 'query value');
-        t.equals(language, 'language value');
-        placeholderService_was_called = true;
-        callback(null, placeholder_response);
-      }
+    const placeholderService = (req, callback) => {
+      t.deepEqual(req, { param1: 'param1 value' });
+      placeholderService_was_called = true;
+      callback(null, placeholder_response);
     };
 
     const should_execute = (req, res) => {
@@ -221,14 +206,7 @@ module.exports.tests.success = function(test, common) {
 
     const controller = placeholder(placeholderService, should_execute);
 
-    const req = {
-      clean: {
-        text: 'query value',
-        lang: {
-          iso6393: 'language value'
-        }
-      }
-    };
+    const req = { param1: 'param1 value' };
     const res = { };
 
     const expected_res = {
@@ -381,12 +359,9 @@ module.exports.tests.success = function(test, common) {
       }
     ];
 
-    const placeholderService = {
-      search: (text, language, do_not_track, callback) => {
-        t.equals(text, 'query value');
-        t.equals(language, 'language value');
-        callback(null, placeholder_response);
-      }
+    const placeholderService = (req, callback) => {
+      t.deepEqual(req, { param1: 'param1 value' });
+      callback(null, placeholder_response);
     };
 
     const should_execute = (req, res) => {
@@ -395,14 +370,7 @@ module.exports.tests.success = function(test, common) {
 
     const controller = placeholder(placeholderService, should_execute);
 
-    const req = {
-      clean: {
-        text: 'query value',
-        lang: {
-          iso6393: 'language value'
-        }
-      }
-    };
+    const req = { param1: 'param1 value' };
     const res = { };
 
     const expected_res = {
@@ -451,12 +419,9 @@ module.exports.tests.success = function(test, common) {
       }
     ];
 
-    const placeholderService = {
-      search: (text, language, do_not_track, callback) => {
-        t.equals(text, 'query value');
-        t.equals(language, 'language value');
-        callback(null, placeholder_response);
-      }
+    const placeholderService = (req, callback) => {
+      t.deepEqual(req, { param1: 'param1 value' });
+      callback(null, placeholder_response);
     };
 
     const should_execute = (req, res) => {
@@ -465,14 +430,7 @@ module.exports.tests.success = function(test, common) {
 
     const controller = placeholder(placeholderService, should_execute);
 
-    const req = {
-      clean: {
-        text: 'query value',
-        lang: {
-          iso6393: 'language value'
-        }
-      }
-    };
+    const req = { param1: 'param1 value' };
     const res = { };
 
     const expected_res = {
@@ -519,12 +477,9 @@ module.exports.tests.success = function(test, common) {
       }
     ];
 
-    const placeholderService = {
-      search: (text, language, do_not_track, callback) => {
-        t.equals(text, 'query value');
-        t.equals(language, 'language value');
-        callback(null, placeholder_response);
-      }
+    const placeholderService = (req, callback) => {
+      t.deepEqual(req, { param1: 'param1 value' });
+      callback(null, placeholder_response);
     };
 
     const should_execute = (req, res) => {
@@ -533,14 +488,7 @@ module.exports.tests.success = function(test, common) {
 
     const controller = placeholder(placeholderService, should_execute);
 
-    const req = {
-      clean: {
-        text: 'query value',
-        lang: {
-          iso6393: 'language value'
-        }
-      }
-    };
+    const req = { param1: 'param1 value' };
     const res = { };
 
     const expected_res = {
@@ -573,95 +521,10 @@ module.exports.tests.success = function(test, common) {
 
 };
 
-module.exports.tests.do_not_track = function(test, common) {
-  test('do_not_track enabled should pass header with `true` value to service', (t) => {
-    let placeholderService_was_called = false;
-
-    const placeholderService = {
-      search: (text, language, do_not_track, callback) => {
-        t.ok(do_not_track, 'should be true');
-        placeholderService_was_called = true;
-        callback(null, []);
-      }
-    };
-
-    const should_execute = (req, res) => {
-      return true;
-    };
-
-    const controller = proxyquire('../../../controller/placeholder', {
-      '../helper/logging': {
-        isDNT: (req) => {
-          return true;
-        }
-      }
-    })(placeholderService, should_execute);
-
-    const req = {
-      clean: {
-        text: 'query value',
-        lang: {
-          iso6393: 'language value'
-        }
-      }
-    };
-    const res = { b: 2 };
-
-    controller(req, res, () => {
-      t.ok(placeholderService_was_called);
-      t.end();
-    });
-
-  });
-
-  test('do_not_track disabled should pass header with `false` value to service', (t) => {
-    let placeholderService_was_called = false;
-
-    const placeholderService = {
-      search: (text, language, do_not_track, callback) => {
-        t.notOk(do_not_track, 'should be false');
-        placeholderService_was_called = true;
-        callback(null, []);
-      }
-    };
-
-    const should_execute = (req, res) => {
-      return true;
-    };
-
-    const controller = proxyquire('../../../controller/placeholder', {
-      '../helper/logging': {
-        isDNT: (req) => {
-          return false;
-        }
-      }
-    })(placeholderService, should_execute);
-
-    const req = {
-      clean: {
-        text: 'query value',
-        lang: {
-          iso6393: 'language value'
-        }
-      }
-    };
-    const res = { b: 2 };
-
-    controller(req, res, () => {
-      t.ok(placeholderService_was_called);
-      t.end();
-    });
-
-  });
-
-};
-
 module.exports.tests.error_conditions = (test, common) => {
   test('service return error string should add to req.errors', (t) => {
-    const placeholderService = {
-      search: (text, language, do_not_track, callback) => {
-        callback('placeholder service error', []);
-      }
+    const placeholderService = (req, callback) => {
+      callback('placeholder service error', []);
     };
 
     const should_execute = (req, res) => {
@@ -671,12 +534,6 @@ module.exports.tests.error_conditions = (test, common) => {
     const controller = placeholder(placeholderService, should_execute);
 
     const req = {
-      clean: {
-        text: 'query value',
-        lang: {
-          iso6393: 'language value'
-        }
-      },
       errors: []
     };
     const res = {};
@@ -689,10 +546,8 @@ module.exports.tests.error_conditions = (test, common) => {
   });
 
   test('service return error object should add message to req.errors', (t) => {
-    const placeholderService = {
-      search: (text, language, do_not_track, callback) => {
-        callback(Error('placeholder service error'), []);
-      }
+    const placeholderService = (req, callback) => {
+      callback(Error('placeholder service error'), []);
     };
 
     const should_execute = (req, res) => {
@@ -702,12 +557,6 @@ module.exports.tests.error_conditions = (test, common) => {
     const controller = placeholder(placeholderService, should_execute);
 
     const req = {
-      clean: {
-        text: 'query value',
-        lang: {
-          iso6393: 'language value'
-        }
-      },
       errors: []
     };
     const res = {};
@@ -720,10 +569,8 @@ module.exports.tests.error_conditions = (test, common) => {
   });
 
   test('service return error object should add stringified error to req.errors', (t) => {
-    const placeholderService = {
-      search: (text, language, do_not_track, callback) => {
-        callback({ error_key: 'error_value' }, []);
-      }
+    const placeholderService = (req, callback) => {
+      callback({ error_key: 'error_value' }, []);
     };
 
     const should_execute = (req, res) => {
@@ -733,12 +580,6 @@ module.exports.tests.error_conditions = (test, common) => {
     const controller = placeholder(placeholderService, should_execute);
 
     const req = {
-      clean: {
-        text: 'query value',
-        lang: {
-          iso6393: 'language value'
-        }
-      },
       errors: []
     };
     const res = {};
@@ -752,10 +593,10 @@ module.exports.tests.error_conditions = (test, common) => {
 
 };
 
-module.exports.all = function (tape, common) {
+module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {
-    return tape('GET /placeholder ' + name, testFunction);
+    return tape(`GET /placeholder ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){
