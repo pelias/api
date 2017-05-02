@@ -86,7 +86,6 @@ var tests = [
   require('./service/mget'),
   require('./service/search'),
   require('./service/interpolation'),
-  require('./service/placeholder'),
   require('./service/pointinpolygon'),
   require('./service/language')
 ];
