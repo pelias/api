@@ -22,7 +22,7 @@ function synthesizeUrl(serviceConfig, req) {
 
 module.exports = function setup(serviceConfig) {
   if (!(serviceConfig instanceof ServiceConfiguration)) {
-    throw Error('serviceConfig be an instance of ServiceConfiguration');
+    throw Error('serviceConfig should be an instance of ServiceConfiguration');
   }
 
   if (_.isEmpty(serviceConfig.getBaseUrl())) {
