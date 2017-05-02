@@ -25,7 +25,7 @@ module.exports.tests.conforms_to = (test, common) => {
   test('non-ServiceConfiguration instance should throw error', (t) => {
     const serviceConfig = 'not an instance of serviceConfiguration';
 
-    t.throws(setup.bind(null, serviceConfig), /serviceConfig be an instance of ServiceConfiguration/);
+    t.throws(setup.bind(null, serviceConfig), /serviceConfig should be an instance of ServiceConfiguration/);
     t.end();
 
   });
