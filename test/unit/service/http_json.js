@@ -1,7 +1,10 @@
+'use strict';
+
 const proxyquire = require('proxyquire').noCallThru();
 const express = require('express');
 
 const setup = require('../../../service/http_json');
+const ServiceConfiguration = require('../../../service/configurations/ServiceConfiguration');
 
 module.exports.tests = {};
 
@@ -19,72 +22,10 @@ module.exports.tests.interface = (test, common) => {
 };
 
 module.exports.tests.conforms_to = (test, common) => {
-  test('serviceConfig with non-function getName property should throw error', (t) => {
-    const serviceConfig = {
-      getName: 'this is not a function',
-      getBaseUrl: () => {},
-      getUrl: () => {},
-      getParameters: () => {},
-      getHeaders: () => {}
-    };
+  test('non-ServiceConfiguration instance should throw error', (t) => {
+    const serviceConfig = 'not an instance of serviceConfiguration';
 
-    t.throws(setup.bind(null, serviceConfig), /serviceConfig should have a bunch of functions exposed/);
-    t.end();
-
-  });
-
-  test('serviceConfig with non-function getBaseUrl property should throw error', (t) => {
-    const serviceConfig = {
-      getName: () => {},
-      getBaseUrl: 'this is not a function',
-      getUrl: () => {},
-      getParameters: () => {},
-      getHeaders: () => {}
-    };
-
-    t.throws(setup.bind(null, serviceConfig), /serviceConfig should have a bunch of functions exposed/);
-    t.end();
-
-  });
-
-  test('serviceConfig with non-function getUrl property should throw error', (t) => {
-    const serviceConfig = {
-      getName: () => {},
-      getBaseUrl: () => {},
-      getUrl: 'this is not a function',
-      getParameters: () => {},
-      getHeaders: () => {}
-    };
-
-    t.throws(setup.bind(null, serviceConfig), /serviceConfig should have a bunch of functions exposed/);
-    t.end();
-
-  });
-
-  test('serviceConfig with non-function getParameters property should throw error', (t) => {
-    const serviceConfig = {
-      getName: () => {},
-      getBaseUrl: () => {},
-      getUrl: () => {},
-      getParameters: 'this is not a function',
-      getHeaders: () => {}
-    };
-
-    t.throws(setup.bind(null, serviceConfig), /serviceConfig should have a bunch of functions exposed/);
-    t.end();
-
-  });
-
-  test('serviceConfig with non-function getHeaders property should throw error', (t) => {
-    const serviceConfig = {
-      getName: () => {},
-      getBaseUrl: () => {},
-      getUrl: () => {},
-      getParameters: () => {},
-      getHeaders: 'this is not a function'
-    };
-
-    t.throws(setup.bind(null, serviceConfig), /serviceConfig should have a bunch of functions exposed/);
+    t.throws(setup.bind(null, serviceConfig), /serviceConfig be an instance of ServiceConfiguration/);
     t.end();
 
   });
@@ -95,19 +36,15 @@ module.exports.tests.do_nothing_service = (test, common) => {
   test('undefined config.url should return service that logs that config.name service is not available', (t) => {
     const logger = require('pelias-mock-logger')();
 
-    const serviceConfig = {
-      getName: () => { return 'foo'; },
-      getBaseUrl: () => {
-        return undefined;
-      },
-      getUrl: () => { return undefined; },
-      getParameters: (req) => {},
-      getHeaders: (req) => {}
+    const MockServiceConfig = class extends ServiceConfiguration {
+      constructor(o) {
+        super('foo', { } );
+      }
     };
 
     const service = proxyquire('../../../service/http_json', {
       'pelias-logger': logger
-    })(serviceConfig);
+    })(new MockServiceConfig());
 
     t.ok(logger.isWarnMessage(/^foo service disabled$/));
 
@@ -130,17 +67,18 @@ module.exports.tests.failure_conditions = (test, common) => {
 
     const logger = require('pelias-mock-logger')();
 
-    const serviceConfig = {
-      getName: () => { return 'foo'; },
-      getBaseUrl: () => { return `http://localhost:${port}`; },
-      getUrl: (req) => { return `http://localhost:${port}/built_url`; },
-      getParameters: (req) => { return { param1: 'param1 value', param2: 'param2 value' }; },
-      getHeaders: (req) => { return { header1: 'header1 value' }; }
+    const MockServiceConfig = class extends ServiceConfiguration {
+      constructor(o) {
+        super('foo', { url: `http://localhost:${port}` } );
+      }
+      getUrl(req) {
+        return `http://localhost:${port}/built_url`;
+      }
     };
 
     const service = proxyquire('../../../service/http_json', {
       'pelias-logger': logger
-    })(serviceConfig);
+    })(new MockServiceConfig());
 
     t.ok(logger.isInfoMessage(new RegExp(`using foo service at http://localhost:${port}`)));
 
@@ -166,12 +104,13 @@ module.exports.tests.failure_conditions = (test, common) => {
 
     const logger = require('pelias-mock-logger')();
 
-    const serviceConfig = {
-      getName: () => { return 'foo'; },
-      getBaseUrl: () => { return `http://localhost:${port}`; },
-      getUrl: (req) => { return `http://localhost:${port}/built_url`; },
-      getParameters: (req) => { return { param1: 'param1 value', param2: 'param2 value' }; },
-      getHeaders: (req) => { return { header1: 'header1 value' }; }
+    const MockServiceConfig = class extends ServiceConfiguration {
+      constructor(o) {
+        super('foo', { url: `http://localhost:${port}` } );
+      }
+      getUrl(req) {
+        return `http://localhost:${port}/built_url`;
+      }
     };
 
     const service = proxyquire('../../../service/http_json', {
@@ -179,7 +118,7 @@ module.exports.tests.failure_conditions = (test, common) => {
       '../helper/logging': {
         isDNT: () => { return true; }
       }
-    })(serviceConfig);
+    })(new MockServiceConfig());
 
     t.ok(logger.isInfoMessage(new RegExp(`using foo service at http://localhost:${port}`)));
 
@@ -212,17 +151,24 @@ module.exports.tests.failure_conditions = (test, common) => {
 
     const logger = require('pelias-mock-logger')();
 
-    const serviceConfig = {
-      getName: () => { return 'foo'; },
-      getBaseUrl: () => { return `http://localhost:${port}`; },
-      getUrl: (req) => { return `http://localhost:${port}/some_endpoint`; },
-      getParameters: (req) => { return { param1: 'param1 value', param2: 'param2 value' }; },
-      getHeaders: (req) => { return { header1: 'header1 value' }; }
+    const MockServiceConfig = class extends ServiceConfiguration {
+      constructor(o) {
+        super('foo', { url: `http://localhost:${port}` } );
+      }
+      getUrl(req) {
+        return `http://localhost:${port}/some_endpoint`;
+      }
+      getParameters(req) {
+        return { param1: 'param1 value', param2: 'param2 value' };
+      }
+      getHeaders(req) {
+        return { header1: 'header1 value' };
+      }
     };
 
     const service = proxyquire('../../../service/http_json', {
       'pelias-logger': logger
-    })(serviceConfig);
+    })(new MockServiceConfig());
 
     t.ok(logger.isInfoMessage(new RegExp(`using foo service at http://localhost:${port}`)));
 
@@ -256,12 +202,19 @@ module.exports.tests.failure_conditions = (test, common) => {
 
     const logger = require('pelias-mock-logger')();
 
-    const serviceConfig = {
-      getName: () => { return 'foo'; },
-      getBaseUrl: () => { return `http://localhost:${port}`; },
-      getUrl: (req) => { return `http://localhost:${port}/some_endpoint`; },
-      getParameters: (req) => { return { param1: 'param1 value', param2: 'param2 value' }; },
-      getHeaders: (req) => { return { header1: 'header1 value' }; }
+    const MockServiceConfig = class extends ServiceConfiguration {
+      constructor(o) {
+        super('foo', { url: `http://localhost:${port}` } );
+      }
+      getUrl(req) {
+        return `http://localhost:${port}/some_endpoint`;
+      }
+      getParameters(req) {
+        return { param1: 'param1 value', param2: 'param2 value' };
+      }
+      getHeaders(req) {
+        return { header1: 'header1 value' };
+      }
     };
 
     const service = proxyquire('../../../service/http_json', {
@@ -269,7 +222,7 @@ module.exports.tests.failure_conditions = (test, common) => {
       '../helper/logging': {
         isDNT: () => { return true; }
       }
-    })(serviceConfig);
+    })(new MockServiceConfig());
 
     t.ok(logger.isInfoMessage(new RegExp(`using foo service at http://localhost:${port}`)));
 
@@ -294,7 +247,7 @@ module.exports.tests.failure_conditions = (test, common) => {
       t.equals(req.headers.header1, 'header1 value', 'all headers should have been passed');
       t.deepEquals(req.query, { param1: 'param1 value', param2: 'param2 value' });
 
-      res.status(200).send('this is not parseable as JSON');
+      res.set('Content-Type', 'text/plain').status(200).send('this is not parseable as JSON');
     });
 
     const server = webServer.listen();
@@ -302,17 +255,24 @@ module.exports.tests.failure_conditions = (test, common) => {
 
     const logger = require('pelias-mock-logger')();
 
-    const serviceConfig = {
-      getName: () => { return 'foo'; },
-      getBaseUrl: () => { return `http://localhost:${port}`; },
-      getUrl: (req) => { return `http://localhost:${port}/some_endpoint`; },
-      getParameters: (req) => { return { param1: 'param1 value', param2: 'param2 value' }; },
-      getHeaders: (req) => { return { header1: 'header1 value' }; }
+    const MockServiceConfig = class extends ServiceConfiguration {
+      constructor(o) {
+        super('foo', { url: `http://localhost:${port}` } );
+      }
+      getUrl(req) {
+        return `http://localhost:${port}/some_endpoint`;
+      }
+      getParameters(req) {
+        return { param1: 'param1 value', param2: 'param2 value' };
+      }
+      getHeaders(req) {
+        return { header1: 'header1 value' };
+      }
     };
 
     const service = proxyquire('../../../service/http_json', {
       'pelias-logger': logger
-    })(serviceConfig);
+    })(new MockServiceConfig());
 
     t.ok(logger.isInfoMessage(new RegExp(`using foo service at http://localhost:${port}`)));
 
@@ -346,12 +306,19 @@ module.exports.tests.failure_conditions = (test, common) => {
 
     const logger = require('pelias-mock-logger')();
 
-    const serviceConfig = {
-      getName: () => { return 'foo'; },
-      getBaseUrl: () => { return `http://localhost:${port}`; },
-      getUrl: (req) => { return `http://localhost:${port}/some_endpoint`; },
-      getParameters: (req) => { return { param1: 'param1 value', param2: 'param2 value' }; },
-      getHeaders: (req) => { return { header1: 'header1 value' }; }
+    const MockServiceConfig = class extends ServiceConfiguration {
+      constructor(o) {
+        super('foo', { url: `http://localhost:${port}` } );
+      }
+      getUrl(req) {
+        return `http://localhost:${port}/some_endpoint`;
+      }
+      getParameters(req) {
+        return { param1: 'param1 value', param2: 'param2 value' };
+      }
+      getHeaders(req) {
+        return { header1: 'header1 value' };
+      }
     };
 
     const service = proxyquire('../../../service/http_json', {
@@ -359,7 +326,7 @@ module.exports.tests.failure_conditions = (test, common) => {
       '../helper/logging': {
         isDNT: () => { return true; }
       }
-    })(serviceConfig);
+    })(new MockServiceConfig());
 
     t.ok(logger.isInfoMessage(new RegExp(`using foo service at http://localhost:${port}`)));
 
@@ -369,6 +336,58 @@ module.exports.tests.failure_conditions = (test, common) => {
       t.notOk(results, 'should return undefined');
       t.ok(logger.isErrorMessage(`http://localhost:${port} [do_not_track] ` +
         `could not parse response: this is not parseable as JSON`));
+      t.end();
+
+      server.close();
+
+    });
+
+  });
+
+  test('server timing out on all requests should log and return error', (t) => {
+    const webServer = express();
+    let requestCount = 0;
+    webServer.get('/some_endpoint', (req, res, next) => {
+      requestCount++;
+      res.set('Content-Type', 'text/plain').status(503).send('request timeout');
+    });
+
+    const server = webServer.listen();
+    const port = server.address().port;
+
+    const logger = require('pelias-mock-logger')();
+
+    const MockServiceConfig = class extends ServiceConfiguration {
+      constructor(o) {
+        super('foo', { url: `http://localhost:${port}` } );
+      }
+      getUrl(req) {
+        return `http://localhost:${port}/some_endpoint`;
+      }
+      getParameters(req) {
+        return { param1: 'param1 value', param2: 'param2 value' };
+      }
+      getHeaders(req) {
+        return { header1: 'header1 value' };
+      }
+      getRetries() {
+        return 1;
+      }
+    };
+
+    const service = proxyquire('../../../service/http_json', {
+      'pelias-logger': logger
+    })(new MockServiceConfig());
+
+    t.ok(logger.isInfoMessage(new RegExp(`using foo service at http://localhost:${port}`)));
+
+    service({}, (err, results) => {
+      t.equals(err, `http://localhost:${port}/some_endpoint?param1=param1%20value&param2=param2%20value ` +
+        'returned status 503: request timeout');
+      t.notOk(results);
+      t.ok(logger.isErrorMessage(`http://localhost:${port}/some_endpoint?param1=param1%20value&param2=param2%20value ` +
+        `returned status 503: request timeout`));
+      t.equals(requestCount, 2);
       t.end();
 
       server.close();
@@ -388,7 +407,7 @@ module.exports.tests.success_conditions = (test, common) => {
       t.equals(req.headers.header1, 'header1 value', 'all headers should have been passed');
       t.deepEquals(req.query, { param1: 'param1 value', param2: 'param2 value' });
 
-      res.status(200).send('[1, 2, 3]');
+      res.status(200).json([1, 2, 3]);
     });
 
     const server = webServer.listen();
@@ -396,17 +415,24 @@ module.exports.tests.success_conditions = (test, common) => {
 
     const logger = require('pelias-mock-logger')();
 
-    const serviceConfig = {
-      getName: () => { return 'foo'; },
-      getBaseUrl: () => { return `http://localhost:${port}`; },
-      getUrl: (req) => { return `http://localhost:${port}/some_endpoint`; },
-      getParameters: (req) => { return { param1: 'param1 value', param2: 'param2 value' }; },
-      getHeaders: (req) => { return { header1: 'header1 value' }; }
+    const MockServiceConfig = class extends ServiceConfiguration {
+      constructor(o) {
+        super('foo', { url: `http://localhost:${port}` } );
+      }
+      getUrl(req) {
+        return `http://localhost:${port}/some_endpoint`;
+      }
+      getParameters(req) {
+        return { param1: 'param1 value', param2: 'param2 value' };
+      }
+      getHeaders(req) {
+        return { header1: 'header1 value' };
+      }
     };
 
     const service = proxyquire('../../../service/http_json', {
       'pelias-logger': logger
-    })(serviceConfig);
+    })(new MockServiceConfig());
 
     t.ok(logger.isInfoMessage(new RegExp(`using foo service at http://localhost:${port}`)));
 
@@ -429,7 +455,7 @@ module.exports.tests.success_conditions = (test, common) => {
 
       t.deepEquals(req.query, { param1: 'param1 value', param2: 'param2 value' });
 
-      res.status(200).send('[1, 2, 3]');
+      res.status(200).json([1, 2, 3]);
     });
 
     const server = webServer.listen();
@@ -437,12 +463,19 @@ module.exports.tests.success_conditions = (test, common) => {
 
     const logger = require('pelias-mock-logger')();
 
-    const serviceConfig = {
-      getName: () => { return 'foo'; },
-      getBaseUrl: () => { return `http://localhost:${port}`; },
-      getUrl: (req) => { return `http://localhost:${port}/some_endpoint`; },
-      getParameters: (req) => { return { param1: 'param1 value', param2: 'param2 value' }; },
-      getHeaders: (req) => { }
+    const MockServiceConfig = class extends ServiceConfiguration {
+      constructor(o) {
+        super('foo', { url: `http://localhost:${port}` } );
+      }
+      getUrl(req) {
+        return `http://localhost:${port}/some_endpoint`;
+      }
+      getParameters(req) {
+        return { param1: 'param1 value', param2: 'param2 value' };
+      }
+      getHeaders(req) {
+        return undefined;
+      }
     };
 
     const service = proxyquire('../../../service/http_json', {
@@ -450,7 +483,7 @@ module.exports.tests.success_conditions = (test, common) => {
       '../helper/logging': {
         isDNT: () => { return true; }
       }
-    })(serviceConfig);
+    })(new MockServiceConfig());
 
     t.ok(logger.isInfoMessage(new RegExp(`using foo service at http://localhost:${port}`)));
 
@@ -458,6 +491,63 @@ module.exports.tests.success_conditions = (test, common) => {
       t.notOk(err, 'should be no error');
       t.deepEquals(results, [1, 2, 3]);
       t.notOk(logger.hasErrorMessages());
+      t.end();
+
+      server.close();
+
+    });
+
+  });
+
+  test('server succeeding on last timeout chance should return no error and parsed output', (t) => {
+    const webServer = express();
+    let requestCount = 0;
+    webServer.get('/some_endpoint', (req, res, next) => {
+      if (++requestCount < 3) {
+        res.status(503);
+
+      } else {
+        t.notOk(req.headers.hasOwnProperty('dnt'), 'dnt header should not have been passed');
+        t.equals(req.headers.header1, 'header1 value', 'all headers should have been passed');
+        t.deepEquals(req.query, { param1: 'param1 value', param2: 'param2 value' });
+
+        res.status(200).json([1, 2, 3]);
+
+      }
+
+    });
+
+    const server = webServer.listen();
+    const port = server.address().port;
+
+    const logger = require('pelias-mock-logger')();
+
+    const MockServiceConfig = class extends ServiceConfiguration {
+      constructor(o) {
+        super('foo', { url: `http://localhost:${port}` } );
+      }
+      getUrl(req) {
+        return `http://localhost:${port}/some_endpoint`;
+      }
+      getParameters(req) {
+        return { param1: 'param1 value', param2: 'param2 value' };
+      }
+      getHeaders(req) {
+        return { header1: 'header1 value' };
+      }
+    };
+
+    const service = proxyquire('../../../service/http_json', {
+      'pelias-logger': logger
+    })(new MockServiceConfig());
+
+    t.ok(logger.isInfoMessage(new RegExp(`using foo service at http://localhost:${port}`)));
+
+    service({}, (err, results) => {
+      t.notOk(err, 'should be no error');
+      t.deepEquals(results, [1, 2, 3]);
+      t.notOk(logger.hasErrorMessages());
+      t.equals(requestCount, 3);
       t.end();
 
       server.close();

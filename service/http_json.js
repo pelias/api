@@ -1,19 +1,27 @@
-const request = require('request');
-const bl = require('bl');
+const request = require('superagent');
 const _ = require('lodash');
 const isDNT = require( '../helper/logging' ).isDNT;
 
 const logger = require( 'pelias-logger' ).get( 'placeholder' );
 
+const ServiceConfiguration = require('./configurations/ServiceConfiguration');
+
+function synthesizeUrl(serviceConfig, req) {
+  const parameters = _.map(serviceConfig.getParameters(), (value, key) => {
+    return `${key}=${value}`;
+  }).join('&');
+
+  if (parameters) {
+    return encodeURI(`${serviceConfig.getUrl(req)}?${parameters}`);
+  } else {
+    return serviceConfig.getUrl(req);
+  }
+
+}
+
 module.exports = function setup(serviceConfig) {
-  if (!_.conformsTo(serviceConfig, {
-    getName: _.isFunction,
-    getBaseUrl: _.isFunction,
-    getUrl: _.isFunction,
-    getParameters: _.isFunction,
-    getHeaders: _.isFunction
-  })) {
-    throw Error('serviceConfig should have a bunch of functions exposed');
+  if (!(serviceConfig instanceof ServiceConfiguration)) {
+    throw Error('serviceConfig be an instance of ServiceConfiguration');
   }
 
   if (_.isEmpty(serviceConfig.getBaseUrl())) {
@@ -28,63 +36,64 @@ module.exports = function setup(serviceConfig) {
 
   logger.info(`using ${serviceConfig.getName()} service at ${serviceConfig.getBaseUrl()}`);
   return (req, callback) => {
-    const options = {
-      method: 'GET',
-      url: serviceConfig.getUrl(req),
-      qs: serviceConfig.getParameters(req),
-      headers: serviceConfig.getHeaders(req) || {}
-    };
-
+    const headers = serviceConfig.getHeaders(req) || {};
     const do_not_track = isDNT(req);
 
     if (do_not_track) {
-      options.headers.dnt = '1';
+      headers.dnt = '1';
     }
 
-    request(options).on('response', (response) => {
-      // pipe the response thru bl which will accumulate the entire body
-      response.pipe(bl((err, data) => {
-        if (response.statusCode === 200) {
-          // parse and return w/o error unless response wasn't JSON
-          try {
-            const parsed = JSON.parse(data);
-            return callback(null, parsed);
-
-          }
-          catch (err) {
-            if (do_not_track) {
-              logger.error(`${serviceConfig.getBaseUrl()} [do_not_track] could not parse response: ${data}`);
-              return callback(`${serviceConfig.getBaseUrl()} [do_not_track] could not parse response: ${data}`);
-            } else {
-              logger.error(`${response.request.href} could not parse response: ${data}`);
-              return callback(`${response.request.href} could not parse response: ${data}`);
-            }
-
-          }
-        }
-        else {
-          // otherwise there was a non-200 status so handle generically
+    request
+      .get(serviceConfig.getUrl(req))
+      .set(headers)
+      .timeout(serviceConfig.getTimeout())
+      .retry(serviceConfig.getRetries())
+      .accept('json')
+      .query(serviceConfig.getParameters(req))
+      .on('error', (err) => {
+        if (err.status) {
+          // first handle case where a non-200 was returned
           if (do_not_track) {
-            logger.error(`${serviceConfig.getBaseUrl()} [do_not_track] returned status ${response.statusCode}: ${data}`);
-            return callback(`${serviceConfig.getBaseUrl()} [do_not_track] returned status ${response.statusCode}: ${data}`);
+            logger.error(`${serviceConfig.getBaseUrl()} [do_not_track] returned status ${err.status}: ${err.response.text}`);
+            return callback(`${serviceConfig.getBaseUrl()} [do_not_track] returned status ${err.status}: ${err.response.text}`);
           } else {
-            logger.error(`${response.request.href} returned status ${response.statusCode}: ${data}`);
-            return callback(`${response.request.href} returned status ${response.statusCode}: ${data}`);
+            logger.error(`${synthesizeUrl(serviceConfig, req)} returned status ${err.status}: ${err.response.text}`);
+            return callback(`${synthesizeUrl(serviceConfig, req)} returned status ${err.status}: ${err.response.text}`);
           }
 
         }
-      }));
 
-    })
-    .on('error', (err) => {
-      if (do_not_track) {
-        logger.error(`${serviceConfig.getBaseUrl()} [do_not_track]: ${JSON.stringify(err)}`);
-        callback(err);
-      } else {
-        logger.error(`${options.url}: ${JSON.stringify(err)}`);
-        callback(err);
-      }
-    });
+        // handle case that something catastrophic happened while contacting the server
+        if (do_not_track) {
+          logger.error(`${serviceConfig.getBaseUrl()} [do_not_track]: ${JSON.stringify(err)}`);
+          return callback(err);
+        } else {
+          logger.error(`${serviceConfig.getUrl(req)}: ${JSON.stringify(err)}`);
+          return callback(err);
+        }
+
+      })
+      .end((err, response) => {
+        // bail early if there's an error (shouldn't happen since it was already handled above)
+        if (err) {
+          return;
+        }
+
+        if (response.type === 'application/json') {
+          return callback(null, response.body);
+
+        } else {
+          if (do_not_track) {
+            logger.error(`${serviceConfig.getBaseUrl()} [do_not_track] could not parse response: ${response.text}`);
+            return callback(`${serviceConfig.getBaseUrl()} [do_not_track] could not parse response: ${response.text}`);
+          } else {
+            logger.error(`${synthesizeUrl(serviceConfig, req)} could not parse response: ${response.text}`);
+            return callback(`${synthesizeUrl(serviceConfig, req)} could not parse response: ${response.text}`);
+          }
+
+        }
+
+      });
 
   };
 
