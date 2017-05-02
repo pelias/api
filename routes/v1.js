@@ -72,7 +72,7 @@ const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_anal
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
 
-const PlaceHolder = require('../service/configurations/placeholder');
+const PlaceHolder = require('../service/configurations/PlaceHolder');
 
 /**
  * Append routes to app
