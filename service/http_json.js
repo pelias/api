@@ -6,6 +6,7 @@ const logger = require( 'pelias-logger' ).get( 'placeholder' );
 
 const ServiceConfiguration = require('./configurations/ServiceConfiguration');
 
+// superagent doesn't exposed the assembled GET request, so synthesize it
 function synthesizeUrl(serviceConfig, req) {
   const parameters = _.map(serviceConfig.getParameters(), (value, key) => {
     return `${key}=${value}`;
@@ -79,18 +80,17 @@ module.exports = function setup(serviceConfig) {
           return;
         }
 
+        // if json was returned then just return it
         if (response.type === 'application/json') {
           return callback(null, response.body);
+        }
 
+        if (do_not_track) {
+          logger.error(`${serviceConfig.getBaseUrl()} [do_not_track] could not parse response: ${response.text}`);
+          return callback(`${serviceConfig.getBaseUrl()} [do_not_track] could not parse response: ${response.text}`);
         } else {
-          if (do_not_track) {
-            logger.error(`${serviceConfig.getBaseUrl()} [do_not_track] could not parse response: ${response.text}`);
-            return callback(`${serviceConfig.getBaseUrl()} [do_not_track] could not parse response: ${response.text}`);
-          } else {
-            logger.error(`${synthesizeUrl(serviceConfig, req)} could not parse response: ${response.text}`);
-            return callback(`${synthesizeUrl(serviceConfig, req)} could not parse response: ${response.text}`);
-          }
-
+          logger.error(`${synthesizeUrl(serviceConfig, req)} could not parse response: ${response.text}`);
+          return callback(`${synthesizeUrl(serviceConfig, req)} could not parse response: ${response.text}`);
         }
 
       });
