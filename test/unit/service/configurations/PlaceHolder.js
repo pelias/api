@@ -1,34 +1,47 @@
 module.exports.tests = {};
 
-const PlaceHolder = require('../../../../service/configurations/placeholder');
+const PlaceHolder = require('../../../../service/configurations/PlaceHolder');
 
 module.exports.tests.all = (test, common) => {
   test('getName should return \'placeholder\'', (t) => {
-    const placeholder = new PlaceHolder('base url');
+    const configBlob = {
+      url: 'base url',
+      timeout: 17,
+      retries: 19
+    };
+
+    const placeholder = new PlaceHolder(configBlob);
 
     t.equals(placeholder.getName(), 'placeholder');
-    t.end();
-
-  });
-
-  test('getBaseUrl should return value passed to constructor', (t) => {
-    const placeholder = new PlaceHolder('base url');
-
     t.equals(placeholder.getBaseUrl(), 'base url');
+    t.equals(placeholder.getTimeout(), 17);
+    t.equals(placeholder.getRetries(), 19);
     t.end();
 
   });
 
   test('getUrl should return value passed to constructor', (t) => {
-    const placeholder = new PlaceHolder('base url');
+    const configBlob = {
+      url: 'base url',
+      timeout: 17,
+      retries: 19
+    };
 
-    t.equals(placeholder.getUrl('this is not an object'), 'base url/search');
+    const placeholder = new PlaceHolder(configBlob);
+
+    t.equals(placeholder.getUrl(), 'base url/search');
     t.end();
 
   });
 
   test('getParameters should return object with text and lang from req', (t) => {
-    const placeholder = new PlaceHolder('base url');
+    const configBlob = {
+      url: 'base url',
+      timeout: 17,
+      retries: 19
+    };
+
+    const placeholder = new PlaceHolder(configBlob);
 
     const req = {
       clean: {
@@ -45,15 +58,27 @@ module.exports.tests.all = (test, common) => {
   });
 
   test('getHeaders should return empty object', (t) => {
-    const placeholder = new PlaceHolder('base url');
+    const configBlob = {
+      url: 'base url',
+      timeout: 17,
+      retries: 19
+    };
 
-    t.deepEquals(placeholder.getHeaders('this is not an object'), {});
+    const placeholder = new PlaceHolder(configBlob);
+
+    t.deepEquals(placeholder.getHeaders(), {});
     t.end();
 
   });
 
   test('getParameters should not include lang if req.clean.lang is unavailable', (t) => {
-    const placeholder = new PlaceHolder('base url');
+    const configBlob = {
+      url: 'base url',
+      timeout: 17,
+      retries: 19
+    };
+
+    const placeholder = new PlaceHolder(configBlob);
 
     const req = {
       clean: {
@@ -67,7 +92,13 @@ module.exports.tests.all = (test, common) => {
   });
 
   test('getParameters should not include lang if req.clean.lang.iso6393 is unavailable', (t) => {
-    const placeholder = new PlaceHolder('base url');
+    const configBlob = {
+      url: 'base url',
+      timeout: 17,
+      retries: 19
+    };
+
+    const placeholder = new PlaceHolder(configBlob);
 
     const req = {
       clean: {
@@ -85,7 +116,7 @@ module.exports.tests.all = (test, common) => {
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`SERVICE CONFIGURATION /placeholder ${name}`, testFunction);
+    return tape(`SERVICE CONFIGURATION /PlaceHolder ${name}`, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

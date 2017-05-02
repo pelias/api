@@ -84,12 +84,12 @@ function addRoutes(app, peliasConfig) {
   const esclient = elasticsearch.Client(peliasConfig.esclient);
 
   const isPipServiceEnabled = require('../controller/predicates/is_service_enabled')(peliasConfig.api.pipService);
-  const isPlaceholderServiceEnabled = require('../controller/predicates/is_service_enabled')(peliasConfig.api.placeholderService);
 
   const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
 
-  const placeholderService = require('../service/http_json')(
-    new PlaceHolder(peliasConfig.api.placeholderService));
+  const placeholderConfiguration = new PlaceHolder(peliasConfig.api.services.placeholder);
+  const placeholderService = require('../service/http_json')(placeholderConfiguration);
+  const isPlaceholderServiceEnabled = require('../controller/predicates/is_service_enabled')(placeholderConfiguration.getBaseUrl());
 
   const coarse_reverse_should_execute = all(
     not(hasRequestErrors), isPipServiceEnabled, isCoarseReverse
