@@ -88,9 +88,9 @@ const PlaceHolder = require('../service/configurations/PlaceHolder');
 function addRoutes(app, peliasConfig) {
   const esclient = elasticsearch.Client(peliasConfig.esclient);
 
-  const isPipServiceEnabled = require('../controller/predicates/is_service_enabled')(peliasConfig.api.pipService);
-
-  const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
+  const pipConfiguration = new PointInPolygon(peliasConfig.api.services.placeholder);
+  const pipService = serviceWrapper(pipConfiguration);
+  const isPipServiceEnabled = _.constant(pipConfiguration.isEnabled());
 
   const placeholderConfiguration = new PlaceHolder(_.get(peliasConfig.api.services, 'placeholder', {}));
   const placeholderService = serviceWrapper(placeholderConfiguration);

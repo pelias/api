@@ -10,7 +10,7 @@ class PointInPolygon extends ServiceConfiguration {
   }
 
   getUrl(req) {
-    return `${this.baseUrl}/${req.clean.point.lon}/${req.clean.point.lat}`;
+    return `${this.baseUrl}/${req.clean['point.lon']}/${req.clean['point.lat']}`;
   }
 
 }

@@ -28,13 +28,11 @@ module.exports.tests.all = (test, common) => {
     const pointInPolygon = new PointInPolygon(configBlob);
 
     const req = {
-      clean: {
-        point: {
-          lat: 12.121212,
-          lon: 21.212121
-        }
-      }
+      clean: { }
     };
+
+    req.clean['point.lon'] = 21.212121;
+    req.clean['point.lat'] = 12.121212;
 
     t.equals(pointInPolygon.getUrl(req), 'base url/21.212121/12.121212');
     t.end();
