@@ -62,7 +62,7 @@
     "pelias-mock-logger": "^1.0.1",
     "pelias-model": "4.8.0",
     "pelias-query": "8.15.0",
-    "pelias-text-analyzer": "1.8.0",
+    "pelias-text-analyzer": "1.8.1",
     "predicates": "^1.0.1",
     "retry": "^0.10.1",
     "request": "^2.79.0",
