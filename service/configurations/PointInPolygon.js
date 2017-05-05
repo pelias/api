@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 
-const ServiceConfiguration = require('./ServiceConfiguration');
+const ServiceConfiguration = require('pelias-microservice-wrapper').ServiceConfiguration;
 
 class PointInPolygon extends ServiceConfiguration {
   constructor(o) {
