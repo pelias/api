@@ -1,8 +1,10 @@
 'use strict';
 
+const url = require('url');
+
 const _ = require('lodash');
 
-const ServiceConfiguration = require('./ServiceConfiguration');
+const ServiceConfiguration = require('pelias-microservice-wrapper').ServiceConfiguration;
 
 class PlaceHolder extends ServiceConfiguration {
   constructor(o) {
@@ -22,7 +24,7 @@ class PlaceHolder extends ServiceConfiguration {
   }
 
   getUrl(req) {
-    return `${this.baseUrl}/search`;
+    return url.resolve(this.baseUrl, 'search');
   }
 
 }
