@@ -2,6 +2,8 @@ var _ = require('lodash');
 
 var SIZE_PADDING = 2;
 
+var MIN_QUERY_SIZE = 20;
+
 /**
  * Utility for calculating query result size
  * incorporating padding for dedupe process
@@ -24,12 +26,7 @@ function setup() {
  * @returns {number}
  */
 function calculateSize(cleanSize) {
-  switch (cleanSize || 1) {
-    case 1:
-      return 1;
-    default:
-      return cleanSize * SIZE_PADDING;
-  }
+  return Math.max(MIN_QUERY_SIZE, cleanSize * SIZE_PADDING);
 }
 
 module.exports = setup;
