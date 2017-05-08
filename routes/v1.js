@@ -4,6 +4,7 @@ var elasticsearch = require('elasticsearch');
 const all = require('predicates').all;
 const any = require('predicates').any;
 const not = require('predicates').not;
+const _ = require('lodash');
 
 /** ----------------------- sanitizers ----------------------- **/
 var sanitizers = {
@@ -72,6 +73,7 @@ const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_anal
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
 
+const serviceWrapper = require('pelias-microservice-wrapper').service;
 const PlaceHolder = require('../service/configurations/PlaceHolder');
 
 /**
@@ -88,8 +90,8 @@ function addRoutes(app, peliasConfig) {
   const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
 
   const placeholderConfiguration = new PlaceHolder(peliasConfig.api.services.placeholder);
-  const placeholderService = require('../service/http_json')(placeholderConfiguration);
-  const isPlaceholderServiceEnabled = require('../controller/predicates/is_service_enabled')(placeholderConfiguration.getBaseUrl());
+  const placeholderService = serviceWrapper(placeholderConfiguration);
+  const isPlaceholderServiceEnabled = _.constant(placeholderConfiguration.isEnabled());
 
   const coarse_reverse_should_execute = all(
     not(hasRequestErrors), isPipServiceEnabled, isCoarseReverse

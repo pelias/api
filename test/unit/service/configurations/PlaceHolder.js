@@ -5,7 +5,7 @@ const PlaceHolder = require('../../../../service/configurations/PlaceHolder');
 module.exports.tests.all = (test, common) => {
   test('getName should return \'placeholder\'', (t) => {
     const configBlob = {
-      url: 'base url',
+      url: 'http://localhost:1234',
       timeout: 17,
       retries: 19
     };
@@ -13,7 +13,7 @@ module.exports.tests.all = (test, common) => {
     const placeholder = new PlaceHolder(configBlob);
 
     t.equals(placeholder.getName(), 'placeholder');
-    t.equals(placeholder.getBaseUrl(), 'base url');
+    t.equals(placeholder.getBaseUrl(), 'http://localhost:1234/');
     t.equals(placeholder.getTimeout(), 17);
     t.equals(placeholder.getRetries(), 19);
     t.end();
@@ -22,21 +22,21 @@ module.exports.tests.all = (test, common) => {
 
   test('getUrl should return value passed to constructor', (t) => {
     const configBlob = {
-      url: 'base url',
+      url: 'http://localhost:1234',
       timeout: 17,
       retries: 19
     };
 
     const placeholder = new PlaceHolder(configBlob);
 
-    t.equals(placeholder.getUrl(), 'base url/search');
+    t.equals(placeholder.getUrl(), 'http://localhost:1234/search');
     t.end();
 
   });
 
   test('getParameters should return object with text and lang from req', (t) => {
     const configBlob = {
-      url: 'base url',
+      url: 'http://localhost:1234',
       timeout: 17,
       retries: 19
     };
@@ -108,6 +108,20 @@ module.exports.tests.all = (test, common) => {
     };
 
     t.deepEquals(placeholder.getParameters(req), { text: 'text value' });
+    t.end();
+
+  });
+
+  test('baseUrl ending in / should not have double /\'s return by getUrl', (t) => {
+    const configBlob = {
+      url: 'http://localhost:1234/blah',
+      timeout: 17,
+      retries: 19
+    };
+
+    const placeholder = new PlaceHolder(configBlob);
+
+    t.deepEquals(placeholder.getUrl(), 'http://localhost:1234/blah/search');
     t.end();
 
   });
