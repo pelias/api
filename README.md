@@ -40,7 +40,7 @@ The API recognizes the following properties under the top-level `api` key in you
 |parameter|required|default|description|
 |---|---|---|---|
 |`host`|*yes*||specifies the url under which the http service is to run|
-|`textAnalyzer`|*yes*|*addressit*|can be either `libpostal` or `addressit` however will soon be deprecated and only `libpostal` will be supported going forward|
+|`textAnalyzer`|*no*|*addressit*|can be either `libpostal` or `addressit` however will soon be **deprecated** and only `libpostal` will be supported going forward|
 |`indexName`|*no*|*pelias*|name of the Elasticsearch index to be used when building queries|
 |`legacyUrl`|*no*||the url to redirect to in case the user does not specify a version such as `v1`
 |`relativeScores`|*no*|true|if set to true, confidence scores will be normalized, realistically at this point setting this to false is not tested or desirable
