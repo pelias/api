@@ -37,9 +37,17 @@ The API ships with several convenience commands (runnable via `npm`):
 ## pelias-config
 The API recognizes the following properties under the top-level `api` key in your `pelias.json` config file:
 
-  * `accessLog`: (*optional*) The name of the format to use for access logs; may be any one of the
+|parameter|required|default|description|
+|---|---|---|---|
+|`host`|*yes*||specifies the url under which the http service is to run|
+|`textAnalyzer`|*yes*|*addressit*|can be either `libpostal` or `addressit` however will soon be deprecated and only `libpostal` will be supported going forward|
+|`legacyUrl`|*no*||the url to redirect to in case the user does not specify a version such as `v1`
+|`relativeScores`|*no*|true|if set to true, confidence scores will be normalized, realistically at this point setting this to false is not tested or desirable
+|`accessLog`|*no*||name of the format to use for access logs; may be any one of the
   [predefined values](https://github.com/expressjs/morgan#predefined-formats) in the `morgan` package. Defaults to
-  `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.
+  `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.|
+|`pipService`|*yes*||full url to the pip service to be used for coarse reverse queries. if missing, which is not recommended, the service will default to using nearby lookups instead of point-in-polygon.|
+
 
 ## Contributing
 
