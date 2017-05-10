@@ -98,9 +98,17 @@ function setup(placeholderService, should_execute) {
         }
 
       } else {
+        const matchesLayers = (result) => {
+          return req.clean.layers.indexOf(result.placetype) >= 0;
+        };
+
+        // filter that passes only results that match on requested layers
+        // passes everything if req.clean.layers is not found
+        const layersFilter = _.get(req, 'clean.layers', []).length ? matchesLayers : _.constant(true);
+
         // otherwise convert results to ES docs
         res.meta = {};
-        res.data = _.flatten(results.map(synthesizeDocs));
+        res.data = _.flatten(results.filter(layersFilter).map(synthesizeDocs));
       }
 
       return next();
