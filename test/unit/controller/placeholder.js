@@ -677,6 +677,150 @@ module.exports.tests.success = (test, common) => {
 
   });
 
+  test('only synthesized docs matching explicit boundary.country should be returned', (t) => {
+    let placeholderService_was_called = false;
+
+    const placeholder_response = [
+      {
+        id: 1,
+        name: 'name 1',
+        placetype: 'locality',
+        lineage: [
+          {
+            country: {
+              id: 1,
+              name: 'country name 1',
+              abbr: 'ABC'
+            }
+          },
+          {
+            country: {
+              id: 2,
+              name: 'country name 2',
+              abbr: 'DEF'
+            }
+          }
+        ],
+        geom: {
+          lat: 14.141414,
+          lon: 41.414141
+        }
+      },
+      {
+        id: 3,
+        name: 'name 3',
+        placetype: 'locality',
+        lineage: [ {} ],
+        geom: {
+          lat: 15.151515,
+          lon: 51.515151
+        }
+      },
+      {
+        id: 4,
+        name: 'name 4',
+        placetype: 'locality',
+        lineage: [
+          {
+            country: {
+              id: 4,
+              name: 'country name 4',
+              abbr: 'ABC'
+            }
+          }
+        ],
+        geom: {
+          lat: 16.161616,
+          lon: 61.616161
+        }
+      }
+    ];
+
+    const placeholderService = (req, callback) => {
+      t.deepEqual(req, {
+        param1: 'param1 value',
+        clean: {
+          'boundary.country': 'ABC'
+        }
+      });
+      placeholderService_was_called = true;
+      callback(null, placeholder_response);
+    };
+
+    const should_execute = (req, res) => {
+      return true;
+    };
+
+    const controller = placeholder(placeholderService, should_execute);
+
+    const req = {
+      param1: 'param1 value',
+      clean: {
+        'boundary.country': 'ABC'
+      }
+    };
+    const res = { };
+
+    const expected_res = {
+      meta: {},
+      data: [
+        {
+          _id: '1',
+          _type: 'locality',
+          layer: 'locality',
+          source: 'whosonfirst',
+          source_id: '1',
+          center_point: {
+            lat: 14.141414,
+            lon: 41.414141
+          },
+          name: {
+            'default': 'name 1'
+          },
+          phrase: {
+            'default': 'name 1'
+          },
+          alpha3: 'ABC',
+          parent: {
+            country: ['country name 1'],
+            country_id: ['1'],
+            country_a: ['ABC']
+          }
+        },
+        {
+          _id: '4',
+          _type: 'locality',
+          layer: 'locality',
+          source: 'whosonfirst',
+          source_id: '4',
+          center_point: {
+            lat: 16.161616,
+            lon: 61.616161
+          },
+          name: {
+            'default': 'name 4'
+          },
+          phrase: {
+            'default': 'name 4'
+          },
+          alpha3: 'ABC',
+          parent: {
+            country: ['country name 4'],
+            country_id: ['4'],
+            country_a: ['ABC']
+          }
+        }
+      ]
+    };
+
+    controller(req, res, () => {
+      t.ok(placeholderService_was_called);
+      t.deepEquals(res, expected_res);
+      t.end();
+    });
+
+  });
+
 };
 
 module.exports.tests.error_conditions = (test, common) => {

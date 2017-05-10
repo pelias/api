@@ -98,17 +98,30 @@ function setup(placeholderService, should_execute) {
         }
 
       } else {
+        // filter that passes only results that match on requested layers
+        // passes everything if req.clean.layers is not found
         const matchesLayers = (result) => {
           return req.clean.layers.indexOf(result.placetype) >= 0;
         };
+        const layersFilter = _.get(req, 'clean.layers', []).length ?
+          matchesLayers : _.constant(true);
 
-        // filter that passes only results that match on requested layers
-        // passes everything if req.clean.layers is not found
-        const layersFilter = _.get(req, 'clean.layers', []).length ? matchesLayers : _.constant(true);
+        // filter that passes only documents that match on boundary.country
+        // passed everything if req.clean['boundary.country'] is not found
+        const matchesBoundaryCountry = (doc) => {
+          return doc.alpha3 === req.clean['boundary.country'];
+        };
+        const countryFilter = _.has(req, ['clean', 'boundary.country']) ?
+          matchesBoundaryCountry : _.constant(true);
 
-        // otherwise convert results to ES docs
+        // convert results to ES docs
+        // boundary.country filter must happen after synthesis since multiple
+        //  lineages may produce different country docs
         res.meta = {};
-        res.data = _.flatten(results.filter(layersFilter).map(synthesizeDocs));
+        res.data = _.flatten(
+          results.filter(layersFilter).map(synthesizeDocs))
+        .filter(countryFilter);
+
       }
 
       return next();
