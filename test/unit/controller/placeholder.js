@@ -405,6 +405,65 @@ module.exports.tests.success = (test, common) => {
 
   });
 
+  test('results with string geom.lat/geom.lon should convert to numbers', (t) => {
+    const placeholder_response = [
+      {
+        id: 1,
+        name: 'name 1',
+        placetype: 'neighbourhood',
+        geom: {
+          area: 12.34,
+          lat: '14.141414',
+          lon: '41.414141'
+        }
+      }
+    ];
+
+    const placeholderService = (req, callback) => {
+      t.deepEqual(req, { param1: 'param1 value' });
+      callback(null, placeholder_response);
+    };
+
+    const should_execute = (req, res) => {
+      return true;
+    };
+
+    const controller = placeholder(placeholderService, should_execute);
+
+    const req = { param1: 'param1 value' };
+    const res = { };
+
+    const expected_res = {
+      meta: {},
+      data: [
+        {
+          _id: '1',
+          _type: 'neighbourhood',
+          layer: 'neighbourhood',
+          source: 'whosonfirst',
+          source_id: '1',
+          center_point: {
+            lat: 14.141414,
+            lon: 41.414141
+          },
+          name: {
+            'default': 'name 1'
+          },
+          phrase: {
+            'default': 'name 1'
+          },
+          parent: { }
+        }
+      ]
+    };
+
+    controller(req, res, () => {
+      t.deepEquals(res, expected_res);
+      t.end();
+    });
+
+  });
+
   test('result without geom.bbox should leave bounding_box undefined', (t) => {
     const placeholder_response = [
       {

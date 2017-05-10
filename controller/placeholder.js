@@ -6,6 +6,12 @@ const logger = require('pelias-logger').get('api');
 const logging = require( '../helper/logging' );
 const Document = require('pelias-model').Document;
 
+// composition of toNumber and isFinite, useful for single call to convert a value
+//  to a number, then checking to see if it's finite
+function isFiniteNumber() {
+  return _.flow(_.toNumber, _.isFinite);
+}
+
 // returns true if all 4 ,-delimited (max) substrings are parseable as numbers
 // '12.12,21.21,13.13,31.31'       returns true
 // '12.12,21.21,13.13,blah'        returns false
@@ -13,8 +19,7 @@ const Document = require('pelias-model').Document;
 function validBoundingBox(bbox) {
   return bbox.
     split(',').
-    map(_.toNumber).
-    filter(_.isFinite).length === 4;
+    filter(isFiniteNumber).length === 4;
 }
 
 function synthesizeDocs(result) {
@@ -22,8 +27,10 @@ function synthesizeDocs(result) {
   doc.setName('default', result.name);
 
   // only assign centroid if both lat and lon are finite numbers
-  if (_.conformsTo(result.geom, { 'lat': _.isFinite, 'lon': _.isFinite } )) {
+  if (_.conformsTo(result.geom, { 'lat': isFiniteNumber, 'lon': isFiniteNumber } )) {
     doc.setCentroid( { lat: result.geom.lat, lon: result.geom.lon } );
+  } else {
+    console.error('what\'s up with ' + result.id);
   }
 
   // lodash conformsTo verifies that an object has a property with a certain format
@@ -31,7 +38,7 @@ function synthesizeDocs(result) {
     const parsedBoundingBox = result.geom.bbox.split(',').map(_.toNumber);
     doc.setBoundingBox({
       upperLeft: {
-        lat: parsedBoundingBox[3],
+        lat: +parsedBoundingBox[3],
         lon: parsedBoundingBox[0]
       },
       lowerRight: {
