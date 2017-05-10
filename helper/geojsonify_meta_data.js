@@ -8,7 +8,14 @@ var Document = require('pelias-model').Document;
  */
 function addMetaData(src, dst) {
   dst.id = src._id;
-  dst.gid = makeGid(src);
+
+  // at this time the gid's of interpolated addresses are not usable in the place endpoint
+  // to avoid confusion they will be removed altogether for now and replaced in the future when we have determined
+  // the right format for these types of results
+  if (src.source !== 'mixed') {
+    dst.gid = makeGid(src);
+  }
+
   dst.layer = lookupLayer(src);
   dst.source = lookupSource(src);
   dst.source_id = lookupSourceId(src);

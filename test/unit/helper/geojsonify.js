@@ -459,6 +459,53 @@ module.exports.tests.categories = function (test, common) {
   });
 };
 
+
+module.exports.tests.interpolated_gids = function (test, common) {
+  test('do not set the gid for interpolated results', function (t) {
+    var input = [
+      {
+        '_id': 'polyline:10439991',
+        'source': 'mixed',
+        'layer': 'address',
+        'center_point': {
+          'lon': -73.953698,
+          'lat': 40.757667
+        },
+        'name': {
+          'default': '123 Main Street'
+        },
+        'source_id': 'polyline:10439991'
+      }
+    ];
+
+    var expected = {
+      'type': 'FeatureCollection',
+      'bbox': [-73.953698, 40.757667, -73.953698, 40.757667],
+      'features': [
+        {
+          'type': 'Feature',
+          'properties': {
+            'id': 'polyline:10439991',
+            'layer': 'address',
+            'source': 'mixed',
+            'source_id': 'polyline:10439991',
+            'name': '123 Main Street'
+          },
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [ -73.953698, 40.757667 ]
+          }
+        }
+      ]
+    };
+
+    var json = geojsonify( {}, input );
+
+    t.deepEqual(json, expected, 'gid is not defined');
+    t.end();
+  });
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
