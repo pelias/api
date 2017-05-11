@@ -54,6 +54,7 @@ var tests = [
   require('./query/text_parser'),
   require('./sanitizer/_boundary_country'),
   require('./sanitizer/_flag_bool'),
+  require('./sanitizer/_geonames_warnings'),
   require('./sanitizer/_geo_common'),
   require('./sanitizer/_geo_reverse'),
   require('./sanitizer/_groups'),
