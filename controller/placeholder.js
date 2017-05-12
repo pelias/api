@@ -50,38 +50,37 @@ function synthesizeDocs(result) {
 
   if (_.isEmpty(result.lineage)) {
     // there are no hierarchies so just return what's been assembled so far
-    const esDoc = doc.toESDocument();
-    esDoc.data._id = esDoc._id;
-    esDoc.data._type = esDoc._type;
-
-    return esDoc.data;
-
-  } else {
-    result.lineage.map((hierarchy) => {
-      Object.keys(hierarchy)
-        .filter(doc.isSupportedParent)
-        .filter((placetype) => { return !_.isEmpty(_.trim(hierarchy[placetype].name)); } )
-        .forEach((placetype) => {
-          if (hierarchy[placetype].hasOwnProperty('abbr') && placetype === 'country') {
-            doc.setAlpha3(hierarchy[placetype].abbr);
-          }
-
-          doc.addParent(
-            placetype,
-            hierarchy[placetype].name,
-            hierarchy[placetype].id.toString(),
-            hierarchy[placetype].abbr);
-
-      });
-    });
-
-    const esDoc = doc.toESDocument();
-    esDoc.data._id = esDoc._id;
-    esDoc.data._type = esDoc._type;
-
-    return esDoc.data;
+    return buildESDoc(doc);
 
   }
+
+  result.lineage.map((hierarchy) => {
+    Object.keys(hierarchy)
+      .filter(doc.isSupportedParent)
+      .filter((placetype) => { return !_.isEmpty(_.trim(hierarchy[placetype].name)); } )
+      .forEach((placetype) => {
+        if (hierarchy[placetype].hasOwnProperty('abbr') && placetype === 'country') {
+          doc.setAlpha3(hierarchy[placetype].abbr);
+        }
+
+        doc.addParent(
+          placetype,
+          hierarchy[placetype].name,
+          hierarchy[placetype].id.toString(),
+          hierarchy[placetype].abbr);
+
+    });
+  });
+
+  return buildESDoc(doc);
+
+}
+
+function buildESDoc(doc) {
+  const esDoc = doc.toESDocument();
+  esDoc.data._id = esDoc._id;
+  esDoc.data._type = esDoc._type;
+  return esDoc.data;
 }
 
 function setup(placeholderService, should_execute) {
@@ -112,7 +111,8 @@ function setup(placeholderService, should_execute) {
         // filter that passes only documents that match on boundary.country
         // passed everything if req.clean['boundary.country'] is not found
         const matchesBoundaryCountry = (doc) => {
-          return doc.alpha3 === req.clean['boundary.country'];
+          return doc.parent.country_a &&
+                 doc.parent.country_a.indexOf(req.clean['boundary.country']) > -1;
         };
         const countryFilter = _.has(req, ['clean', 'boundary.country']) ?
           matchesBoundaryCountry : _.constant(true);
