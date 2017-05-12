@@ -41,7 +41,7 @@ function normalizeParentIds(place) {
           source = place.source;
         }
         
-        place[placeType + '_gid'] = [ makeNewId(source, placeType, place[placeType + '_gid']) ];
+        place[placeType + '_gid'] = [ makeNewId(source, placeType, place[placeType + '_gid'][0]) ];
       }
     });
   }
