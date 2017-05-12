@@ -38,7 +38,7 @@ function synthesizeDocs(result) {
     const parsedBoundingBox = result.geom.bbox.split(',').map(_.toNumber);
     doc.setBoundingBox({
       upperLeft: {
-        lat: +parsedBoundingBox[3],
+        lat: parsedBoundingBox[3],
         lon: parsedBoundingBox[0]
       },
       lowerRight: {
