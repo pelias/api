@@ -1,25 +1,26 @@
-'use strict';
-
 const _ = require('lodash');
-
 const logger = require('pelias-logger').get('api');
-const logging = require( '../helper/logging' );
 const Document = require('pelias-model').Document;
 
 // composition of toNumber and isFinite, useful for single call to convert a value
 //  to a number, then checking to see if it's finite
-function isFiniteNumber() {
-  return _.flow(_.toNumber, _.isFinite);
-}
+const isFiniteNumber = _.flow(_.toNumber, _.isFinite);
 
-// returns true if all 4 ,-delimited (max) substrings are parseable as numbers
+// returns true if all 4 ,-delimited (max) substrings are parseable as finite numbers
 // '12.12,21.21,13.13,31.31'       returns true
+// '12.12,21.21,13.13,31.31,14.14' returns false
 // '12.12,21.21,13.13,blah'        returns false
 // '12.12,21.21,13.13,31.31,blah'  returns false
-function validBoundingBox(bbox) {
+// '12.12,NaN,13.13,31.31'         returns false
+// '12.12,Infinity,13.13,31.31'    returns false
+function is4CommaDelimitedNumbers(bbox) {
   return bbox.
     split(',').
     filter(isFiniteNumber).length === 4;
+}
+
+function hasName(result) {
+  return !_.isEmpty(_.trim(result.name));
 }
 
 function synthesizeDocs(result) {
@@ -30,11 +31,11 @@ function synthesizeDocs(result) {
   if (_.conformsTo(result.geom, { 'lat': isFiniteNumber, 'lon': isFiniteNumber } )) {
     doc.setCentroid( { lat: result.geom.lat, lon: result.geom.lon } );
   } else {
-    console.error('what\'s up with ' + result.id);
+    logger.error(`could not parse centroid for id ${result.id}`);
   }
 
   // lodash conformsTo verifies that an object has a property with a certain format
-  if (_.conformsTo(result.geom, { 'bbox': validBoundingBox } )) {
+  if (_.conformsTo(result.geom, { 'bbox': is4CommaDelimitedNumbers } )) {
     const parsedBoundingBox = result.geom.bbox.split(',').map(_.toNumber);
     doc.setBoundingBox({
       upperLeft: {
@@ -46,12 +47,13 @@ function synthesizeDocs(result) {
         lon: parsedBoundingBox[2]
       }
     });
+  } else {
+    logger.error(`could not parse bbox for id ${result.id}: ${result.geom.bbox}`);
   }
 
   if (_.isEmpty(result.lineage)) {
     // there are no hierarchies so just return what's been assembled so far
     return buildESDoc(doc);
-
   }
 
   result.lineage.map((hierarchy) => {
@@ -59,7 +61,9 @@ function synthesizeDocs(result) {
       .filter(doc.isSupportedParent)
       .filter((placetype) => { return !_.isEmpty(_.trim(hierarchy[placetype].name)); } )
       .forEach((placetype) => {
-        if (hierarchy[placetype].hasOwnProperty('abbr') && placetype === 'country') {
+        if (placetype === 'country' &&
+            hierarchy[placetype].hasOwnProperty('abbr') &&
+            hierarchy[placetype].abbr.match(/^[a-zA-Z]{3}$/)) {
           doc.setAlpha3(hierarchy[placetype].abbr);
         }
 
@@ -78,9 +82,7 @@ function synthesizeDocs(result) {
 
 function buildESDoc(doc) {
   const esDoc = doc.toESDocument();
-  esDoc.data._id = esDoc._id;
-  esDoc.data._type = esDoc._type;
-  return esDoc.data;
+  return _.extend(esDoc.data, { _id: esDoc._id, _type: esDoc._type });
 }
 
 function setup(placeholderService, should_execute) {
@@ -103,7 +105,7 @@ function setup(placeholderService, should_execute) {
         // filter that passes only results that match on requested layers
         // passes everything if req.clean.layers is not found
         const matchesLayers = (result) => {
-          return req.clean.layers.indexOf(result.placetype) >= 0;
+          return _.includes(req.clean.layers, result.placetype);
         };
         const layersFilter = _.get(req, 'clean.layers', []).length ?
           matchesLayers : _.constant(true);
@@ -111,8 +113,7 @@ function setup(placeholderService, should_execute) {
         // filter that passes only documents that match on boundary.country
         // passed everything if req.clean['boundary.country'] is not found
         const matchesBoundaryCountry = (doc) => {
-          return doc.parent.country_a &&
-                 doc.parent.country_a.indexOf(req.clean['boundary.country']) > -1;
+          return _.includes(doc.parent.country_a, req.clean['boundary.country']);
         };
         const countryFilter = _.has(req, ['clean', 'boundary.country']) ?
           matchesBoundaryCountry : _.constant(true);
@@ -122,12 +123,12 @@ function setup(placeholderService, should_execute) {
         //  lineages may produce different country docs
         res.meta = {};
         res.data = _.flatten(
-          results.filter(layersFilter).map(synthesizeDocs))
+          results.filter(hasName).filter(layersFilter).map(synthesizeDocs))
         .filter(countryFilter);
 
         const messageParts = [
           '[controller:placeholder]',
-          `[result_count:${_.get(res, 'data', []).length}]`
+          `[result_count:${_.defaultTo(res.data, []).length}]`
         ];
 
         logger.info(messageParts.join(' '));
