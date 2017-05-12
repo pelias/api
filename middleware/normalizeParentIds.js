@@ -1,7 +1,9 @@
-var logger = require('pelias-logger').get('api');
-var Document = require('pelias-model').Document;
+'use strict';
 
-var placeTypes = require('../helper/placeTypes');
+const logger = require('pelias-logger').get('api');
+const Document = require('pelias-model').Document;
+const placeTypes = require('../helper/placeTypes');
+const _ = require('lodash');
 
 /**
  * Convert WOF integer ids to Pelias formatted ids that can be used by the /place endpoint.
@@ -32,16 +34,18 @@ function normalizeParentIds(place) {
   if (place) {
     placeTypes.forEach(function (placeType) {
       if (place[placeType] && place[placeType].length > 0 && place[placeType][0]) {
-        var source = 'whosonfirst';
+        let source = 'whosonfirst';
+
+        const placetype_ids = _.get(place, `${placeType}_gid`, [null]);
 
         // looking forward to the day we can remove all geonames specific hacks, but until then...
         // geonames sometimes has its own ids in the parent hierarchy, so it's dangerous to assume that 
         // it's always WOF ids and hardcode to that
-        if (place.source === 'geonames' && place.source_id === place[placeType + '_gid'][0]) {
+        if (place.source === 'geonames' && place.source_id === placetype_ids[0]) {
           source = place.source;
         }
         
-        place[placeType + '_gid'] = [ makeNewId(source, placeType, place[placeType + '_gid'][0]) ];
+        place[`${placeType}_gid`] = [ makeNewId(source, placeType, placetype_ids[0]) ];
       }
     });
   }
