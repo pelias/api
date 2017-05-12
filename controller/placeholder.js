@@ -57,10 +57,7 @@ function synthesizeDocs(result) {
     return esDoc.data;
 
   } else {
-    return result.lineage.map((hierarchy) => {
-      // clear out the effects of the last hierarchy array (this effectively clones the base Document)
-      doc.clearAlpha3().clearAllParents();
-
+    result.lineage.map((hierarchy) => {
       Object.keys(hierarchy)
         .filter(doc.isSupportedParent)
         .filter((placetype) => { return !_.isEmpty(_.trim(hierarchy[placetype].name)); } )
@@ -76,14 +73,13 @@ function synthesizeDocs(result) {
             hierarchy[placetype].abbr);
 
       });
-
-      const esDoc = doc.toESDocument();
-      esDoc.data._id = esDoc._id;
-      esDoc.data._type = esDoc._type;
-
-      return esDoc.data;
-
     });
+
+    const esDoc = doc.toESDocument();
+    esDoc.data._id = esDoc._id;
+    esDoc.data._type = esDoc._type;
+
+    return esDoc.data;
 
   }
 }
@@ -129,6 +125,12 @@ function setup(placeholderService, should_execute) {
           results.filter(layersFilter).map(synthesizeDocs))
         .filter(countryFilter);
 
+        const messageParts = [
+          '[controller:placeholder]',
+          `[result_count:${_.get(res, 'data', []).length}]`
+        ];
+
+        logger.info(messageParts.join(' '));
       }
 
       return next();
