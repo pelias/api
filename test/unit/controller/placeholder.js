@@ -228,7 +228,6 @@ module.exports.tests.success = (test, common) => {
             phrase: {
               'default': 'name 1'
             },
-            alpha3: 'XYZ',
             parent: {
               neighbourhood: ['neighbourhood name 1', 'neighbourhood name 2'],
               neighbourhood_id: ['10', '20'],
@@ -407,78 +406,6 @@ module.exports.tests.success = (test, common) => {
                 'default': 'name 2'
               },
               parent: { }
-            }
-          ]
-        };
-
-        t.deepEquals(res, expected_res);
-        t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:1]'));
-      });
-
-    });
-
-    t.end();
-
-  });
-
-  test('results with non-3-character country abbreviation should not set alpha3', (t) => {
-    ['AB', 'ABCD'].forEach((country_abbr) => {
-      const logger = require('pelias-mock-logger')();
-
-      const placeholder_service = (req, callback) => {
-        t.deepEqual(req, { param1: 'param1 value' });
-
-        const response = [
-          {
-            id: 123,
-            name: 'name 1',
-            placetype: 'neighbourhood',
-            geom: {
-              area: 12.34
-            },
-            lineage: [
-              {
-                country: {
-                  id: 1,
-                  name: 'country name 1',
-                  abbr: country_abbr
-                }
-              }
-            ]
-          }
-        ];
-
-        callback(null, response);
-      };
-
-      const controller = proxyquire('../../../controller/placeholder', {
-        'pelias-logger': logger
-      })(placeholder_service, _.constant(true));
-
-      const req = { param1: 'param1 value' };
-      const res = { };
-
-      controller(req, res, () => {
-        const expected_res = {
-          meta: {},
-          data: [
-            {
-              _id: '123',
-              _type: 'neighbourhood',
-              layer: 'neighbourhood',
-              source: 'whosonfirst',
-              source_id: '123',
-              name: {
-                'default': 'name 1'
-              },
-              phrase: {
-                'default': 'name 1'
-              },
-              parent: {
-                country: ['country name 1'],
-                country_id: ['1'],
-                country_a: [country_abbr]
-              }
             }
           ]
         };
@@ -819,7 +746,6 @@ module.exports.tests.result_filtering = (test, common) => {
             phrase: {
               'default': 'name 1'
             },
-            alpha3: 'DEF',
             parent: {
               country: ['country name 1', 'country name 2'],
               country_id: ['1', '2'],
@@ -842,7 +768,6 @@ module.exports.tests.result_filtering = (test, common) => {
             phrase: {
               'default': 'name 4'
             },
-            alpha3: 'ABC',
             parent: {
               country: ['country name 4'],
               country_id: ['4'],

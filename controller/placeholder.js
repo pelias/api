@@ -61,18 +61,11 @@ function synthesizeDocs(result) {
       .filter(doc.isSupportedParent)
       .filter((placetype) => { return !_.isEmpty(_.trim(hierarchy[placetype].name)); } )
       .forEach((placetype) => {
-        if (placetype === 'country' &&
-            hierarchy[placetype].hasOwnProperty('abbr') &&
-            hierarchy[placetype].abbr.match(/^[a-zA-Z]{3}$/)) {
-          doc.setAlpha3(hierarchy[placetype].abbr);
-        }
-
         doc.addParent(
           placetype,
           hierarchy[placetype].name,
           hierarchy[placetype].id.toString(),
           hierarchy[placetype].abbr);
-
     });
   });
 
