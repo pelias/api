@@ -747,9 +747,9 @@ module.exports.tests.result_filtering = (test, common) => {
               'default': 'name 1'
             },
             parent: {
-              country: ['country name 1', 'country name 2'],
-              country_id: ['1', '2'],
-              country_a: ['ABC', 'DEF']
+              country: ['country name 1'],
+              country_id: ['1'],
+              country_a: ['ABC']
             }
           },
           {

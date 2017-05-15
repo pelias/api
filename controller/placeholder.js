@@ -23,7 +23,19 @@ function hasName(result) {
   return !_.isEmpty(_.trim(result.name));
 }
 
-function synthesizeDocs(result) {
+// return true if the hierarchy does not have a country.abbr
+// OR hierarchy country.abbr matches boundary.country
+function matchesBoundaryCountry(boundaryCountry, hierarchy) {
+  return !boundaryCountry || _.get(hierarchy, 'country.abbr') === boundaryCountry;
+}
+
+// return true if the result does not have a lineage
+// OR at least one lineage matches the requested boundary.country
+function atLeastOneLineageMatchesBoundaryCountry(boundaryCountry, result) {
+  return !result.lineage || result.lineage.some(_.curry(matchesBoundaryCountry)(boundaryCountry));
+}
+
+function synthesizeDocs(boundaryCountry, result) {
   const doc = new Document('whosonfirst', result.placetype, result.id.toString());
   doc.setName('default', result.name);
 
@@ -51,23 +63,22 @@ function synthesizeDocs(result) {
     logger.error(`could not parse bbox for id ${result.id}: ${result.geom.bbox}`);
   }
 
-  if (_.isEmpty(result.lineage)) {
-    // there are no hierarchies so just return what's been assembled so far
-    return buildESDoc(doc);
-  }
-
-  result.lineage.map((hierarchy) => {
-    Object.keys(hierarchy)
-      .filter(doc.isSupportedParent)
-      .filter((placetype) => { return !_.isEmpty(_.trim(hierarchy[placetype].name)); } )
-      .forEach((placetype) => {
-        doc.addParent(
-          placetype,
-          hierarchy[placetype].name,
-          hierarchy[placetype].id.toString(),
-          hierarchy[placetype].abbr);
+  _.defaultTo(result.lineage, [])
+    // remove all lineages that don't match an explicit boundary.country
+    .filter(_.curry(matchesBoundaryCountry)(boundaryCountry))
+    // add all the lineages to the doc
+    .map((hierarchy) => {
+      Object.keys(hierarchy)
+        .filter(doc.isSupportedParent)
+        .filter((placetype) => { return !_.isEmpty(_.trim(hierarchy[placetype].name)); } )
+        .forEach((placetype) => {
+          doc.addParent(
+            placetype,
+            hierarchy[placetype].name,
+            hierarchy[placetype].id.toString(),
+            hierarchy[placetype].abbr);
+      });
     });
-  });
 
   return buildESDoc(doc);
 
@@ -105,19 +116,20 @@ function setup(placeholderService, should_execute) {
 
         // filter that passes only documents that match on boundary.country
         // passed everything if req.clean['boundary.country'] is not found
-        const matchesBoundaryCountry = (doc) => {
-          return _.includes(doc.parent.country_a, req.clean['boundary.country']);
-        };
-        const countryFilter = _.has(req, ['clean', 'boundary.country']) ?
-          matchesBoundaryCountry : _.constant(true);
+        const boundaryCountry = _.get(req, ['clean', 'boundary.country']);
+        const boundaryCountryFilter = !!boundaryCountry ?
+          _.curry(atLeastOneLineageMatchesBoundaryCountry)(boundaryCountry) : _.constant(true);
 
         // convert results to ES docs
         // boundary.country filter must happen after synthesis since multiple
         //  lineages may produce different country docs
         res.meta = {};
-        res.data = _.flatten(
-          results.filter(hasName).filter(layersFilter).map(synthesizeDocs))
-        .filter(countryFilter);
+        res.data = results
+                    .filter(hasName)
+                    .filter(layersFilter)
+                    // filter out results that don't match on any lineage country
+                    .filter(boundaryCountryFilter)
+                    .map(_.curry(synthesizeDocs)(boundaryCountry));
 
         const messageParts = [
           '[controller:placeholder]',
