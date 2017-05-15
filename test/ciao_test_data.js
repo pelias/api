@@ -15,7 +15,7 @@
 var client = require('elasticsearch').Client(),
     async = require('async'),
     actions = [];
-var config = require('pelias-config').generate().api;
+const indexName = require('pelias-config').generate().schema.indexName;
 
 // add one record per 'type' in order to cause the _default_ mapping
 // to be copied when the new type is created.
@@ -29,7 +29,7 @@ types.forEach( function( type, i1 ){
     layers.forEach( function( layer, i3 ){
       actions.push( function( done ){
         client.index({
-          index: config.indexName,
+          index: indexName,
           type: type,
           id: [i1,i2,i3].join(':'),
           body: {
@@ -50,7 +50,7 @@ types.forEach( function( type, i1 ){
 
 client.index(
   {
-    index: config.indexName,
+    index: indexName,
     type: 'address',
     id: 'way:265038872',
     body: {
@@ -130,7 +130,7 @@ client.index(
 
 // call refresh so the index merges the changes
 actions.push( function( done ){
-  client.indices.refresh( { index: config.indexName }, done);
+  client.indices.refresh( { index: indexName }, done);
 });
 
 // perform all actions in series
