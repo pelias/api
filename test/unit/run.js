@@ -40,6 +40,7 @@ var tests = [
   require('./middleware/parseBBox'),
   require('./middleware/sendJSON'),
   require('./middleware/normalizeParentIds'),
+  require('./middleware/sortResponseData'),
   require('./middleware/trimByGranularity'),
   require('./middleware/trimByGranularityStructured'),
   require('./middleware/requestLanguage'),
