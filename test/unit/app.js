@@ -49,7 +49,7 @@ module.exports.tests.api_indexName_deprecation_warning = (test, common) => {
       }
     });
 
-    t.ok(logger.isWarnMessage(/^api.indexName has been deprecated, new location is schema.indexName$/));
+    t.ok(logger.isWarnMessage(/^deprecation warning: api.indexName has been relocated to schema.indexName$/));
     t.end();
 
   });

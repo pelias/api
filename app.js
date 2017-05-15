@@ -11,7 +11,7 @@ if( peliasConfig.api.accessLog ){
 // indexName config value has been moved to 'schema' root child, so warn if
 // it's in the old place
 if (peliasConfig.api.hasOwnProperty('indexName')) {
-  logger.warn('api.indexName has been deprecated, new location is schema.indexName');
+  logger.warn('deprecation warning: api.indexName has been relocated to schema.indexName');
 }
 
 /** ----------------------- pre-processing-middleware ----------------------- **/
