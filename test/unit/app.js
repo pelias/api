@@ -27,6 +27,35 @@ module.exports.tests.invalid_configuration = (test, common) => {
 
 };
 
+module.exports.tests.api_indexName_deprecation_warning = (test, common) => {
+  test('indexName found in api section of config should log deprecation warning', (t) => {
+    const logger = require('pelias-mock-logger')();
+
+    const app = proxyquire('../../app', {
+      './schema': 'this is the schema',
+      'pelias-config': {
+        generate: (schema) => {
+          return {
+            api: {
+              indexName: 'this is the indexName'
+            }
+          };
+        }
+      },
+      'pelias-logger': logger,
+      // mock out routes/v1 since it causes test to hang
+      './routes/v1': {
+        addRoutes: () => {}
+      }
+    });
+
+    t.ok(logger.isWarnMessage(/^api.indexName has been deprecated, new location is schema.indexName$/));
+    t.end();
+
+  });
+
+};
+
 module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {
