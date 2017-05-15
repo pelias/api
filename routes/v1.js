@@ -114,9 +114,9 @@ function addRoutes(app, peliasConfig) {
       middleware.calcSize(),
       // 3rd parameter is which query module to use, use fallback/geodisambiguation
       //  first, then use original search strategy if first query didn't return anything
-      controllers.search(peliasConfig.api, esclient, queries.libpostal, not(hasResponseDataOrRequestErrors)),
+      controllers.search(peliasConfig, esclient, queries.libpostal, not(hasResponseDataOrRequestErrors)),
       sanitizers.search_fallback.middleware,
-      controllers.search(peliasConfig.api, esclient, queries.fallback_to_old_prod, not(hasResponseDataOrRequestErrors)),
+      controllers.search(peliasConfig, esclient, queries.fallback_to_old_prod, not(hasResponseDataOrRequestErrors)),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
@@ -137,13 +137,13 @@ function addRoutes(app, peliasConfig) {
       sanitizers.structured_geocoding.middleware,
       middleware.requestLanguage,
       middleware.calcSize(),
-      controllers.search(peliasConfig.api, esclient, queries.structured_geocoding, not(hasResponseDataOrRequestErrors)),
+      controllers.search(peliasConfig, esclient, queries.structured_geocoding, not(hasResponseDataOrRequestErrors)),
       postProc.trimByGranularityStructured(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
       postProc.confidenceScoresFallback(),
       postProc.interpolate(),
-      postProc.dedupe(),      
+      postProc.dedupe(),
       postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
@@ -157,7 +157,7 @@ function addRoutes(app, peliasConfig) {
     autocomplete: createRouter([
       sanitizers.autocomplete.middleware,
       middleware.requestLanguage,
-      controllers.search(peliasConfig.api, esclient, queries.autocomplete, not(hasResponseDataOrRequestErrors)),
+      controllers.search(peliasConfig, esclient, queries.autocomplete, not(hasResponseDataOrRequestErrors)),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
       postProc.dedupe(),
@@ -176,7 +176,7 @@ function addRoutes(app, peliasConfig) {
       middleware.requestLanguage,
       middleware.calcSize(),
       controllers.coarse_reverse(pipService, coarse_reverse_should_execute),
-      controllers.search(peliasConfig.api, esclient, queries.reverse, original_reverse_should_execute),
+      controllers.search(peliasConfig, esclient, queries.reverse, original_reverse_should_execute),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
@@ -196,7 +196,7 @@ function addRoutes(app, peliasConfig) {
       sanitizers.nearby.middleware,
       middleware.requestLanguage,
       middleware.calcSize(),
-      controllers.search(peliasConfig.api, esclient, queries.reverse, not(hasResponseDataOrRequestErrors)),
+      controllers.search(peliasConfig, esclient, queries.reverse, not(hasResponseDataOrRequestErrors)),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
@@ -215,7 +215,7 @@ function addRoutes(app, peliasConfig) {
     place: createRouter([
       sanitizers.place.middleware,
       middleware.requestLanguage,
-      controllers.place(peliasConfig.api, esclient),
+      controllers.place(peliasConfig, esclient),
       postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),

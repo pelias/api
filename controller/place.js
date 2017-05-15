@@ -14,7 +14,7 @@ function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
 
-function setup( apiConfig, esclient ){
+function setup( config, esclient ){
   function controller( req, res, next ){
     // do not run controller when a request validation error has occurred.
     if (requestHasErrors(req)){
@@ -25,7 +25,7 @@ function setup( apiConfig, esclient ){
     // maxRetries is from the API config with default of 3
     // factor of 1 means that each retry attempt will esclient requestTimeout
     const operationOptions = {
-      retries: _.get(apiConfig, 'requestRetries', 3),
+      retries: _.get(config.api, 'requestRetries', 3),
       factor: 1,
       minTimeout: _.get(esclient, 'transport.requestTimeout')
     };
@@ -35,7 +35,7 @@ function setup( apiConfig, esclient ){
 
     const cmd = req.clean.ids.map( function(id) {
       return {
-        _index: apiConfig.indexName,
+        _index: config.schema.indexName,
         _type: id.layers,
         _id: id.id
       };

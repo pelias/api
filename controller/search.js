@@ -11,7 +11,7 @@ function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
 
-function setup( apiConfig, esclient, query, should_execute ){
+function setup( config, esclient, query, should_execute ){
   function controller( req, res, next ){
     if (!should_execute(req, res)) {
       return next();
@@ -35,7 +35,7 @@ function setup( apiConfig, esclient, query, should_execute ){
     // maxRetries is from the API config with default of 3
     // factor of 1 means that each retry attempt will esclient requestTimeout
     const operationOptions = {
-      retries: _.get(apiConfig, 'requestRetries', 3),
+      retries: _.get(config.api, 'requestRetries', 3),
       factor: 1,
       minTimeout: _.get(esclient, 'transport.requestTimeout')
     };
@@ -45,7 +45,7 @@ function setup( apiConfig, esclient, query, should_execute ){
 
     // elasticsearch command
     const cmd = {
-      index: apiConfig.indexName,
+      index: config.schema.indexName,
       searchType: 'dfs_query_then_fetch',
       body: renderedQuery.body
     };

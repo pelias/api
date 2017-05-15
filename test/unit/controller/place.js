@@ -16,7 +16,9 @@ module.exports.tests.interface = (test, common) => {
 module.exports.tests.success = (test, common) => {
   test('successful request to search service should set data and meta', (t) => {
     const config = {
-      indexName: 'indexName value'
+      schema: {
+        indexName: 'indexName value'
+      }
     };
     const esclient = 'this is the esclient';
 
@@ -100,7 +102,9 @@ module.exports.tests.error_conditions = (test, common) => {
 
   test('mgetService returning error should add to req.errors and ignore docs', (t) => {
     const config = {
-      indexName: 'indexName value'
+      schema: {
+        indexName: 'indexName value'
+      }
     };
     const esclient = 'this is the esclient';
 
@@ -152,7 +156,9 @@ module.exports.tests.error_conditions = (test, common) => {
 module.exports.tests.timeout = function(test, common) {
   test('default # of request timeout retries should be 3', (t) => {
     const config = {
-      indexName: 'indexName value'
+      schema: {
+        indexName: 'indexName value'
+      }
     };
     const esclient = 'this is the esclient';
 
@@ -220,8 +226,12 @@ module.exports.tests.timeout = function(test, common) {
 
   test('explicit apiConfig.requestRetries should retry that many times', (t) => {
     const config = {
-      indexName: 'indexName value',
-      requestRetries: 17
+      schema: {
+        indexName: 'indexName value'
+      },
+      api: {
+        requestRetries: 17
+      }
     };
     const esclient = 'this is the esclient';
 
@@ -268,7 +278,9 @@ module.exports.tests.timeout = function(test, common) {
 
   test('only status code 408 should be considered a retryable request', (t) => {
     const config = {
-      indexName: 'indexName value'
+      schema: {
+        indexName: 'indexName value'
+      }
     };
     const esclient = 'this is the esclient';
 
@@ -316,7 +328,9 @@ module.exports.tests.timeout = function(test, common) {
 
   test('string error should not retry and be logged as-is', (t) => {
     const config = {
-      indexName: 'indexName value'
+      schema: {
+        indexName: 'indexName value'
+      }
     };
     const esclient = 'this is the esclient';
 
