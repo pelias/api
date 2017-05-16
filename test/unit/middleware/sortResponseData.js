@@ -3,6 +3,74 @@ const sortResponseData = require('../../../middleware/sortResponseData');
 module.exports.tests = {};
 
 module.exports.tests.doIt = (test, common) => {
+  test('{} should be passed to comparator when req is unavailable', (t) => {
+    const comparator = (clean) => {
+      t.deepEquals(clean, { });
+      return () => {
+        throw Error('should not have been called');
+      };
+    };
+
+    const sort = sortResponseData(comparator);
+
+    const res = {
+      data: [ {} ]
+    };
+
+    sort(undefined, res, () => {
+      t.end();
+    });
+
+  });
+
+  test('{} should be passed to comparator when req.clean is unavailable', (t) => {
+    const comparator = (clean) => {
+      t.deepEquals(clean, { });
+      return () => {
+        throw Error('should not have been called');
+      };
+    };
+
+    const sort = sortResponseData(comparator);
+
+    const req = {};
+
+    const res = {
+      data: [ {} ]
+    };
+
+    sort(req, res, () => {
+      t.end();
+    });
+
+  });
+
+  test('req.clean should be passed to sort', (t) => {
+    const comparator = (clean) => {
+      t.deepEquals(clean, { a: 1 });
+      return () => {
+        throw Error('should not have been called');
+      };
+    };
+
+    const sort = sortResponseData(comparator);
+
+    const req = {
+      clean: {
+        a: 1
+      }
+    };
+
+    const res = {
+      data: [ {} ]
+    };
+
+    sort(req, res, () => {
+      t.end();
+    });
+
+  });
+
   test('undefined res should return without interacting with comparator', (t) => {
     const comparator = () => {
       throw Error('should not have been called');
@@ -51,8 +119,10 @@ module.exports.tests.doIt = (test, common) => {
   });
 
   test('comparator should be consulted for sorting res.data when defined', (t) => {
-    const comparator = (a, b) => {
-      return a.key > b.key;
+    const comparator = () => {
+      return (a, b) => {
+        return a.key > b.key;
+      };
     };
 
     const sort = sortResponseData(comparator);
