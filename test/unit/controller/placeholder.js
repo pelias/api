@@ -79,6 +79,7 @@ module.exports.tests.success = (test, common) => {
           id: 123,
           name: 'name 1',
           placetype: 'neighbourhood',
+          population: 123456,
           lineage: [
             {
               country: {
@@ -187,6 +188,7 @@ module.exports.tests.success = (test, common) => {
           id: 456,
           name: 'name 3',
           placetype: 'locality',
+          population: 789,
           lineage: [ {} ],
           geom: {
             area: 23.45,
@@ -228,6 +230,7 @@ module.exports.tests.success = (test, common) => {
             phrase: {
               'default': 'name 1'
             },
+            population: 123456,
             parent: {
               neighbourhood: ['neighbourhood name 1', 'neighbourhood name 2'],
               neighbourhood_id: ['10', '20'],
@@ -278,6 +281,7 @@ module.exports.tests.success = (test, common) => {
             phrase: {
               'default': 'name 3'
             },
+            population: 789,
             parent: { }
           }
         ]

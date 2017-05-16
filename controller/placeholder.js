@@ -63,6 +63,10 @@ function synthesizeDocs(boundaryCountry, result) {
     logger.error(`could not parse bbox for id ${result.id}: ${result.geom.bbox}`);
   }
 
+  if (_.conformsTo(result, { 'population': isFiniteNumber })) {
+    doc.setPopulation(result.population);
+  }
+
   _.defaultTo(result.lineage, [])
     // remove all lineages that don't match an explicit boundary.country
     .filter(_.curry(matchesBoundaryCountry)(boundaryCountry))
