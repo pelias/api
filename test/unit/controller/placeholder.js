@@ -357,6 +357,119 @@ module.exports.tests.success = (test, common) => {
 
   });
 
+  test('results with string population should convert to number', (t) => {
+    const logger = require('pelias-mock-logger')();
+
+    const placeholder_service = (req, callback) => {
+      t.deepEqual(req, { param1: 'param1 value' });
+
+      const response = [
+        {
+          id: 123,
+          name: 'name 1',
+          placetype: 'neighbourhood',
+          population: '123.4',
+          geom: {
+            area: 12.34
+          }
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = proxyquire('../../../controller/placeholder', {
+      'pelias-logger': logger
+    })(placeholder_service, _.constant(true));
+
+    const req = { param1: 'param1 value' };
+    const res = { };
+
+    controller(req, res, () => {
+      const expected_res = {
+        meta: {},
+        data: [
+          {
+            _id: '123',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '123',
+            population: 123.4,
+            name: {
+              'default': 'name 1'
+            },
+            phrase: {
+              'default': 'name 1'
+            },
+            parent: { }
+          }
+        ]
+      };
+
+      t.deepEquals(res, expected_res);
+      t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:1]'));
+      t.end();
+    });
+
+  });
+
+  test('results with negative population should not set population', (t) => {
+    const logger = require('pelias-mock-logger')();
+
+    const placeholder_service = (req, callback) => {
+      t.deepEqual(req, { param1: 'param1 value' });
+
+      const response = [
+        {
+          id: 123,
+          name: 'name 1',
+          placetype: 'neighbourhood',
+          population: -1,
+          geom: {
+            area: 12.34
+          }
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = proxyquire('../../../controller/placeholder', {
+      'pelias-logger': logger
+    })(placeholder_service, _.constant(true));
+
+    const req = { param1: 'param1 value' };
+    const res = { };
+
+    controller(req, res, () => {
+      const expected_res = {
+        meta: {},
+        data: [
+          {
+            _id: '123',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '123',
+            name: {
+              'default': 'name 1'
+            },
+            phrase: {
+              'default': 'name 1'
+            },
+            parent: { }
+          }
+        ]
+      };
+
+      t.deepEquals(res, expected_res);
+      t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:1]'));
+      t.end();
+    });
+
+  });
+
   test('results with undefined or empty name should be skipped', (t) => {
     [undefined, '', ' \t '].forEach((invalid_name) => {
       const logger = require('pelias-mock-logger')();

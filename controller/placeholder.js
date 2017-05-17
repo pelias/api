@@ -5,6 +5,7 @@ const Document = require('pelias-model').Document;
 // composition of toNumber and isFinite, useful for single call to convert a value
 //  to a number, then checking to see if it's finite
 const isFiniteNumber = _.flow(_.toNumber, _.isFinite);
+const isNonNegativeFiniteNumber = _.flow(_.toNumber, (val) => { return val >= 0; });
 
 // returns true if all 4 ,-delimited (max) substrings are parseable as finite numbers
 // '12.12,21.21,13.13,31.31'       returns true
@@ -63,8 +64,8 @@ function synthesizeDocs(boundaryCountry, result) {
     logger.error(`could not parse bbox for id ${result.id}: ${result.geom.bbox}`);
   }
 
-  if (_.conformsTo(result, { 'population': isFiniteNumber })) {
-    doc.setPopulation(result.population);
+  if (_.conformsTo(result, { 'population': isNonNegativeFiniteNumber })) {
+    doc.setPopulation(_.toNumber(result.population));
   }
 
   _.defaultTo(result.lineage, [])
