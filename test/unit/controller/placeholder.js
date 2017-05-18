@@ -79,7 +79,8 @@ module.exports.tests.success = (test, common) => {
           id: 123,
           name: 'name 1',
           placetype: 'neighbourhood',
-          population: 123456,
+          population: 1234,
+          popularity: 5678,
           lineage: [
             {
               country: {
@@ -188,7 +189,8 @@ module.exports.tests.success = (test, common) => {
           id: 456,
           name: 'name 3',
           placetype: 'locality',
-          population: 789,
+          population: 4321,
+          popularity: 8765,
           lineage: [ {} ],
           geom: {
             area: 23.45,
@@ -230,7 +232,8 @@ module.exports.tests.success = (test, common) => {
             phrase: {
               'default': 'name 1'
             },
-            population: 123456,
+            population: 1234,
+            popularity: 5678,
             parent: {
               neighbourhood: ['neighbourhood name 1', 'neighbourhood name 2'],
               neighbourhood_id: ['10', '20'],
@@ -281,7 +284,8 @@ module.exports.tests.success = (test, common) => {
             phrase: {
               'default': 'name 3'
             },
-            population: 789,
+            population: 4321,
+            popularity: 8765,
             parent: { }
           }
         ]
@@ -357,7 +361,7 @@ module.exports.tests.success = (test, common) => {
 
   });
 
-  test('results with string population should convert to number', (t) => {
+  test('results with string population/popularity should convert to number', (t) => {
     const logger = require('pelias-mock-logger')();
 
     const placeholder_service = (req, callback) => {
@@ -369,6 +373,7 @@ module.exports.tests.success = (test, common) => {
           name: 'name 1',
           placetype: 'neighbourhood',
           population: '123.4',
+          popularity: '567.8',
           geom: {
             area: 12.34
           }
@@ -396,6 +401,7 @@ module.exports.tests.success = (test, common) => {
             source: 'whosonfirst',
             source_id: '123',
             population: 123.4,
+            popularity: 568,
             name: {
               'default': 'name 1'
             },
@@ -414,7 +420,7 @@ module.exports.tests.success = (test, common) => {
 
   });
 
-  test('results with negative population should not set population', (t) => {
+  test('results with negative population/popularity should not set population/popularity', (t) => {
     const logger = require('pelias-mock-logger')();
 
     const placeholder_service = (req, callback) => {
@@ -426,6 +432,7 @@ module.exports.tests.success = (test, common) => {
           name: 'name 1',
           placetype: 'neighbourhood',
           population: -1,
+          popularity: -1,
           geom: {
             area: 12.34
           }

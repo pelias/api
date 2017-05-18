@@ -68,6 +68,10 @@ function synthesizeDocs(boundaryCountry, result) {
     doc.setPopulation(_.toNumber(result.population));
   }
 
+  if (_.conformsTo(result, { 'popularity': isNonNegativeFiniteNumber })) {
+    doc.setPopularity(_.toNumber(result.popularity));
+  }
+
   _.defaultTo(result.lineage, [])
     // remove all lineages that don't match an explicit boundary.country
     .filter(_.curry(matchesBoundaryCountry)(boundaryCountry))
