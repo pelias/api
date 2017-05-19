@@ -196,7 +196,6 @@ function synthesizeDocs(boundaryCountry, result) {
           return placetypeHasNameAndId(hierarchy[placetype]);
         })
         .forEach((placetype) => {
-          // console.error(JSON.stringify(hierarchy[placetype], null, 2));
           doc.addParent(
             placetype,
             hierarchy[placetype].name,
