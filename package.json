@@ -44,7 +44,7 @@
     "elasticsearch-exceptions": "0.0.4",
     "express": "^4.8.8",
     "express-http-proxy": "^0.11.0",
-    "extend": "3.0.0",
+    "extend": "^3.0.1",
     "geojson": "^0.4.0",
     "geojson-extent": "^0.3.1",
     "geolib": "^2.0.18",
@@ -60,9 +60,9 @@
     "pelias-labels": "1.6.0",
     "pelias-logger": "0.2.0",
     "pelias-mock-logger": "^1.0.1",
-    "pelias-model": "4.8.0",
+    "pelias-model": "4.8.1",
     "pelias-query": "8.15.0",
-    "pelias-text-analyzer": "1.8.1",
+    "pelias-text-analyzer": "1.8.2",
     "predicates": "^1.0.1",
     "retry": "^0.10.1",
     "request": "^2.79.0",
@@ -84,7 +84,7 @@
     "tap-dot": "1.0.5",
     "tape": "^4.5.1",
     "tmp": "0.0.31",
-    "uglify-js": "^2.6.2"
+    "uglify-js": "^3.0.4"
   },
   "pre-commit": [
     "lint",
