@@ -2,9 +2,16 @@
 var app = require('express')();
 
 var peliasConfig = require( 'pelias-config' ).generate(require('./schema'));
+const logger = require('pelias-logger').get('api');
 
 if( peliasConfig.api.accessLog ){
   app.use( require( './middleware/access_log' ).createAccessLogger( peliasConfig.api.accessLog ) );
+}
+
+// indexName config value has been moved to 'schema' root child, so warn if
+// it's in the old place
+if (peliasConfig.api.hasOwnProperty('indexName')) {
+  logger.warn('deprecation warning: api.indexName has been relocated to schema.indexName');
 }
 
 /** ----------------------- pre-processing-middleware ----------------------- **/
