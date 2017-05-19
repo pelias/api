@@ -612,6 +612,376 @@ module.exports.tests.success = (test, common) => {
 };
 
 module.exports.tests.result_filtering = (test, common) => {
+  test('when boundary.rect is available, results outside of it should be removed', (t) => {
+    const logger = require('pelias-mock-logger')();
+
+    const placeholder_service = (req, callback) => {
+      t.deepEqual(req, {
+        param1: 'param1 value',
+        clean: {
+          'boundary.rect.min_lat': -2,
+          'boundary.rect.max_lat': 2,
+          'boundary.rect.min_lon': -2,
+          'boundary.rect.max_lon': 2
+        }
+      });
+
+      const response = [
+        {
+          // inside bbox
+          id: 1,
+          name: 'name 1',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: -1,
+            lon: -1
+          }
+        },
+        {
+          // outside bbox on max_lon
+          id: 2,
+          name: 'name 2',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: -1,
+            lon: 3
+          }
+        },
+        {
+          // outside bbox on max_lat
+          id: 3,
+          name: 'name 3',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: 3,
+            lon: -1
+          }
+        },
+        {
+          // outside bbox on min_lon
+          id: 4,
+          name: 'name 4',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: -1,
+            lon: -3
+          }
+        },
+        {
+          // outside bbox on min_lat
+          id: 5,
+          name: 'name 5',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: -3,
+            lon: -1
+          }
+        },
+        {
+          // no lat/lon
+          id: 6,
+          name: 'name 6',
+          placetype: 'neighbourhood',
+          geom: {
+          }
+        },
+        {
+          // empty string lat/lon
+          id: 7,
+          name: 'name 7',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: '',
+            lon: ''
+          }
+        },
+        {
+          // valid lat, empty string lon
+          id: 8,
+          name: 'name 8',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: 0,
+            lon: ' '
+          }
+        },
+        {
+          // valid lon, empty string lat
+          id: 9,
+          name: 'name 9',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: ' ',
+            lon: 0
+          }
+        },
+        {
+          // inside bbox
+          id: 10,
+          name: 'name 10',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: 1,
+            lon: 1
+          }
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const should_execute = (req, res) => {
+      return true;
+    };
+
+    const controller = proxyquire('../../../controller/placeholder', {
+      'pelias-logger': logger
+    })(placeholder_service, _.constant(true));
+
+    const req = {
+      param1: 'param1 value',
+      clean: {
+        'boundary.rect.min_lat': -2,
+        'boundary.rect.max_lat': 2,
+        'boundary.rect.min_lon': -2,
+        'boundary.rect.max_lon': 2
+      }
+    };
+    const res = { };
+
+    controller(req, res, () => {
+      const expected_res = {
+        meta: {},
+        data: [
+          {
+            _id: '1',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '1',
+            center_point: {
+              lat: -1,
+              lon: -1
+            },
+            name: {
+              'default': 'name 1'
+            },
+            phrase: {
+              'default': 'name 1'
+            },
+            parent: { }
+          },
+          {
+            _id: '10',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '10',
+            center_point: {
+              lat: 1,
+              lon: 1
+            },
+            name: {
+              'default': 'name 10'
+            },
+            phrase: {
+              'default': 'name 10'
+            },
+            parent: { }
+          }
+        ]
+      };
+
+      t.deepEquals(res, expected_res);
+      t.end();
+    });
+
+  });
+
+  test('when boundary.circle is available, results outside of it should be removed', (t) => {
+    const logger = require('pelias-mock-logger')();
+
+    const placeholder_service = (req, callback) => {
+      t.deepEqual(req, {
+        param1: 'param1 value',
+        clean: {
+          'boundary.circle.lat': 0,
+          'boundary.circle.lon': 0,
+          'boundary.circle.radius': 500
+        }
+      });
+
+      const response = [
+        {
+          // inside circle
+          id: 1,
+          name: 'name 1',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: 1,
+            lon: 1
+          }
+        },
+        {
+          // outside circle on +lon
+          id: 2,
+          name: 'name 2',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: 0,
+            lon: 45
+          }
+        },
+        {
+          // outside bbox on +lat
+          id: 3,
+          name: 'name 3',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: 45,
+            lon: 0
+          }
+        },
+        {
+          // outside bbox on -lon
+          id: 4,
+          name: 'name 4',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: 0,
+            lon: -45
+          }
+        },
+        {
+          // outside bbox on -lat
+          id: 5,
+          name: 'name 5',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: -45,
+            lon: 0
+          }
+        },
+        {
+          // no lat/lon
+          id: 6,
+          name: 'name 6',
+          placetype: 'neighbourhood',
+          geom: {
+          }
+        },
+        {
+          // empty string lat/lon
+          id: 7,
+          name: 'name 7',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: '',
+            lon: ''
+          }
+        },
+        {
+          // valid lat, empty string lon
+          id: 8,
+          name: 'name 8',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: 0,
+            lon: ' '
+          }
+        },
+        {
+          // valid lon, empty string lat
+          id: 9,
+          name: 'name 9',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: ' ',
+            lon: 0
+          }
+        },
+        {
+          // inside circle
+          id: 10,
+          name: 'name 10',
+          placetype: 'neighbourhood',
+          geom: {
+            lat: -1,
+            lon: -1
+          }
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const should_execute = (req, res) => {
+      return true;
+    };
+
+    const controller = proxyquire('../../../controller/placeholder', {
+      'pelias-logger': logger
+    })(placeholder_service, _.constant(true));
+
+    const req = {
+      param1: 'param1 value',
+      clean: {
+        'boundary.circle.lat': 0,
+        'boundary.circle.lon': 0,
+        'boundary.circle.radius': 500
+      }
+    };
+    const res = { };
+
+    controller(req, res, () => {
+      const expected_res = {
+        meta: {},
+        data: [
+          {
+            _id: '1',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '1',
+            center_point: {
+              lat: 1,
+              lon: 1
+            },
+            name: {
+              'default': 'name 1'
+            },
+            phrase: {
+              'default': 'name 1'
+            },
+            parent: { }
+          },
+          {
+            _id: '10',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '10',
+            center_point: {
+              lat: -1,
+              lon: -1
+            },
+            name: {
+              'default': 'name 10'
+            },
+            phrase: {
+              'default': 'name 10'
+            },
+            parent: { }
+          }
+        ]
+      };
+
+      t.deepEquals(res, expected_res);
+      t.end();
+    });
+
+  });
+
   test('only results matching explicit layers should be returned', (t) => {
     const logger = mock_logger();
 
@@ -910,7 +1280,280 @@ module.exports.tests.result_filtering = (test, common) => {
 
 };
 
-module.exports.centroid_errors = (test, common) => {
+module.exports.tests.lineage_errors = (test, common) => {
+  test('unsupported lineage placetypes should be ignored', (t) => {
+    const logger = mock_logger();
+
+    const placeholder_service = (req, callback) => {
+      t.deepEqual(req, { param1: 'param1 value' });
+
+      const response = [
+        {
+          id: 123,
+          name: 'name 1',
+          placetype: 'neighbourhood',
+          lineage: [
+            {
+              country: {
+                id: 1,
+                name: 'country name 1',
+                abbr: 'country abbr 1'
+              },
+              unknown: {
+                id: 2,
+                name: 'unknown name 2',
+                abbr: 'unknown abbr 2'
+              }
+
+            }
+          ],
+          geom: {
+            area: 12.34
+          }
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = proxyquire('../../../controller/placeholder', {
+      'pelias-logger': logger
+    })(placeholder_service, _.constant(true));
+
+    const req = { param1: 'param1 value' };
+    const res = { };
+
+    controller(req, res, () => {
+      const expected_res = {
+        meta: {},
+        data: [
+          {
+            _id: '123',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '123',
+            name: {
+              'default': 'name 1'
+            },
+            phrase: {
+              'default': 'name 1'
+            },
+            parent: {
+              country: ['country name 1'],
+              country_id: ['1'],
+              country_a: ['country abbr 1']
+            }
+          }
+        ]
+      };
+
+      t.deepEquals(res, expected_res);
+      t.end();
+    });
+
+  });
+
+  test('lineage placetypes lacking names should be ignored', (t) => {
+    const logger = mock_logger();
+
+    const placeholder_service = (req, callback) => {
+      t.deepEqual(req, { param1: 'param1 value' });
+
+      const response = [
+        {
+          id: 123,
+          name: 'name 1',
+          placetype: 'neighbourhood',
+          lineage: [
+            {
+              country: {
+                id: 1,
+                name: 'country name 1',
+                abbr: 'country abbr 1'
+              },
+              region: {
+                id: 2,
+                abbr: 'region abbr 2'
+              }
+
+            }
+          ],
+          geom: {
+            area: 12.34
+          }
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = proxyquire('../../../controller/placeholder', {
+      'pelias-logger': logger
+    })(placeholder_service, _.constant(true));
+
+    const req = { param1: 'param1 value' };
+    const res = { };
+
+    controller(req, res, () => {
+      const expected_res = {
+        meta: {},
+        data: [
+          {
+            _id: '123',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '123',
+            name: {
+              'default': 'name 1'
+            },
+            phrase: {
+              'default': 'name 1'
+            },
+            parent: {
+              country: ['country name 1'],
+              country_id: ['1'],
+              country_a: ['country abbr 1']
+            }
+          }
+        ]
+      };
+
+      t.deepEquals(res, expected_res);
+      t.end();
+    });
+
+  });
+
+  test('lineage placetypes lacking ids should be ignored', (t) => {
+    const logger = mock_logger();
+
+    const placeholder_service = (req, callback) => {
+      t.deepEqual(req, { param1: 'param1 value' });
+
+      const response = [
+        {
+          id: 123,
+          name: 'name 1',
+          placetype: 'neighbourhood',
+          lineage: [
+            {
+              country: {
+                id: 1,
+                name: 'country name 1',
+                abbr: 'country abbr 1'
+              },
+              region: {
+                name: 'region name 2',
+                abbr: 'region abbr 2'
+              }
+            }
+          ],
+          geom: {
+            area: 12.34
+          }
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = proxyquire('../../../controller/placeholder', {
+      'pelias-logger': logger
+    })(placeholder_service, _.constant(true));
+
+    const req = { param1: 'param1 value' };
+    const res = { };
+
+    controller(req, res, () => {
+      const expected_res = {
+        meta: {},
+        data: [
+          {
+            _id: '123',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '123',
+            name: {
+              'default': 'name 1'
+            },
+            phrase: {
+              'default': 'name 1'
+            },
+            parent: {
+              country: ['country name 1'],
+              country_id: ['1'],
+              country_a: ['country abbr 1']
+            }
+          }
+        ]
+      };
+
+      t.deepEquals(res, expected_res);
+      t.end();
+    });
+
+  });
+
+};
+
+module.exports.tests.geometry_errors = (test, common) => {
+  test('result without geometry should not cause problems', (t) => {
+    const logger = mock_logger();
+
+    const placeholder_service = (req, callback) => {
+      t.deepEqual(req, { param1: 'param1 value' });
+
+      const response = [
+        {
+          id: 123,
+          name: 'name 1',
+          placetype: 'neighbourhood'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = proxyquire('../../../controller/placeholder', {
+      'pelias-logger': logger
+    })(placeholder_service, _.constant(true));
+
+    const req = { param1: 'param1 value' };
+    const res = { };
+
+    controller(req, res, () => {
+      const expected_res = {
+        meta: {},
+        data: [
+          {
+            _id: '123',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '123',
+            name: {
+              'default': 'name 1'
+            },
+            phrase: {
+              'default': 'name 1'
+            },
+            parent: {}
+          }
+        ]
+      };
+
+      t.deepEquals(res, expected_res);
+      t.end();
+    });
+
+  });
+
+};
+
+module.exports.tests.centroid_errors = (test, common) => {
   test('result without geom.lat/geom.lon should leave centroid undefined', (t) => {
     const logger = require('pelias-mock-logger')();
 
@@ -1029,7 +1672,7 @@ module.exports.centroid_errors = (test, common) => {
 
 };
 
-module.exports.boundingbox_errors = (test, common) => {
+module.exports.tests.boundingbox_errors = (test, common) => {
   test('result with invalid geom.bbox should leave bounding_box undefined and log error', (t) => {
     [
       undefined,
