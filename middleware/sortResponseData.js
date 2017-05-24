@@ -7,7 +7,8 @@ function setup(comparator) {
       return next();
     }
 
-    res.data = res.data.sort(comparator(_.get(req, 'clean', {})));
+    // sort does so in place
+    res.data.sort(comparator(_.get(req, 'clean', {})));
 
     next();
   }
