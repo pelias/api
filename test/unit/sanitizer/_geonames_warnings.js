@@ -8,6 +8,18 @@ const adminProperties = ['neighbourhood', 'borough', 'city', 'county', 'state', 
 module.exports.tests = {};
 
 module.exports.tests.no_errors = (test, common) => {
+  test('undefined clean.parsed_text should exit early', (t) => {
+    const clean = {
+      sources: ['geonames'],
+    };
+
+    const messages = geonames_warnings(undefined, clean);
+
+    t.deepEquals(messages, { errors: [], warnings: [] });
+    t.end();
+
+  });
+
   test('any non-admin analysis field with only geonames sources should exit early', (t) => {
     adminProperties.forEach((adminProperty) => {
       nonAdminProperties.forEach((nonAdminProperty) => {
