@@ -17,6 +17,7 @@ var tests = [
   require('./controller/placeholder'),
   require('./controller/search'),
   require('./controller/predicates/has_response_data'),
+  require('./controller/predicates/has_results_at_layers'),
   require('./controller/predicates/has_request_errors'),
   require('./controller/predicates/is_admin_only_analysis'),
   require('./controller/predicates/is_coarse_reverse'),
