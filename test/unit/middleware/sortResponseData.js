@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const proxyquire =  require('proxyquire').noCallThru();
+const mock_logger = require('pelias-mock-logger');
 
 const sortResponseData = require('../../../middleware/sortResponseData');
 
@@ -100,27 +102,41 @@ module.exports.tests.general_tests = (test, common) => {
 
 module.exports.tests.successful_sort = (test, common) => {
   test('comparator should be sort res.data', (t) => {
+    const logger = mock_logger();
+
     const comparator = () => {
       return (a, b) => {
-        return a.key > b.key;
+        return a._id > b._id;
       };
     };
 
+    const sortResponseData = proxyquire('../../../middleware/sortResponseData', {
+      'pelias-logger': logger
+    });
+
     const sort = sortResponseData(comparator, _.constant(true));
 
-    const req = {};
+    const req = {
+      clean: {
+        field: 'value'
+      }
+    };
     const res = {
       data: [
-        { key: 3 },
-        { key: 2 },
-        { key: 1 },
+        { _id: 3 },
+        { _id: 2 },
+        { _id: 1 },
       ]
     };
 
     sort(req, res, () => {
-      t.deepEquals(res.data.shift(), { key: 1 });
-      t.deepEquals(res.data.shift(), { key: 2 });
-      t.deepEquals(res.data.shift(), { key: 3 });
+      t.deepEquals(res.data.shift(), { _id: 1 });
+      t.deepEquals(res.data.shift(), { _id: 2 });
+      t.deepEquals(res.data.shift(), { _id: 3 });
+
+      t.ok(logger.isDebugMessage(
+        'req.clean: {"field":"value"}, pre-sort: [3,2,1], post-sort: [1,2,3]'));
+
       t.end();
     });
 
