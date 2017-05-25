@@ -61,7 +61,8 @@ var postProc = {
   parseBoundingBox: require('../middleware/parseBBox'),
   normalizeParentIds: require('../middleware/normalizeParentIds'),
   assignLabels: require('../middleware/assignLabels'),
-  changeLanguage: require('../middleware/changeLanguage')
+  changeLanguage: require('../middleware/changeLanguage'),
+  sortResponseData: require('../middleware/sortResponseData')
 };
 
 // predicates that drive whether controller/search runs
@@ -69,9 +70,11 @@ const hasResponseData = require('../controller/predicates/has_response_data');
 const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
 const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_analysis');
+const hasResultsAtLayers = require('../controller/predicates/has_results_at_layers');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
+const hasAdminOnlyResults = not(hasResultsAtLayers(['venue', 'address', 'street']));
 
 const serviceWrapper = require('pelias-microservice-wrapper').service;
 const PlaceHolder = require('../service/configurations/PlaceHolder');
@@ -146,6 +149,7 @@ function addRoutes(app, peliasConfig) {
       postProc.normalizeParentIds(),
       postProc.changeLanguage(),
       postProc.assignLabels(),
+      postProc.sortResponseData(require('pelias-sorting'), hasAdminOnlyResults),
       postProc.geocodeJSON(peliasConfig.api, base),
       postProc.sendJSON
     ]),
