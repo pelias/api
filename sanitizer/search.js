@@ -16,7 +16,8 @@ var sanitizeAll = require('../sanitizer/sanitizeAll'),
       geo_search: require('../sanitizer/_geo_search'),
       boundary_country: require('../sanitizer/_boundary_country'),
       categories: require('../sanitizer/_categories'),
-      geonames_warnings: require('../sanitizer/_geonames_warnings') 
+      // this can go away once geonames has been abrogated
+      geonames_warnings: require('../sanitizer/_geonames_warnings')
     };
 
 var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
