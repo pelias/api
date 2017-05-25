@@ -61,6 +61,7 @@
     "pelias-labels": "1.6.0",
     "pelias-logger": "0.2.0",
     "pelias-microservice-wrapper": "^1.1.0",
+    "pelias-model": "^4.8.1",
     "pelias-query": "8.15.0",
     "pelias-sorting": "git://github.com/pelias/sorting.git",
     "pelias-text-analyzer": "1.8.2",
