@@ -1,43 +1,27 @@
+const _ = require('lodash');
+
 const sortResponseData = require('../../../middleware/sortResponseData');
 
 module.exports.tests = {};
 
-module.exports.tests.doIt = (test, common) => {
-  test('{} should be passed to comparator when req is unavailable', (t) => {
-    const comparator = (clean) => {
-      t.deepEquals(clean, { });
-      return () => {
-        throw Error('should not have been called');
-      };
+module.exports.tests.should_execute_failure = (test, common) => {
+  test('should_execute returning false should call next w/o invoking comparator', (t) => {
+    t.plan(2, 'this ensures that should_execute was invoked');
+
+    const comparator = () => {
+      throw Error('should not have been called');
     };
 
-    const sort = sortResponseData(comparator);
-
-    const res = {
-      data: [ {} ]
+    const should_execute = (req, res) => {
+      t.deepEquals(req, { a: 1 });
+      t.deepEquals(res, { b: 2 });
+      return false;
     };
 
-    sort(undefined, res, () => {
-      t.end();
-    });
+    const sort = sortResponseData(comparator, should_execute);
 
-  });
-
-  test('{} should be passed to comparator when req.clean is unavailable', (t) => {
-    const comparator = (clean) => {
-      t.deepEquals(clean, { });
-      return () => {
-        throw Error('should not have been called');
-      };
-    };
-
-    const sort = sortResponseData(comparator);
-
-    const req = {};
-
-    const res = {
-      data: [ {} ]
-    };
+    const req = { a: 1 };
+    const res = { b: 2 };
 
     sort(req, res, () => {
       t.end();
@@ -45,7 +29,12 @@ module.exports.tests.doIt = (test, common) => {
 
   });
 
+};
+
+module.exports.tests.general_tests = (test, common) => {
   test('req.clean should be passed to sort', (t) => {
+    t.plan(1, 'this ensures that comparator was invoked');
+
     const comparator = (clean) => {
       t.deepEquals(clean, { a: 1 });
       return () => {
@@ -53,7 +42,7 @@ module.exports.tests.doIt = (test, common) => {
       };
     };
 
-    const sort = sortResponseData(comparator);
+    const sort = sortResponseData(comparator, _.constant(true));
 
     const req = {
       clean: {
@@ -71,62 +60,55 @@ module.exports.tests.doIt = (test, common) => {
 
   });
 
-  test('undefined res should return without interacting with comparator', (t) => {
-    const comparator = () => {
-      throw Error('should not have been called');
-    };
-
-    const sort = sortResponseData(comparator);
-
-    sort(undefined, undefined, () => {
-      t.end();
-    });
-
-  });
-
   test('undefined res.data should return without interacting with comparator', (t) => {
     const comparator = () => {
       throw Error('should not have been called');
     };
 
-    const sort = sortResponseData(comparator);
+    const sort = sortResponseData(comparator, _.constant(true));
 
+    const req = {};
     const res = {};
 
-    sort(undefined, res, () => {
+    sort(req, res, () => {
       t.deepEquals(res, {});
       t.end();
     });
 
   });
 
-  test('empty res.data should not cause problems', (t) => {
+  test('empty res.data should return without interacting with comparator', (t) => {
     const comparator = () => {
       throw Error('should not have been called');
     };
 
-    const sort = sortResponseData(comparator);
+    const sort = sortResponseData(comparator, _.constant(true));
 
+    const req = {};
     const res = {
       data: []
     };
 
-    sort(undefined, res, () => {
+    sort(req, res, () => {
       t.deepEquals(res.data, [], 'res.data should still be empty');
       t.end();
     });
 
   });
 
-  test('comparator should be consulted for sorting res.data when defined', (t) => {
+};
+
+module.exports.tests.successful_sort = (test, common) => {
+  test('comparator should be sort res.data', (t) => {
     const comparator = () => {
       return (a, b) => {
         return a.key > b.key;
       };
     };
 
-    const sort = sortResponseData(comparator);
+    const sort = sortResponseData(comparator, _.constant(true));
 
+    const req = {};
     const res = {
       data: [
         { key: 3 },
@@ -135,7 +117,7 @@ module.exports.tests.doIt = (test, common) => {
       ]
     };
 
-    sort(undefined, res, () => {
+    sort(req, res, () => {
       t.deepEquals(res.data.shift(), { key: 1 });
       t.deepEquals(res.data.shift(), { key: 2 });
       t.deepEquals(res.data.shift(), { key: 3 });

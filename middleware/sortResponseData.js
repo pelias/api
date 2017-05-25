@@ -1,14 +1,14 @@
 const _ = require('lodash');
 
-function setup(comparator) {
+function setup(comparator, should_execute) {
   function middleware(req, res, next) {
-    // do nothing if there's nothing to do
-    if (_.isEmpty(_.get(res, 'data', []))) {
+    // bail early if req/res don't pass conditions for execution or there's no data to sort
+    if (!should_execute(req, res) || _.isEmpty(res.data)) {
       return next();
     }
 
-    // sort does so in place
-    res.data.sort(comparator(_.get(req, 'clean', {})));
+    // sort operates on array in place
+    res.data.sort(comparator(req.clean));
 
     next();
   }
