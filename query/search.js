@@ -144,6 +144,9 @@ function generateQuery( clean ){
 }
 
 function getQuery(vs) {
+
+  logger.info(`[query:search] [search_input_type:${determineQueryType(vs)}]`);
+
   if (hasStreet(vs) ||
       isCityStateOnlyWithOptionalCountry(vs) ||
       isCityCountryOnly(vs) ||
@@ -158,6 +161,23 @@ function getQuery(vs) {
   // query should be queried for
   return undefined;
 
+}
+
+function determineQueryType(vs) {
+  if (vs.isset('input:housenumber') && vs.isset('input:street')) {
+    return 'address';
+  }
+  else if (vs.isset('input:street')) {
+    return 'street';
+  }
+  else if (vs.isset('input:query')) {
+    return 'venue';
+  }
+  else if (['neighbourhood', 'borough', 'postcode', 'county', 'region','country'].some(
+      (layer)=> { return vs.isset(`input:${layer}`);})) {
+    return 'admin';
+  }
+  return 'other';
 }
 
 function hasStreet(vs) {
