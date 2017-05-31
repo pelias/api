@@ -63,7 +63,7 @@
     "pelias-microservice-wrapper": "^1.1.0",
     "pelias-model": "4.8.1",
     "pelias-query": "8.15.0",
-    "pelias-sorting": "git://github.com/pelias/sorting.git",
+    "pelias-sorting": "1.0.1",
     "pelias-text-analyzer": "1.8.2",
     "predicates": "^1.0.1",
     "request": "^2.81.0",
