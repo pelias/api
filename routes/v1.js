@@ -141,6 +141,7 @@ function addRoutes(app, peliasConfig) {
       postProc.confidenceScores(peliasConfig.api),
       postProc.confidenceScoresFallback(),
       postProc.interpolate(),
+      postProc.sortResponseData(require('pelias-sorting'), hasAdminOnlyResults),
       postProc.dedupe(),
       postProc.accuracy(),
       postProc.localNamingConventions(),
@@ -149,7 +150,6 @@ function addRoutes(app, peliasConfig) {
       postProc.normalizeParentIds(),
       postProc.changeLanguage(),
       postProc.assignLabels(),
-      postProc.sortResponseData(require('pelias-sorting'), hasAdminOnlyResults),
       postProc.geocodeJSON(peliasConfig.api, base),
       postProc.sendJSON
     ]),
