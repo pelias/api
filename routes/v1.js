@@ -92,7 +92,7 @@ function addRoutes(app, peliasConfig) {
 
   const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
 
-  const placeholderConfiguration = new PlaceHolder(peliasConfig.api.services.placeholder);
+  const placeholderConfiguration = new PlaceHolder(_.get(peliasConfig.api.services, 'placeholder', {}));
   const placeholderService = serviceWrapper(placeholderConfiguration);
   const isPlaceholderServiceEnabled = _.constant(placeholderConfiguration.isEnabled());
 
