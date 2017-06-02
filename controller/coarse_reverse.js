@@ -83,12 +83,7 @@ function synthesizeDoc(results) {
 
   // assign the administrative hierarchy
   Object.keys(results).forEach((layer) => {
-    if (results[layer][0].hasOwnProperty('abbr')) {
-      doc.addParent(layer, results[layer][0].name, results[layer][0].id.toString(), results[layer][0].abbr);
-    } else {
-      doc.addParent(layer, results[layer][0].name, results[layer][0].id.toString());
-    }
-
+    doc.addParent(layer, results[layer][0].name, results[layer][0].id.toString(), results[layer][0].abbr);
   });
 
   const esDoc = doc.toESDocument();

@@ -237,7 +237,6 @@ module.exports.tests.success_conditions = (test, common) => {
           {
             id: 10,
             name: 'neighbourhood name',
-            abbr: 'neighbourhood abbr',
             centroid: {
               lat: 12.121212,
               lon: 21.212121
@@ -291,7 +290,7 @@ module.exports.tests.success_conditions = (test, common) => {
           parent: {
             neighbourhood: ['neighbourhood name'],
             neighbourhood_id: ['10'],
-            neighbourhood_a: ['neighbourhood abbr']
+            neighbourhood_a: [null]
           },
           center_point: {
             lat: 12.121212,
