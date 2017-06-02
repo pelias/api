@@ -4,6 +4,7 @@ var elasticsearch = require('elasticsearch');
 const all = require('predicates').all;
 const any = require('predicates').any;
 const not = require('predicates').not;
+const _ = require('lodash');
 
 /** ----------------------- sanitizers ----------------------- **/
 var sanitizers = {
@@ -28,6 +29,7 @@ var controllers = {
   coarse_reverse: require('../controller/coarse_reverse'),
   mdToHTML: require('../controller/markdownToHtml'),
   place: require('../controller/place'),
+  placeholder: require('../controller/placeholder'),
   search: require('../controller/search'),
   status: require('../controller/status')
 };
@@ -59,16 +61,23 @@ var postProc = {
   parseBoundingBox: require('../middleware/parseBBox'),
   normalizeParentIds: require('../middleware/normalizeParentIds'),
   assignLabels: require('../middleware/assignLabels'),
-  changeLanguage: require('../middleware/changeLanguage')
+  changeLanguage: require('../middleware/changeLanguage'),
+  sortResponseData: require('../middleware/sortResponseData')
 };
 
 // predicates that drive whether controller/search runs
 const hasResponseData = require('../controller/predicates/has_response_data');
 const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
+const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_analysis');
+const hasResultsAtLayers = require('../controller/predicates/has_results_at_layers');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
+const hasAdminOnlyResults = not(hasResultsAtLayers(['venue', 'address', 'street']));
+
+const serviceWrapper = require('pelias-microservice-wrapper').service;
+const PlaceHolder = require('../service/configurations/PlaceHolder');
 
 /**
  * Append routes to app
@@ -79,11 +88,20 @@ const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
 function addRoutes(app, peliasConfig) {
   const esclient = elasticsearch.Client(peliasConfig.esclient);
 
-  const isPipServiceEnabled = require('../controller/predicates/is_pip_service_enabled')(peliasConfig.api.pipService);
+  const isPipServiceEnabled = require('../controller/predicates/is_service_enabled')(peliasConfig.api.pipService);
+
   const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
+
+  const placeholderConfiguration = new PlaceHolder(_.get(peliasConfig.api.services, 'placeholder', {}));
+  const placeholderService = serviceWrapper(placeholderConfiguration);
+  const isPlaceholderServiceEnabled = _.constant(placeholderConfiguration.isEnabled());
 
   const coarse_reverse_should_execute = all(
     not(hasRequestErrors), isPipServiceEnabled, isCoarseReverse
+  );
+
+  const placeholderShouldExecute = all(
+    not(hasResponseDataOrRequestErrors), isPlaceholderServiceEnabled, isAdminOnlyAnalysis
   );
 
   // execute under the following conditions:
@@ -112,6 +130,7 @@ function addRoutes(app, peliasConfig) {
       sanitizers.search.middleware,
       middleware.requestLanguage,
       middleware.calcSize(),
+      controllers.placeholder(placeholderService, placeholderShouldExecute),
       // 3rd parameter is which query module to use, use fallback/geodisambiguation
       //  first, then use original search strategy if first query didn't return anything
       controllers.search(peliasConfig.api, esclient, queries.libpostal, not(hasResponseDataOrRequestErrors)),
@@ -122,6 +141,7 @@ function addRoutes(app, peliasConfig) {
       postProc.confidenceScores(peliasConfig.api),
       postProc.confidenceScoresFallback(),
       postProc.interpolate(),
+      postProc.sortResponseData(require('pelias-sorting'), hasAdminOnlyResults),
       postProc.dedupe(),
       postProc.accuracy(),
       postProc.localNamingConventions(),
@@ -143,7 +163,7 @@ function addRoutes(app, peliasConfig) {
       postProc.confidenceScores(peliasConfig.api),
       postProc.confidenceScoresFallback(),
       postProc.interpolate(),
-      postProc.dedupe(),      
+      postProc.dedupe(),
       postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
