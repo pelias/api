@@ -22,7 +22,7 @@ function getMostGranularLayer(results) {
 }
 
 function hasResultsAtRequestedLayers(results, layers) {
-  return _.intersection(layers, Object.keys(results)).length > 0;
+  return _.isEmpty(layers) || !_.isEmpty(_.intersection(layers, Object.keys(results)));
 }
 
 function synthesizeDoc(results) {
@@ -110,7 +110,7 @@ function setup(service, should_execute) {
       res.meta = {};
       res.data = [];
       // synthesize a doc from results if there's a result at the request layer(s)
-      if (hasResultsAtRequestedLayers(results, req.clean.layers)) {
+      if (hasResultsAtRequestedLayers(results, _.without(req.clean.layers, 'venue', 'address', 'street'))) {
         res.data.push(synthesizeDoc(results));
       }
 

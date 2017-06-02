@@ -465,6 +465,188 @@ module.exports.tests.success_conditions = (test, common) => {
 
   });
 
+  test('layers specifying only venue, address, or street should not exclude coarse results', (t) => {
+    // this test is used to test coarse reverse fallback for when non-coarse reverse
+    //  was requested but no non-coarse results were found
+    const non_coarse_layers = ['venue', 'address', 'street'];
+    const tests_per_non_coarse_layer = 4;
+
+    // by plan'ing the number of tests, we can verify that next() was called w/o
+    //  additional bookkeeping
+    t.plan(non_coarse_layers.length * tests_per_non_coarse_layer);
+
+    non_coarse_layers.forEach((non_coarse_layer) => {
+      const service = (point, do_not_track, callback) => {
+        t.equals(do_not_track, 'do_not_track value');
+        const results = {
+          neighbourhood: [
+            {
+              id: 10,
+              name: 'neighbourhood name',
+              abbr: 'neighbourhood abbr'
+            }
+          ]
+        };
+
+        callback(undefined, results);
+      };
+
+      const logger = require('pelias-mock-logger')();
+
+      const should_execute = () => { return true; };
+      const controller = proxyquire('../../../controller/coarse_reverse', {
+        'pelias-logger': logger,
+        '../helper/logging': {
+          isDNT: () => {
+            return 'do_not_track value';
+          }
+        }
+      })(service, should_execute);
+
+      const req = {
+        clean: {
+          layers: [non_coarse_layer],
+          point: {
+            lat: 12.121212,
+            lon: 21.212121
+          }
+        }
+      };
+
+      const res = { };
+
+      // verify that next was called
+      const next = () => {
+        t.pass('next() should have been called');
+      };
+
+      controller(req, res, next);
+
+      const expected = {
+        meta: {},
+        data: [
+          {
+            _id: '10',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '10',
+            name: {
+              'default': 'neighbourhood name'
+            },
+            phrase: {
+              'default': 'neighbourhood name'
+            },
+            parent: {
+              neighbourhood: ['neighbourhood name'],
+              neighbourhood_id: ['10'],
+              neighbourhood_a: ['neighbourhood abbr']
+            }
+          }
+        ]
+      };
+
+      t.deepEquals(res, expected);
+
+      t.notOk(logger.hasErrorMessages());
+
+    });
+
+    t.end();
+
+  });
+
+  test('layers specifying venue, address, or street AND coarse layer should not exclude coarse results', (t) => {
+    // this test is used to test coarse reverse fallback for when non-coarse reverse
+    //  was requested but no non-coarse results were found
+    const non_coarse_layers = ['venue', 'address', 'street'];
+    const tests_per_non_coarse_layer = 4;
+
+    // by plan'ing the number of tests, we can verify that next() was called w/o
+    //  additional bookkeeping
+    t.plan(non_coarse_layers.length * tests_per_non_coarse_layer);
+
+    non_coarse_layers.forEach((non_coarse_layer) => {
+      const service = (point, do_not_track, callback) => {
+        t.equals(do_not_track, 'do_not_track value');
+        const results = {
+          neighbourhood: [
+            {
+              id: 10,
+              name: 'neighbourhood name',
+              abbr: 'neighbourhood abbr'
+            }
+          ]
+        };
+
+        callback(undefined, results);
+      };
+
+      const logger = require('pelias-mock-logger')();
+
+      const should_execute = () => { return true; };
+      const controller = proxyquire('../../../controller/coarse_reverse', {
+        'pelias-logger': logger,
+        '../helper/logging': {
+          isDNT: () => {
+            return 'do_not_track value';
+          }
+        }
+      })(service, should_execute);
+
+      const req = {
+        clean: {
+          layers: [non_coarse_layer, 'neighbourhood'],
+          point: {
+            lat: 12.121212,
+            lon: 21.212121
+          }
+        }
+      };
+
+      const res = { };
+
+      // verify that next was called
+      const next = () => {
+        t.pass('next() should have been called');
+      };
+
+      controller(req, res, next);
+
+      const expected = {
+        meta: {},
+        data: [
+          {
+            _id: '10',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '10',
+            name: {
+              'default': 'neighbourhood name'
+            },
+            phrase: {
+              'default': 'neighbourhood name'
+            },
+            parent: {
+              neighbourhood: ['neighbourhood name'],
+              neighbourhood_id: ['10'],
+              neighbourhood_a: ['neighbourhood abbr']
+            }
+          }
+        ]
+      };
+
+      t.deepEquals(res, expected);
+
+      t.notOk(logger.hasErrorMessages());
+
+    });
+
+    t.end();
+
+  });
+
 };
 
 module.exports.tests.failure_conditions = (test, common) => {
