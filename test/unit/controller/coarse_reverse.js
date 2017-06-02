@@ -469,7 +469,7 @@ module.exports.tests.success_conditions = (test, common) => {
     // this test is used to test coarse reverse fallback for when non-coarse reverse
     //  was requested but no non-coarse results were found
     const non_coarse_layers = ['venue', 'address', 'street'];
-    const tests_per_non_coarse_layer = 4;
+    const tests_per_non_coarse_layer = 5;
 
     // by plan'ing the number of tests, we can verify that next() was called w/o
     //  additional bookkeeping
@@ -546,8 +546,8 @@ module.exports.tests.success_conditions = (test, common) => {
         ]
       };
 
+      t.deepEquals(req.clean.layers, [non_coarse_layer], 'req.clean.layers should be unmodified');
       t.deepEquals(res, expected);
-
       t.notOk(logger.hasErrorMessages());
 
     });
@@ -560,7 +560,7 @@ module.exports.tests.success_conditions = (test, common) => {
     // this test is used to test coarse reverse fallback for when non-coarse reverse
     //  was requested but no non-coarse results were found
     const non_coarse_layers = ['venue', 'address', 'street'];
-    const tests_per_non_coarse_layer = 4;
+    const tests_per_non_coarse_layer = 5;
 
     // by plan'ing the number of tests, we can verify that next() was called w/o
     //  additional bookkeeping
@@ -637,8 +637,8 @@ module.exports.tests.success_conditions = (test, common) => {
         ]
       };
 
+      t.deepEquals(req.clean.layers, [non_coarse_layer, 'neighbourhood'], 'req.clean.layers should be unmodified');
       t.deepEquals(res, expected);
-
       t.notOk(logger.hasErrorMessages());
 
     });
