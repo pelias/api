@@ -1,37 +1,38 @@
-var proxyquire =  require('proxyquire').noCallThru();
+const proxyquire =  require('proxyquire').noCallThru();
+const _ = require('lodash');
 
 module.exports.tests = {};
 
-module.exports.tests.sanitize = function(test, common) {
-  test('verify that all sanitizers were called as expected', function(t) {
-    var called_sanitizers = [];
+module.exports.tests.sanitize = (test, common) => {
+  test('verify that all sanitizers were called as expected', (t) => {
+    const called_sanitizers = [];
 
     // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
     //  were all called correctly
-    var search = proxyquire('../../../sanitizer/search', {
-      '../sanitizer/_deprecate_quattroshapes': function() {
+    const search = proxyquire('../../../sanitizer/search', {
+      '../sanitizer/_deprecate_quattroshapes': () => {
         called_sanitizers.push('_deprecate_quattroshapes');
         return { errors: [], warnings: [] };
       },
-      '../sanitizer/_single_scalar_parameters': function() {
+      '../sanitizer/_single_scalar_parameters': () => {
         called_sanitizers.push('_single_scalar_parameters');
         return { errors: [], warnings: [] };
       },
-      '../sanitizer/_text': function() {
+      '../sanitizer/_text': () => {
         called_sanitizers.push('_text');
         return { errors: [], warnings: [] };
       },
-      '../sanitizer/_iso2_to_iso3': function() {
+      '../sanitizer/_iso2_to_iso3': () => {
         called_sanitizers.push('_iso2_to_iso3');
         return { errors: [], warnings: [] };
       },
-      '../sanitizer/_city_name_standardizer': function() {
+      '../sanitizer/_city_name_standardizer': () => {
         called_sanitizers.push('_city_name_standardizer');
         return { errors: [], warnings: [] };
       },
       '../sanitizer/_size': function() {
-        if (arguments.length === 0) {
-          return function() {
+        if (_.isEmpty(arguments)) {
+          return () => {
             called_sanitizers.push('_size');
             return { errors: [], warnings: [] };
           };
@@ -41,10 +42,10 @@ module.exports.tests.sanitize = function(test, common) {
         }
 
       },
-      '../sanitizer/_targets': function(type) {
+      '../sanitizer/_targets': (type) => {
         if (['layers', 'sources'].indexOf(type) !== -1) {
-          return function() {
-            called_sanitizers.push('_targets/' + type);
+          return () => {
+            called_sanitizers.push(`_targets/${type}`);
             return { errors: [], warnings: [] };
           };
 
@@ -54,13 +55,13 @@ module.exports.tests.sanitize = function(test, common) {
         }
 
       },
-      '../sanitizer/_sources_and_layers': function() {
+      '../sanitizer/_sources_and_layers': () => {
         called_sanitizers.push('_sources_and_layers');
         return { errors: [], warnings: [] };
       },
       '../sanitizer/_flag_bool': function() {
         if (arguments[0] === 'private' && arguments[1] === false) {
-          return function() {
+          return () => {
             called_sanitizers.push('_flag_bool');
             return { errors: [], warnings: [] };
           };
@@ -71,21 +72,25 @@ module.exports.tests.sanitize = function(test, common) {
         }
 
       },
-      '../sanitizer/_geo_search': function() {
+      '../sanitizer/_geo_search': () => {
         called_sanitizers.push('_geo_search');
         return { errors: [], warnings: [] };
       },
-      '../sanitizer/_boundary_country': function() {
+      '../sanitizer/_boundary_country': () => {
         called_sanitizers.push('_boundary_country');
         return { errors: [], warnings: [] };
       },
-      '../sanitizer/_categories': function() {
+      '../sanitizer/_categories': () => {
         called_sanitizers.push('_categories');
         return { errors: [], warnings: [] };
       },
+        '../sanitizer/_geonames_warnings': () => {
+        called_sanitizers.push('_geonames_warnings');
+        return { errors: [], warnings: [] };
+      }
     });
 
-    var expected_sanitizers = [
+    const expected_sanitizers = [
       '_single_scalar_parameters',
       '_deprecate_quattroshapes',
       '_text',
@@ -98,26 +103,27 @@ module.exports.tests.sanitize = function(test, common) {
       '_flag_bool',
       '_geo_search',
       '_boundary_country',
-      '_categories'
+      '_categories',
+      '_geonames_warnings'
     ];
 
-    var req = {};
-    var res = {};
+    const req = {};
+    const res = {};
 
-    search.middleware(req, res, function(){
+    search.middleware(req, res, () => {
       t.deepEquals(called_sanitizers, expected_sanitizers);
       t.end();
     });
   });
 };
 
-module.exports.all = function (tape, common) {
+module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /search ' + name, testFunction);
+    return tape(`SANTIZE /search ${name}`, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for( const testCase in module.exports.tests ){
     module.exports.tests[testCase](test, common);
   }
 };
