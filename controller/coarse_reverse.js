@@ -21,6 +21,8 @@ function getMostGranularLayer(results) {
   });
 }
 
+//  removing non-coarse layers could leave effective_layers empty, so it's
+//  important to check for empty layers here
 function hasResultsAtRequestedLayers(results, layers) {
   return _.isEmpty(layers) || !_.isEmpty(_.intersection(layers, Object.keys(results)));
 }
@@ -83,6 +85,15 @@ function setup(service, should_execute) {
       return next();
     }
 
+    // because coarse reverse is called when non-coarse reverse didn't return
+    //  anything, don't consider non-coarse layers when filtering
+    const effective_layers = _.without(req.clean.layers, 'venue', 'address', 'street');
+
+    const centroid = {
+      lat: req.clean['point.lat'],
+      lon: req.clean['point.lon']
+    };
+
     service(req, (err, results) => {
       // if there's an error, log it and bail
       if (err) {
@@ -93,13 +104,13 @@ function setup(service, should_execute) {
 
       // find the finest granularity requested
       const finest_granularity_requested = granularities.findIndex((granularity) => {
-        return req.clean.layers.indexOf(granularity) !== -1;
+        return effective_layers.indexOf(granularity) !== -1;
       });
 
       logger.info(`[controller:coarse_reverse][queryType:pip][result_count:${Object.keys(results).length}]`);
 
       // now remove everything from the response that is more granular than the
-      // most granular layer requested.  that is, if req.clean.layers=['county'],
+      // most granular layer requested.  that is, if effective_layers=['county'],
       // remove neighbourhoods, localities, and localadmins
       Object.keys(results).forEach((layer) => {
         if (granularities.indexOf(layer) < finest_granularity_requested) {
@@ -110,7 +121,7 @@ function setup(service, should_execute) {
       res.meta = {};
       res.data = [];
       // synthesize a doc from results if there's a result at the request layer(s)
-      if (hasResultsAtRequestedLayers(results, _.without(req.clean.layers, 'venue', 'address', 'street'))) {
+      if (hasResultsAtRequestedLayers(results, effective_layers)) {
         res.data.push(synthesizeDoc(results));
       }
 
