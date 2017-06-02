@@ -211,7 +211,6 @@ module.exports.tests.success_conditions = (test, common) => {
             country_id: ['100'],
             country_a: ['xyz']
           },
-          alpha3: 'XYZ',
           center_point: {
             lat: 12.121212,
             lon: 21.212121

@@ -81,10 +81,6 @@ function synthesizeDoc(results) {
 
   }
 
-  if (_.has(results, 'country[0].abbr')) {
-    doc.setAlpha3(results.country[0].abbr);
-  }
-
   // assign the administrative hierarchy
   Object.keys(results).forEach((layer) => {
     if (results[layer][0].hasOwnProperty('abbr')) {
