@@ -23,6 +23,11 @@ module.exports = {
             'lon': -82.50622
           }
         }
+      },
+      {
+        'terms': {
+          'layer': ['venue', 'address', 'street']
+        }
       }]
     }
   },

@@ -17,7 +17,7 @@ module.exports = {
         },
         {
           'terms': {
-            'layer': ['country']
+            'layer': ['venue', 'address', 'street']
           }
         }
       ]
