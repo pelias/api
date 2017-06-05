@@ -20,6 +20,9 @@ module.exports.tests.completely_valid = (test, common) => {
         },
         requestRetries: 19,
         services: {
+          pip: {
+            url: 'http://locahost'
+          },
           placeholder: {
             url: 'http://locahost'
           }
