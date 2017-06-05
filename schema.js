@@ -29,6 +29,9 @@ module.exports = Joi.object().keys({
     pipService: Joi.string().uri({ scheme: /https?/ }),
     placeholderService: Joi.any().forbidden(), // got moved to services
     services: Joi.object().keys({
+      pip: Joi.object().keys({
+        url: Joi.string().uri({ scheme: /https?/ })
+      }).unknown(false).requiredKeys('url'),
       placeholder: Joi.object().keys({
         url: Joi.string().uri({ scheme: /https?/ })
       }).unknown(false).requiredKeys('url')

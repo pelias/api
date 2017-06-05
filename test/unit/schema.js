@@ -523,30 +523,9 @@ module.exports.tests.api_services_validation = (test, common) => {
 
   });
 
-  test('non-url children of api.services.placeholder should be disallowed', (t) => {
-    var config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          placeholder: {
-            url: 'http://localhost',
-            unknown_property: 'value'
-          }
-        }
-      },
-      esclient: {}
-    };
+};
 
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"unknown_property" is not allowed');
-    t.end();
-
-  });
-
+module.exports.tests.placeholder_service_validation = (test, common) => {
   test('when api.services.placeholder is defined, url is required', (t) => {
     var config = {
       api: {
@@ -631,6 +610,109 @@ module.exports.tests.api_services_validation = (test, common) => {
         host: 'host value',
         services: {
           placeholder: {
+            url: 'http://localhost',
+            unknown_property: 'value'
+          }
+        }
+      },
+      esclient: {}
+    };
+
+    const result = Joi.validate(config, schema);
+
+    t.equals(result.error.details.length, 1);
+    t.equals(result.error.details[0].message, '"unknown_property" is not allowed');
+    t.end();
+
+  });
+
+};
+
+module.exports.tests.pip_service_validation = (test, common) => {
+  test('when api.services.pip is defined, url is required', (t) => {
+    var config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value',
+        services: {
+          pip: {
+          }
+        }
+      },
+      esclient: {}
+    };
+
+    const result = Joi.validate(config, schema);
+
+    t.equals(result.error.details.length, 1);
+    t.equals(result.error.details[0].message, '"url" is required');
+    t.end();
+
+  });
+
+  test('non-string api.services.pip.url should throw error', (t) => {
+    [null, 17, {}, [], true].forEach((value) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          services: {
+            pip: {
+              url: value
+            }
+          }
+        },
+        esclient: {}
+      };
+
+      const result = Joi.validate(config, schema);
+
+      t.equals(result.error.details.length, 1);
+      t.equals(result.error.details[0].message, '"url" must be a string');
+
+    });
+
+    t.end();
+
+  });
+
+  test('non-http/https api.services.pip.url should throw error', (t) => {
+    ['ftp', 'git', 'unknown'].forEach((scheme) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          services: {
+            pip: {
+              url: `${scheme}://localhost`
+            }
+          }
+        },
+        esclient: {}
+      };
+
+      const result = Joi.validate(config, schema);
+
+      t.equals(result.error.details.length, 1);
+      t.equals(result.error.details[0].message, '"url" must be a valid uri with a scheme matching the https\? pattern');
+
+    });
+
+    t.end();
+
+  });
+
+  test('non-url children of api.services.pip should be disallowed', (t) => {
+    var config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value',
+        services: {
+          pip: {
             url: 'http://localhost',
             unknown_property: 'value'
           }
