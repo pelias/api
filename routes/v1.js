@@ -78,6 +78,7 @@ const hasAdminOnlyResults = not(hasResultsAtLayers(['venue', 'address', 'street'
 
 const serviceWrapper = require('pelias-microservice-wrapper').service;
 const PlaceHolder = require('../service/configurations/PlaceHolder');
+const PointInPolygon = require('../service/configurations/PointInPolygon');
 
 /**
  * Append routes to app
