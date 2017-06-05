@@ -407,74 +407,6 @@ module.exports.tests.api_validation = (test, common) => {
 
   });
 
-  test('non-string api.pipService should throw error', (t) => {
-    [null, 17, {}, [], true].forEach((value) => {
-      var config = {
-        api: {
-          version: 'version value',
-          indexName: 'index name value',
-          host: 'host value',
-          pipService: value
-        },
-        esclient: {}
-      };
-
-      const result = Joi.validate(config, schema);
-
-      t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"pipService" must be a string');
-
-    });
-
-    t.end();
-
-  });
-
-  test('non-http/https api.pipService should throw error', (t) => {
-    ['ftp', 'git', 'unknown'].forEach((scheme) => {
-      var config = {
-        api: {
-          version: 'version value',
-          indexName: 'index name value',
-          host: 'host value',
-          pipService: `${scheme}://localhost`
-        },
-        esclient: {}
-      };
-
-      const result = Joi.validate(config, schema);
-
-      t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"pipService" must be a valid uri with a scheme matching the https? pattern');
-
-    });
-
-    t.end();
-
-  });
-
-  test('http/https api.pipService should not throw error', (t) => {
-    ['http', 'https'].forEach((scheme) => {
-      var config = {
-        api: {
-          version: 'version value',
-          indexName: 'index name value',
-          host: 'host value',
-          pipService: `${scheme}://localhost`
-        },
-        esclient: {}
-      };
-
-      const result = Joi.validate(config, schema);
-
-      t.notOk(result.error);
-
-    });
-
-    t.end();
-
-  });
-
   // api.placeholderService has been moved to api.services.placeholder.url
   test('any api.placeholderService value should be disallowed', (t) => {
     [null, 17, {}, [], true, 'http://localhost'].forEach((value) => {
@@ -492,6 +424,30 @@ module.exports.tests.api_validation = (test, common) => {
 
       t.equals(result.error.details.length, 1);
       t.equals(result.error.details[0].message, '"placeholderService" is not allowed');
+
+    });
+
+    t.end();
+
+  });
+
+  // api.pipService has been moved to api.services.pip.url
+  test('any api.pipService value should be disallowed', (t) => {
+    [null, 17, {}, [], true, 'http://localhost'].forEach((value) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          pipService: value
+        },
+        esclient: {}
+      };
+
+      const result = Joi.validate(config, schema);
+
+      t.equals(result.error.details.length, 1);
+      t.equals(result.error.details[0].message, '"pipService" is not allowed');
 
     });
 
