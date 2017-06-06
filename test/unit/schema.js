@@ -435,7 +435,7 @@ module.exports.tests.api_validation = (test, common) => {
   });
 
   // api.pipService has been moved to api.services.pip.url
-  test('any api.pipService value should be disallowed', (t) => {
+  test('any api.pipService value should be allowed', (t) => {
     [null, 17, {}, [], true, 'http://localhost'].forEach((value) => {
       var config = {
         api: {
@@ -449,8 +449,7 @@ module.exports.tests.api_validation = (test, common) => {
 
       const result = Joi.validate(config, schema);
 
-      t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"pipService" is not allowed');
+      t.notOk(result.error);
 
     });
 

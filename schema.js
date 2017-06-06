@@ -26,7 +26,7 @@ module.exports = Joi.object().keys({
     localization: Joi.object().keys({
       flipNumberAndStreetCountries: Joi.array().items(Joi.string().regex(/^[A-Z]{3}$/))
     }).unknown(false),
-    pipService: Joi.any().forbidden(), // got moved to services
+    pipService: Joi.any(), // got moved to services, ignored for now
     placeholderService: Joi.any().forbidden(), // got moved to services
     services: Joi.object().keys({
       pip: Joi.object().keys({
