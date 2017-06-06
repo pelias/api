@@ -78,6 +78,7 @@ const hasAdminOnlyResults = not(hasResultsAtLayers(['venue', 'address', 'street'
 
 const serviceWrapper = require('pelias-microservice-wrapper').service;
 const PlaceHolder = require('../service/configurations/PlaceHolder');
+const PointInPolygon = require('../service/configurations/PointInPolygon');
 
 /**
  * Append routes to app
@@ -88,11 +89,11 @@ const PlaceHolder = require('../service/configurations/PlaceHolder');
 function addRoutes(app, peliasConfig) {
   const esclient = elasticsearch.Client(peliasConfig.esclient);
 
-  const isPipServiceEnabled = require('../controller/predicates/is_service_enabled')(peliasConfig.api.pipService);
+  const pipConfiguration = new PointInPolygon(_.defaultTo(peliasConfig.api.services.pip, {}));
+  const pipService = serviceWrapper(pipConfiguration);
+  const isPipServiceEnabled = _.constant(pipConfiguration.isEnabled());
 
-  const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
-
-  const placeholderConfiguration = new PlaceHolder(_.get(peliasConfig.api.services, 'placeholder', {}));
+  const placeholderConfiguration = new PlaceHolder(_.defaultTo(peliasConfig.api.services.placeholder, {}));
   const placeholderService = serviceWrapper(placeholderConfiguration);
   const isPlaceholderServiceEnabled = _.constant(placeholderConfiguration.isEnabled());
 

@@ -46,8 +46,8 @@ module.exports.tests.early_exit_conditions = (test, common) => {
 
 module.exports.tests.error_conditions = (test, common) => {
   test('service error should log and call next', (t) => {
-    const service = (point, do_not_track, callback) => {
-      t.equals(do_not_track, 'do_not_track value');
+    const service = (req, callback) => {
+      t.deepEquals(req, { clean: { layers: ['locality'] } } );
       callback('this is an error');
     };
 
@@ -55,21 +55,12 @@ module.exports.tests.error_conditions = (test, common) => {
 
     const should_execute = () => { return true; };
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger,
-      '../helper/logging': {
-        isDNT: () => {
-          return 'do_not_track value';
-        }
-      }
+      'pelias-logger': logger
     })(service, should_execute);
 
     const req = {
       clean: {
-        layers: ['locality'],
-        point: {
-          lat: 12.121212,
-          lon: 21.212121
-        }
+        layers: ['locality']
       }
     };
 
@@ -92,8 +83,9 @@ module.exports.tests.error_conditions = (test, common) => {
 
 module.exports.tests.success_conditions = (test, common) => {
   test('service returning results should use first entry for each layer', (t) => {
-    const service = (point, do_not_track, callback) => {
-      t.equals(do_not_track, 'do_not_track value');
+    const service = (req, callback) => {
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+
       const results = {
         neighbourhood: [
           {
@@ -153,21 +145,12 @@ module.exports.tests.success_conditions = (test, common) => {
 
     const should_execute = () => { return true; };
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger,
-      '../helper/logging': {
-        isDNT: () => {
-          return 'do_not_track value';
-        }
-      }
+      'pelias-logger': logger
     })(service, should_execute);
 
     const req = {
       clean: {
-        layers: ['neighbourhood'],
-        point: {
-          lat: 12.121212,
-          lon: 21.212121
-        }
+        layers: ['neighbourhood']
       }
     };
 
@@ -247,8 +230,9 @@ module.exports.tests.success_conditions = (test, common) => {
   });
 
   test('layers missing from results should be ignored', (t) => {
-    const service = (point, do_not_track, callback) => {
-      t.equals(do_not_track, 'do_not_track value');
+    const service = (req, callback) => {
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+
       const results = {
         neighbourhood: [
           {
@@ -271,21 +255,12 @@ module.exports.tests.success_conditions = (test, common) => {
 
     const should_execute = () => { return true; };
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger,
-      '../helper/logging': {
-        isDNT: () => {
-          return 'do_not_track value';
-        }
-      }
+      'pelias-logger': logger
     })(service, should_execute);
 
     const req = {
       clean: {
-        layers: ['neighbourhood'],
-        point: {
-          lat: 12.121212,
-          lon: 21.212121
-        }
+        layers: ['neighbourhood']
       }
     };
 
@@ -337,8 +312,9 @@ module.exports.tests.success_conditions = (test, common) => {
   });
 
   test('most granular layer missing centroid should not set', (t) => {
-    const service = (point, do_not_track, callback) => {
-      t.equals(do_not_track, 'do_not_track value');
+    const service = (req, callback) => {
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+
       const results = {
         neighbourhood: [
           {
@@ -357,21 +333,12 @@ module.exports.tests.success_conditions = (test, common) => {
 
     const should_execute = () => { return true; };
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger,
-      '../helper/logging': {
-        isDNT: () => {
-          return 'do_not_track value';
-        }
-      }
+      'pelias-logger': logger
     })(service, should_execute);
 
     const req = {
       clean: {
-        layers: ['neighbourhood'],
-        point: {
-          lat: 12.121212,
-          lon: 21.212121
-        }
+        layers: ['neighbourhood']
       }
     };
 
@@ -419,8 +386,9 @@ module.exports.tests.success_conditions = (test, common) => {
   });
 
   test('most granular layer missing bounding_box should not set', (t) => {
-    const service = (point, do_not_track, callback) => {
-      t.equals(do_not_track, 'do_not_track value');
+    const service = (req, callback) => {
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+
       const results = {
         neighbourhood: [
           {
@@ -442,21 +410,12 @@ module.exports.tests.success_conditions = (test, common) => {
 
     const should_execute = () => { return true; };
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger,
-      '../helper/logging': {
-        isDNT: () => {
-          return 'do_not_track value';
-        }
-      }
+      'pelias-logger': logger
     })(service, should_execute);
 
     const req = {
       clean: {
-        layers: ['neighbourhood'],
-        point: {
-          lat: 12.121212,
-          lon: 21.212121
-        }
+        layers: ['neighbourhood']
       }
     };
 
@@ -510,8 +469,9 @@ module.exports.tests.success_conditions = (test, common) => {
 
 module.exports.tests.failure_conditions = (test, common) => {
   test('service returning 0 results at the requested layer should return nothing', (t) => {
-    const service = (point, do_not_track, callback) => {
-      t.equals(do_not_track, 'do_not_track value');
+    const service = (req, callback) => {
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+
       // response without neighbourhood results
       const results = {
         borough: [
@@ -559,21 +519,12 @@ module.exports.tests.failure_conditions = (test, common) => {
 
     const should_execute = () => { return true; };
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger,
-      '../helper/logging': {
-        isDNT: () => {
-          return 'do_not_track value';
-        }
-      }
+      'pelias-logger': logger
     })(service, should_execute);
 
     const req = {
       clean: {
-        layers: ['neighbourhood'],
-        point: {
-          lat: 12.121212,
-          lon: 21.212121
-        }
+        layers: ['neighbourhood']
       }
     };
 
