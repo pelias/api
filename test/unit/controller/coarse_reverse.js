@@ -449,6 +449,7 @@ module.exports.tests.success_conditions = (test, common) => {
     };
 
     t.deepEquals(res, expected);
+
     t.notOk(logger.hasErrorMessages());
     t.end();
 

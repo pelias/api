@@ -3,6 +3,7 @@
 const peliasQuery = require('pelias-query');
 const defaults = require('./reverse_defaults');
 const check = require('check-types');
+const _ = require('lodash');
 const logger = require('pelias-logger').get('api');
 
 //------------------------------
@@ -44,7 +45,8 @@ function generateQuery( clean ){
 
   // layers
   if( check.array(clean.layers) && clean.layers.length ) {
-    vs.var( 'layers', clean.layers);
+    // only include non-coarse layers
+    vs.var( 'layers', _.intersection(clean.layers, ['address', 'street', 'venue']));
     logStr += '[param:layers] ';
   }
 

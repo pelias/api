@@ -19,6 +19,11 @@ module.exports = {
           'terms': {
             'source': ['test']
           }
+        },
+        {
+          'terms': {
+            'layer': ['venue', 'address', 'street']
+          }
         }
       ]
     }

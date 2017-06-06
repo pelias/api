@@ -13,6 +13,11 @@ module.exports = {
             'lon': 0
           }
         }
+      },
+      {
+        'terms': {
+          'layer': ['venue', 'address', 'street']
+        }
       }]
     }
   },
