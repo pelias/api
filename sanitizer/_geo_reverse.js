@@ -25,21 +25,17 @@ module.exports = function sanitize( raw, clean ){
     // first verify that point.lat/point.lon are valid
     geo_common.sanitize_point( 'point', clean, raw, LAT_LON_IS_REQUIRED );
 
-    // only set boundary.circle things if the request is non-coarse
-    if (_.isEmpty(clean.layers) || !_.isEmpty(_.intersection(non_coarse_layers, clean.layers))) {
-      // overwrite boundary.circle.lat/lon with point.lat/lon
-      raw['boundary.circle.lat'] = clean['point.lat'];
-      raw['boundary.circle.lon'] = clean['point.lon'];
+    // overwrite boundary.circle.lat/lon with point.lat/lon
+    raw['boundary.circle.lat'] = clean['point.lat'];
+    raw['boundary.circle.lon'] = clean['point.lon'];
 
-      // if no radius was passed, set the default
-      if ( _.isUndefined( raw['boundary.circle.radius'] ) ) {
-        raw['boundary.circle.radius'] = defaults['boundary:circle:radius'];
-      }
-
-      // santize the boundary.circle
-      geo_common.sanitize_circle( 'boundary.circle', clean, raw, CIRCLE_IS_REQUIRED );
-
+    // if no radius was passed, set the default
+    if ( _.isUndefined( raw['boundary.circle.radius'] ) ) {
+      raw['boundary.circle.radius'] = defaults['boundary:circle:radius'];
     }
+
+    // santize the boundary.circle
+    geo_common.sanitize_circle( 'boundary.circle', clean, raw, CIRCLE_IS_REQUIRED );
 
   }
   catch (err) {
