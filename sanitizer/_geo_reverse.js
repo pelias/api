@@ -4,6 +4,8 @@ var defaults = require('../query/reverse_defaults');
 var LAT_LON_IS_REQUIRED = true,
     CIRCLE_IS_REQUIRED = false;
 
+const non_coarse_layers = ['venue', 'address', 'street'];
+
 // validate inputs, convert types and apply defaults
 module.exports = function sanitize( raw, clean ){
 
@@ -29,12 +31,7 @@ module.exports = function sanitize( raw, clean ){
 
     // if no radius was passed, set the default
     if ( _.isUndefined( raw['boundary.circle.radius'] ) ) {
-      // the default is small unless layers other than venue or address were explicitly specified
-      if (clean.layers && clean.layers.length > 0 && !_.includes(clean.layers, 'venue') && !_.includes(clean.layers, 'address')) {
-        raw['boundary.circle.radius'] = defaults['boundary:circle:radius:coarse'];
-      } else {
-        raw['boundary.circle.radius'] = defaults['boundary:circle:radius'];
-      }
+      raw['boundary.circle.radius'] = defaults['boundary:circle:radius'];
     }
 
     // santize the boundary.circle

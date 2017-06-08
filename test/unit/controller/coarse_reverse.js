@@ -80,6 +80,80 @@ module.exports.tests.error_conditions = (test, common) => {
 
 };
 
+module.exports.tests.boundary_circle_radius_warnings = (test, common) => {
+  test('defined clean[boundary.circle.radius] should add a warning', (t) => {
+    const service = (req, callback) => {
+      callback(undefined, {});
+    };
+
+    const logger = require('pelias-mock-logger')();
+
+    const controller = proxyquire('../../../controller/coarse_reverse', {
+      'pelias-logger': logger
+    })(service, _.constant(true));
+
+    const req = {
+      warnings: [],
+      clean: {
+        'boundary.circle.radius': 17
+      }
+    };
+
+    const res = { };
+
+    const next = () => {};
+
+    controller(req, res, next);
+
+    const expected = {
+      meta: {},
+      data: []
+    };
+
+    t.deepEquals(req.warnings, ['boundary.circle.radius is not applicable for coarse reverse']);
+    t.deepEquals(res, expected);
+    t.notOk(logger.hasErrorMessages());
+    t.end();
+
+  });
+
+  test('defined clean[boundary.circle.radius] should add a warning', (t) => {
+    const service = (req, callback) => {
+      callback(undefined, {});
+    };
+
+    const logger = require('pelias-mock-logger')();
+
+    const controller = proxyquire('../../../controller/coarse_reverse', {
+      'pelias-logger': logger
+    })(service, _.constant(true));
+
+    const req = {
+      warnings: [],
+      clean: {}
+    };
+
+    const res = { };
+
+    // verify that next was called
+    const next = () => { };
+
+    controller(req, res, next);
+
+    const expected = {
+      meta: {},
+      data: []
+    };
+
+    t.deepEquals(req.warnings, []);
+    t.deepEquals(res, expected);
+    t.notOk(logger.hasErrorMessages());
+    t.end();
+
+  });
+
+};
+
 module.exports.tests.success_conditions = (test, common) => {
   test('service returning results should use first entry for each layer', (t) => {
     t.plan(4);

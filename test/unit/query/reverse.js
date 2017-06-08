@@ -16,7 +16,7 @@ module.exports.tests.query = function(test, common) {
       'point.lon': -82.50622,
       'boundary.circle.lat': 29.49136,
       'boundary.circle.lon': -82.50622,
-      'boundary.circle.radius': 500
+      'boundary.circle.radius': 3
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -33,7 +33,7 @@ module.exports.tests.query = function(test, common) {
       'point.lon': 0,
       'boundary.circle.lat': 0,
       'boundary.circle.lon': 0,
-      'boundary.circle.radius': 500
+      'boundary.circle.radius': 3
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -67,7 +67,7 @@ module.exports.tests.query = function(test, common) {
       'point.lon': -82.50622,
       'boundary.circle.lat': 111,
       'boundary.circle.lon': 333,
-      'boundary.circle.radius': 500
+      'boundary.circle.radius': 3
     };
     var query = generate(clean);
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -102,7 +102,7 @@ module.exports.tests.query = function(test, common) {
       'point.lon': -82.50622,
       'boundary.circle.lat': 29.49136,
       'boundary.circle.lon': -82.50622,
-      'boundary.circle.radius': 500,
+      'boundary.circle.radius': 3,
       'boundary.country': 'ABC'
     });
 
@@ -120,7 +120,7 @@ module.exports.tests.query = function(test, common) {
       'point.lon': -82.50622,
       'boundary.circle.lat': 29.49136,
       'boundary.circle.lon': -82.50622,
-      'boundary.circle.radius': 500,
+      'boundary.circle.radius': 3,
       'sources': ['test']
     });
 
@@ -138,7 +138,7 @@ module.exports.tests.query = function(test, common) {
       'point.lon': -82.50622,
       'boundary.circle.lat': 29.49136,
       'boundary.circle.lon': -82.50622,
-      'boundary.circle.radius': 500,
+      'boundary.circle.radius': 3,
       // only venue, address, and street layers should be retained
       'layers': ['neighbourhood', 'venue', 'locality', 'address', 'region', 'street', 'country']
     });
@@ -158,7 +158,7 @@ module.exports.tests.query = function(test, common) {
       'point.lon': -82.50622,
       'boundary.circle.lat': 29.49136,
       'boundary.circle.lon': -82.50622,
-      'boundary.circle.radius': 500,
+      'boundary.circle.radius': 3,
       // only venue, address, and street layers should be retained
       'layers': ['neighbourhood', 'venue', 'street', 'locality']
     });

@@ -103,6 +103,11 @@ function setup(service, should_execute) {
       return next();
     }
 
+    // return a warning to the caller that boundary.circle.radius will be ignored
+    if (!_.isUndefined(req.clean['boundary.circle.radius'])) {
+      req.warnings.push('boundary.circle.radius is not applicable for coarse reverse');
+    }
+
     // because coarse reverse is called when non-coarse reverse didn't return
     //  anything, treat requested layers as if it didn't contain non-coarse layers
     const effective_layers = getEffectiveLayers(req.clean.layers);
