@@ -73,7 +73,7 @@ Example configuration file would look something like this:
         "url": "http://mypipservice.com:3000"
       },
       "placeholder": {
-        "url": "http://myplaceholderservice.com:5000"
+        "url": "http://myplaceholderservice.com:5000/parser"
       }
     }
   },
@@ -89,6 +89,7 @@ Example configuration file would look something like this:
 }
 ```
 
+* note that the placeholder URL has a `/parser` root as the service provides several services.
 
 ## Contributing
 
