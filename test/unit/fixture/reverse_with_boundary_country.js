@@ -15,7 +15,7 @@ module.exports = {
       ],
       'filter': [{
         'geo_distance': {
-          'distance': '500km',
+          'distance': '3km',
           'distance_type': 'plane',
           'optimize_bbox': 'indexed',
           'center_point': {
