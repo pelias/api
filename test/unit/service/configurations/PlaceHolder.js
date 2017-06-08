@@ -29,7 +29,7 @@ module.exports.tests.all = (test, common) => {
 
     const placeholder = new PlaceHolder(configBlob);
 
-    t.equals(placeholder.getUrl(), 'http://localhost:1234/search');
+    t.equals(placeholder.getUrl(), 'http://localhost:1234/parser/search');
     t.end();
 
   });
@@ -114,14 +114,14 @@ module.exports.tests.all = (test, common) => {
 
   test('baseUrl ending in / should not have double /\'s return by getUrl', (t) => {
     const configBlob = {
-      url: 'http://localhost:1234/blah',
+      url: 'http://localhost:1234/',
       timeout: 17,
       retries: 19
     };
 
     const placeholder = new PlaceHolder(configBlob);
 
-    t.deepEquals(placeholder.getUrl(), 'http://localhost:1234/blah/search');
+    t.deepEquals(placeholder.getUrl(), 'http://localhost:1234/parser/search');
     t.end();
 
   });
