@@ -66,6 +66,7 @@ var postProc = {
 };
 
 // predicates that drive whether controller/search runs
+const hasParsedTextProperty = require('../controller/predicates/has_parsed_text_property');
 const hasResponseData = require('../controller/predicates/has_response_data');
 const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
@@ -103,7 +104,14 @@ function addRoutes(app, peliasConfig) {
   );
 
   const placeholderShouldExecute = all(
-    not(hasResponseDataOrRequestErrors), isPlaceholderServiceEnabled, isAdminOnlyAnalysis
+    not(hasResponseDataOrRequestErrors),
+    isPlaceholderServiceEnabled,
+    not(
+      any(
+        hasParsedTextProperty('venue'),
+        hasParsedTextProperty('category')
+      )
+    )
   );
 
   // execute under the following conditions:
