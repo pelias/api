@@ -484,6 +484,29 @@ module.exports.tests.api_services_validation = (test, common) => {
 };
 
 module.exports.tests.placeholder_service_validation = (test, common) => {
+  test('timeout and retries not specified should default to 250 and 3', (t) => {
+    const config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value',
+        services: {
+          placeholder: {
+            url: 'http://localhost'
+          }
+        }
+      },
+      esclient: {}
+    };
+
+    const result = Joi.validate(config, schema);
+
+    t.equals(result.value.api.services.placeholder.timeout, 250);
+    t.equals(result.value.api.services.placeholder.retries, 3);
+    t.end();
+
+  });
+
   test('when api.services.placeholder is defined, url is required', (t) => {
     var config = {
       api: {
