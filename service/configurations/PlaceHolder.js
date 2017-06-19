@@ -24,7 +24,7 @@ class PlaceHolder extends ServiceConfiguration {
   }
 
   getUrl(req) {
-    return url.resolve(this.baseUrl, 'search');
+    return url.resolve(this.baseUrl, 'parser/search');
   }
 
 }

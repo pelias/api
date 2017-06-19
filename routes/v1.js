@@ -78,6 +78,7 @@ const hasAdminOnlyResults = not(hasResultsAtLayers(['venue', 'address', 'street'
 
 const serviceWrapper = require('pelias-microservice-wrapper').service;
 const PlaceHolder = require('../service/configurations/PlaceHolder');
+const PointInPolygon = require('../service/configurations/PointInPolygon');
 
 /**
  * Append routes to app
@@ -88,16 +89,17 @@ const PlaceHolder = require('../service/configurations/PlaceHolder');
 function addRoutes(app, peliasConfig) {
   const esclient = elasticsearch.Client(peliasConfig.esclient);
 
-  const isPipServiceEnabled = require('../controller/predicates/is_service_enabled')(peliasConfig.api.pipService);
+  const pipConfiguration = new PointInPolygon(_.defaultTo(peliasConfig.api.services.pip, {}));
+  const pipService = serviceWrapper(pipConfiguration);
+  const isPipServiceEnabled = _.constant(pipConfiguration.isEnabled());
 
-  const pipService = require('../service/pointinpolygon')(peliasConfig.api.pipService);
-
-  const placeholderConfiguration = new PlaceHolder(_.get(peliasConfig.api.services, 'placeholder', {}));
+  const placeholderConfiguration = new PlaceHolder(_.defaultTo(peliasConfig.api.services.placeholder, {}));
   const placeholderService = serviceWrapper(placeholderConfiguration);
   const isPlaceholderServiceEnabled = _.constant(placeholderConfiguration.isEnabled());
 
-  const coarse_reverse_should_execute = all(
-    not(hasRequestErrors), isPipServiceEnabled, isCoarseReverse
+  // fallback to coarse reverse when regular reverse didn't return anything
+  const coarseReverseShouldExecute = all(
+    isPipServiceEnabled, not(hasRequestErrors), not(hasResponseData)
   );
 
   const placeholderShouldExecute = all(
@@ -107,7 +109,7 @@ function addRoutes(app, peliasConfig) {
   // execute under the following conditions:
   // - there are no errors or data
   // - request is not coarse OR pip service is disabled
-  const original_reverse_should_execute = all(
+  const nonCoarseReverseShouldExecute = all(
     not(hasResponseDataOrRequestErrors),
     any(
       not(isCoarseReverse),
@@ -195,8 +197,8 @@ function addRoutes(app, peliasConfig) {
       sanitizers.reverse.middleware,
       middleware.requestLanguage,
       middleware.calcSize(),
-      controllers.coarse_reverse(pipService, coarse_reverse_should_execute),
-      controllers.search(peliasConfig.api, esclient, queries.reverse, original_reverse_should_execute),
+      controllers.search(peliasConfig.api, esclient, queries.reverse, nonCoarseReverseShouldExecute),
+      controllers.coarse_reverse(pipService, coarseReverseShouldExecute),
       postProc.distances('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first

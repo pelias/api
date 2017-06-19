@@ -37,7 +37,8 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.sanitizers = function(test, common) {
   test('check sanitizer list', function (t) {
     var expected = ['singleScalarParameters', 'quattroshapes_deprecation', 'layers',
-      'sources', 'sources_and_layers', 'size', 'private', 'geo_reverse', 'boundary_country'];
+      'sources', 'sources_and_layers', 'geonames_deprecation', 'size', 'private',
+      'geo_reverse', 'boundary_country'];
     t.deepEqual(Object.keys(reverse.sanitizer_list), expected);
     t.end();
   });

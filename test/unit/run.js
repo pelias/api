@@ -56,6 +56,7 @@ var tests = [
   require('./query/text_parser'),
   require('./sanitizer/_boundary_country'),
   require('./sanitizer/_flag_bool'),
+  require('./sanitizer/_geonames_deprecation'),
   require('./sanitizer/_geonames_warnings'),
   require('./sanitizer/_geo_common'),
   require('./sanitizer/_geo_reverse'),
@@ -84,10 +85,10 @@ var tests = [
   require('./sanitizer/search_fallback'),
   require('./sanitizer/wrap'),
   require('./service/configurations/PlaceHolder'),
+  require('./service/configurations/PointInPolygon'),
   require('./service/mget'),
   require('./service/search'),
   require('./service/interpolation'),
-  require('./service/pointinpolygon'),
   require('./service/language')
 ];
 

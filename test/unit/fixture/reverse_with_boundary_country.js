@@ -15,13 +15,18 @@ module.exports = {
       ],
       'filter': [{
         'geo_distance': {
-          'distance': '500km',
+          'distance': '3km',
           'distance_type': 'plane',
           'optimize_bbox': 'indexed',
           'center_point': {
             'lat': 29.49136,
             'lon': -82.50622
           }
+        }
+      },
+      {
+        'terms': {
+          'layer': ['venue', 'address', 'street']
         }
       }]
     }
