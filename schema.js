@@ -26,7 +26,20 @@ module.exports = Joi.object().keys({
     localization: Joi.object().keys({
       flipNumberAndStreetCountries: Joi.array().items(Joi.string().regex(/^[A-Z]{3}$/))
     }).unknown(false),
-    pipService: Joi.string().uri({ scheme: /https?/ })
+    pipService: Joi.any(), // got moved to services, ignored for now
+    placeholderService: Joi.any().forbidden(), // got moved to services
+    services: Joi.object().keys({
+      pip: Joi.object().keys({
+        url: Joi.string().uri({ scheme: /https?/ }),
+        timeout: Joi.number().integer().optional().default(250).min(0),
+        retries: Joi.number().integer().optional().default(3).min(0),
+      }).unknown(false).requiredKeys('url'),
+      placeholder: Joi.object().keys({
+        url: Joi.string().uri({ scheme: /https?/ }),
+        timeout: Joi.number().integer().optional().default(250).min(0),
+        retries: Joi.number().integer().optional().default(3).min(0),
+      }).unknown(false).requiredKeys('url')
+    }).unknown(false).default({}) // default api.services to an empty object
 
   }).requiredKeys('version', 'indexName', 'host').unknown(true),
   esclient: Joi.object().keys({

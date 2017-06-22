@@ -3,22 +3,24 @@ var vs = require('../../../query/reverse_defaults');
 module.exports = {
   'query': {
     'bool': {
-      'filter': [{
-        'geo_distance': {
-          'distance': '3km',
-          'distance_type': 'plane',
-          'optimize_bbox': 'indexed',
-          'center_point': {
-            'lat': 29.49136,
-            'lon': -82.50622
+      'filter': [
+        {
+          'geo_distance': {
+            'distance': '3km',
+            'distance_type': 'plane',
+            'optimize_bbox': 'indexed',
+            'center_point': {
+              'lat': 29.49136,
+              'lon': -82.50622
+            }
+          }
+        },
+        {
+          'terms': {
+            'layer': ['venue', 'street']
           }
         }
-      },
-      {
-        'terms': {
-          'layer': ['venue', 'address', 'street']
-        }
-      }]
+      ]
     }
   },
   'sort': [
