@@ -31,6 +31,7 @@ var controllers = {
   place: require('../controller/place'),
   placeholder: require('../controller/placeholder'),
   search: require('../controller/search'),
+  search_with_ids: require('../controller/search_with_ids'),
   status: require('../controller/status')
 };
 
@@ -39,7 +40,8 @@ var queries = {
   fallback_to_old_prod: require('../query/search_original'),
   structured_geocoding: require('../query/structured_geocoding'),
   reverse: require('../query/reverse'),
-  autocomplete: require('../query/autocomplete')
+  autocomplete: require('../query/autocomplete'),
+  address_using_ids: require('../query/address_search_using_ids')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -114,6 +116,12 @@ function addRoutes(app, peliasConfig) {
     )
   );
 
+  const searchWithIdsShouldExecute = all(
+    not(hasRequestErrors),
+    not(hasParsedTextProperty('venue')),
+    hasParsedTextProperty('street')
+  );
+
   // execute under the following conditions:
   // - there are no errors or data
   // - request is not coarse OR pip service is disabled
@@ -141,6 +149,7 @@ function addRoutes(app, peliasConfig) {
       middleware.requestLanguage,
       middleware.calcSize(),
       controllers.placeholder(placeholderService, placeholderShouldExecute),
+      controllers.search_with_ids(peliasConfig.api, esclient, queries.address_using_ids, searchWithIdsShouldExecute),
       // 3rd parameter is which query module to use, use fallback/geodisambiguation
       //  first, then use original search strategy if first query didn't return anything
       controllers.search(peliasConfig.api, esclient, queries.libpostal, not(hasResponseDataOrRequestErrors)),
