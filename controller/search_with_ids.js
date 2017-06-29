@@ -1,5 +1,3 @@
-'use strict';
-
 const _ = require('lodash');
 
 const searchService = require('../service/search');
@@ -17,12 +15,12 @@ function setup( apiConfig, esclient, query, should_execute ){
       return next();
     }
 
-    let cleanOutput = _.cloneDeep(req.clean);
+    const cleanOutput = _.cloneDeep(req.clean);
     if (logging.isDNT(req)) {
-      cleanOutput = logging.removeFields(cleanOutput);
+      logging.removeFields(cleanOutput);
     }
     // log clean parameters for stats
-    logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
+    logger.info('[req]', `endpoint=${req.path}`, cleanOutput);
 
     const renderedQuery = query(req.clean, res);
     // console.log(JSON.stringify(renderedQuery.body, null, 2));
@@ -72,11 +70,8 @@ function setup( apiConfig, esclient, query, should_execute ){
 
         // error handler
         if( err ){
-          if (_.isObject(err) && err.message) {
-            req.errors.push( err.message );
-          } else {
-            req.errors.push( err );
-          }
+          // push err.message or err onto req.errors
+          req.errors.push( _.get(err, 'message', err));
         }
         else {
           // log that a retry was successful

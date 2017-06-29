@@ -25,6 +25,7 @@ function setup( apiConfig, esclient, query, should_execute ){
     logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
 
     const renderedQuery = query(req.clean);
+    // console.log(`BODY: ` + JSON.stringify(renderedQuery.body, null, 2));
 
     // if there's no query to call ES with, skip the service
     if (_.isUndefined(renderedQuery)) {

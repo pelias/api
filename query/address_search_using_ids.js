@@ -73,11 +73,11 @@ const granularity_bands = [
 ];
 
 function anyResultsAtGranularityBand(results, band) {
-  return results.some((result) => { return _.includes(band, result.layer); });
+  return results.some(result => _.includes(band, result.layer));
 }
 
 function getIdsAtLayer(results, layer) {
-  return results.filter((result) => { return result.layer === layer; }).map(_.property('source_id'));
+  return results.filter(result => result.layer === layer).map(_.property('source_id'));
 }
 
 /**
@@ -107,9 +107,7 @@ function generateQuery( clean, res ){
   }
   vs.var( 'input:street', clean.parsed_text.street );
 
-  const granularity_band = granularity_bands.find((band) => {
-    return anyResultsAtGranularityBand(results, band);
-  });
+  const granularity_band = granularity_bands.find(band => anyResultsAtGranularityBand(results, band));
 
   if (granularity_band) {
     const layers_to_ids = granularity_band.reduce((acc, layer) => {
@@ -117,6 +115,8 @@ function generateQuery( clean, res ){
       return acc;
     }, {});
 
+    // use an object here instead of calling `set` since that flattens out an
+    // object into key/value pairs and makes identifying layers harder in query module
     vs.var('input:layers', JSON.stringify(layers_to_ids));
 
   }
@@ -167,7 +167,7 @@ function generateQuery( clean, res ){
   }
 
   // format the log parts into a single coherent string
-  logger.info(logParts.map((part) => { return `[${part}]`;} ).join(' ') );
+  logger.info(logParts.map(part => `[${part}]`).join(' '));
 
   return {
     type: 'fallback_using_ids',
