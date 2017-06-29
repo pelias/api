@@ -179,20 +179,64 @@ module.exports.tests.granularity_bands = (test, common) => {
           source_id: 5
         },
         {
-          layer: 'neighbourhood',
+          layer: 'macrocounty',
           source_id: 6
         },
         {
-          layer: 'borough',
+          layer: 'region',
           source_id: 7
         },
         {
-          layer: 'locality',
+          layer: 'macroregion',
           source_id: 8
         },
         {
-          layer: 'localadmin',
+          layer: 'dependency',
           source_id: 9
+        },
+        {
+          layer: 'country',
+          source_id: 10
+        },
+        {
+          layer: 'neighbourhood',
+          source_id: 11
+        },
+        {
+          layer: 'borough',
+          source_id: 12
+        },
+        {
+          layer: 'locality',
+          source_id: 13
+        },
+        {
+          layer: 'localadmin',
+          source_id: 14
+        },
+        {
+          layer: 'county',
+          source_id: 15
+        },
+        {
+          layer: 'macrocounty',
+          source_id: 16
+        },
+        {
+          layer: 'region',
+          source_id: 17
+        },
+        {
+          layer: 'macroregion',
+          source_id: 18
+        },
+        {
+          layer: 'dependency',
+          source_id: 19
+        },
+        {
+          layer: 'country',
+          source_id: 20
         }
       ]
     };
@@ -212,10 +256,14 @@ module.exports.tests.granularity_bands = (test, common) => {
     const generatedQuery = generateQuery(clean, res);
 
     t.deepEquals(JSON.parse(generatedQuery.body.vs.var('input:layers')), {
-      neighbourhood: [1, 6],
-      borough: [2, 7],
-      locality: [3, 8],
-      localadmin: [4, 9]
+      neighbourhood: [1, 11],
+      borough: [2, 12],
+      locality: [3, 13],
+      localadmin: [4, 14],
+      region: [7, 17],
+      macroregion: [8, 18],
+      dependency: [9, 19],
+      country: [10, 20]
     });
 
     t.end();
@@ -256,7 +304,11 @@ module.exports.tests.granularity_bands = (test, common) => {
       neighbourhood: [1],
       borough: [],
       locality: [],
-      localadmin: []
+      localadmin: [],
+      region: [],
+      macroregion: [],
+      dependency: [],
+      country: []
     });
 
     t.end();
@@ -280,10 +332,6 @@ module.exports.tests.granularity_bands = (test, common) => {
         {
           layer: 'macrocounty',
           source_id: 2
-        },
-        {
-          layer: 'region',
-          source_id: 3
         },
         {
           layer: 'county',
@@ -316,116 +364,6 @@ module.exports.tests.granularity_bands = (test, common) => {
     });
 
     t.end();
-  });
-
-  test('region/macroregion granularity band', (t) => {
-    const logger = mock_logger();
-
-    const clean = {
-      parsed_text: {
-        number: 'housenumber value',
-        street: 'street value'
-      }
-    };
-    const res = {
-      data: [
-        {
-          layer: 'region',
-          source_id: 1
-        },
-        {
-          layer: 'macroregion',
-          source_id: 2
-        },
-        {
-          layer: 'country',
-          source_id: 3
-        },
-        {
-          layer: 'region',
-          source_id: 4
-        },
-        {
-          layer: 'macroregion',
-          source_id: 5
-        }
-      ]
-    };
-
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
-        },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-
-    });
-
-    const generatedQuery = generateQuery(clean, res);
-
-    t.deepEquals(JSON.parse(generatedQuery.body.vs.var('input:layers')), {
-      region: [1, 4],
-      macroregion: [2, 5]
-    });
-
-    t.end();
-
-  });
-
-  test('dependency/country granularity band', (t) => {
-    const logger = mock_logger();
-
-    const clean = {
-      parsed_text: {
-        number: 'housenumber value',
-        street: 'street value'
-      }
-    };
-    const res = {
-      data: [
-        {
-          layer: 'dependency',
-          source_id: 1
-        },
-        {
-          layer: 'country',
-          source_id: 2
-        },
-        {
-          layer: 'dependency',
-          source_id: 3
-        },
-        {
-          layer: 'country',
-          source_id: 4
-        }
-      ]
-    };
-
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
-        },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-
-    });
-
-    const generatedQuery = generateQuery(clean, res);
-
-    t.deepEquals(JSON.parse(generatedQuery.body.vs.var('input:layers')), {
-      dependency: [1, 3],
-      country: [2, 4]
-    });
-
-    t.end();
-
   });
 
 };

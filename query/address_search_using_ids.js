@@ -66,10 +66,8 @@ addressUsingIdsQuery.filter( peliasQuery.view.sources );
 // if there are region/macroregion layers, return ['region', 'macroregion']
 
 const granularity_bands = [
-  ['neighbourhood', 'borough', 'locality', 'localadmin'],
-  ['county', 'macrocounty'],
-  ['region', 'macroregion'],
-  ['dependency', 'country']
+  ['neighbourhood', 'borough', 'locality', 'localadmin', 'region', 'macroregion', 'dependency', 'country'],
+  ['county', 'macrocounty']
 ];
 
 function anyResultsAtGranularityBand(results, band) {
