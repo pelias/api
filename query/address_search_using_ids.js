@@ -10,7 +10,7 @@ const check = require('check-types');
 const addressUsingIdsQuery = new peliasQuery.layout.AddressesUsingIdsQuery();
 
 // scoring boost
-// addressUsingIdsQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
+addressUsingIdsQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
 addressUsingIdsQuery.score( peliasQuery.view.popularity_only_function );
 addressUsingIdsQuery.score( peliasQuery.view.population_only_function );
 // --------------------------------
