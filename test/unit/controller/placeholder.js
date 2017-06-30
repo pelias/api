@@ -1213,7 +1213,9 @@ module.exports.tests.result_filtering = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '1',
