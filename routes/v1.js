@@ -79,6 +79,16 @@ const hasResultsAtLayers = require('../controller/predicates/has_results_at_laye
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
 const hasAdminOnlyResults = not(hasResultsAtLayers(['venue', 'address', 'street']));
 
+const hasNumberButNotStreet = all(
+  hasParsedTextProperty('number'),
+  not(hasParsedTextProperty('street'))
+);
+
+const hasQueryOrCategory = any(
+  hasParsedTextProperty('query'),
+  hasParsedTextProperty('category')
+);
+
 const serviceWrapper = require('pelias-microservice-wrapper').service;
 const PlaceHolder = require('../service/configurations/PlaceHolder');
 const PointInPolygon = require('../service/configurations/PointInPolygon');
@@ -108,17 +118,17 @@ function addRoutes(app, peliasConfig) {
   const placeholderShouldExecute = all(
     not(hasResponseDataOrRequestErrors),
     isPlaceholderServiceEnabled,
-    not(
-      any(
-        hasParsedTextProperty('venue'),
-        hasParsedTextProperty('category')
-      )
-    )
+    // don't run placeholder if there's a number but no street
+    not(hasNumberButNotStreet),
+    // don't run placeholder if there's a query or category
+    not(hasQueryOrCategory)
   );
 
   const searchWithIdsShouldExecute = all(
     not(hasRequestErrors),
-    not(hasParsedTextProperty('venue')),
+    // don't search-with-ids if there's a query or category
+    not(hasQueryOrCategory),
+    // there must be a street
     hasParsedTextProperty('street')
   );
 
