@@ -1143,6 +1143,142 @@ module.exports.tests.result_filtering = (test, common) => {
 
   });
 
+  test('if req.clean.parsed_text contains street, don\'t filter on anything', (t) => {
+    const logger = mock_logger();
+
+    const placeholder_service = (req, callback) => {
+      t.deepEqual(req, {
+        param1: 'param1 value',
+        clean: {
+          layers: ['neighbourhood'],
+          parsed_text: {
+            street: 'street value'
+          }
+        }
+      });
+
+      const response = [
+        {
+          id: 1,
+          name: 'name 1',
+          placetype: 'neighbourhood',
+          lineage: [ {} ],
+          geom: {
+            area: 1,
+            lat: 14.141414,
+            lon: 41.414141
+          }
+        },
+        {
+          id: 2,
+          name: 'name 2',
+          placetype: 'borough',
+          lineage: [ {} ],
+          geom: {
+            area: 2,
+            lat: 15.151515,
+            lon: 51.515151
+          }
+        },
+        {
+          id: 3,
+          name: 'name 3',
+          placetype: 'locality',
+          lineage: [ {} ],
+          geom: {
+            area: 3,
+            lat: 16.161616,
+            lon: 61.616161
+          }
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = proxyquire('../../../controller/placeholder', {
+      'pelias-logger': logger
+    })(placeholder_service, _.constant(true));
+
+    const req = {
+      param1: 'param1 value',
+      clean: {
+        layers: ['neighbourhood'],
+        parsed_text: {
+          street: 'street value'
+        }
+      }
+    };
+    const res = { };
+
+    controller(req, res, () => {
+      const expected_res = {
+        meta: {},
+        data: [
+          {
+            _id: '1',
+            _type: 'neighbourhood',
+            layer: 'neighbourhood',
+            source: 'whosonfirst',
+            source_id: '1',
+            center_point: {
+              lat: 14.141414,
+              lon: 41.414141
+            },
+            name: {
+              'default': 'name 1'
+            },
+            phrase: {
+              'default': 'name 1'
+            },
+            parent: { }
+          },
+          {
+            _id: '2',
+            _type: 'borough',
+            layer: 'borough',
+            source: 'whosonfirst',
+            source_id: '2',
+            center_point: {
+              lat: 15.151515,
+              lon: 51.515151
+            },
+            name: {
+              'default': 'name 2'
+            },
+            phrase: {
+              'default': 'name 2'
+            },
+            parent: { }
+          },
+          {
+            _id: '3',
+            _type: 'locality',
+            layer: 'locality',
+            source: 'whosonfirst',
+            source_id: '3',
+            center_point: {
+              lat: 16.161616,
+              lon: 61.616161
+            },
+            name: {
+              'default': 'name 3'
+            },
+            phrase: {
+              'default': 'name 3'
+            },
+            parent: { }
+          }
+        ]
+      };
+
+      t.deepEquals(res, expected_res);
+      t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:3]'));
+      t.end();
+    });
+
+  });
+
   test('only synthesized docs matching explicit boundary.country should be returned', (t) => {
     const logger = require('pelias-mock-logger')();
 

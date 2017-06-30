@@ -59,16 +59,16 @@ function hasName(result) {
 }
 
 // filter that passes only results that match on requested layers
-// passes everything if req.clean.layers is not found
 function getLayersFilter(clean) {
-  if (_.isEmpty(_.get(clean, 'layers', []))) {
-    return _.constant(true);
+  // passes everything if:
+  // - req.clean.layers is empty
+  // - req.clean.parsed_text.street is available
+  if (_.isEmpty(_.get(clean, 'layers', [])) || _.has(clean, ['parsed_text', 'street'])) {
+    return () => true;
   }
 
   // otherwise return a function that checks for set inclusion of a result placetype
-  return (result) => {
-    return _.includes(clean.layers, result.placetype);
-  };
+  return (result) => _.includes(clean.layers, result.placetype);
 
 }
 
@@ -222,12 +222,8 @@ function setup(placeholderService, should_execute) {
 
     placeholderService(req, (err, results) => {
       if (err) {
-        // bubble up an error if one occurred
-        if (_.isObject(err) && err.message) {
-          req.errors.push( err.message );
-        } else {
-          req.errors.push( err );
-        }
+        // push err.message or err onto req.errors
+        req.errors.push( _.get(err, 'message', err));
 
       } else {
         const boundaryCountry = _.get(req, ['clean', 'boundary.country']);
