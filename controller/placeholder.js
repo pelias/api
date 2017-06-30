@@ -235,7 +235,10 @@ function setup(placeholderService, should_execute) {
         // convert results to ES docs
         // boundary.country filter must happen after synthesis since multiple
         //  lineages may produce different country docs
-        res.meta = {};
+        res.meta = {
+          query_type: 'fallback'
+        };
+
         res.data = results
                     // filter out results that don't have a name
                     .filter(hasName)
