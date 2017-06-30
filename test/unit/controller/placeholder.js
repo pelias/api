@@ -213,7 +213,9 @@ module.exports.tests.success = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '123',
@@ -330,7 +332,9 @@ module.exports.tests.success = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '123',
@@ -392,7 +396,9 @@ module.exports.tests.success = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '123',
@@ -451,7 +457,9 @@ module.exports.tests.success = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '123',
@@ -515,7 +523,9 @@ module.exports.tests.success = (test, common) => {
 
       controller(req, res, () => {
         const expected_res = {
-          meta: {},
+          meta: {
+            query_type: 'fallback'
+          },
           data: [
             {
               _id: '456',
@@ -579,7 +589,9 @@ module.exports.tests.success = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '1',
@@ -751,7 +763,9 @@ module.exports.tests.result_filtering = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '1',
@@ -935,7 +949,9 @@ module.exports.tests.result_filtering = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '1',
@@ -1072,7 +1088,9 @@ module.exports.tests.result_filtering = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '1',
@@ -1222,7 +1240,9 @@ module.exports.tests.result_filtering = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '1',
@@ -1325,7 +1345,9 @@ module.exports.tests.lineage_errors = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '123',
@@ -1397,7 +1419,9 @@ module.exports.tests.lineage_errors = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '123',
@@ -1468,7 +1492,9 @@ module.exports.tests.lineage_errors = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '123',
@@ -1526,7 +1552,9 @@ module.exports.tests.geometry_errors = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '123',
@@ -1584,7 +1612,9 @@ module.exports.tests.centroid_errors = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '123',
@@ -1643,7 +1673,9 @@ module.exports.tests.centroid_errors = (test, common) => {
 
     controller(req, res, () => {
       const expected_res = {
-        meta: {},
+        meta: {
+          query_type: 'fallback'
+        },
         data: [
           {
             _id: '123',
@@ -1712,7 +1744,9 @@ module.exports.tests.boundingbox_errors = (test, common) => {
 
       controller(req, res, () => {
         const expected_res = {
-          meta: {},
+          meta: {
+            query_type: 'fallback'
+          },
           data: [
             {
               _id: '123',
