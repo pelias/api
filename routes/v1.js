@@ -68,7 +68,7 @@ var postProc = {
 };
 
 // predicates that drive whether controller/search runs
-const hasParsedTextProperty = require('../controller/predicates/has_parsed_text_property');
+const hasAnyParsedTextProperty = require('../controller/predicates/has_any_parsed_text_property');
 const hasResponseData = require('../controller/predicates/has_response_data');
 const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
@@ -80,13 +80,8 @@ const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
 const hasAdminOnlyResults = not(hasResultsAtLayers(['venue', 'address', 'street']));
 
 const hasNumberButNotStreet = all(
-  hasParsedTextProperty('number'),
-  not(hasParsedTextProperty('street'))
-);
-
-const hasQueryOrCategory = any(
-  hasParsedTextProperty('query'),
-  hasParsedTextProperty('category')
+  hasAnyParsedTextProperty('number'),
+  not(hasAnyParsedTextProperty('street'))
 );
 
 const serviceWrapper = require('pelias-microservice-wrapper').service;
@@ -121,15 +116,15 @@ function addRoutes(app, peliasConfig) {
     // don't run placeholder if there's a number but no street
     not(hasNumberButNotStreet),
     // don't run placeholder if there's a query or category
-    not(hasQueryOrCategory)
+    not(hasAnyParsedTextProperty('query', 'category'))
   );
 
   const searchWithIdsShouldExecute = all(
     not(hasRequestErrors),
     // don't search-with-ids if there's a query or category
-    not(hasQueryOrCategory),
+    not(hasAnyParsedTextProperty('query', 'category')),
     // there must be a street
-    hasParsedTextProperty('street')
+    hasAnyParsedTextProperty('street')
   );
 
   // execute under the following conditions:
