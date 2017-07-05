@@ -142,6 +142,67 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
+  test('sources=whosonfirst should not call text_analyzer and set clean.text from raw.text', (t) => {
+    const sanitizer = proxyquire('../../../sanitizer/_text', {
+      'pelias-text-analyzer': { parse: query => t.fail('should not have been called') }
+    });
+
+    const raw = {
+      text: 'raw clean.text'
+    };
+    const clean = {
+      sources: ['whosonfirst'],
+      text: 'original clean.text'
+    };
+
+    const expected_clean = {
+      sources: ['whosonfirst'],
+      text: 'raw clean.text'
+    };
+
+    const messages = sanitizer(raw, clean);
+
+    t.deepEquals(clean, expected_clean);
+    t.deepEquals(messages, { errors: [], warnings: [] });
+    t.end();
+
+  });
+
+  test('sources with whosonfirst + others should call analyzer', (t) => {
+    const sanitizer = proxyquire('../../../sanitizer/_text', {
+      'pelias-text-analyzer': { parse: function(query) {
+        return {
+          key1: 'value 1',
+          key2: 'value 2'
+        };
+      }
+    }});
+
+    const raw = {
+      text: 'raw text'
+    };
+    const clean = {
+      sources: ['whosonfirst', 'another source'],
+      text: 'clean text'
+    };
+
+    const expected_clean = {
+      sources: ['whosonfirst', 'another source'],
+      text: 'raw text',
+      parsed_text: {
+        key1: 'value 1',
+        key2: 'value 2'
+      }
+    };
+
+    const messages = sanitizer(raw, clean);
+
+    t.deepEquals(clean, expected_clean);
+    t.deepEquals(messages, { errors: [], warnings: [] });
+    t.end();
+
+  });
+
 };
 
 module.exports.all = function (tape, common) {
