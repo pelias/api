@@ -16,8 +16,6 @@ module.exports.tests.interface = (test, common) => {
 // helper for canned views
 const views = {
   focus_only_function: () => 'focus_only_function',
-  popularity_only_function: 'popularity_only_function view',
-  population_only_function: 'population_only_function view',
   boundary_country: 'boundary_country view',
   boundary_circle: 'boundary_circle view',
   boundary_rect: 'boundary_rect view',
@@ -59,9 +57,7 @@ module.exports.tests.base_query = (test, common) => {
     t.equals(generatedQuery.body.vs.var('size').toString(), 20);
 
     t.deepEquals(generatedQuery.body.score_functions, [
-      'focus_only_function',
-      'popularity_only_function view',
-      'population_only_function view'
+      'focus_only_function'
     ]);
 
     t.deepEquals(generatedQuery.body.filter_functions, [
