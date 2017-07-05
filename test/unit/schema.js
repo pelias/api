@@ -26,6 +26,10 @@ module.exports.tests.completely_valid = (test, common) => {
           placeholder: {
             url: 'http://locahost'
           }
+        },
+        defaultParameters: {
+          'focus.point.lat': 19,
+          'focus.point.lon': 91
         }
       },
       esclient: {
@@ -456,6 +460,80 @@ module.exports.tests.api_validation = (test, common) => {
     t.end();
 
   });
+
+  test('non-number defaultParameters.focus.point.lat should throw error', (t) => {
+    [null, 'string', {}, [], false].forEach((value) => {
+      const config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          defaultParameters: {
+            'focus.point.lat': value
+          }
+        },
+        esclient: {}
+      };
+
+      const result = Joi.validate(config, schema);
+
+      t.equals(result.error.details.length, 1);
+      t.equals(result.error.details[0].message, '"focus.point.lat" must be a number');
+
+    });
+
+    t.end();
+
+  });
+
+  test('non-number defaultParameters.focus.point.lon should throw error', (t) => {
+    [null, 'string', {}, [], false].forEach((value) => {
+      const config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          defaultParameters: {
+            'focus.point.lon': value
+          }
+        },
+        esclient: {}
+      };
+
+      const result = Joi.validate(config, schema);
+
+      t.equals(result.error.details.length, 1);
+      t.equals(result.error.details[0].message, '"focus.point.lon" must be a number');
+
+    });
+
+    t.end();
+
+  });
+
+  test('non-object api.defaultParameters should throw error', (t) => {
+    [null, 17, false, [], 'string'].forEach((value) => {
+      var config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          defaultParameters: value
+        },
+        esclient: {}
+      };
+
+      const result = Joi.validate(config, schema);
+
+      t.equals(result.error.details.length, 1);
+      t.equals(result.error.details[0].message, '"defaultParameters" must be an object');
+
+    });
+
+    t.end();
+
+  });
+
 
 };
 
