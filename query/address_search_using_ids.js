@@ -168,7 +168,7 @@ function generateQuery( clean, res ){
   logger.info(logParts.map(part => `[${part}]`).join(' '));
 
   return {
-    type: 'original',
+    type: 'fallback',
     body: addressUsingIdsQuery.render(vs)
   };
 
