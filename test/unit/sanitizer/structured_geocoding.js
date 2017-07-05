@@ -83,6 +83,10 @@ module.exports.tests.sanitize = function(test, common) {
         called_sanitizers.push('_categories');
         return { errors: [], warnings: [] };
       },
+      '../sanitizer/_location_bias': () => {
+        called_sanitizers.push('_location_bias');
+        return { errors: [], warnings: [] };
+      }
     });
 
     var expected_sanitizers = [
@@ -96,6 +100,7 @@ module.exports.tests.sanitize = function(test, common) {
       '_targets/sources',
       '_sources_and_layers',
       '_flag_bool',
+      '_location_bias',
       '_geo_search',
       '_boundary_country',
       '_categories'

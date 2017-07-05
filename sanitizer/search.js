@@ -13,6 +13,7 @@ var sanitizeAll = require('../sanitizer/sanitizeAll'),
       // depends on the layers and sources sanitizers, must be run after them
       sources_and_layers: require('../sanitizer/_sources_and_layers'),
       private: require('../sanitizer/_flag_bool')('private', false),
+      location_bias: require('../sanitizer/_location_bias'),
       geo_search: require('../sanitizer/_geo_search'),
       boundary_country: require('../sanitizer/_boundary_country'),
       categories: require('../sanitizer/_categories'),

@@ -5,7 +5,9 @@ var _ = require('lodash');
 
 function setup(defaultParameters){
   return function setLocationBias(req, res, next){
-    if (_.isUndefined(req.clean) || _.isUndefined(defaultParameters['focus.point.lat']) || _.isUndefined(defaultParameters['focus.point.lon'])) {
+    if (_.isUndefined(req.clean) ||
+      _.isUndefined(defaultParameters['focus.point.lat']) ||
+      _.isUndefined(defaultParameters['focus.point.lon'])) {
       return next();
     }
     req.clean['focus.point.lat'] = defaultParameters['focus.point.lat'];
