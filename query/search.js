@@ -135,10 +135,7 @@ function getQuery(vs) {
 
   logger.info(`[query:search] [search_input_type:${determineQueryType(vs)}]`);
 
-  if (hasStreet(vs) ||
-      isCityStateOnlyWithOptionalCountry(vs) ||
-      isCityCountryOnly(vs) ||
-      isPostalCodeOnly(vs)) {
+  if (hasStreet(vs) || isPostalCodeOnly(vs)) {
     return {
       type: 'fallback',
       body: fallbackQuery.render(vs)
@@ -162,7 +159,8 @@ function determineQueryType(vs) {
     return 'venue';
   }
   else if (['neighbourhood', 'borough', 'postcode', 'county', 'region','country'].some(
-      (layer)=> { return vs.isset(`input:${layer}`);})) {
+    layer => vs.isset(`input:${layer}`)
+  )) {
     return 'admin';
   }
   return 'other';
@@ -172,37 +170,8 @@ function hasStreet(vs) {
   return vs.isset('input:street');
 }
 
-function isCityStateOnlyWithOptionalCountry(vs) {
-  var isSet = (layer) => {
-    return vs.isset(`input:${layer}`);
-  };
-
-  var allowedFields = ['locality', 'region'];
-  var disallowedFields = ['query', 'category', 'housenumber', 'street',
-                          'neighbourhood', 'borough', 'postcode', 'county'];
-
-  return allowedFields.every(isSet) && !disallowedFields.some(isSet);
-
-}
-
-function isCityCountryOnly(vs) {
-  var isSet = (layer) => {
-    return vs.isset(`input:${layer}`);
-  };
-
-  var allowedFields = ['locality', 'country'];
-  var disallowedFields = ['query', 'category', 'housenumber', 'street',
-                          'neighbourhood', 'borough', 'postcode', 'county', 'region'];
-
-  return allowedFields.every(isSet) &&
-        !disallowedFields.some(isSet);
-
-}
-
 function isPostalCodeOnly(vs) {
-  var isSet = (layer) => {
-    return vs.isset(`input:${layer}`);
-  };
+  var isSet = layer => vs.isset(`input:${layer}`);
 
   var allowedFields = ['postcode'];
   var disallowedFields = ['query', 'category', 'housenumber', 'street',
