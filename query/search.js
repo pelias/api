@@ -10,16 +10,11 @@ const logger = require('pelias-logger').get('api');
 // general-purpose search query
 //------------------------------
 var fallbackQuery = new peliasQuery.layout.FallbackQuery();
-var geodisambiguationQuery = new peliasQuery.layout.GeodisambiguationQuery();
 
 // scoring boost
 fallbackQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
 fallbackQuery.score( peliasQuery.view.popularity_only_function );
 fallbackQuery.score( peliasQuery.view.population_only_function );
-
-geodisambiguationQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
-geodisambiguationQuery.score( peliasQuery.view.popularity_only_function );
-geodisambiguationQuery.score( peliasQuery.view.population_only_function );
 // --------------------------------
 
 // non-scoring hard filters
@@ -29,13 +24,6 @@ fallbackQuery.filter( peliasQuery.view.boundary_rect );
 fallbackQuery.filter( peliasQuery.view.sources );
 fallbackQuery.filter( peliasQuery.view.layers );
 fallbackQuery.filter( peliasQuery.view.categories );
-
-geodisambiguationQuery.filter( peliasQuery.view.boundary_country );
-geodisambiguationQuery.filter( peliasQuery.view.boundary_circle );
-geodisambiguationQuery.filter( peliasQuery.view.boundary_rect );
-geodisambiguationQuery.filter( peliasQuery.view.sources );
-geodisambiguationQuery.filter( peliasQuery.view.layers );
-geodisambiguationQuery.filter( peliasQuery.view.categories );
 // --------------------------------
 
 /**
