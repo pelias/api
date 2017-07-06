@@ -2,12 +2,9 @@
   "query": {
     "function_score": {
       "query": {
-        "filtered": {
-          "query": {
-            "bool": {
-              "should": []
-            }
-          },
+        "bool": {
+          "minimum_should_match": 1,
+          "should": [],
           "filter": {
             "bool": {
               "must": [
