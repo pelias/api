@@ -1232,8 +1232,7 @@ module.exports.tests.result_filtering = (test, common) => {
             },
             phrase: {
               'default': 'name 1'
-            },
-            parent: { }
+            }
           },
           {
             _id: '2',
@@ -1250,8 +1249,7 @@ module.exports.tests.result_filtering = (test, common) => {
             },
             phrase: {
               'default': 'name 2'
-            },
-            parent: { }
+            }
           },
           {
             _id: '3',
@@ -1268,8 +1266,7 @@ module.exports.tests.result_filtering = (test, common) => {
             },
             phrase: {
               'default': 'name 3'
-            },
-            parent: { }
+            }
           }
         ]
       };
