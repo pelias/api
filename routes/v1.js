@@ -36,8 +36,8 @@ var controllers = {
 };
 
 var queries = {
-  libpostal: require('../query/search'),
-  fallback_to_old_prod: require('../query/search_original'),
+  cascading_fallback: require('../query/search'),
+  very_old_prod: require('../query/search_original'),
   structured_geocoding: require('../query/structured_geocoding'),
   reverse: require('../query/reverse'),
   autocomplete: require('../query/autocomplete'),
@@ -74,6 +74,7 @@ const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
 const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_analysis');
 const hasResultsAtLayers = require('../controller/predicates/has_results_at_layers');
+const isSingleFieldAnalysis = require('../controller/predicates/is_single_field_analysis');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
@@ -110,13 +111,33 @@ function addRoutes(app, peliasConfig) {
     isPipServiceEnabled, not(hasRequestErrors), not(hasResponseData)
   );
 
-  const placeholderShouldExecute = all(
+  // execute placeholder if libpostal only parsed as admin-only and needs to
+  //  be geodisambiguated
+  const placeholderGeodisambiguationShouldExecute = all(
+    not(hasResponseDataOrRequestErrors),
+    isPlaceholderServiceEnabled,
+    isAdminOnlyAnalysis,
+    not(isSingleFieldAnalysis('postalcode'))
+  );
+
+  // execute placeholder if libpostal identified address parts but ids need to
+  //  be looked up for admin parts
+  const placeholderIdsLookupShouldExecute = all(
     not(hasResponseDataOrRequestErrors),
     isPlaceholderServiceEnabled,
     // don't run placeholder if there's a number but no street
     not(hasNumberButNotStreet),
     // don't run placeholder if there's a query or category
-    not(hasAnyParsedTextProperty('query', 'category'))
+    not(hasAnyParsedTextProperty('query', 'category')),
+    not(isSingleFieldAnalysis('postalcode'))
+  );
+
+  // placeholder should have executed, useful for determining whether to actually
+  //  fallback or not (don't fallback to old search if the placeholder response
+  //  should be honored as is)
+  const placeholderShouldHaveExecuted = any(
+    placeholderGeodisambiguationShouldExecute,
+    placeholderIdsLookupShouldExecute
   );
 
   const searchWithIdsShouldExecute = all(
@@ -125,6 +146,14 @@ function addRoutes(app, peliasConfig) {
     not(hasAnyParsedTextProperty('query', 'category')),
     // there must be a street
     hasAnyParsedTextProperty('street')
+  );
+
+  // don't execute the cascading fallback query IF placeholder should have executed
+  //  that way, if placeholder didn't return anything, don't try to find more things the old way
+  const fallbackQueryShouldExecute = all(
+    not(hasRequestErrors),
+    not(hasResponseData),
+    not(placeholderShouldHaveExecuted)
   );
 
   // execute under the following conditions:
@@ -137,6 +166,10 @@ function addRoutes(app, peliasConfig) {
       not(isPipServiceEnabled)
     )
   );
+
+  // helpers to replace vague booleans
+  const geometricFiltersApply = true;
+  const geometricFiltersDontApply = false;
 
   var base = '/v1/';
 
@@ -153,13 +186,14 @@ function addRoutes(app, peliasConfig) {
       sanitizers.search.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.calcSize(),
-      controllers.placeholder(placeholderService, placeholderShouldExecute),
+      controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
+      controllers.placeholder(placeholderService, geometricFiltersDontApply, placeholderIdsLookupShouldExecute),
       controllers.search_with_ids(peliasConfig.api, esclient, queries.address_using_ids, searchWithIdsShouldExecute),
-      // 3rd parameter is which query module to use, use fallback/geodisambiguation
+      // 3rd parameter is which query module to use, use fallback
       //  first, then use original search strategy if first query didn't return anything
-      controllers.search(peliasConfig.api, esclient, queries.libpostal, not(hasResponseDataOrRequestErrors)),
+      controllers.search(peliasConfig.api, esclient, queries.cascading_fallback, fallbackQueryShouldExecute),
       sanitizers.search_fallback.middleware,
-      controllers.search(peliasConfig.api, esclient, queries.fallback_to_old_prod, not(hasResponseDataOrRequestErrors)),
+      controllers.search(peliasConfig.api, esclient, queries.very_old_prod, fallbackQueryShouldExecute),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),

@@ -24,6 +24,7 @@ var tests = [
   require('./controller/predicates/is_admin_only_analysis'),
   require('./controller/predicates/is_coarse_reverse'),
   require('./controller/predicates/is_service_enabled'),
+  require('./controller/predicates/is_single_field_analysis'),
   require('./helper/diffPlaces'),
   require('./helper/geojsonify'),
   require('./helper/logging'),
