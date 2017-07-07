@@ -129,7 +129,7 @@ function addRoutes(app, peliasConfig) {
       controllers.mdToHTML(peliasConfig.api, './public/attribution.md')
     ]),
     search: createRouter([
-      sanitizers.search.middleware,
+      sanitizers.search.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.calcSize(),
       controllers.placeholder(placeholderService, placeholderShouldExecute),
@@ -156,7 +156,7 @@ function addRoutes(app, peliasConfig) {
       postProc.sendJSON
     ]),
     structured: createRouter([
-      sanitizers.structured_geocoding.middleware,
+      sanitizers.structured_geocoding.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.calcSize(),
       controllers.search(peliasConfig.api, esclient, queries.structured_geocoding, not(hasResponseDataOrRequestErrors)),
@@ -177,7 +177,7 @@ function addRoutes(app, peliasConfig) {
       postProc.sendJSON
     ]),
     autocomplete: createRouter([
-      sanitizers.autocomplete.middleware,
+      sanitizers.autocomplete.middleware(peliasConfig.api),
       middleware.requestLanguage,
       controllers.search(peliasConfig.api, esclient, queries.autocomplete, not(hasResponseDataOrRequestErrors)),
       postProc.distances('focus.point.'),

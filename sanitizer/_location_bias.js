@@ -1,18 +1,21 @@
-/*
+const _ = require('lodash');
+/**
 Set a focus.lat and focus.lon if specified in pelias config
+* @param {object} defaultParameters property of pelias config
 */
-var _ = require('lodash');
 
 function setup(defaultParameters){
-  return function setLocationBias(req, res, next){
-    if (_.isUndefined(req.clean) ||
-      _.isUndefined(defaultParameters['focus.point.lat']) ||
-      _.isUndefined(defaultParameters['focus.point.lon'])) {
-      return next();
+
+  return function setLocationBias(raw, clean){
+    if (!_.isUndefined(raw) &&
+      !_.isUndefined(defaultParameters['focus.point.lat']) &&
+      !_.isUndefined(defaultParameters['focus.point.lon'])) {
+
+      raw['focus.point.lat'] = defaultParameters['focus.point.lat'];
+      raw['focus.point.lon'] = defaultParameters['focus.point.lon'];
     }
-    req.clean['focus.point.lat'] = defaultParameters['focus.point.lat'];
-    req.clean['focus.point.lon'] = defaultParameters['focus.point.lon'];
-    next();
+
+    return { errors: [], warnings: [] };
   };
 }
 

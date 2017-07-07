@@ -1,21 +1,126 @@
-var autocomplete = require('../../../sanitizer/autocomplete');
+const proxyquire =  require('proxyquire').noCallThru();
+const _ = require('lodash');
 
 module.exports.tests = {};
 
 module.exports.tests.sanitizers = function(test, common) {
-  test('check sanitizer list', function (t) {
-    var expected = [
-      'singleScalarParameters', 'text', 'tokenizer', 'size', 'layers', 'sources',
-      'sources_and_layers', 'private', 'location_bias', 'geo_autocomplete', 'boundary_country', 'categories'
+  test('verify that all sanitizers were called as expected', function(t) {
+    var called_sanitizers = [];
+
+    var autocomplete = proxyquire('../../../sanitizer/autocomplete', {
+      '../sanitizer/_single_scalar_parameters': () => {
+        called_sanitizers.push('_single_scalar_parameters');
+        return { errors: [], warnings: [] };
+      },
+      '../sanitizer/_text_addressit': () => {
+        called_sanitizers.push('_text_addressit');
+        return { errors: [], warnings: [] };
+      },
+      '../sanitizer/_tokenizer': () => {
+        called_sanitizers.push('_tokenizer');
+        return { errors: [], warnings: [] };
+      },
+      '../sanitizer/_size': function() {
+        if (_.isEqual(_.values(arguments), [10, 10, 10])) {
+          return () => {
+            called_sanitizers.push('_size');
+            return { errors: [], warnings: [] };
+          };
+
+        } else {
+          throw new Error('incorrect parameters passed to _size');
+        }
+
+      },
+      '../sanitizer/_targets': (type) => {
+        if (['layers', 'sources'].indexOf(type) !== -1) {
+          return () => {
+            called_sanitizers.push(`_targets/${type}`);
+            return { errors: [], warnings: [] };
+          };
+
+        }
+        else {
+          throw new Error('incorrect parameters passed to _targets');
+        }
+
+      },
+      '../sanitizer/_sources_and_layers': () => {
+        called_sanitizers.push('_sources_and_layers');
+        return { errors: [], warnings: [] };
+      },
+      '../sanitizer/_flag_bool': function() {
+        if (arguments[0] === 'private' && arguments[1] === false) {
+          return () => {
+            called_sanitizers.push('_flag_bool');
+            return { errors: [], warnings: [] };
+          };
+
+        }
+        else {
+          throw new Error('incorrect parameters passed to _flag_bool');
+        }
+
+      },
+      '../sanitizer/_location_bias': (defaultParameters) => {
+        if (defaultParameters.key === 'value'){
+          return () => {
+            called_sanitizers.push('_location_bias');
+            return { errors: [], warnings: [] };
+          };
+        } else {
+            throw new Error('incorrect parameter passed to _location_bias');
+        }
+      },
+      '../sanitizer/_geo_autocomplete': () => {
+        called_sanitizers.push('_geo_autocomplete');
+        return { errors: [], warnings: [] };
+      },
+      '../sanitizer/_boundary_country': () => {
+        called_sanitizers.push('_boundary_country');
+        return { errors: [], warnings: [] };
+      },
+      '../sanitizer/_categories': () => {
+        called_sanitizers.push('_categories');
+        return { errors: [], warnings: [] };
+      },
+    });
+
+    const expected_sanitizers = [
+      '_single_scalar_parameters',
+      '_text_addressit',
+      '_tokenizer',
+      '_size',
+      '_targets/layers',
+      '_targets/sources',
+      '_sources_and_layers',
+      '_flag_bool',
+      '_location_bias',
+      '_geo_autocomplete',
+      '_boundary_country',
+      '_categories'
     ];
-    t.deepEqual(Object.keys(autocomplete.sanitizer_list), expected);
-    t.end();
+
+    const req = {};
+    const res = {};
+
+    const middleware = autocomplete.middleware({
+      defaultParameters: {
+        key: 'value'
+      }
+    });
+
+    middleware(req, res, () => {
+      t.deepEquals(called_sanitizers, expected_sanitizers);
+      t.end();
+    });
+
   });
 };
 
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape('SANTIZE /autocomplete ' + name, testFunction);
+    return tape('SANITIZE /autocomplete ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

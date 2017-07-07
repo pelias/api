@@ -88,9 +88,15 @@ module.exports.tests.sanitize = (test, common) => {
         called_sanitizers.push('_geonames_warnings');
         return { errors: [], warnings: [] };
       },
-      '../sanitizer/_location_bias': () => {
-        called_sanitizers.push('_location_bias');
-        return { errors: [], warnings: [] };
+      '../sanitizer/_location_bias': (defaultParameters) => {
+        if (defaultParameters.key === 'value'){
+          return () => {
+            called_sanitizers.push('_location_bias');
+            return { errors: [], warnings: [] };
+          };
+        } else {
+            throw new Error('incorrect parameter passed to _location_bias');
+        }
       }
 
     });
@@ -116,17 +122,24 @@ module.exports.tests.sanitize = (test, common) => {
     const req = {};
     const res = {};
 
-    search.middleware(req, res, () => {
+    const middleware = search.middleware({
+      defaultParameters: {
+        key: 'value'
+      }
+    });
+
+    middleware(req, res, () => {
       t.deepEquals(called_sanitizers, expected_sanitizers);
       t.end();
     });
+
   });
 };
 
 module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {
-    return tape(`SANTIZE /search ${name}`, testFunction);
+    return tape(`SANITIZE /search ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){
