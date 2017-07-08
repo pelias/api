@@ -60,7 +60,7 @@
     "pelias-labels": "1.6.0",
     "pelias-logger": "0.2.0",
     "pelias-microservice-wrapper": "1.1.2",
-    "pelias-model": "4.9.0",
+    "pelias-model": "4.10.1",
     "pelias-query": "8.16.1",
     "pelias-sorting": "1.0.1",
     "pelias-text-analyzer": "1.8.3",
