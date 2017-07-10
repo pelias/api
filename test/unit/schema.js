@@ -12,7 +12,6 @@ module.exports.tests.completely_valid = (test, common) => {
         version: 'version value',
         indexName: 'index name value',
         host: 'host value',
-        legacyUrl: 'legacyUrl value',
         accessLog: 'accessLog value',
         relativeScores: true,
         localization: {
@@ -153,29 +152,6 @@ module.exports.tests.api_validation = (test, common) => {
 
       t.equals(result.error.details.length, 1);
       t.equals(result.error.details[0].message, '"host" must be a string');
-
-    });
-
-    t.end();
-
-  });
-
-  test('non-string api.legacyUrl should throw error', (t) => {
-    [null, 17, {}, [], true].forEach((value) => {
-      var config = {
-        api: {
-          version: 'version value',
-          indexName: 'index name value',
-          host: 'host value',
-          legacyUrl: value
-        },
-        esclient: {}
-      };
-
-      const result = Joi.validate(config, schema);
-
-      t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"legacyUrl" must be a string');
 
     });
 

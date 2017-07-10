@@ -12,14 +12,12 @@ const Joi = require('joi');
 // optional:
 // * api.accessLog (string)
 // * api.relativeScores (boolean)
-// * api.legacyUrl (string)
 // * api.localization (flipNumberAndStreetCountries is array of 3 character strings)
 module.exports = Joi.object().keys({
   api: Joi.object().keys({
     version: Joi.string(),
     indexName: Joi.string(),
     host: Joi.string(),
-    legacyUrl: Joi.string(),
     accessLog: Joi.string(),
     relativeScores: Joi.boolean(),
     requestRetries: Joi.number().integer().min(0),
