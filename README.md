@@ -42,7 +42,6 @@ The API recognizes the following properties under the top-level `api` key in you
 |`host`|*yes*||specifies the url under which the http service is to run|
 |`textAnalyzer`|*no*|*addressit*|can be either `libpostal` or `addressit` however will soon be **deprecated** and only `libpostal` will be supported going forward|
 |`indexName`|*no*|*pelias*|name of the Elasticsearch index to be used when building queries|
-|`legacyUrl`|*no*||the url to redirect to in case the user does not specify a version such as `v1`
 |`relativeScores`|*no*|true|if set to true, confidence scores will be normalized, realistically at this point setting this to false is not tested or desirable
 |`accessLog`|*no*||name of the format to use for access logs; may be any one of the [predefined values](https://github.com/expressjs/morgan#predefined-formats) in the `morgan` package. Defaults to `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.|
 |`services`|*no*||service definitions for [point-in-polygon](https://github.com/pelias/pip-service) and [placholder](https://github.com/pelias/placeholder) services.  If missing (which is not recommended), the point-in-polygon and placeholder services will not be called.|
@@ -65,7 +64,6 @@ Example configuration file would look something like this:
   "api": {
     "host": "localhost:3100/v1/",
     "indexName": "foobar",  
-    "legacyUrl": "pelias.mapzen.com",
     "relativeScores": true,
     "textAnalyzer": "libpostal",
     "services": {
