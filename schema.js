@@ -41,8 +41,8 @@ module.exports = Joi.object().keys({
       }).unknown(false).requiredKeys('url')
     }).unknown(false).default({}), // default api.services to an empty object
     defaultParameters: Joi.object().keys({
-        'focus.point.lat': Joi.number().optional().min(-90).max(90),
-        'focus.point.lon': Joi.number().optional().min(-180).max(180),
+        'focus.point.lat': Joi.number(),
+        'focus.point.lon': Joi.number(),
     }).unknown(true).default({})
 
   }).requiredKeys('version', 'indexName', 'host').unknown(true),

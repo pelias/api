@@ -59,6 +59,42 @@ module.exports.tests.setLocationBias = function(test, common) {
       t.end();
   });
 
+  test('raw has focus.point.lon already', t => {
+    const defaultParameters = {
+      'focus.point.lon': 12.2121212,
+      'focus.point.lat': 12.2121212
+    };
+    const locationBias = setup(defaultParameters);
+    const raw = {
+      'focus.point.lon': 43.4343434
+    };
+    const expected = {
+      'focus.point.lon': 43.4343434
+    };
+
+    locationBias(raw, undefined);
+      t.deepEqual(raw, expected, 'should be unmodified' );
+      t.end();
+  });
+
+  test('raw has focus.point.lat already', t => {
+    const defaultParameters = {
+      'focus.point.lon': 12.2121212,
+      'focus.point.lat': 12.2121212
+    };
+    const locationBias = setup(defaultParameters);
+    const raw = {
+      'focus.point.lat': 34.3434343
+    };
+    const expected = {
+      'focus.point.lat': 34.3434343
+    };
+
+    locationBias(raw, undefined);
+      t.deepEqual(raw, expected, 'should be unmodified' );
+      t.end();
+  });
+
 };
 
 module.exports.all = (tape, common) => {
