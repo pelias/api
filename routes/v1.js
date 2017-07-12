@@ -11,7 +11,7 @@ var sanitizers = {
   autocomplete: require('../sanitizer/autocomplete'),
   place: require('../sanitizer/place'),
   search: require('../sanitizer/search'),
-  search_fallback: require('../sanitizer/search_fallback'),
+  defer_to_addressit: require('../sanitizer/defer_to_addressit'),
   structured_geocoding: require('../sanitizer/structured_geocoding'),
   reverse: require('../sanitizer/reverse'),
   nearby: require('../sanitizer/nearby')
@@ -75,6 +75,7 @@ const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
 const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_analysis');
 const hasResultsAtLayers = require('../controller/predicates/has_results_at_layers');
 const isSingleFieldAnalysis = require('../controller/predicates/is_single_field_analysis');
+const isAddressItParse = require('../controller/predicates/is_addressit_parse');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
@@ -116,8 +117,7 @@ function addRoutes(app, peliasConfig) {
   const placeholderGeodisambiguationShouldExecute = all(
     not(hasResponseDataOrRequestErrors),
     isPlaceholderServiceEnabled,
-    isAdminOnlyAnalysis,
-    not(isSingleFieldAnalysis('postalcode'))
+    isAdminOnlyAnalysis
   );
 
   // execute placeholder if libpostal identified address parts but ids need to
@@ -129,6 +129,9 @@ function addRoutes(app, peliasConfig) {
     not(hasNumberButNotStreet),
     // don't run placeholder if there's a query or category
     not(hasAnyParsedTextProperty('query', 'category')),
+    // run placeholder if there are any adminareas identified
+    // hasAnyParsedTextProperty('neighbourhood', 'borough', 'city', 'county', 'state', 'country'),
+    // don't run placeholder if only postalcode was identified
     not(isSingleFieldAnalysis('postalcode'))
   );
 
@@ -154,6 +157,18 @@ function addRoutes(app, peliasConfig) {
     not(hasRequestErrors),
     not(hasResponseData),
     not(placeholderShouldHaveExecuted)
+  );
+
+  const shouldDeferToAddressIt = all(
+    not(hasRequestErrors),
+    not(hasResponseData),
+    not(placeholderShouldHaveExecuted)
+  );
+
+  const oldProdQueryShouldExecute = all(
+    not(hasRequestErrors),
+    not(hasResponseData),
+    isAddressItParse
   );
 
   // execute under the following conditions:
@@ -189,11 +204,11 @@ function addRoutes(app, peliasConfig) {
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersDontApply, placeholderIdsLookupShouldExecute),
       controllers.search_with_ids(peliasConfig.api, esclient, queries.address_using_ids, searchWithIdsShouldExecute),
-      // 3rd parameter is which query module to use, use fallback
-      //  first, then use original search strategy if first query didn't return anything
+      // 3rd parameter is which query module to use, use fallback first, then
+      //  use original search strategy if first query didn't return anything
       controllers.search(peliasConfig.api, esclient, queries.cascading_fallback, fallbackQueryShouldExecute),
-      sanitizers.search_fallback.middleware,
-      controllers.search(peliasConfig.api, esclient, queries.very_old_prod, fallbackQueryShouldExecute),
+      sanitizers.defer_to_addressit(shouldDeferToAddressIt),
+      controllers.search(peliasConfig.api, esclient, queries.very_old_prod, oldProdQueryShouldExecute),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),

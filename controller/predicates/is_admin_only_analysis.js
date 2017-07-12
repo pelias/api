@@ -6,7 +6,7 @@ module.exports = (request, response) => {
   }
 
   // return true only if all non-admin properties of parsed_text are empty
-  return ['number', 'street', 'query', 'category'].every((prop) => {
+  return ['number', 'street', 'query', 'category', 'postalcode'].every((prop) => {
     return _.isEmpty(request.clean.parsed_text[prop]);
   });
 
