@@ -45,6 +45,7 @@ The API recognizes the following properties under the top-level `api` key in you
 |`relativeScores`|*no*|true|if set to true, confidence scores will be normalized, realistically at this point setting this to false is not tested or desirable
 |`accessLog`|*no*||name of the format to use for access logs; may be any one of the [predefined values](https://github.com/expressjs/morgan#predefined-formats) in the `morgan` package. Defaults to `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.|
 |`services`|*no*||service definitions for [point-in-polygon](https://github.com/pelias/pip-service) and [placholder](https://github.com/pelias/placeholder) services.  If missing (which is not recommended), the point-in-polygon and placeholder services will not be called.|
+|`defaultParameters.focus.point.lon` <br> `defaultParameters.focus.point.lat`|no | |default coordinates for focus point
 
 Example configuration file would look something like this:
 
@@ -73,6 +74,10 @@ Example configuration file would look something like this:
       "placeholder": {
         "url": "http://myplaceholderservice.com:5000"
       }
+    }
+    "defaultParameters": {
+      "focus.point.lat": 12.121212,
+      "focus.point.lon": 21.212121
     }
   },
   "interpolation": {
