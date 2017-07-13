@@ -22,14 +22,6 @@ module.exports.tests.sanitize = (test, common) => {
         called_sanitizers.push('_text');
         return { errors: [], warnings: [] };
       },
-      '../sanitizer/_iso2_to_iso3': () => {
-        called_sanitizers.push('_iso2_to_iso3');
-        return { errors: [], warnings: [] };
-      },
-      '../sanitizer/_city_name_standardizer': () => {
-        called_sanitizers.push('_city_name_standardizer');
-        return { errors: [], warnings: [] };
-      },
       '../sanitizer/_size': function() {
         if (_.isEmpty(arguments)) {
           return () => {
@@ -114,8 +106,6 @@ module.exports.tests.sanitize = (test, common) => {
       '_boundary_country',
       '_categories',
       '_text',
-      '_iso2_to_iso3',
-      '_city_name_standardizer',
       '_geonames_warnings'
     ];
 
