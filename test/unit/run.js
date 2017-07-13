@@ -13,6 +13,7 @@ var tests = [
   require('./schema'),
   require('./controller/coarse_reverse'),
   require('./controller/index'),
+  require('./controller/libpostal'),
   require('./controller/place'),
   require('./controller/placeholder'),
   require('./controller/search'),
