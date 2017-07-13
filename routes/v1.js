@@ -28,6 +28,7 @@ var middleware = {
 var controllers = {
   coarse_reverse: require('../controller/coarse_reverse'),
   mdToHTML: require('../controller/markdownToHtml'),
+  libpostal: require('../controller/libpostal'),
   place: require('../controller/place'),
   placeholder: require('../controller/placeholder'),
   search: require('../controller/search'),
@@ -114,6 +115,11 @@ function addRoutes(app, peliasConfig) {
   // fallback to coarse reverse when regular reverse didn't return anything
   const coarseReverseShouldExecute = all(
     isPipServiceEnabled, not(hasRequestErrors), not(hasResponseData)
+  );
+
+  const libpostalShouldExecute = all(
+    not(hasRequestErrors),
+    not(isRequestSourcesOnlyWhosOnFirst)
   );
 
   // execute placeholder if libpostal only parsed as admin-only and needs to
@@ -220,6 +226,7 @@ function addRoutes(app, peliasConfig) {
       sanitizers.search.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.calcSize(),
+      controllers.libpostal(libpostalShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersDontApply, placeholderIdsLookupShouldExecute),
       controllers.search_with_ids(peliasConfig.api, esclient, queries.address_using_ids, searchWithIdsShouldExecute),
