@@ -76,6 +76,10 @@ const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_anal
 const hasResultsAtLayers = require('../controller/predicates/has_results_at_layers');
 const isSingleFieldAnalysis = require('../controller/predicates/is_single_field_analysis');
 const isAddressItParse = require('../controller/predicates/is_addressit_parse');
+const hasRequestCategories = require('../controller/predicates/has_request_parameter')('categories');
+const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin_layers');
+// this can probably be more generalized
+const isRequestSourcesOnlyWhosOnFirst = require('../controller/predicates/is_request_sources_only_whosonfirst');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
@@ -117,7 +121,20 @@ function addRoutes(app, peliasConfig) {
   const placeholderGeodisambiguationShouldExecute = all(
     not(hasResponseDataOrRequestErrors),
     isPlaceholderServiceEnabled,
-    isAdminOnlyAnalysis
+    // check request.clean for several conditions first
+    not(
+      any(
+        // layers only contains venue, address, or street
+        isOnlyNonAdminLayers,
+        // don't geodisambiguate if categories were requested
+        hasRequestCategories
+      )
+    ),
+    any(
+      // only geodisambiguate if libpostal returned only admin areas or libpostal was skipped
+      isAdminOnlyAnalysis,
+      isRequestSourcesOnlyWhosOnFirst
+    )
   );
 
   // execute placeholder if libpostal identified address parts but ids need to
@@ -125,22 +142,15 @@ function addRoutes(app, peliasConfig) {
   const placeholderIdsLookupShouldExecute = all(
     not(hasResponseDataOrRequestErrors),
     isPlaceholderServiceEnabled,
-    // don't run placeholder if there's a number but no street
-    not(hasNumberButNotStreet),
-    // don't run placeholder if there's a query or category
-    not(hasAnyParsedTextProperty('query', 'category')),
-    // run placeholder if there are any adminareas identified
-    // hasAnyParsedTextProperty('neighbourhood', 'borough', 'city', 'county', 'state', 'country'),
-    // don't run placeholder if only postalcode was identified
-    not(isSingleFieldAnalysis('postalcode'))
-  );
-
-  // placeholder should have executed, useful for determining whether to actually
-  //  fallback or not (don't fallback to old search if the placeholder response
-  //  should be honored as is)
-  const placeholderShouldHaveExecuted = any(
-    placeholderGeodisambiguationShouldExecute,
-    placeholderIdsLookupShouldExecute
+    // check clean.parsed_text for several conditions that must all be true
+    all(
+      // run placeholder if clean.parsed_text has 'street'
+      hasAnyParsedTextProperty('street'),
+      // don't run placeholder if there's a query or category
+      not(hasAnyParsedTextProperty('query', 'category')),
+      // run placeholder if there are any adminareas identified
+      hasAnyParsedTextProperty('neighbourhood', 'borough', 'city', 'county', 'state', 'country')
+    )
   );
 
   const searchWithIdsShouldExecute = all(
@@ -151,6 +161,14 @@ function addRoutes(app, peliasConfig) {
     hasAnyParsedTextProperty('street')
   );
 
+  // placeholder should have executed, useful for determining whether to actually
+  //  fallback or not (don't fallback to old search if the placeholder response
+  //  should be honored as is)
+  const placeholderShouldHaveExecuted = any(
+    placeholderGeodisambiguationShouldExecute,
+    placeholderIdsLookupShouldExecute
+  );
+
   // don't execute the cascading fallback query IF placeholder should have executed
   //  that way, if placeholder didn't return anything, don't try to find more things the old way
   const fallbackQueryShouldExecute = all(
@@ -159,15 +177,16 @@ function addRoutes(app, peliasConfig) {
     not(placeholderShouldHaveExecuted)
   );
 
+  // defer to addressit for analysis IF there's no response AND placeholder should not have executed
   const shouldDeferToAddressIt = all(
     not(hasRequestErrors),
     not(hasResponseData),
     not(placeholderShouldHaveExecuted)
   );
 
+  // call very old prod query if addressit was the parser
   const oldProdQueryShouldExecute = all(
     not(hasRequestErrors),
-    not(hasResponseData),
     isAddressItParse
   );
 
