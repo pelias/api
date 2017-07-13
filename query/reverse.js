@@ -75,6 +75,18 @@ function generateQuery( clean ){
     logStr += '[param:boundary_circle] ';
   }
 
+  // for coarse reverse when boundary circle radius is undefined
+  if( check.number(clean['boundary.circle.lat']) &&
+      check.number(clean['boundary.circle.lon']) &&
+      check.undefined(clean['boundary.circle.radius']) ){
+    vs.set({
+      'boundary:circle:lat': clean['boundary.circle.lat'],
+      'boundary:circle:lon': clean['boundary.circle.lon'],
+      'boundary:circle:radius': defaults['boundary:circle:radius']
+    });
+    logStr += '[param:boundary_circle] ';
+  }
+
   // boundary country
   if( check.string(clean['boundary.country']) ){
     vs.set({
