@@ -96,6 +96,7 @@ module.exports.tests.sanitize = (test, common) => {
     const expected_sanitizers = [
       '_single_scalar_parameters',
       '_deprecate_quattroshapes',
+      '_text',
       '_size',
       '_targets/layers',
       '_targets/sources',
@@ -105,7 +106,6 @@ module.exports.tests.sanitize = (test, common) => {
       '_geo_search',
       '_boundary_country',
       '_categories',
-      '_text',
       '_geonames_warnings'
     ];
 
