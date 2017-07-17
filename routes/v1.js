@@ -75,7 +75,6 @@ const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
 const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_analysis');
 const hasResultsAtLayers = require('../controller/predicates/has_results_at_layers');
-const isSingleFieldAnalysis = require('../controller/predicates/is_single_field_analysis');
 const isAddressItParse = require('../controller/predicates/is_addressit_parse');
 const hasRequestCategories = require('../controller/predicates/has_request_parameter')('categories');
 const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin_layers');
