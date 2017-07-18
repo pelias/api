@@ -146,7 +146,7 @@ function updateDocs( req, res, translations ){
 
         // requested language is not available
         if (_.isEmpty(_.get(translations[id].names, requestLanguage, [] ))) {
-          logger.info( '[language] [info]', 'missing translation', requestLanguage, id );
+          logger.debug( '[language] [debug]', 'missing translation', requestLanguage, id );
           continue;
         }
 
