@@ -95,6 +95,7 @@ var tests = [
   require('./sanitizer/search'),
   require('./sanitizer/defer_to_addressit'),
   require('./sanitizer/wrap'),
+  require('./service/configurations/Language'),
   require('./service/configurations/PlaceHolder'),
   require('./service/configurations/PointInPolygon'),
   require('./service/mget'),
