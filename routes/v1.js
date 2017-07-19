@@ -80,6 +80,7 @@ const hasRequestCategories = require('../controller/predicates/has_request_param
 const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin_layers');
 // this can probably be more generalized
 const isRequestSourcesOnlyWhosOnFirst = require('../controller/predicates/is_request_sources_only_whosonfirst');
+const hasRequestParameter = require('../controller/predicates/has_request_parameter');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
@@ -93,6 +94,7 @@ const hasNumberButNotStreet = all(
 const serviceWrapper = require('pelias-microservice-wrapper').service;
 const PlaceHolder = require('../service/configurations/PlaceHolder');
 const PointInPolygon = require('../service/configurations/PointInPolygon');
+const Language = require('../service/configurations/Language');
 
 /**
  * Append routes to app
@@ -110,6 +112,10 @@ function addRoutes(app, peliasConfig) {
   const placeholderConfiguration = new PlaceHolder(_.defaultTo(peliasConfig.api.services.placeholder, {}));
   const placeholderService = serviceWrapper(placeholderConfiguration);
   const isPlaceholderServiceEnabled = _.constant(placeholderConfiguration.isEnabled());
+
+  const changeLanguageConfiguration = new Language(_.defaultTo(peliasConfig.api.services.language, {}));
+  const changeLanguageService = serviceWrapper(changeLanguageConfiguration);
+  const isChangeLanguageEnabled = _.constant(changeLanguageConfiguration.isEnabled());
 
   // fallback to coarse reverse when regular reverse didn't return anything
   const coarseReverseShouldExecute = all(
@@ -195,6 +201,13 @@ function addRoutes(app, peliasConfig) {
     isAddressItParse
   );
 
+  const changeLanguageShouldExecute = all(
+    hasResponseData,
+    not(hasRequestErrors),
+    isChangeLanguageEnabled,
+    hasRequestParameter('lang')
+  );
+
   // execute under the following conditions:
   // - there are no errors or data
   // - request is not coarse OR pip service is disabled
@@ -246,7 +259,7 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
-      postProc.changeLanguage(),
+      postProc.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
       postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig.api, base),
       postProc.sendJSON

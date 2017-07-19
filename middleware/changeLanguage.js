@@ -1,6 +1,5 @@
 
 var logger = require( 'pelias-logger' ).get( 'api' );
-var service = require('../service/language');
 const _ = require('lodash');
 
 /**
@@ -28,84 +27,34 @@ example response from language web service:
 }
 **/
 
-function setup() {
-  var transport = service.findById();
-  var middleware = function(req, res, next) {
-
-    // no-op, request did not require a language change
-    if( !isLanguageChangeRequired( req, res ) ){
+function setup(service, should_execute) {
+  return function controller(req, res, next) {
+    if (!should_execute(req, res)) {
       return next();
     }
 
-    // collect a list of parent ids to fetch translations for
-    var ids = extractIds( res );
-
-    // perform language lookup for all relevant ids
-    var timer = (new Date()).getTime();
-    transport.query( ids, function( err, translations ){
-
-      // update documents using a translation map
-      if( err ){
-        logger.error( '[language] [error]', err );
-      } else {
-        updateDocs( req, res, translations );
+    service(req, res, (err, translations) => {
+      // if there's an error, log it and bail
+      if (err) {
+        logger.info(`[middleware:language][error]`);
+        logger.error(err);
+        return next();
       }
 
-      logger.info( '[language] [took]', (new Date()).getTime() - timer, 'ms' );
+      // otherwise, update all the docs with translations
+      updateDocs(req, res, _.defaultTo(translations, []));
       next();
+
     });
+
   };
 
-  middleware.transport = transport;
-  return middleware;
-}
-
-// collect a list of parent ids to fetch translations for
-function extractIds( res ){
-
-  // store ids in an object in order to avoid duplicates
-  var ids = {};
-
-  // convenience function for adding a new id to the object
-  function addId(id) {
-    ids[id] = true;
-  }
-
-  // extract all parent ids from documents
-  res.data.forEach( function( doc ){
-
-    // skip invalid records
-    if( !doc || !doc.parent ){ return; }
-
-    // iterate over doc.parent.* attributes
-    for( var attr in doc.parent ){
-
-      // match only attributes ending with '_id'
-      var match = attr.match(/_id$/);
-      if( !match ){ continue; }
-
-      // skip invalid/empty arrays
-      if( !Array.isArray( doc.parent[attr] ) || !doc.parent[attr].length ){
-        continue;
-      }
-
-      // add each id as a key in the ids object
-      doc.parent[attr].forEach( addId );
-    }
-  });
-
-  // return a deduplicated array of ids
-  return Object.keys( ids );
 }
 
 // update documents using a translation map
 function updateDocs( req, res, translations ){
-
-  // sanity check arguments
-  if( !req || !res || !res.data || !translations ){ return; }
-
   // this is the target language we will be translating to
-  var requestLanguage = req.language.iso6393;
+  var requestLanguage = req.clean.lang.iso6393;
 
   // iterate over response documents
   res.data.forEach( function( doc, p ){
@@ -136,17 +85,14 @@ function updateDocs( req, res, translations ){
         if( !id ){ continue; }
 
         // id not found in translation service response
-        if( !translations.hasOwnProperty( id ) ){
-          logger.error( '[language] [error]', 'failed to find translations for', id );
+        if( !_.has(translations, id)){
+          logger.debug( `[language] [debug] failed to find translations for ${id}` );
           continue;
         }
 
-        // skip invalid records
-        if( !translations[id].hasOwnProperty( 'names' ) ){ continue; }
-
         // requested language is not available
         if (_.isEmpty(_.get(translations[id].names, requestLanguage, [] ))) {
-          logger.debug( '[language] [debug]', 'missing translation', requestLanguage, id );
+          logger.debug( `[language] [debug] missing translation ${requestLanguage} ${id}` );
           continue;
         }
 
