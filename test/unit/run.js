@@ -19,6 +19,7 @@ var tests = [
   require('./controller/search'),
   require('./controller/search_with_ids'),
   require('./controller/predicates/has_any_parsed_text_property'),
+  require('./controller/predicates/has_request_parameter'),
   require('./controller/predicates/has_response_data'),
   require('./controller/predicates/has_results_at_layers'),
   require('./controller/predicates/has_request_parameter'),
