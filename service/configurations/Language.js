@@ -19,7 +19,8 @@ class Language extends ServiceConfiguration {
     }, []);
 
     return {
-      ids: _.uniq(ids)
+      // arrays will be nested, so flatten first, then uniqify, and finally join elements with comma
+      ids: _.uniq(_.flattenDeep(ids)).join(',')
     };
 
   }

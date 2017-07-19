@@ -48,9 +48,9 @@ module.exports.tests.all = (test, common) => {
         {
           parent: {
             layer1_name: 'layer1 name',
-            layer1_id: 1,
+            layer1_id: [1],
             layer2_name: 'layer2 name',
-            layer2_id: 2
+            layer2_id: [2]
           }
         },
         {
@@ -63,25 +63,26 @@ module.exports.tests.all = (test, common) => {
         {
           parent: {
             layer3_name: 'layer3 name',
-            layer3_id: 3,
+            layer3_id: [3],
             layer4_name: 'layer4 name',
             // doesn't end with '_id', will be ignored
-            layer4id: 4
+            layer4id: [4]
           }
         },
         {
           parent: {
-            layer1_name: 'layer1 name',
             // this is a duplicate id
-            layer1_id: 1,
+            layer1_name: 'layer1 name',
+            layer1_id: [1],
+            // two ids, both should be added
             layer5_name: 'layer5 name',
-            layer5_id: 5
+            layer5_id: [5, 6]
           }
         }
       ]
     };
 
-    t.deepEquals(language.getParameters(undefined, res), { ids: [1, 2, 3, 5] });
+    t.deepEquals(language.getParameters(undefined, res), { ids: '1,2,3,5,6' });
     t.end();
 
   });
@@ -95,7 +96,7 @@ module.exports.tests.all = (test, common) => {
 
     const language = new Language(configBlob);
 
-    t.deepEquals(language.getParameters(undefined, undefined), { ids: [] });
+    t.deepEquals(language.getParameters(undefined, undefined), { ids: '' });
     t.end();
 
   });
@@ -111,7 +112,7 @@ module.exports.tests.all = (test, common) => {
 
     const language = new Language(configBlob);
 
-    t.deepEquals(language.getParameters(undefined, res), { ids: [] });
+    t.deepEquals(language.getParameters(undefined, res), { ids: '' });
     t.end();
 
   });
