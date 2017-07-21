@@ -9,7 +9,7 @@ function hasAnyNonAdminFields(parsed_text) {
               non_admin_fields));
 }
 
-function sanitize( raw, clean ){
+function _sanitize( raw, clean ){
   // error & warning messages
   const messages = { errors: [], warnings: [] };
 
@@ -34,4 +34,6 @@ function sanitize( raw, clean ){
   return messages;
 }
 
-module.exports = sanitize;
+module.exports = () => ({
+  sanitize: _sanitize
+});

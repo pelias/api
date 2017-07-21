@@ -1,4 +1,4 @@
-var sanitizer = require('../../../sanitizer/_tokenizer');
+var sanitizer = require('../../../sanitizer/_tokenizer')();
 
 module.exports.tests = {};
 
@@ -6,7 +6,7 @@ module.exports.tests.sanity_checks = function(test, common) {
   test('clean.text not set', function(t) {
 
     var clean = {}; // clean.text not set
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // no tokens produced
     t.deepEquals(clean.tokens, [], 'no tokens');
@@ -22,7 +22,7 @@ module.exports.tests.sanity_checks = function(test, common) {
   test('clean.text not a string', function(t) {
 
     var clean = { text: {} }; // clean.text not a string
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // no tokens produced
     t.deepEquals(clean.tokens, [], 'no tokens');
@@ -38,7 +38,7 @@ module.exports.tests.sanity_checks = function(test, common) {
   test('empty string', function(t) {
 
     var clean = { text: '' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // no tokens produced
     t.deepEquals(clean.tokens, [], 'no tokens');
@@ -54,7 +54,7 @@ module.exports.tests.sanity_checks = function(test, common) {
   test('clean.parsed_text set but clean.parsed_text.name invalid', function(t) {
 
     var clean = { parsed_text: { text: {} } };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // no tokens produced
     t.deepEquals(clean.tokens, [], 'no tokens');
@@ -70,7 +70,7 @@ module.exports.tests.sanity_checks = function(test, common) {
   test('favor clean.parsed_text.name over clean.text', function(t) {
 
     var clean = { parsed_text: { name: 'foo' }, text: 'bar' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // favor clean.parsed_text.name over clean.text
     t.deepEquals(clean.tokens, [ 'foo' ], 'use clean.parsed_text.name');
@@ -86,7 +86,7 @@ module.exports.tests.sanity_checks = function(test, common) {
   test('favor clean.parsed_text street data over clean.text', function(t) {
 
     var clean = { parsed_text: { number: '190', street: 'foo st' }, text: 'bar' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // favor clean.parsed_text.name over clean.text
     t.deepEquals(clean.tokens, [ '190', 'foo', 'st' ], 'use street name + number');
@@ -102,7 +102,7 @@ module.exports.tests.sanity_checks = function(test, common) {
   test('favor clean.parsed_text.name over clean.parsed_text street data', function(t) {
 
     var clean = { parsed_text: { number: '190', street: 'foo st', name: 'foo' }, text: 'bar' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // favor clean.parsed_text.name over all other variables
     t.deepEquals(clean.tokens, [ 'foo' ], 'use clean.parsed_text.name');
@@ -121,7 +121,7 @@ module.exports.tests.space_delimiter = function(test, common) {
   test('space delimiter - simple', function(t) {
 
     var clean = { text: '30 west 26th street new york' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
     t.deepEquals(clean.tokens, [
@@ -156,7 +156,7 @@ module.exports.tests.space_delimiter = function(test, common) {
   test('space delimiter - multiple spaces / other whitespace', function(t) {
 
     var clean = { text: ' 30  west \t26th \nstreet   new york ' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
     t.deepEquals(clean.tokens, [
@@ -194,7 +194,7 @@ module.exports.tests.comma_delimiter = function(test, common) {
   test('comma delimiter - simple', function(t) {
 
     var clean = { text: '30 west 26th street, new york' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
     t.deepEquals(clean.tokens, [
@@ -229,7 +229,7 @@ module.exports.tests.comma_delimiter = function(test, common) {
   test('comma delimiter - multiple commas', function(t) {
 
     var clean = { text: ',30 west 26th street,,, new york,' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
     t.deepEquals(clean.tokens, [
@@ -267,7 +267,7 @@ module.exports.tests.forward_slash_delimiter = function(test, common) {
   test('forward slash delimiter - simple', function(t) {
 
     var clean = { text: 'Bedell Street/133rd Avenue' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
     t.deepEquals(clean.tokens, [
@@ -298,7 +298,7 @@ module.exports.tests.forward_slash_delimiter = function(test, common) {
   test('forward slash - multiple slashes', function(t) {
 
     var clean = { text: '/Bedell Street//133rd Avenue/' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
     t.deepEquals(clean.tokens, [
@@ -332,7 +332,7 @@ module.exports.tests.final_token_single_gram = function(test, common) {
   test('final token single gram - numeric', function(t) {
 
     var clean = { text: 'grolmanstrasse 1' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
     t.deepEquals(clean.tokens, [
@@ -359,7 +359,7 @@ module.exports.tests.final_token_single_gram = function(test, common) {
   test('final token single gram - non-numeric', function(t) {
 
     var clean = { text: 'grolmanstrasse a' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
     t.deepEquals(clean.tokens, [
@@ -389,7 +389,7 @@ module.exports.tests.back_slash_delimiter = function(test, common) {
   test('back slash delimiter - simple', function(t) {
 
     var clean = { text: 'Bedell Street\\133rd Avenue' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
     t.deepEquals(clean.tokens, [
@@ -408,7 +408,7 @@ module.exports.tests.back_slash_delimiter = function(test, common) {
   test('back slash - multiple slashes', function(t) {
 
     var clean = { text: '\\Bedell Street\\\\133rd Avenue\\' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
     t.deepEquals(clean.tokens, [
@@ -430,7 +430,7 @@ module.exports.tests.mixed_delimiter = function(test, common) {
   test('mixed delimiters', function(t) {
 
     var clean = { text: ',/Bedell Street\\, \n\t ,\\//133rd Avenue, /\n/' };
-    var messages = sanitizer({}, clean);
+    var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
     t.deepEquals(clean.tokens, [

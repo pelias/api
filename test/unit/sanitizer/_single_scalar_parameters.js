@@ -1,4 +1,4 @@
-var sanitize = require('../../../sanitizer/_single_scalar_parameters');
+var sanitizer = require('../../../sanitizer/_single_scalar_parameters')();
 
 module.exports.tests = {};
 
@@ -10,8 +10,8 @@ module.exports.tests.single_scalar_parameters = function(test, common) {
       arrayParameter2: ['value3']
     };
     var clean = {};
-    var errorsAndWarnings = sanitize(raw, clean);
-    t.deepEquals(errorsAndWarnings, {
+    var messages = sanitizer.sanitize(raw, clean);
+    t.deepEquals(messages, {
       errors: [
         '\'arrayParameter1\' parameter can only have one value',
         '\'arrayParameter2\' parameter can only have one value',
@@ -33,8 +33,8 @@ module.exports.tests.single_scalar_parameters = function(test, common) {
       objectParameter2: { }
     };
     var clean = {};
-    var errorsAndWarnings = sanitize(raw, clean);
-    t.deepEquals(errorsAndWarnings, {
+    var messages = sanitizer.sanitize(raw, clean);
+    t.deepEquals(messages, {
       errors: [
         '\'objectParameter1\' parameter must be a scalar',
         '\'objectParameter2\' parameter must be a scalar'
@@ -51,8 +51,8 @@ module.exports.tests.single_scalar_parameters = function(test, common) {
   test('request with all scalar parameters should return empty errors', function(t) {
     var raw = { scalarParameter1: 'value1', scalarParameter2: 2, scalarParameter3: true };
     var clean = {};
-    var errorsAndWarnings = sanitize(raw, clean);
-    t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] });
+    var messages = sanitizer.sanitize(raw, clean);
+    t.deepEquals(messages, { errors: [], warnings: [] });
     t.end();
   });
 

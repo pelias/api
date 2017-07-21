@@ -5,7 +5,7 @@ var _      = require('lodash');
 var logger = require('pelias-logger').get('api');
 
 // validate texts, convert types and apply defaults
-function sanitize( raw, clean ){
+function _sanitize( raw, clean ){
 
   // error & warning messages
   var messages = { errors: [], warnings: [] };
@@ -36,9 +36,9 @@ function sanitize( raw, clean ){
 }
 
 // export function
-module.exports = sanitize;
-
-
+module.exports = () => ({
+  sanitize: _sanitize
+});
 
 // this is the addressit functionality from https://github.com/pelias/text-analyzer/blob/master/src/addressItParser.js
 var DELIM = ',';

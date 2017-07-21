@@ -10,7 +10,7 @@ var _ = require('lodash');
   @see: https://github.com/pelias/api/issues/442
 **/
 
-function sanitize( raw, clean, opts ) {
+function _sanitize( raw, clean, opts ) {
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
@@ -38,4 +38,6 @@ function sanitize( raw, clean, opts ) {
   return messages;
 }
 
-module.exports = sanitize;
+module.exports = () => ({
+  sanitize: _sanitize
+});

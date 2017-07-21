@@ -37,7 +37,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    const messages = sanitizer(raw, clean);
+    const messages = sanitizer().sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, [], 'no errors');
@@ -76,7 +76,7 @@ module.exports.tests.text_parser = function(test, common) {
       parsed_text: {}
     };
 
-    const messages = sanitizer(raw, clean);
+    const messages = sanitizer().sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, ['at least one of the following fields is required: ' +
@@ -99,7 +99,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     const expected_clean = { parsed_text: {} };
 
-    const messages = sanitizer(raw, clean);
+    const messages = sanitizer().sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, ['at least one of the following fields is required: ' +
@@ -128,7 +128,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    const messages = sanitizer(raw, clean);
+    const messages = sanitizer().sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, [], 'no errors');
@@ -161,7 +161,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    const messages = sanitizer(raw, clean);
+    const messages = sanitizer().sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, [], 'no errors');
@@ -194,7 +194,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    const messages = sanitizer(raw, clean);
+    const messages = sanitizer().sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, [], 'no errors');
@@ -224,7 +224,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    const messages = sanitizer(raw, clean);
+    const messages = sanitizer().sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, [], 'no errors');
@@ -233,6 +233,23 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
+  test('return an array of valid parameters in object form for Joi schema validation', function (t) {
+    const sanitizer = require('../../../sanitizer/_synthesize_analysis');
+    const expected = [
+      { 'name': 'venue' },
+      { 'name': 'address' },
+      { 'name': 'neighbourhood' },
+      { 'name': 'borough' },
+      { 'name': 'locality' },
+      { 'name': 'county' },
+      { 'name': 'region' },
+      { 'name': 'postalcode' },
+      { 'name': 'country' }];
+
+    const validParameters = sanitizer().expected();
+    t.deepEquals(validParameters, expected);
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {

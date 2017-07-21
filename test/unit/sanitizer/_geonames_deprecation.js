@@ -1,4 +1,4 @@
-const geonames_deprecation = require('../../../sanitizer/_geonames_deprecation');
+const sanitizer = require('../../../sanitizer/_geonames_deprecation')();
 
 module.exports.tests = {};
 
@@ -6,7 +6,7 @@ module.exports.tests.no_warnings_or_errors_conditions = (test, common) => {
   test('undefined sources should add neither warnings nor errors', (t) => {
     const clean = {};
 
-    const messages = geonames_deprecation(undefined, clean);
+    const messages = sanitizer.sanitize(undefined, clean);
 
     t.deepEquals(clean, {});
     t.deepEquals(messages, { errors: [], warnings: [] });
@@ -19,7 +19,7 @@ module.exports.tests.no_warnings_or_errors_conditions = (test, common) => {
       sources: ['source 1', 'source 2'],
     };
 
-    const messages = geonames_deprecation(undefined, clean);
+    const messages = sanitizer.sanitize(undefined, clean);
 
     t.deepEquals(clean.sources, ['source 1', 'source 2']);
     t.deepEquals(messages, { errors: [], warnings: [] });
@@ -36,7 +36,7 @@ module.exports.tests.error_conditions = (test, common) => {
         sources: [sources]
       };
 
-      const messages = geonames_deprecation(undefined, clean);
+      const messages = sanitizer.sanitize(undefined, clean);
 
       t.deepEquals(clean.sources, [sources]);
       t.deepEquals(messages.errors, ['/reverse does not support geonames']);
@@ -57,7 +57,7 @@ module.exports.tests.warning_conditions = (test, common) => {
         sources: ['another source', sources, 'yet another source']
       };
 
-      const messages = geonames_deprecation(undefined, clean);
+      const messages = sanitizer.sanitize(undefined, clean);
 
       t.deepEquals(clean.sources, ['another source', 'yet another source']);
       t.deepEquals(messages.errors, []);
@@ -73,7 +73,7 @@ module.exports.tests.warning_conditions = (test, common) => {
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`SANTIZE _geonames_deprecation ${name}`, testFunction);
+    return tape(`SANITIZE _geonames_deprecation ${name}`, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

@@ -14,7 +14,7 @@ var check = require('check-types');
   note: this sanitizer should run *after* the '_text' sanitizer so it can
   use the output of clean.parsed_text where available.
 **/
-function sanitize( raw, clean ){
+function _sanitize( raw, clean ){
 
   // error & warning messages
   var messages = { errors: [], warnings: [] };
@@ -103,4 +103,6 @@ function sanitize( raw, clean ){
 }
 
 // export function
-module.exports = sanitize;
+module.exports = () => ({
+  sanitize: _sanitize
+});

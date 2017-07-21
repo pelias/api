@@ -1,4 +1,4 @@
-const sanitizer = require('../../../sanitizer/_iso2_to_iso3');
+const sanitizer = require('../../../sanitizer/_iso2_to_iso3')();
 
 module.exports.tests = {};
 
@@ -12,7 +12,7 @@ module.exports.tests.text_parser = function(test, common) {
     const expected_clean = {
     };
 
-    const messages = sanitizer(raw, clean);
+    const messages = sanitizer.sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, [], 'no errors');
@@ -38,7 +38,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    const messages = sanitizer(raw, clean);
+    const messages = sanitizer.sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, [], 'no errors');
@@ -64,7 +64,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    const messages = sanitizer(raw, clean);
+    const messages = sanitizer.sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, [], 'no errors');
@@ -90,7 +90,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    const messages = sanitizer(raw, clean);
+    const messages = sanitizer.sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages.errors, [], 'no errors');
@@ -103,7 +103,7 @@ module.exports.tests.text_parser = function(test, common) {
 
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape('sanitizer _iso2_to_iso3: ' + name, testFunction);
+    return tape('SANITIZE _iso2_to_iso3: ' + name, testFunction);
   }
 
   for( const testCase in module.exports.tests ){
