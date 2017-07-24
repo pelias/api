@@ -140,7 +140,6 @@ function generateQuery( clean, res ){
   }
 
   // boundary circle
-  // @todo: change these to the correct request variable names
   if( check.number(clean['boundary.circle.lat']) &&
       check.number(clean['boundary.circle.lon']) ){
     vs.set({
