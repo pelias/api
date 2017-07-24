@@ -85,21 +85,20 @@ function atLeastOneLineageMatchesBoundaryCountry(boundaryCountry, result) {
 }
 
 // return a function that detects if a result has at least one lineage in boundary.country
-// if there's no boundary.country, return a function that always returns true
-function getBoundaryCountryFilter(clean, geometric_filters_apply) {
-  if (_.has(clean, 'boundary.country') && geometric_filters_apply) {
+function getBoundaryCountryFilter(clean, do_geometric_filters_apply) {
+  if ( do_geometric_filters_apply && _.has(clean, 'boundary.country') ) {
     return _.partial(atLeastOneLineageMatchesBoundaryCountry, clean['boundary.country']);
   }
 
+  // there's no boundary.country filter, so return a function that always returns true
   return () => true;
 
 }
 
 // return a function that detects if a result is inside a bbox if a bbox is available
-// if there's no bbox, return a function that always returns true
-function getBoundaryRectangleFilter(clean, geometric_filters_apply) {
+function getBoundaryRectangleFilter(clean, do_geometric_filters_apply) {
   // check to see if boundary.rect.min_lat/min_lon/max_lat/max_lon are all available
-  if (geometric_filters_apply && ['min_lat', 'min_lon', 'max_lat', 'max_lon'].every((f) => {
+  if (do_geometric_filters_apply && ['min_lat', 'min_lon', 'max_lat', 'max_lon'].every((f) => {
     return _.has(clean, `boundary.rect.${f}`);
   })) {
     const polygon = [
@@ -121,10 +120,9 @@ function getBoundaryRectangleFilter(clean, geometric_filters_apply) {
 }
 
 // return a function that detects if a result is inside a circle if a circle is available
-// if there's no circle, return a function that always returns true
-function getBoundaryCircleFilter(clean, geometric_filters_apply) {
+function getBoundaryCircleFilter(clean, do_geometric_filters_apply) {
   // check to see if boundary.circle.lat/lon/radius are all available
-  if (geometric_filters_apply && ['lat', 'lon', 'radius'].every((f) => {
+  if (do_geometric_filters_apply && ['lat', 'lon', 'radius'].every((f) => {
     return _.has(clean, `boundary.circle.${f}`);
   })) {
     const center = {
@@ -168,7 +166,7 @@ function synthesizeDocs(boundaryCountry, result) {
     logger.error(`could not parse centroid for id ${result.id}`);
   }
 
-  // lodash conformsTo verifies that an object has a property with a certain format
+  // _.conformsTo verifies that an object property has a certain format
   if (_.conformsTo(result.geom, { 'bbox': is4CommaDelimitedNumbers } )) {
     const parsedBoundingBox = result.geom.bbox.split(',').map(_.toFinite);
     doc.setBoundingBox({
@@ -221,7 +219,7 @@ function buildESDoc(doc) {
   return _.extend(esDoc.data, { _id: esDoc._id, _type: esDoc._type });
 }
 
-function setup(placeholderService, geometric_filters_apply, should_execute) {
+function setup(placeholderService, do_geometric_filters_apply, should_execute) {
   function controller( req, res, next ){
     // bail early if req/res don't pass conditions for execution
     if (!should_execute(req, res)) {
@@ -234,7 +232,7 @@ function setup(placeholderService, geometric_filters_apply, should_execute) {
         req.errors.push( _.get(err, 'message', err));
 
       } else {
-        const boundaryCountry = geometric_filters_apply ? _.get(req, ['clean', 'boundary.country']) : undefined;
+        const boundaryCountry = do_geometric_filters_apply ? _.get(req, ['clean', 'boundary.country']) : undefined;
 
         // convert results to ES docs
         // boundary.country filter must happen after synthesis since multiple
@@ -249,13 +247,13 @@ function setup(placeholderService, geometric_filters_apply, should_execute) {
                     // filter out results that don't match on requested layer(s)
                     .filter(getLayersFilter(req.clean))
                     // filter out results that don't match on any lineage country
-                    .filter(getBoundaryCountryFilter(req.clean, geometric_filters_apply))
+                    .filter(getBoundaryCountryFilter(req.clean, do_geometric_filters_apply))
                     // clean up geom.lat/lon for boundary rect/circle checks
                     .map(numberifyGeomLatLon)
                     // filter out results that aren't in the boundary.rect
-                    .filter(getBoundaryRectangleFilter(req.clean, geometric_filters_apply))
+                    .filter(getBoundaryRectangleFilter(req.clean, do_geometric_filters_apply))
                     // filter out results that aren't in the boundary.circle
-                    .filter(getBoundaryCircleFilter(req.clean, geometric_filters_apply))
+                    .filter(getBoundaryCircleFilter(req.clean, do_geometric_filters_apply))
                     // convert results to ES docs
                     .map(_.partial(synthesizeDocs, boundaryCountry));
 
