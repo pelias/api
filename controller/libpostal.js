@@ -12,7 +12,7 @@ function setup(should_execute) {
     // parse text with query parser
     const parsed_text = text_analyzer.parse(req.clean.text);
 
-    if (!_.isUndefined(parsed_text)) {
+    if (parsed_text !== undefined) {
       // if a known ISO2 country was parsed, convert it to ISO3
       if (_.has(parsed_text, 'country') && iso3166.is2(_.toUpper(parsed_text.country))) {
         parsed_text.country = iso3166.to3(_.toUpper(parsed_text.country));
