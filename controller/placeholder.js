@@ -98,6 +98,7 @@ function getBoundaryCountryFilter(clean, geometric_filters_apply) {
 // return a function that detects if a result is inside a bbox if a bbox is available
 // if there's no bbox, return a function that always returns true
 function getBoundaryRectangleFilter(clean, geometric_filters_apply) {
+  // check to see if boundary.rect.min_lat/min_lon/max_lat/max_lon are all available
   if (geometric_filters_apply && ['min_lat', 'min_lon', 'max_lat', 'max_lon'].every((f) => {
     return _.has(clean, `boundary.rect.${f}`);
   })) {
@@ -107,12 +108,14 @@ function getBoundaryRectangleFilter(clean, geometric_filters_apply) {
       { latitude: clean['boundary.rect.max_lat'], longitude: clean['boundary.rect.max_lon'] },
       { latitude: clean['boundary.rect.min_lat'], longitude: clean['boundary.rect.max_lon'] }
     ];
+    // isPointInside takes polygon last, so create a function that has it pre-populated
     const isPointInsidePolygon = _.partialRight(geolib.isPointInside, polygon);
 
     return _.partial(isInsideGeometry, isPointInsidePolygon);
 
   }
 
+  // there's no bbox filter, so return a function that always returns true
   return () => true;
 
 }
@@ -120,6 +123,7 @@ function getBoundaryRectangleFilter(clean, geometric_filters_apply) {
 // return a function that detects if a result is inside a circle if a circle is available
 // if there's no circle, return a function that always returns true
 function getBoundaryCircleFilter(clean, geometric_filters_apply) {
+  // check to see if boundary.circle.lat/lon/radius are all available
   if (geometric_filters_apply && ['lat', 'lon', 'radius'].every((f) => {
     return _.has(clean, `boundary.circle.${f}`);
   })) {
@@ -128,12 +132,15 @@ function getBoundaryCircleFilter(clean, geometric_filters_apply) {
       longitude: clean['boundary.circle.lon']
     };
     const radiusInMeters = clean['boundary.circle.radius'] * 1000;
+
+    // isPointInCircle takes circle/radius last, so create a function that has them pre-populated
     const isPointInCircle = _.partialRight(geolib.isPointInCircle, center, radiusInMeters);
 
     return _.partial(isInsideGeometry, isPointInCircle);
 
   }
 
+  // there's no circle filter, so return a function that always returns true
   return () => true;
 
 }
@@ -143,6 +150,7 @@ function isInsideGeometry(f, result) {
   return hasLatLon(result) ? f(getLatLon(result)) : false;
 }
 
+// returns true if hierarchyElement has both name and id
 function placetypeHasNameAndId(hierarchyElement) {
   return !_.isEmpty(_.trim(hierarchyElement.name)) &&
           !_.isEmpty(_.trim(hierarchyElement.id));

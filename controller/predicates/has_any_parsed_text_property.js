@@ -7,6 +7,7 @@ module.exports = function() {
   // save off requested properties since arguments can't be referenced later
   const properties = _.values(arguments);
 
+  // return true if any of the supplied properties are in clean.parsed_text
   return (request, response) => !_.isEmpty(
     _.intersection(
       properties,
