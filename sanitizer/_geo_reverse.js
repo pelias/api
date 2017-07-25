@@ -29,11 +29,6 @@ module.exports = function sanitize( raw, clean ){
     raw['boundary.circle.lat'] = clean['point.lat'];
     raw['boundary.circle.lon'] = clean['point.lon'];
 
-    // if no radius was passed, set the default
-    if ( _.isUndefined( raw['boundary.circle.radius'] ) ) {
-      raw['boundary.circle.radius'] = defaults['boundary:circle:radius'];
-    }
-
     // santize the boundary.circle
     geo_common.sanitize_circle( 'boundary.circle', clean, raw, CIRCLE_IS_REQUIRED );
 

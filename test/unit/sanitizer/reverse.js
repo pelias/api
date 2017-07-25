@@ -10,7 +10,6 @@ var reverse  = require('../../../sanitizer/reverse'),
                       'point.lon': 0,
                       'boundary.circle.lat': 0,
                       'boundary.circle.lon': 0,
-                      'boundary.circle.radius': parseFloat(defaults['boundary:circle:radius']),
                       size: 10,
                       private: false
                     };
