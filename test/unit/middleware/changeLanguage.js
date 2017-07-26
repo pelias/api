@@ -2,6 +2,7 @@
 var fs = require('fs'),
     tmp = require('tmp'),
     setup = require('../../../middleware/changeLanguage');
+const proxyquire = require('proxyquire').noCallThru();
 
 // load middleware using the default pelias config
 var load = function(){
@@ -144,7 +145,7 @@ module.exports.tests.hit = function(test, common) {
         name: { default: 'London' },
         parent: {
           locality_id: [ 101735809 ],
-          locaity: [ 'London' ]
+          locality: [ 'London' ]
         }
       }
     ]};
@@ -158,23 +159,23 @@ module.exports.tests.hit = function(test, common) {
       cb( null, {
         '101750367': {
           'names': {
-            'default':'London',
-            'chi':'倫敦',
-            'spa':'Londres',
-            'eng':'London',
-            'hin':'लंदन',
-            'ara':'لندن',
-            'por':'Londres',
-            'ben':'লন্ডন',
-            'rus':'Лондон',
-            'jpn':'ロンドン',
-            'kor':'런던'
+            'default':['London'],
+            'chi':['倫敦'],
+            'spa':['Londres'],
+            'eng':['London'],
+            'hin':['लंदन'],
+            'ara':['لندن'],
+            'por':['Londres'],
+            'ben':['লন্ডন'],
+            'rus':['Лондон'],
+            'jpn':['ロンドン'],
+            'kor':['런던']
           }
         },
         '101735809': {
           'names':{
-            'default':'London',
-            'eng':'London'
+            'default':['London'],
+            'eng':['London']
           }
         }
       });
@@ -195,13 +196,66 @@ module.exports.tests.hit = function(test, common) {
           name: { default: 'London' },
           parent: {
             locality_id: [ 101735809 ],
-            locaity: [ 'London' ]
+            locality: [ 'London' ]
           }
         }
       ]});
       t.end();
     });
   });
+
+  test('empty array name translation should not change the value', t => {
+    t.plan(2);
+
+    const req = { language: { iso6393: 'ISO3 value' } };
+    const res = {
+      data: [
+        {
+          layer: 'locality',
+          name: { default: 'original name' },
+          parent: {
+            locality_id: [ 123 ],
+            locality: [ 'original name' ]
+          }
+        }
+      ]
+    };
+
+    const changeLanguage = proxyquire('../../../middleware/changeLanguage', {
+      '../service/language': {
+        findById: () => ({
+          query: (ids, callback) => {
+            t.deepEquals(ids, ['123']);
+            callback(null, {
+              '123': {
+                'names': {
+                  'ISO3 value':[]
+                }
+              }
+            });
+          }
+        })
+      }
+    })();
+
+    changeLanguage(req, res, () => {
+      t.deepEqual( res, { data: [
+        {
+          layer: 'locality',
+          name: {
+            default: 'original name'
+          },
+          parent: {
+            locality_id: [ 123 ],
+            locality: [ 'original name' ]
+          }
+        }
+      ]});
+
+    });
+
+  });
+
 };
 
 module.exports.all = function (tape, common) {

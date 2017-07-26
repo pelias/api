@@ -287,8 +287,7 @@ module.exports.tests.success = (test, common) => {
               'default': 'name 3'
             },
             population: 4321,
-            popularity: 8765,
-            parent: { }
+            popularity: 8765
           }
         ]
       };
@@ -352,8 +351,7 @@ module.exports.tests.success = (test, common) => {
             },
             phrase: {
               'default': 'name 1'
-            },
-            parent: { }
+            }
           }
         ]
       };
@@ -413,8 +411,7 @@ module.exports.tests.success = (test, common) => {
             },
             phrase: {
               'default': 'name 1'
-            },
-            parent: { }
+            }
           }
         ]
       };
@@ -472,8 +469,7 @@ module.exports.tests.success = (test, common) => {
             },
             phrase: {
               'default': 'name 1'
-            },
-            parent: { }
+            }
           }
         ]
       };
@@ -538,8 +534,7 @@ module.exports.tests.success = (test, common) => {
               },
               phrase: {
                 'default': 'name 2'
-              },
-              parent: { }
+              }
             }
           ]
         };
@@ -608,8 +603,7 @@ module.exports.tests.success = (test, common) => {
             },
             phrase: {
               'default': 'name 1'
-            },
-            parent: { }
+            }
           }
         ]
       };
@@ -782,8 +776,7 @@ module.exports.tests.result_filtering = (test, common) => {
             },
             phrase: {
               'default': 'name 1'
-            },
-            parent: { }
+            }
           },
           {
             _id: '10',
@@ -800,8 +793,7 @@ module.exports.tests.result_filtering = (test, common) => {
             },
             phrase: {
               'default': 'name 10'
-            },
-            parent: { }
+            }
           }
         ]
       };
@@ -968,8 +960,7 @@ module.exports.tests.result_filtering = (test, common) => {
             },
             phrase: {
               'default': 'name 1'
-            },
-            parent: { }
+            }
           },
           {
             _id: '10',
@@ -986,8 +977,7 @@ module.exports.tests.result_filtering = (test, common) => {
             },
             phrase: {
               'default': 'name 10'
-            },
-            parent: { }
+            }
           }
         ]
       };
@@ -1107,8 +1097,7 @@ module.exports.tests.result_filtering = (test, common) => {
             },
             phrase: {
               'default': 'name 1'
-            },
-            parent: { }
+            }
           },
           {
             _id: '3',
@@ -1125,8 +1114,7 @@ module.exports.tests.result_filtering = (test, common) => {
             },
             phrase: {
               'default': 'name 3'
-            },
-            parent: { }
+            }
           },
           {
             _id: '5',
@@ -1143,8 +1131,7 @@ module.exports.tests.result_filtering = (test, common) => {
             },
             phrase: {
               'default': 'name 5'
-            },
-            parent: { }
+            }
           }
         ]
       };
@@ -1567,8 +1554,7 @@ module.exports.tests.geometry_errors = (test, common) => {
             },
             phrase: {
               'default': 'name 1'
-            },
-            parent: {}
+            }
           }
         ]
       };
@@ -1628,8 +1614,7 @@ module.exports.tests.centroid_errors = (test, common) => {
             },
             phrase: {
               'default': 'name 1'
-            },
-            parent: { }
+            }
           }
         ]
       };
@@ -1689,8 +1674,7 @@ module.exports.tests.centroid_errors = (test, common) => {
             },
             phrase: {
               'default': 'name 1'
-            },
-            parent: { }
+            }
           }
         ]
       };
@@ -1763,8 +1747,7 @@ module.exports.tests.boundingbox_errors = (test, common) => {
               },
               phrase: {
                 'default': 'name 1'
-              },
-              parent: { }
+              }
             }
           ]
         };

@@ -84,31 +84,11 @@ module.exports.tests.success_conditions = (test, common) => {
 
   });
 
-  test('boundary.circle.radius not specified should use default', (t) => {
-    const raw = {
-      'point.lat': '12.121212',
-      'point.lon': '21.212121'
-    };
-    const clean = {};
-    const errorsAndWarnings = sanitize(raw, clean);
-
-    t.equals(raw['boundary.circle.lat'], 12.121212);
-    t.equals(raw['boundary.circle.lon'], 21.212121);
-    t.equals(raw['boundary.circle.radius'], defaults['boundary:circle:radius'], 'should be from defaults');
-    t.equals(clean['boundary.circle.lat'], 12.121212);
-    t.equals(clean['boundary.circle.lon'], 21.212121);
-    t.equals(clean['boundary.circle.radius'], parseFloat(defaults['boundary:circle:radius']), 'should be same as raw');
-
-    t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] });
-    t.end();
-
-  });
-
 };
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`SANTIZE _geo_reverse ${name}`, testFunction);
+    return tape(`SANITIZE _geo_reverse ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){

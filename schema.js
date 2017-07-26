@@ -12,14 +12,12 @@ const Joi = require('joi');
 // optional:
 // * api.accessLog (string)
 // * api.relativeScores (boolean)
-// * api.legacyUrl (string)
 // * api.localization (flipNumberAndStreetCountries is array of 3 character strings)
 module.exports = Joi.object().keys({
   api: Joi.object().keys({
     version: Joi.string(),
     indexName: Joi.string(),
     host: Joi.string(),
-    legacyUrl: Joi.string(),
     accessLog: Joi.string(),
     relativeScores: Joi.boolean(),
     requestRetries: Joi.number().integer().min(0),
@@ -39,7 +37,11 @@ module.exports = Joi.object().keys({
         timeout: Joi.number().integer().optional().default(250).min(0),
         retries: Joi.number().integer().optional().default(3).min(0),
       }).unknown(false).requiredKeys('url')
-    }).unknown(false).default({}) // default api.services to an empty object
+    }).unknown(false).default({}), // default api.services to an empty object
+    defaultParameters: Joi.object().keys({
+        'focus.point.lat': Joi.number(),
+        'focus.point.lon': Joi.number(),
+    }).unknown(true).default({})
 
   }).requiredKeys('version', 'indexName', 'host').unknown(true),
   esclient: Joi.object().keys({
