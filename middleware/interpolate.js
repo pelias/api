@@ -1,7 +1,6 @@
-
-var async = require('async');
-var logger = require( 'pelias-logger' ).get( 'api' );
-var service = require('../service/interpolation');
+const async = require('async');
+const logger = require( 'pelias-logger' ).get( 'api' );
+const _ = require('lodash');
 
 /**
 example response from interpolation web service:
@@ -21,132 +20,96 @@ example response from interpolation web service:
 }
 **/
 
-function setup() {
-
-  var transport = service.search();
-  var middleware = function(req, res, next) {
-
-    // no-op, user did not request an address
-    if( !isAddressQuery( req ) ){
+function setup(service, should_execute) {
+  return function controller(req, res, next) {
+    if (!should_execute(req, res)) {
       return next();
     }
 
-    // bind parsed_text variables to function call
-    var bound = interpolate.bind( transport, req.clean.parsed_text );
+    // bind the service to the req which doesn't change
+    const req_bound_service = _.partial(service, req);
+
+    // only interpolate the street-layer results
+    // save this off into a separate array so that when docs are annotated
+    //  after the interpolate results are returned, no complicated bookkeeping is needed
+    const street_results = _.get(res, 'data', []).filter(result => result.layer === 'street');
 
     // perform interpolations asynchronously for all relevant hits
-    var timer = (new Date()).getTime();
-    async.map( res.data, bound, function( err, results ){
-
-      // update res.data with the mapped values
-      if( !err ){
-        res.data = results;
+    const start = (new Date()).getTime();
+    async.map(street_results, req_bound_service, (err, interpolation_results) => {
+      if (err) {
+        logger.error(`[middleware:interpolation] ${_.defaultTo(err.message, err)}`);
+        return next();
       }
 
-      // sort the results to ensure that addresses show up higher than street centroids      
-      res.data = res.data.sort((a, b) => {
-        if (a.layer === 'address' && b.layer !== 'address') { return -1; }
-        if (a.layer !== 'address' && b.layer === 'address') { return 1; }
-        return 0;
+      interpolation_results.forEach((interpolation_result, idx) => {
+        const source_result = street_results[idx];
+
+        // invalid / not useful response, debug log for posterity
+        // note: leave this hit unmodified
+        if (!_.has(interpolation_result, 'properties')) {
+          logger.debug(`[interpolation] [miss] ${req.clean.parsed_text}`);
+          return;
+        }
+
+        // the interpolation service returned a valid result, debug log for posterity
+        // note: we now merge those values with the existing 'street' record
+        logger.debug(`[interpolation] [hit] ${req.clean.parsed_text} ${JSON.stringify(interpolation_result)}`);
+
+        // -- metatdata --
+        source_result.layer = 'address';
+        source_result.match_type = 'interpolated';
+
+        // -- name --
+        source_result.name.default = `${interpolation_result.properties.number} ${source_result.name.default}`;
+
+        // -- source --
+        if (interpolation_result.properties.source === 'OSM') {
+          source_result.source = 'openstreetmap';
+        } else if (interpolation_result.properties.source === 'OA') {
+          source_result.source = 'openaddresses';
+        } else {
+          source_result.source = 'mixed';
+        }
+
+        // -- source_id --
+        // note: interpolated values have no source_id
+        delete source_result.source_id; // remove original street source_id
+        if( interpolation_result.properties.hasOwnProperty( 'source_id' ) ){
+          source_result.source_id = interpolation_result.properties.source_id;
+        }
+
+        // -- address_parts --
+        source_result.address_parts.number = interpolation_result.properties.number;
+
+        // -- geo --
+        source_result.center_point = {
+          lat: interpolation_result.properties.lat,
+          lon: interpolation_result.properties.lon
+        };
+
+        // -- bbox --
+        delete source_result.bounding_box;
+
       });
 
-      // log the execution time, continue
-      logger.info( '[interpolation] [took]', (new Date()).getTime() - timer, 'ms' );
-      next();
-    });
-  };
-
-  middleware.transport = transport;
-  return middleware;
-}
-
-function interpolate( parsed_text, hit, cb ){
-
-  // no-op, this hit is not from the 'street' layer
-  // note: no network request is performed.
-  if( !hit || hit.layer !== 'street' ){
-    return cb( null, hit );
-  }
-
-  // query variables
-  var coord = hit.center_point;
-  var number = parsed_text.number;
-  var street = hit.address_parts.street || parsed_text.street;
-
-  // query interpolation service
-  this.query( coord, number, street, function( err, data ){
-
-    // an error occurred
-    // note: leave this hit unmodified
-    if( err ){
-      logger.error( '[interpolation] [error]', err );
-      return cb( null, hit );
-    }
-
-    // invalid / not useful response
-    // note: leave this hit unmodified
-    if( !data || !data.hasOwnProperty('properties') ){
-      logger.info( '[interpolation] [miss]', parsed_text );
-      return cb( null, hit );
-    }
-
-    // the interpolation service returned a valid result
-    // note: we now merge thos values with the existing 'street' record.
-    logger.info( '[interpolation] [hit]', parsed_text, data );
-
-    // safety first!
-    try {
-
-      // -- metatdata --
-      hit.layer = 'address';
-      hit.match_type = 'interpolated';
-
-      // -- name --
-      hit.name.default = data.properties.number + ' ' + hit.name.default;
-
-      // -- source --
-      var source = 'mixed';
-      if( data.properties.source === 'OSM' ){ source = 'openstreetmap'; }
-      else if( data.properties.source === 'OA' ){ source = 'openaddresses'; }
-      hit.source = source;
-
-      // -- source_id --
-      // note: interpolated values have no source_id
-      delete hit.source_id; // remove original street source_id
-      if( data.properties.hasOwnProperty( 'source_id' ) ){
-        hit.source_id = data.properties.source_id;
+      // sort the results to ensure that addresses show up higher than street centroids
+      if (_.has(res, 'data')) {
+        res.data.sort((a, b) => {
+          if (a.layer === 'address' && b.layer !== 'address') { return -1; }
+          if (a.layer !== 'address' && b.layer === 'address') { return 1; }
+          return 0;
+        });
       }
 
-      // -- address_parts --
-      hit.address_parts.number = data.properties.number;
+      // log the execution time, continue
+      logger.info( `[interpolation] [took] ${(new Date()).getTime() - start} ms`);
+      next();
 
-      // -- geo --
-      hit.center_point = {
-        lat: data.properties.lat,
-        lon: data.properties.lon
-      };
+    });
 
-      // -- bbox --
-      delete hit.bounding_box;
-
-      // return the modified hit
-      return cb( null, hit );
-
-    // a syntax error occurred in the code above (this shouldn't happen!)
-    // note: the hit object may be partially modified, could possibly be invalid
-    } catch( e ){
-      logger.error( '[interpolation] [error]', e, e.stack );
-      return cb( null, hit );
-    }
-  });
-}
-
-// boolean function to check if an address was requested by the user
-function isAddressQuery( req ){
-  return req && req.hasOwnProperty('clean') &&
-         req.clean.hasOwnProperty('parsed_text') &&
-         req.clean.parsed_text.hasOwnProperty('number') &&
-         req.clean.parsed_text.hasOwnProperty('street');
+  };
+  
 }
 
 module.exports = setup;

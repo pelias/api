@@ -101,8 +101,7 @@ var tests = [
   require('./service/configurations/PlaceHolder'),
   require('./service/configurations/PointInPolygon'),
   require('./service/mget'),
-  require('./service/search'),
-  require('./service/interpolation')
+  require('./service/search')
 ];
 
 tests.map(function(t) {
