@@ -2,6 +2,7 @@
 
 const Joi = require('joi');
 const schema = require('../../schema');
+const _ = require('lodash');
 
 module.exports.tests = {};
 
@@ -540,72 +541,30 @@ module.exports.tests.api_services_validation = (test, common) => {
 
 };
 
-module.exports.tests.placeholder_service_validation = (test, common) => {
+module.exports.tests.service_validation = (test, common) => {
+  // these tests apply for all the individual service definitions
+  const services = ['pip', 'placeholder', 'language', 'interpolation'];
+
   test('timeout and retries not specified should default to 250 and 3', (t) => {
-    const config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          placeholder: {
-            url: 'http://localhost'
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.value.api.services.placeholder.timeout, 250);
-    t.equals(result.value.api.services.placeholder.retries, 3);
-    t.end();
-
-  });
-
-  test('when api.services.placeholder is defined, url is required', (t) => {
-    var config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          placeholder: {
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"url" is required');
-    t.end();
-
-  });
-
-  test('non-string api.services.placeholder.url should throw error', (t) => {
-    [null, 17, {}, [], true].forEach((value) => {
-      var config = {
+    services.forEach(service => {
+      const config = {
         api: {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          services: {
-            placeholder: {
-              url: value
-            }
-          }
+          services: {}
         },
         esclient: {}
       };
 
+      config.api.services[service] = {
+        url: 'http://localhost'
+      };
+
       const result = Joi.validate(config, schema);
 
-      t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"url" must be a string');
+      t.equals(result.value.api.services[service].timeout, 250);
+      t.equals(result.value.api.services[service].retries, 3);
 
     });
 
@@ -613,125 +572,53 @@ module.exports.tests.placeholder_service_validation = (test, common) => {
 
   });
 
-  test('non-http/https api.services.placeholder.url should throw error', (t) => {
-    ['ftp', 'git', 'unknown'].forEach((scheme) => {
-      var config = {
+  test('when api.services.service is defined, url is required', (t) => {
+    services.forEach(service => {
+      const config = {
         api: {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          services: {
-            placeholder: {
-              url: `${scheme}://localhost`
-            }
-          }
+          services: {}
         },
         esclient: {}
       };
 
+      config.api.services[service] = {};
+
       const result = Joi.validate(config, schema);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"url" must be a valid uri with a scheme matching the https\? pattern');
-
+      t.equals(result.error.details[0].message, '"url" is required');
     });
 
-    t.end();
-
-  });
-
-  test('non-url children of api.services.placeholder should be disallowed', (t) => {
-    var config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          placeholder: {
-            url: 'http://localhost',
-            unknown_property: 'value'
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"unknown_property" is not allowed');
-    t.end();
-
-  });
-
-};
-
-module.exports.tests.pip_service_validation = (test, common) => {
-  test('timeout and retries not specified should default to 250 and 3', (t) => {
-    const config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          pip: {
-            url: 'http://localhost'
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.value.api.services.pip.timeout, 250);
-    t.equals(result.value.api.services.pip.retries, 3);
-    t.end();
-
-  });
-
-  test('when api.services.pip is defined, url is required', (t) => {
-    var config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          pip: {
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"url" is required');
     t.end();
 
   });
 
   test('non-string api.services.pip.url should throw error', (t) => {
-    [null, 17, {}, [], true].forEach((value) => {
-      var config = {
-        api: {
-          version: 'version value',
-          indexName: 'index name value',
-          host: 'host value',
-          services: {
-            pip: {
-              url: value
-            }
-          }
-        },
-        esclient: {}
-      };
+    services.forEach(service => {
+      [null, 17, {}, [], true].forEach(value => {
+        const config = {
+          api: {
+            version: 'version value',
+            indexName: 'index name value',
+            host: 'host value',
+            services: {}
+          },
+          esclient: {}
+        };
 
-      const result = Joi.validate(config, schema);
+        config.api.services[service] = {
+          url: value
+        };
 
-      t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"url" must be a string');
+        const result = Joi.validate(config, schema);
+
+        t.equals(result.error.details.length, 1);
+        t.equals(result.error.details[0].message, '"url" must be a string');
+
+      });
 
     });
 
@@ -740,25 +627,28 @@ module.exports.tests.pip_service_validation = (test, common) => {
   });
 
   test('non-http/https api.services.pip.url should throw error', (t) => {
-    ['ftp', 'git', 'unknown'].forEach((scheme) => {
-      var config = {
-        api: {
-          version: 'version value',
-          indexName: 'index name value',
-          host: 'host value',
-          services: {
-            pip: {
-              url: `${scheme}://localhost`
-            }
-          }
-        },
-        esclient: {}
-      };
+    services.forEach(service => {
+      ['ftp', 'git', 'unknown'].forEach((scheme) => {
+        const config = {
+          api: {
+            version: 'version value',
+            indexName: 'index name value',
+            host: 'host value',
+            services: {}
+          },
+          esclient: {}
+        };
 
-      const result = Joi.validate(config, schema);
+        config.api.services[service] = {
+          url: `${scheme}://localhost`
+        };
 
-      t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"url" must be a valid uri with a scheme matching the https\? pattern');
+        const result = Joi.validate(config, schema);
+
+        t.equals(result.error.details.length, 1);
+        t.equals(result.error.details[0].message, '"url" must be a valid uri with a scheme matching the https\? pattern');
+
+      });
 
     });
 
@@ -767,50 +657,57 @@ module.exports.tests.pip_service_validation = (test, common) => {
   });
 
   test('non-url children of api.services.pip should be disallowed', (t) => {
-    var config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          pip: {
-            url: 'http://localhost',
-            unknown_property: 'value'
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"unknown_property" is not allowed');
-    t.end();
-
-  });
-
-  test('non-number timeout should throw error', (t) => {
-    [null, 'string', {}, [], false].forEach((value) => {
+    services.forEach(service => {
       const config = {
         api: {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          services: {
-            pip: {
-              url: 'http://localhost',
-              timeout: value
-            }
-          }
+          services: {}
         },
         esclient: {}
+      };
+
+      config.api.services[service] = {
+        url: 'http://localhost',
+        unknown_property: 'value'
       };
 
       const result = Joi.validate(config, schema);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"timeout" must be a number');
+      t.equals(result.error.details[0].message, '"unknown_property" is not allowed');
+
+    });
+
+    t.end();
+
+  });
+
+  test('non-number timeout should throw error', (t) => {
+    services.forEach(service => {
+      [null, 'string', {}, [], false].forEach((value) => {
+        const config = {
+          api: {
+            version: 'version value',
+            indexName: 'index name value',
+            host: 'host value',
+            services: {}
+          },
+          esclient: {}
+        };
+
+        config.api.services[service] = {
+          url: 'http://localhost',
+          timeout: value
+        };
+
+        const result = Joi.validate(config, schema);
+
+        t.equals(result.error.details.length, 1);
+        t.equals(result.error.details[0].message, '"timeout" must be a number');
+
+      });
 
     });
 
@@ -819,74 +716,85 @@ module.exports.tests.pip_service_validation = (test, common) => {
   });
 
   test('non-integer timeout should throw error', (t) => {
-    const config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          pip: {
-            url: 'http://localhost',
-            timeout: 17.3
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"timeout" must be an integer');
-    t.end();
-
-  });
-
-  test('negative timeout should throw error', (t) => {
-    const config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          pip: {
-            url: 'http://localhost',
-            timeout: -1
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"timeout" must be larger than or equal to 0');
-    t.end();
-
-  });
-
-  test('non-number retries should throw error', (t) => {
-    [null, 'string', {}, [], false].forEach((value) => {
+    services.forEach(service => {
       const config = {
         api: {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          services: {
-            pip: {
-              url: 'http://localhost',
-              retries: value
-            }
-          }
+          services: {}
         },
         esclient: {}
+      };
+
+      config.api.services[service] = {
+        url: 'http://localhost',
+        timeout: 17.3
       };
 
       const result = Joi.validate(config, schema);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"retries" must be a number');
+      t.equals(result.error.details[0].message, '"timeout" must be an integer');
+
+    });
+
+    t.end();
+
+  });
+
+  test('negative timeout should throw error', (t) => {
+    services.forEach(service => {
+      const config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          services: {}
+        },
+        esclient: {}
+      };
+
+      config.api.services[service] = {
+        url: 'http://localhost',
+        timeout: -1
+      };
+
+      const result = Joi.validate(config, schema);
+
+      t.equals(result.error.details.length, 1);
+      t.equals(result.error.details[0].message, '"timeout" must be larger than or equal to 0');
+
+    });
+
+    t.end();
+
+  });
+
+  test('non-number retries should throw error', (t) => {
+    services.forEach(service => {
+      [null, 'string', {}, [], false].forEach((value) => {
+        const config = {
+          api: {
+            version: 'version value',
+            indexName: 'index name value',
+            host: 'host value',
+            services: {}
+          },
+          esclient: {}
+        };
+
+        config.api.services[service] = {
+          url: 'http://localhost',
+          retries: value
+        };
+
+        const result = Joi.validate(config, schema);
+
+        t.equals(result.error.details.length, 1);
+        t.equals(result.error.details[0].message, '"retries" must be a number');
+
+      });
 
     });
 
@@ -895,327 +803,57 @@ module.exports.tests.pip_service_validation = (test, common) => {
   });
 
   test('non-integer retries should throw error', (t) => {
-    const config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          pip: {
-            url: 'http://localhost',
-            retries: 17.3
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"retries" must be an integer');
-    t.end();
-
-  });
-
-  test('negative retries should throw error', (t) => {
-    const config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          pip: {
-            url: 'http://localhost',
-            retries: -1
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"retries" must be larger than or equal to 0');
-    t.end();
-
-  });
-
-};
-
-module.exports.tests.language_service_validation = (test, common) => {
-  test('timeout and retries not specified should default to 250 and 3', (t) => {
-    const config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          language: {
-            url: 'http://localhost'
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.value.api.services.language.timeout, 250);
-    t.equals(result.value.api.services.language.retries, 3);
-    t.end();
-
-  });
-
-  test('when api.services.language is defined, url is required', (t) => {
-    var config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          language: {
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"url" is required');
-    t.end();
-
-  });
-
-  test('non-string api.services.language.url should throw error', (t) => {
-    [null, 17, {}, [], true].forEach((value) => {
-      var config = {
-        api: {
-          version: 'version value',
-          indexName: 'index name value',
-          host: 'host value',
-          services: {
-            language: {
-              url: value
-            }
-          }
-        },
-        esclient: {}
-      };
-
-      const result = Joi.validate(config, schema);
-
-      t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"url" must be a string');
-
-    });
-
-    t.end();
-
-  });
-
-  test('non-http/https api.services.language.url should throw error', (t) => {
-    ['ftp', 'git', 'unknown'].forEach((scheme) => {
-      var config = {
-        api: {
-          version: 'version value',
-          indexName: 'index name value',
-          host: 'host value',
-          services: {
-            language: {
-              url: `${scheme}://localhost`
-            }
-          }
-        },
-        esclient: {}
-      };
-
-      const result = Joi.validate(config, schema);
-
-      t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"url" must be a valid uri with a scheme matching the https\? pattern');
-
-    });
-
-    t.end();
-
-  });
-
-  test('non-url children of api.services.language should be disallowed', (t) => {
-    var config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          language: {
-            url: 'http://localhost',
-            unknown_property: 'value'
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"unknown_property" is not allowed');
-    t.end();
-
-  });
-
-  test('non-number timeout should throw error', (t) => {
-    [null, 'string', {}, [], false].forEach((value) => {
+    services.forEach(service => {
       const config = {
         api: {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          services: {
-            language: {
-              url: 'http://localhost',
-              timeout: value
-            }
-          }
+          services: {}
         },
         esclient: {}
+      };
+
+      config.api.services[service] = {
+        url: 'http://localhost',
+        retries: 17.3
       };
 
       const result = Joi.validate(config, schema);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"timeout" must be a number');
+      t.equals(result.error.details[0].message, '"retries" must be an integer');
 
     });
 
-    t.end();
-
-  });
-
-  test('non-integer timeout should throw error', (t) => {
-    const config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          language: {
-            url: 'http://localhost',
-            timeout: 17.3
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"timeout" must be an integer');
-    t.end();
-
-  });
-
-  test('negative timeout should throw error', (t) => {
-    const config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          language: {
-            url: 'http://localhost',
-            timeout: -1
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"timeout" must be larger than or equal to 0');
-    t.end();
-
-  });
-
-  test('non-number retries should throw error', (t) => {
-    [null, 'string', {}, [], false].forEach((value) => {
-      const config = {
-        api: {
-          version: 'version value',
-          indexName: 'index name value',
-          host: 'host value',
-          services: {
-            language: {
-              url: 'http://localhost',
-              retries: value
-            }
-          }
-        },
-        esclient: {}
-      };
-
-      const result = Joi.validate(config, schema);
-
-      t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"retries" must be a number');
-
-    });
-
-    t.end();
-
-  });
-
-  test('non-integer retries should throw error', (t) => {
-    const config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          language: {
-            url: 'http://localhost',
-            retries: 17.3
-          }
-        }
-      },
-      esclient: {}
-    };
-
-    const result = Joi.validate(config, schema);
-
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"retries" must be an integer');
     t.end();
 
   });
 
   test('negative retries should throw error', (t) => {
-    const config = {
-      api: {
-        version: 'version value',
-        indexName: 'index name value',
-        host: 'host value',
-        services: {
-          language: {
-            url: 'http://localhost',
-            retries: -1
-          }
-        }
-      },
-      esclient: {}
-    };
+    services.forEach(service => {
+      const config = {
+        api: {
+          version: 'version value',
+          indexName: 'index name value',
+          host: 'host value',
+          services: {}
+        },
+        esclient: {}
+      };
 
-    const result = Joi.validate(config, schema);
+      config.api.services[service] = {
+        url: 'http://localhost',
+        retries: -1
+      };
 
-    t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"retries" must be larger than or equal to 0');
+      const result = Joi.validate(config, schema);
+
+      t.equals(result.error.details.length, 1);
+      t.equals(result.error.details[0].message, '"retries" must be larger than or equal to 0');
+
+    });
+
     t.end();
 
   });
