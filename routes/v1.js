@@ -81,6 +81,7 @@ const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin
 // this can probably be more generalized
 const isRequestSourcesOnlyWhosOnFirst = require('../controller/predicates/is_request_sources_only_whosonfirst');
 const hasRequestParameter = require('../controller/predicates/has_request_parameter');
+const hasParsedTextProperties = require('../controller/predicates/has_parsed_text_properties');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
@@ -95,6 +96,7 @@ const serviceWrapper = require('pelias-microservice-wrapper').service;
 const PlaceHolder = require('../service/configurations/PlaceHolder');
 const PointInPolygon = require('../service/configurations/PointInPolygon');
 const Language = require('../service/configurations/Language');
+const Interpolation = require('../service/configurations/Interpolation');
 
 /**
  * Append routes to app
@@ -116,6 +118,10 @@ function addRoutes(app, peliasConfig) {
   const changeLanguageConfiguration = new Language(_.defaultTo(peliasConfig.api.services.language, {}));
   const changeLanguageService = serviceWrapper(changeLanguageConfiguration);
   const isChangeLanguageEnabled = _.constant(changeLanguageConfiguration.isEnabled());
+
+  const interpolationConfiguration = new Interpolation(_.defaultTo(peliasConfig.api.services.interpolation, {}));
+  const interpolationService = serviceWrapper(interpolationConfiguration);
+  const isInterpolationEnabled = _.constant(interpolationConfiguration.isEnabled());
 
   // fallback to coarse reverse when regular reverse didn't return anything
   const coarseReverseShouldExecute = all(
@@ -208,6 +214,16 @@ function addRoutes(app, peliasConfig) {
     hasRequestParameter('lang')
   );
 
+  // interpolate if:
+  // - there's a number and street
+  // - there are street-layer results (these are results that need to be interpolated)
+  const interpolationShouldExecute = all(
+    not(hasRequestErrors),
+    isInterpolationEnabled,
+    hasParsedTextProperties.all('number', 'street'),
+    hasResultsAtLayers('street')
+  );
+
   // execute under the following conditions:
   // - there are no errors or data
   // - request is not coarse OR pip service is disabled
@@ -251,7 +267,7 @@ function addRoutes(app, peliasConfig) {
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
       postProc.confidenceScoresFallback(),
-      postProc.interpolate(),
+      postProc.interpolate(interpolationService, interpolationShouldExecute),
       postProc.sortResponseData(require('pelias-sorting'), hasAdminOnlyResults),
       postProc.dedupe(),
       postProc.accuracy(),
@@ -273,7 +289,7 @@ function addRoutes(app, peliasConfig) {
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
       postProc.confidenceScoresFallback(),
-      postProc.interpolate(),
+      postProc.interpolate(interpolationService, interpolationShouldExecute),
       postProc.dedupe(),
       postProc.accuracy(),
       postProc.localNamingConventions(),
