@@ -3,7 +3,7 @@ module.exports.tests = {};
 const Language = require('../../../../service/configurations/Language');
 
 module.exports.tests.all = (test, common) => {
-  test('getName should return \'placeholder.language\'', (t) => {
+  test('getName should return \'language\'', (t) => {
     const configBlob = {
       url: 'http://localhost:1234',
       timeout: 17,
@@ -12,7 +12,7 @@ module.exports.tests.all = (test, common) => {
 
     const language = new Language(configBlob);
 
-    t.equals(language.getName(), 'placeholder.language');
+    t.equals(language.getName(), 'language');
     t.equals(language.getBaseUrl(), 'http://localhost:1234/');
     t.equals(language.getTimeout(), 17);
     t.equals(language.getRetries(), 19);

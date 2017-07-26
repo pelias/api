@@ -8,7 +8,7 @@ const ServiceConfiguration = require('pelias-microservice-wrapper').ServiceConfi
 
 class Language extends ServiceConfiguration {
   constructor(o) {
-    super('placeholder.language', o);
+    super('language', o);
   }
 
   getParameters(req, res) {
