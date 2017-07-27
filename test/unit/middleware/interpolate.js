@@ -225,8 +225,8 @@ module.exports.tests.success_conditions = (test, common) => {
         callback(null, {
           properties: {
             number: 17,
-            source: 'OSM',
-            source_id: 'openstreetmap source id',
+            source: 'Source Abbr 1',
+            source_id: 'source 1 source id',
             lat: 12.121212,
             lon: 21.212121
           }
@@ -236,8 +236,8 @@ module.exports.tests.success_conditions = (test, common) => {
         callback(null, {
           properties: {
             number: 18,
-            source: 'OA',
-            source_id: 'openaddresses source id',
+            source: 'Source Abbr 2',
+            source_id: 'source 2 source id',
             lat: 13.131313,
             lon: 31.313131
           }
@@ -264,7 +264,13 @@ module.exports.tests.success_conditions = (test, common) => {
     const logger = require('pelias-mock-logger')();
 
     const controller = proxyquire('../../../middleware/interpolate', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
+      '../helper/type_mapping': {
+        source_mapping: {
+          'source abbr 1': ['full source name 1'],
+          'source abbr 2': ['full source name 2']
+        }
+      }
     })(service, () => true);
 
     const req = {
@@ -331,8 +337,8 @@ module.exports.tests.success_conditions = (test, common) => {
             name: {
               default: '17 street name 1'
             },
-            source: 'openstreetmap',
-            source_id: 'openstreetmap source id',
+            source: 'full source name 1',
+            source_id: 'source 1 source id',
             address_parts: {
               number: 17
             },
@@ -348,8 +354,8 @@ module.exports.tests.success_conditions = (test, common) => {
             name: {
               default: '18 street name 3'
             },
-            source: 'openaddresses',
-            source_id: 'openaddresses source id',
+            source: 'full source name 2',
+            source_id: 'source 2 source id',
             address_parts: {
               number: 18
             },

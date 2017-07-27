@@ -1,5 +1,6 @@
 const async = require('async');
 const logger = require( 'pelias-logger' ).get( 'api' );
+const source_mapping = require('../helper/type_mapping').source_mapping;
 const _ = require('lodash');
 
 /**
@@ -64,13 +65,13 @@ function setup(service, should_execute) {
         source_result.name.default = `${interpolation_result.properties.number} ${source_result.name.default}`;
 
         // -- source --
-        if (interpolation_result.properties.source === 'OSM') {
-          source_result.source = 'openstreetmap';
-        } else if (interpolation_result.properties.source === 'OA') {
-          source_result.source = 'openaddresses';
-        } else {
-          source_result.source = 'mixed';
-        }
+        // lookup the lowercased source, defaulting to 'mixed' when not found
+        // the source mapping is a jagged string->array, so default to 'mixed' as an array
+        //  to ensure that subscript works
+        source_result.source = _.defaultTo(
+          source_mapping[_.toLower(interpolation_result.properties.source)],
+          ['mixed']
+        )[0];
 
         // -- source_id --
         // note: interpolated values have no source_id
@@ -109,7 +110,7 @@ function setup(service, should_execute) {
     });
 
   };
-  
+
 }
 
 module.exports = setup;
