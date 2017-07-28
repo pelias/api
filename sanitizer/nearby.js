@@ -4,10 +4,10 @@ var reverseSanitizers = require('./reverse').sanitizer_list;
 
 // add categories to the sanitizer list
 var sanitizers = _.merge({}, reverseSanitizers, {
-  categories: require('../sanitizer/_categories')
+  categories: require('../sanitizer/_categories')()
 });
 
-var sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
+var sanitize = sanitizeAll.runAllChecks;
 
 // export sanitize for testing
 module.exports.sanitize = sanitize;
@@ -15,7 +15,11 @@ module.exports.sanitizer_list = sanitizers;
 
 // middleware
 module.exports.middleware = function( req, res, next ){
-  sanitize( req, function( err, clean ){
+  sanitize(req, sanitizers, ( err, clean ) => {
+    if( err ){
+      res.status(400); // 400 Bad Request
+      return next(err);
+    }
     next();
   });
 };

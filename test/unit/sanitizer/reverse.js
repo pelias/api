@@ -4,6 +4,7 @@
 var reverse  = require('../../../sanitizer/reverse'),
     sanitize = reverse.sanitize,
     middleware = reverse.middleware,
+    sanitizer_list = reverse.sanitizer_list,
     defaults = require('../../../query/reverse_defaults'),
     defaultError = 'missing param \'lat\'',
     defaultClean =  { 'point.lat': 0,
@@ -23,7 +24,7 @@ module.exports.tests = {};
 module.exports.tests.interface = function(test, common) {
   test('sanitize interface', function(t) {
     t.equal(typeof sanitize, 'function', 'sanitize is a function');
-    t.equal(sanitize.length, 2, 'sanitize interface');
+    t.equal(sanitize.length, 3, 'sanitize interface takes one param: req');
     t.end();
   });
   test('middleware interface', function(t) {
@@ -52,7 +53,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
   test('invalid lat', function(t) {
     lats.invalid.forEach( function( lat ){
       var req = { query: { 'point.lat': lat, 'point.lon': 0 } };
-      sanitize(req, function(){
+      sanitize(req, sanitizer_list, () => {
         t.equal(req.errors[0], 'invalid param \'point.lat\': must be >-90 and <90', lat + ' is an invalid latitude');
         t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
       });
@@ -62,7 +63,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
   test('valid lat', function(t) {
     lats.valid.forEach( function( lat ){
       var req = { query: { 'point.lat': lat, 'point.lon': 0 } };
-      sanitize(req, function(){
+      sanitize(req, sanitizer_list, () => {
         var expected_lat = parseFloat( lat );
         t.deepEqual(req.errors, [], 'no errors');
       });
@@ -72,7 +73,7 @@ module.exports.tests.sanitize_lat = function(test, common) {
   test('missing lat', function(t) {
     lats.missing.forEach( function( lat ){
       var req = { query: { 'point.lat': lat, 'point.lon': 0 } };
-      sanitize(req, function(){
+      sanitize(req, sanitizer_list, () => {
         t.equal(req.errors[0], 'missing param \'point.lat\'', 'latitude is a required field');
         t.deepEqual(req.clean, emptyClean, 'clean only has default values set');
       });
@@ -89,7 +90,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
   test('valid lon', function(t) {
     lons.valid.forEach( function( lon ){
       var req = { query: { 'point.lat': 0, 'point.lon': lon } };
-      sanitize(req, function(){
+      sanitize(req, sanitizer_list, () => {
         var expected_lon = parseFloat( lon );
         t.deepEqual(req.errors, [], 'no errors');
       });
@@ -102,7 +103,7 @@ module.exports.tests.sanitize_lon = function(test, common) {
 
       // @todo: why is lat set?
       var expected = { 'point.lat': 0, private: false, size: 10 };
-      sanitize(req, function(){
+      sanitize(req, sanitizer_list, () => {
         t.equal(req.errors[0], 'missing param \'point.lon\'', 'longitude is a required field');
         t.deepEqual(req.clean, expected, 'clean only has default values set');
       });
@@ -114,21 +115,21 @@ module.exports.tests.sanitize_lon = function(test, common) {
 module.exports.tests.sanitize_size = function(test, common) {
   test('invalid size value', function(t) {
     var req = { query: { size: 'a', 'point.lat': 0, 'point.lon': 0 } };
-    sanitize(req, function(){
+    sanitize(req, sanitizer_list, () => {
       t.equal(req.clean.size, 10, 'default size set');
       t.end();
     });
   });
   test('below min size value', function(t) {
     var req = { query: { size: -100, 'point.lat': 0, 'point.lon': 0 } };
-    sanitize(req, function(){
+    sanitize(req, sanitizer_list, () => {
       t.equal(req.clean.size, 1, 'min size set');
       t.end();
     });
   });
   test('above max size value', function(t) {
     var req = { query: { size: 9999, 'point.lat': 0, 'point.lon': 0 } };
-    sanitize(req, function(){
+    sanitize(req, sanitizer_list, () => {
       t.equal(req.clean.size, 40, 'max size set');
       t.end();
     });
@@ -140,7 +141,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   invalid_values.forEach(function(value) {
     test('invalid private param ' + value, function(t) {
       var req = { query: { 'point.lat': 0, 'point.lon': 0, 'private': value } };
-      sanitize(req, function(){
+      sanitize(req, sanitizer_list, () => {
         t.equal(req.clean.private, false, 'default private set (to false)');
         t.end();
       });
@@ -151,7 +152,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   valid_values.forEach(function(value) {
     test('valid private param ' + value, function(t) {
       var req = { query: { 'point.lat': 0, 'point.lon': 0, 'private': value } };
-      sanitize(req, function(){
+      sanitize(req, sanitizer_list, () => {
         t.equal(req.clean.private, true, 'private set to true');
         t.end();
       });
@@ -162,7 +163,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   valid_false_values.forEach(function(value) {
     test('test setting false explicitly ' + value, function(t) {
       var req = { query: { 'point.lat': 0, 'point.lon': 0, 'private': value } };
-      sanitize(req, function(){
+      sanitize(req, sanitizer_list, () => {
         t.equal(req.clean.private, false, 'private set to false');
         t.end();
       });
@@ -171,7 +172,7 @@ module.exports.tests.sanitize_private = function(test, common) {
 
   test('test default behavior', function(t) {
     var req = { query: { 'point.lat': 0, 'point.lon': 0 } };
-    sanitize(req, function(){
+    sanitize(req, sanitizer_list, () => {
       t.equal(req.clean.private, false, 'private set to false');
       t.end();
     });
@@ -193,7 +194,7 @@ module.exports.tests.middleware_success = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /reverse ' + name, testFunction);
+    return tape('SANITIZE /reverse ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

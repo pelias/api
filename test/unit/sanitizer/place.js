@@ -1,6 +1,7 @@
 var place  = require('../../../sanitizer/place'),
     sanitize = place.sanitize,
     middleware = place.middleware,
+    sanitizer_list = place.sanitizer_list,
     defaultClean = { ids: [ { source: 'geonames', layer: 'venue', id: '123' } ], private: false };
 
 // these are the default values you would expect when no input params are specified.
@@ -9,7 +10,7 @@ module.exports.tests = {};
 module.exports.tests.interface = function(test, common) {
   test('sanitize interface', function(t) {
     t.equal(typeof sanitize, 'function', 'sanitize is a function');
-    t.equal(sanitize.length, 2, 'sanitize interface');
+    t.equal(sanitize.length, 3, 'sanitize interface takes one arg: req');
     t.end();
   });
   test('middleware interface', function(t) {
@@ -32,7 +33,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   invalid_values.forEach(function(value) {
     test('invalid private param ' + value, function(t) {
       var req = { query: { ids:'geonames:venue:123', 'private': value } };
-      sanitize(req, function(){
+      sanitize(req, sanitizer_list, () => {
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
         t.equal(req.clean.private, false, 'default private set (to false)');
@@ -45,7 +46,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   valid_values.forEach(function(value) {
     test('valid private param ' + value, function(t) {
       var req = { query: { ids:'geonames:venue:123', 'private': value } };
-      sanitize(req, function(){
+      sanitize(req, sanitizer_list, () => {
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
         t.equal(req.clean.private, true, 'private set to true');
@@ -58,7 +59,7 @@ module.exports.tests.sanitize_private = function(test, common) {
   valid_false_values.forEach(function(value) {
     test('test setting false explicitly ' + value, function(t) {
       var req = { query: { ids:'geonames:venue:123', 'private': value } };
-      sanitize(req, function(){
+      sanitize(req, sanitizer_list, () => {
         t.deepEqual( req.errors, [], 'no errors' );
         t.deepEqual( req.warnings, [], 'no warnings' );
         t.equal(req.clean.private, false, 'private set to false');
@@ -69,7 +70,7 @@ module.exports.tests.sanitize_private = function(test, common) {
 
   test('test default behavior', function(t) {
     var req = { query: { ids:'geonames:venue:123' } };
-    sanitize(req, function(){
+    sanitize(req, sanitizer_list, () => {
       t.deepEqual( req.errors, [], 'no errors' );
       t.deepEqual( req.warnings, [], 'no warnings' );
       t.equal(req.clean.private, false, 'private set to false');
@@ -81,7 +82,7 @@ module.exports.tests.sanitize_private = function(test, common) {
 module.exports.tests.invalid_params = function(test, common) {
   test('no params', function(t) {
     var req = { query: {} };
-    sanitize( req, function(){
+    sanitize(req, sanitizer_list, () => {
       t.equal( req.errors[0], 'invalid param \'ids\': length must be >0', 'error for missing `ids` param');
       t.deepEqual( req.warnings, [], 'no warnings' );
       t.end();
@@ -105,7 +106,7 @@ module.exports.tests.middleware_success = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /place ' + name, testFunction);
+    return tape('SANITIZE /place ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

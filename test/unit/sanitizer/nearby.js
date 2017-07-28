@@ -3,6 +3,7 @@ var nearby  = require('../../../sanitizer/nearby');
 var defaults = require('../../../query/reverse_defaults');
 var sanitize = nearby.sanitize;
 var middleware = nearby.middleware;
+var sanitizer_list = nearby.sanitizer_list;
 
 var defaultClean =  { 'point.lat': 0,
                       'point.lon': 0,
@@ -17,7 +18,7 @@ module.exports.tests = {};
 module.exports.tests.interface = function(test, common) {
   test('sanitize interface', function(t) {
     t.equal(typeof sanitize, 'function', 'sanitize is a function');
-    t.equal(sanitize.length, 2, 'sanitize interface');
+    t.equal(sanitize.length, 3, 'sanitize interface takes one argument: req');
     t.end();
   });
   test('middleware interface', function(t) {
@@ -52,7 +53,7 @@ module.exports.tests.middleware_success = function(test, common) {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /nearby ' + name, testFunction);
+    return tape('SANITIZE /nearby ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
