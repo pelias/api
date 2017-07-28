@@ -37,11 +37,6 @@ module.exports = Joi.object().keys({
         timeout: Joi.number().integer().optional().default(250).min(0),
         retries: Joi.number().integer().optional().default(3).min(0),
       }).unknown(false).requiredKeys('url'),
-      language: Joi.object().keys({
-        url: Joi.string().uri({ scheme: /https?/ }),
-        timeout: Joi.number().integer().optional().default(250).min(0),
-        retries: Joi.number().integer().optional().default(3).min(0),
-      }).unknown(false).requiredKeys('url'),
       interpolation: Joi.object().keys({
         url: Joi.string().uri({ scheme: /https?/ }),
         timeout: Joi.number().integer().optional().default(250).min(0),

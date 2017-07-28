@@ -26,7 +26,7 @@ module.exports.tests.completely_valid = (test, common) => {
           placeholder: {
             url: 'http://localhost'
           },
-          language: {
+          interpolation: {
             url: 'http://localhost'
           }
         },
@@ -543,7 +543,7 @@ module.exports.tests.api_services_validation = (test, common) => {
 
 module.exports.tests.service_validation = (test, common) => {
   // these tests apply for all the individual service definitions
-  const services = ['pip', 'placeholder', 'language', 'interpolation'];
+  const services = ['pip', 'placeholder', 'interpolation'];
 
   test('timeout and retries not specified should default to 250 and 3', (t) => {
     services.forEach(service => {
