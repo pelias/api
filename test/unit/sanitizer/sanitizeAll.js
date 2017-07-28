@@ -1,26 +1,31 @@
 var sanitizeAll = require('../../../sanitizer/sanitizeAll');
+const Joi = require('joi');
 
 module.exports.tests = {};
 
 module.exports.tests.all = function(test, common) {
   test('req.clean/errors/warnings should be initialized when they are not', function(t) {
     var req = {};
-    var sanitizers = [
-      function() {
-        req.clean.a = 'first sanitizer';
-        return {
-          errors: ['error 1', 'error 2'],
-          warnings: ['warning 1', 'warning 2']
-        };
+    var sanitizers = {
+      'first': {
+        sanitize: function(){
+          req.clean.a = 'first sanitizer';
+          return {
+            errors: ['error 1', 'error 2'],
+            warnings: ['warning 1', 'warning 2']
+          };
+        }
       },
-      function() {
-        req.clean.b = 'second sanitizer';
-        return {
-          errors: ['error 3'],
-          warnings: ['warning 3']
-        };
+      'second': {
+        sanitize: function() {
+          req.clean.b = 'second sanitizer';
+          return {
+            errors: ['error 3'],
+            warnings: ['warning 3']
+          };
+        }
       }
-    ];
+    };
 
     var expected_req = {
       clean: {
@@ -31,7 +36,7 @@ module.exports.tests.all = function(test, common) {
       warnings: ['warning 1', 'warning 2', 'warning 3']
     };
 
-    sanitizeAll(req, sanitizers, function(){
+    sanitizeAll.sanitize(req, sanitizers, function (){
       t.deepEquals(req, expected_req);
       t.end();
     });
@@ -47,22 +52,26 @@ module.exports.tests.all = function(test, common) {
       warnings: ['pre-existing warning']
     };
 
-    var sanitizers = [
-      function() {
-        req.clean.a = 'first sanitizer';
-        return {
-          errors: ['error 1', 'error 2'],
-          warnings: ['warning 1', 'warning 2']
-        };
+    var sanitizers = {
+      'first': {
+        sanitize: function(){
+          req.clean.a = 'first sanitizer';
+          return {
+            errors: ['error 1', 'error 2'],
+            warnings: ['warning 1', 'warning 2']
+          };
+        }
       },
-      function() {
-        req.clean.b = 'second sanitizer';
-        return {
-          errors: ['error 3'],
-          warnings: ['warning 3']
-        };
+      'second': {
+        sanitize: function() {
+          req.clean.b = 'second sanitizer';
+          return {
+            errors: ['error 3'],
+            warnings: ['warning 3']
+          };
+        }
       }
-    ];
+    };
 
     var expected_req = {
       clean: {
@@ -74,7 +83,7 @@ module.exports.tests.all = function(test, common) {
       warnings: ['pre-existing warning', 'warning 1', 'warning 2', 'warning 3']
     };
 
-    sanitizeAll(req, sanitizers, function(){
+    sanitizeAll.sanitize(req, sanitizers, function () {
       t.deepEquals(req, expected_req);
       t.end();
     });
@@ -84,33 +93,35 @@ module.exports.tests.all = function(test, common) {
   test('req.query should be passed to individual sanitizers when available', function(t) {
     var req = {
       query: {
-        value: 'query value'
+        value: 'query'
       }
     };
-    var sanitizers = [
-      function(params) {
-        req.clean.query = params;
-        return {
-          errors: [],
-          warnings: []
-        };
+    var sanitizers = {
+      'first': {
+        sanitize: function(params) {
+          req.clean.query = params;
+          return {
+            errors: [],
+            warnings: []
+          };
+        }
       }
-    ];
+    };
 
     var expected_req = {
       query: {
-        value: 'query value'
+        value: 'query'
       },
       clean: {
         query: {
-          value: 'query value'
+          value: 'query'
         }
       },
       errors: [],
       warnings: []
     };
 
-    sanitizeAll(req, sanitizers, function(){
+    sanitizeAll.sanitize(req, sanitizers, function () {
       t.deepEquals(req, expected_req);
       t.end();
     });
@@ -119,18 +130,20 @@ module.exports.tests.all = function(test, common) {
 
   test('an empty object should be passed to individual sanitizers when req.query is unavailable', function(t) {
     var req = {};
-    var sanitizers = [
-      function(params) {
-        if (Object.keys(params).length === 0) {
-          req.clean.empty_object_was_passed = true;
-        }
+    var sanitizers = {
+      'first': {
+        sanitize: function(params) {
+          if (Object.keys(params).length === 0) {
+            req.clean.empty_object_was_passed = true;
+          }
 
-        return {
-          errors: [],
-          warnings: []
-        };
+          return {
+            errors: [],
+            warnings: []
+          };
+        }
       }
-    ];
+    };
 
     var expected_req = {
       clean: {
@@ -140,11 +153,64 @@ module.exports.tests.all = function(test, common) {
       warnings: []
     };
 
-    sanitizeAll(req, sanitizers, function(){
+    sanitizeAll.sanitize(req, sanitizers, function () {
       t.deepEquals(req, expected_req);
       t.end();
     });
 
+  });
+
+  test('unexpected parameters should throw warning', function(t) {
+    var req = {
+          query: {
+            unknown_value: 'query value'
+          },
+          errors: [],
+          warnings: []
+    };
+    var sanitizers = {
+      'first': {
+        expected: function _expected () {
+          // add value as a valid parameter for joi
+          return [{
+            name: 'value'
+          }];
+        }
+      }
+    };
+
+    sanitizeAll.checkParameters(req, sanitizers, function () {
+      t.equals(req.errors.length, 0);
+      t.deepEquals(req.warnings[0], 'Invalid Parameter: unknown_value');
+      t.end();
+    });
+
+  });
+
+  test('expected parameters should not throw warning', function(t) {
+    var req = {
+          query: {
+            value: 'query value'
+          },
+          errors: [],
+          warnings: []
+    };
+    var sanitizers = {
+      'first': {
+        expected: function _expected () {
+          // add value as a valid parameter for joi
+          return [{
+            name: 'value'
+          }];
+        }
+      }
+    };
+
+    sanitizeAll.checkParameters(req, sanitizers, function () {
+      t.equals(req.errors.length, 0);
+      t.equals(req.warnings.length, 0);
+      t.end();
+    });
   });
 
 };
