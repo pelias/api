@@ -35,9 +35,14 @@ function _sanitize( raw, clean ){
   return messages;
 }
 
+function _expected(){
+  return [{ name: 'text' }];
+}
+
 // export function
 module.exports = () => ({
-  sanitize: _sanitize
+  sanitize: _sanitize,
+  expected: _expected
 });
 
 // this is the addressit functionality from https://github.com/pelias/text-analyzer/blob/master/src/addressItParser.js

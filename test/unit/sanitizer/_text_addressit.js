@@ -339,6 +339,12 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
+  test('return an array of valid parameters in object form for Joi schema validation', (t) => {
+    const expected = [{ name: 'text' }];
+    const validParameters = sanitizer.expected();
+    t.deepEquals(validParameters, expected);
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
