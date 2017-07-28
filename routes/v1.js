@@ -115,7 +115,7 @@ function addRoutes(app, peliasConfig) {
   const placeholderService = serviceWrapper(placeholderConfiguration);
   const isPlaceholderServiceEnabled = _.constant(placeholderConfiguration.isEnabled());
 
-  const changeLanguageConfiguration = new Language(_.defaultTo(peliasConfig.api.services.language, {}));
+  const changeLanguageConfiguration = new Language(_.defaultTo(peliasConfig.api.services.placeholder, {}));
   const changeLanguageService = serviceWrapper(changeLanguageConfiguration);
   const isChangeLanguageEnabled = _.constant(changeLanguageConfiguration.isEnabled());
 
