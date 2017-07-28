@@ -1,3 +1,5 @@
+'use strict';
+
 const async = require('async');
 
 function sanitize( req, sanitizers, cb ){
@@ -12,7 +14,7 @@ function sanitize( req, sanitizers, cb ){
   // (in this case from the GET querystring params)
   const params = req.query || {};
 
-  for (var s in sanitizers) {
+  for (let s in sanitizers) {
     var sanity = sanitizers[s].sanitize( params, req.clean );
 
     // if errors occurred then set them
@@ -37,11 +39,11 @@ function checkParameters(req, sanitizers, cb) {
   const params = req.query || {};
   const goodParameters = {};
 
-  for (var s in sanitizers) {
+  for (let s in sanitizers) {
 
     // checks if there is a function that returns valid params
     if (typeof sanitizers[s].expected === 'function'){
-      /** func returns {array} ex: [{ name: 'text' }, { name: 'parsed_text' }] */
+      /** func returns {array} ex: [{ name: 'text' }] */
       for (let t in sanitizers[s].expected()) {
         /** {object} prop */
         const prop = sanitizers[s].expected()[t];

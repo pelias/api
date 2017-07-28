@@ -18,7 +18,7 @@ module.exports.tests = {};
 module.exports.tests.interface = function(test, common) {
   test('sanitize interface', function(t) {
     t.equal(typeof sanitize, 'function', 'sanitize is a function');
-    t.equal(sanitize.length, 3, 'sanitize interface takes one argument: req');
+    t.equal(sanitize.length, 3, 'sanitize interface takes three args');
     t.end();
   });
   test('middleware interface', function(t) {
