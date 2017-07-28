@@ -44,6 +44,8 @@ function _expected(){
   return [
   { name: 'point.lat' },
   { name: 'point.lon' },
+  { name: 'boundary.circle.lon' }, // copied from point.lon by the API, not user input
+  { name: 'boundary.circle.lat' }, // copied from point.lat by the API, not user input
   { name: 'boundary.circle.radius'}];
 }
 
