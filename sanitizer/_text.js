@@ -22,7 +22,7 @@ function _sanitize( raw, clean ){
 }
 
 function _expected(){
-  return [{ name: 'text' }, { name: 'parsed_text' }];
+  return [{ name: 'text' }];
 }
 // export function
 module.exports = () => ({

@@ -52,7 +52,6 @@ module.exports.tests.text_parser = function(test, common) {
     t.deepEquals(validParameters, expected);
     t.end();
   });
-
 };
 
 module.exports.all = (tape, common) => {
