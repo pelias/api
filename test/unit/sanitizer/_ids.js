@@ -205,7 +205,7 @@ module.exports.tests.de_dupe = function(test, common) {
 };
 
 module.exports.tests.valid_Parameters = function(test, common) {
-  test('return an array of valid parameters in object form for Joi schema validation', (t) => {
+  test('return an array of expected parameters in object form for validation', (t) => {
     const expected = [{ name: 'ids' }];
     const validParameters = sanitizer.expected();
     t.deepEquals(validParameters, expected);

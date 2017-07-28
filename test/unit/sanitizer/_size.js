@@ -35,7 +35,7 @@ module.exports.tests.sanitize_size = function(test, common) {
     t.end();
   });
 
-  test('return an array of valid parameters in object form for Joi schema validation', function(t) {
+  test('return an array of expected parameters in object form for validation', function(t) {
     const expected = [{ name: 'size' }];
     const validParameters = sanitizer(/*defaults*/).expected();
     t.deepEquals(validParameters, expected);

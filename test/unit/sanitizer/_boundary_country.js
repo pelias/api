@@ -66,7 +66,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.end();
   });
 
-  test('return an array of valid parameters in object form for Joi schema validation', (t) => {
+  test('return an array of expected parameters in object form for validation', (t) => {
     const expected = [{ name: 'boundary.country' }];
     const validParameters = sanitizer.expected();
     t.deepEquals(validParameters, expected);

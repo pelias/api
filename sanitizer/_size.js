@@ -41,7 +41,7 @@ function _setup( size_min, size_max, size_def ){
     },
 
     expected: function _expected() {
-      // add size as a valid parameter for joi
+      // add size as a valid parameter
       return [{ name: 'size' }];
     }
   };

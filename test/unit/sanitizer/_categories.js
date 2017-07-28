@@ -158,7 +158,7 @@ module.exports.tests.invalid_categories = function(test, common) {
     t.end();
   });
 
-  test('return an array of valid parameters in object form for Joi schema validation', (t) => {
+  test('return an array of expected parameters in object form for validation', (t) => {
     const expected = [{ name: 'categories' }];
 
     const validParameters = sanitizer.expected();

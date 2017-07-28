@@ -1,5 +1,4 @@
 var sanitizeAll = require('../../../sanitizer/sanitizeAll');
-const Joi = require('joi');
 
 module.exports.tests = {};
 
@@ -171,7 +170,7 @@ module.exports.tests.all = function(test, common) {
     var sanitizers = {
       'first': {
         expected: function _expected () {
-          // add value as a valid parameter for joi
+          // add value as a valid parameter
           return [{
             name: 'value'
           }];
@@ -198,7 +197,7 @@ module.exports.tests.all = function(test, common) {
     var sanitizers = {
       'first': {
         expected: function _expected () {
-          // add value as a valid parameter for joi
+          // add value as a valid parameter
           return [{
             name: 'value'
           }];

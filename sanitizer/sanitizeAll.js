@@ -30,7 +30,7 @@ function sanitize( req, sanitizers, cb ){
   return cb( undefined, req.clean );
 }
 
-// Adds to schemaKeys every acceptable parameter passed through API call
+// Adds to goodParameters every acceptable parameter passed through API call
 function checkParameters(req, sanitizers, cb) {
   // source of input parameters
   // (in this case from the GET querystring params)

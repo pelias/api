@@ -233,7 +233,7 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
-  test('return an array of valid parameters in object form for Joi schema validation', function (t) {
+  test('return an array of expected parameters in object form for validation', function (t) {
     const sanitizer = require('../../../sanitizer/_synthesize_analysis');
     const expected = [
       { 'name': 'venue' },
