@@ -212,6 +212,50 @@ module.exports.tests.all = function(test, common) {
     });
   });
 
+  test('runAllChecks calls both sanitize and expectedParameters function', function(t) {
+    var req = {
+      query: {
+        value: 'query'
+      }
+    };
+
+    var sanitizers = {
+      'first': {
+        sanitize: function(params) {
+          req.clean.query = params;
+          return {
+            errors: [],
+            warnings: ['warning 1']
+          };
+        },
+        expected: function _expected () {
+          // add value as a valid parameter
+          return [{
+            name: 'value'
+          }];
+        }
+      }
+    };
+
+    var expected_req = {
+      query: {
+        value: 'query'
+      },
+      clean: {
+        query: {
+          value: 'query'
+        }
+      },
+      errors: [],
+      warnings: ['warning 1']
+    };
+
+    sanitizeAll.runAllChecks(req, sanitizers, function () {
+      t.deepEquals(req, expected_req);
+      t.end();
+    });
+  });
+
 };
 
 module.exports.all = function (tape, common) {
