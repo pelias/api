@@ -69,7 +69,6 @@ var postProc = {
 };
 
 // predicates that drive whether controller/search runs
-const hasAnyParsedTextProperty = require('../controller/predicates/has_any_parsed_text_property');
 const hasResponseData = require('../controller/predicates/has_response_data');
 const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
@@ -88,8 +87,8 @@ const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
 const hasAdminOnlyResults = not(hasResultsAtLayers(['venue', 'address', 'street']));
 
 const hasNumberButNotStreet = all(
-  hasAnyParsedTextProperty('number'),
-  not(hasAnyParsedTextProperty('street'))
+  hasParsedTextProperties.any('number'),
+  not(hasParsedTextProperties.any('street'))
 );
 
 const serviceWrapper = require('pelias-microservice-wrapper').service;
@@ -162,20 +161,20 @@ function addRoutes(app, peliasConfig) {
     // check clean.parsed_text for several conditions that must all be true
     all(
       // run placeholder if clean.parsed_text has 'street'
-      hasAnyParsedTextProperty('street'),
+      hasParsedTextProperties.any('street'),
       // don't run placeholder if there's a query or category
-      not(hasAnyParsedTextProperty('query', 'category')),
+      not(hasParsedTextProperties.any('query', 'category')),
       // run placeholder if there are any adminareas identified
-      hasAnyParsedTextProperty('neighbourhood', 'borough', 'city', 'county', 'state', 'country')
+      hasParsedTextProperties.any('neighbourhood', 'borough', 'city', 'county', 'state', 'country')
     )
   );
 
   const searchWithIdsShouldExecute = all(
     not(hasRequestErrors),
     // don't search-with-ids if there's a query or category
-    not(hasAnyParsedTextProperty('query', 'category')),
+    not(hasParsedTextProperties.any('query', 'category')),
     // there must be a street
-    hasAnyParsedTextProperty('street')
+    hasParsedTextProperties.any('street')
   );
 
   // placeholder should have executed, useful for determining whether to actually
