@@ -131,7 +131,7 @@ function generateQuery( clean, res ){
 
     // use an object here instead of calling `set` since that flattens out an
     // object into key/value pairs and makes identifying layers harder in query module
-    vs.var('input:layers', JSON.stringify(layers_to_ids));
+    vs.var('input:layers', layers_to_ids);
 
   }
 

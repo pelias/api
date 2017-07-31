@@ -251,7 +251,7 @@ module.exports.tests.granularity_bands = (test, common) => {
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.deepEquals(JSON.parse(generatedQuery.body.vs.var('input:layers')), {
+    t.deepEquals(generatedQuery.body.vs.var('input:layers').$, {
       neighbourhood: [1, 11],
       borough: [2, 12],
       locality: [3, 13],
@@ -296,7 +296,7 @@ module.exports.tests.granularity_bands = (test, common) => {
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.deepEquals(JSON.parse(generatedQuery.body.vs.var('input:layers')), {
+    t.deepEquals(generatedQuery.body.vs.var('input:layers').$, {
       neighbourhood: [1],
       borough: [],
       locality: [],
@@ -354,7 +354,7 @@ module.exports.tests.granularity_bands = (test, common) => {
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.deepEquals(JSON.parse(generatedQuery.body.vs.var('input:layers')), {
+    t.deepEquals(generatedQuery.body.vs.var('input:layers').$, {
       county: [1, 4],
       macrocounty: [2, 5]
     });
