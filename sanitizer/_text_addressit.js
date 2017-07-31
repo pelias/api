@@ -20,6 +20,7 @@ function sanitize( raw, clean ){
 
     // valid text
     clean.text = raw.text;
+    clean.parser = 'addressit';
 
     // remove anything that may have been parsed before
     delete clean.parsed_text;

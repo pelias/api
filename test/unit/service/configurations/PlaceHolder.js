@@ -126,6 +126,59 @@ module.exports.tests.all = (test, common) => {
 
   });
 
+  test('existence of street in req.clean.parsed_text should assemble text parameter from admin fields', (t) => {
+    const configBlob = {
+      url: 'http://localhost:1234',
+    };
+
+    const placeholder = new PlaceHolder(configBlob);
+
+    const req = {
+      clean: {
+        text: 'text value',
+        parsed_text: {
+          street: 'street value',
+          neighbourhood: 'neighbourhood value',
+          borough: 'borough value',
+          city: 'city value',
+          county: 'county value',
+          state: 'state value',
+          country: 'country value'
+        }
+      }
+    };
+
+    t.deepEquals(placeholder.getParameters(req), {
+      text: 'neighbourhood value borough value city value county value state value country value'
+    });
+    t.end();
+
+  });
+
+  test('existence of street in req.clean.parsed_text should assemble text parameter from defined admin fields', (t) => {
+    const configBlob = {
+      url: 'http://localhost:1234',
+    };
+
+    const placeholder = new PlaceHolder(configBlob);
+
+    const req = {
+      clean: {
+        text: 'text value',
+        parsed_text: {
+          street: 'street value',
+          country: 'country value'
+        }
+      }
+    };
+
+    t.deepEquals(placeholder.getParameters(req), {
+      text: 'country value'
+    });
+    t.end();
+
+  });
+
 };
 
 module.exports.all = (tape, common) => {

@@ -284,7 +284,7 @@ module.exports.tests.city_state = function(test, common) {
 
     var query = generate(clean);
 
-    t.notEqual(query, undefined, 'should not have returned undefined');
+    t.equal(query, undefined, 'should have returned undefined');
     t.end();
 
   });
@@ -300,7 +300,7 @@ module.exports.tests.city_state = function(test, common) {
 
     var query = generate(clean);
 
-    t.notEqual(query, undefined, 'should not have returned undefined');
+    t.equal(query, undefined, 'should have returned undefined');
     t.end();
 
   });
@@ -458,7 +458,7 @@ module.exports.tests.city_country = function(test, common) {
 
     var query = generate(clean);
 
-    t.notEqual(query, undefined, 'should not have returned undefined');
+    t.equal(query, undefined, 'should have returned undefined');
     t.end();
 
   });
@@ -620,7 +620,6 @@ module.exports.tests.city_country = function(test, common) {
     t.deepEqual(compiled.body, expected, 'search_fallback_postalcode_only');
     t.end();
   });
-
 
 };
 

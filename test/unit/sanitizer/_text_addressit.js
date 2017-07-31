@@ -33,6 +33,7 @@ module.exports.tests.text_parser = function(test, common) {
 
       var expected_clean = {
         text: query.name + ', ' + query.admin_parts,
+        parser: 'addressit',
         parsed_text: {
           name: query.name,
           regions: [ query.name ],
@@ -57,6 +58,7 @@ module.exports.tests.text_parser = function(test, common) {
 
       var expected_clean = {
         text: query.name + ',' + query.admin_parts,
+        parser: 'addressit',
         parsed_text: {
           name: query.name,
           regions: [ query.name ],
@@ -88,6 +90,7 @@ module.exports.tests.text_parser = function(test, common) {
 
       var expected_clean = {
         text: query.name + ', ' + query.admin_parts,
+        parser: 'addressit',
         parsed_text: {
           name: query.name,
           regions: [ query.name, query.admin_parts ],
@@ -111,6 +114,7 @@ module.exports.tests.text_parser = function(test, common) {
 
       var expected_clean = {
         text: query.name + ',' + query.admin_parts,
+        parser: 'addressit',
         parsed_text: {
           name: query.name,
           regions: [ query.name, query.admin_parts ],
@@ -136,6 +140,7 @@ module.exports.tests.text_parser = function(test, common) {
     clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
+      parser: 'addressit',
       text: 'yugolsavia'
     };
 
@@ -155,6 +160,7 @@ module.exports.tests.text_parser = function(test, common) {
     clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
+      parser: 'addressit',
       text: 'small town'
     };
 
@@ -174,6 +180,7 @@ module.exports.tests.text_parser = function(test, common) {
     clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
+      parser: 'addressit',
       text: '123 main'
     };
 
@@ -193,6 +200,7 @@ module.exports.tests.text_parser = function(test, common) {
     clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
+      parser: 'addressit',
       text: 'main 123'
     };
 
@@ -213,6 +221,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     var expected_clean = {
       text: 'main particle new york',
+      parser: 'addressit',
       parsed_text: {
         regions: [ 'main particle' ],
         state: 'NY'
@@ -235,6 +244,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     var expected_clean = {
       text: '123 main st new york ny',
+      parser: 'addressit',
       parsed_text: {
         number: '123',
         street: 'main st',
@@ -259,6 +269,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     var expected_clean = {
       text: '123 main st new york ny 10010',
+      parser: 'addressit',
       parsed_text: {
         number: '123',
         street: 'main st',
@@ -283,6 +294,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     var expected_clean = {
       text: '339 W Main St, Cheshire, 06410',
+      parser: 'addressit',
       parsed_text: {
         name: '339 W Main St',
         number: '339',
@@ -308,6 +320,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     var expected_clean = {
       text: '339 W Main St,Lancaster,PA',
+      parser: 'addressit',
       parsed_text: {
         name: '339 W Main St',
         number: '339',
