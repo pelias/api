@@ -22,13 +22,9 @@ module.exports.middleware = (_api_pelias_config) => {
       };
 
   return ( req, res, next ) => {
-    sanitizeAll.runAllChecks(req, sanitizers, ( err, clean ) => {
-      if( err ){
-        res.status(400); // 400 Bad Request
-        return next(err);
-      }
-      next();
-    });
+    sanitizeAll.runAllChecks(req, sanitizers);
+    next();
+
   };
 
 };

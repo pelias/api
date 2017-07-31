@@ -14,11 +14,6 @@ module.exports.sanitizer_list = sanitizers;
 
 // middleware
 module.exports.middleware = function(req, res, next){
-  sanitize(req, sanitizers, ( err, clean ) => {
-    if( err ){
-      res.status(400); // 400 Bad Request
-      return next(err);
-    }
-    next();
-  });
+  sanitizeAll.runAllChecks(req, sanitizers);
+  next();
 };

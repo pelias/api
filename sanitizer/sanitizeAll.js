@@ -1,8 +1,5 @@
 'use strict';
-
-const async = require('async');
-
-function sanitize( req, sanitizers, cb ){
+function sanitize( req, sanitizers ){
   // init an object to store clean (sanitized) input parameters if not initialized
   req.clean = req.clean || {};
 
@@ -29,11 +26,11 @@ function sanitize( req, sanitizers, cb ){
       req.warnings = req.warnings.concat( sanity.warnings );
     }
   }
-  return cb( undefined, req.clean );
 }
 
 // Adds to goodParameters every acceptable parameter passed through API call
-function checkParameters(req, sanitizers, cb) {
+function checkParameters( req, sanitizers ) {
+  req.warnings = req.warnings || [];
   // source of input parameters
   // (in this case from the GET querystring params)
   const params = req.query || {};
@@ -41,9 +38,9 @@ function checkParameters(req, sanitizers, cb) {
 
   for (let s in sanitizers) {
 
-    // checks if there is a function that returns valid params
+    // checks if function exists
     if (typeof sanitizers[s].expected === 'function'){
-      /** func returns {array} ex: [{ name: 'text' }] */
+      /** expected() returns {array} ex: [{ name: 'text' }] */
       for (let t in sanitizers[s].expected()) {
         /** {object} prop */
         const prop = sanitizers[s].expected()[t];
@@ -54,21 +51,21 @@ function checkParameters(req, sanitizers, cb) {
       }
     }
   }
-  // If there are any unexpected parameters, add a warning to messages
-  for (let p in params) {
-    if (!goodParameters.hasOwnProperty(p)){
-      req.warnings = req.warnings.concat('Invalid Parameter: ' + p);
+  // If there are any unexpected parameters & goodParameters isn't empty,
+  // add a warning message
+  if (Object.keys(goodParameters).length !== 0) {
+    for (let p in params) {
+      if (!goodParameters.hasOwnProperty(p)){
+        req.warnings = req.warnings.concat('Invalid Parameter: ' + p);
+      }
     }
   }
-  return cb( undefined, req.clean );
 }
 
 // runs both sanitize and checkParameters functions in async parallel
-function runAllChecks (req, sanitizers, cb) {
-  async.parallel([
-    sanitize.bind(null, req, sanitizers),
-    checkParameters.bind(null, req, sanitizers)
-  ], cb);
+function runAllChecks (req, sanitizers) {
+  sanitize(req, sanitizers);
+  checkParameters(req, sanitizers);
 }
 
 // export function

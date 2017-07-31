@@ -23,12 +23,7 @@ module.exports.middleware = function( req, res, next ){
   }
   // calls to sanitize the input
   // omits check if parameters are valid since it only calls _text_addressit
-  sanitizeAll.sanitize(req, sanitizers, ( err, clean ) => {
-    if( err ){
-      res.status(400); // 400 Bad Request
-      return next(err);
-    }
-    next();
-  });
+  sanitizeAll.sanitize(req, sanitizers);
+  next();
 
 };
