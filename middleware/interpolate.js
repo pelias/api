@@ -57,7 +57,7 @@ function setup(service, should_execute) {
         // note: we now merge those values with the existing 'street' record
         logger.debug(`[interpolation] [hit] ${req.clean.parsed_text} ${JSON.stringify(interpolation_result)}`);
 
-        // -- metatdata --
+        // -- metadata --
         source_result.layer = 'address';
         source_result.match_type = 'interpolated';
 
