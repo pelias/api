@@ -1,52 +1,36 @@
-
-var nearby  = require('../../../sanitizer/nearby');
-var defaults = require('../../../query/reverse_defaults');
-var sanitize = nearby.sanitize;
-var middleware = nearby.middleware;
-var sanitizer_list = nearby.sanitizer_list;
-
-var defaultClean =  { 'point.lat': 0,
-                      'point.lon': 0,
-                      'boundary.circle.lat': 0,
-                      'boundary.circle.lon': 0,
-                      size: 10,
-                      private: false
-                    };
+const  _ = require('lodash'),
+    proxyquire =  require('proxyquire').noCallThru();
 
 module.exports.tests = {};
 
-module.exports.tests.interface = function(test, common) {
-  test('sanitize interface', function(t) {
-    t.equal(typeof sanitize, 'function', 'sanitize is a function');
-    t.equal(sanitize.length, 3, 'sanitize interface takes three args');
-    t.end();
-  });
-  test('middleware interface', function(t) {
-    t.equal(typeof middleware, 'function', 'middleware is a function');
-    t.equal(middleware.length, 3, 'sanitizee has a valid middleware');
-    t.end();
-  });
-};
+module.exports.tests.sanitize = function(test, common) {
+  test('verify that all sanitizers were called as expected', function(t) {
+    var called_sanitizers = [];
 
-module.exports.tests.sanitizers = function(test, common) {
-  test('check sanitizer list', function (t) {
-    var expected = ['singleScalarParameters', 'quattroshapes_deprecation', 'layers',
-      'sources', 'sources_and_layers', 'geonames_deprecation', 'size', 'private',
-      'geo_reverse', 'boundary_country', 'categories'];
-    t.deepEqual(Object.keys(nearby.sanitizer_list), expected);
-    t.end();
-  });
-};
+    // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
+    //  were all called correctly
+    var nearby = proxyquire('../../../sanitizer/nearby.js', {
+      '../sanitizer/_categories': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_categories');
+            return { errors: [], warnings: [] };
+          }
+        };
+      }
+    });
 
-module.exports.tests.middleware_success = function(test, common) {
-  test('middleware success', function(t) {
-    var req = { query: { 'point.lat': 0, 'point.lon': 0 }};
-    var next = function(){
-      t.deepEqual(req.errors, [], 'no error message set');
-      t.deepEqual(req.clean, defaultClean);
+    const expected_sanitizers = [
+      '_categories'
+    ];
+
+    const req = {};
+    const res = {};
+
+    nearby.middleware(req, res, () => {
+      t.deepEquals(called_sanitizers, expected_sanitizers);
       t.end();
-    };
-    middleware( req, undefined, next );
+    });
   });
 };
 
