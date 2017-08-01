@@ -17,12 +17,6 @@ var sanitizers = {
   categories: require('../sanitizer/_categories')()
 };
 
-var sanitize = sanitizeAll.runAllChecks;
-
-// export sanitize for testing
-module.exports.sanitize = sanitize;
-module.exports.sanitizer_list = sanitizers;
-
 // middleware
 module.exports.middleware = function( req, res, next ){
   sanitizeAll.runAllChecks(req, sanitizers);

@@ -15,12 +15,6 @@ var sanitizeAll = require('../sanitizer/sanitizeAll'),
       boundary_country: require('../sanitizer/_boundary_country')()
     };
 
-var sanitize = sanitizeAll.runAllChecks;
-
-// export sanitize for testing
-module.exports.sanitize = sanitize;
-module.exports.sanitizer_list = sanitizers;
-
 // middleware
 module.exports.middleware = function( req, res, next ){
   sanitizeAll.runAllChecks(req, sanitizers);

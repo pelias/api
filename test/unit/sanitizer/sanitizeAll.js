@@ -152,7 +152,7 @@ module.exports.tests.all = function(test, common) {
     t.end();
   });
 
-  test('unexpected parameters should throw warning', function(t) {
+  test('unexpected parameters should add warning', function(t) {
     var req = {
           query: {
             unknown_value: 'query value'
@@ -177,7 +177,7 @@ module.exports.tests.all = function(test, common) {
     t.end();
   });
 
-  test('expected parameters should not throw warning', function(t) {
+  test('expected parameters should not add warning', function(t) {
     var req = {
           query: {
             value: 'query value'
