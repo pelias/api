@@ -3,7 +3,7 @@ const sanitizer = require('../../../sanitizer/_text')();
 module.exports.tests = {};
 
 module.exports.tests.text_parser = function(test, common) {
-  test('non-empty raw.text should call analyzer and set clean.text and not clean.parsed_text', t => {
+  test('non-empty raw.text should overwrite clean.text', t => {
     const raw = {
       text: 'raw input'
     };
