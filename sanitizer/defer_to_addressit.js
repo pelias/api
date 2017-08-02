@@ -1,9 +1,8 @@
 const sanitizeAll = require('../sanitizer/sanitizeAll'),
     sanitizers = {
-      text: require('../sanitizer/_text_addressit')
+      text: require('../sanitizer/_text_addressit')()
     };
 
-const sanitize = function(req, cb) { sanitizeAll(req, sanitizers, cb); };
 const logger = require('pelias-logger').get('api');
 const logging = require( '../helper/logging' );
 
@@ -23,9 +22,8 @@ module.exports = (should_execute) => {
       logger.info(`fallback queryText: ${queryText}`);
     }
 
-    sanitize( req, function( err, clean ){
-      next();
-    });
+    sanitizeAll.sanitize(req, sanitizers);
+    next();
 
   };
 
