@@ -26,6 +26,14 @@ module.exports.tests.sanitize = function(test, common) {
           }
         };
       },
+      '../sanitizer/_debug': () => {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_debug');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
       '../sanitizer/_synthesize_analysis': function () {
         return {
           sanitize: () => {
@@ -134,6 +142,7 @@ module.exports.tests.sanitize = function(test, common) {
 
     var expected_sanitizers = [
       '_single_scalar_parameters',
+      '_debug',
       '_deprecate_quattroshapes',
       '_synthesize_analysis',
       '_iso2_to_iso3',

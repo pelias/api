@@ -30,6 +30,14 @@ module.exports.tests.sanitize = (test, common) => {
           }
         };
       },
+      '../sanitizer/_debug': () => {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_debug');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
       '../sanitizer/_text': function () {
         return {
           sanitize: () => {
@@ -131,6 +139,7 @@ module.exports.tests.sanitize = (test, common) => {
 
     const expected_sanitizers = [
       '_single_scalar_parameters',
+      '_debug',
       '_deprecate_quattroshapes',
       '_text',
       '_size',

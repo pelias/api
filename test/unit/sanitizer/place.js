@@ -18,6 +18,14 @@ module.exports.tests.sanitize = function(test, common) {
           }
         };
       },
+      '../sanitizer/_debug': () => {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_debug');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
       '../sanitizer/_ids': function () {
         return {
           sanitize: () => {
@@ -42,6 +50,7 @@ module.exports.tests.sanitize = function(test, common) {
 
     const expected_sanitizers = [
       '_single_scalar_parameters',
+      '_debug',
       '_ids',
       '_flag_bool'
     ];

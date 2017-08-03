@@ -5,6 +5,7 @@ var sanitizeAll = require('../sanitizer/sanitizeAll');
 module.exports.middleware = (_api_pelias_config) => {
   var sanitizers = {
       singleScalarParameters: require('../sanitizer/_single_scalar_parameters')(),
+      debug: require('../sanitizer/_debug')(),
       text: require('../sanitizer/_text_addressit')(),
       tokenizer: require('../sanitizer/_tokenizer')(),
       size: require('../sanitizer/_size')(10, 10, 10),
