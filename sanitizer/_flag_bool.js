@@ -41,7 +41,7 @@ function _setup( paramName, defaultValue ) {
     }, // end of _sanitize function
 
     expected: function _expected(){
-      return [{ name: 'private'}];
+      return [{ name: opts.paramName}];
     } // end of _expected function
   }; // end of return object
 } // end of _setup function

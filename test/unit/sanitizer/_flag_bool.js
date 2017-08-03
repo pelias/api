@@ -53,8 +53,8 @@ module.exports.tests.validate_default_behavior = function(test, common) {
 
 module.exports.tests.check_valid_parameters = function(test, common) {
   test('return an array of expected parameters in object form for validation', (t) => {
-    const expected = [{ name: 'private' }];
-    const validParameters = sanitizer('dirty_param', true).expected();
+    const expected = [{ name: 'value' }]; // depends on first argument of sanitizer()
+    const validParameters = sanitizer('value', true).expected();
     t.deepEquals(validParameters, expected);
     t.end();
   });
