@@ -19,7 +19,14 @@ module.exports.tests.sanitize = (test, common) => {
           }
         };
       },
-      'pelias-logger': logger
+      'pelias-logger': logger,
+      '../sanitizer/_debug': () => {
+        return {
+          sanitize: () => {
+            t.fail('_debug should not have been called');
+          }
+        };
+      }
     })(() => false);
 
     defer_to_addressit({}, {}, () => {
@@ -30,7 +37,7 @@ module.exports.tests.sanitize = (test, common) => {
   });
 
   test('verify that _text_addressit sanitizer was called when should_execute returns true', (t) => {
-    t.plan(2);
+    t.plan(3);
 
     const logger = mock_logger();
 
@@ -48,7 +55,15 @@ module.exports.tests.sanitize = (test, common) => {
       'pelias-logger': logger,
       '../helper/logging': {
         isDNT: () => false
-      }
+      },
+      '../sanitizer/_debug': () => {
+        return {
+          sanitize: () => {
+            t.pass('_debug should have been called');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
     })(() => true);
 
     const req = {
@@ -66,7 +81,7 @@ module.exports.tests.sanitize = (test, common) => {
   });
 
   test('query should not be logged if path != \'/v1/search\'', (t) => {
-    t.plan(2);
+    t.plan(3);
 
     const logger = mock_logger();
 
@@ -81,7 +96,15 @@ module.exports.tests.sanitize = (test, common) => {
           }
         };
       },
-      'pelias-logger': logger
+      'pelias-logger': logger,
+      '../sanitizer/_debug': () => {
+        return {
+          sanitize: () => {
+            t.pass('_debug should have been called');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
     })(() => true);
 
     const req = {
@@ -99,7 +122,7 @@ module.exports.tests.sanitize = (test, common) => {
   });
 
   test('query should be logged as [text removed] if private', (t) => {
-    t.plan(2);
+    t.plan(3);
 
     const logger = mock_logger();
 
@@ -117,6 +140,14 @@ module.exports.tests.sanitize = (test, common) => {
       'pelias-logger': logger,
       '../helper/logging': {
         isDNT: () => true
+      },
+      '../sanitizer/_debug': () => {
+        return {
+          sanitize: () => {
+            t.pass('_debug should have been called');
+          return { errors: [], warnings: [] };
+          }
+        };
       }
     })(() => true);
 
