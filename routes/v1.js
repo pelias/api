@@ -1,3 +1,4 @@
+const path = require('path');
 var Router = require('express').Router;
 var elasticsearch = require('elasticsearch');
 
@@ -216,10 +217,10 @@ function addRoutes(app, peliasConfig) {
 
   var routers = {
     index: createRouter([
-      controllers.mdToHTML(peliasConfig.api, './public/apiDoc.md')
+      controllers.mdToHTML(peliasConfig.api, path.join('..', 'public', 'apiDoc.md'))
     ]),
     attribution: createRouter([
-      controllers.mdToHTML(peliasConfig.api, './public/attribution.md')
+      controllers.mdToHTML(peliasConfig.api, path.join('..', 'public', 'attribution.md'))
     ]),
     search: createRouter([
       sanitizers.search.middleware(peliasConfig.api),
