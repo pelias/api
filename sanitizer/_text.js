@@ -2,7 +2,8 @@ const check = require('check-types');
 const _ = require('lodash');
 
 // validate texts, convert types and apply defaults
-function sanitize( raw, clean ){
+function _sanitize( raw, clean ){
+
   // error & warning messages
   const messages = { errors: [], warnings: [] };
 
@@ -20,5 +21,11 @@ function sanitize( raw, clean ){
   return messages;
 }
 
+function _expected(){
+  return [{ name: 'text' }];
+}
 // export function
-module.exports = sanitize;
+module.exports = () => ({
+  sanitize: _sanitize,
+  expected: _expected
+});

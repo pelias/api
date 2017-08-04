@@ -3,7 +3,7 @@ var LAT_LON_IS_REQUIRED = false;
 var RECT_IS_REQUIRED = false;
 
 // validate inputs, convert types and apply defaults
-module.exports = function sanitize( raw, clean ){
+function _sanitize( raw, clean ){
 
   // error & warning messages
   var messages = { errors: [], warnings: [] };
@@ -17,4 +17,19 @@ module.exports = function sanitize( raw, clean ){
   }
 
   return messages;
-};
+}
+
+function _expected(){
+  return [
+  { name: 'focus.point.lat' },
+  { name: 'focus.point.lon' },
+  { name: 'boundary.rect.min_lat' },
+  { name: 'boundary.rect.max_lat' },
+  { name: 'boundary.rect.min_lon' },
+  { name: 'boundary.rect.max_lon' }];
+}
+
+module.exports = () => ({
+  sanitize: _sanitize,
+  expected: _expected
+});

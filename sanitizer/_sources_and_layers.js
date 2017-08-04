@@ -5,7 +5,7 @@ var type_mapping = require( '../helper/type_mapping' );
  * This sanitizer depends on clean.layers and clean.sources
  * so it has to be run after those sanitizers have been run
  */
-function sanitize( raw, clean ){
+function _sanitize( raw, clean ){
   var messages = { errors: [], warnings: [] };
 
   var possible_errors = [];
@@ -34,4 +34,11 @@ function sanitize( raw, clean ){
   return messages;
 }
 
-module.exports = sanitize;
+function _expected(){
+  return [{ 'name': 'sources' }, { 'name': 'layers' }];
+}
+
+module.exports = () => ({
+  sanitize: _sanitize,
+  expected: _expected
+});

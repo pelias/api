@@ -12,8 +12,12 @@ module.exports.tests.sanitize = (test, common) => {
     // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
     //  were all called correctly
     const defer_to_addressit = proxyquire('../../../sanitizer/defer_to_addressit', {
-      '../sanitizer/_text_addressit': () => {
-        t.fail('_text_addressit should not have been called');
+      '../sanitizer/_text_addressit': function () {
+        return {
+          sanitize: () => {
+            t.fail('_text_addressit should not have been called');
+          }
+        };
       },
       'pelias-logger': logger
     })(() => false);
@@ -33,9 +37,13 @@ module.exports.tests.sanitize = (test, common) => {
     // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
     //  were all called correctly
     const defer_to_addressit = proxyquire('../../../sanitizer/defer_to_addressit', {
-      '../sanitizer/_text_addressit': () => {
-        t.pass('_text_addressit should have been called');
-        return { errors: [], warnings: [] };
+      '../sanitizer/_text_addressit': function () {
+        return {
+          sanitize: () => {
+            t.pass('_text_addressit should have been called');
+            return { errors: [], warnings: [] };
+          }
+        };
       },
       'pelias-logger': logger,
       '../helper/logging': {
@@ -65,9 +73,13 @@ module.exports.tests.sanitize = (test, common) => {
     // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
     //  were all called correctly
     const defer_to_addressit = proxyquire('../../../sanitizer/defer_to_addressit', {
-      '../sanitizer/_text_addressit': () => {
-        t.pass('_text_addressit should have been called');
-        return { errors: [], warnings: [] };
+      '../sanitizer/_text_addressit': function () {
+        return {
+          sanitize: () => {
+            t.pass('_text_addressit should have been called');
+            return { errors: [], warnings: [] };
+          }
+        };
       },
       'pelias-logger': logger
     })(() => true);
@@ -94,9 +106,13 @@ module.exports.tests.sanitize = (test, common) => {
     // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
     //  were all called correctly
     const defer_to_addressit = proxyquire('../../../sanitizer/defer_to_addressit', {
-      '../sanitizer/_text_addressit': () => {
-        t.pass('_text_addressit should have been called');
-        return { errors: [], warnings: [] };
+      '../sanitizer/_text_addressit': function () {
+        return {
+          sanitize: () => {
+            t.pass('_text_addressit should have been called');
+            return { errors: [], warnings: [] };
+          }
+        };
       },
       'pelias-logger': logger,
       '../helper/logging': {

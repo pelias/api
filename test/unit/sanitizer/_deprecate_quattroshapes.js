@@ -1,4 +1,4 @@
-var sanitize = require('../../../sanitizer/_deprecate_quattroshapes');
+var sanitizer = require('../../../sanitizer/_deprecate_quattroshapes')();
 
 module.exports.tests = {};
 
@@ -7,7 +7,7 @@ module.exports.tests.warning_message_1 = function(test, common) {
     var raw = { sources: 'qs' };
     var clean = {};
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
     t.deepEquals(messages, {
       errors: [],
       warnings: ['You are using Quattroshapes as a data source in this query. ' +
@@ -27,7 +27,7 @@ module.exports.tests.warning_message_2 = function(test, common) {
     var raw = { sources: 'quattroshapes' };
     var clean = {};
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
     t.deepEquals(messages, {
       errors: [],
       warnings: ['You are using Quattroshapes as a data source in this query. ' +
@@ -47,7 +47,7 @@ module.exports.tests.rewrite = function(test, common) {
     var raw = { sources: 'qs,quattroshapes,qs,quattroshapes,osm' };
     var clean = {};
 
-    sanitize(raw, clean);
+    sanitizer.sanitize(raw, clean);
     t.equals(raw.sources,'osm,whosonfirst','use wof instead of qs');
 
     t.end();
@@ -56,7 +56,7 @@ module.exports.tests.rewrite = function(test, common) {
 
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape('SANTIZE _deprecate_quattroshapes ' + name, testFunction);
+    return tape('SANITIZE _deprecate_quattroshapes ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

@@ -1,9 +1,9 @@
-const sanitizer = require('../../../sanitizer/_text');
+const sanitizer = require('../../../sanitizer/_text')();
 
 module.exports.tests = {};
 
 module.exports.tests.text_parser = function(test, common) {
-  test('non-empty raw.text should call analyzer and set clean.text and not clean.parsed_text', t => {
+  test('non-empty raw.text should overwrite clean.text', t => {
     const raw = {
       text: 'raw input'
     };
@@ -15,7 +15,7 @@ module.exports.tests.text_parser = function(test, common) {
       text: raw.text
     };
 
-    const messages = sanitizer(raw, clean);
+    const messages = sanitizer.sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
     t.deepEquals(messages, { warnings: [], errors: [] }, 'no errors/warnings');
@@ -34,7 +34,7 @@ module.exports.tests.text_parser = function(test, common) {
       const expected_clean = {
       };
 
-      const messages = sanitizer(raw, clean);
+      const messages = sanitizer.sanitize(raw, clean);
 
       t.deepEquals(clean, expected_clean);
       t.deepEquals(messages.errors, ['invalid param \'text\': text length, must be >0'], 'no errors');
@@ -46,6 +46,12 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
+  test('return an array of expected parameters in object form for validation', (t) => {
+    const expected = [{ name: 'text' }];
+    const validParameters = sanitizer.expected();
+    t.deepEquals(validParameters, expected);
+    t.end();
+  });
 };
 
 module.exports.all = (tape, common) => {

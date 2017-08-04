@@ -1,5 +1,5 @@
 var type_mapping = require('../../../helper/type_mapping');
-var sanitize = require( '../../../sanitizer/_targets' )('sources', type_mapping.source_mapping);
+var sanitizer = require( '../../../sanitizer/_targets' )('sources', type_mapping.source_mapping);
 
 var success_messages = { error: false };
 
@@ -12,7 +12,7 @@ module.exports.tests.no_sources = function(test, common) {
       clean: { }
     };
 
-    var messages = sanitize(req.query, req.clean);
+    var messages = sanitizer.sanitize(req.query, req.clean);
 
     t.equal(req.clean.sources, undefined, 'no sources should be defined');
     t.deepEqual(messages.errors, [], 'no error returned');
@@ -31,7 +31,7 @@ module.exports.tests.no_sources = function(test, common) {
     var expected_error = 'sources parameter cannot be an empty string. ' +
        'Valid options: osm,oa,gn,wof,openstreetmap,openaddresses,geonames,whosonfirst';
 
-    var messages = sanitize(req.query, req.clean);
+    var messages = sanitizer.sanitize(req.query, req.clean);
 
     t.equal(req.clean.sources, undefined, 'no sources should be defined');
     t.deepEqual(messages.errors.length, 1, 'error returned');
@@ -50,7 +50,7 @@ module.exports.tests.valid_sources = function(test, common) {
       clean: { }
     };
 
-    var messages = sanitize(req.query, req.clean);
+    var messages = sanitizer.sanitize(req.query, req.clean);
 
     t.deepEqual(req.clean.sources, ['geonames'], 'sources should contain geonames');
     t.deepEqual(messages.errors, [], 'no error returned');
@@ -67,7 +67,7 @@ module.exports.tests.valid_sources = function(test, common) {
       clean: { }
     };
 
-    var messages = sanitize(req.query, req.clean);
+    var messages = sanitizer.sanitize(req.query, req.clean);
 
     t.deepEqual(req.clean.sources, ['openstreetmap'], 'abbreviation is expanded to full version');
     t.deepEqual(messages.errors, [], 'no error returned');
@@ -83,7 +83,7 @@ module.exports.tests.valid_sources = function(test, common) {
       clean: { }
     };
 
-    var messages = sanitize(req.query, req.clean);
+    var messages = sanitizer.sanitize(req.query, req.clean);
 
     t.deepEqual(req.clean.sources, ['openstreetmap', 'openaddresses'],
                 'clean.sources should contain openstreetmap and openadresses');
@@ -109,7 +109,7 @@ module.exports.tests.invalid_sources = function(test, common) {
       warnings: []
     };
 
-    var messages = sanitize(req.query, req.clean);
+    var messages = sanitizer.sanitize(req.query, req.clean);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
     t.equal(req.clean.sources, undefined, 'clean.sources should remain empty');

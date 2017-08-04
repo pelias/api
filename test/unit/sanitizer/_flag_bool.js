@@ -1,5 +1,4 @@
 var sanitizer = require('../../../sanitizer/_flag_bool');
-var sanitize = sanitizer('dirty_param', true);
 
 module.exports.tests = {};
 
@@ -9,7 +8,7 @@ module.exports.tests.sanitize_private = function(test, common) {
     test('invalid dirty_param ' + value, function (t) {
       var raw = {dirty_param: value};
       var clean = {};
-      sanitize(raw, clean);
+      sanitizer('dirty_param', true).sanitize(raw, clean);
       t.equal(clean.dirty_param, false, 'default clean value set (to false)');
       t.end();
     });
@@ -20,7 +19,7 @@ module.exports.tests.sanitize_private = function(test, common) {
     test('valid dirty_param ' + value, function (t) {
       var raw = {dirty_param: value};
       var clean = {};
-      sanitize(raw, clean);
+      sanitizer('dirty_param', true).sanitize(raw, clean);
       t.equal(clean.dirty_param, true, 'clean value set to true');
       t.end();
     });
@@ -31,7 +30,7 @@ module.exports.tests.sanitize_private = function(test, common) {
     test('test setting false explicitly ' + value, function (t) {
       var raw = {dirty_param: value};
       var clean = {};
-      sanitize(raw, clean);
+      sanitizer('dirty_param', true).sanitize(raw, clean);
       t.equal(clean.dirty_param, false, 'clean value set to false');
       t.end();
     });
@@ -45,17 +44,26 @@ module.exports.tests.validate_default_behavior = function(test, common) {
       var sanitize_true = sanitizer('foo_bar', defaultValue);
       var raw = {};
       var clean = {};
-      sanitize_true(raw, clean);
+      sanitize_true.sanitize(raw, clean);
       t.equal(clean.foo_bar, defaultValue, 'foo_bar set to ' + defaultValue);
       t.end();
     });
   });
 };
 
+module.exports.tests.check_valid_parameters = function(test, common) {
+  test('return an array of expected parameters in object form for validation', (t) => {
+    const expected = [{ name: 'value' }]; // depends on first argument of sanitizer()
+    const validParameters = sanitizer('value', true).expected();
+    t.deepEquals(validParameters, expected);
+    t.end();
+  });
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE _flag_bool: ' + name, testFunction);
+    return tape('SANITIZE _flag_bool: ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
