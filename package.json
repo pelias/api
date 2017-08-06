@@ -44,7 +44,7 @@
     "elasticsearch-exceptions": "0.0.4",
     "express": "^4.8.8",
     "extend": "^3.0.1",
-    "geojson": "^0.4.0",
+    "geojson": "^0.5.0",
     "@mapbox/geojson-extent": "^0.3.1",
     "geolib": "^2.0.18",
     "iso-639-3": "^1.0.0",
