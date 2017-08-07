@@ -1,6 +1,8 @@
 const logger = require('pelias-logger').get('coarse_reverse');
 const _ = require('lodash');
 const Document = require('pelias-model').Document;
+const Debug = require('../helper/debug');
+const debugLog = new Debug('controller:coarse_reverse');
 
 // do not change order, other functionality depends on most-to-least granular order
 const coarse_granularities = [
@@ -102,7 +104,7 @@ function setup(service, should_execute) {
     if (!should_execute(req, res)) {
       return next();
     }
-
+    const initialTime = debugLog.beginTimer(req);
     // return a warning to the caller that boundary.circle.radius will be ignored
     if (!_.isUndefined(req.clean['boundary.circle.radius'])) {
       req.warnings.push('boundary.circle.radius is not applicable for coarse reverse');
@@ -111,6 +113,7 @@ function setup(service, should_execute) {
     // because coarse reverse is called when non-coarse reverse didn't return
     //  anything, treat requested layers as if it didn't contain non-coarse layers
     const effective_layers = getEffectiveLayers(req.clean.layers);
+    debugLog.push(req, {effective_layers: effective_layers});
 
     const centroid = {
       lat: req.clean['point.lat'],
@@ -140,7 +143,7 @@ function setup(service, should_execute) {
       if (hasResultsAtRequestedLayers(applicable_results, effective_layers)) {
         res.data.push(synthesizeDoc(applicable_results));
       }
-
+      debugLog.stopTimer(req, initialTime);
       return next();
 
     });

@@ -5,6 +5,8 @@ const retry = require('retry');
 
 const mgetService = require('../service/mget');
 const logger = require('pelias-logger').get('api');
+const Debug = require('../helper/debug');
+const debugLog = new Debug('controller:place');
 
 function requestHasErrors(request) {
   return _.get(request, 'errors', []).length > 0;
@@ -20,7 +22,7 @@ function setup( apiConfig, esclient ){
     if (requestHasErrors(req)){
       return next();
     }
-
+    const initialTime = debugLog.beginTimer(req);
     // options for retry
     // maxRetries is from the API config with default of 3
     // factor of 1 means that each retry attempt will esclient requestTimeout
@@ -42,6 +44,7 @@ function setup( apiConfig, esclient ){
     });
 
     logger.debug( '[ES req]', cmd );
+    debugLog.push(req, {ES_req: cmd});
 
     operation.attempt((currentAttempt) => {
       mgetService( esclient, cmd, function( err, docs ) {
@@ -50,6 +53,7 @@ function setup( apiConfig, esclient ){
         // only consider for status 408 (request timeout)
         if (isRequestTimeout(err) && operation.retry(err)) {
           logger.info(`request timed out on attempt ${currentAttempt}, retrying`);
+          debugLog.stopTimer(req, initialTime, 'request timed out, retrying');
           return;
         }
 
@@ -81,6 +85,7 @@ function setup( apiConfig, esclient ){
 
         next();
       });
+      debugLog.stopTimer(req, initialTime);
     });
 
   }
