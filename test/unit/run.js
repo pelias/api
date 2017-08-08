@@ -18,7 +18,8 @@ var tests = [
   require('./controller/placeholder'),
   require('./controller/search'),
   require('./controller/search_with_ids'),
-  require('./controller/predicates/has_any_parsed_text_property'),
+  require('./controller/predicates/has_parsed_text_properties'),
+  require('./controller/predicates/has_request_parameter'),
   require('./controller/predicates/has_response_data'),
   require('./controller/predicates/has_results_at_layers'),
   require('./controller/predicates/has_request_parameter'),
@@ -95,12 +96,12 @@ var tests = [
   require('./sanitizer/search'),
   require('./sanitizer/defer_to_addressit'),
   require('./sanitizer/wrap'),
+  require('./service/configurations/Interpolation'),
+  require('./service/configurations/Language'),
   require('./service/configurations/PlaceHolder'),
   require('./service/configurations/PointInPolygon'),
   require('./service/mget'),
-  require('./service/search'),
-  require('./service/interpolation'),
-  require('./service/language')
+  require('./service/search')
 ];
 
 tests.map(function(t) {

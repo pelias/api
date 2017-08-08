@@ -69,7 +69,6 @@ var postProc = {
 };
 
 // predicates that drive whether controller/search runs
-const hasAnyParsedTextProperty = require('../controller/predicates/has_any_parsed_text_property');
 const hasResponseData = require('../controller/predicates/has_response_data');
 const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
@@ -80,19 +79,23 @@ const hasRequestCategories = require('../controller/predicates/has_request_param
 const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin_layers');
 // this can probably be more generalized
 const isRequestSourcesOnlyWhosOnFirst = require('../controller/predicates/is_request_sources_only_whosonfirst');
+const hasRequestParameter = require('../controller/predicates/has_request_parameter');
+const hasParsedTextProperties = require('../controller/predicates/has_parsed_text_properties');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
 const hasAdminOnlyResults = not(hasResultsAtLayers(['venue', 'address', 'street']));
 
 const hasNumberButNotStreet = all(
-  hasAnyParsedTextProperty('number'),
-  not(hasAnyParsedTextProperty('street'))
+  hasParsedTextProperties.any('number'),
+  not(hasParsedTextProperties.any('street'))
 );
 
 const serviceWrapper = require('pelias-microservice-wrapper').service;
 const PlaceHolder = require('../service/configurations/PlaceHolder');
 const PointInPolygon = require('../service/configurations/PointInPolygon');
+const Language = require('../service/configurations/Language');
+const Interpolation = require('../service/configurations/Interpolation');
 
 /**
  * Append routes to app
@@ -110,6 +113,14 @@ function addRoutes(app, peliasConfig) {
   const placeholderConfiguration = new PlaceHolder(_.defaultTo(peliasConfig.api.services.placeholder, {}));
   const placeholderService = serviceWrapper(placeholderConfiguration);
   const isPlaceholderServiceEnabled = _.constant(placeholderConfiguration.isEnabled());
+
+  const changeLanguageConfiguration = new Language(_.defaultTo(peliasConfig.api.services.placeholder, {}));
+  const changeLanguageService = serviceWrapper(changeLanguageConfiguration);
+  const isChangeLanguageEnabled = _.constant(changeLanguageConfiguration.isEnabled());
+
+  const interpolationConfiguration = new Interpolation(_.defaultTo(peliasConfig.api.services.interpolation, {}));
+  const interpolationService = serviceWrapper(interpolationConfiguration);
+  const isInterpolationEnabled = _.constant(interpolationConfiguration.isEnabled());
 
   // fallback to coarse reverse when regular reverse didn't return anything
   const coarseReverseShouldExecute = all(
@@ -150,20 +161,20 @@ function addRoutes(app, peliasConfig) {
     // check clean.parsed_text for several conditions that must all be true
     all(
       // run placeholder if clean.parsed_text has 'street'
-      hasAnyParsedTextProperty('street'),
+      hasParsedTextProperties.any('street'),
       // don't run placeholder if there's a query or category
-      not(hasAnyParsedTextProperty('query', 'category')),
+      not(hasParsedTextProperties.any('query', 'category')),
       // run placeholder if there are any adminareas identified
-      hasAnyParsedTextProperty('neighbourhood', 'borough', 'city', 'county', 'state', 'country')
+      hasParsedTextProperties.any('neighbourhood', 'borough', 'city', 'county', 'state', 'country')
     )
   );
 
   const searchWithIdsShouldExecute = all(
     not(hasRequestErrors),
     // don't search-with-ids if there's a query or category
-    not(hasAnyParsedTextProperty('query', 'category')),
+    not(hasParsedTextProperties.any('query', 'category')),
     // there must be a street
-    hasAnyParsedTextProperty('street')
+    hasParsedTextProperties.any('street')
   );
 
   // placeholder should have executed, useful for determining whether to actually
@@ -193,6 +204,26 @@ function addRoutes(app, peliasConfig) {
   const oldProdQueryShouldExecute = all(
     not(hasRequestErrors),
     isAddressItParse
+  );
+
+  // get language adjustments if:
+  // - there's a response
+  // - theres's a lang parameter in req.clean
+  const changeLanguageShouldExecute = all(
+    hasResponseData,
+    not(hasRequestErrors),
+    isChangeLanguageEnabled,
+    hasRequestParameter('lang')
+  );
+
+  // interpolate if:
+  // - there's a number and street
+  // - there are street-layer results (these are results that need to be interpolated)
+  const interpolationShouldExecute = all(
+    not(hasRequestErrors),
+    isInterpolationEnabled,
+    hasParsedTextProperties.all('number', 'street'),
+    hasResultsAtLayers('street')
   );
 
   // execute under the following conditions:
@@ -238,7 +269,7 @@ function addRoutes(app, peliasConfig) {
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
       postProc.confidenceScoresFallback(),
-      postProc.interpolate(),
+      postProc.interpolate(interpolationService, interpolationShouldExecute),
       postProc.sortResponseData(require('pelias-sorting'), hasAdminOnlyResults),
       postProc.dedupe(),
       postProc.accuracy(),
@@ -246,7 +277,7 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
-      postProc.changeLanguage(),
+      postProc.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
       postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig.api, base),
       postProc.sendJSON
@@ -260,14 +291,14 @@ function addRoutes(app, peliasConfig) {
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
       postProc.confidenceScoresFallback(),
-      postProc.interpolate(),
+      postProc.interpolate(interpolationService, interpolationShouldExecute),
       postProc.dedupe(),
       postProc.accuracy(),
       postProc.localNamingConventions(),
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
-      postProc.changeLanguage(),
+      postProc.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
       postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig.api, base),
       postProc.sendJSON
@@ -284,7 +315,7 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
-      postProc.changeLanguage(),
+      postProc.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
       postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig.api, base),
       postProc.sendJSON
@@ -305,7 +336,7 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
-      postProc.changeLanguage(),
+      postProc.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
       postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig.api, base),
       postProc.sendJSON
@@ -325,7 +356,7 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
-      postProc.changeLanguage(),
+      postProc.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
       postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig.api, base),
       postProc.sendJSON
@@ -339,7 +370,7 @@ function addRoutes(app, peliasConfig) {
       postProc.renamePlacenames(),
       postProc.parseBoundingBox(),
       postProc.normalizeParentIds(),
-      postProc.changeLanguage(),
+      postProc.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
       postProc.assignLabels(),
       postProc.geocodeJSON(peliasConfig.api, base),
       postProc.sendJSON
