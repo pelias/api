@@ -21,6 +21,7 @@ function setup(should_execute) {
       }
 
       req.clean.parsed_text = parsed_text;
+      debugLog.push(req, {parsed_text: req.clean.parsed_text});
     }
     debugLog.stopTimer(req, initialTime);
     return next();

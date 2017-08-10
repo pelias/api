@@ -267,6 +267,7 @@ function setup(placeholderService, do_geometric_filters_apply, should_execute) {
 
         logger.info(messageParts.join(' '));
         debugLog.push(req, messageParts[1].slice(1,-1));
+        debugLog.push(req, res.data);
       }
 
       debugLog.stopTimer(req, initialTime);
