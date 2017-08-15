@@ -29,7 +29,6 @@ var tests = [
   require('./controller/predicates/is_coarse_reverse'),
   require('./controller/predicates/is_only_non_admin_layers'),
   require('./controller/predicates/is_request_sources_only_whosonfirst'),
-  require('./controller/predicates/is_service_enabled'),
   require('./helper/debug'),
   require('./helper/diffPlaces'),
   require('./helper/geojsonify'),
