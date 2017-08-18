@@ -387,7 +387,8 @@ module.exports.tests.service_errors = (test, common) => {
     const res = {};
 
     const next = () => {
-      t.ok(logger.getInfoMessages(), [
+      t.deepEqual(logger.getInfoMessages(), [
+        '[req]',
         'request timed out on attempt 1, retrying',
         'request timed out on attempt 2, retrying',
         'request timed out on attempt 3, retrying'
