@@ -1,6 +1,7 @@
 
 var logger = require( 'pelias-logger' ).get( 'api' );
 var service = require('../service/language');
+const _ = require('lodash');
 
 /**
 example response from language web service:
@@ -28,7 +29,6 @@ example response from language web service:
 **/
 
 function setup() {
-
   var transport = service.findById();
   var middleware = function(req, res, next) {
 
@@ -145,18 +145,18 @@ function updateDocs( req, res, translations ){
         if( !translations[id].hasOwnProperty( 'names' ) ){ continue; }
 
         // requested language is not available
-        if( !translations[id].names.hasOwnProperty( requestLanguage ) ){
-          logger.info( '[language] [info]', 'missing translation', requestLanguage, id );
+        if (_.isEmpty(_.get(translations[id].names, requestLanguage, [] ))) {
+          logger.debug( '[language] [debug]', 'missing translation', requestLanguage, id );
           continue;
         }
 
         // translate 'parent.*' property
-        adminValues[i] = translations[id].names[ requestLanguage ];
+        adminValues[i] = translations[id].names[ requestLanguage ][0];
 
         // if the record is an admin record we also translate
         // the 'name.default' property.
         if( adminKey === doc.layer ){
-          doc.name.default = translations[id].names[ requestLanguage ];
+          doc.name.default = translations[id].names[ requestLanguage ][0];
         }
       }
     }

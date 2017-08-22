@@ -83,6 +83,16 @@ module.exports.tests.sanitize = function(test, common) {
         called_sanitizers.push('_categories');
         return { errors: [], warnings: [] };
       },
+      '../sanitizer/_location_bias': function (defaultParameters) {
+        if (defaultParameters.key === 'value'){
+          return () => {
+            called_sanitizers.push('_location_bias');
+            return { errors: [], warnings: [] };
+          };
+        } else {
+            throw new Error('incorrect parameter passed to _location_bias');
+        }
+      }
     });
 
     var expected_sanitizers = [
@@ -96,6 +106,7 @@ module.exports.tests.sanitize = function(test, common) {
       '_targets/sources',
       '_sources_and_layers',
       '_flag_bool',
+      '_location_bias',
       '_geo_search',
       '_boundary_country',
       '_categories'
@@ -104,17 +115,24 @@ module.exports.tests.sanitize = function(test, common) {
     var req = {};
     var res = {};
 
-    search.middleware(req, res, function(){
+    const middleware = search.middleware({
+      defaultParameters: {
+        key: 'value'
+      }
+    });
+
+    middleware(req, res, function(){
       t.deepEquals(called_sanitizers, expected_sanitizers);
       t.end();
     });
+
   });
 };
 
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /structured ' + name, testFunction);
+    return tape('SANITIZE /structured ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
