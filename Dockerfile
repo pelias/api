@@ -1,4 +1,5 @@
-FROM node:4.6.0
+# base image
+FROM pelias/libpostal_baseimage
 MAINTAINER Pelias
 
 EXPOSE 3100
