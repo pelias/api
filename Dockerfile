@@ -19,8 +19,6 @@ RUN npm install && \
   npm test && \
   chmod -R a+rwX .
 
-ADD pelias.json.docker pelias.json
-
 # Don't run as root, because there's no reason to (https://docs.docker.com/engine/articles/dockerfile_best-practices/#user).
 # This also reveals permission problems on local Docker.
 RUN chown -R 9999:9999 ${WORK}
