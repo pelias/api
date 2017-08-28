@@ -26,4 +26,5 @@ ADD pelias.json.docker pelias.json
 RUN chown -R 9999:9999 ${WORK}
 USER 9999
 
-CMD npm start
+# start service
+CMD [ "npm", "start" ]
