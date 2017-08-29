@@ -122,7 +122,8 @@ module.exports.tests.confidenceScore = function(test, common) {
         parent: {
           country: ['country1'],
           region: ['region1'],
-          county: ['city1']
+          county: ['city1'],
+            locality: ['city']
         }
       }],
       meta: {
@@ -132,6 +133,7 @@ module.exports.tests.confidenceScore = function(test, common) {
     };
 
     confidenceScore(req, res, function() {});
+      
     t.equal(res.data[0].confidence, 1.0, 'max score was set');
     t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
     t.end();
