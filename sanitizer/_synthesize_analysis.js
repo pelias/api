@@ -35,7 +35,7 @@ function getHouseNumberField(analyzed_address) {
 
 }
 
-function sanitize( raw, clean ){
+function _sanitize( raw, clean ){
 
   // error & warning messages
   const messages = { errors: [], warnings: [] };
@@ -86,5 +86,20 @@ function sanitize( raw, clean ){
   return messages;
 }
 
+function _expected() {
+  return [
+    { 'name': 'venue' },
+    { 'name': 'address' },
+    { 'name': 'neighbourhood' },
+    { 'name': 'borough' },
+    { 'name': 'locality' },
+    { 'name': 'county' },
+    { 'name': 'region' },
+    { 'name': 'postalcode' },
+    { 'name': 'country' }];
+}
 // export function
-module.exports = sanitize;
+module.exports = () => ({
+  sanitize: _sanitize,
+  expected: _expected
+});

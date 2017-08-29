@@ -1,4 +1,4 @@
-var sanitizer = require('../../../sanitizer/_text_addressit');
+var sanitizer = require('../../../sanitizer/_text_addressit')();
 var type_mapping = require('../../../helper/type_mapping');
 
 module.exports.tests = {};
@@ -11,7 +11,7 @@ module.exports.tests.text_parser = function(test, common) {
     var clean = {
     };
 
-    var messages = sanitizer(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
@@ -33,6 +33,7 @@ module.exports.tests.text_parser = function(test, common) {
 
       var expected_clean = {
         text: query.name + ', ' + query.admin_parts,
+        parser: 'addressit',
         parsed_text: {
           name: query.name,
           regions: [ query.name ],
@@ -41,7 +42,7 @@ module.exports.tests.text_parser = function(test, common) {
         }
       };
 
-      var messages = sanitizer(raw, clean);
+      var messages = sanitizer.sanitize(raw, clean);
 
       t.deepEqual(messages, { errors: [], warnings: [] } );
       t.deepEqual(clean, expected_clean);
@@ -57,6 +58,7 @@ module.exports.tests.text_parser = function(test, common) {
 
       var expected_clean = {
         text: query.name + ',' + query.admin_parts,
+        parser: 'addressit',
         parsed_text: {
           name: query.name,
           regions: [ query.name ],
@@ -65,7 +67,7 @@ module.exports.tests.text_parser = function(test, common) {
         }
       };
 
-      var messages = sanitizer(raw, clean);
+      var messages = sanitizer.sanitize(raw, clean);
 
       t.deepEqual(messages, { errors: [], warnings: [] } );
       t.deepEqual(clean, expected_clean);
@@ -88,6 +90,7 @@ module.exports.tests.text_parser = function(test, common) {
 
       var expected_clean = {
         text: query.name + ', ' + query.admin_parts,
+        parser: 'addressit',
         parsed_text: {
           name: query.name,
           regions: [ query.name, query.admin_parts ],
@@ -95,7 +98,7 @@ module.exports.tests.text_parser = function(test, common) {
         }
       };
 
-      var messages = sanitizer(raw, clean);
+      var messages = sanitizer.sanitize(raw, clean);
 
       t.deepEqual(messages, { errors: [], warnings: [] } );
       t.deepEqual(clean, expected_clean);
@@ -111,6 +114,7 @@ module.exports.tests.text_parser = function(test, common) {
 
       var expected_clean = {
         text: query.name + ',' + query.admin_parts,
+        parser: 'addressit',
         parsed_text: {
           name: query.name,
           regions: [ query.name, query.admin_parts ],
@@ -118,7 +122,7 @@ module.exports.tests.text_parser = function(test, common) {
         }
       };
 
-      var messages = sanitizer(raw, clean);
+      var messages = sanitizer.sanitize(raw, clean);
 
       t.deepEqual(messages, { errors: [], warnings: [] } );
       t.deepEqual(clean, expected_clean);
@@ -136,10 +140,11 @@ module.exports.tests.text_parser = function(test, common) {
     clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
+      parser: 'addressit',
       text: 'yugolsavia'
     };
 
-    var messages = sanitizer(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -155,10 +160,11 @@ module.exports.tests.text_parser = function(test, common) {
     clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
+      parser: 'addressit',
       text: 'small town'
     };
 
-    var messages = sanitizer(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -174,10 +180,11 @@ module.exports.tests.text_parser = function(test, common) {
     clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
+      parser: 'addressit',
       text: '123 main'
     };
 
-    var messages = sanitizer(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -193,10 +200,11 @@ module.exports.tests.text_parser = function(test, common) {
     clean.parsed_text = 'this should be removed';
 
     var expected_clean = {
+      parser: 'addressit',
       text: 'main 123'
     };
 
-    var messages = sanitizer(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -213,13 +221,14 @@ module.exports.tests.text_parser = function(test, common) {
 
     var expected_clean = {
       text: 'main particle new york',
+      parser: 'addressit',
       parsed_text: {
         regions: [ 'main particle' ],
         state: 'NY'
       }
     };
 
-    var messages = sanitizer(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -235,6 +244,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     var expected_clean = {
       text: '123 main st new york ny',
+      parser: 'addressit',
       parsed_text: {
         number: '123',
         street: 'main st',
@@ -243,7 +253,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    var messages = sanitizer(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -259,6 +269,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     var expected_clean = {
       text: '123 main st new york ny 10010',
+      parser: 'addressit',
       parsed_text: {
         number: '123',
         street: 'main st',
@@ -268,7 +279,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    var messages = sanitizer(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -283,6 +294,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     var expected_clean = {
       text: '339 W Main St, Cheshire, 06410',
+      parser: 'addressit',
       parsed_text: {
         name: '339 W Main St',
         number: '339',
@@ -293,7 +305,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    var messages = sanitizer(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -308,6 +320,7 @@ module.exports.tests.text_parser = function(test, common) {
 
     var expected_clean = {
       text: '339 W Main St,Lancaster,PA',
+      parser: 'addressit',
       parsed_text: {
         name: '339 W Main St',
         number: '339',
@@ -318,7 +331,7 @@ module.exports.tests.text_parser = function(test, common) {
       }
     };
 
-    var messages = sanitizer(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.deepEqual(messages, { errors: [], warnings: [] } );
     t.deepEqual(clean, expected_clean);
@@ -326,6 +339,12 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
+  test('return an array of expected parameters in object form for validation', (t) => {
+    const expected = [{ name: 'text' }];
+    const validParameters = sanitizer.expected();
+    t.deepEquals(validParameters, expected);
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {

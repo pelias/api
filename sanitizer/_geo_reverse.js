@@ -7,7 +7,7 @@ var LAT_LON_IS_REQUIRED = true,
 const non_coarse_layers = ['venue', 'address', 'street'];
 
 // validate inputs, convert types and apply defaults
-module.exports = function sanitize( raw, clean ){
+function _sanitize( raw, clean ){
 
   // error & warning messages
   var messages = { errors: [], warnings: [] };
@@ -38,4 +38,18 @@ module.exports = function sanitize( raw, clean ){
   }
 
   return messages;
-};
+}
+
+function _expected(){
+  return [
+  { name: 'point.lat' },
+  { name: 'point.lon' },
+  { name: 'boundary.circle.lon' }, // copied from point.lon by the API, not user input
+  { name: 'boundary.circle.lat' }, // copied from point.lat by the API, not user input
+  { name: 'boundary.circle.radius'}];
+}
+
+module.exports = () => ({
+  sanitize: _sanitize,
+  expected: _expected
+});

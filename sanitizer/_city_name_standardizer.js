@@ -15,7 +15,7 @@ function transliterate(match) {
 }
 
 // transliterate ft/mt/saint/sainte to fort/mount/st/ste, respectively
-function sanitize(raw, clean) {
+function _sanitize(raw, clean) {
   // error & warning messages
   // this function doesn't add any error or warning messages
   const messages = { errors: [], warnings: [] };
@@ -44,4 +44,6 @@ function sanitize(raw, clean) {
 
 }
 
-module.exports = sanitize;
+module.exports = () => ({
+  sanitize: _sanitize
+});

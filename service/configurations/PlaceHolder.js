@@ -12,9 +12,17 @@ class PlaceHolder extends ServiceConfiguration {
   }
 
   getParameters(req) {
-    const parameters = {
-      text: req.clean.text
-    };
+    const parameters = {};
+
+    if (_.has(req.clean.parsed_text, 'street')) {
+      // assemble all these fields into a space-delimited string
+      parameters.text = _.values(_.pick(req.clean.parsed_text,
+        ['neighbourhood', 'borough', 'city', 'county', 'state', 'country'])).join(' ');
+
+    } else {
+      parameters.text = req.clean.text;
+
+    }
 
     if (_.has(req.clean, 'lang.iso6393')) {
       parameters.lang = req.clean.lang.iso6393;

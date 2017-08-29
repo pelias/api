@@ -1,4 +1,4 @@
-var sanitize = require( '../../../sanitizer/_categories');
+var sanitizer = require( '../../../sanitizer/_categories')();
 
 module.exports.tests = {};
 
@@ -9,7 +9,7 @@ module.exports.tests.no_categories = function(test, common) {
       clean: { }
     };
 
-    var messages = sanitize(req.query, req.clean);
+    var messages = sanitizer.sanitize(req.query, req.clean);
 
     t.equal(req.clean.categories, undefined, 'no categories should be defined');
     t.deepEqual(messages.errors, [], 'no error returned');
@@ -27,7 +27,7 @@ module.exports.tests.no_categories = function(test, common) {
 
     var expected_error = 'Categories parameter cannot be left blank. See documentation of service for valid options.';
 
-    var messages = sanitize(req.query, req.clean);
+    var messages = sanitizer.sanitize(req.query, req.clean);
 
     t.equal(req.clean.categories, undefined, 'no categories should be defined');
     t.deepEqual(messages.errors.length, 1, 'error returned');
@@ -46,7 +46,7 @@ module.exports.tests.no_categories = function(test, common) {
 
     var expected_error = 'Invalid categories parameter value(s). See documentation of service for valid options.';
 
-    var messages = sanitize(req.query, req.clean);
+    var messages = sanitizer.sanitize(req.query, req.clean);
 
     t.equal(req.clean.categories, undefined, 'no categories should be defined');
     t.deepEqual(messages.errors.length, 1, 'error returned');
@@ -74,7 +74,7 @@ module.exports.tests.valid_categories = function(test, common) {
       clean: { }
     };
 
-    var messages = sanitize(req.query, req.clean, validCategories);
+    var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
 
     t.deepEqual(req.clean.categories, ['food'], 'categories should contain food');
     t.deepEqual(messages.errors, [], 'no error returned');
@@ -95,7 +95,7 @@ module.exports.tests.valid_categories = function(test, common) {
     };
     var expectedCategories = ['food', 'health'];
 
-    var messages = sanitize(req.query, req.clean, validCategories);
+    var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
 
     t.deepEqual(req.clean.categories, expectedCategories,
                 'clean.categories should be an array with proper values');
@@ -130,7 +130,7 @@ module.exports.tests.invalid_categories = function(test, common) {
       warnings: []
     };
 
-    var messages = sanitize(req.query, req.clean, validCategories);
+    var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
     t.equal(req.clean.categories, undefined, 'clean.categories should remain empty');
@@ -151,17 +151,26 @@ module.exports.tests.invalid_categories = function(test, common) {
       warnings: []
     };
 
-    var messages = sanitize(req.query, req.clean, validCategories);
+    var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
     t.equal(req.clean.categories, undefined, 'clean.categories should remain empty');
+    t.end();
+  });
+
+  test('return an array of expected parameters in object form for validation', (t) => {
+    const expected = [{ name: 'categories' }];
+
+    const validParameters = sanitizer.expected();
+
+    t.deepEquals(validParameters, expected);
     t.end();
   });
 };
 
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape('SANTIZE _categories ' + name, testFunction);
+    return tape('SANITIZE _categories ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

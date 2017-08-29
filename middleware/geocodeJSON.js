@@ -64,6 +64,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
   // OPTIONAL. Warnings and errors.
   addMessages(req, 'warnings', res.body.geocoding);
   addMessages(req, 'errors', res.body.geocoding);
+  addMessages(req, 'debug', res.body.geocoding);
 
   // OPTIONAL
   // Freeform

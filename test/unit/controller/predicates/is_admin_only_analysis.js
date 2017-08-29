@@ -14,7 +14,7 @@ module.exports.tests.interface = (test, common) => {
 
 module.exports.tests.true_conditions = (test, common) => {
   test('parsed_text with admin-only properties should return true', (t) => {
-    ['neighbourhood', 'borough', 'city', 'county', 'state', 'postalcode', 'country'].forEach((property) => {
+    ['neighbourhood', 'borough', 'city', 'county', 'state', 'country'].forEach((property) => {
       const req = {
         clean: {
           parsed_text: {}
@@ -47,7 +47,7 @@ module.exports.tests.false_conditions = (test, common) => {
   });
 
   test('parsed_text with non-admin properties should return false', (t) => {
-    ['number', 'street', 'query', 'category'].forEach((property) => {
+    ['number', 'street', 'query', 'category', 'postalcode'].forEach((property) => {
       const req = {
         clean: {
           parsed_text: {}

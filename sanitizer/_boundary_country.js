@@ -1,7 +1,7 @@
-var check = require('check-types');
-var iso3166 = require('iso3166-1');
+const check = require('check-types');
+const iso3166 = require('iso3166-1');
 
-function sanitize(raw, clean) {
+function _sanitize(raw, clean) {
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
@@ -37,4 +37,11 @@ function containsIsoCode(isoCode) {
   return iso3166.is2(isoCode) || iso3166.is3(isoCode);
 }
 
-module.exports = sanitize;
+function _expected(){
+  return [{ name: 'boundary.country' }];
+}
+
+module.exports = () => ({
+  sanitize: _sanitize,
+  expected: _expected
+});

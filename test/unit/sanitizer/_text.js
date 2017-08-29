@@ -1,152 +1,62 @@
-var type_mapping = require('../../../helper/type_mapping');
-var proxyquire =  require('proxyquire').noCallThru();
+const sanitizer = require('../../../sanitizer/_text')();
 
 module.exports.tests = {};
 
 module.exports.tests.text_parser = function(test, common) {
-  test('non-empty raw.text should call analyzer and set clean.text and clean.parsed_text', function(t) {
-    var mock_analyzer_response = {
-      key1: 'value 1',
-      key2: 'value 2'
-    };
-
-    var sanitizer = proxyquire('../../../sanitizer/_text', {
-      'pelias-text-analyzer': { parse: function(query) {
-        return mock_analyzer_response;
-      }
-    }});
-
-    var raw = {
+  test('non-empty raw.text should overwrite clean.text', t => {
+    const raw = {
       text: 'raw input'
     };
-    var clean = {
+    const clean = {
+      text: 'original clean.text'
     };
 
-    var expected_clean = {
-      text: raw.text,
-      parsed_text: mock_analyzer_response
+    const expected_clean = {
+      text: raw.text
     };
 
-    var messages = sanitizer(raw, clean);
+    const messages = sanitizer.sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, [], 'no errors');
-    t.deepEquals(messages.warnings, [], 'no warnings');
+    t.deepEquals(messages, { warnings: [], errors: [] }, 'no errors/warnings');
     t.end();
 
   });
 
-  test('empty raw.text should add error message', function(t) {
-    var sanitizer = proxyquire('../../../sanitizer/_text', {
-      'pelias-text-analyzer': { parse: function(query) {
-        throw new Error('analyzer should not have been called');
-      }
-    }});
+  test('undefined/empty raw.text should add error message', t => {
+    [undefined, ''].forEach(val => {
+      const raw = {
+        text: val
+      };
+      const clean = {
+      };
 
-    var raw = {
-      text: ''
-    };
-    var clean = {
-    };
+      const expected_clean = {
+      };
 
-    var expected_clean = {
-    };
+      const messages = sanitizer.sanitize(raw, clean);
 
-    var messages = sanitizer(raw, clean);
+      t.deepEquals(clean, expected_clean);
+      t.deepEquals(messages.errors, ['invalid param \'text\': text length, must be >0'], 'no errors');
+      t.deepEquals(messages.warnings, [], 'no warnings');
 
-    t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, ['invalid param \'text\': text length, must be >0'], 'no errors');
-    t.deepEquals(messages.warnings, [], 'no warnings');
+    });
+
     t.end();
 
   });
 
-  test('undefined raw.text should add error message', function(t) {
-    var sanitizer = proxyquire('../../../sanitizer/_text', {
-      'pelias-text-analyzer': { parse: function(query) {
-        throw new Error('analyzer should not have been called');
-      }
-    }});
-
-    var raw = {
-      text: undefined
-    };
-    var clean = {
-    };
-
-    var expected_clean = {
-    };
-
-    var messages = sanitizer(raw, clean);
-
-    t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, ['invalid param \'text\': text length, must be >0'], 'no errors');
-    t.deepEquals(messages.warnings, [], 'no warnings');
+  test('return an array of expected parameters in object form for validation', (t) => {
+    const expected = [{ name: 'text' }];
+    const validParameters = sanitizer.expected();
+    t.deepEquals(validParameters, expected);
     t.end();
-
   });
-
-  test('text_analyzer.parse returning undefined should not overwrite clean.parsed_text', function(t) {
-    var sanitizer = proxyquire('../../../sanitizer/_text', {
-      'pelias-text-analyzer': { parse: function(query) {
-        return undefined;
-      }
-    }});
-
-    var raw = {
-      text: 'raw input'
-    };
-    var clean = {
-      parsed_text: 'original clean.parsed_text'
-    };
-
-    var expected_clean = {
-      text: raw.text,
-      parsed_text: 'original clean.parsed_text'
-    };
-
-    var messages = sanitizer(raw, clean);
-
-    t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, [], 'no errors');
-    t.deepEquals(messages.warnings, [], 'no warnings');
-    t.end();
-
-  });
-
-  test('text_analyzer.parse returning null should not overwrite clean.parsed_text', function(t) {
-    var sanitizer = proxyquire('../../../sanitizer/_text', {
-      'pelias-text-analyzer': { parse: function(query) {
-        return null;
-      }
-    }});
-
-    var raw = {
-      text: 'raw input'
-    };
-    var clean = {
-      parsed_text: 'original clean.parsed_text'
-    };
-
-    var expected_clean = {
-      text: raw.text,
-      parsed_text: 'original clean.parsed_text'
-    };
-
-    var messages = sanitizer(raw, clean);
-
-    t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, [], 'no errors');
-    t.deepEquals(messages.warnings, [], 'no warnings');
-    t.end();
-
-  });
-
 };
 
-module.exports.all = function (tape, common) {
+module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape('sanitizeR _text: ' + name, testFunction);
+    return tape(`sanitizer _text: ${name}`, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

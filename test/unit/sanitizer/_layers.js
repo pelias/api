@@ -1,12 +1,12 @@
 var type_mapping = require('../../../helper/type_mapping');
 
-var sanitize = require('../../../sanitizer/_targets')('layers', type_mapping.layer_mapping);
+var sanitizer = require('../../../sanitizer/_targets')('layers', type_mapping.layer_mapping);
 
 module.exports.tests = {};
 
 module.exports.tests.sanitize_layers = function(test, common) {
   test('unspecified', function(t) {
-    var messages = sanitize({ layers: undefined }, {});
+    var messages = sanitizer.sanitize({ layers: undefined }, {});
     t.equal(messages.errors.length, 0, 'no errors');
     t.end();
   });
@@ -15,7 +15,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var raw = { layers: 'test_layer' };
     var clean = {};
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     var msg = ' is an invalid layers parameter. Valid options: ';
     t.equal(messages.errors.length, 1, 'errors set');
@@ -28,7 +28,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var raw = { layers: 'venue' };
     var clean = {};
 
-    sanitize(raw, clean);
+    sanitizer.sanitize(raw, clean);
 
     var venue_layers = ['venue'];
     t.deepEqual(clean.layers, venue_layers, 'venue layers set');
@@ -39,7 +39,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var raw = { layers: 'coarse' };
     var clean = {};
 
-    sanitize(raw, clean);
+    sanitizer.sanitize(raw, clean);
 
     var admin_layers = [ 'continent', 'country', 'dependency',
     'macroregion', 'region', 'locality', 'localadmin', 'macrocounty', 'county',
@@ -53,7 +53,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var raw = { layers: 'address' };
     var clean = {};
 
-    sanitize(raw, clean);
+    sanitizer.sanitize(raw, clean);
 
     t.deepEqual(clean.layers, ['address'], 'address layer set');
     t.end();
@@ -63,7 +63,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var raw = { layers: 'venue,country,region' };
     var clean = {};
 
-    sanitize(raw, clean);
+    sanitizer.sanitize(raw, clean);
 
     var expected_layers = ['venue', 'country', 'region'];
     t.deepEqual(clean.layers, expected_layers, 'venue + regular layers');
@@ -74,7 +74,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var raw = { layers: 'coarse,country' };
     var clean = {};
 
-    sanitize(raw, clean);
+    sanitizer.sanitize(raw, clean);
 
     var expected_layers = [ 'continent', 'country', 'dependency',
     'macroregion', 'region', 'locality', 'localadmin', 'macrocounty', 'county',
@@ -88,7 +88,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var raw = { layers: 'address,country,locality' };
     var clean = {};
 
-    sanitize(raw, clean);
+    sanitizer.sanitize(raw, clean);
 
     var expected_layers = ['address', 'country', 'locality' ];
     t.deepEqual(clean.layers, expected_layers, 'address + regular layers set');
@@ -99,7 +99,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var raw = { layers: 'venue,country' };
     var clean = {};
 
-    sanitize(raw, clean);
+    sanitizer.sanitize(raw, clean);
 
     var expected_layers = ['venue', 'country'];
     t.deepEqual(clean.layers, expected_layers, 'venue layers found (no duplicates)');
@@ -110,7 +110,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var raw = { layers: 'venue,coarse' };
     var clean = {};
 
-    sanitize(raw, clean);
+    sanitizer.sanitize(raw, clean);
 
     var coarse_layers = [ 'continent',
       'country', 'dependency', 'macroregion', 'region', 'locality', 'localadmin',
@@ -126,7 +126,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
 
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape('SANTIZE _layers ' + name, testFunction);
+    return tape('SANITIZE _layers ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

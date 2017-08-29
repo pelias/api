@@ -1,4 +1,4 @@
-const setup = require('../../../sanitizer/_location_bias');
+const sanitizer = require('../../../sanitizer/_location_bias');
 
 module.exports.tests = {};
 
@@ -8,14 +8,14 @@ module.exports.tests.setLocationBias = function(test, common) {
       'focus.point.lat': 12.12121212,
       'focus.point.lon': 21.21212121
     };
-    const locationBias = setup(defaultParameters);
+    const locationBias = sanitizer(defaultParameters);
     const raw = {};
     const expected = {
           'focus.point.lat': 12.12121212,
           'focus.point.lon': 21.21212121
     };
 
-    locationBias(raw, undefined);
+    locationBias.sanitize(raw, undefined);
     t.deepEqual(raw, expected, 'focus point should be set');
     t.end();
 
@@ -26,9 +26,9 @@ module.exports.tests.setLocationBias = function(test, common) {
         'focus.point.lat': 12.12121212,
         'focus.point.lon': 21.21212121
     };
-    const locationBias = setup(defaultParameters);
+    const locationBias = sanitizer(defaultParameters);
 
-    locationBias(undefined, undefined);
+    locationBias.sanitize(undefined, undefined);
     t.deepEqual(undefined, undefined, 'should be unmodified' );
     t.end();
   });
@@ -37,11 +37,11 @@ module.exports.tests.setLocationBias = function(test, common) {
     const defaultParameters = {
       'focus.point.lon': 12.2121212
     };
-    const locationBias = setup(defaultParameters);
+    const locationBias = sanitizer(defaultParameters);
     const raw = {};
     const expected = {};
 
-    locationBias(raw, undefined);
+    locationBias.sanitize(raw, undefined);
     t.deepEqual(raw, expected, 'should be unmodified' );
     t.end();
   });
@@ -50,11 +50,11 @@ module.exports.tests.setLocationBias = function(test, common) {
     const defaultParameters = {
       'focus.point.lat': 12.2121212
     };
-    const locationBias = setup(defaultParameters);
+    const locationBias = sanitizer(defaultParameters);
     const raw = {};
     const expected = {};
 
-    locationBias(raw, undefined);
+    locationBias.sanitize(raw, undefined);
       t.deepEqual(raw, expected, 'should be unmodified' );
       t.end();
   });
@@ -64,7 +64,7 @@ module.exports.tests.setLocationBias = function(test, common) {
       'focus.point.lon': 12.2121212,
       'focus.point.lat': 12.2121212
     };
-    const locationBias = setup(defaultParameters);
+    const locationBias = sanitizer(defaultParameters);
     const raw = {
       'focus.point.lon': 43.4343434
     };
@@ -72,7 +72,7 @@ module.exports.tests.setLocationBias = function(test, common) {
       'focus.point.lon': 43.4343434
     };
 
-    locationBias(raw, undefined);
+    locationBias.sanitize(raw, undefined);
       t.deepEqual(raw, expected, 'should be unmodified' );
       t.end();
   });
@@ -82,7 +82,7 @@ module.exports.tests.setLocationBias = function(test, common) {
       'focus.point.lon': 12.2121212,
       'focus.point.lat': 12.2121212
     };
-    const locationBias = setup(defaultParameters);
+    const locationBias = sanitizer(defaultParameters);
     const raw = {
       'focus.point.lat': 34.3434343
     };
@@ -90,7 +90,7 @@ module.exports.tests.setLocationBias = function(test, common) {
       'focus.point.lat': 34.3434343
     };
 
-    locationBias(raw, undefined);
+    locationBias.sanitize(raw, undefined);
       t.deepEqual(raw, expected, 'should be unmodified' );
       t.end();
   });

@@ -3,7 +3,7 @@ var _ = require('lodash'),
     check = require('check-types');
 
 // validate inputs
-function sanitize( raw, clean ){
+function _sanitize( raw, clean ){
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
@@ -22,4 +22,6 @@ function sanitize( raw, clean ){
 }
 
 // export function
-module.exports = sanitize;
+module.exports = () => ({
+  sanitize: _sanitize
+});

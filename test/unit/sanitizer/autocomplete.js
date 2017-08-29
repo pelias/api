@@ -8,86 +8,124 @@ module.exports.tests.sanitizers = function(test, common) {
     var called_sanitizers = [];
 
     var autocomplete = proxyquire('../../../sanitizer/autocomplete', {
-      '../sanitizer/_single_scalar_parameters': () => {
-        called_sanitizers.push('_single_scalar_parameters');
-        return { errors: [], warnings: [] };
-      },
-      '../sanitizer/_text_addressit': () => {
-        called_sanitizers.push('_text_addressit');
-        return { errors: [], warnings: [] };
-      },
-      '../sanitizer/_tokenizer': () => {
-        called_sanitizers.push('_tokenizer');
-        return { errors: [], warnings: [] };
-      },
-      '../sanitizer/_size': function() {
-        if (_.isEqual(_.values(arguments), [10, 10, 10])) {
-          return () => {
-            called_sanitizers.push('_size');
+      '../sanitizer/_single_scalar_parameters': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_single_scalar_parameters');
             return { errors: [], warnings: [] };
+          }
+        };
+      },
+      '../sanitizer/_debug': () => {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_debug');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
+      '../sanitizer/_text_addressit': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_text_addressit');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
+      '../sanitizer/_tokenizer': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_tokenizer');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
+      '../sanitizer/_size': function () {
+        if (_.isEqual(_.values(arguments), [10, 10, 10])) {
+          return {
+            sanitize: () => {
+              called_sanitizers.push('_size');
+              return { errors: [], warnings: [] };
+              }
           };
-
         } else {
           throw new Error('incorrect parameters passed to _size');
         }
-
       },
-      '../sanitizer/_targets': (type) => {
+      '../sanitizer/_targets': function (type) {
         if (['layers', 'sources'].indexOf(type) !== -1) {
-          return () => {
-            called_sanitizers.push(`_targets/${type}`);
-            return { errors: [], warnings: [] };
-          };
-
-        }
-        else {
+          return {
+            sanitize: () => {
+              called_sanitizers.push(`_targets/${type}`);
+              return { errors: [], warnings: [] };
+              }
+            };
+          } else {
           throw new Error('incorrect parameters passed to _targets');
         }
+      },
 
+      '../sanitizer/_sources_and_layers': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_sources_and_layers');
+            return { errors: [], warnings: [] };
+          }
+        };
       },
-      '../sanitizer/_sources_and_layers': () => {
-        called_sanitizers.push('_sources_and_layers');
-        return { errors: [], warnings: [] };
-      },
-      '../sanitizer/_flag_bool': function() {
+      '../sanitizer/_flag_bool': function () {
         if (arguments[0] === 'private' && arguments[1] === false) {
-          return () => {
-            called_sanitizers.push('_flag_bool');
-            return { errors: [], warnings: [] };
-          };
-
-        }
-        else {
-          throw new Error('incorrect parameters passed to _flag_bool');
-        }
-
-      },
-      '../sanitizer/_location_bias': (defaultParameters) => {
-        if (defaultParameters.key === 'value'){
-          return () => {
-            called_sanitizers.push('_location_bias');
-            return { errors: [], warnings: [] };
-          };
+          return {
+            sanitize: () => {
+                called_sanitizers.push('_flag_bool');
+                return { errors: [], warnings: [] };
+              }
+            };
         } else {
-            throw new Error('incorrect parameter passed to _location_bias');
+            throw new Error('incorrect parameters passed to _flag_bool');
         }
       },
-      '../sanitizer/_geo_autocomplete': () => {
-        called_sanitizers.push('_geo_autocomplete');
-        return { errors: [], warnings: [] };
+      '../sanitizer/_location_bias': function (defaultParameters) {
+        return {
+          sanitize: () => {
+            if (defaultParameters.key === 'value'){
+                called_sanitizers.push('_location_bias');
+                return { errors: [], warnings: [] };
+            } else {
+                throw new Error('incorrect parameter passed to _location_bias');
+            }
+          }
+        };
       },
-      '../sanitizer/_boundary_country': () => {
-        called_sanitizers.push('_boundary_country');
-        return { errors: [], warnings: [] };
+      '../sanitizer/_geo_autocomplete': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_geo_autocomplete');
+            return { errors: [], warnings: [] };
+          }
+        };
       },
-      '../sanitizer/_categories': () => {
-        called_sanitizers.push('_categories');
-        return { errors: [], warnings: [] };
+      '../sanitizer/_boundary_country': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_boundary_country');
+            return { errors: [], warnings: [] };
+          }
+        };
       },
+      '../sanitizer/_categories': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_categories');
+            return { errors: [], warnings: [] };
+          }
+        };
+      }
     });
 
     const expected_sanitizers = [
       '_single_scalar_parameters',
+      '_debug',
       '_text_addressit',
       '_tokenizer',
       '_size',

@@ -59,16 +59,16 @@ function hasName(result) {
 }
 
 // filter that passes only results that match on requested layers
-// passes everything if req.clean.layers is not found
 function getLayersFilter(clean) {
-  if (_.isEmpty(_.get(clean, 'layers', []))) {
-    return _.constant(true);
+  // passes everything if:
+  // - req.clean.layers is empty
+  // - req.clean.parsed_text.street is available
+  if (_.isEmpty(_.get(clean, 'layers', [])) || _.has(clean, ['parsed_text', 'street'])) {
+    return () => true;
   }
 
   // otherwise return a function that checks for set inclusion of a result placetype
-  return (result) => {
-    return _.includes(clean.layers, result.placetype);
-  };
+  return (result) => _.includes(clean.layers, result.placetype);
 
 }
 
@@ -85,20 +85,20 @@ function atLeastOneLineageMatchesBoundaryCountry(boundaryCountry, result) {
 }
 
 // return a function that detects if a result has at least one lineage in boundary.country
-// if there's no boundary.country, return a function that always returns true
-function getBoundaryCountryFilter(clean) {
-  if (_.has(clean, 'boundary.country')) {
+function getBoundaryCountryFilter(clean, do_geometric_filters_apply) {
+  if ( do_geometric_filters_apply && _.has(clean, 'boundary.country') ) {
     return _.partial(atLeastOneLineageMatchesBoundaryCountry, clean['boundary.country']);
   }
 
-  return _.constant(true);
+  // there's no boundary.country filter, so return a function that always returns true
+  return () => true;
 
 }
 
 // return a function that detects if a result is inside a bbox if a bbox is available
-// if there's no bbox, return a function that always returns true
-function getBoundaryRectangleFilter(clean) {
-  if (['min_lat', 'min_lon', 'max_lat', 'max_lon'].every((f) => {
+function getBoundaryRectangleFilter(clean, do_geometric_filters_apply) {
+  // check to see if boundary.rect.min_lat/min_lon/max_lat/max_lon are all available
+  if (do_geometric_filters_apply && ['min_lat', 'min_lon', 'max_lat', 'max_lon'].every((f) => {
     return _.has(clean, `boundary.rect.${f}`);
   })) {
     const polygon = [
@@ -107,20 +107,22 @@ function getBoundaryRectangleFilter(clean) {
       { latitude: clean['boundary.rect.max_lat'], longitude: clean['boundary.rect.max_lon'] },
       { latitude: clean['boundary.rect.min_lat'], longitude: clean['boundary.rect.max_lon'] }
     ];
+    // isPointInside takes polygon last, so create a function that has it pre-populated
     const isPointInsidePolygon = _.partialRight(geolib.isPointInside, polygon);
 
     return _.partial(isInsideGeometry, isPointInsidePolygon);
 
   }
 
-  return _.constant(true);
+  // there's no bbox filter, so return a function that always returns true
+  return () => true;
 
 }
 
 // return a function that detects if a result is inside a circle if a circle is available
-// if there's no circle, return a function that always returns true
-function getBoundaryCircleFilter(clean) {
-  if (['lat', 'lon', 'radius'].every((f) => {
+function getBoundaryCircleFilter(clean, do_geometric_filters_apply) {
+  // check to see if boundary.circle.lat/lon/radius are all available
+  if (do_geometric_filters_apply && ['lat', 'lon', 'radius'].every((f) => {
     return _.has(clean, `boundary.circle.${f}`);
   })) {
     const center = {
@@ -128,13 +130,16 @@ function getBoundaryCircleFilter(clean) {
       longitude: clean['boundary.circle.lon']
     };
     const radiusInMeters = clean['boundary.circle.radius'] * 1000;
+
+    // isPointInCircle takes circle/radius last, so create a function that has them pre-populated
     const isPointInCircle = _.partialRight(geolib.isPointInCircle, center, radiusInMeters);
 
     return _.partial(isInsideGeometry, isPointInCircle);
 
   }
 
-  return _.constant(true);
+  // there's no circle filter, so return a function that always returns true
+  return () => true;
 
 }
 
@@ -143,6 +148,7 @@ function isInsideGeometry(f, result) {
   return hasLatLon(result) ? f(getLatLon(result)) : false;
 }
 
+// returns true if hierarchyElement has both name and id
 function placetypeHasNameAndId(hierarchyElement) {
   return !_.isEmpty(_.trim(hierarchyElement.name)) &&
           !_.isEmpty(_.trim(hierarchyElement.id));
@@ -160,7 +166,7 @@ function synthesizeDocs(boundaryCountry, result) {
     logger.error(`could not parse centroid for id ${result.id}`);
   }
 
-  // lodash conformsTo verifies that an object has a property with a certain format
+  // _.conformsTo verifies that an object property has a certain format
   if (_.conformsTo(result.geom, { 'bbox': is4CommaDelimitedNumbers } )) {
     const parsedBoundingBox = result.geom.bbox.split(',').map(_.toFinite);
     doc.setBoundingBox({
@@ -213,7 +219,7 @@ function buildESDoc(doc) {
   return _.extend(esDoc.data, { _id: esDoc._id, _type: esDoc._type });
 }
 
-function setup(placeholderService, should_execute) {
+function setup(placeholderService, do_geometric_filters_apply, should_execute) {
   function controller( req, res, next ){
     // bail early if req/res don't pass conditions for execution
     if (!should_execute(req, res)) {
@@ -222,15 +228,11 @@ function setup(placeholderService, should_execute) {
 
     placeholderService(req, (err, results) => {
       if (err) {
-        // bubble up an error if one occurred
-        if (_.isObject(err) && err.message) {
-          req.errors.push( err.message );
-        } else {
-          req.errors.push( err );
-        }
+        // push err.message or err onto req.errors
+        req.errors.push( _.get(err, 'message', err));
 
       } else {
-        const boundaryCountry = _.get(req, ['clean', 'boundary.country']);
+        const boundaryCountry = do_geometric_filters_apply ? _.get(req, ['clean', 'boundary.country']) : undefined;
 
         // convert results to ES docs
         // boundary.country filter must happen after synthesis since multiple
@@ -245,13 +247,13 @@ function setup(placeholderService, should_execute) {
                     // filter out results that don't match on requested layer(s)
                     .filter(getLayersFilter(req.clean))
                     // filter out results that don't match on any lineage country
-                    .filter(getBoundaryCountryFilter(req.clean))
+                    .filter(getBoundaryCountryFilter(req.clean, do_geometric_filters_apply))
                     // clean up geom.lat/lon for boundary rect/circle checks
                     .map(numberifyGeomLatLon)
                     // filter out results that aren't in the boundary.rect
-                    .filter(getBoundaryRectangleFilter(req.clean))
+                    .filter(getBoundaryRectangleFilter(req.clean, do_geometric_filters_apply))
                     // filter out results that aren't in the boundary.circle
-                    .filter(getBoundaryCircleFilter(req.clean))
+                    .filter(getBoundaryCircleFilter(req.clean, do_geometric_filters_apply))
                     // convert results to ES docs
                     .map(_.partial(synthesizeDocs, boundaryCountry));
 
