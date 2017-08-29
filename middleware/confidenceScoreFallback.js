@@ -27,6 +27,7 @@ function computeScores(req, res, next) {
       res.meta.query_type !== 'fallback') {
     return next();
   }
+  
   // loop through data items and determine confidence scores
   res.data = res.data.map(computeConfidenceScore.bind(null, req));
 
@@ -42,6 +43,7 @@ function computeScores(req, res, next) {
  * @returns {object}
  */
 function computeConfidenceScore(req, hit) {
+  
   // if parsed text doesn't exist, which it never should, just assign a low confidence and move on
   if (!req.clean.hasOwnProperty('parsed_text')) {
     hit.confidence = 0.1;
