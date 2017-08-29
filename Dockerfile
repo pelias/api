@@ -13,7 +13,7 @@ ENV WORK=/opt/pelias
 ENV HOME=/opt/pelias
 
 WORKDIR ${WORK}
-ADD . ${WORK}
+COPY . ${WORK}
 
 # Build and set permissions for arbitrary non-root user
 RUN npm install && \
