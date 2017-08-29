@@ -1,9 +1,10 @@
 # base image
 FROM pelias/libpostal_baseimage
-MAINTAINER Pelias
+
+# maintainer information
+LABEL maintainer="pelias@mapzen.com"
 
 EXPOSE 3100
-LABEL io.openshift.expose-services 3100:http
 
 # Where the app is built and run inside the docker fs
 ENV WORK=/opt/pelias
