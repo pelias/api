@@ -217,7 +217,6 @@ function checkAddress(text, hit) {
   var res = 0;
 
   if (check.assigned(text) && check.assigned(text.number) && check.assigned(text.street)) {
-      logger.debug(text);
     res += propMatch(text.number, (hit.address_parts ? hit.address_parts.number : null), false);
     res += propMatch(text.street, (hit.address_parts ? hit.address_parts.street : null), false);
     res += propMatch(text.postalcode, (hit.address_parts ? hit.address_parts.zip: null), true);
