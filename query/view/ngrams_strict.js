@@ -20,6 +20,7 @@ module.exports = function( vs ){
   view.match['name.default'].type = 'phrase';
   view.match['name.default'].operator = 'and';
   view.match['name.default'].slop = vs.var('phrase:slop');
-
+  // Allow fuzzy matching (one char)
+  view.match['name.default'].fuzziness = 1;
   return view;
 };
