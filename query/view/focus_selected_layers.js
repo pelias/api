@@ -25,12 +25,15 @@ module.exports = function( subview ){
     if( !macroView ){ return null; } // macroView validation failed
     var view = macroView( vs );
 
-    if( view && view.hasOwnProperty('function_score') ){
-      view.function_score.filter = {
-        'or': [
-          { 'term': { 'layer': 'venue' } },
-          { 'term': { 'layer': 'address' } }
-        ]
+      if (view && view.hasOwnProperty('function_score')) {
+        // Entur: Support fuzzy matching for multiple words in search string
+          view.function_score.query.match['name.default'].type = null;
+          view.function_score.query.match['name.default'].operator = 'and';
+          view.function_score.filter = {
+              'or': [
+                  {'term': {'layer': 'venue'}},
+                  {'term': {'layer': 'address'}}
+              ]
       };
     }
 
