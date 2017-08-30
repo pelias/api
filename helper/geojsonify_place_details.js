@@ -43,7 +43,7 @@ var DETAILS_PROPS = [
   { name: 'neighbourhood_gid', type: 'string' },
   { name: 'bounding_box',      type: 'default' },
   { name: 'label',             type: 'string' },
-  { name: 'category',          type: 'array',     condition: checkCategoryParam }
+  { name: 'category',          type: 'array'} //,     condition: checkCategoryParam } Entur: Always return categories
 ];
 
 function checkCategoryParam(params) {
