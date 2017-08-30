@@ -444,7 +444,237 @@ module.exports.tests.confidenceScore = function(test, common) {
     t.equal(res.data[0].match_type, 'fallback', 'fallback match indicated');
     t.end();
   });
+  
+    test('exact address with "city" matching locality should have full (1.0) confidence multiplier', function(t) {
+        var req = {
+            clean: {
+                text: '123 Main St, City, NM',
+                parsed_text: {
+                    number: 123,
+                    street: 'Main St',
+                    city: 'City',
+                    state: 'NM'
+                }
+            }
+        };
+        var res = {
+            data: [{
+                _score: 10,
+                found: true,
+                value: 1,
+                layer: 'address',
+                center_point: { lat: 100.1, lon: -50.5 },
+                name: { default: 'test name1' },
+                parent: {
+                    country: ['country1'],
+                    region: ['region1'],
+                    county: ['city1'],
+                    locality: ['city']
+                }
+            }],
+            meta: {
+                scores: [10],
+                query_type: 'fallback'
+            }
+        };
 
+        confidenceScore(req, res, function() {});
+        t.equal(res.data[0].confidence, 1.0, 'score set to 1.0');
+        t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
+        t.end();
+    });
+    
+    test('exact address with "city" matching borough should have 0.9 confidence multiplier', function(t) {
+        var req = {
+            clean: {
+                text: '123 Main St, City, NM',
+                parsed_text: {
+                    number: 123,
+                    street: 'Main St',
+                    city: 'City',
+                    state: 'NM'
+                }
+            }
+        };
+        var res = {
+            data: [{
+                _score: 10,
+                found: true,
+                value: 1,
+                layer: 'address',
+                center_point: { lat: 100.1, lon: -50.5 },
+                name: { default: 'test name1' },
+                parent: {
+                    country: ['country1'],
+                    region: ['region1'],
+                    county: ['city1'],
+                    borough: ['city']
+                }
+            }],
+            meta: {
+                scores: [10],
+                query_type: 'fallback'
+            }
+        };
+
+        confidenceScore(req, res, function() {});
+        t.equal(res.data[0].confidence, 0.9, 'score set to 0.9');
+        t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
+        t.end();
+    });
+    
+    test('exact address with "city" matching neighbourhood should have 0.8 confidence multiplier', function(t) {
+        var req = {
+            clean: {
+                text: '123 Main St, City, NM',
+                parsed_text: {
+                    number: 123,
+                    street: 'Main St',
+                    city: 'City',
+                    state: 'NM'
+                }
+            }
+        };
+        var res = {
+            data: [{
+                _score: 10,
+                found: true,
+                value: 1,
+                layer: 'address',
+                center_point: { lat: 100.1, lon: -50.5 },
+                name: { default: 'test name1' },
+                parent: {
+                    country: ['country1'],
+                    region: ['region1'],
+                    county: ['city1'],
+                    neighbourhood: ['city']
+                }
+            }],
+            meta: {
+                scores: [10],
+                query_type: 'fallback'
+            }
+        };
+
+        confidenceScore(req, res, function() {});
+        t.equal(res.data[0].confidence, 0.8, 'score set to 0.8');
+        t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
+        t.end();
+    });
+    
+    test('exact address with "city" matching macrocounty should have 0.7 confidence multiplier', function(t) {
+        var req = {
+            clean: {
+                text: '123 Main St, City, NM',
+                parsed_text: {
+                    number: 123,
+                    street: 'Main St',
+                    city: 'City',
+                    state: 'NM'
+                }
+            }
+        };
+        var res = {
+            data: [{
+                _score: 10,
+                found: true,
+                value: 1,
+                layer: 'address',
+                center_point: { lat: 100.1, lon: -50.5 },
+                name: { default: 'test name1' },
+                parent: {
+                    country: ['country1'],
+                    region: ['region1'],
+                    county: ['city1'],
+                    macrocounty: ['city']
+                }
+            }],
+            meta: {
+                scores: [10],
+                query_type: 'fallback'
+            }
+        };
+
+        confidenceScore(req, res, function() {});
+        t.equal(res.data[0].confidence, 0.7, 'score set to 0.7');
+        t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
+        t.end();
+    });
+    
+    test('exact address with "city" matching county should have 0.6 confidence multiplier', function(t) {
+        var req = {
+            clean: {
+                text: '123 Main St, City, NM',
+                parsed_text: {
+                    number: 123,
+                    street: 'Main St',
+                    city: 'City',
+                    state: 'NM'
+                }
+            }
+        };
+        var res = {
+            data: [{
+                _score: 10,
+                found: true,
+                value: 1,
+                layer: 'address',
+                center_point: { lat: 100.1, lon: -50.5 },
+                name: { default: 'test name1' },
+                parent: {
+                    country: ['country1'],
+                    region: ['region1'],
+                    county: ['city']
+                }
+            }],
+            meta: {
+                scores: [10],
+                query_type: 'fallback'
+            }
+        };
+
+        confidenceScore(req, res, function() {});
+        t.equal(res.data[0].confidence, 0.6, 'score set to 0.6');
+        t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
+        t.end();
+    });
+    
+    test('exact address with "city" matching region larger than county should have a 0.5 confidence multiplier', function(t) {
+        var req = {
+            clean: {
+                text: '123 Main St, City, NM',
+                parsed_text: {
+                    number: 123,
+                    street: 'Main St',
+                    city: 'City',
+                    state: 'NM'
+                }
+            }
+        };
+        var res = {
+            data: [{
+                _score: 10,
+                found: true,
+                value: 1,
+                layer: 'address',
+                center_point: { lat: 100.1, lon: -50.5 },
+                name: { default: 'test name1' },
+                parent: {
+                    country: ['country1'],
+                    region: ['city']
+                }
+            }],
+            meta: {
+                scores: [10],
+                query_type: 'fallback'
+            }
+        };
+
+        confidenceScore(req, res, function() {});
+        t.equal(res.data[0].confidence, 0.5, 'score set to 0.5');
+        t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
+        t.end();
+    });
 };
 
 module.exports.all = function (tape, common) {
