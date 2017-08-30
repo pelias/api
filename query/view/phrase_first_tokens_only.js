@@ -26,6 +26,12 @@ module.exports = function( vs ){
   // set the 'name' variable in the copy to all but the last token
   vsCopy.var('input:name').set( tokens.join(' ') );
 
+    // alter query from match to phrase, allow fuzzy matching
+    var view =  peliasQuery.view.phrase( vsCopy );
+    view.match['name.default'].fuzziness = 1;
+    view.match['name.default'].type=null;
+    view.match['name.default'].operator='and';
+
   // return the view rendered using the copy
   return peliasQuery.view.phrase( vsCopy );
 };
