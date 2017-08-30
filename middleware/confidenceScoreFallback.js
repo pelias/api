@@ -27,7 +27,7 @@ function computeScores(req, res, next) {
       res.meta.query_type !== 'fallback') {
     return next();
   }
-
+  
   // loop through data items and determine confidence scores
   res.data = res.data.map(computeConfidenceScore.bind(null, req));
 
@@ -43,7 +43,7 @@ function computeScores(req, res, next) {
  * @returns {object}
  */
 function computeConfidenceScore(req, hit) {
-
+  
   // if parsed text doesn't exist, which it never should, just assign a low confidence and move on
   if (!req.clean.hasOwnProperty('parsed_text')) {
     hit.confidence = 0.1;
@@ -56,6 +56,9 @@ function computeConfidenceScore(req, hit) {
 
   // in the case of fallback there might be deductions
   hit.confidence *= checkFallbackLevel(req, hit);
+    
+    // We should also be more confident where matches are present for lower granularity
+    hit.confidence *= checkGranularityMatch(req, hit);
 
   // truncate the precision
   hit.confidence = Number((hit.confidence).toFixed(3));
@@ -63,10 +66,52 @@ function computeConfidenceScore(req, hit) {
   return hit;
 }
 
+function checkGranularityMatch(req, hit) {
+    if(hit.layer === 'address') {
+        // Only do this if we are working with addresses        
+        if(req.clean.hasOwnProperty('parsed_text') && req.clean.parsed_text.hasOwnProperty('city')) {
+            // The request identified a specific city, so if the locality, borough or neighbourhood 
+            // match that, then it should be given a higher score the order is important as some 
+            // places will match multiple of these, so we want to give a higher weighting to the higher 
+            // granularity
+            if(matchPlace(req, hit, 'locality', 'city')) {
+                return 1.0;
+            }
+            if(matchPlace(req, hit, 'borough', 'city')) {
+                return 0.9;
+            }
+            if(matchPlace(req, hit, 'neighbourhood', 'city')) {
+                return 0.8;
+            }
+            if(matchPlace(req, hit, 'macrocounty', 'city')) {
+                return 0.7;
+            }
+            if(matchPlace(req, hit, 'county', 'city')) {
+                return 0.6;
+            }
+            return 0.5;
+        }
+    }
+    
+    return 1.0;
+}
+
+function matchPlace(req, hit, property, matchTo) {
+    if(hit.hasOwnProperty('parent') && hit.parent.hasOwnProperty(property) && req.clean.parsed_text.hasOwnProperty(matchTo)) {
+        var ht = hit.parent[property][0].toLowerCase();
+        var qt = req.clean.parsed_text[matchTo].toLowerCase();
+        
+        // Now check for equality
+        return ht === qt;
+    } else {
+        // The hit and or request does not have this property against it
+        return false;
+    }
+}
+
 function checkFallbackLevel(req, hit) {
   if (checkFallbackOccurred(req, hit)) {
     hit.match_type = 'fallback';
-
     // if we know a fallback occurred, deduct points based on layer granularity
     switch (hit.layer) {
       case 'venue':
@@ -76,6 +121,8 @@ function checkFallbackLevel(req, hit) {
         return 0.8;
       case 'street':
         return 0.8;
+      case 'postalcode':
+        return 0.8;    
       case 'localadmin':
       case 'locality':
       case 'borough':
@@ -137,38 +184,44 @@ const fallbackRules = [
     expectedLayers: ['street']
   },
   {
-    name: 'neighbourhood',
+    name: 'postalcode',
     notSet: ['query', 'number', 'street'],
+    set: ['postalcode'],
+    expectedLayers: ['postalcode']
+  },
+  {
+    name: 'neighbourhood',
+    notSet: ['query', 'number', 'street', 'postalcode'],
     set: ['neighbourhood'],
     expectedLayers: ['neighbourhood']
   },
   {
     name: 'borough',
-    notSet: ['query', 'number', 'street', 'neighbourhood'],
+    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood'],
     set: ['borough'],
     expectedLayers: ['borough']
   },
   {
     name: 'city',
-    notSet: ['query', 'number', 'street', 'neighbourhood', 'borough'],
+    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood', 'borough'],
     set: ['city'],
     expectedLayers: ['borough', 'locality', 'localadmin']
   },
   {
     name: 'county',
-    notSet: ['query', 'number', 'street', 'neighbourhood', 'borough', 'city'],
+    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood', 'borough', 'city'],
     set: ['county'],
     expectedLayers: ['county']
   },
   {
     name: 'state',
-    notSet: ['query', 'number', 'street', 'neighbourhood', 'borough', 'city', 'county'],
+    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood', 'borough', 'city', 'county'],
     set: ['state'],
     expectedLayers: ['region']
   },
   {
     name: 'country',
-    notSet: ['query', 'number', 'street', 'neighbourhood', 'borough', 'city', 'county', 'state'],
+    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood', 'borough', 'city', 'county', 'state'],
     set: ['country'],
     expectedLayers: ['country']
   }
