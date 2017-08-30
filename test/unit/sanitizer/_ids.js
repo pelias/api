@@ -1,4 +1,4 @@
-var sanitize = require('../../../sanitizer/_ids');
+var sanitizer = require('../../../sanitizer/_ids')();
 
 var delimiter = ':';
 var type_mapping = require('../../../helper/type_mapping');
@@ -15,7 +15,7 @@ module.exports.tests.invalid_ids = function(test, common) {
     var raw = { ids: '' };
     var clean = {};
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors[0], lengthError, 'ids length error returned');
     t.equal(clean.ids, undefined, 'ids unset in clean object');
@@ -26,7 +26,7 @@ module.exports.tests.invalid_ids = function(test, common) {
     var raw = { ids: ':' };
     var clean = {};
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors[0], formatError(':'), 'format error returned');
     t.equal(clean.ids, undefined, 'ids unset in clean object');
@@ -37,7 +37,7 @@ module.exports.tests.invalid_ids = function(test, common) {
     var raw = { ids: '::' };
     var clean = {};
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors[0], formatError('::'), 'format error returned');
     t.equal(clean.ids, undefined, 'ids unset in clean object');
@@ -48,7 +48,7 @@ module.exports.tests.invalid_ids = function(test, common) {
     var raw = { ids: 'geoname:' };
     var clean = {};
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors[0], formatError('geoname:'), 'format error returned');
     t.equal(clean.ids, undefined, 'ids unset in clean object');
@@ -59,7 +59,7 @@ module.exports.tests.invalid_ids = function(test, common) {
     var raw = { ids: ':234' };
     var clean = {};
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors[0], formatError(':234'), 'format error returned');
     t.equal(clean.ids, undefined, 'ids unset in clean object');
@@ -72,7 +72,7 @@ module.exports.tests.invalid_ids = function(test, common) {
     var expected_error = 'invalidsource is invalid. It must be one of these values - [' +
       Object.keys(type_mapping.source_mapping).join(', ') + ']';
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors[0], expected_error, 'format error returned');
     t.equal(clean.ids, undefined, 'ids unset in clean object');
@@ -83,7 +83,7 @@ module.exports.tests.invalid_ids = function(test, common) {
     var raw = { ids: 'geonames:23' };
     var clean = {};
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors[0], formatError('geonames:23'), 'format error returned');
     t.equal(clean.ids, undefined, 'ids unset in clean object');
@@ -96,7 +96,7 @@ module.exports.tests.valid_ids = function(test, common) {
     var raw = { ids: 'openaddresses:address:20' };
     var clean = {};
 
-    var messages = sanitize( raw, clean );
+    var messages = sanitizer.sanitize( raw, clean );
 
     var expected_ids = [{
       source: 'openaddresses',
@@ -112,7 +112,7 @@ test('ids: valid short input (openaddresses)', function(t) {
     var raw = { ids: 'oa:address:20' };
     var clean = {};
 
-    var messages = sanitize( raw, clean );
+    var messages = sanitizer.sanitize( raw, clean );
 
     var expected_ids = [{
       source: 'openaddresses',
@@ -133,7 +133,7 @@ test('ids: valid short input (openaddresses)', function(t) {
       id: 'node:500',
     }];
 
-    var messages = sanitize( raw, clean );
+    var messages = sanitizer.sanitize( raw, clean );
 
     t.deepEqual( messages.errors, [], ' no errors');
     t.deepEqual( clean.ids, expected_ids, 'osm has node: or way: in id field');
@@ -149,7 +149,7 @@ test('ids: valid short input (openaddresses)', function(t) {
       id: 'node:500',
     }];
 
-    var messages = sanitize( raw, clean );
+    var messages = sanitizer.sanitize( raw, clean );
 
     t.deepEqual( messages.errors, [], ' no errors');
     t.deepEqual( clean.ids, expected_ids, 'osm has node: or way: in id field');
@@ -162,7 +162,7 @@ module.exports.tests.multiple_ids = function(test, common) {
     var raw = { ids: 'geonames:venue:1,openstreetmap:address:way:2' };
     var clean = {};
 
-    var messages = sanitize( raw, clean);
+    var messages = sanitizer.sanitize( raw, clean);
 
     var expected_ids = [ {
       source: 'geonames',
@@ -186,7 +186,7 @@ module.exports.tests.de_dupe = function(test, common) {
     var raw = { ids: 'geonames:venue:1,openstreetmap:venue:node:2,geonames:venue:1' };
     var clean = {};
 
-    var messages = sanitize( raw, clean );
+    var messages = sanitizer.sanitize( raw, clean );
 
     var expected_ids = [ {
       source: 'geonames',
@@ -204,9 +204,18 @@ module.exports.tests.de_dupe = function(test, common) {
   });
 };
 
+module.exports.tests.valid_Parameters = function(test, common) {
+  test('return an array of expected parameters in object form for validation', (t) => {
+    const expected = [{ name: 'ids' }];
+    const validParameters = sanitizer.expected();
+    t.deepEquals(validParameters, expected);
+    t.end();
+  });
+};
+
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape('SANTIZE _ids ' + name, testFunction);
+    return tape('SANITIZE _ids ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

@@ -1,256 +1,235 @@
+'use strict';
 
-var fs = require('fs'),
-    tmp = require('tmp'),
-    setup = require('../../../middleware/changeLanguage');
-const proxyquire = require('proxyquire').noCallThru();
-
-// load middleware using the default pelias config
-var load = function(){
-  // adapter is driven by config
-  var tmpfile = tmp.tmpNameSync({ postfix: '.json' });
-  fs.writeFileSync( tmpfile, '{}', { encoding: 'utf8' } );
-  process.env.PELIAS_CONFIG = tmpfile;
-  var middleware = setup();
-  delete process.env.PELIAS_CONFIG;
-  return middleware;
-};
+const setup = require('../../../middleware/changeLanguage');
+const proxyquire =  require('proxyquire').noCallThru();
+const _  = require('lodash');
 
 module.exports.tests = {};
 
-module.exports.tests.interface = function(test, common) {
-  test('valid interface', function(t) {
-    var middleware = load();
-    t.equal(typeof middleware, 'function', 'middleware is a function');
-    t.equal(middleware.length, 3, 'middleware is a function');
+module.exports.tests.interface = (test, common) => {
+  test('valid interface', t => {
+    t.equal(typeof setup, 'function', 'setup is a function');
+    t.equal(typeof setup(), 'function', 'setup returns a controller');
     t.end();
   });
 };
 
-module.exports.tests.isLanguageChangeRequired = function(test, common) {
-  test('invalid query - null req/res', function(t) {
-    var middleware = load();
-    middleware(null, null, t.end);
-  });
+module.exports.tests.early_exit_conditions = (test, common) => {
+  test('should_execute returning false should not call service', t => {
+    t.plan(2, 'should_execute will assert 2 things');
 
-  test('invalid query - no results', function(t) {
-    var req = { language: { iso6393: 'spa' } };
-    var res = {};
-
-    var middleware = load();
-    middleware(req, res, function(){
-      t.deepEqual( req, { language: { iso6393: 'spa' } } );
-      t.deepEqual( res, {} );
-      t.end();
-    });
-  });
-
-  test('invalid query - empty results', function(t) {
-    var req = { language: { iso6393: 'spa' } };
-    var res = { data: [] };
-
-    var middleware = load();
-    middleware(req, res, function(){
-      t.deepEqual( req, { language: { iso6393: 'spa' } } );
-      t.deepEqual( res, { data: [] } );
-      t.end();
-    });
-  });
-
-  test('invalid query - no target language', function(t) {
-    var req = {};
-    var res = { data: [] };
-
-    var middleware = load();
-    middleware(req, res, function(){
-      t.deepEqual( req, {} );
-      t.deepEqual( res, { data: [] } );
-      t.end();
-    });
-  });
-};
-
-// check the service is called and response mapped correctly
-module.exports.tests.miss = function(test, common) {
-  test('miss', function(t) {
-
-    var req = { language: { iso6393: 'spa' } };
-    var res = { data: [
-      {
-        layer: 'locality',
-        name: { default: 'London' },
-        parent: {
-          locality_id: [ 101750367 ],
-          locality: [ 'London' ]
-        }
-      },
-      {
-        layer: 'example',
-        name: { default: 'London' },
-        parent: {
-          locality_id: [ 101735809 ],
-          locaity: [ 'London' ]
-        }
-      }
-    ]};
-
-    var middleware = load();
-
-    // mock out the transport
-    middleware.transport.query = function mock( ids, cb ){
-      t.deepEqual( ids, [ '101735809', '101750367' ] );
-      t.equal( typeof cb, 'function' );
-      cb( 'error' );
+    const service = () => {
+      t.fail('service should not have been called');
     };
 
-    middleware(req, res, function(){
-      t.deepEqual( res, { data: [
-        {
-          layer: 'locality',
-          name: { default: 'London' },
-          parent: {
-            locality_id: [ 101750367 ],
-            locality: [ 'London' ]
-          }
-        },
-        {
-          layer: 'example',
-          name: { default: 'London' },
-          parent: {
-            locality_id: [ 101735809 ],
-            locaity: [ 'London' ]
-          }
-        }
-      ]});
-      t.end();
-    });
-  });
-};
-
-// check the service is called and response mapped correctly
-module.exports.tests.hit = function(test, common) {
-  test('hit', function(t) {
-
-    var req = { language: { iso6393: 'spa' } };
-    var res = { data: [
-      {
-        layer: 'locality',
-        name: { default: 'London' },
-        parent: {
-          locality_id: [ 101750367 ],
-          locality: [ 'London' ]
-        }
-      },
-      {
-        layer: 'example',
-        name: { default: 'London' },
-        parent: {
-          locality_id: [ 101735809 ],
-          locality: [ 'London' ]
-        }
-      }
-    ]};
-
-    var middleware = load();
-
-    // mock out the transport
-    middleware.transport.query = function mock( ids, cb ){
-      t.deepEqual( ids, [ '101735809', '101750367' ] );
-      t.equal( typeof cb, 'function' );
-      cb( null, {
-        '101750367': {
-          'names': {
-            'default':['London'],
-            'chi':['倫敦'],
-            'spa':['Londres'],
-            'eng':['London'],
-            'hin':['लंदन'],
-            'ara':['لندن'],
-            'por':['Londres'],
-            'ben':['লন্ডন'],
-            'rus':['Лондон'],
-            'jpn':['ロンドン'],
-            'kor':['런던']
-          }
-        },
-        '101735809': {
-          'names':{
-            'default':['London'],
-            'eng':['London']
-          }
-        }
-      });
+    const should_execute = (req, res) => {
+      t.deepEquals(req, { a: 1 });
+      t.deepEquals(res, { b: 2 });
+      return false;
     };
 
-    middleware(req, res, function(){
-      t.deepEqual( res, { data: [
-        {
-          layer: 'locality',
-          name: { default: 'Londres' },
-          parent: {
-            locality_id: [ 101750367 ],
-            locality: [ 'Londres' ]
-          }
-        },
-        {
-          layer: 'example',
-          name: { default: 'London' },
-          parent: {
-            locality_id: [ 101735809 ],
-            locality: [ 'London' ]
-          }
-        }
-      ]});
-      t.end();
-    });
+    const controller = setup(service, should_execute);
+
+    controller({ a: 1 }, { b: 2 }, () => { });
+
   });
 
-  test('empty array name translation should not change the value', t => {
-    t.plan(2);
+};
 
-    const req = { language: { iso6393: 'ISO3 value' } };
+module.exports.tests.error_conditions = (test, common) => {
+  test('service error should log and call next', t => {
+    // (2) req/res were passed to service
+    // (1) error was logged
+    // (1) res was not modified
+    t.plan(4);
+
+    const service = (req, res, callback) => {
+      t.deepEquals(req, { a: 1 } );
+      t.deepEquals(res, { b: 2 } );
+      callback('this is an error');
+    };
+
+    const logger = require('pelias-mock-logger')();
+
+    const controller = proxyquire('../../../middleware/changeLanguage', {
+      'pelias-logger': logger
+    })(service, () => true);
+
+    const req = { a: 1 };
+    const res = { b: 2 };
+
+    controller(req, res, () => {
+      t.ok(logger.isErrorMessage('this is an error'));
+      t.deepEquals(res, { b: 2 }, 'res should not have been modified');
+    });
+
+  });
+
+};
+
+module.exports.tests.success_conditions = (test, common) => {
+  test('translations should be mapped in', t => {
+    // (2) req/res were passed to service
+    // (1) error was logged
+    // (1) res was not modified
+    // t.plan(4);
+
+    const service = (req, res, callback) => {
+      const response = {
+        '1': {
+          names: {
+            'requested language': [
+              'replacement name for layer1'
+            ],
+            // this should be ignored
+            'another language': [
+              'name in another language'
+            ]
+          }
+        },
+        '2': {
+          names: {
+            'requested language': [
+              'replacement name for layer2',
+              // this should be ignored
+              'another replacement name for layer2'
+            ]
+          }
+        },
+        '3': {
+          names: {
+            'requested language': [
+              'replacement name 1 for layer3'
+            ]
+          }
+        },
+        '4': {
+          names: {
+            'requested language': [
+              'replacement name 2 for layer3'
+            ]
+          }
+        },
+        '10': {
+          // has names but not in the requested language
+          names: {
+            'another language': [
+              'replacement name for layer4'
+            ]
+          }
+        },
+        '11': {
+          // no names
+        }
+      };
+
+      callback(null, response);
+    };
+
+    const logger = require('pelias-mock-logger')();
+
+    const controller = proxyquire('../../../middleware/changeLanguage', {
+      'pelias-logger': logger
+    })(service, () => true);
+
+    const req = {
+      clean: {
+        lang: {
+          iso6393: 'requested language'
+        }
+      }
+    };
+
     const res = {
       data: [
+        // doc with 2 layer names that will be changed
         {
-          layer: 'locality',
-          name: { default: 'original name' },
+          name: {
+            default: 'original name for 1st result'
+          },
+          layer: 'layer1',
           parent: {
-            locality_id: [ 123 ],
-            locality: [ 'original name' ]
+            layer1_id: ['1'],
+            layer1: ['original name for layer1'],
+            layer2_id: ['2'],
+            layer2: ['original name for layer2']
+          }
+        },
+        // not sure how this would sneak in but check anyway
+        undefined,
+        // doc w/o parent
+        {},
+        // doc with only 1 layer name that will be changed and no default name change
+        {
+          name: {
+            default: 'original name for 2nd result'
+          },
+          layer: 'layer10',
+          parent: {
+            layer3_id: ['3', '4'],
+            layer3: ['original name 1 for layer3', 'original name 2 for layer3'],
+            // requested language not found for this id
+            layer10_id: ['10'],
+            layer10: ['original name for layer10'],
+            // no names for this id
+            layer11_id: ['11'],
+            layer11: ['original name for layer11'],
+            // no translations for this id
+            layer12_id: ['12'],
+            layer12: ['original name for layer12'],
+            // undefined id, will be skipped
+            layer13_id: [undefined],
+            layer13: ['original name for layer13']
           }
         }
       ]
     };
 
-    const changeLanguage = proxyquire('../../../middleware/changeLanguage', {
-      '../service/language': {
-        findById: () => ({
-          query: (ids, callback) => {
-            t.deepEquals(ids, ['123']);
-            callback(null, {
-              '123': {
-                'names': {
-                  'ISO3 value':[]
-                }
-              }
-            });
-          }
-        })
-      }
-    })();
+    controller(req, res, () => {
+      t.ok(logger.isDebugMessage('[language] [debug] missing translation requested language 10'));
+      t.ok(logger.isDebugMessage('[language] [debug] missing translation requested language 11'));
+      t.ok(logger.isDebugMessage('[language] [debug] failed to find translations for 12'));
 
-    changeLanguage(req, res, () => {
-      t.deepEqual( res, { data: [
-        {
-          layer: 'locality',
-          name: {
-            default: 'original name'
+      t.notOk(logger.hasErrorMessages(), 'there shouldn\'t be any error messages');
+
+      t.deepEquals(res, {
+        data: [
+          {
+            name: {
+              default: 'replacement name for layer1'
+            },
+            layer: 'layer1',
+            parent: {
+              layer1_id: ['1'],
+              layer1: ['replacement name for layer1'],
+              layer2_id: ['2'],
+              layer2: ['replacement name for layer2']
+            }
           },
-          parent: {
-            locality_id: [ 123 ],
-            locality: [ 'original name' ]
+          undefined,
+          {},
+          {
+            name: {
+              default: 'original name for 2nd result'
+            },
+            layer: 'layer10',
+            parent: {
+              layer3_id: ['3', '4'],
+              layer3: ['replacement name 1 for layer3', 'replacement name 2 for layer3'],
+              layer10_id: ['10'],
+              layer10: ['original name for layer10'],
+              layer11_id: ['11'],
+              layer11: ['original name for layer11'],
+              layer12_id: ['12'],
+              layer12: ['original name for layer12'],
+              layer13_id: [undefined],
+              layer13: ['original name for layer13']
+            }
           }
-        }
-      ]});
+        ]
+      });
+
+      t.end();
 
     });
 
@@ -258,13 +237,13 @@ module.exports.tests.hit = function(test, common) {
 
 };
 
-module.exports.all = function (tape, common) {
+module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {
-    return tape('[middleware] changeLanguage: ' + name, testFunction);
+    return tape(`GET /changeLanguage ${name}`, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for( const testCase in module.exports.tests ){
     module.exports.tests[testCase](test, common);
   }
 };

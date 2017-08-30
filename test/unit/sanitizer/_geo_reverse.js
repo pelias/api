@@ -1,6 +1,6 @@
 'use strict';
 
-const sanitize = require('../../../sanitizer/_geo_reverse');
+const sanitizer = require('../../../sanitizer/_geo_reverse')();
 const defaults = require('../../../query/reverse_defaults');
 
 module.exports.tests = {};
@@ -13,7 +13,7 @@ module.exports.tests.warning_situations = (test, common) => {
       'boundary.circle.lat': '13.131313'
     };
     const clean = {};
-    const errorsAndWarnings = sanitize(raw, clean);
+    const errorsAndWarnings = sanitizer.sanitize(raw, clean);
 
     t.equals(clean['boundary.circle.lat'], 12.121212, 'should be set to point.lat');
     t.deepEquals(errorsAndWarnings, {
@@ -31,7 +31,7 @@ module.exports.tests.warning_situations = (test, common) => {
       'boundary.circle.lon': '31.313131'
     };
     const clean = {};
-    const errorsAndWarnings = sanitize(raw, clean);
+    const errorsAndWarnings = sanitizer.sanitize(raw, clean);
 
     t.equals(clean['boundary.circle.lon'], 21.212121, 'should be set to point.lon');
     t.deepEquals(errorsAndWarnings, {
@@ -49,7 +49,7 @@ module.exports.tests.warning_situations = (test, common) => {
       'boundary.circle.radius': '17'
     };
     const clean = {};
-    const errorsAndWarnings = sanitize(raw, clean);
+    const errorsAndWarnings = sanitizer.sanitize(raw, clean);
 
     // t.equals(clean['boundary.circle.radius'], 12.121212, 'should be set to point.lat')
     t.deepEquals(errorsAndWarnings, {
@@ -70,7 +70,7 @@ module.exports.tests.success_conditions = (test, common) => {
       'boundary.circle.radius': '3248732857km' // this will never be the default
     };
     const clean = {};
-    const errorsAndWarnings = sanitize(raw, clean);
+    const errorsAndWarnings = sanitizer.sanitize(raw, clean);
 
     t.equals(raw['boundary.circle.lat'], 12.121212);
     t.equals(raw['boundary.circle.lon'], 21.212121);

@@ -5,38 +5,46 @@ var _ = require('lodash');
  *
  * @param {string} paramName name of parameter being sanitized
  * @param {boolean} defaultValue value to set variable to if none specified
- * @returns {Function}
+ * @returns {Object} object containing functions
  */
-function setup( paramName, defaultValue ) {
-  return function( raw, clean ){
-    return sanitize( raw, clean, {
-      paramName: paramName,
-      defaultValue: defaultValue
-    });
+function _setup( paramName, defaultValue ) {
+  /**
+   * {object} opts
+  */
+
+  const opts = {
+    paramName: paramName,
+    defaultValue: defaultValue
   };
-}
 
-/**
- * Validate inputs, convert types and apply defaults
- *
- * @param {object} raw
- * @param {object} clean
- * @param {object} opts
- * @returns {{errors: Array, warnings: Array}}
- */
-function sanitize( raw, clean, opts ){
+  return {
+    /**
+     * Validate inputs, convert types and apply defaults
+     *
+     * @param {object} raw
+     * @param {object} clean
+     * @returns {{errors: Array, warnings: Array}}
+     */
 
-  // error & warning messages`1
-  var messages = { errors: [], warnings: [] };
+    sanitize: function _sanitize( raw, clean){
 
-  if( !_.isUndefined( raw[opts.paramName] ) ){
-    clean[opts.paramName] = isTruthy( raw[opts.paramName] );
-  }
-  else {
-    clean[opts.paramName] = opts.defaultValue;
-  }
-  return messages;
-}
+      // error & warning messages`1
+      var messages = { errors: [], warnings: [] };
+
+      if( !_.isUndefined( raw[opts.paramName] ) ){
+        clean[opts.paramName] = isTruthy( raw[opts.paramName] );
+      }
+      else {
+        clean[opts.paramName] = opts.defaultValue;
+      }
+      return messages;
+    }, // end of _sanitize function
+
+    expected: function _expected(){
+      return [{ name: opts.paramName}];
+    } // end of _expected function
+  }; // end of return object
+} // end of _setup function
 
 /**
  * Determine if param value is "truthy"
@@ -47,4 +55,4 @@ function isTruthy(val) {
   return _.includes( ['true', '1', 1, true], val );
 }
 
-module.exports = setup;
+module.exports = _setup;

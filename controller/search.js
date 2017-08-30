@@ -6,6 +6,8 @@ const searchService = require('../service/search');
 const logger = require('pelias-logger').get('api');
 const logging = require( '../helper/logging' );
 const retry = require('retry');
+const Debug = require('../helper/debug');
+const debugLog = new Debug('controller:search');
 
 function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
@@ -16,7 +18,7 @@ function setup( apiConfig, esclient, query, should_execute ){
     if (!should_execute(req, res)) {
       return next();
     }
-
+    debugLog.beginTimer(req);
     let cleanOutput = _.cloneDeep(req.clean);
     if (logging.isDNT(req)) {
       cleanOutput = logging.removeFields(cleanOutput);
@@ -28,6 +30,7 @@ function setup( apiConfig, esclient, query, should_execute ){
 
     // if there's no query to call ES with, skip the service
     if (_.isUndefined(renderedQuery)) {
+      debugLog.stopTimer(req, 'No query to call ES with. Skipping');
       return next();
     }
 
@@ -60,6 +63,7 @@ function setup( apiConfig, esclient, query, should_execute ){
         // only consider for status 408 (request timeout)
         if (isRequestTimeout(err) && operation.retry(err)) {
           logger.info(`request timed out on attempt ${currentAttempt}, retrying`);
+          debugLog.stopTimer(req, 'request timed out, retrying');
           return;
         }
 
@@ -97,11 +101,16 @@ function setup( apiConfig, esclient, query, should_execute ){
           ];
 
           logger.info(messageParts.join(' '));
+          debugLog.push(req, {queryType: {
+            [renderedQuery.type] : {
+              es_result_count: parseInt(messageParts[2].slice(17, -1))
+            }
+          }});
         }
         logger.debug('[ES response]', docs);
         next();
       });
-
+      debugLog.stopTimer(req);
     });
 
   }

@@ -4,7 +4,7 @@ const iso3166 = require('iso3166-1');
 // this sanitizer exists solely to convert an ISO2 country value to ISO3
 // eg - 'TH' -> 'THA'
 // this can go away once altnames imports ISO2 country values from WOF
-function sanitize( raw, clean ){
+function _sanitize( raw, clean ){
   // error & warning messages
   const messages = { errors: [], warnings: [] };
 
@@ -16,4 +16,6 @@ function sanitize( raw, clean ){
 }
 
 // export function
-module.exports = sanitize;
+module.exports = () => ({
+  sanitize: _sanitize
+});

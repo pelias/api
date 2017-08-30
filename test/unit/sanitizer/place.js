@@ -1,111 +1,74 @@
-var place  = require('../../../sanitizer/place'),
-    sanitize = place.sanitize,
-    middleware = place.middleware,
-    defaultClean = { ids: [ { source: 'geonames', layer: 'venue', id: '123' } ], private: false };
+const  _ = require('lodash'),
+    proxyquire =  require('proxyquire').noCallThru();
 
-// these are the default values you would expect when no input params are specified.
 module.exports.tests = {};
 
-module.exports.tests.interface = function(test, common) {
-  test('sanitize interface', function(t) {
-    t.equal(typeof sanitize, 'function', 'sanitize is a function');
-    t.equal(sanitize.length, 2, 'sanitize interface');
-    t.end();
-  });
-  test('middleware interface', function(t) {
-    t.equal(typeof middleware, 'function', 'middleware is a function');
-    t.equal(middleware.length, 3, 'sanitize has a valid middleware');
-    t.end();
-  });
-};
+module.exports.tests.sanitize = function(test, common) {
+  test('verify that all sanitizers were called as expected', function(t) {
+    var called_sanitizers = [];
 
-module.exports.tests.sanitizers = function(test, common) {
-  test('check sanitizer list', function (t) {
-    var expected = ['singleScalarParameters', 'ids', 'private' ];
-    t.deepEqual(Object.keys(place.sanitizer_list), expected);
-    t.end();
-  });
-};
-
-module.exports.tests.sanitize_private = function(test, common) {
-  var invalid_values = [null, -1, 123, NaN, 'abc'];
-  invalid_values.forEach(function(value) {
-    test('invalid private param ' + value, function(t) {
-      var req = { query: { ids:'geonames:venue:123', 'private': value } };
-      sanitize(req, function(){
-        t.deepEqual( req.errors, [], 'no errors' );
-        t.deepEqual( req.warnings, [], 'no warnings' );
-        t.equal(req.clean.private, false, 'default private set (to false)');
-        t.end();
-      });
+    // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
+    //  were all called correctly
+    var place = proxyquire('../../../sanitizer/place.js', {
+      '../sanitizer/_single_scalar_parameters': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_single_scalar_parameters');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
+      '../sanitizer/_debug': () => {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_debug');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
+      '../sanitizer/_ids': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_ids');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
+      '../sanitizer/_flag_bool': function () {
+        if (arguments[0] === 'private' && arguments[1] === false) {
+          return {
+            sanitize: () => {
+                called_sanitizers.push('_flag_bool');
+                return { errors: [], warnings: [] };
+              }
+            };
+        } else {
+            throw new Error('incorrect parameters passed to _flag_bool');
+        }
+      }
     });
-  });
 
-  var valid_values = ['true', true, 1];
-  valid_values.forEach(function(value) {
-    test('valid private param ' + value, function(t) {
-      var req = { query: { ids:'geonames:venue:123', 'private': value } };
-      sanitize(req, function(){
-        t.deepEqual( req.errors, [], 'no errors' );
-        t.deepEqual( req.warnings, [], 'no warnings' );
-        t.equal(req.clean.private, true, 'private set to true');
-        t.end();
-      });
-    });
-  });
+    const expected_sanitizers = [
+      '_single_scalar_parameters',
+      '_debug',
+      '_ids',
+      '_flag_bool'
+    ];
 
-  var valid_false_values = ['false', false, 0];
-  valid_false_values.forEach(function(value) {
-    test('test setting false explicitly ' + value, function(t) {
-      var req = { query: { ids:'geonames:venue:123', 'private': value } };
-      sanitize(req, function(){
-        t.deepEqual( req.errors, [], 'no errors' );
-        t.deepEqual( req.warnings, [], 'no warnings' );
-        t.equal(req.clean.private, false, 'private set to false');
-        t.end();
-      });
-    });
-  });
+    const req = {};
+    const res = {};
 
-  test('test default behavior', function(t) {
-    var req = { query: { ids:'geonames:venue:123' } };
-    sanitize(req, function(){
-      t.deepEqual( req.errors, [], 'no errors' );
-      t.deepEqual( req.warnings, [], 'no warnings' );
-      t.equal(req.clean.private, false, 'private set to false');
+    place.middleware(req, res, () => {
+      t.deepEquals(called_sanitizers, expected_sanitizers);
       t.end();
     });
-  });
-};
-
-module.exports.tests.invalid_params = function(test, common) {
-  test('no params', function(t) {
-    var req = { query: {} };
-    sanitize( req, function(){
-      t.equal( req.errors[0], 'invalid param \'ids\': length must be >0', 'error for missing `ids` param');
-      t.deepEqual( req.warnings, [], 'no warnings' );
-      t.end();
-    });
-  });
-};
-
-module.exports.tests.middleware_success = function(test, common) {
-  test('middleware success', function(t) {
-    var req = { query: { ids: 'geonames:venue:123' }};
-    var next = function(){
-      t.deepEqual( req.errors, [], 'no errors' );
-      t.deepEqual( req.warnings, [], 'no warnings' );
-      t.deepEqual(req.clean, defaultClean);
-      t.end();
-    };
-    middleware( req, undefined, next );
   });
 };
 
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape('SANTIZE /place ' + name, testFunction);
+    return tape('SANITIZE /place ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

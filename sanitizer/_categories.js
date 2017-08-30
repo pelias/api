@@ -1,4 +1,3 @@
-
 var check = require('check-types');
 var categoryTaxonomy = require('pelias-categories');
 
@@ -8,7 +7,7 @@ var ERRORS = {
 };
 
 // validate inputs, convert types and apply defaults
-function sanitize( raw, clean, categories ) {
+function _sanitize( raw, clean, categories ) {
 
   categories = categories || categoryTaxonomy;
 
@@ -50,5 +49,11 @@ function sanitize( raw, clean, categories ) {
   return messages;
 }
 
+function _expected() {
+  return [{ name: 'categories' }];
+}
 // export function
-module.exports = sanitize;
+module.exports = () => ({
+  sanitize: _sanitize,
+  expected: _expected
+});

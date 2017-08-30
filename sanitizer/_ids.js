@@ -52,7 +52,7 @@ function sanitizeId(rawId, messages) {
   };
 }
 
-function sanitize( raw, clean ){
+function _sanitize( raw, clean ){
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
@@ -84,5 +84,11 @@ function sanitize( raw, clean ){
   return messages;
 }
 
+function _expected(){
+  return [{ name: 'ids' }];
+}
 // export function
-module.exports = sanitize;
+module.exports = () => ({
+  sanitize: _sanitize,
+  expected: _expected
+});

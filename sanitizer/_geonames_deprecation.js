@@ -5,7 +5,7 @@ with the release of coarse reverse as a separate thing and ES reverse only
 handling venues, addresses, and streets, geonames make no sense in the reverse context
 **/
 
-function sanitize( raw, clean, opts ) {
+function _sanitize( raw, clean, opts ) {
   // error & warning messages
   const messages = { errors: [], warnings: [] };
 
@@ -19,7 +19,9 @@ function sanitize( raw, clean, opts ) {
   }
 
   return messages;
-  
+
 }
 
-module.exports = sanitize;
+module.exports = () => ({
+  sanitize: _sanitize
+});

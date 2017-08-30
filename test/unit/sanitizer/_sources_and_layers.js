@@ -1,4 +1,4 @@
-var sanitize = require('../../../sanitizer/_sources_and_layers');
+var sanitizer = require('../../../sanitizer/_sources_and_layers')();
 
 var type_mapping = require('../../../helper/type_mapping');
 
@@ -9,7 +9,7 @@ module.exports.tests.inactive = function(test, common) {
     var raw = {};
     var clean = {};
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors.length, 0, 'should return no errors');
     t.equal(messages.warnings.length, 0, 'should return no warnings');
@@ -20,7 +20,7 @@ module.exports.tests.inactive = function(test, common) {
     var raw = {};
     var clean = { layers: ['venue'] };
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors.length, 0, 'should return no errors');
     t.equal(messages.warnings.length, 0, 'should return no warnings');
@@ -31,7 +31,7 @@ module.exports.tests.inactive = function(test, common) {
     var raw = {};
     var clean = { sources: ['openstreetmap'] };
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors.length, 0, 'should return no errors');
     t.equal(messages.warnings.length, 0, 'should return no warnings');
@@ -44,7 +44,7 @@ module.exports.tests.no_errors = function(test, common) {
     var raw = {};
     var clean = { sources: ['openstreetmap'], layers: ['venue'] };
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors.length, 0, 'should return no errors');
     t.equal(messages.warnings.length, 0, 'should return no warnings');
@@ -55,7 +55,7 @@ test('valid combination', function(t) {
     var raw = {};
     var clean = { sources: ['geonames'], layers: ['borough'] };
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors.length, 0, 'should return no errors');
     t.equal(messages.warnings.length, 0, 'should return no warnings');
@@ -66,7 +66,7 @@ test('valid combination', function(t) {
     var raw = {};
     var clean = { sources: ['geonames'], layers: ['macroregion'] };
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors.length, 0, 'should return no errors');
     t.equal(messages.warnings.length, 0, 'should return no warnings');
@@ -77,7 +77,7 @@ test('valid combination', function(t) {
     var raw = {};
     var clean = { sources: ['whosonfirst'], layers: ['venue'] };
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors.length, 0, 'should return no errors');
     t.equal(messages.warnings.length, 0, 'should return no warnings');
@@ -88,7 +88,7 @@ test('valid combination', function(t) {
     var raw = {};
     var clean = { sources: ['openstreetmap', 'openaddresses'], layers: ['venue'] };
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors.length, 0, 'should return no errors');
     t.equal(messages.warnings.length, 0, 'should return no warnings');
@@ -99,10 +99,17 @@ test('valid combination', function(t) {
     var raw = {};
     var clean = { sources: ['openaddresses'], layers: ['address', 'country'] };
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors.length, 0, 'should return no errors');
     t.equal(messages.warnings.length, 0, 'should return no warnings');
+    t.end();
+  });
+
+  test('return an array of expected parameters in object form for validation', function (t) {
+    const expected = [{ 'name': 'sources' }, { 'name': 'layers' }];
+    const validParameters = sanitizer.expected();
+    t.deepEquals(validParameters, expected);
     t.end();
   });
 };
@@ -112,7 +119,7 @@ module.exports.tests.invalid_combination = function(test, common) {
     var raw = {};
     var clean = { sources: ['whosonfirst'], layers: ['address'] };
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors.length, 1, 'should return an error');
     t.equal(messages.errors[0], 'You have specified both the `sources` and `layers` ' +
@@ -125,7 +132,7 @@ module.exports.tests.invalid_combination = function(test, common) {
     var raw = {};
     var clean = { sources: ['openstreetmap'], layers: ['country', 'locality'] };
 
-    var messages = sanitize(raw, clean);
+    var messages = sanitizer.sanitize(raw, clean);
 
     t.equal(messages.errors.length, 2, 'should return an error');
     t.equal(messages.errors[0], 'You have specified both the `sources` and `layers` ' +
