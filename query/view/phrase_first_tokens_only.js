@@ -33,5 +33,5 @@ module.exports = function( vs ){
     view.match['name.default'].operator='and';
 
   // return the view rendered using the copy
-  return peliasQuery.view.phrase( vsCopy );
+  return view;
 };
