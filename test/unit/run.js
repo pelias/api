@@ -76,6 +76,7 @@ var tests = [
   require('./sanitizer/_layers'),
   require('./sanitizer/_location_bias'),
   require('./sanitizer/_city_name_standardizer'),
+  require('./sanitizer/_request_language'),
   require('./sanitizer/_single_scalar_parameters'),
   require('./sanitizer/_size'),
   require('./sanitizer/_sources'),
