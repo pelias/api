@@ -133,6 +133,14 @@ module.exports.tests.sanitize = (test, common) => {
             }
           }
         };
+      },
+      '../sanitizer/_request_language': () => {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_request_language');
+            return { errors: [], warnings: [] };
+          }
+        };
       }
 
     });
@@ -151,7 +159,8 @@ module.exports.tests.sanitize = (test, common) => {
       '_geo_search',
       '_boundary_country',
       '_categories',
-      '_geonames_warnings'
+      '_geonames_warnings',
+      '_request_language'
     ];
 
     const req = {};
