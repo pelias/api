@@ -45,6 +45,14 @@ module.exports.tests.sanitize = function(test, common) {
         } else {
             throw new Error('incorrect parameters passed to _flag_bool');
         }
+      },
+      '../sanitizer/_request_language': () => {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_request_language');
+            return { errors: [], warnings: [] };
+          }
+        };
       }
     });
 
@@ -52,7 +60,8 @@ module.exports.tests.sanitize = function(test, common) {
       '_single_scalar_parameters',
       '_debug',
       '_ids',
-      '_flag_bool'
+      '_flag_bool',
+      '_request_language'
     ];
 
     const req = {};

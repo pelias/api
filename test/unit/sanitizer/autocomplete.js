@@ -120,6 +120,14 @@ module.exports.tests.sanitizers = function(test, common) {
             return { errors: [], warnings: [] };
           }
         };
+      },
+      '../sanitizer/_request_language': () => {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_request_language');
+            return { errors: [], warnings: [] };
+          }
+        };
       }
     });
 
@@ -136,7 +144,8 @@ module.exports.tests.sanitizers = function(test, common) {
       '_location_bias',
       '_geo_autocomplete',
       '_boundary_country',
-      '_categories'
+      '_categories',
+      '_request_language'
     ];
 
     const req = {};

@@ -19,7 +19,8 @@ module.exports.middleware = (_api_pelias_config) => {
         location_bias: require('../sanitizer/_location_bias')(_api_pelias_config.defaultParameters),
         geo_search: require('../sanitizer/_geo_search')(),
         boundary_country: require('../sanitizer/_boundary_country')(),
-        categories: require('../sanitizer/_categories')()
+        categories: require('../sanitizer/_categories')(),
+        request_language: require('../sanitizer/_request_language')()
       };
 
   return ( req, res, next ) => {
