@@ -18,9 +18,9 @@ function assignLabel(req, res, next, labelGenerator) {
   res.data.forEach(function (result) {
       result.label = labelGenerator(result);
       // Entur - override default behaviour in pelias-labels deduping ', locality' part
-      // when locality = name
-      if (result.locality && result.name && result.name.default && !result.label.includes(',')) {
-        result.label = result.name.default + ', ' + result.locality;
+      // when locality = name. Instead adding county name in ( )
+      if (result.locality && result.county && result.name && result.name.default && !result.label.includes(',')) {
+        result.label = result.name.default + ' (' + result.county + ')';
       }
   });
 
