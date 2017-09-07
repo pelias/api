@@ -17,7 +17,6 @@ function setup( apiConfig, esclient, query, should_execute ){
       return next();
     }
 
-    const initialTime = debugLog.beginTimer(req);
     const cleanOutput = _.cloneDeep(req.clean);
     if (logging.isDNT(req)) {
       logging.removeFields(cleanOutput);
@@ -29,7 +28,7 @@ function setup( apiConfig, esclient, query, should_execute ){
 
     // if there's no query to call ES with, skip the service
     if (_.isUndefined(renderedQuery)) {
-      debugLog.stopTimer(req, initialTime, 'No query to call ES with. Skipping');
+      debugLog.push(req, `No query to call ES with. Skipping`);
       return next();
     }
 
@@ -56,6 +55,7 @@ function setup( apiConfig, esclient, query, should_execute ){
     debugLog.push(req, {ES_req: cmd});
 
     operation.attempt((currentAttempt) => {
+      const initialTime = debugLog.beginTimer(req, `Attempt ${currentAttempt}`);
       // query elasticsearch
       searchService( esclient, cmd, function( err, docs, meta ){
         // returns true if the operation should be attempted again
@@ -63,7 +63,7 @@ function setup( apiConfig, esclient, query, should_execute ){
         // only consider for status 408 (request timeout)
         if (isRequestTimeout(err) && operation.retry(err)) {
           logger.info(`request timed out on attempt ${currentAttempt}, retrying`);
-          debugLog.stopTimer(req, initialTime, 'request timed out, retrying');
+          debugLog.stopTimer(req, initialTime, `request timed out on attempt ${currentAttempt}, retrying`);
           return;
         }
 

@@ -18,8 +18,7 @@ function setup( apiConfig, esclient, query, should_execute ){
       return next();
     }
 
-    const debugLog = new Debug(req, 'controller:search');
-    const initialTime = debugLog.beginTimer(req);
+    const debugLog = new Debug('controller:search');
 
     let cleanOutput = _.cloneDeep(req.clean);
     if (logging.isDNT(req)) {
@@ -32,7 +31,7 @@ function setup( apiConfig, esclient, query, should_execute ){
 
     // if there's no query to call ES with, skip the service
     if (_.isUndefined(renderedQuery)) {
-      debugLog.stopTimer(req, initialTime, 'No query to call ES with. Skipping');
+      debugLog.push(req, 'No query to call ES with. Skipping');
       return next();
     }
 
@@ -59,6 +58,7 @@ function setup( apiConfig, esclient, query, should_execute ){
     debugLog.push(req, {ES_req: cmd});
 
     operation.attempt((currentAttempt) => {
+      const initialTime = debugLog.beginTimer(req, `Attempt ${currentAttempt}`);
       // query elasticsearch
       searchService( esclient, cmd, function( err, docs, meta ){
         // returns true if the operation should be attempted again

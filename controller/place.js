@@ -22,7 +22,7 @@ function setup( apiConfig, esclient ){
     if (requestHasErrors(req)){
       return next();
     }
-    const initialTime = debugLog.beginTimer(req);
+
     // options for retry
     // maxRetries is from the API config with default of 3
     // factor of 1 means that each retry attempt will esclient requestTimeout
@@ -47,13 +47,15 @@ function setup( apiConfig, esclient ){
     debugLog.push(req, {ES_req: cmd});
 
     operation.attempt((currentAttempt) => {
+      const initialTime = debugLog.beginTimer(req);
+
       mgetService( esclient, cmd, function( err, docs ) {
         // returns true if the operation should be attempted again
         // (handles bookkeeping of maxRetries)
         // only consider for status 408 (request timeout)
         if (isRequestTimeout(err) && operation.retry(err)) {
           logger.info(`request timed out on attempt ${currentAttempt}, retrying`);
-          debugLog.stopTimer(req, initialTime, 'request timed out, retrying');
+          debugLog.stopTimer(req, initialTime, `request timed out on attempt ${currentAttempt}, retrying`);
           return;
         }
 
