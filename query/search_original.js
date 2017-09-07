@@ -58,7 +58,7 @@ query.filter( peliasQuery.view.categories );
 function generateQuery( clean ){
 
   var vs = new peliasQuery.Vars( defaults );
-
+   
   let logStr = '[query:search] [parser:addressit] ';
 
   // input text

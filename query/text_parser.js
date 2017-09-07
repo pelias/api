@@ -29,6 +29,16 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
     vs.var( 'input:street', parsed_text.street );
   }
 
+  // street1 name
+  if( ! _.isEmpty(parsed_text.street1) ){
+    vs.var( 'input:street1', parsed_text.street1 );
+  }
+
+  // street2 name
+  if( ! _.isEmpty(parsed_text.street2) ){
+    vs.var( 'input:street2', parsed_text.street2 );
+  }
+
   // neighbourhood
   if ( ! _.isEmpty(parsed_text.neighbourhood) ) {
     vs.var( 'input:neighbourhood', parsed_text.neighbourhood);

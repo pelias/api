@@ -33,7 +33,8 @@ var controllers = {
   placeholder: require('../controller/placeholder'),
   search: require('../controller/search'),
   search_with_ids: require('../controller/search_with_ids'),
-  status: require('../controller/status')
+  status: require('../controller/status'),
+  intersection: require('../controller/intersections')
 };
 
 var queries = {
@@ -42,7 +43,8 @@ var queries = {
   structured_geocoding: require('../query/structured_geocoding'),
   reverse: require('../query/reverse'),
   autocomplete: require('../query/autocomplete'),
-  address_using_ids: require('../query/address_search_using_ids')
+  address_using_ids: require('../query/address_search_using_ids'),
+  intersections: require('../query/search_intersections')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -81,6 +83,8 @@ const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin
 const isRequestSourcesOnlyWhosOnFirst = require('../controller/predicates/is_request_sources_only_whosonfirst');
 const hasRequestParameter = require('../controller/predicates/has_request_parameter');
 const hasParsedTextProperties = require('../controller/predicates/has_parsed_text_properties');
+
+const isIntersectionLayer = require('../controller/predicates/is_intersection_layer');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
@@ -127,7 +131,19 @@ function addRoutes(app, peliasConfig) {
     isPipServiceEnabled, not(hasRequestErrors), not(hasResponseData)
   );
 
+  // defines whether to skip libpostal and control should be switched to intersection processing
+  const IntersectionParserShouldExecute = all (
+    isIntersectionLayer,
+    not(hasRequestErrors)
+  );
+
+  const intersectionQueryShouldExecute = all (
+    isIntersectionLayer,
+    not(hasRequestErrors)
+  );
+
   const libpostalShouldExecute = all(
+    not(isIntersectionLayer),
     not(hasRequestErrors),
     not(isRequestSourcesOnlyWhosOnFirst)
   );
@@ -197,12 +213,14 @@ function addRoutes(app, peliasConfig) {
   const shouldDeferToAddressIt = all(
     not(hasRequestErrors),
     not(hasResponseData),
-    not(placeholderShouldHaveExecuted)
+    not(placeholderShouldHaveExecuted),
+    not(isIntersectionLayer)
   );
 
   // call very old prod query if addressit was the parser
   const oldProdQueryShouldExecute = all(
     not(hasRequestErrors),
+    not(isIntersectionLayer),
     isAddressItParse
   );
 
@@ -256,6 +274,7 @@ function addRoutes(app, peliasConfig) {
       sanitizers.search.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.calcSize(),
+      controllers.intersection(IntersectionParserShouldExecute),
       controllers.libpostal(libpostalShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersDontApply, placeholderIdsLookupShouldExecute),
@@ -265,6 +284,7 @@ function addRoutes(app, peliasConfig) {
       controllers.search(peliasConfig.api, esclient, queries.cascading_fallback, fallbackQueryShouldExecute),
       sanitizers.defer_to_addressit(shouldDeferToAddressIt),
       controllers.search(peliasConfig.api, esclient, queries.very_old_prod, oldProdQueryShouldExecute),
+      controllers.search(peliasConfig.api, esclient, queries.intersections, intersectionQueryShouldExecute),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),

@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const util = require('util');
 
 const searchService = require('../service/search');
 const logger = require('pelias-logger').get('api');
@@ -20,6 +21,7 @@ function setup( apiConfig, esclient, query, should_execute ){
     }
     debugLog.beginTimer(req);
     let cleanOutput = _.cloneDeep(req.clean);
+
     if (logging.isDNT(req)) {
       cleanOutput = logging.removeFields(cleanOutput);
     }
@@ -27,7 +29,7 @@ function setup( apiConfig, esclient, query, should_execute ){
     logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
 
     const renderedQuery = query(req.clean);
-
+  
     // if there's no query to call ES with, skip the service
     if (_.isUndefined(renderedQuery)) {
       debugLog.stopTimer(req, 'No query to call ES with. Skipping');

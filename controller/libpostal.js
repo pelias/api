@@ -8,7 +8,6 @@ function setup(should_execute) {
     if (!should_execute(req, res)) {
       return next();
     }
-
     // parse text with query parser
     const parsed_text = text_analyzer.parse(req.clean.text);
 
