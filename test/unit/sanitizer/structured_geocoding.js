@@ -137,6 +137,14 @@ module.exports.tests.sanitize = function(test, common) {
             }
           }
         };
+      },
+      '../sanitizer/_request_language': () => {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_request_language');
+            return { errors: [], warnings: [] };
+          }
+        };
       }
     });
 
@@ -155,7 +163,8 @@ module.exports.tests.sanitize = function(test, common) {
       '_location_bias',
       '_geo_search',
       '_boundary_country',
-      '_categories'
+      '_categories',
+      '_request_language'
     ];
 
     var req = {};

@@ -233,6 +233,36 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
+  test('text_analyzer returning undefined on address resolution should treat as if no house number field was found', t => {
+    var sanitizer = proxyquire('../../../sanitizer/_synthesize_analysis', {
+      'pelias-text-analyzer': { parse: function(query) {
+        t.equals(query, 'Street Value');
+
+        return undefined;
+      }
+    }});
+
+    const raw = {
+      address: 'Street Value'
+    };
+
+    const clean = {};
+
+    const expected_clean = {
+      parsed_text: {
+        street: 'Street Value'
+      }
+    };
+
+    const messages = sanitizer().sanitize(raw, clean);
+
+    t.deepEquals(clean, expected_clean);
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+    t.end();
+
+  });
+
   test('return an array of expected parameters in object form for validation', function (t) {
     const sanitizer = require('../../../sanitizer/_synthesize_analysis');
     const expected = [

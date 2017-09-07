@@ -101,6 +101,14 @@ module.exports.tests.sanitize = function(test, common) {
             return { errors: [], warnings: [] };
           }
         };
+      },
+      '../sanitizer/_request_language': () => {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_request_language');
+            return { errors: [], warnings: [] };
+          }
+        };
       }
     });
 
@@ -115,7 +123,8 @@ module.exports.tests.sanitize = function(test, common) {
       '_size',
       '_flag_bool',
       '_geo_reverse',
-      '_boundary_country'
+      '_boundary_country',
+      '_request_language'
     ];
 
     const req = {};
