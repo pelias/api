@@ -1,6 +1,8 @@
 const text_analyzer = require('pelias-text-analyzer');
 const _ = require('lodash');
 const iso3166 = require('iso3166-1');
+const Debug = require('../helper/debug');
+const debugLog = new Debug('controller:libpostal');
 
 function setup(should_execute) {
   function controller( req, res, next ){
@@ -8,7 +10,7 @@ function setup(should_execute) {
     if (!should_execute(req, res)) {
       return next();
     }
-
+    const initialTime = debugLog.beginTimer(req);
     // parse text with query parser
     const parsed_text = text_analyzer.parse(req.clean.text);
 
@@ -19,8 +21,9 @@ function setup(should_execute) {
       }
 
       req.clean.parsed_text = parsed_text;
+      debugLog.push(req, {parsed_text: req.clean.parsed_text});
     }
-
+    debugLog.stopTimer(req, initialTime);
     return next();
 
   }
