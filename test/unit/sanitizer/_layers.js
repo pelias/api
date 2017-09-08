@@ -34,16 +34,17 @@ module.exports.tests.sanitize_layers = function(test, common) {
     t.deepEqual(clean.layers, venue_layers, 'venue layers set');
     t.end();
   });
-
+  
   test('coarse (alias) layer', function(t) {
     var raw = { layers: 'coarse' };
     var clean = {};
 
     sanitizer.sanitize(raw, clean);
 
-    var admin_layers = [ 'continent', 'country', 'dependency',
-    'macroregion', 'region', 'locality', 'localadmin', 'macrocounty', 'county',
-    'macrohood', 'borough', 'neighbourhood', 'microhood', 'disputed', 'postalcode' ];
+    var admin_layers = [ 'continent', 'country', 'dependency', 'macroregion',
+    'region', 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood',
+    'borough', 'neighbourhood', 'microhood', 'disputed', 'postalcode', 'ocean',
+    'marinearea' ];
 
     t.deepEqual(clean.layers, admin_layers, 'coarse layers set');
     t.end();
@@ -78,7 +79,8 @@ module.exports.tests.sanitize_layers = function(test, common) {
 
     var expected_layers = [ 'continent', 'country', 'dependency',
     'macroregion', 'region', 'locality', 'localadmin', 'macrocounty', 'county',
-    'macrohood', 'borough', 'neighbourhood', 'microhood', 'disputed', 'postalcode' ];
+    'macrohood', 'borough', 'neighbourhood', 'microhood', 'disputed', 'postalcode',
+    'ocean', 'marinearea'];
 
     t.deepEqual(clean.layers, expected_layers, 'coarse + regular layers set');
     t.end();
@@ -115,7 +117,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var coarse_layers = [ 'continent',
       'country', 'dependency', 'macroregion', 'region', 'locality', 'localadmin',
       'macrocounty', 'county', 'macrohood', 'borough', 'neighbourhood', 'microhood',
-      'disputed', 'postalcode' ];
+      'disputed', 'postalcode', 'ocean', 'marinearea' ];
 
     var venue_layers = [ 'venue' ];
     var expected_layers = venue_layers.concat(coarse_layers);

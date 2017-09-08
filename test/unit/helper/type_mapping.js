@@ -14,7 +14,8 @@ module.exports.tests.interfaces = function(test, common) {
     t.deepEquals(type_mapping.layer_mapping.coarse,
                  [ 'continent', 'country', 'dependency', 'macroregion',
                    'region', 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood',
-                   'borough', 'neighbourhood', 'microhood', 'disputed', 'postalcode' ]);
+                   'borough', 'neighbourhood', 'microhood', 'disputed', 'postalcode',
+                   'continent', 'ocean', 'marinearea']);
     t.end();
   });
 

@@ -210,6 +210,18 @@ module.exports.tests.success_conditions = (test, common) => {
         country: [
           { id: 100, name: 'country name', abbr: 'xyz'},
           { id: 101, name: 'country name 2'}
+        ],
+        continent: [
+          { id: 110, name: 'continent name', abbr: 'continent abbr'},
+          { id: 111, name: 'continent name 2'}
+        ],
+        ocean: [
+          { id: 120, name: 'ocean name', abbr: 'ocean abbr'},
+          { id: 121, name: 'ocean name 2'}
+        ],
+        marinearea: [
+          { id: 130, name: 'marinearea name', abbr: 'marinearea abbr'},
+          { id: 131, name: 'marinearea name 2'}
         ]
       };
 
@@ -282,7 +294,16 @@ module.exports.tests.success_conditions = (test, common) => {
             dependency_a: ['dependency abbr'],
             country: ['country name'],
             country_id: ['100'],
-            country_a: ['xyz']
+            country_a: ['xyz'],
+            continent: ['continent name'],
+            continent_id: ['110'],
+            continent_a: ['continent abbr'],
+            ocean: ['ocean name'],
+            ocean_id: ['120'],
+            ocean_a: ['ocean abbr'],
+            marinearea: ['marinearea name'],
+            marinearea_id: ['130'],
+            marinearea_a: ['marinearea abbr'],
           },
           center_point: {
             lat: 12.121212,
@@ -822,6 +843,18 @@ module.exports.tests.failure_conditions = (test, common) => {
         country: [
           { id: 100, name: 'country name', abbr: 'xyz'},
           { id: 101, name: 'country name 2'}
+        ],
+        continent: [
+          { id: 110, name: 'continent name', abbr: 'continent abbr'},
+          { id: 111, name: 'continent name 2'}
+        ],
+        ocean: [
+          { id: 120, name: 'ocean name', abbr: 'ocean abbr'},
+          { id: 121, name: 'ocean name 2'}
+        ],
+        marinearea: [
+          { id: 130, name: 'marinearea name', abbr: 'marinearea abbr'},
+          { id: 131, name: 'marinearea name 2'}
         ]
       };
 
