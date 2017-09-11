@@ -1,9 +1,11 @@
-var _ = require('lodash');
+'use strict';
+
+const _ = require('lodash');
 
 // Properties to be copied
 // If a property is identified as a single string, assume it should be presented as a string in response
 // If something other than string is desired, use the following structure: { name: 'category', type: 'array' }
-var DETAILS_PROPS = [
+const DETAILS_PROPS = [
   { name: 'housenumber',       type: 'string' },
   { name: 'street',            type: 'string' },
   { name: 'postalcode',        type: 'string' },
@@ -67,7 +69,7 @@ function copyProperties( params, source, dst ) {
     }
 
     if ( source.hasOwnProperty( prop.name ) ) {
-      var value = null;
+      let value = null;
 
       switch (prop.type) {
         case 'string':
