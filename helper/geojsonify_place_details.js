@@ -66,28 +66,23 @@ function copyProperties( params, source, dst ) {
       return;
     }
 
-    var property = {
-      name: prop.name || prop,
-      type: prop.type || 'default'
-    };
-
     var value = null;
-    if ( source.hasOwnProperty( property.name ) ) {
+    if ( source.hasOwnProperty( prop.name ) ) {
 
-      switch (property.type) {
+      switch (_.defaultTo(prop.type, 'default')) {
         case 'string':
-          value = getStringValue(source[property.name]);
+          value = getStringValue(source[prop.name]);
           break;
         case 'array':
-          value = getArrayValue(source[property.name]);
+          value = getArrayValue(source[prop.name]);
           break;
         // default behavior is to copy property exactly as is
         default:
-          value = source[property.name];
+          value = source[prop.name];
       }
 
       if (_.isNumber(value) || (value && !_.isEmpty(value))) {
-        dst[property.name] = value;
+        dst[prop.name] = value;
       }
     }
   });
