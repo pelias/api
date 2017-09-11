@@ -51,23 +51,11 @@ function checkCategoryParam(params) {
 }
 
 /**
- * Add details properties
- *
- * @param {object} params clean query params
- * @param {object} src
- * @param {object} dst
- */
-// function addDetails(params, src, dst) {
-//   copyProperties(params, src, DETAILS_PROPS, dst);
-// }
-
-/**
  * Copy specified properties from source to dest.
  * Ignore missing properties.
  *
  * @param {object} params clean query params
  * @param {object} source
- * @param {[]} props
  * @param {object} dst
  */
 function copyProperties( params, source, dst ) {
