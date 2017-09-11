@@ -69,7 +69,7 @@ function copyProperties( params, source, dst ) {
     if ( source.hasOwnProperty( prop.name ) ) {
       var value = null;
 
-      switch (_.defaultTo(prop.type, 'default')) {
+      switch (prop.type) {
         case 'string':
           value = getStringValue(source[prop.name]);
           break;
