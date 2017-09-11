@@ -3,7 +3,6 @@ const GeoJSON = require('geojson');
 const extent = require('@mapbox/geojson-extent');
 const logger = require('pelias-logger').get('geojsonify');
 const addDetails = require('./geojsonify_place_details');
-// const addMetaData = require('./geojsonify_meta_data');
 const _ = require('lodash');
 const Document = require('pelias-model').Document;
 
