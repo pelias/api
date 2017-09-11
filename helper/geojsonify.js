@@ -3,8 +3,9 @@ const GeoJSON = require('geojson');
 const extent = require('@mapbox/geojson-extent');
 const logger = require('pelias-logger').get('geojsonify');
 const addDetails = require('./geojsonify_place_details');
-const addMetaData = require('./geojsonify_meta_data');
+// const addMetaData = require('./geojsonify_meta_data');
 const _ = require('lodash');
+const Document = require('pelias-model').Document;
 
 function geojsonifyPlaces( params, docs ){
 
@@ -41,7 +42,16 @@ function geojsonifyPlaces( params, docs ){
 function geojsonifyPlace(params, place) {
   const output = {};
 
-  addMetaData(place, output);
+  output.id = place._id;
+  output.gid = new Document(place.source, place.layer, place._id).getGid();
+  output.layer = place.layer;
+  output.source = place.source;
+  output.source_id = place.source_id;
+  if (place.hasOwnProperty('bounding_box')) {
+    output.bounding_box = place.bounding_box;
+  }
+
+  // addMetaData(place, output);
   addName(place, output);
   addDetails(params, place, output);
 
