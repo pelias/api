@@ -1,26 +1,32 @@
 
-var GeoJSON = require('geojson');
-var extent = require('@mapbox/geojson-extent');
-var logger = require('pelias-logger').get('api');
-var addDetails = require('./geojsonify_place_details');
-var addMetaData = require('./geojsonify_meta_data');
+const GeoJSON = require('geojson');
+const extent = require('@mapbox/geojson-extent');
+const logger = require('pelias-logger').get('geojsonify');
+const addDetails = require('./geojsonify_place_details');
+const addMetaData = require('./geojsonify_meta_data');
+const _ = require('lodash');
 
 function geojsonifyPlaces( params, docs ){
 
   // flatten & expand data for geojson conversion
-  var geodata = docs
-    .map(geojsonifyPlace.bind(null, params))
-    .filter( function( doc ){
-      return !!doc;
-    });
+  const geodata = docs
+    .filter(doc => {
+      if (!_.has(doc, 'center_point')) {
+        logger.warn('No doc or center_point property');
+        return false;
+      } else {
+        return true;
+      }
+    })
+    .map(geojsonifyPlace.bind(null, params));
 
   // get all the bounding_box corners as well as single points
   // to be used for computing the overall bounding_box for the FeatureCollection
-  var extentPoints = extractExtentPoints(geodata);
+  const extentPoints = extractExtentPoints(geodata);
 
   // convert to geojson
-  var geojson             = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
-  var geojsonExtentPoints = GeoJSON.parse( extentPoints, { Point: ['lat', 'lng'] });
+  const geojson             = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
+  const geojsonExtentPoints = GeoJSON.parse( extentPoints, { Point: ['lat', 'lng'] });
 
   // to insert the bbox property at the top level of each feature, it must be done separately after
   // initial geojson construction is finished
@@ -33,13 +39,7 @@ function geojsonifyPlaces( params, docs ){
 }
 
 function geojsonifyPlace(params, place) {
-
-  // something went very wrong
-  if( !place || !place.hasOwnProperty( 'center_point' ) ) {
-    return warning('No doc or center_point property');
-  }
-
-  var output = {};
+  const output = {};
 
   addMetaData(place, output);
   addName(place, output);
@@ -60,9 +60,11 @@ function geojsonifyPlace(params, place) {
  * @param {object} dst
  */
 function addName(src, dst) {
-  // map name
-  if( !src.name || !src.name.default ) { return warning(src); }
-  dst.name = src.name.default;
+  if (_.has(src, 'name.default')) {
+    dst.name = src.name.default;
+  } else {
+    logger.warn(`doc ${dst.gid} does not contain name.default`);
+  }
 }
 
 /**
@@ -71,7 +73,7 @@ function addName(src, dst) {
  * @param {object} geojson
  */
 function addBBoxPerFeature(geojson) {
-  geojson.features.forEach(function (feature) {
+  geojson.features.forEach(feature => {
 
     if (!feature.properties.hasOwnProperty('bounding_box')) {
       return;
@@ -99,7 +101,7 @@ function addBBoxPerFeature(geojson) {
  * @returns {Array}
  */
 function extractExtentPoints(geodata) {
-  var extentPoints = [];
+  const extentPoints = [];
   geodata.forEach(function (place) {
     if (place.bounding_box) {
       extentPoints.push({
@@ -141,16 +143,5 @@ function computeBBox(geojson, geojsonExtentPoints) {
     console.error( 'geojson', JSON.stringify( geojsonExtentPoints, null, 2 ) );
   }
 }
-
-/**
- * emit a warning if the doc format is invalid
- *
- * @note: if you see this error, fix it ASAP!
- */
-function warning( doc ) {
-  console.error( 'error: invalid doc', __filename, doc);
-  return false; // remove offending doc from results
-}
-
 
 module.exports = geojsonifyPlaces;
