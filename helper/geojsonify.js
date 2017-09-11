@@ -39,13 +39,14 @@ function geojsonifyPlaces( params, docs ){
 }
 
 function geojsonifyPlace(params, place) {
-  const output = {};
+  const output = {
+    id: place._id,
+    gid: new Document(place.source, place.layer, place._id).getGid(),
+    layer: place.layer,
+    source: place.source,
+    source_id: place.source_id
+  };
 
-  output.id = place._id;
-  output.gid = new Document(place.source, place.layer, place._id).getGid();
-  output.layer = place.layer;
-  output.source = place.source;
-  output.source_id = place.source_id;
   if (place.hasOwnProperty('bounding_box')) {
     output.bounding_box = place.bounding_box;
   }
