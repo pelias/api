@@ -57,9 +57,9 @@ function checkCategoryParam(params) {
  * @param {object} src
  * @param {object} dst
  */
-function addDetails(params, src, dst) {
-  copyProperties(params, src, DETAILS_PROPS, dst);
-}
+// function addDetails(params, src, dst) {
+//   copyProperties(params, src, DETAILS_PROPS, dst);
+// }
 
 /**
  * Copy specified properties from source to dest.
@@ -70,8 +70,8 @@ function addDetails(params, src, dst) {
  * @param {[]} props
  * @param {object} dst
  */
-function copyProperties( params, source, props, dst ) {
-  props.forEach( function ( prop ) {
+function copyProperties( params, source, dst ) {
+  DETAILS_PROPS.forEach( function ( prop ) {
 
     // if condition isn't met, just return without setting the property
     if (_.isFunction(prop.condition) && !prop.condition(params)) {
@@ -137,4 +137,4 @@ function getArrayValue(property) {
   return [property];
 }
 
-module.exports = addDetails;
+module.exports = copyProperties;
