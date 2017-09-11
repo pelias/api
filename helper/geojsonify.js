@@ -2,8 +2,6 @@
 var GeoJSON = require('geojson');
 var extent = require('@mapbox/geojson-extent');
 var logger = require('pelias-logger').get('api');
-var type_mapping = require('./type_mapping');
-var _ = require('lodash');
 var addDetails = require('./geojsonify_place_details');
 var addMetaData = require('./geojsonify_meta_data');
 
