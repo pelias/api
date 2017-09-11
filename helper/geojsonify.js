@@ -83,11 +83,6 @@ function addName(src, dst) {
  */
 function addBBoxPerFeature(geojson) {
   geojson.features.forEach(feature => {
-
-    if (!feature.properties.hasOwnProperty('bounding_box')) {
-      return;
-    }
-
     if (feature.properties.bounding_box) {
       feature.bbox = [
         feature.properties.bounding_box.min_lon,
