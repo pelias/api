@@ -51,7 +51,6 @@ function geojsonifyPlace(params, place) {
     output.bounding_box = place.bounding_box;
   }
 
-  // addMetaData(place, output);
   addName(place, output);
   addDetails(params, place, output);
 
