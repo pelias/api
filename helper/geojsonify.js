@@ -105,8 +105,7 @@ function addBBoxPerFeature(geojson) {
  * @returns {Array}
  */
 function extractExtentPoints(geodata) {
-  const extentPoints = [];
-  geodata.forEach(function (place) {
+  return geodata.reduce((extentPoints, place) => {
     if (place.bounding_box) {
       extentPoints.push({
         lng: place.bounding_box.min_lon,
@@ -116,16 +115,19 @@ function extractExtentPoints(geodata) {
         lng: place.bounding_box.max_lon,
         lat: place.bounding_box.max_lat
       });
+
     }
     else {
       extentPoints.push({
         lng: place.lng,
         lat: place.lat
       });
-    }
-  });
 
-  return extentPoints;
+    }
+    return extentPoints;
+
+  }, []);
+
 }
 
 /**
