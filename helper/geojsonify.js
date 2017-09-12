@@ -2,7 +2,7 @@
 const GeoJSON = require('geojson');
 const extent = require('@mapbox/geojson-extent');
 const logger = require('pelias-logger').get('geojsonify');
-const addDetails = require('./geojsonify_place_details');
+const collectDetails = require('./geojsonify_place_details');
 const _ = require('lodash');
 const Document = require('pelias-model').Document;
 
@@ -58,7 +58,8 @@ function geojsonifyPlace(params, place) {
     logger.warn(`doc ${doc.gid} does not contain name.default`);
   }
 
-  _.assign(doc, addDetails(params, place));
+  // extend doc with all the details info
+  _.assign(doc, collectDetails(params, place));
 
   return doc;
 }
