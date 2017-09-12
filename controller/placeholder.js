@@ -2,6 +2,8 @@ const _ = require('lodash');
 const logger = require('pelias-logger').get('api');
 const Document = require('pelias-model').Document;
 const geolib = require('geolib');
+const Debug = require('../helper/debug');
+const debugLog = new Debug('controller:placeholder');
 
 // composition of toNumber and isFinite, useful for single call to convert a value
 //  to a number, then checking to see if it's finite
@@ -225,6 +227,7 @@ function setup(placeholderService, do_geometric_filters_apply, should_execute) {
     if (!should_execute(req, res)) {
       return next();
     }
+    const initialTime = debugLog.beginTimer(req);
 
     placeholderService(req, (err, results) => {
       if (err) {
@@ -263,8 +266,11 @@ function setup(placeholderService, do_geometric_filters_apply, should_execute) {
         ];
 
         logger.info(messageParts.join(' '));
+        debugLog.push(req, messageParts[1].slice(1,-1));
+        debugLog.push(req, res.data);
       }
 
+      debugLog.stopTimer(req, initialTime);
       return next();
     });
 

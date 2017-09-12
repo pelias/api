@@ -35,6 +35,7 @@ var tests = [
   require('./helper/logging'),
   require('./helper/type_mapping'),
   require('./helper/sizeCalculator'),
+  require('./helper/stackTraceLine'),
   require('./middleware/access_log'),
   require('./middleware/accuracy'),
   require('./middleware/assignLabels'),
