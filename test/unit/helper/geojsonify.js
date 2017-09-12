@@ -71,11 +71,15 @@ module.exports.tests.all = (test, common) => {
     const geojsonify = proxyquire('../../../helper/geojsonify', {
       './geojsonify_place_details': (params, source, dst) => {
         if (source._id === 'id 1') {
-          dst.property1 = 'property 1';
-          dst.property2 = 'property 2';
+          return {
+            property1: 'property 1',
+            property2: 'property 2'
+          };
         } else if (source._id === 'id 2') {
-          dst.property3 = 'property 3';
-          dst.property4 = 'property 4';
+          return {
+            property3: 'property 3',
+            property4: 'property 4'
+          };
         }
 
       }
@@ -174,11 +178,15 @@ module.exports.tests.all = (test, common) => {
     const geojsonify = proxyquire('../../../helper/geojsonify', {
       './geojsonify_place_details': (params, source, dst) => {
         if (source._id === 'id 1') {
-          dst.property1 = 'property 1';
-          dst.property2 = 'property 2';
+          return {
+            property1: 'property 1',
+            property2: 'property 2'
+          };
         } else if (source._id === 'id 2') {
-          dst.property3 = 'property 3';
-          dst.property4 = 'property 4';
+          return {
+            property3: 'property 3',
+            property4: 'property 4'
+          };
         }
 
       }
@@ -273,11 +281,15 @@ module.exports.tests.all = (test, common) => {
     const geojsonify = proxyquire('../../../helper/geojsonify', {
       './geojsonify_place_details': (params, source, dst) => {
         if (source._id === 'id 1') {
-          dst.property1 = 'property 1';
-          dst.property2 = 'property 2';
+          return {
+            property1: 'property 1',
+            property2: 'property 2'
+          };
         } else if (source._id === 'id 2') {
-          dst.property3 = 'property 3';
-          dst.property4 = 'property 4';
+          return {
+            property3: 'property 3',
+            property4: 'property 4'
+          };
         }
 
       }
@@ -359,8 +371,10 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
     const geojsonify = proxyquire('../../../helper/geojsonify', {
       './geojsonify_place_details': (params, source, dst) => {
         if (source._id === 'id 1') {
-          dst.property1 = 'property 1';
-          dst.property2 = 'property 2';
+          return {
+            property1: 'property 1',
+            property2: 'property 2'
+          };
         }
       },
       'pelias-logger': logger
@@ -429,8 +443,10 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
     const geojsonify = proxyquire('../../../helper/geojsonify', {
       './geojsonify_place_details': (params, source, dst) => {
         if (source._id === 'id 2') {
-          dst.property3 = 'property 3';
-          dst.property4 = 'property 4';
+          return {
+            property3: 'property 3',
+            property4: 'property 4'
+          };
         }
       },
       'pelias-logger': logger
@@ -511,16 +527,21 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
     const geojsonify = proxyquire('../../../helper/geojsonify', {
       './geojsonify_place_details': (params, source, dst) => {
         if (source._id === 'id 1') {
-          dst.property1 = 'property 1';
-          dst.property2 = 'property 2';
-        }
-        else if (source._id === 'id 2') {
-          dst.property3 = 'property 3';
-          dst.property4 = 'property 4';
-        }
-        else if (source._id === 'id 3') {
-          dst.property5 = 'property 5';
-          dst.property6 = 'property 6';
+          return {
+            property1: 'property 1',
+            property2: 'property 2'
+          };
+        } else if (source._id === 'id 2') {
+          return {
+            property3: 'property 3',
+            property4: 'property 4'
+          };
+        } else if (source._id === 'id 3') {
+          return {
+            property5: 'property 5',
+            property6: 'property 6'
+          };
+
         }
       },
       'pelias-logger': logger

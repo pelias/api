@@ -5,7 +5,6 @@ module.exports.tests = {};
 module.exports.tests.geojsonify_place_details = (test, common) => {
   test('plain old string values should be copied verbatim, replacing old values', t => {
     const source = {
-      unknown_field: 'original unknown_field value',
       housenumber: 'housenumber value',
       street: 'street value',
       postalcode: 'postalcode value',
@@ -42,49 +41,9 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       neighbourhood: 'neighbourhood value',
       neighbourhood_gid: 'neighbourhood_gid value',
       label: 'label value'
-    };
-    const destination = {
-      unknown_field: 'original unknown_field value',
-      housenumber: 'original housenumber value',
-      street: 'original street value',
-      postalcode: 'original postalcode value',
-      postalcode_gid: 'original postalcode_gid value',
-      match_type: 'original match_type value',
-      accuracy: 'original accuracy value',
-      country: 'original country value',
-      country_gid: 'original country_gid value',
-      country_a: 'original country_a value',
-      dependency: 'original dependency value',
-      dependency_gid: 'original dependency_gid value',
-      dependency_a: 'original dependency_a value',
-      macroregion: 'original macroregion value',
-      macroregion_gid: 'original macroregion_gid value',
-      macroregion_a: 'original macroregion_a value',
-      region: 'original region value',
-      region_gid: 'original region_gid value',
-      region_a: 'original region_a value',
-      macrocounty: 'original macrocounty value',
-      macrocounty_gid: 'original macrocounty_gid value',
-      macrocounty_a: 'original macrocounty_a value',
-      county: 'original county value',
-      county_gid: 'original county_gid value',
-      county_a: 'original county_a value',
-      localadmin: 'original localadmin value',
-      localadmin_gid: 'original localadmin_gid value',
-      localadmin_a: 'original localadmin_a value',
-      locality: 'original locality value',
-      locality_gid: 'original locality_gid value',
-      locality_a: 'original locality_a value',
-      borough: 'original borough value',
-      borough_gid: 'original borough_gid value',
-      borough_a: 'original borough_a value',
-      neighbourhood: 'original neighbourhood value',
-      neighbourhood_gid: 'original neighbourhood_gid value',
-      label: 'original label value'
     };
 
     const expected = {
-      unknown_field: 'original unknown_field value',
       housenumber: 'housenumber value',
       street: 'street value',
       postalcode: 'postalcode value',
@@ -123,9 +82,9 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       label: 'label value'
     };
 
-    geojsonify({}, source, destination);
+    const actual = geojsonify({}, source);
 
-    t.deepEqual(destination, expected);
+    t.deepEqual(actual, expected);
     t.end();
 
   });
@@ -170,12 +129,11 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
         neighbourhood_gid: empty_value,
         label: empty_value
       };
-      const destination = {};
       const expected = {};
 
-      geojsonify({}, source, destination);
+      const actual = geojsonify({}, source);
 
-      t.deepEqual(destination, expected);
+      t.deepEqual(actual, expected);
 
     });
 
@@ -222,7 +180,6 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       neighbourhood_gid: ['neighbourhood_gid value 1', 'neighbourhood_gid value 2'],
       label: ['label value 1', 'label value 2']
     };
-    const destination = { };
 
     const expected = {
       housenumber: 'housenumber value 1',
@@ -263,9 +220,9 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       label: 'label value 1'
     };
 
-    geojsonify({}, source, destination);
+    const actual = geojsonify({}, source);
 
-    t.deepEqual(destination, expected);
+    t.deepEqual(actual, expected);
     t.end();
 
   });
@@ -310,7 +267,6 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       neighbourhood_gid: { neighbourhood_gid: 'neighbourhood_gid value'},
       label: { label: 'label value'}
     };
-    const destination = { };
 
     const expected = {
       housenumber: '[object Object]',
@@ -351,9 +307,9 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       label: '[object Object]'
     };
 
-    geojsonify({}, source, destination);
+    const actual = geojsonify({}, source);
 
-    t.deepEqual(destination, expected);
+    t.deepEqual(actual, expected);
     t.end();
 
   });
@@ -365,11 +321,6 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
         distance: value,
         bounding_box: value
       };
-      const destination = {
-        confidence: 'original confidence value',
-        distance: 'original distance value',
-        bounding_box: 'original bounding_box value'
-      };
 
       const expected = {
         confidence: value,
@@ -377,9 +328,9 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
         bounding_box: value
       };
 
-      geojsonify({}, source, destination);
+      const actual = geojsonify({}, source);
 
-      t.deepEqual(destination, expected);
+      t.deepEqual(actual, expected);
 
     });
 
@@ -394,16 +345,15 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
         distance: value,
         bounding_box: value
       };
-      const destination = {};
       const expected = {
         confidence: value,
         distance: value,
         bounding_box: value
       };
 
-      geojsonify({}, source, destination);
+      const actual = geojsonify({}, source);
 
-      t.deepEqual(destination, expected);
+      t.deepEqual(actual, expected);
 
     });
 
@@ -418,12 +368,11 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
         distance: value,
         bounding_box: value
       };
-      const destination = {};
       const expected = {};
 
-      geojsonify({}, source, destination);
+      const actual = geojsonify({}, source);
 
-      t.deepEqual(destination, expected);
+      t.deepEqual(actual, expected);
 
     });
 
@@ -435,12 +384,11 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
     const source = {
       category: []
     };
-    const destination = {};
     const expected = {};
 
-    geojsonify({}, source, destination);
+    const actual = geojsonify({}, source);
 
-    t.deepEqual(destination, expected);
+    t.deepEqual(actual, expected);
     t.end();
 
   });
@@ -449,7 +397,6 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
     const source = {
       category: [ 1, 2 ]
     };
-    const destination = {};
     const expected = {
       category: [ 1, 2 ]
     };
@@ -458,9 +405,9 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       categories: true
     };
 
-    geojsonify(clean, source, destination);
+    const actual = geojsonify(clean, source);
 
-    t.deepEqual(destination, expected);
+    t.deepEqual(actual, expected);
     t.end();
 
   });
@@ -470,7 +417,6 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       const source = {
         category: value
       };
-      const destination = {};
       const expected = {
         category: [ value ]
       };
@@ -479,9 +425,9 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
         categories: true
       };
 
-      geojsonify(clean, source, destination);
+      const actual = geojsonify(clean, source);
 
-      t.deepEqual(destination, expected);
+      t.deepEqual(actual, expected);
 
     });
 
@@ -493,15 +439,14 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
     const source = {
       category: [ 1, 2 ]
     };
-    const destination = {};
     const expected = {
     };
 
     const clean = {};
 
-    geojsonify(clean, source, destination);
+    const actual = geojsonify(clean, source);
 
-    t.deepEqual(destination, expected);
+    t.deepEqual(actual, expected);
     t.end();
 
   });
@@ -510,19 +455,18 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
     const source = {
       category: [ 1, 2 ]
     };
-    const destination = {};
     const expected = {
     };
 
     const clean = 'this is not an object';
 
-    geojsonify(clean, source, destination);
+    const actual = geojsonify(clean, source);
 
-    t.deepEqual(destination, expected);
+    t.deepEqual(actual, expected);
     t.end();
 
   });
-
+  
 };
 
 module.exports.all = (tape, common) => {

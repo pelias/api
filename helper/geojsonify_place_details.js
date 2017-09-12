@@ -53,19 +53,18 @@ function checkCategoryParam(params) {
 }
 
 /**
- * Copy specified properties from source to dest.
+ * Collect the specified properties from source into an object and return it
  * Ignore missing properties.
  *
  * @param {object} params clean query params
  * @param {object} source
  * @param {object} dst
  */
-function copyProperties( params, source, dst ) {
-  DETAILS_PROPS.forEach( function ( prop ) {
-
-    // if condition isn't met, just return without setting the property
+function collectProperties( params, source ) {
+  return DETAILS_PROPS.reduce((result, prop) => {
+    // if condition isn't met, don't set the property
     if (_.isFunction(prop.condition) && !prop.condition(params)) {
-      return;
+      return result;
     }
 
     if ( source.hasOwnProperty( prop.name ) ) {
@@ -84,10 +83,14 @@ function copyProperties( params, source, dst ) {
       }
 
       if (_.isNumber(value) || (value && !_.isEmpty(value))) {
-        dst[prop.name] = value;
+        result[prop.name] = value;
       }
     }
-  });
+
+    return result;
+
+  }, {});
+
 }
 
 function getStringValue(property) {
@@ -108,7 +111,6 @@ function getStringValue(property) {
   return _.toString(property);
 }
 
-
 function getArrayValue(property) {
   // isEmpty check works for all types of values: strings, arrays, objects
   if (_.isEmpty(property)) {
@@ -122,4 +124,4 @@ function getArrayValue(property) {
   return [property];
 }
 
-module.exports = copyProperties;
+module.exports = collectProperties;

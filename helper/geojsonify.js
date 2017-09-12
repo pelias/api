@@ -58,7 +58,7 @@ function geojsonifyPlace(params, place) {
     logger.warn(`doc ${doc.gid} does not contain name.default`);
   }
 
-  addDetails(params, place, doc);
+  _.assign(doc, addDetails(params, place));
 
   return doc;
 }
