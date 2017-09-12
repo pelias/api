@@ -135,7 +135,7 @@ function getQuery(vs) {
 
   logger.info(`[query:search] [search_input_type:${determineQueryType(vs)}]`);
 
-  if (hasStreet(vs) || isPostalCodeOnly(vs)) {
+  if (hasStreet(vs) || isPostalCodeOnly(vs) || isPostalCodeWithCountry(vs)) {
     return {
       type: 'fallback',
       body: fallbackQuery.render(vs)
@@ -180,6 +180,20 @@ function isPostalCodeOnly(vs) {
   return allowedFields.every(isSet) &&
     !disallowedFields.some(isSet);
 
+}
+
+
+function isPostalCodeWithCountry(vs) {
+    var isSet = (layer) => {
+        return vs.isset(`input:${layer}`);
+    };
+    
+    var allowedFields = ['postcode', 'country'];
+    var disallowedFields = ['query', 'category', 'housenumber', 'street', 'locality',
+                          'neighbourhood', 'borough', 'county', 'region'];
+        
+    return allowedFields.every(isSet) &&
+        !disallowedFields.some(isSet);
 }
 
 module.exports = generateQuery;
