@@ -40,6 +40,15 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       borough_a: 'borough_a value',
       neighbourhood: 'neighbourhood value',
       neighbourhood_gid: 'neighbourhood_gid value',
+      continent: 'continent value',
+      continent_gid: 'continent_gid value',
+      continent_a: 'continent_a value',
+      ocean: 'ocean value',
+      ocean_gid: 'ocean_gid value',
+      ocean_a: 'ocean_a value',
+      marinearea: 'marinearea value',
+      marinearea_gid: 'marinearea_gid value',
+      marinearea_a: 'marinearea_a value',
       label: 'label value'
     };
 
@@ -79,6 +88,15 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       borough_a: 'borough_a value',
       neighbourhood: 'neighbourhood value',
       neighbourhood_gid: 'neighbourhood_gid value',
+      continent: 'continent value',
+      continent_gid: 'continent_gid value',
+      continent_a: 'continent_a value',
+      ocean: 'ocean value',
+      ocean_gid: 'ocean_gid value',
+      ocean_a: 'ocean_a value',
+      marinearea: 'marinearea value',
+      marinearea_gid: 'marinearea_gid value',
+      marinearea_a: 'marinearea_a value',
       label: 'label value'
     };
 
@@ -127,6 +145,15 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
         borough_a: empty_value,
         neighbourhood: empty_value,
         neighbourhood_gid: empty_value,
+        continent: empty_value,
+        continent_gid: empty_value,
+        continent_a: empty_value,
+        ocean: empty_value,
+        ocean_gid: empty_value,
+        ocean_a: empty_value,
+        marinearea: empty_value,
+        marinearea_gid: empty_value,
+        marinearea_a: empty_value,
         label: empty_value
       };
       const expected = {};
@@ -178,6 +205,15 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       borough_a: ['borough_a value 1', 'borough_a value 2'],
       neighbourhood: ['neighbourhood value 1', 'neighbourhood value 2'],
       neighbourhood_gid: ['neighbourhood_gid value 1', 'neighbourhood_gid value 2'],
+      continent: ['continent value 1', 'continent value 2'],
+      continent_gid: ['continent_gid value 1', 'continent_gid value 2'],
+      continent_a: ['continent_a value 1', 'continent_a value 2'],
+      ocean: ['ocean value 1', 'ocean value 2'],
+      ocean_gid: ['ocean_gid value 1', 'ocean_gid value 2'],
+      ocean_a: ['ocean_a value 1', 'ocean_a value 2'],
+      marinearea: ['marinearea value 1', 'marinearea value 2'],
+      marinearea_gid: ['marinearea_gid value 1', 'marinearea_gid value 2'],
+      marinearea_a: ['marinearea_a value 1','marinearea_a value 2'],
       label: ['label value 1', 'label value 2']
     };
 
@@ -217,6 +253,15 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       borough_a: 'borough_a value 1',
       neighbourhood: 'neighbourhood value 1',
       neighbourhood_gid: 'neighbourhood_gid value 1',
+      continent: 'continent value 1',
+      continent_gid: 'continent_gid value 1',
+      continent_a: 'continent_a value 1',
+      ocean: 'ocean value 1',
+      ocean_gid: 'ocean_gid value 1',
+      ocean_a: 'ocean_a value 1',
+      marinearea: 'marinearea value 1',
+      marinearea_gid: 'marinearea_gid value 1',
+      marinearea_a: 'marinearea_a value 1',
       label: 'label value 1'
     };
 
@@ -265,6 +310,15 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       borough_a: { borough_a: 'borough_a value'},
       neighbourhood: { neighbourhood: 'neighbourhood value'},
       neighbourhood_gid: { neighbourhood_gid: 'neighbourhood_gid value'},
+      continent: { continent: 'continent value'} ,
+      continent_gid: { continent: 'continent_gid value'},
+      continent_a: { continent: 'continent_a value'},
+      ocean: { ocean: 'ocean value'},
+      ocean_gid: { ocean_gid: 'ocean_gid value'},
+      ocean_a: { ocean_a: 'ocean_a value'},
+      marinearea: { marinearea: 'marinearea value'},
+      marinearea_gid: { marinearea_gid: 'marinearea_gid value'},
+      marinearea_a: { marinearea_a: 'marinearea_a value'},
       label: { label: 'label value'}
     };
 
@@ -304,6 +358,15 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       borough_a: '[object Object]',
       neighbourhood: '[object Object]',
       neighbourhood_gid: '[object Object]',
+      continent: '[object Object]',
+      continent_gid: '[object Object]',
+      continent_a: '[object Object]',
+      ocean: '[object Object]',
+      ocean_gid: '[object Object]',
+      ocean_a: '[object Object]',
+      marinearea: '[object Object]',
+      marinearea_gid: '[object Object]',
+      marinearea_a: '[object Object]',
       label: '[object Object]'
     };
 
@@ -466,7 +529,7 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
     t.end();
 
   });
-  
+
 };
 
 module.exports.all = (tape, common) => {
