@@ -591,6 +591,30 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
 
   });
 
+  test('no points', t => {
+    const logger = require('pelias-mock-logger')();
+
+    const input = [];
+
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      './geojsonify_place_details': (params, source, dst) => {
+        t.fail('should not have bee called');
+      },
+      'pelias-logger': logger
+    });
+
+    const actual = geojsonify({}, input);
+
+    const expected = {
+      type: 'FeatureCollection',
+      features: []
+    };
+
+    t.deepEquals(actual, expected);
+    t.end();
+
+  });
+
 };
 
 module.exports.all = (tape, common) => {

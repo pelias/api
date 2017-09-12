@@ -39,41 +39,28 @@ function geojsonifyPlaces( params, docs ){
 }
 
 function geojsonifyPlace(params, place) {
-  const output = {
+  // setup the base doc
+  const doc = {
     id: place._id,
     gid: new Document(place.source, place.layer, place._id).getGid(),
     layer: place.layer,
     source: place.source,
-    source_id: place.source_id
+    source_id: place.source_id,
+    bounding_box: place.bounding_box,
+    lat: parseFloat(place.center_point.lat),
+    lng: parseFloat(place.center_point.lon)
   };
 
-  if (place.hasOwnProperty('bounding_box')) {
-    output.bounding_box = place.bounding_box;
-  }
-
-  addName(place, output);
-  addDetails(params, place, output);
-
-  // map center_point for GeoJSON to work properly
-  // these should not show up in the final feature properties
-  output.lat = parseFloat(place.center_point.lat);
-  output.lng = parseFloat(place.center_point.lon);
-
-  return output;
-}
-
-/**
- * Validate and add name property
- *
- * @param {object} src
- * @param {object} dst
- */
-function addName(src, dst) {
-  if (_.has(src, 'name.default')) {
-    dst.name = src.name.default;
+  // assign name, logging a warning if it doesn't exist
+  if (_.has(place, 'name.default')) {
+    doc.name = place.name.default;
   } else {
-    logger.warn(`doc ${dst.gid} does not contain name.default`);
+    logger.warn(`doc ${doc.gid} does not contain name.default`);
   }
+
+  addDetails(params, place, doc);
+
+  return doc;
 }
 
 /**
@@ -106,6 +93,7 @@ function addBBoxPerFeature(geojson) {
  */
 function extractExtentPoints(geodata) {
   return geodata.reduce((extentPoints, place) => {
+    // if there's a bounding_box, use the LL/UR for the extent
     if (place.bounding_box) {
       extentPoints.push({
         lng: place.bounding_box.min_lon,
@@ -118,6 +106,7 @@ function extractExtentPoints(geodata) {
 
     }
     else {
+      // otherwise, use the point for the extent
       extentPoints.push({
         lng: place.lng,
         lat: place.lat
