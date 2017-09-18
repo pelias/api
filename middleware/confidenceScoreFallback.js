@@ -76,6 +76,8 @@ function checkFallbackLevel(req, hit) {
         return 0.8;
       case 'street':
         return 0.8;
+      case 'postalcode':
+        return 0.8;    
       case 'localadmin':
       case 'locality':
       case 'borough':
@@ -137,38 +139,44 @@ const fallbackRules = [
     expectedLayers: ['street']
   },
   {
-    name: 'neighbourhood',
+    name: 'postalcode',
     notSet: ['query', 'number', 'street'],
+    set: ['postalcode'],
+    expectedLayers: ['postalcode']
+  },
+  {
+    name: 'neighbourhood',
+    notSet: ['query', 'number', 'street', 'postalcode'],
     set: ['neighbourhood'],
     expectedLayers: ['neighbourhood']
   },
   {
     name: 'borough',
-    notSet: ['query', 'number', 'street', 'neighbourhood'],
+    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood'],
     set: ['borough'],
     expectedLayers: ['borough']
   },
   {
     name: 'city',
-    notSet: ['query', 'number', 'street', 'neighbourhood', 'borough'],
+    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood', 'borough'],
     set: ['city'],
     expectedLayers: ['borough', 'locality', 'localadmin']
   },
   {
     name: 'county',
-    notSet: ['query', 'number', 'street', 'neighbourhood', 'borough', 'city'],
+    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood', 'borough', 'city'],
     set: ['county'],
     expectedLayers: ['county']
   },
   {
     name: 'state',
-    notSet: ['query', 'number', 'street', 'neighbourhood', 'borough', 'city', 'county'],
+    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood', 'borough', 'city', 'county'],
     set: ['state'],
     expectedLayers: ['region']
   },
   {
     name: 'country',
-    notSet: ['query', 'number', 'street', 'neighbourhood', 'borough', 'city', 'county', 'state'],
+    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood', 'borough', 'city', 'county', 'state'],
     set: ['country'],
     expectedLayers: ['country']
   }
