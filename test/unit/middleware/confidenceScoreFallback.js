@@ -442,6 +442,57 @@ module.exports.tests.confidenceScore = function(test, common) {
     t.equal(res.data[0].match_type, 'fallback', 'fallback match indicated');
     t.end();
   });
+    
+    test('address fallback to postal code should have a score set to 0.8', function(t) {
+        var req = {
+            clean: {
+                text: '123 Main St, City, NM, USA, 1234',
+                parsed_text: {
+                    number: 123,
+                    street: 'Main St',
+                    state: 'NM',
+                    country: 'USA',
+                    postalcode: '1234'
+                }
+            }
+        };
+        var res = {
+            data: [{
+                layer: 'postalcode'
+            }],
+            meta: {
+                query_type: 'fallback'
+            }
+        };
+        confidenceScore(req, res, function() {});
+        t.equal(res.data[0].confidence, 0.8, 'score was set');
+        t.equal(res.data[0].match_type, 'fallback', 'fallback match indicated');
+        t.end();
+    });
+    
+    test('matching address search with postalcode and country should have an exact match with score of 1.0', function(t) {
+        var req = {
+            clean: {
+                text: 'USA, 1234',
+                parsed_text: {
+                    country: 'USA',
+                    postalcode: '1234'
+                }
+            }
+        };
+        var res = {
+            data: [{
+                layer: 'postalcode'
+            }],
+            meta: {
+                query_type: 'fallback'
+            }
+        };
+        confidenceScore(req, res, function() {});
+        t.equal(res.data[0].confidence, 1, 'score was set');
+        t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
+        t.end();
+    });
 
 };
 
