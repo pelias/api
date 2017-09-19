@@ -11,6 +11,16 @@ class PointInPolygon extends ServiceConfiguration {
     super('pip', o);
   }
 
+  getParameters(req) {
+    if (_.has(req, 'clean.layers')) {
+      return {
+        layers: _.join(req.clean.layers, ',')
+      };
+    }
+
+    return {};
+  }
+
   getUrl(req) {
     // use resolve to eliminate possibility of duplicate /'s in URL
     return url.resolve(this.baseUrl, `${req.clean['point.lon']}/${req.clean['point.lat']}`);
