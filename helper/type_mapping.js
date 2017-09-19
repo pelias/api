@@ -49,7 +49,7 @@ var LAYERS_BY_SOURCE = {
  openaddresses: [ 'address' ],
  geonames: [ 'country','macroregion', 'region', 'county','localadmin',
   'locality','borough', 'neighbourhood', 'venue' ],
- whosonfirst: [ 'continent', 'country', 'dependency', 'macroregion', 'region',
+ whosonfirst: [ 'continent', 'empire', 'country', 'dependency', 'macroregion', 'region',
    'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
    'neighbourhood', 'microhood', 'disputed', 'venue', 'postalcode',
    'continent', 'ocean', 'marinearea']
@@ -61,10 +61,10 @@ var LAYERS_BY_SOURCE = {
  * may have layers that mean the same thing but have a different name
  */
 var LAYER_ALIASES = {
-  'coarse': [ 'continent', 'country', 'dependency', 'macroregion', 'region',
-   'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
-   'neighbourhood', 'microhood', 'disputed', 'postalcode',
-   'continent', 'ocean', 'marinearea']
+  'coarse': [ 'continent', 'empire', 'country', 'dependency', 'macroregion',
+    'region', 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood',
+    'borough', 'neighbourhood', 'microhood', 'disputed', 'postalcode',
+    'continent', 'ocean', 'marinearea']
 };
 
 // create a list of all layers by combining each entry from LAYERS_BY_SOURCE
