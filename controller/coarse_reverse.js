@@ -16,6 +16,7 @@ const coarse_granularities = [
   'macroregion',
   'dependency',
   'country',
+  'empire',
   'continent',
   'ocean',
   'marinearea'
