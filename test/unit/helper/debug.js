@@ -50,35 +50,50 @@ module.exports.tests.debug = function(test, common) {
         enableDebug: true
       }
     };
-    const expected_req = {
-      debug: [
-        {
-          debugger: 'This should be pushed'
-        },
-        {
-          debugger: 'Timer Began: Timer 1'
-        }
-      ]
-    };
+    const expected_req = [
+      {
+        debugger: 'This should be pushed'
+      },
+      {
+        debugger: 'Timer Began. Timer 1'
+      }
+    ];
     debugLog.push(req, 'This should be pushed');
     debugLog.beginTimer(req, 'Timer 1');
+    t.deepEquals(req.debug, expected_req);
     t.end();
   });
 
-  test('Timer should return positive number of milliseconds', (t) => {
+  test('Push messages can take output of function', (t) => {
     const debugLog = new Debug('debugger');
     const req = {
       clean: {
         enableDebug: true
       }
     };
-    debugLog.beginTimer(req);
-    setTimeout(() => {
-      debugLog.stopTimer(req);
-      t.deepEquals(parseInt(req.debug[1].debugger.slice(15, -3)) > 0, true);
-      t.end();
-    }, 2);
+    const expected_req = [
+      {
+        debugger: 'This should be pushed'
+      }
+    ];
+    debugLog.push(req, () => ('This should be pushed'));
+    t.deepEquals(req.debug, expected_req);
+    t.end();
+  });
 
+  test('Timer should return number of milliseconds', (t) => {
+    const debugLog = new Debug('debugger');
+    const req = {
+      clean: {
+        enableDebug: true
+      }
+    };
+    const timer = debugLog.beginTimer(req);
+    debugLog.stopTimer(req, timer);
+    // Checks that there is a debug message
+    // that matches the pattern "Timer Stopped. [number] ms"
+    t.deepEquals(req.debug[1].debugger.match(/Timer Stopped\. \d+ ms/i).length, 1);
+    t.end();
   });
 
 };

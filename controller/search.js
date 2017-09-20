@@ -8,7 +8,6 @@ const logger = require('pelias-logger').get('api');
 const logging = require( '../helper/logging' );
 const retry = require('retry');
 const Debug = require('../helper/debug');
-const debugLog = new Debug('controller:search');
 
 function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
@@ -19,7 +18,9 @@ function setup( apiConfig, esclient, query, should_execute ){
     if (!should_execute(req, res)) {
       return next();
     }
-    debugLog.beginTimer(req);
+
+    const debugLog = new Debug('controller:search');
+
     let cleanOutput = _.cloneDeep(req.clean);
 
     if (logging.isDNT(req)) {
@@ -32,7 +33,7 @@ function setup( apiConfig, esclient, query, should_execute ){
   
     // if there's no query to call ES with, skip the service
     if (_.isUndefined(renderedQuery)) {
-      debugLog.stopTimer(req, 'No query to call ES with. Skipping');
+      debugLog.push(req, 'No query to call ES with. Skipping');
       return next();
     }
 
@@ -56,8 +57,10 @@ function setup( apiConfig, esclient, query, should_execute ){
     };
 
     logger.debug( '[ES req]', cmd );
+    debugLog.push(req, {ES_req: cmd});
 
     operation.attempt((currentAttempt) => {
+      const initialTime = debugLog.beginTimer(req, `Attempt ${currentAttempt}`);
       // query elasticsearch
       searchService( esclient, cmd, function( err, docs, meta ){
         // returns true if the operation should be attempted again
@@ -65,7 +68,7 @@ function setup( apiConfig, esclient, query, should_execute ){
         // only consider for status 408 (request timeout)
         if (isRequestTimeout(err) && operation.retry(err)) {
           logger.info(`request timed out on attempt ${currentAttempt}, retrying`);
-          debugLog.stopTimer(req, 'request timed out, retrying');
+          debugLog.stopTimer(req, initialTime, 'request timed out, retrying');
           return;
         }
 
@@ -112,7 +115,7 @@ function setup( apiConfig, esclient, query, should_execute ){
         logger.debug('[ES response]', docs);
         next();
       });
-      debugLog.stopTimer(req);
+      debugLog.stopTimer(req, initialTime);
     });
 
   }
