@@ -6,6 +6,8 @@ var _ = require('lodash');
 var DETAILS_PROPS = [
   { name: 'housenumber',       type: 'string' },
   { name: 'street',            type: 'string' },
+  { name: 'street1',            type: 'string' },
+  { name: 'street2',            type: 'string' },
   { name: 'postalcode',        type: 'string' },
   { name: 'postalcode_gid',    type: 'string' },
   { name: 'confidence',        type: 'default' },
