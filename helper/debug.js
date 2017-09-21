@@ -6,38 +6,47 @@ class Debug {
     this.name = moduleName || 'unnamed module';
   }
 
-  push(req, debugMsg){
-    if (!_.isEmpty(req.clean) && req.clean.enableDebug){
-      req.debug = req.debug || [];
-      // remove the extra space character
-      req.debug.push({[this.name]: debugMsg});
-    //  req.debug.push(`[${this.name}] ${debugMsg}`);
+  push(req, value){
+    if (!req || _.isEmpty(req.clean) || !req.clean.enableDebug){
+      return;
     }
-  }
-  // optional debugMsg passed to timer
-  beginTimer(req, debugMsg){
-    if (!_.isEmpty(req.clean) && req.clean.enableDebug){
-      // internal object debugTimers. Doesn't get displayed in geocodeJSON
-      req.debugTimers = req.debugTimers || {};
-      req.debugTimers[this.name] = Date.now();
-      if (debugMsg){
-        this.push(req, `Timer Began: ${debugMsg}`);
-      } else {
-        this.push(req, `Timer Began`);
-      }
+    req.debug = req.debug || [];
+    switch(typeof value) {
+      case 'function':
+        req.debug.push({[this.name]: value()});
+        break;
+      default:
+        req.debug.push({[this.name]: value});
     }
   }
 
-  stopTimer(req, debugMsg){
-    if (!_.isEmpty(req.clean) && req.clean.enableDebug){
-      let timeElapsed = Date.now() - req.debugTimers[this.name];
-      if (debugMsg){
-        this.push(req, `Timer Stopped: ${timeElapsed} ms: ${debugMsg}`);
-      } else {
-        this.push(req, `Timer Stopped: ${timeElapsed} ms`);
+  beginTimer(req, debugMsg){
+     if (req && !_.isEmpty(req.clean) && req.clean.enableDebug){
+       // debugMsg is optional
+       this.push(req, () => {
+         if (debugMsg){
+           return `Timer Began. ${debugMsg}`;
+         } else {
+           return `Timer Began`;
+         }
+       });
+       return Date.now();
+     }
+   }
+
+  stopTimer(req, startTime, debugMsg){
+    if (req && !_.isEmpty(req.clean) && req.clean.enableDebug){
+      let timeElapsed = Date.now() - startTime;
+        this.push(req, () => {
+          if (debugMsg){
+            return `Timer Stopped. ${timeElapsed} ms. ${debugMsg}`;
+          } else {
+            return `Timer Stopped. ${timeElapsed} ms`;
+          }
+        });
       }
     }
-  }
+
 }
 
 module.exports = Debug;

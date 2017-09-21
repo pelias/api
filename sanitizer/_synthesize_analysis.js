@@ -27,12 +27,8 @@ function isPostalCodeOnly(parsed_text) {
 // so because we're treating the entire field as a street address, it's safe
 // to assume that an identified postcode is actually a house number.
 function getHouseNumberField(analyzed_address) {
-  for (var field of ['number', 'postalcode']) {
-    if (analyzed_address.hasOwnProperty(field)) {
-      return field;
-    }
-  }
-
+  // return the first field available in the libpostal response, undefined if none
+  return _.find(['number', 'postalcode'], _.partial(_.has, analyzed_address));
 }
 
 function _sanitize( raw, clean ){
