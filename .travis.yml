@@ -9,6 +9,7 @@ matrix:
   fast_finish: true
 env:
   global:
+    - BUILD_LEADER_ID=2
     - CXX=g++-4.8
 script: npm run travis
 addons:
@@ -22,7 +23,8 @@ before_install:
 before_script:
   - npm prune
 after_success:
-  - npm run semantic-release
+  - npm install -g npx
+  - npx -p node@8 npm run semantic-release
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
