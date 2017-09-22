@@ -41,7 +41,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
 
     sanitizer.sanitize(raw, clean);
 
-    var admin_layers = [ 'continent', 'country', 'dependency',
+    var admin_layers = [ 'continent', 'empire', 'country', 'dependency',
     'macroregion', 'region', 'locality', 'localadmin', 'macrocounty', 'county',
     'macrohood', 'borough', 'neighbourhood', 'microhood', 'disputed', 'postalcode' ];
 
@@ -76,7 +76,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
 
     sanitizer.sanitize(raw, clean);
 
-    var expected_layers = [ 'continent', 'country', 'dependency',
+    var expected_layers = [ 'continent', 'empire', 'country', 'dependency',
     'macroregion', 'region', 'locality', 'localadmin', 'macrocounty', 'county',
     'macrohood', 'borough', 'neighbourhood', 'microhood', 'disputed', 'postalcode' ];
 
@@ -112,7 +112,7 @@ module.exports.tests.sanitize_layers = function(test, common) {
 
     sanitizer.sanitize(raw, clean);
 
-    var coarse_layers = [ 'continent',
+    var coarse_layers = [ 'continent', 'empire',
       'country', 'dependency', 'macroregion', 'region', 'locality', 'localadmin',
       'macrocounty', 'county', 'macrohood', 'borough', 'neighbourhood', 'microhood',
       'disputed', 'postalcode' ];
