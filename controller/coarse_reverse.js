@@ -102,7 +102,7 @@ function synthesizeDoc(results) {
     // an error occurred when generating a new Document
     logger.info(`[controller:coarse_reverse][error]`);
     logger.error(e);
-    logger.error(results);
+    logger.info(results);
 
     return null;
   }
