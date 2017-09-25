@@ -62,40 +62,50 @@ function synthesizeDoc(results) {
   const most_granular_layer = getMostGranularLayerOfResult(_.keys(results));
   const id = results[most_granular_layer][0].id;
 
-  const doc = new Document('whosonfirst', most_granular_layer, id.toString());
-  doc.setName('default', results[most_granular_layer][0].name);
+  try {
+    const doc = new Document('whosonfirst', most_granular_layer, id.toString());
+    doc.setName('default', results[most_granular_layer][0].name);
 
-  // assign the administrative hierarchy
-  _.keys(results).forEach((layer) => {
-    doc.addParent(layer, results[layer][0].name, results[layer][0].id.toString(), results[layer][0].abbr);
-  });
-
-  // set centroid if available
-  if (_.has(results[most_granular_layer][0], 'centroid')) {
-    doc.setCentroid( results[most_granular_layer][0].centroid );
-  }
-
-  // set bounding box if available
-  if (_.has(results[most_granular_layer][0], 'bounding_box')) {
-    const parsed_bounding_box = results[most_granular_layer][0].bounding_box.split(',').map(parseFloat);
-    doc.setBoundingBox({
-      upperLeft: {
-        lat: parsed_bounding_box[3],
-        lon: parsed_bounding_box[0]
-      },
-      lowerRight: {
-        lat: parsed_bounding_box[1],
-        lon: parsed_bounding_box[2]
-      }
+    // assign the administrative hierarchy
+    _.keys(results).forEach((layer) => {
+      doc.addParent(layer, results[layer][0].name, results[layer][0].id.toString(), results[layer][0].abbr);
     });
 
+    // set centroid if available
+    if (_.has(results[most_granular_layer][0], 'centroid')) {
+      doc.setCentroid( results[most_granular_layer][0].centroid );
+    }
+
+    // set bounding box if available
+    if (_.has(results[most_granular_layer][0], 'bounding_box')) {
+      const parsed_bounding_box = results[most_granular_layer][0].bounding_box.split(',').map(parseFloat);
+      doc.setBoundingBox({
+        upperLeft: {
+          lat: parsed_bounding_box[3],
+          lon: parsed_bounding_box[0]
+        },
+        lowerRight: {
+          lat: parsed_bounding_box[1],
+          lon: parsed_bounding_box[2]
+        }
+      });
+
+    }
+
+    const esDoc = doc.toESDocument();
+    esDoc.data._id = esDoc._id;
+    esDoc.data._type = esDoc._type;
+    return esDoc.data;
+
+  } catch( e ) {
+
+    // an error occurred when generating a new Document
+    logger.info(`[controller:coarse_reverse][error]`);
+    logger.error(e);
+    logger.error(results);
+
+    return null;
   }
-
-  const esDoc = doc.toESDocument();
-  esDoc.data._id = esDoc._id;
-  esDoc.data._type = esDoc._type;
-  return esDoc.data;
-
 }
 
 function setup(service, should_execute) {
@@ -141,7 +151,10 @@ function setup(service, should_execute) {
 
       // if there's a result at the requested layer(s), synthesize a doc from results
       if (hasResultsAtRequestedLayers(applicable_results, effective_layers)) {
-        res.data.push(synthesizeDoc(applicable_results));
+        const doc = synthesizeDoc(applicable_results);
+        if (doc){
+          res.data.push(doc);
+        }
       }
       debugLog.stopTimer(req, initialTime);
       return next();

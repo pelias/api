@@ -860,6 +860,60 @@ module.exports.tests.failure_conditions = (test, common) => {
 
   });
 
+  test('service returns 0 length name', (t) => {
+    t.plan(5);
+
+    const service = (req, callback) => {
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+
+      const results = {
+        neighbourhood: [
+          { id: 20, name: '' }
+        ]
+      };
+
+      callback(undefined, results);
+    };
+
+    const logger = require('pelias-mock-logger')();
+
+    const controller = proxyquire('../../../controller/coarse_reverse', {
+      'pelias-logger': logger
+    })(service, _.constant(true));
+
+    const req = {
+      clean: {
+        layers: ['neighbourhood']
+      }
+    };
+
+    const res = { };
+
+    // verify that next was called
+    const next = () => {
+      t.pass('next() was called');
+    };
+
+    controller(req, res, next);
+
+    const expected = {
+      meta: {},
+      data: []
+    };
+
+    t.deepEquals(res, expected);
+    t.deepEquals(logger.getMessages('info'), [
+      '[controller:coarse_reverse][queryType:pip][result_count:1]',
+      '[controller:coarse_reverse][error]'
+    ]);
+    t.deepEquals(logger.getMessages('error'), [
+      '{ [PeliasModelError: invalid document type, expecting: truthy, ' +
+      'got: ]\n  name: \'PeliasModelError\',\n  message: \'invalid document type, expecting: truthy, got: \' }',
+      '{ neighbourhood: [ { id: 20, name: \'\' } ] }'
+    ]);
+    t.end();
+
+  });
 };
 
 module.exports.all = (tape, common) => {
