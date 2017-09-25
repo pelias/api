@@ -860,6 +860,57 @@ module.exports.tests.failure_conditions = (test, common) => {
 
   });
 
+  test('service returns 0 length name', (t) => {
+    t.plan(6);
+
+    const service = (req, callback) => {
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+
+      const results = {
+        neighbourhood: [
+          { id: 20, name: '' }
+        ]
+      };
+
+      callback(undefined, results);
+    };
+
+    const logger = require('pelias-mock-logger')();
+
+    const controller = proxyquire('../../../controller/coarse_reverse', {
+      'pelias-logger': logger
+    })(service, _.constant(true));
+
+    const req = {
+      clean: {
+        layers: ['neighbourhood']
+      }
+    };
+
+    const res = { };
+
+    // verify that next was called
+    const next = () => {
+      t.pass('next() was called');
+    };
+
+    controller(req, res, next);
+
+    const expected = {
+      meta: {},
+      data: []
+    };
+
+    t.deepEquals(res, expected);
+
+    // logger messages
+    t.true(logger.hasMessages('info'), '[controller:coarse_reverse][error]');
+    t.true(logger.hasMessages('error'), 'invalid document type, expecting: truthy, got: ');
+    t.true(logger.hasMessages('info'), '{ neighbourhood: [ { id: 20, name: \'\' } ] }');
+
+    t.end();
+
+  });
 };
 
 module.exports.all = (tape, common) => {
