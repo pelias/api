@@ -911,6 +911,66 @@ module.exports.tests.failure_conditions = (test, common) => {
     t.end();
 
   });
+
+  test('service returns 0 length abbr', (t) => {
+    t.plan(4);
+
+    const service = (req, callback) => {
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+
+      const results = {
+        neighbourhood: [
+          { id: 20, name: 'Example', abbr: '' }
+        ]
+      };
+
+      callback(undefined, results);
+    };
+
+    const logger = require('pelias-mock-logger')();
+
+    const controller = proxyquire('../../../controller/coarse_reverse', {
+      'pelias-logger': logger
+    })(service, _.constant(true));
+
+    const req = {
+      clean: {
+        layers: ['neighbourhood']
+      }
+    };
+
+    const res = { };
+
+    // verify that next was called
+    const next = () => {
+      t.pass('next() was called');
+    };
+
+    controller(req, res, next);
+
+    const expected = {
+      meta: {},
+      data: [{
+        name: { default: 'Example' },
+        phrase: { default: 'Example' },
+        parent: {
+          neighbourhood: [ 'Example' ],
+          neighbourhood_id: [ '20' ],
+          neighbourhood_a: [ null ]
+        },
+        source: 'whosonfirst',
+        layer: 'neighbourhood',
+        source_id: '20',
+        _id: '20',
+        _type: 'neighbourhood'
+      }]
+    };
+
+    t.deepEquals(res, expected);
+    t.notOk(logger.hasErrorMessages());
+    t.end();
+
+  });
 };
 
 module.exports.all = (tape, common) => {
