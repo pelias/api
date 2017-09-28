@@ -68,7 +68,7 @@ function synthesizeDoc(results) {
 
     // assign the administrative hierarchy
     _.keys(results).forEach((layer) => {
-      doc.addParent(layer, results[layer][0].name, results[layer][0].id.toString(), results[layer][0].abbr);
+      doc.addParent(layer, results[layer][0].name, results[layer][0].id.toString(), results[layer][0].abbr || undefined);
     });
 
     // set centroid if available
