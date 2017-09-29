@@ -15,7 +15,11 @@ const coarse_granularities = [
   'region',
   'macroregion',
   'dependency',
-  'country'
+  'country',
+  'empire',
+  'continent',
+  'ocean',
+  'marinearea'
 ];
 
 // remove non-coarse layers and return what's left (or all if empty)

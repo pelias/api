@@ -1,9 +1,11 @@
-var _ = require('lodash');
+'use strict';
+
+const _ = require('lodash');
 
 // Properties to be copied
 // If a property is identified as a single string, assume it should be presented as a string in response
 // If something other than string is desired, use the following structure: { name: 'category', type: 'array' }
-var DETAILS_PROPS = [
+const DETAILS_PROPS = [
   { name: 'housenumber',       type: 'string' },
   { name: 'street',            type: 'string' },
   { name: 'postalcode',        type: 'string' },
@@ -41,6 +43,15 @@ var DETAILS_PROPS = [
   { name: 'borough_a',         type: 'string' },
   { name: 'neighbourhood',     type: 'string' },
   { name: 'neighbourhood_gid', type: 'string' },
+  { name: 'continent',         type: 'string' },
+  { name: 'continent_gid',     type: 'string' },
+  { name: 'continent_a',       type: 'string' },
+  { name: 'ocean',             type: 'string' },
+  { name: 'ocean_gid',         type: 'string' },
+  { name: 'ocean_a',           type: 'string' },
+  { name: 'marinearea',        type: 'string' },
+  { name: 'marinearea_gid',    type: 'string' },
+  { name: 'marinearea_a',      type: 'string' },
   { name: 'bounding_box',      type: 'default' },
   { name: 'label',             type: 'string' },
   { name: 'category',          type: 'array',     condition: checkCategoryParam }
@@ -51,58 +62,44 @@ function checkCategoryParam(params) {
 }
 
 /**
- * Add details properties
- *
- * @param {object} params clean query params
- * @param {object} src
- * @param {object} dst
- */
-function addDetails(params, src, dst) {
-  copyProperties(params, src, DETAILS_PROPS, dst);
-}
-
-/**
- * Copy specified properties from source to dest.
+ * Collect the specified properties from source into an object and return it
  * Ignore missing properties.
  *
  * @param {object} params clean query params
  * @param {object} source
- * @param {[]} props
  * @param {object} dst
  */
-function copyProperties( params, source, props, dst ) {
-  props.forEach( function ( prop ) {
-
-    // if condition isn't met, just return without setting the property
+function collectProperties( params, source ) {
+  return DETAILS_PROPS.reduce((result, prop) => {
+    // if condition isn't met, don't set the property
     if (_.isFunction(prop.condition) && !prop.condition(params)) {
-      return;
+      return result;
     }
 
-    var property = {
-      name: prop.name || prop,
-      type: prop.type || 'default'
-    };
+    if ( source.hasOwnProperty( prop.name ) ) {
+      let value = null;
 
-    var value = null;
-    if ( source.hasOwnProperty( property.name ) ) {
-
-      switch (property.type) {
+      switch (prop.type) {
         case 'string':
-          value = getStringValue(source[property.name]);
+          value = getStringValue(source[prop.name]);
           break;
         case 'array':
-          value = getArrayValue(source[property.name]);
+          value = getArrayValue(source[prop.name]);
           break;
         // default behavior is to copy property exactly as is
         default:
-          value = source[property.name];
+          value = source[prop.name];
       }
 
       if (_.isNumber(value) || (value && !_.isEmpty(value))) {
-        dst[property.name] = value;
+        result[prop.name] = value;
       }
     }
-  });
+
+    return result;
+
+  }, {});
+
 }
 
 function getStringValue(property) {
@@ -123,7 +120,6 @@ function getStringValue(property) {
   return _.toString(property);
 }
 
-
 function getArrayValue(property) {
   // isEmpty check works for all types of values: strings, arrays, objects
   if (_.isEmpty(property)) {
@@ -137,4 +133,4 @@ function getArrayValue(property) {
   return [property];
 }
 
-module.exports = addDetails;
+module.exports = collectProperties;

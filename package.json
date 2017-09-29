@@ -19,7 +19,8 @@
     "validate": "npm ls",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "config": "node -e \"console.log(JSON.stringify(require( 'pelias-config' ).generate(require('./schema')), null, 2))\"",
-    "check-dependencies": "node_modules/.bin/npm-check --production --ignore pelias-interpolation"
+    "check-dependencies": "node_modules/.bin/npm-check --production --ignore pelias-interpolation",
+    "prune": "npm prune"
   },
   "repository": {
     "type": "git",
@@ -87,6 +88,7 @@
   },
   "pre-commit": [
     "lint",
+    "prune",
     "validate",
     "test",
     "check-dependencies"
