@@ -53,16 +53,62 @@ module.exports.tests.all = (test, common) => {
 
   });
 
-  test('getParameters should return an empty object', (t) => {
+  test('getParameters should return an empty object when req is undefined', (t) => {
     const configBlob = {
-      url: 'http://localhost:1234',
-      timeout: 17,
-      retries: 19
+      url: 'http://localhost:1234'
     };
 
     const pointInPolygon = new PointInPolygon(configBlob);
 
-    t.deepEquals(pointInPolygon.getParameters(), {});
+    t.deepEquals(pointInPolygon.getParameters(undefined), {});
+    t.end();
+
+  });
+
+  test('getParameters should return an empty object when req.clean is undefined', (t) => {
+    const configBlob = {
+      url: 'http://localhost:1234'
+    };
+
+    const pointInPolygon = new PointInPolygon(configBlob);
+
+    const req = {};
+
+    t.deepEquals(pointInPolygon.getParameters(req), {});
+    t.end();
+
+  });
+
+  test('getParameters should return an empty object when req.clean.layers is undefined', (t) => {
+    const configBlob = {
+      url: 'http://localhost:1234'
+    };
+
+    const pointInPolygon = new PointInPolygon(configBlob);
+
+    const req = {
+      clean: {}
+    };
+
+    t.deepEquals(pointInPolygon.getParameters(req), {});
+    t.end();
+
+  });
+
+  test('getParameters should return object with layers property when req.clean.layers is specified', t => {
+    const configBlob = {
+      url: 'http://localhost:1234'
+    };
+
+    const pointInPolygon = new PointInPolygon(configBlob);
+
+    const req = {
+      clean: {
+        layers: ['layer1', 'layer2']
+      }
+    };
+
+    t.deepEquals(pointInPolygon.getParameters(req), { layers: 'layer1,layer2'});
     t.end();
 
   });

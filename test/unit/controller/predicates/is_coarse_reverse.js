@@ -17,7 +17,9 @@ const coarse_layers = [
   'borough',
   'neighbourhood',
   'microhood',
-  'disputed'
+  'disputed',
+  'ocean',
+  'marinearea'
 ];
 
 module.exports.tests = {};
