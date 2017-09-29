@@ -1,4 +1,8 @@
 module.exports = [
+  'ocean',
+  'marinearea',
+  'continent',
+  'empire',
   'country',
   'dependency',
   'macroregion',

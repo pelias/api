@@ -15,7 +15,11 @@ const coarse_granularities = [
   'region',
   'macroregion',
   'dependency',
-  'country'
+  'country',
+  'empire',
+  'continent',
+  'ocean',
+  'marinearea'
 ];
 
 // remove non-coarse layers and return what's left (or all if empty)
@@ -68,7 +72,7 @@ function synthesizeDoc(results) {
 
     // assign the administrative hierarchy
     _.keys(results).forEach((layer) => {
-      doc.addParent(layer, results[layer][0].name, results[layer][0].id.toString(), results[layer][0].abbr);
+      doc.addParent(layer, results[layer][0].name, results[layer][0].id.toString(), results[layer][0].abbr || undefined);
     });
 
     // set centroid if available

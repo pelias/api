@@ -210,6 +210,22 @@ module.exports.tests.success_conditions = (test, common) => {
         country: [
           { id: 100, name: 'country name', abbr: 'xyz'},
           { id: 101, name: 'country name 2'}
+        ],
+        empire: [
+          { id: 110, name: 'empire name', abbr: 'empire abbr'},
+          { id: 111, name: 'empire name 2'}
+        ],
+        continent: [
+          { id: 120, name: 'continent name', abbr: 'continent abbr'},
+          { id: 121, name: 'continent name 2'}
+        ],
+        ocean: [
+          { id: 130, name: 'ocean name', abbr: 'ocean abbr'},
+          { id: 131, name: 'ocean name 2'}
+        ],
+        marinearea: [
+          { id: 140, name: 'marinearea name', abbr: 'marinearea abbr'},
+          { id: 141, name: 'marinearea name 2'}
         ]
       };
 
@@ -282,7 +298,19 @@ module.exports.tests.success_conditions = (test, common) => {
             dependency_a: ['dependency abbr'],
             country: ['country name'],
             country_id: ['100'],
-            country_a: ['xyz']
+            country_a: ['xyz'],
+            empire: ['empire name'],
+            empire_id: ['110'],
+            empire_a: ['empire abbr'],
+            continent: ['continent name'],
+            continent_id: ['120'],
+            continent_a: ['continent abbr'],
+            ocean: ['ocean name'],
+            ocean_id: ['130'],
+            ocean_a: ['ocean abbr'],
+            marinearea: ['marinearea name'],
+            marinearea_id: ['140'],
+            marinearea_a: ['marinearea abbr'],
           },
           center_point: {
             lat: 12.121212,
@@ -822,6 +850,22 @@ module.exports.tests.failure_conditions = (test, common) => {
         country: [
           { id: 100, name: 'country name', abbr: 'xyz'},
           { id: 101, name: 'country name 2'}
+        ],
+        empire: [
+          { id: 110, name: 'empire name', abbr: 'empire abbr'},
+          { id: 111, name: 'empire name 2'}
+        ],
+        continent: [
+          { id: 120, name: 'continent name', abbr: 'continent abbr'},
+          { id: 121, name: 'continent name 2'}
+        ],
+        ocean: [
+          { id: 130, name: 'ocean name', abbr: 'ocean abbr'},
+          { id: 131, name: 'ocean name 2'}
+        ],
+        marinearea: [
+          { id: 140, name: 'marinearea name', abbr: 'marinearea abbr'},
+          { id: 141, name: 'marinearea name 2'}
         ]
       };
 
@@ -908,6 +952,66 @@ module.exports.tests.failure_conditions = (test, common) => {
     t.true(logger.hasMessages('error'), 'invalid document type, expecting: truthy, got: ');
     t.true(logger.hasMessages('info'), '{ neighbourhood: [ { id: 20, name: \'\' } ] }');
 
+    t.end();
+
+  });
+
+  test('service returns 0 length abbr', (t) => {
+    t.plan(4);
+
+    const service = (req, callback) => {
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+
+      const results = {
+        neighbourhood: [
+          { id: 20, name: 'Example', abbr: '' }
+        ]
+      };
+
+      callback(undefined, results);
+    };
+
+    const logger = require('pelias-mock-logger')();
+
+    const controller = proxyquire('../../../controller/coarse_reverse', {
+      'pelias-logger': logger
+    })(service, _.constant(true));
+
+    const req = {
+      clean: {
+        layers: ['neighbourhood']
+      }
+    };
+
+    const res = { };
+
+    // verify that next was called
+    const next = () => {
+      t.pass('next() was called');
+    };
+
+    controller(req, res, next);
+
+    const expected = {
+      meta: {},
+      data: [{
+        name: { default: 'Example' },
+        phrase: { default: 'Example' },
+        parent: {
+          neighbourhood: [ 'Example' ],
+          neighbourhood_id: [ '20' ],
+          neighbourhood_a: [ null ]
+        },
+        source: 'whosonfirst',
+        layer: 'neighbourhood',
+        source_id: '20',
+        _id: '20',
+        _type: 'neighbourhood'
+      }]
+    };
+
+    t.deepEquals(res, expected);
+    t.notOk(logger.hasErrorMessages());
     t.end();
 
   });
