@@ -28,6 +28,16 @@ function geojsonifyPlaces( params, docs ){
   const geojson             = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
   const geojsonExtentPoints = GeoJSON.parse( extentPoints, { Point: ['lat', 'lng'] });
 
+  // iterate all features removing empire* properties if there is a country_gid property
+  // per: https://github.com/pelias/placeholder/issues/54#issuecomment-333921012
+  geojson.features.forEach(feature => {
+    if (_.has(feature, 'properties.country_gid')) {
+      delete feature.properties.empire_gid;
+      delete feature.properties.empire;
+      delete feature.properties.empire_a;
+    }
+  });
+
   // to insert the bbox property at the top level of each feature, it must be done separately after
   // initial geojson construction is finished
   addBBoxPerFeature(geojson);
