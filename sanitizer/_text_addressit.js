@@ -1,6 +1,5 @@
 var check = require('check-types');
 var parser = require('addressit');
-var extend = require('extend');
 var _      = require('lodash');
 var logger = require('pelias-logger').get('api');
 
