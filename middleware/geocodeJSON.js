@@ -1,5 +1,4 @@
 var url = require('url');
-var extend = require('extend');
 var geojsonify = require('../helper/geojsonify');
 var _ = require('lodash');
 
