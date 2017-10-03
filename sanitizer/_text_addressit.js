@@ -82,8 +82,8 @@ function parse(query) {
   var addressWithAdminParts  = getAdminPartsBySplittingOnDelim(queryParts);
   var addressWithAddressParts= getAddressParts(queryParts.join(DELIM + ' '));
 
-  var parsedAddress  = extend(addressWithAdminParts,
-                              addressWithAddressParts);
+  // combine the 2 objects
+  _.extend(addressWithAdminParts, addressWithAddressParts);
 
   var address_parts  =  [ 'name',
                           'number',
@@ -99,8 +99,8 @@ function parse(query) {
   var parsed_text = {};
 
   address_parts.forEach(function(part){
-    if (parsedAddress[part]) {
-      parsed_text[part] = parsedAddress[part];
+    if (addressWithAdminParts[part]) {
+      parsed_text[part] = addressWithAdminParts[part];
     }
   });
 
