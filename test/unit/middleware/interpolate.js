@@ -38,129 +38,6 @@ module.exports.tests.early_exit_conditions = (test, common) => {
 
 };
 
-module.exports.tests.error_conditions = (test, common) => {
-  test('service error string should log and not modify any results', t => {
-    t.plan(2);
-
-    const service = (req, res, callback) => {
-      callback('this is an error', {
-        properties: {
-          number: 17,
-          source: 'OSM',
-          source_id: 'openstreetmap source id',
-          lat: 12.121212,
-          lon: 21.212121
-        }
-      });
-
-    };
-
-    const logger = require('pelias-mock-logger')();
-
-    const controller = proxyquire('../../../middleware/interpolate', {
-      'pelias-logger': logger
-    })(service, () => true);
-
-    const req = { a: 1 };
-    const res = {
-      data: [
-        {
-          id: 1,
-          layer: 'street',
-          name: {
-            default: 'street name 1'
-          },
-          address_parts: {},
-          // bounding_box should be removed
-          bounding_box: {}
-        }
-      ]
-    };
-
-    controller(req, res, () => {
-      t.ok(logger.isErrorMessage('[middleware:interpolation] this is an error'));
-
-      t.deepEquals(res, {
-        data: [
-          {
-            id: 1,
-            layer: 'street',
-            name: {
-              default: 'street name 1'
-            },
-            address_parts: {},
-            // bounding_box should be removed
-            bounding_box: {}
-          }
-        ]
-      }, 'res should not have been modified');
-
-    });
-
-  });
-
-  test('service error object should log message and not modify any results', t => {
-    t.plan(2);
-
-    const service = (req, res, callback) => {
-      callback({ message: 'this is an error' }, {
-        properties: {
-          number: 17,
-          source: 'OSM',
-          source_id: 'openstreetmap source id',
-          lat: 12.121212,
-          lon: 21.212121
-        }
-      });
-
-    };
-
-    const logger = require('pelias-mock-logger')();
-
-    const controller = proxyquire('../../../middleware/interpolate', {
-      'pelias-logger': logger
-    })(service, () => true);
-
-    const req = { a: 1 };
-    const res = {
-      data: [
-        {
-          id: 1,
-          layer: 'street',
-          name: {
-            default: 'street name 1'
-          },
-          address_parts: {},
-          // bounding_box should be removed
-          bounding_box: {}
-        }
-      ]
-    };
-
-    controller(req, res, () => {
-      t.ok(logger.isErrorMessage('[middleware:interpolation] this is an error'));
-
-      t.deepEquals(res, {
-        data: [
-          {
-            id: 1,
-            layer: 'street',
-            name: {
-              default: 'street name 1'
-            },
-            address_parts: {},
-            // bounding_box should be removed
-            bounding_box: {}
-          }
-        ]
-      }, 'res should not have been modified');
-
-    });
-
-  });
-
-};
-
 module.exports.tests.success_conditions = (test, common) => {
   test('undefined res should not cause errors', t => {
     const service = (req, res, callback) => {
@@ -219,7 +96,7 @@ module.exports.tests.success_conditions = (test, common) => {
 
   });
 
-  test('interpolated results should be mapped in', t => {
+  test('only \'street\' layer results should attempt interpolation', t => {
     const service = (req, res, callback) => {
       if (res.id === 1) {
         callback(null, {
@@ -294,6 +171,7 @@ module.exports.tests.success_conditions = (test, common) => {
           bounding_box: {}
         },
         {
+          // this is not a street result and should not attempt interpolation
           id: 2,
           layer: 'not street',
           name: {
@@ -386,6 +264,171 @@ module.exports.tests.success_conditions = (test, common) => {
             layer: 'not street',
             name: {
               default: 'name 2'
+            },
+            address_parts: {}
+          }
+        ]
+      }, 'hits should be mapped in and res.data sorted with addresses first and non-addresses last');
+
+      t.end();
+
+    });
+
+  });
+
+  test('service call returning error should not map in interpolated results for non-errors', t => {
+    const service = (req, res, callback) => {
+      if (res.id === 1) {
+        callback(null, {
+          properties: {
+            number: 17,
+            source: 'Source Abbr 1',
+            source_id: 'source 1 source id',
+            lat: 12.121212,
+            lon: 21.212121
+          }
+        });
+
+      } else if (res.id === 2) {
+        callback('id 2 produced an error string', {});
+
+      } else if (res.id === 3) {
+        callback({ message: 'id 3 produced an error object' }, {});
+
+      } else if (res.id === 4) {
+        callback(null, {
+          properties: {
+            number: 18,
+            source: 'Source Abbr 4',
+            source_id: 'source 4 source id',
+            lat: 13.131313,
+            lon: 31.313131
+          }
+        });
+
+      } else {
+        console.error(res.id);
+        t.fail(`unexpected id ${res.id}`);
+
+      }
+
+    };
+
+    const logger = require('pelias-mock-logger')();
+
+    const controller = proxyquire('../../../middleware/interpolate', {
+      'pelias-logger': logger,
+      '../helper/type_mapping': {
+        source_mapping: {
+          'source abbr 1': ['full source name 1'],
+          'source abbr 4': ['full source name 4']
+        }
+      }
+    })(service, () => true);
+
+    const req = {
+      clean: {
+        parsed_text: 'this is req.clean.parsed_text'
+      }
+    };
+
+    const res = {
+      data: [
+        {
+          id: 1,
+          layer: 'street',
+          name: {
+            default: 'street name 1'
+          },
+          address_parts: {}
+        },
+        {
+          id: 2,
+          layer: 'street',
+          name: {
+            default: 'street name 2'
+          },
+          address_parts: {}
+        },
+        {
+          id: 3,
+          layer: 'street',
+          name: {
+            default: 'street name 3'
+          },
+          address_parts: {}
+        },
+        {
+          id: 4,
+          layer: 'street',
+          name: {
+            default: 'street name 4'
+          },
+          address_parts: {}
+        }
+      ]
+    };
+
+    controller(req, res, () => {
+      t.deepEquals(logger.getErrorMessages(), [
+        '[middleware:interpolation] id 2 produced an error string',
+        '[middleware:interpolation] id 3 produced an error object'
+      ]);
+      t.ok(logger.isInfoMessage(/\[interpolation\] \[took\] \d+ ms/), 'timing should be info-logged');
+
+      // test debug messages very vaguely to avoid brittle tests
+      t.ok(logger.isDebugMessage(/^\[interpolation\] \[hit\] this is req.clean.parsed_text \{.+?\}$/),
+        'hits should be debug-logged');
+
+      t.deepEquals(res, {
+        data: [
+          {
+            id: 1,
+            layer: 'address',
+            match_type: 'interpolated',
+            name: {
+              default: '17 street name 1'
+            },
+            source: 'full source name 1',
+            source_id: 'source 1 source id',
+            address_parts: {
+              number: 17
+            },
+            center_point: {
+              lat: 12.121212,
+              lon: 21.212121
+            }
+          },
+          {
+            id: 4,
+            layer: 'address',
+            match_type: 'interpolated',
+            name: {
+              default: '18 street name 4'
+            },
+            source: 'full source name 4',
+            source_id: 'source 4 source id',
+            address_parts: {
+              number: 18
+            },
+            center_point: {
+              lat: 13.131313,
+              lon: 31.313131
+            }
+          },
+          {
+            id: 2,
+            layer: 'street',
+            name: {
+              default: 'street name 2'
+            },
+            address_parts: {}
+          },
+          {
+            id: 3,
+            layer: 'street',
+            name: {
+              default: 'street name 3'
             },
             address_parts: {}
           }
