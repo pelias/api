@@ -46,6 +46,9 @@ const DETAILS_PROPS = [
   { name: 'continent',         type: 'string' },
   { name: 'continent_gid',     type: 'string' },
   { name: 'continent_a',       type: 'string' },
+  { name: 'empire',            type: 'string',    condition: _.negate(hasCountry) },
+  { name: 'empire_gid',        type: 'string',    condition: _.negate(hasCountry) },
+  { name: 'empire_a',          type: 'string',    condition: _.negate(hasCountry) },
   { name: 'ocean',             type: 'string' },
   { name: 'ocean_gid',         type: 'string' },
   { name: 'ocean_a',           type: 'string' },
@@ -56,6 +59,11 @@ const DETAILS_PROPS = [
   { name: 'label',             type: 'string' },
   { name: 'category',          type: 'array',     condition: checkCategoryParam }
 ];
+
+// returns true IFF source a country_gid property
+function hasCountry(params, source) {
+  return source.hasOwnProperty('country_gid');
+}
 
 function checkCategoryParam(params) {
   return _.isObject(params) && params.hasOwnProperty('categories');
@@ -72,7 +80,7 @@ function checkCategoryParam(params) {
 function collectProperties( params, source ) {
   return DETAILS_PROPS.reduce((result, prop) => {
     // if condition isn't met, don't set the property
-    if (_.isFunction(prop.condition) && !prop.condition(params)) {
+    if (_.isFunction(prop.condition) && !prop.condition(params, source)) {
       return result;
     }
 
