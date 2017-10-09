@@ -532,6 +532,52 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
 
 };
 
+module.exports.tests.empire_specific = (test, common) => {
+  test('empire* properties should not be output when country_gid property is available', t => {
+    const source = {
+      country_gid: 'country_gid value',
+      empire: 'empire value',
+      empire_gid: 'empire_gid value',
+      empire_a: 'empire_a value',
+      label: 'label value'
+    };
+
+    const expected = {
+      country_gid: 'country_gid value',
+      label: 'label value'
+    };
+
+    const actual = geojsonify({}, source);
+
+    t.deepEqual(actual, expected);
+    t.end();
+
+  });
+
+  test('empire* properties should be output when country_gid property is not available', t => {
+    const source = {
+      empire: 'empire value',
+      empire_gid: 'empire_gid value',
+      empire_a: 'empire_a value',
+      label: 'label value'
+    };
+
+    const expected = {
+      empire: 'empire value',
+      empire_gid: 'empire_gid value',
+      empire_a: 'empire_a value',
+      label: 'label value'
+    };
+
+    const actual = geojsonify({}, source);
+
+    t.deepEqual(actual, expected);
+    t.end();
+
+  });
+
+};
+
 module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {
