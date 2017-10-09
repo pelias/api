@@ -20,6 +20,7 @@ function setup(should_execute) {
         parsed_text.country = iso3166.to3(_.toUpper(parsed_text.country));
       }
 
+      req.clean.parser = 'libpostal';
       req.clean.parsed_text = parsed_text;
       debugLog.push(req, {parsed_text: req.clean.parsed_text});
     }
