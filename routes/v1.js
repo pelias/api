@@ -33,6 +33,7 @@ var controllers = {
   placeholder: require('../controller/placeholder'),
   search: require('../controller/search'),
   search_with_ids: require('../controller/search_with_ids'),
+  search_with_appending_results: require('../controller/search_with_appending_results'),
   status: require('../controller/status')
 };
 
@@ -42,7 +43,8 @@ var queries = {
   structured_geocoding: require('../query/structured_geocoding'),
   reverse: require('../query/reverse'),
   autocomplete: require('../query/autocomplete'),
-  address_using_ids: require('../query/address_search_using_ids')
+  address_using_ids: require('../query/address_search_using_ids'),
+  venues: require('../query/venues')
 };
 
 /** ----------------------- controllers ----------------------- **/
@@ -81,10 +83,11 @@ const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin
 const isRequestSourcesOnlyWhosOnFirst = require('../controller/predicates/is_request_sources_only_whosonfirst');
 const hasRequestParameter = require('../controller/predicates/has_request_parameter');
 const hasParsedTextProperties = require('../controller/predicates/has_parsed_text_properties');
+const isSingleFieldAnalysis = require('../controller/predicates/is_single_field_analysis');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
-const hasAdminOnlyResults = not(hasResultsAtLayers(['venue', 'address', 'street']));
+const hasAdminOnlyResults = not(hasResultsAtLayers.any(['venue', 'address', 'street']));
 
 const hasNumberButNotStreet = all(
   hasParsedTextProperties.any('number'),
@@ -223,7 +226,7 @@ function addRoutes(app, peliasConfig) {
     not(hasRequestErrors),
     isInterpolationEnabled,
     hasParsedTextProperties.all('number', 'street'),
-    hasResultsAtLayers('street')
+    hasResultsAtLayers.any('street')
   );
 
   // execute under the following conditions:
@@ -235,6 +238,13 @@ function addRoutes(app, peliasConfig) {
       not(isCoarseReverse),
       not(isPipServiceEnabled)
     )
+  );
+
+  const venuesSearchShouldExecute = all(
+    not(hasRequestErrors),
+    isAdminOnlyAnalysis,
+    isSingleFieldAnalysis,
+    hasResultsAtLayers.all('neighbourhood')
   );
 
   // helpers to replace vague booleans
@@ -260,6 +270,7 @@ function addRoutes(app, peliasConfig) {
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersDontApply, placeholderIdsLookupShouldExecute),
       controllers.search_with_ids(peliasConfig.api, esclient, queries.address_using_ids, searchWithIdsShouldExecute),
+      controllers.search_with_appending_results(peliasConfig.api, esclient, queries.venues, venuesSearchShouldExecute),
       // 3rd parameter is which query module to use, use fallback first, then
       //  use original search strategy if first query didn't return anything
       controllers.search(peliasConfig.api, esclient, queries.cascading_fallback, fallbackQueryShouldExecute),
