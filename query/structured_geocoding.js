@@ -1,12 +1,12 @@
-var peliasQuery = require('pelias-query'),
-    defaults = require('./search_defaults'),
-    textParser = require('./text_parser'),
-    check = require('check-types');
+const peliasQuery = require('pelias-query'),
+      defaults = require('./search_defaults'),
+      textParser = require('./text_parser'),
+      check = require('check-types');
 
 //------------------------------
 // general-purpose search query
 //------------------------------
-var structuredQuery = new peliasQuery.layout.StructuredFallbackQuery();
+const structuredQuery = new peliasQuery.layout.StructuredFallbackQuery();
 
 // scoring boost
 structuredQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
@@ -29,7 +29,7 @@ structuredQuery.filter( peliasQuery.view.categories );
 **/
 function generateQuery( clean ){
 
-  var vs = new peliasQuery.Vars( defaults );
+  const vs = new peliasQuery.Vars( defaults );
 
   // input text
   vs.var( 'input:name', clean.text );
@@ -95,7 +95,7 @@ function generateQuery( clean ){
     textParser( clean.parsed_text, vs );
   }
 
-  var q = getQuery(vs);
+  const q = getQuery(vs);
 
   // console.log(JSON.stringify(q.body, null, 2));
 
