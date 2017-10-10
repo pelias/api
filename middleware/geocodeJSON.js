@@ -1,5 +1,4 @@
 var url = require('url');
-var extend = require('extend');
 var geojsonify = require('../helper/geojsonify');
 var _ = require('lodash');
 
@@ -74,7 +73,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
   res.body.geocoding.timestamp = new Date().getTime();
 
   // convert docs to geojson and merge with geocoding block
-  extend(res.body, geojsonify(req.clean, res.data || []));
+  _.extend(res.body, geojsonify(req.clean, res.data || []));
 
   next();
 }
