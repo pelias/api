@@ -1,5 +1,4 @@
-var extend = require('extend'),
-  _ = require('lodash');
+const _ = require('lodash');
 
 function addStandardTargetsToAliases(standard, aliases) {
   var combined = _.extend({}, aliases);
