@@ -23,13 +23,16 @@ module.exports = {
         stack_trace: stackTraceLine()
       }));
       return has_results_at_any_layer;
+      
     };
   },
   all(layers) {
     return (request, response) => {
       const has_results_at_all_layers = _.isEmpty(
         _.difference(
+          // get all layers of all the results into an array
           _.map(response.data, _.property('layer')),
+          // convert layers to an array if it isn't already one
           _.castArray(layers)
         )
       );
