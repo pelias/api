@@ -1,7 +1,8 @@
 
-var app = require('./app'),
-    port = ( process.env.PORT || 3100 );
+const app = require('./app'),
+    port = ( process.env.PORT || 3100 ),
+    host = ( process.env.HOST || 'localhost' );
 
 /** run server on the default setup (single core) **/
-console.log( 'pelias is now running on port ' + port );
-app.listen( port );
+console.log( `pelias is now running on ${host}:${port}` );
+app.listen( port, host );
