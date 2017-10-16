@@ -73,6 +73,7 @@ var postProc = {
 
 // predicates that drive whether controller/search runs
 const hasResponseData = require('../controller/predicates/has_response_data');
+const hasRequestFocusPoint = require('../controller/predicates/has_request_focus_point');
 const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
 const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_analysis');
@@ -264,7 +265,7 @@ function addRoutes(app, peliasConfig) {
     not(hasRequestErrors),
     isAdminOnlyAnalysis,
     isSingleFieldAnalysis,
-    hasResultsAtLayers.all('neighbourhood')
+    hasRequestFocusPoint
   );
 
   // helpers to replace vague booleans
