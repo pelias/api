@@ -59,7 +59,7 @@
     "pelias-labels": "1.7.0",
     "pelias-logger": "0.2.1",
     "pelias-microservice-wrapper": "1.2.1",
-    "pelias-model": "5.1.0",
+    "pelias-model": "5.2.0",
     "pelias-query": "9.1.0",
     "pelias-sorting": "1.0.1",
     "pelias-text-analyzer": "1.9.5",
