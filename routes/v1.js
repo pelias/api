@@ -261,6 +261,12 @@ function addRoutes(app, peliasConfig) {
     )
   );
 
+  // search for venues under the following conditions:
+  // - there are no request errors
+  // - analysis is only admin (no address, query, or street)
+  // - there's a single field in analysis
+  // - request has a focus.point available
+  // https://github.com/pelias/pelias/issues/564
   const venuesSearchShouldExecute = all(
     not(hasRequestErrors),
     isAdminOnlyAnalysis,
