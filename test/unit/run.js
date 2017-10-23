@@ -29,6 +29,7 @@ var tests = [
   require('./controller/predicates/is_addressit_parse'),
   require('./controller/predicates/is_admin_only_analysis'),
   require('./controller/predicates/is_coarse_reverse'),
+  require('./controller/predicates/is_layer_requested'),
   require('./controller/predicates/is_only_non_admin_layers'),
   require('./controller/predicates/is_request_sources_only_whosonfirst'),
   require('./controller/predicates/is_single_field_analysis'),
