@@ -85,10 +85,11 @@ const isRequestSourcesOnlyWhosOnFirst = require('../controller/predicates/is_req
 const hasRequestParameter = require('../controller/predicates/has_request_parameter');
 const hasParsedTextProperties = require('../controller/predicates/has_parsed_text_properties');
 const isSingleFieldAnalysis = require('../controller/predicates/is_single_field_analysis');
+const isVenueRequested = require('../controller/predicates/is_layer_requested')('venue');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
-const hasAdminOnlyResults = not(hasResultsAtLayers.any(['venue', 'address', 'street']));
+const hasAdminOnlyResults = not(hasResultsAtLayers.any(['address', 'street']));
 
 const hasNumberButNotStreet = all(
   hasParsedTextProperties.any('number'),
@@ -246,9 +247,11 @@ function addRoutes(app, peliasConfig) {
   // - analysis is only admin (no address, query, or street)
   // - there's a single field in analysis
   // - request has a focus.point available
+  // - TODO: needs check for venues is in layers
   // https://github.com/pelias/pelias/issues/564
   const venuesSearchShouldExecute = all(
     not(hasRequestErrors),
+    isVenueRequested,
     isAdminOnlyAnalysis,
     isSingleFieldAnalysis,
     hasRequestFocusPoint
