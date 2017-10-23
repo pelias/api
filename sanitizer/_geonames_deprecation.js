@@ -7,6 +7,8 @@ const _ = require('lodash');
  * _non-coarse_ reverse.
 **/
 
+const coarse_reverse_message ='coarse /reverse does not support geonames. See https://github.com/pelias/pelias/issues/675 for more info';
+
 function _sanitize( raw, clean, opts ) {
   // error & warning messages
   const messages = { errors: [], warnings: [] };
@@ -15,18 +17,16 @@ function _sanitize( raw, clean, opts ) {
   const non_coarse_layers = ['address', 'street', 'venue'];
   const is_coarse_reverse = !_.isEmpty(clean.layers) &&
           _.isEmpty(_.intersection(clean.layers, non_coarse_layers));
-
   if (!is_coarse_reverse) {
     return messages;
   }
 
   if (_.isEqual(clean.sources, ['geonames']) || _.isEqual(clean.sources, ['gn'])) {
-    messages.errors.push('/reverse does not support geonames');
+    messages.errors.push(coarse_reverse_message);
 
   } else if (_.includes(clean.sources, 'geonames') || _.includes(clean.sources, 'gn')) {
     clean.sources = _.without(clean.sources, 'geonames', 'gn');
-    messages.warnings.push('/reverse does not support geonames');
-
+    messages.warnings.push(coarse_reverse_message);
   }
 
   return messages;

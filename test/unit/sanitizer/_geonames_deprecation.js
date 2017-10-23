@@ -2,6 +2,8 @@ const sanitizer = require('../../../sanitizer/_geonames_deprecation')();
 
 module.exports.tests = {};
 
+const coarse_reverse_message ='coarse /reverse does not support geonames. See https://github.com/pelias/pelias/issues/675 for more info';
+
 module.exports.tests.no_warnings_or_errors_conditions = (test, common) => {
   test('undefined sources should add neither warnings nor errors', (t) => {
     const clean = {};
@@ -52,7 +54,7 @@ module.exports.tests.error_conditions = (test, common) => {
       const messages = sanitizer.sanitize(undefined, clean);
 
       t.deepEquals(clean.sources, [sources]);
-      t.deepEquals(messages.errors, ['/reverse does not support geonames']);
+      t.deepEquals(messages.errors, [ coarse_reverse_message ]);
       t.deepEquals(messages.warnings, []);
 
     });
@@ -70,7 +72,7 @@ module.exports.tests.error_conditions = (test, common) => {
       const messages = sanitizer.sanitize(undefined, clean);
 
       t.deepEquals(clean.sources, [sources]);
-      t.deepEquals(messages.errors, ['/reverse does not support geonames']);
+      t.deepEquals(messages.errors, [ coarse_reverse_message ]);
       t.deepEquals(messages.warnings, []);
 
     });
@@ -91,7 +93,7 @@ module.exports.tests.warning_conditions = (test, common) => {
 
       t.deepEquals(clean.sources, ['another source', 'yet another source']);
       t.deepEquals(messages.errors, []);
-      t.deepEquals(messages.warnings, ['/reverse does not support geonames']);
+      t.deepEquals(messages.warnings, [ coarse_reverse_message ]);
 
     });
 
