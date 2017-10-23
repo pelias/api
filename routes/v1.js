@@ -86,7 +86,7 @@ const isRequestSourcesOnlyWhosOnFirst = require('../controller/predicates/is_req
 const hasRequestParameter = require('../controller/predicates/has_request_parameter');
 const hasParsedTextProperties = require('../controller/predicates/has_parsed_text_properties');
 const isSingleFieldAnalysis = require('../controller/predicates/is_single_field_analysis');
-const isVenueRequested = require('../controller/predicates/is_layer_requested')('venue');
+const isVenueLayerRequested = require('../controller/predicates/is_layer_requested')('venue');
 
 // shorthand for standard early-exit conditions
 const hasResponseDataOrRequestErrors = any(hasResponseData, hasRequestErrors);
@@ -271,7 +271,7 @@ function addRoutes(app, peliasConfig) {
   // https://github.com/pelias/pelias/issues/564
   const venuesSearchShouldExecute = all(
     not(hasRequestErrors),
-    isVenueRequested,
+    isVenueLayerRequested,
     isAdminOnlyAnalysis,
     isSingleFieldAnalysis,
     hasRequestFocusPoint
