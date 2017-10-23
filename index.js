@@ -1,8 +1,10 @@
 
 const app = require('./app'),
     port = ( process.env.PORT || 3100 ),
-    host = ( process.env.HOST || 'localhost' );
+    host = ( process.env.HOST || undefined );
 
-/** run server on the default setup (single core) **/
-console.log( `pelias is now running on ${host}:${port}` );
-app.listen( port, host );
+const server = app.listen( port, host, () => {
+  // ask server for the actual address and port its listening on
+  const listenAddress = server.address();
+  console.log( `pelias is now running on ${listenAddress.address}:${listenAddress.port}` );
+});
