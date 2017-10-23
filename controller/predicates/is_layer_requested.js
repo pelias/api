@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const Debug = require('../../helper/debug');
-const debugLog = new Debug('controller:predicates:is_admin_only_analysis');
+const debugLog = new Debug('controller:predicates:is_layer_requested');
 const stackTraceLine = require('../../helper/stackTraceLine');
 
 // this function returns true IFF request.clean.layers is either undefined or
