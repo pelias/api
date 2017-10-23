@@ -2,6 +2,7 @@ const generate = require('../../../query/reverse');
 const _ = require('lodash');
 const proxyquire = require('proxyquire').noCallThru();
 const MockQuery = require('./MockQuery');
+const all_layers = require('../../../helper/type_mapping').layers;
 
 // helper for canned views
 const views = {
@@ -207,7 +208,7 @@ module.exports.tests.layers = (test, common) => {
 
   test('non-empty array clean.layers should only set non-coarse layers in vs', t => {
     const clean = {
-      sources: ['source 1', 'source 2']
+      layers: all_layers
     };
 
     const query = proxyquire('../../../query/reverse', {
@@ -221,7 +222,282 @@ module.exports.tests.layers = (test, common) => {
       './reverse_defaults': {}
     })(clean);
 
-    t.deepEquals(query.body.vs.var('sources').toString(), ['source 1', 'source 2']);
+    t.deepEquals(query.body.vs.var('layers').toString(), ['address', 'venue', 'street']);
+    t.end();
+
+  });
+
+};
+
+module.exports.tests.focus_point = (test, common) => {
+  test('numeric point.lat and non-numeric point.lon should not add focus:point:* fields', t => {
+    const clean = {
+      'point.lat': 12.121212,
+      'point.lon': 'this is non-numeric'
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {}
+    })(clean);
+
+    t.notOk(query.body.vs.isset('focus:point:lat'));
+    t.notOk(query.body.vs.isset('focus:point:lon'));
+    t.end();
+
+  });
+
+  test('non-numeric point.lat and numeric point.lon should not add focus:point:* fields', t => {
+    const clean = {
+      'point.lat': 'this is non-numeric',
+      'point.lon': 21.212121
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {}
+    })(clean);
+
+    t.notOk(query.body.vs.isset('focus:point:lat'));
+    t.notOk(query.body.vs.isset('focus:point:lon'));
+    t.end();
+
+  });
+
+  test('numeric point.lat and point.lon should add focus:point:* fields', t => {
+    const clean = {
+      'point.lat': 12.121212,
+      'point.lon': 21.212121
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {}
+    })(clean);
+
+    t.deepEquals(query.body.vs.var('focus:point:lat').toString(), 12.121212);
+    t.deepEquals(query.body.vs.var('focus:point:lon').toString(), 21.212121);
+    t.end();
+
+  });
+
+};
+
+module.exports.tests.boundary_circle = (test, common) => {
+  test('numeric lat and non-numeric lon should not add boundary:circle:* fields', t => {
+    const clean = {
+      'boundary.circle.lat': 12.121212,
+      'boundary.circle.lon': 'this is non-numeric'
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {}
+    })(clean);
+
+    t.notOk(query.body.vs.isset('boundary:circle:lat'));
+    t.notOk(query.body.vs.isset('boundary:circle:lon'));
+    t.notOk(query.body.vs.isset('boundary:circle:radius'));
+    t.end();
+
+  });
+
+  test('non-numeric lat and numeric lon should not add boundary:circle:* fields', t => {
+    const clean = {
+      'boundary.circle.lat': 'this is non-numeric',
+      'boundary.circle.lon': 21.212121
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {}
+    })(clean);
+
+    t.notOk(query.body.vs.isset('boundary:circle:lat'));
+    t.notOk(query.body.vs.isset('boundary:circle:lon'));
+    t.notOk(query.body.vs.isset('boundary:circle:radius'));
+    t.end();
+
+  });
+
+  test('radius not supplied should default to value from reverse_defaults', t => {
+    const clean = {
+      'boundary.circle.lat': 12.121212,
+      'boundary.circle.lon': 21.212121
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {
+        'boundary:circle:radius': 17
+      }
+    })(clean);
+
+    t.deepEquals(query.body.vs.var('boundary:circle:lat').toString(), 12.121212);
+    t.deepEquals(query.body.vs.var('boundary:circle:lon').toString(), 21.212121);
+    t.deepEquals(query.body.vs.var('boundary:circle:radius').toString(), 17);
+    t.end();
+
+  });
+
+  test('numeric radius supplied should be used instead of value from reverse_defaults', t => {
+    const clean = {
+      'boundary.circle.lat': 12.121212,
+      'boundary.circle.lon': 21.212121,
+      'boundary.circle.radius': 17
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {
+        'boundary:circle:radius': 18
+      }
+    })(clean);
+
+    t.deepEquals(query.body.vs.var('boundary:circle:lat').toString(), 12.121212);
+    t.deepEquals(query.body.vs.var('boundary:circle:lon').toString(), 21.212121);
+    t.deepEquals(query.body.vs.var('boundary:circle:radius').toString(), '17km');
+    t.end();
+
+  });
+
+  test('non-numeric radius supplied should not set any boundary:circle:radius', t => {
+    const clean = {
+      'boundary.circle.lat': 12.121212,
+      'boundary.circle.lon': 21.212121,
+      'boundary.circle.radius': 'this is non-numeric'
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {
+        'boundary:circle:radius': 18
+      }
+    })(clean);
+
+    t.deepEquals(query.body.vs.var('boundary:circle:lat').toString(), 12.121212);
+    t.deepEquals(query.body.vs.var('boundary:circle:lon').toString(), 21.212121);
+    t.deepEquals(query.body.vs.var('boundary:circle:radius').toString(), 18);
+    t.end();
+
+  });
+
+};
+
+module.exports.tests.boundary_country = (test, common) => {
+  test('non-string boundary.country should not set boundary:country', t => {
+    [17, undefined, {}, [], true, null].forEach(value => {
+      const clean = {
+        'boundary.country': value
+      };
+
+      const query = proxyquire('../../../query/reverse', {
+        'pelias-query': {
+          layout: {
+            FilteredBooleanQuery: MockQuery
+          },
+          view: views,
+          Vars: require('pelias-query').Vars
+        },
+        './reverse_defaults': {}
+      })(clean);
+
+      t.notOk(query.body.vs.isset('boundary:country'));
+    });
+
+    t.end();
+
+  });
+
+  test('string boundary.country should set boundary:country', t => {
+    const clean = {
+      'boundary.country': 'boundary country value'
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {}
+    })(clean);
+
+    t.deepEquals(query.body.vs.var('boundary:country').toString(), 'boundary country value');
+    t.end();
+
+  });
+
+};
+
+module.exports.tests.categories = (test, common) => {
+  test('categories supplied should set input:categories', t => {
+    const clean = {
+      categories: 'categories value'
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {}
+    })(clean);
+
+    t.deepEquals(query.body.vs.var('input:categories').toString(), 'categories value');
     t.end();
 
   });
