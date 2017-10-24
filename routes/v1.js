@@ -132,7 +132,7 @@ function addRoutes(app, peliasConfig) {
   );
 
   // defines whether to skip libpostal and control should be switched to intersection processing
-  const IntersectionParserShouldExecute = all (
+  const intersectionParserShouldExecute = all (
     isIntersectionLayer,
     not(hasRequestErrors)
   );
@@ -274,7 +274,7 @@ function addRoutes(app, peliasConfig) {
       sanitizers.search.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.calcSize(),
-      controllers.intersection(IntersectionParserShouldExecute),
+      controllers.intersection(intersectionParserShouldExecute),
       controllers.libpostal(libpostalShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersDontApply, placeholderIdsLookupShouldExecute),

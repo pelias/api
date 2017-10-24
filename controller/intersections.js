@@ -1,33 +1,6 @@
 const _ = require('lodash');
 const iso3166 = require('iso3166-1');
-const util = require('../util/arrayHelper');
-
-/*
-this function returns an object that denotes an intersection of form:
-{
-  street1: value1,
-  street2: value2
-}
-*/
-function parseIntersections(text) {
-    var str1 = '', str2 = '';
-    if(text.trim().length > 1) {
-         var words = text.toLowerCase().split(' ');
-         // remove all the whitespaces
-         words = util.removeWhitespaceElements(words);
-         words = util.EWStreetsSanitizer(words);
-         words = util.addOrdinality(words);
-         // only treat input as intersection if contains '&' or 'and'
-         const delimiter = _.includes(text, '&') ? '&' : 'and';
-         const delimiterIndex = words.indexOf(delimiter);
-
-         str1 = util.wordsToSentence(words, 0, delimiterIndex);
-         str2 = util.wordsToSentence(words, delimiterIndex+1, words.length);
-    } else {
-      throw 'Missing streets in the intersection';
-    }
-    return { street1: str1, street2: str2 };
-}
+const intersectionsParser = require('../helper/intersectionsParsing');
 
 function setup(should_execute) {
   function controller( req, res, next ){
@@ -38,7 +11,7 @@ function setup(should_execute) {
 
     // parse text with query parser
     //const parsed_text = text_analyzer.parse(req.clean.text);
-    const parsed_text = parseIntersections(req.clean.text);
+    const parsed_text = intersectionsParser(req.clean.text);
 
     if (parsed_text !== undefined) {
       // if a known ISO2 country was parsed, convert it to ISO3

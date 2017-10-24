@@ -195,8 +195,8 @@ function generateQuery(clean) {
                 					]
                 			} }
                 		]
-                	}
-       }
+                 }
+        }
   };
 }
 
