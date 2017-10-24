@@ -22,61 +22,6 @@ venuesQuery.filter( peliasQuery.view.sources );
 
 const adminLayers = ['neighbourhood', 'borough', 'city', 'county', 'state', 'country'];
 
-// This query is a departure from traditional Pelias queries where textual
-// names of admin areas were looked up.  This query uses the ids returned by
-// placeholder for lookups which dramatically reduces the amount of information
-// that ES has to store and allows us to have placeholder handle altnames on
-// behalf of Pelias.
-//
-// For the happy path, an input like '30 West 26th Street, Manhattan' would result
-// in:
-// neighbourhood_id in []
-// borough_id in [421205771]
-// locality_id in [85945171, 85940551, 85972655]
-// localadmin_id in [404502889, 404499147, 404502891, 85972655]
-//
-// Where the ids are for all the various Manhattans.  Each of those could
-// conceivably be the Manhattan that the user was referring to so so all must be
-// queried for at the same time.
-//
-// A counter example for this is '1 West Market Street, York, PA' where York, PA
-// can be interpreted as a locality OR county.  From experience, when there's
-// ambiguity between locality and county for an input, the user is, with complete
-// metaphysical certitude, referring to the city.  If they were referring to the
-// county, they would have entered 'York County, PA'.  The point is that it's
-// insufficient to just query for all ids because, in this case, '1 West Market Street'
-// in other cities in York County, PA would be returned and would be both jarring
-// to the user and almost certainly leads to incorrect results.  For example,
-// the following could be returned (all are towns in York County, PA):
-// - 1 West Market Street, Dallastown, PA
-// - 1 West Market Street, Fawn Grove, PA
-// - 1 West Market Street, Shrewsbury, PA
-// etc.
-//
-// To avoid this calamitous response, this query takes the approach of
-// "granularity bands".  That is, if there are any ids in the first set of any
-// of these granularities:
-// - neighbourhood
-// - borough
-// - locality
-// - localadmin
-// - region
-// - macroregion
-// - dependency
-// - country
-//
-// then query for all ids in only those layers.  Falling back, if there are
-// no ids in those layers, query for the county/macrocounty layers.
-//
-// This methodology ensures that no happened-to-match-on-county results are returned.
-//
-// The decision was made to include all other layers in one to solve the issue
-// where a country and city share a name, such as Mexico, which could be
-// interpreted as a country AND city (in Missouri).  The data itself will sort
-// out which is correct.  That is, it's unlikely that "11 Rock Springs Dr" exists
-// in Mexico the country due to naming conventions and would be filtered out
-// (though it could, but that's good because it's legitimate)
-
 /**
   map request variables to query variables for all inputs
   provided by this HTTP request.  This function operates on res.data which is the
@@ -143,6 +88,13 @@ function generateQuery( clean ){
         'boundary:circle:radius': Math.round( clean['boundary.circle.radius'] ) + 'km'
       });
     }
+  } else if ( check.number(clean['focus.point.lat']) &&
+              check.number(clean['focus.point.lon']) ){
+    vs.set({
+      'boundary:circle:lat': clean['focus.point.lat'],
+      'boundary:circle:lon': clean['focus.point.lon']
+    });
+
   }
 
   // boundary country

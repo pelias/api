@@ -7,7 +7,7 @@ const MockQuery = require('./MockQuery');
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
-  test('valid interface', (t) => {
+  test('valid interface', t => {
     t.ok(_.isFunction(generateQuery));
     t.end();
   });
@@ -235,7 +235,7 @@ module.exports.tests.base_query = (test, common) => {
 };
 
 module.exports.tests.other_parameters = (test, common) => {
-  test('explicit size set', (t) => {
+  test('explicit size set', t => {
     const logger = mock_logger();
 
     const clean = {
@@ -262,7 +262,7 @@ module.exports.tests.other_parameters = (test, common) => {
 
   });
 
-  test('explicit sources set', (t) => {
+  test('explicit sources set', t => {
     const logger = mock_logger();
 
     const clean = {
@@ -292,7 +292,7 @@ module.exports.tests.other_parameters = (test, common) => {
 };
 
 module.exports.tests.boundary_filters = (test, common) => {
-  test('boundary.country available should add to query', (t) => {
+  test('boundary.country available should add to query', t => {
     const logger = mock_logger();
 
     const clean = {
@@ -319,7 +319,7 @@ module.exports.tests.boundary_filters = (test, common) => {
 
   });
 
-  test('focus.point.lat/lon w/both numbers should add to query', (t) => {
+  test('focus.point.lat/lon w/both numbers should add to query', t => {
     const logger = mock_logger();
 
     const clean = {
@@ -343,12 +343,14 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     t.equals(generatedQuery.body.vs.var('focus:point:lat').toString(), 12.121212);
     t.equals(generatedQuery.body.vs.var('focus:point:lon').toString(), 21.212121);
+    t.equals(generatedQuery.body.vs.var('boundary:circle:lat').toString(), 12.121212);
+    t.equals(generatedQuery.body.vs.var('boundary:circle:lon').toString(), 21.212121);
 
     t.end();
 
   });
 
-  test('boundary.rect with all numbers should add to query', (t) => {
+  test('boundary.rect with all numbers should add to query', t => {
     const logger = mock_logger();
 
     const clean = {
@@ -381,7 +383,7 @@ module.exports.tests.boundary_filters = (test, common) => {
 
   });
 
-  test('boundary circle without radius should set radius to default', (t) => {
+  test('boundary circle without radius should set radius to default', t => {
     const logger = mock_logger();
 
     const clean = {
@@ -411,7 +413,7 @@ module.exports.tests.boundary_filters = (test, common) => {
 
   });
 
-  test('boundary circle with radius set radius to that value rounded', (t) => {
+  test('boundary circle with radius set radius to that value rounded', t => {
     const logger = mock_logger();
 
     const clean = {
