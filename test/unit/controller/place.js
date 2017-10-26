@@ -51,11 +51,11 @@ module.exports.tests.success = (test, common) => {
         ids: [
           {
             id: 'id1',
-            layers: 'layer1'
+            layer: 'layer1'
           },
           {
             id: 'id2',
-            layers: 'layer2'
+            layer: 'layer2'
           }
         ]
       },

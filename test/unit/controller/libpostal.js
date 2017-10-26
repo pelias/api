@@ -149,6 +149,7 @@ module.exports.tests.parse_is_called = (test, common) => {
     controller(req, res, () => {
       t.deepEquals(req, {
         clean: {
+          parser: 'libpostal',
           parsed_text: 'replacement parsed_text'
         }
       });
@@ -184,6 +185,7 @@ module.exports.tests.iso2_conversion = (test, common) => {
     controller(req, res, () => {
       t.deepEquals(req, {
         clean: {
+          parser: 'libpostal',
           parsed_text: {
             locality: 'this is the locality'
           }
@@ -223,6 +225,7 @@ module.exports.tests.iso2_conversion = (test, common) => {
     controller(req, res, () => {
       t.deepEquals(req, {
         clean: {
+          parser: 'libpostal',
           parsed_text: {
             country: 'unknown country code'
           }
@@ -265,6 +268,7 @@ module.exports.tests.iso2_conversion = (test, common) => {
     controller(req, res, () => {
       t.deepEquals(req, {
         clean: {
+          parser: 'libpostal',
           parsed_text: {
             country: 'ISO3 COUNTRY CODE'
           }
