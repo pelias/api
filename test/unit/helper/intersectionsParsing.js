@@ -28,25 +28,25 @@ module.exports.tests.intersectionsParser = function (test) {
 
     test('parseIntersections', t => {
         t.deepEqual(intersectionsParser('73 & e5'), {street1: '73rd', street2: 'East 5th'},
-            'intersectionsParser parsed "73 and e5" correctly!');
+            'intersectionsParser parsed "73 & e5" correctly!');
         t.end();
     });
 
     test('parseIntersections', t => {
         t.deepEqual(intersectionsParser('25 & w5'), { street1: '25th', street2: 'West 5th'},
-            'intersectionsParser parsed "25 and w5" correctly!');
+            'intersectionsParser parsed "25 & w5" correctly!');
         t.end();
     });
 
     test('parseIntersections', t => {
         t.deepEqual(intersectionsParser('ne26 & nw5'), { street1: 'Northeast 26th', street2: 'Northwest 5th'},
-            'intersectionsParser parsed "26 and nw5" correctly!');
+            'intersectionsParser parsed "ne26 and nw5" correctly!');
         t.end();
     });
 
     test('parseIntersections', t => {
         t.deepEqual(intersectionsParser('se26 & sw5'), { street1: 'Southeast 26th', street2: 'Southwest 5th'},
-            'intersectionsParser parsed "26 and nw5" correctly!');
+            'intersectionsParser parsed "se26 & sw5" correctly!');
          t.end();
     });
 
