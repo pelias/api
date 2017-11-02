@@ -102,6 +102,11 @@ function assertAddressMatch(item1, item2) {
       propMatch(item1.address_parts, item2.address_parts, 'zip');
     }
 
+    // only compare unit if both records have it, otherwise just ignore and assume it's the same
+    if (item1.address_parts.hasOwnProperty('unit') && item2.address_parts.hasOwnProperty('unit')) {
+      propMatch(item1.address_parts, item2.address_parts, 'unit');
+    }
+
     return false;
   }
 

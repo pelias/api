@@ -12,12 +12,16 @@ class Language extends ServiceConfiguration {
   }
 
   getParameters(req, hit) {
-    return {
+    let res = {
       number: req.clean.parsed_text.number,
       street: hit.address_parts.street || req.clean.parsed_text.street,
       lat: hit.center_point.lat,
       lon: hit.center_point.lon
     };
+    if(req.clean.parsed_text.hasOwnProperty('unit')) {
+      res.unit = req.clean.parsed_text.unit;
+    } 
+    return res;
 
   }
 

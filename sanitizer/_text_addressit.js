@@ -85,6 +85,7 @@ function parse(query) {
   _.extend(addressWithAdminParts, addressWithAddressParts);
 
   var address_parts  =  [ 'name',
+                          'unit',
                           'number',
                           'street',
                           'city',
