@@ -19,6 +19,7 @@ module.exports.tests.query = function(test, common) {
 
     t.false(vs.isset('input:query'));
     t.false(vs.isset('input:category'));
+    t.false(vs.isset('input:unit'));
     t.false(vs.isset('input:housenumber'));
     t.false(vs.isset('input:street'));
     t.false(vs.isset('input:address'));
@@ -37,6 +38,7 @@ module.exports.tests.query = function(test, common) {
     var parsed_text = {
       query: 'query value',
       category: 'category value',
+      unit: 'unit value',
       number: 'number value',
       street: 'street value',
       address: 'address value',
@@ -54,6 +56,7 @@ module.exports.tests.query = function(test, common) {
 
     t.equals(vs.var('input:query').toString(), 'query value');
     t.equals(vs.var('input:category').toString(), 'category value');
+    t.equals(vs.var('input:unit').toString(), 'unit value');
     t.equals(vs.var('input:housenumber').toString(), 'number value');
     t.equals(vs.var('input:street').toString(), 'street value');
     t.equals(vs.var('input:address').toString(), 'address value');
@@ -162,6 +165,7 @@ module.exports.tests.empty_values = function(test, common) {
     var parsed_text = {
       query: '',
       category: '',
+      unit: '',
       number: '',
       street: '',
       address: '',
@@ -183,6 +187,7 @@ module.exports.tests.empty_values = function(test, common) {
 
     t.false(vs.isset('input:query'));
     t.false(vs.isset('input:category'));
+    t.false(vs.isset('input:unit'));
     t.false(vs.isset('input:housenumber'));
     t.false(vs.isset('input:street'));
     t.false(vs.isset('input:address'));

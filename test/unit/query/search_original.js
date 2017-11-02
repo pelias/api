@@ -113,6 +113,29 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  test('valid query with a full valid address with unit', function(t) {
+    var query = generate({ text: 'Shop 8, 431 St Kilda Rd Melbourne',
+      layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
+      querySize: 10,
+      parsed_text: {
+        unit: '8',
+        number: '431',
+        street: 'St Kilda Rd',
+        regions: [ 'Melbourne' ]
+      }
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    
+    var expected = require('../fixture/search_full_address_original_with_unit');
+    console.log(JSON.stringify( expected , null, 2));
+    console.log('----');
+    console.log(JSON.stringify( compiled.body , null, 2));
+    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_full_address');
+    t.end();
+  });
+
   test('valid query with partial address', function(t) {
     var query = generate({ text: 'soho grand, new york',
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],

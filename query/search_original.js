@@ -30,6 +30,7 @@ query.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
 query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
 
 // address components
+query.score( peliasQuery.view.address('unit') );
 query.score( peliasQuery.view.address('housenumber') );
 query.score( peliasQuery.view.address('street') );
 query.score( peliasQuery.view.address('postcode') );
