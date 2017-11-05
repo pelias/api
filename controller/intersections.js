@@ -18,7 +18,7 @@ function setup(should_execute) {
       if (_.has(parsed_text, 'country') && iso3166.is2(_.toUpper(parsed_text.country))) {
         parsed_text.country = iso3166.to3(_.toUpper(parsed_text.country));
       }
-
+      
       req.clean.parsed_text = parsed_text;
     }
 

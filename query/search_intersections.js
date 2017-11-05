@@ -120,9 +120,7 @@ function generateQuery( clean ){
     textParser( clean.parsed_text, vs );
   }
 
-  var q = getQuery(vs,clean);
-
-  //console.log(JSON.stringify(q, null, 2));
+  var q = getQuery(vs, clean);
 
   if (q !== undefined) {
     logger.info(logStr);
@@ -135,11 +133,10 @@ function generateQuery( clean ){
 }
 
 function getQuery(vs, clean) {
-
   logger.info(`[query:search] [search_input_type:${determineQueryType(vs)}]`);
 
   if (hasIntersection(vs)) {
-    return generateQuery(clean);
+    return generateIntersectionQuery(vs,clean);
   }
 
   // returning undefined is a signal to a later step that the addressit-parsed
@@ -173,30 +170,57 @@ function hasIntersection(vs) {
   return vs.isset('input:street1') && vs.isset('input:street2');
 }
 
-function generateQuery(clean) {
+function shouldSort(vs) {
+  if (vs.isset('focus:point:lat') && vs.isset('focus:point:lon')) {
+    return true;
+  }
+
+  return false;
+}
+
+function generateIntersectionQuery(vs,clean) {
+  let sort = {};
+  if (shouldSort(vs)) {
+    sort = {
+              "_geo_distance": {
+                  "order": "asc",
+                  "distance_type": "plane",
+                  "center_point": {
+                      "lat": clean['focus.point.lat'],
+                      "lon": clean['focus.point.lon']
+                  }
+              }
+    }
+  }
+
   return {
-        type: 'fallback',
-        body: {
-                	'size': 2,
-                	'query': {
-                		'or': [{
-                			'bool' : {
-                					'must': [
-                            { 'match': { 'layer' : 'intersection'} },
-                						{ 'match': { 'address_parts.street1' : clean.parsed_text.street1} },
-                						{ 'match': { 'address_parts.street2' : clean.parsed_text.street2} }
-                					]
-                			} }, {
-                			'bool' : {
-                					'must': [
-                            { 'match': { 'layer' : 'intersection'} },
-                						{ 'match': { 'address_parts.street1' : clean.parsed_text.street2} },
-                						{ 'match': { 'address_parts.street2' : clean.parsed_text.street1} }
-                					]
-                			} }
-                		]
-                 }
-        }
+      type: 'fallback',
+      body: {
+          'size': 2,
+          'query': {
+              'or': [
+                  {
+                      'bool': {
+                          'must': [
+                              { 'match': { 'layer': 'intersection'} },
+                              { 'match': { 'address_parts.street1': clean.parsed_text.street1} },
+                              { 'match': { 'address_parts.street2': clean.parsed_text.street2} }
+                          ]
+                      }
+                  },
+                  {
+                      'bool': {
+                          'must': [
+                              { 'match': { 'layer': 'intersection'} },
+                              { 'match': { 'address_parts.street1': clean.parsed_text.street2} },
+                              { 'match': { 'address_parts.street2': clean.parsed_text.street1} }
+                          ]
+                      }
+                  }
+              ]
+          },
+          'sort': [sort]
+      }
   };
 }
 
