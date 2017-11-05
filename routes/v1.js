@@ -143,7 +143,8 @@ function addRoutes(app, peliasConfig) {
   );
 
   const libpostalShouldExecute = all(
-    not(isIntersectionLayer),
+    //not(isIntersectionLayer),
+    not(hasResponseData),
     not(hasRequestErrors),
     not(isRequestSourcesOnlyWhosOnFirst)
   );
@@ -213,14 +214,14 @@ function addRoutes(app, peliasConfig) {
   const shouldDeferToAddressIt = all(
     not(hasRequestErrors),
     not(hasResponseData),
-    not(placeholderShouldHaveExecuted),
-    not(isIntersectionLayer)
+    not(placeholderShouldHaveExecuted)
+    //not(isIntersectionLayer)
   );
 
   // call very old prod query if addressit was the parser
   const oldProdQueryShouldExecute = all(
     not(hasRequestErrors),
-    not(isIntersectionLayer),
+    //not(isIntersectionLayer),
     isAddressItParse
   );
 
@@ -275,6 +276,7 @@ function addRoutes(app, peliasConfig) {
       middleware.requestLanguage,
       middleware.calcSize(),
       controllers.intersection(intersectionParserShouldExecute),
+      controllers.search(peliasConfig.api, esclient, queries.intersections, intersectionQueryShouldExecute),
       controllers.libpostal(libpostalShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersDontApply, placeholderIdsLookupShouldExecute),
@@ -284,7 +286,7 @@ function addRoutes(app, peliasConfig) {
       controllers.search(peliasConfig.api, esclient, queries.cascading_fallback, fallbackQueryShouldExecute),
       sanitizers.defer_to_addressit(shouldDeferToAddressIt),
       controllers.search(peliasConfig.api, esclient, queries.very_old_prod, oldProdQueryShouldExecute),
-      controllers.search(peliasConfig.api, esclient, queries.intersections, intersectionQueryShouldExecute),
+      //controllers.search(peliasConfig.api, esclient, queries.intersections, intersectionQueryShouldExecute),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
