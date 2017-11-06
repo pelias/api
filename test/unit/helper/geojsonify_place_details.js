@@ -497,38 +497,38 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
     t.end();
 
   });
-
-  test('category property should not be output when params does not contain \'category\' property', t => {
-    const source = {
-      category: [ 1, 2 ]
-    };
-    const expected = {
-    };
-
-    const clean = {};
-
-    const actual = geojsonify(clean, source);
-
-    t.deepEqual(actual, expected);
-    t.end();
-
-  });
-
-  test('category property should not be output when params is not an object', t => {
-    const source = {
-      category: [ 1, 2 ]
-    };
-    const expected = {
-    };
-
-    const clean = 'this is not an object';
-
-    const actual = geojsonify(clean, source);
-
-    t.deepEqual(actual, expected);
-    t.end();
-
-  });
+  // Entur: code modified to always return categories
+  // test('category property should not be output when params does not contain \'category\' property', t => {
+  //   const source = {
+  //     category: [ 1, 2 ]
+  //   };
+  //   const expected = {
+  //   };
+  //
+  //   const clean = {};
+  //
+  //   const actual = geojsonify(clean, source);
+  //
+  //   t.deepEqual(actual, expected);
+  //   t.end();
+  //
+  // });
+  //
+  // test('category property should not be output when params is not an object', t => {
+  //   const source = {
+  //     category: [ 1, 2 ]
+  //   };
+  //   const expected = {
+  //   };
+  //
+  //   const clean = 'this is not an object';
+  //
+  //   const actual = geojsonify(clean, source);
+  //
+  //   t.deepEqual(actual, expected);
+  //   t.end();
+  //
+  // });
 
 };
 
