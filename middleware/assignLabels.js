@@ -16,6 +16,10 @@ function assignLabel(req, res, next, labelGenerator) {
   }
 
   res.data.forEach(function (result) {
+      // Entur: Use display name as default name when set. To display alias documents by their proper name
+      if (result && result.name && result.name.display) {
+          result.name.default = result.name.display;
+      }
       result.label = labelGenerator(result);
       // Entur - override default behaviour in pelias-labels deduping ', locality' part
       // when locality = name. Instead adding county name in ( )
