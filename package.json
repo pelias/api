@@ -7,7 +7,7 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "audit": "npm shrinkwrap; node node_modules/nsp/bin/nspCLI.js audit-shrinkwrap; rm npm-shrinkwrap.json;",
+    "audit": "npm shrinkwrap; node node_modules/nsp/bin/nsp check; rm npm-shrinkwrap.json;",
     "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao",
     "coverage": "node_modules/.bin/istanbul cover test/unit/run.js",
     "docs": "./bin/generate-docs",
@@ -74,7 +74,7 @@
     "istanbul": "^0.4.2",
     "jshint": "^2.5.6",
     "npm-check": "git://github.com/orangejulius/npm-check.git#disable-update-check",
-    "nsp": "^2.2.0",
+    "nsp": "^3.0.0",
     "pelias-mock-logger": "1.2.0",
     "precommit-hook": "^3.0.0",
     "proxyquire": "^1.7.10",
