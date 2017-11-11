@@ -1,28 +1,32 @@
 
-var GeoJSON = require('geojson');
-var extent = require('@mapbox/geojson-extent');
-var logger = require('pelias-logger').get('api');
-var type_mapping = require('./type_mapping');
-var _ = require('lodash');
-var addDetails = require('./geojsonify_place_details');
-var addMetaData = require('./geojsonify_meta_data');
+const GeoJSON = require('geojson');
+const extent = require('@mapbox/geojson-extent');
+const logger = require('pelias-logger').get('geojsonify');
+const collectDetails = require('./geojsonify_place_details');
+const _ = require('lodash');
+const Document = require('pelias-model').Document;
 
 function geojsonifyPlaces( params, docs ){
 
   // flatten & expand data for geojson conversion
-  var geodata = docs
-    .map(geojsonifyPlace.bind(null, params))
-    .filter( function( doc ){
-      return !!doc;
-    });
+  const geodata = docs
+    .filter(doc => {
+      if (!_.has(doc, 'center_point')) {
+        logger.warn('No doc or center_point property');
+        return false;
+      } else {
+        return true;
+      }
+    })
+    .map(geojsonifyPlace.bind(null, params));
 
   // get all the bounding_box corners as well as single points
   // to be used for computing the overall bounding_box for the FeatureCollection
-  var extentPoints = extractExtentPoints(geodata);
+  const extentPoints = extractExtentPoints(geodata);
 
   // convert to geojson
-  var geojson             = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
-  var geojsonExtentPoints = GeoJSON.parse( extentPoints, { Point: ['lat', 'lng'] });
+  const geojson             = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
+  const geojsonExtentPoints = GeoJSON.parse( extentPoints, { Point: ['lat', 'lng'] });
 
   // to insert the bbox property at the top level of each feature, it must be done separately after
   // initial geojson construction is finished
@@ -35,36 +39,29 @@ function geojsonifyPlaces( params, docs ){
 }
 
 function geojsonifyPlace(params, place) {
+  // setup the base doc
+  const doc = {
+    id: place._id,
+    gid: new Document(place.source, place.layer, place._id).getGid(),
+    layer: place.layer,
+    source: place.source,
+    source_id: place.source_id,
+    bounding_box: place.bounding_box,
+    lat: parseFloat(place.center_point.lat),
+    lng: parseFloat(place.center_point.lon)
+  };
 
-  // something went very wrong
-  if( !place || !place.hasOwnProperty( 'center_point' ) ) {
-    return warning('No doc or center_point property');
+  // assign name, logging a warning if it doesn't exist
+  if (_.has(place, 'name.default')) {
+    doc.name = place.name.default;
+  } else {
+    logger.warn(`doc ${doc.gid} does not contain name.default`);
   }
 
-  var output = {};
+  // assign all the details info into the doc
+  Object.assign(doc, collectDetails(params, place));
 
-  addMetaData(place, output);
-  addName(place, output);
-  addDetails(params, place, output);
-
-  // map center_point for GeoJSON to work properly
-  // these should not show up in the final feature properties
-  output.lat = parseFloat(place.center_point.lat);
-  output.lng = parseFloat(place.center_point.lon);
-
-  return output;
-}
-
-/**
- * Validate and add name property
- *
- * @param {object} src
- * @param {object} dst
- */
-function addName(src, dst) {
-  // map name
-  if( !src.name || !src.name.default ) { return warning(src); }
-  dst.name = src.name.default;
+  return doc;
 }
 
 /**
@@ -73,12 +70,7 @@ function addName(src, dst) {
  * @param {object} geojson
  */
 function addBBoxPerFeature(geojson) {
-  geojson.features.forEach(function (feature) {
-
-    if (!feature.properties.hasOwnProperty('bounding_box')) {
-      return;
-    }
-
+  geojson.features.forEach(feature => {
     if (feature.properties.bounding_box) {
       feature.bbox = [
         feature.properties.bounding_box.min_lon,
@@ -101,8 +93,8 @@ function addBBoxPerFeature(geojson) {
  * @returns {Array}
  */
 function extractExtentPoints(geodata) {
-  var extentPoints = [];
-  geodata.forEach(function (place) {
+  return geodata.reduce((extentPoints, place) => {
+    // if there's a bounding_box, use the LL/UR for the extent
     if (place.bounding_box) {
       extentPoints.push({
         lng: place.bounding_box.min_lon,
@@ -112,16 +104,20 @@ function extractExtentPoints(geodata) {
         lng: place.bounding_box.max_lon,
         lat: place.bounding_box.max_lat
       });
+
     }
     else {
+      // otherwise, use the point for the extent
       extentPoints.push({
         lng: place.lng,
         lat: place.lat
       });
-    }
-  });
 
-  return extentPoints;
+    }
+    return extentPoints;
+
+  }, []);
+
 }
 
 /**
@@ -143,16 +139,5 @@ function computeBBox(geojson, geojsonExtentPoints) {
     console.error( 'geojson', JSON.stringify( geojsonExtentPoints, null, 2 ) );
   }
 }
-
-/**
- * emit a warning if the doc format is invalid
- *
- * @note: if you see this error, fix it ASAP!
- */
-function warning( doc ) {
-  console.error( 'error: invalid doc', __filename, doc);
-  return false; // remove offending doc from results
-}
-
 
 module.exports = geojsonifyPlaces;

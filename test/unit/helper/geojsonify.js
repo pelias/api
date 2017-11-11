@@ -1,5 +1,6 @@
+const geojsonify = require('../../../helper/geojsonify');
 
-var geojsonify = require('../../../helper/geojsonify');
+const proxyquire = require('proxyquire').noCallThru();
 
 module.exports.tests = {};
 
@@ -36,433 +37,610 @@ module.exports.tests.earth = function(test, common) {
 
 };
 
-module.exports.tests.geojsonify = function(test, common) {
-
-  test('geojsonify(doc)', function(t) {
-    var input = [
+module.exports.tests.all = (test, common) => {
+  test('bounding_box should be calculated using points when avaiable', t => {
+    const input = [
       {
-        '_id': 'id1',
-        '_type': 'layer1',
-        'source': 'source1',
-        'source_id': 'source_id_1',
-        'layer': 'layer1',
-        'center_point': {
-          'lat': 51.5337144,
-          'lon': -0.1069716
+        _id: 'id 1',
+        source: 'source 1',
+        source_id: 'source_id 1',
+        layer: 'layer 1',
+        name: {
+          default: 'name 1',
         },
-        'name': {
-          'default': '\'Round Midnight Jazz and Blues Bar'
-        },
-        'housenumber': '13',
-        'street': 'Liverpool Road',
-        'postalcode': 'N1 0RW',
-        'country_a': 'GBR',
-        'country': 'United Kingdom',
-        'dependency': 'dependency name',
-        'region': 'Islington',
-        'region_a': 'ISL',
-        'macroregion': 'England',
-        'county': 'Angel',
-        'localadmin': 'test1',
-        'locality': 'test2',
-        'neighbourhood': 'test3',
-        'category': [
-          'food',
-          'nightlife'
-        ],
-        'label': 'label for id id1'
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        }
       },
       {
-        '_id': 'id2',
-        '_type': 'layer2',
-        'source': 'source2',
-        'source_id': 'source_id_2',
-        'layer': 'layer2',
-        'name': {
-          'default': 'Blues Cafe'
+        _id: 'id 2',
+        source: 'source 2',
+        source_id: 'source_id 2',
+        layer: 'layer 2',
+        name: {
+          default: 'name 2',
         },
-        'center_point': {
-          'lat': '51.517806',
-          'lon': '-0.101795'
+        center_point: {
+          lat: 13.131313,
+          lon: 31.313131
+        }
+      }
+    ];
+
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      './geojsonify_place_details': (params, source, dst) => {
+        if (source._id === 'id 1') {
+          return {
+            property1: 'property 1',
+            property2: 'property 2'
+          };
+        } else if (source._id === 'id 2') {
+          return {
+            property3: 'property 3',
+            property4: 'property 4'
+          };
+        }
+
+      }
+    });
+
+    const actual = geojsonify({}, input);
+
+    const expected = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ 21.212121, 12.121212 ]
+          },
+          properties: {
+            id: 'id 1',
+            gid: 'source 1:layer 1:id 1',
+            layer: 'layer 1',
+            source: 'source 1',
+            source_id: 'source_id 1',
+            name: 'name 1',
+            property1: 'property 1',
+            property2: 'property 2'
+          }
         },
-        'country_a': 'GBR',
-        'country': 'United Kingdom',
-        'dependency': 'dependency name',
-        'region': 'City And County Of The City Of London',
-        'region_a': 'COL',
-        'macroregion': 'England',
-        'county': 'Smithfield',
-        'localadmin': 'test1',
-        'locality': 'test2',
-        'neighbourhood': 'test3',
-        'label': 'label for id id2'
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ 31.313131, 13.131313 ]
+          },
+          properties: {
+            id: 'id 2',
+            gid: 'source 2:layer 2:id 2',
+            layer: 'layer 2',
+            source: 'source 2',
+            source_id: 'source_id 2',
+            name: 'name 2',
+            property3: 'property 3',
+            property4: 'property 4'
+          }
+        }
+      ],
+      bbox: [21.212121, 12.121212, 31.313131, 13.131313]
+    };
+
+    t.deepEquals(actual, expected);
+    t.end();
+
+  });
+
+  test('bounding_box should be calculated using polygons when avaiable', t => {
+    const input = [
+      {
+        _id: 'id 1',
+        source: 'source 1',
+        source_id: 'source_id 1',
+        layer: 'layer 1',
+        name: {
+          default: 'name 1',
+        },
+        bounding_box: {
+          min_lon: 1,
+          min_lat: 1,
+          max_lon: 2,
+          max_lat: 2
+        },
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        }
       },
       {
-        '_id': 'node:34633854',
-        '_type': 'venue',
-        'source': 'openstreetmap',
-        'source_id': 'source_id_3',
-        'layer': 'venue',
-        'name': {
-          'default': 'Empire State Building'
+        _id: 'id 2',
+        source: 'source 2',
+        source_id: 'source_id 2',
+        layer: 'layer 2',
+        name: {
+          default: 'name 2',
         },
-        'center_point': {
-          'lat': '40.748432',
-          'lon': '-73.985656'
+        bounding_box: {
+          min_lon: -3,
+          min_lat: -3,
+          max_lon: -1,
+          max_lat: -1
         },
-        'country_a': 'USA',
-        'country': 'United States',
-        'dependency': 'dependency name',
-        'region': 'New York',
-        'region_a': 'NY',
-        'county': 'New York',
-        'borough': 'Manhattan',
-        'locality': 'New York',
-        'neighbourhood': 'Koreatown',
-        'category': [
-          'tourism',
-          'transport'
-        ],
-        'label': 'label for id node:34633854'
+        center_point: {
+          lat: 13.131313,
+          lon: 31.313131
+        }
       }
     ];
 
-    var expected = {
-      'type': 'FeatureCollection',
-      'bbox': [ -73.985656, 40.748432, -0.101795, 51.5337144 ],
-      'features': [
-        {
-          'type': 'Feature',
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [
-              -0.1069716,
-              51.5337144
-            ]
-          },
-          'properties': {
-            'id': 'id1',
-            'gid': 'source1:layer1:id1',
-            'layer': 'layer1',
-            'source': 'source1',
-            'source_id': 'source_id_1',
-            'name': '\'Round Midnight Jazz and Blues Bar',
-            'country_a': 'GBR',
-            'country': 'United Kingdom',
-            'dependency': 'dependency name',
-            'macroregion': 'England',
-            'region': 'Islington',
-            'region_a': 'ISL',
-            'county': 'Angel',
-            'localadmin': 'test1',
-            'locality': 'test2',
-            'neighbourhood': 'test3',
-            'housenumber': '13',
-            'street': 'Liverpool Road',
-            'postalcode': 'N1 0RW',
-            'category': [
-              'food',
-              'nightlife'
-            ],
-            'label': 'label for id id1'
-          }
-        },
-        {
-          'type': 'Feature',
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [
-              -0.101795,
-              51.517806
-            ]
-          },
-          'properties': {
-            'id': 'id2',
-            'gid': 'source2:layer2:id2',
-            'layer': 'layer2',
-            'source': 'source2',
-            'source_id': 'source_id_2',
-            'name': 'Blues Cafe',
-            'country_a': 'GBR',
-            'country': 'United Kingdom',
-            'dependency': 'dependency name',
-            'macroregion': 'England',
-            'region': 'City And County Of The City Of London',
-            'region_a': 'COL',
-            'county': 'Smithfield',
-            'localadmin': 'test1',
-            'locality': 'test2',
-            'neighbourhood': 'test3',
-            'label': 'label for id id2'
-          }
-        },
-        {
-          'type': 'Feature',
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [
-              -73.985656,
-              40.748432
-            ]
-          },
-          'properties': {
-            'id': 'node:34633854',
-            'gid': 'openstreetmap:venue:node:34633854',
-            'layer': 'venue',
-            'source': 'openstreetmap',
-            'source_id': 'source_id_3',
-            'name': 'Empire State Building',
-            'country_a': 'USA',
-            'country': 'United States',
-            'dependency': 'dependency name',
-            'region': 'New York',
-            'region_a': 'NY',
-            'county': 'New York',
-            'borough': 'Manhattan',
-            'locality': 'New York',
-            'neighbourhood': 'Koreatown',
-            'category': [
-              'tourism',
-              'transport'
-            ],
-            'label': 'label for id node:34633854'
-          }
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      './geojsonify_place_details': (params, source, dst) => {
+        if (source._id === 'id 1') {
+          return {
+            property1: 'property 1',
+            property2: 'property 2'
+          };
+        } else if (source._id === 'id 2') {
+          return {
+            property3: 'property 3',
+            property4: 'property 4'
+          };
         }
-      ]
+
+      }
+    });
+
+    const actual = geojsonify({}, input);
+
+    const expected = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ 21.212121, 12.121212 ]
+          },
+          properties: {
+            id: 'id 1',
+            gid: 'source 1:layer 1:id 1',
+            layer: 'layer 1',
+            source: 'source 1',
+            source_id: 'source_id 1',
+            name: 'name 1',
+            property1: 'property 1',
+            property2: 'property 2'
+          },
+          bbox: [ 1, 1, 2, 2 ]
+        },
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ 31.313131, 13.131313 ]
+          },
+          properties: {
+            id: 'id 2',
+            gid: 'source 2:layer 2:id 2',
+            layer: 'layer 2',
+            source: 'source 2',
+            source_id: 'source_id 2',
+            name: 'name 2',
+            property3: 'property 3',
+            property4: 'property 4'
+          },
+          bbox: [ -3, -3, -1, -1 ]
+        }
+      ],
+      bbox: [ -3, -3, 2, 2 ]
     };
 
-    var json = geojsonify( {categories: 'foo'}, input );
-
-    t.deepEqual(json, expected, 'all docs mapped');
+    t.deepEquals(actual, expected);
     t.end();
+
   });
 
-  test('filtering out empty items', function (t) {
-    var input = [
+  test('bounding_box should be calculated using polygons AND points when avaiable', t => {
+    const input = [
       {
-        'bounding_box': {
-          'min_lat': 40.6514712164,
-          'max_lat': 40.6737320588,
-          'min_lon': -73.8967895508,
-          'max_lon': -73.8665771484
+        _id: 'id 1',
+        source: 'source 1',
+        source_id: 'source_id 1',
+        layer: 'layer 1',
+        name: {
+          default: 'name 1',
         },
-        'locality': [
-          'New York'
-        ],
-        'source': 'whosonfirst',
-        'layer': 'neighbourhood',
-        'population': 173198,
-        'popularity': 495,
-        'center_point': {
-          'lon': -73.881319,
-          'lat': 40.663303
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        }
+      },
+      {
+        _id: 'id 2',
+        source: 'source 2',
+        source_id: 'source_id 2',
+        layer: 'layer 2',
+        name: {
+          default: 'name 2',
         },
-        'name': {
-          'default': 'East New York'
+        bounding_box: {
+          min_lon: -3,
+          min_lat: -3,
+          max_lon: -1,
+          max_lat: -1
         },
-        'source_id': '85816607',
-        'category': ['government'],
-        '_id': '85816607',
-        '_type': 'neighbourhood',
-        '_score': 21.434,
-        'confidence': 0.888,
-        'country': [
-          'United States'
-        ],
-        'country_gid': [
-          '85633793'
-        ],
-        'country_a': [
-          'USA'
-        ],
-        'dependency': [
-          'dependency name'
-        ],
-        'dependency_gid': [
-          'dependency id'
-        ],
-        'dependency_a': [
-          'dependency abbrevation'
-        ],
-        'macroregion': [
-          'MacroRegion Name'
-        ],
-        'macroregion_gid': [
-          'MacroRegion Id'
-        ],
-        'macroregion_a': [
-          'MacroRegion Abbreviation'
-        ],
-        'region': [
-          'New York'
-        ],
-        'region_gid': [
-          '85688543'
-        ],
-        'region_a': [
-          'NY'
-        ],
-        'macrocounty': [
-          'MacroCounty Name'
-        ],
-        'macrocounty_gid': [
-          'MacroCounty Id'
-        ],
-        'macrocounty_a': [
-          'MacroCounty Abbreviation'
-        ],
-        'county': [
-          'Kings County'
-        ],
-        'county_gid': [
-          '102082361'
-        ],
-        'county_a': [
-          null
-        ],
-        'borough': [
-          'Brooklyn'
-        ],
-        'localadmin_gid': [
-          '404521211'
-        ],
-        'borough_a': [
-          null
-        ],
-        'locality_gid': [
-          '85977539'
-        ],
-        'locality_a': [
-          null
-        ],
-        'neighbourhood': [],
-        'neighbourhood_gid': [],
-        'label': 'label for id 85816607'
+        center_point: {
+          lat: 13.131313,
+          lon: 31.313131
+        }
       }
     ];
 
-    var expected = {
-      'type': 'FeatureCollection',
-      'bbox': [-73.8967895508, 40.6514712164, -73.8665771484, 40.6737320588],
-      'features': [
-        {
-          'type': 'Feature',
-          'properties': {
-            'id': '85816607',
-            'gid': 'whosonfirst:neighbourhood:85816607',
-            'layer': 'neighbourhood',
-            'source': 'whosonfirst',
-            'source_id': '85816607',
-            'name': 'East New York',
-            'category': ['government'],
-            'confidence': 0.888,
-            'country': 'United States',
-            'country_gid': '85633793',
-            'country_a': 'USA',
-            'dependency': 'dependency name',
-            'dependency_gid': 'dependency id',
-            'dependency_a': 'dependency abbrevation',
-            'macroregion': 'MacroRegion Name',
-            'macroregion_gid': 'MacroRegion Id',
-            'macroregion_a': 'MacroRegion Abbreviation',
-            'region': 'New York',
-            'region_gid': '85688543',
-            'region_a': 'NY',
-            'macrocounty': 'MacroCounty Name',
-            'macrocounty_gid': 'MacroCounty Id',
-            'macrocounty_a': 'MacroCounty Abbreviation',
-            'county': 'Kings County',
-            'borough': 'Brooklyn',
-            'county_gid': '102082361',
-            'localadmin_gid': '404521211',
-            'locality': 'New York',
-            'locality_gid': '85977539',
-            'label': 'label for id 85816607'
-          },
-          'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [
-              -73.881319,
-              40.663303
-            ]
-          }
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      './geojsonify_place_details': (params, source, dst) => {
+        if (source._id === 'id 1') {
+          return {
+            property1: 'property 1',
+            property2: 'property 2'
+          };
+        } else if (source._id === 'id 2') {
+          return {
+            property3: 'property 3',
+            property4: 'property 4'
+          };
         }
-      ]
+
+      }
+    });
+
+    const actual = geojsonify({}, input);
+
+    const expected = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ 21.212121, 12.121212 ]
+          },
+          properties: {
+            id: 'id 1',
+            gid: 'source 1:layer 1:id 1',
+            layer: 'layer 1',
+            source: 'source 1',
+            source_id: 'source_id 1',
+            name: 'name 1',
+            property1: 'property 1',
+            property2: 'property 2'
+          }
+        },
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ 31.313131, 13.131313 ]
+          },
+          properties: {
+            id: 'id 2',
+            gid: 'source 2:layer 2:id 2',
+            layer: 'layer 2',
+            source: 'source 2',
+            source_id: 'source_id 2',
+            name: 'name 2',
+            property3: 'property 3',
+            property4: 'property 4'
+          },
+          bbox: [ -3, -3, -1, -1 ]
+        }
+      ],
+      bbox: [ -3, -3, 21.212121, 12.121212 ]
     };
 
-    var json = geojsonify( {categories: 'foo'}, input );
-
-    t.deepEqual(json, expected, 'all wanted properties exposed');
+    t.deepEquals(actual, expected);
     t.end();
+
   });
+
 };
 
-module.exports.tests.categories = function (test, common) {
-  test('only set category if categories filter was used', function (t) {
-    var input = [
+module.exports.tests.non_optimal_conditions = (test, common) => {
+  test('null/undefined places should log warnings and be ignored', t => {
+    const logger = require('pelias-mock-logger')();
+
+    const input = [
+      null,
+      undefined,
       {
-        '_id': '85816607',
-        'bounding_box': {
-          'min_lat': 40.6514712164,
-          'max_lat': 40.6737320588,
-          'min_lon': -73.8967895508,
-          'max_lon': -73.8665771484
+        _id: 'id 1',
+        source: 'source 1',
+        source_id: 'source_id 1',
+        layer: 'layer 1',
+        name: {
+          default: 'name 1',
         },
-        'source': 'whosonfirst',
-        'layer': 'neighbourhood',
-        'center_point': {
-          'lon': -73.881319,
-          'lat': 40.663303
-        },
-        'name': {
-          'default': 'East New York'
-        },
-        'source_id': '85816607',
-        'category': ['government'],
-        'label': 'label for id 85816607'
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        }
       }
     ];
 
-    var expected = {
-      'type': 'FeatureCollection',
-      'bbox': [-73.8967895508, 40.6514712164, -73.8665771484, 40.6737320588],
-      'features': [
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      './geojsonify_place_details': (params, source, dst) => {
+        if (source._id === 'id 1') {
+          return {
+            property1: 'property 1',
+            property2: 'property 2'
+          };
+        }
+      },
+      'pelias-logger': logger
+    });
+
+    const actual = geojsonify({}, input);
+
+    const expected = {
+      type: 'FeatureCollection',
+      features: [
         {
-          'type': 'Feature',
-          'properties': {
-            'id': '85816607',
-            'gid': 'whosonfirst:neighbourhood:85816607',
-            'layer': 'neighbourhood',
-            'source': 'whosonfirst',
-            'source_id': '85816607',
-            'name': 'East New York',
-            'category': ['government'],
-            'label': 'label for id 85816607'
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ 21.212121, 12.121212 ]
           },
-          'bbox': [-73.8967895508,40.6514712164,-73.8665771484,40.6737320588],
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [
-              -73.881319,
-              40.663303
-            ]
+          properties: {
+            id: 'id 1',
+            gid: 'source 1:layer 1:id 1',
+            layer: 'layer 1',
+            source: 'source 1',
+            source_id: 'source_id 1',
+            name: 'name 1',
+            property1: 'property 1',
+            property2: 'property 2'
           }
         }
-      ]
+      ],
+      bbox: [21.212121, 12.121212, 21.212121, 12.121212]
     };
 
-    var json = geojsonify( {categories: 'foo'}, input );
-
-    t.deepEqual(json, expected, 'all wanted properties exposed');
+    t.deepEquals(actual, expected);
+    t.ok(logger.isWarnMessage('No doc or center_point property'));
     t.end();
+
   });
+
+  test('places w/o center_point should log warnings and be ignored', t => {
+    const logger = require('pelias-mock-logger')();
+
+    const input = [
+      {
+        _id: 'id 1',
+        source: 'source 1',
+        source_id: 'source_id 1',
+        layer: 'layer 1',
+        name: {
+          default: 'name 1',
+        }
+      },
+      {
+        _id: 'id 2',
+        source: 'source 2',
+        source_id: 'source_id 2',
+        layer: 'layer 2',
+        name: {
+          default: 'name 2',
+        },
+        center_point: {
+          lat: 13.131313,
+          lon: 31.313131
+        }
+      }
+    ];
+
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      './geojsonify_place_details': (params, source, dst) => {
+        if (source._id === 'id 2') {
+          return {
+            property3: 'property 3',
+            property4: 'property 4'
+          };
+        }
+      },
+      'pelias-logger': logger
+    });
+
+    const actual = geojsonify({}, input);
+
+    const expected = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ 31.313131, 13.131313 ]
+          },
+          properties: {
+            id: 'id 2',
+            gid: 'source 2:layer 2:id 2',
+            layer: 'layer 2',
+            source: 'source 2',
+            source_id: 'source_id 2',
+            name: 'name 2',
+            property3: 'property 3',
+            property4: 'property 4'
+          }
+        }
+      ],
+      bbox: [31.313131, 13.131313, 31.313131, 13.131313]
+    };
+
+    t.deepEquals(actual, expected);
+    t.ok(logger.isWarnMessage('No doc or center_point property'));
+    t.end();
+
+  });
+
+  test('places w/o names should log warnings and be ignored', t => {
+    const logger = require('pelias-mock-logger')();
+
+    const input = [
+      {
+        _id: 'id 1',
+        source: 'source 1',
+        source_id: 'source_id 1',
+        layer: 'layer 1',
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        }
+      },
+      {
+        _id: 'id 2',
+        source: 'source 2',
+        source_id: 'source_id 2',
+        layer: 'layer 2',
+        name: {},
+        center_point: {
+          lat: 13.131313,
+          lon: 31.313131
+        }
+      },
+      {
+        _id: 'id 3',
+        source: 'source 3',
+        source_id: 'source_id 3',
+        layer: 'layer 3',
+        name: {
+          default: 'name 3',
+        },
+        center_point: {
+          lat: 14.141414,
+          lon: 41.414141
+        }
+      }
+    ];
+
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      './geojsonify_place_details': (params, source, dst) => {
+        if (source._id === 'id 1') {
+          return {
+            property1: 'property 1',
+            property2: 'property 2'
+          };
+        } else if (source._id === 'id 2') {
+          return {
+            property3: 'property 3',
+            property4: 'property 4'
+          };
+        } else if (source._id === 'id 3') {
+          return {
+            property5: 'property 5',
+            property6: 'property 6'
+          };
+
+        }
+      },
+      'pelias-logger': logger
+    });
+
+    const actual = geojsonify({}, input);
+
+    const expected = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ 21.212121, 12.121212 ]
+          },
+          properties: {
+            id: 'id 1',
+            gid: 'source 1:layer 1:id 1',
+            layer: 'layer 1',
+            source: 'source 1',
+            source_id: 'source_id 1',
+            property1: 'property 1',
+            property2: 'property 2'
+          }
+        },
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ 31.313131, 13.131313 ]
+          },
+          properties: {
+            id: 'id 2',
+            gid: 'source 2:layer 2:id 2',
+            layer: 'layer 2',
+            source: 'source 2',
+            source_id: 'source_id 2',
+            property3: 'property 3',
+            property4: 'property 4'
+          }
+        },
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ 41.414141, 14.141414 ]
+          },
+          properties: {
+            id: 'id 3',
+            gid: 'source 3:layer 3:id 3',
+            layer: 'layer 3',
+            source: 'source 3',
+            source_id: 'source_id 3',
+            name: 'name 3',
+            property5: 'property 5',
+            property6: 'property 6'
+          }
+        }
+      ],
+      bbox: [21.212121, 12.121212, 41.414141, 14.141414]
+    };
+
+    t.deepEquals(actual, expected);
+    t.ok(logger.isWarnMessage('doc source 1:layer 1:id 1 does not contain name.default'));
+    t.ok(logger.isWarnMessage('doc source 2:layer 2:id 2 does not contain name.default'));
+    t.end();
+
+  });
+
+  test('no points', t => {
+    const logger = require('pelias-mock-logger')();
+
+    const input = [];
+
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      './geojsonify_place_details': (params, source, dst) => {
+        t.fail('should not have bee called');
+      },
+      'pelias-logger': logger
+    });
+
+    const actual = geojsonify({}, input);
+
+    const expected = {
+      type: 'FeatureCollection',
+      features: []
+    };
+
+    t.deepEquals(actual, expected);
+    t.end();
+
+  });
+
 };
 
-module.exports.all = function (tape, common) {
-
+module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape('geojsonify: ' + name, testFunction);
+    return tape(`geojsonify: ${name}`, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

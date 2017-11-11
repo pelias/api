@@ -21,14 +21,33 @@ example response from interpolation web service:
 }
 **/
 
+// The interpolation middleware layer uses async.map to iterate over the results
+//  since the interpolation service only operates on single inputs.  The problem
+//  with async.map is that if a single error is returned then the entire batch
+//  exits early.  This function wraps the service call to intercept the error so
+//  that async.map never returns an error.
+function error_intercepting_service(service, req) {
+  return (street_result, next) => {
+    service(req, street_result, (err, interpolation_result) => {
+      if (err) {
+        logger.error(`[middleware:interpolation] ${_.defaultTo(err.message, err)}`);
+        // now that the error has been caught and reported, act as if there was no error
+        return next(null, null);
+      }
+
+      // no error occurred, so pass along the result
+      return next(null, interpolation_result);
+
+    });
+  };
+}
+
 function setup(service, should_execute) {
   return function controller(req, res, next) {
+    // bail early if the service shouldn't execute
     if (!should_execute(req, res)) {
       return next();
     }
-
-    // bind the service to the req which doesn't change
-    const req_bound_service = _.partial(service, req);
 
     // only interpolate the street-layer results
     // save this off into a separate array so that when docs are annotated
@@ -37,12 +56,13 @@ function setup(service, should_execute) {
 
     // perform interpolations asynchronously for all relevant hits
     const start = (new Date()).getTime();
-    async.map(street_results, req_bound_service, (err, interpolation_results) => {
-      if (err) {
-        logger.error(`[middleware:interpolation] ${_.defaultTo(err.message, err)}`);
-        return next();
-      }
 
+    logger.info(`[interpolation] [street_results] count=${street_results.length}`);
+
+    // call the interpolation service asynchronously on every street result
+    async.map(street_results, error_intercepting_service(service, req), (err, interpolation_results) => {
+
+      // iterate the interpolation results, mapping back into the source results
       interpolation_results.forEach((interpolation_result, idx) => {
         const source_result = street_results[idx];
 

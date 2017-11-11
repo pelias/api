@@ -9,20 +9,15 @@ matrix:
   fast_finish: true
 env:
   global:
-    - CXX=g++-4.8
+    - BUILD_LEADER_ID=2
 script: npm run travis
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
 before_install:
   - npm i -g npm@^3.0.0
 before_script:
   - npm prune
 after_success:
-  - npm run semantic-release
+  - npm install -g npx
+  - npx -p node@8 npm run semantic-release
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
