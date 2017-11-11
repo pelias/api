@@ -11,7 +11,6 @@ module.exports = function parseIntersections(text) {
     if(text.trim().length > 1) {
         //   var words = text.toLowerCase().split(' ');
         var words = _.words(text.toLowerCase(), /[^ ]+/g);
-        console.log(words);
 
         // changes 'e15' to 'East 15', etc.
         words = directionalSanitizer(words);
@@ -133,4 +132,3 @@ function wordsToSentence(arr, start, end) {
     }
     return sentence;
 }
-

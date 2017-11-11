@@ -182,15 +182,15 @@ function generateIntersectionQuery(vs,clean) {
   let sort = {};
   if (shouldSort(vs)) {
     sort = {
-              "_geo_distance": {
-                  "order": "asc",
-                  "distance_type": "plane",
-                  "center_point": {
-                      "lat": clean['focus.point.lat'],
-                      "lon": clean['focus.point.lon']
+              '_geo_distance': {
+                  'order': 'asc',
+                  'distance_type': 'plane',
+                  'center_point': {
+                      'lat': clean['focus.point.lat'],
+                      'lon': clean['focus.point.lon']
                   }
               }
-    }
+    };
   }
 
   return {

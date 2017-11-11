@@ -7,7 +7,9 @@ const PARENT_PROPS = require('../helper/placeTypes');
 const ADDRESS_PROPS = [
   { name: 'number', newName: 'housenumber' },
   { name: 'zip',    newName: 'postalcode', transform: (value) => { return [value]; } },
-  { name: 'street', newName: 'street' }
+  { name: 'street', newName: 'street' },
+  { name: 'street1', newName: 'street1'},
+  { name: 'street2', newName: 'street2'}
 ];
 
 
