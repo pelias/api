@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const util = require('util');
 
 const searchService = require('../service/search');
 const logger = require('pelias-logger').get('api');
@@ -22,7 +21,6 @@ function setup( apiConfig, esclient, query, should_execute ){
     const debugLog = new Debug('controller:search');
 
     let cleanOutput = _.cloneDeep(req.clean);
-
     if (logging.isDNT(req)) {
       cleanOutput = logging.removeFields(cleanOutput);
     }

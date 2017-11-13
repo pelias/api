@@ -1,6 +1,3 @@
-/* eslint-disable */
-
-
 'use strict';
 
 const peliasQuery = require('pelias-query');

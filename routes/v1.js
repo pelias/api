@@ -143,7 +143,6 @@ function addRoutes(app, peliasConfig) {
   );
 
   const libpostalShouldExecute = all(
-    //not(isIntersectionLayer),
     not(hasResponseData),
     not(hasRequestErrors),
     not(isRequestSourcesOnlyWhosOnFirst)
@@ -221,7 +220,6 @@ function addRoutes(app, peliasConfig) {
   // call very old prod query if addressit was the parser
   const oldProdQueryShouldExecute = all(
     not(hasRequestErrors),
-    //not(isIntersectionLayer),
     isAddressItParse
   );
 
