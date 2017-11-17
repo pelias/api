@@ -19,7 +19,7 @@ function dedupeResults(req, res, next) {
 
     // Entur: Use display name as default name when set. To eliminate alias documents with identical display names.
       if (hit && hit.name && hit.name.display)  {
-        hit.name.alias = hit.name.default;
+       // Entur: ruins deduping: hit.name.alias = hit.name.default;
         hit.name.default = hit.name.display;
     }
 
