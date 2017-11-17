@@ -18,8 +18,9 @@ function dedupeResults(req, res, next) {
   _.some(res.data, function (hit) {
 
     // Entur: Use display name as default name when set. To eliminate alias documents with identical display names.
-      if (hit && hit.name && hit.name.display)  {
-       // Entur: ruins deduping: hit.name.alias = hit.name.default;
+    // Stash away alias
+      if (hit && hit.name && hit.name.display && hit.name.default !== hit.name.display)  {
+        hit.alias = hit.name.default;
         hit.name.default = hit.name.display;
     }
 
@@ -81,6 +82,13 @@ function isPreferred(existing, candidateReplacement) {
 
   //bind the trumps function to the data items to keep the rest of the function clean
   var trumpsFunc = trumps.bind(null, existing, candidateReplacement);
+
+  // Entur: Prefer original documents over alias records
+   if (existing.alias && !candidateReplacement.alias) {
+       return true;
+   } else if (candidateReplacement.alias && !existing.alias) {
+       return false;
+   }
 
   return trumpsFunc('geonames', 'whosonfirst') || // WOF has bbox and is generally preferred
          trumpsFunc('openstreetmap', 'openaddresses') || // addresses are better in OA

@@ -17,8 +17,8 @@ function assignLabel(req, res, next, labelGenerator) {
 
   res.data.forEach(function (result) {
       // Entur: Use display name as default name when set. To display alias documents by their proper name
-      if (result && result.name && result.name.alias && result.name.alias !== result.name.default) {
-          result.label = result.name.display +  ' (' + result.name.alias + ')';
+      if (result && result.alias && result.alias !== result.name.default) {
+          result.label = result.name.display +  ' (' + result.alias + ')';
       } else if (result && result.name && result.name.default && result.category && result.category.includes('airport')) {
           // Entur: Do not display municipality for airports
           result.label=result.name.default;
