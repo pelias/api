@@ -93,7 +93,7 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
   var dkAddressWithUnit = {
     '_id': 'test5',
     '_type': 'test',
-    'name': { 'default': '26 2 th Nikolaj Plads' },
+    'name': { 'default': '26 Nikolaj Plads 2 th' },
     'center_point': { 'lon': 12.580921, 'lat': 55.678665 },
     'address_parts': {
        'zip': '1067',

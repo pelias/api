@@ -45,12 +45,18 @@ function applyLocalNamingConventions(req, res, next) {
 // flip the housenumber and street name
 // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
 function flipNumberAndStreet(place) {
-  var unit = '';
+  var standard = ( [ place.address_parts.number, place.address_parts.street ] ),
+      flipped  = ( [ place.address_parts.street, place.address_parts.number ] );
+
+  // unit attribte added if set
   if(place.address_parts.hasOwnProperty('unit')) {
-    unit = ' ' + place.address_parts.unit;
+    standard.push(place.address_parts.unit);
+    flipped.push(place.address_parts.unit);
   }
-  var standard = ( place.address_parts.number + unit + ' ' + place.address_parts.street ),
-      flipped  = ( place.address_parts.street + ' ' + place.address_parts.number + unit );
+  
+  // join into strings
+  standard = standard.join(' ');
+  flipped = flipped.join(' ');
 
   // flip street name and housenumber
   if( place.name.default === standard ){
