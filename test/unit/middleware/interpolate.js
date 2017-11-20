@@ -59,6 +59,7 @@ module.exports.tests.success_conditions = (test, common) => {
     controller(req, undefined, () => {
       t.notOk(logger.hasErrorMessages(), 'there shouldn\'t be any error messages');
       t.ok(logger.isInfoMessage(/\[interpolation\] \[took\] \d+ ms/));
+      t.ok(logger.isInfoMessage(/\[interpolation\] \[street_results\] count=0/));
       t.end();
 
     });
@@ -87,6 +88,7 @@ module.exports.tests.success_conditions = (test, common) => {
     controller(req, res, () => {
       t.notOk(logger.hasErrorMessages(), 'there shouldn\'t be any error messages');
       t.ok(logger.isInfoMessage(/\[interpolation\] \[took\] \d+ ms/));
+      t.ok(logger.isInfoMessage(/\[interpolation\] \[street_results\] count=0/));
 
       t.deepEquals(res, {});
 
@@ -201,6 +203,7 @@ module.exports.tests.success_conditions = (test, common) => {
     controller(req, res, () => {
       t.notOk(logger.hasErrorMessages(), 'there shouldn\'t be any error messages');
       t.ok(logger.isInfoMessage(/\[interpolation\] \[took\] \d+ ms/), 'timing should be info-logged');
+      t.ok(logger.isInfoMessage(/\[interpolation\] \[street_results\] count=3/), 'street count should be info-logged');
 
       // test debug messages very vaguely to avoid brittle tests
       t.ok(logger.isDebugMessage(/^\[interpolation\] \[hit\] this is req.clean.parsed_text \{.+?\}$/),
@@ -375,6 +378,7 @@ module.exports.tests.success_conditions = (test, common) => {
         '[middleware:interpolation] id 3 produced an error object'
       ]);
       t.ok(logger.isInfoMessage(/\[interpolation\] \[took\] \d+ ms/), 'timing should be info-logged');
+      t.ok(logger.isInfoMessage(/\[interpolation\] \[street_results\] count=4/), 'street count should be info-logged');
 
       // test debug messages very vaguely to avoid brittle tests
       t.ok(logger.isDebugMessage(/^\[interpolation\] \[hit\] this is req.clean.parsed_text \{.+?\}$/),
@@ -491,6 +495,7 @@ module.exports.tests.success_conditions = (test, common) => {
     controller(req, res, () => {
       t.notOk(logger.hasErrorMessages(), 'there shouldn\'t be any error messages');
       t.ok(logger.isInfoMessage(/\[interpolation\] \[took\] \d+ ms/));
+      t.ok(logger.isInfoMessage(/\[interpolation\] \[street_results\] count=1/), 'street count should be info-logged');
 
       t.deepEquals(res, {
         data: [
@@ -579,6 +584,7 @@ module.exports.tests.success_conditions = (test, common) => {
     controller(req, res, () => {
       t.notOk(logger.hasErrorMessages(), 'there shouldn\'t be any error messages');
       t.ok(logger.isInfoMessage(/\[interpolation\] \[took\] \d+ ms/));
+      t.ok(logger.isInfoMessage(/\[interpolation\] \[street_results\] count=2/), 'street count should be info-logged');
 
       // test debug messages very vaguely to avoid brittle tests
       t.ok(logger.isDebugMessage('[interpolation] [miss] this is req.clean.parsed_text'));
@@ -679,6 +685,7 @@ module.exports.tests.success_conditions = (test, common) => {
     controller(req, res, () => {
       t.notOk(logger.hasErrorMessages(), 'there shouldn\'t be any error messages');
       t.ok(logger.isInfoMessage(/\[interpolation\] \[took\] \d+ ms/));
+      t.ok(logger.isInfoMessage(/\[interpolation\] \[street_results\] count=2/), 'street count should be info-logged');
 
       // test debug messages very vaguely to avoid brittle tests
       t.ok(logger.isDebugMessage('[interpolation] [miss] this is req.clean.parsed_text'));
