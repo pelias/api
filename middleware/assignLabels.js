@@ -19,9 +19,9 @@ function assignLabel(req, res, next, labelGenerator) {
       // Entur: Use display name as default name when set. To display alias documents by their proper name
       if (result && result.alias && result.alias !== result.name.default) {
           result.label = result.name.display +  ' (' + result.alias + ')';
-      } else if (result && result.name && result.name.default && result.category && result.category.includes('airport')) {
-          // Entur: Do not display municipality for airports
-          result.label=result.name.default;
+      // } else if (result && result.name && result.name.default && result.category && result.category.includes('airport')) {
+      //     // Entur: Do not display municipality for airports
+      //     result.label=result.name.default;
       }  else {
           result.label = labelGenerator(result);
           // Entur - override default behaviour in pelias-labels deduping ', locality' part
