@@ -62,7 +62,6 @@
     "pelias-model": "5.2.0",
     "pelias-query": "9.1.1",
     "pelias-sorting": "1.1.0",
-    "pelias-text-analyzer": "1.10.2",
     "predicates": "^2.0.0",
     "retry": "^0.10.1",
     "stats-lite": "^2.0.4",

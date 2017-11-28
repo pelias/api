@@ -1,18 +1,14 @@
 const _ = require('lodash');
 const proxyquire =  require('proxyquire').noCallThru();
+const sanitizer = require('../../../sanitizer/_synthesize_analysis');
 
 module.exports.tests = {};
 
 module.exports.tests.text_parser = function(test, common) {
   test('all variables should be parsed', function(t) {
-    var sanitizer = proxyquire('../../../sanitizer/_synthesize_analysis', {
-      'pelias-text-analyzer': { parse: function(query) {
-        t.fail('parse should not have been called');
-      }
-    }});
-
     const raw = {
       venue: ' \t venue \t value \t ',
+      address: ' \t address \t value \t ',
       neighbourhood: ' \t neighbourhood \t value \t ',
       borough: ' \t borough \t value \t ',
       locality: ' \t locality \t value \t ',
@@ -27,6 +23,7 @@ module.exports.tests.text_parser = function(test, common) {
     const expected_clean = {
       parsed_text: {
         query: 'venue value',
+        address: 'address value',
         neighbourhood: 'neighbourhood value',
         borough: 'borough value',
         city: 'locality value',
@@ -47,12 +44,6 @@ module.exports.tests.text_parser = function(test, common) {
   });
 
   test('non-string and blank string values should be treated as not supplied', function(t) {
-    var sanitizer = proxyquire('../../../sanitizer/_synthesize_analysis', {
-      'pelias-text-analyzer': { parse: function(query) {
-        t.fail('parse should not have been called');
-      }
-    }});
-
     // helper to return a random value that's considered invalid
     function getInvalidValue() {
       return _.sample([{}, [], false, '', ' \t ', 17, undefined]);
@@ -87,12 +78,6 @@ module.exports.tests.text_parser = function(test, common) {
   });
 
   test('no supplied fields should return error', function(t) {
-    var sanitizer = proxyquire('../../../sanitizer/_synthesize_analysis', {
-      'pelias-text-analyzer': { parse: function(query) {
-        t.fail('parse should not have been called');
-      }
-    }});
-
     const raw = {};
 
     const clean = {};
@@ -110,12 +95,6 @@ module.exports.tests.text_parser = function(test, common) {
   });
 
   test('postalcode-only parsed_text should return error', function(t) {
-    var sanitizer = proxyquire('../../../sanitizer/_synthesize_analysis', {
-      'pelias-text-analyzer': { parse: function(query) {
-        t.fail('parse should not have been called');
-      }
-    }});
-
     const raw = {
       postalcode: 'postalcode value'
     };
@@ -125,132 +104,6 @@ module.exports.tests.text_parser = function(test, common) {
     const expected_clean = {
       parsed_text: {
         postalcode: 'postalcode value'
-      }
-    };
-
-    const messages = sanitizer().sanitize(raw, clean);
-
-    t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, [], 'no errors');
-    t.deepEquals(messages.warnings, [], 'no warnings');
-    t.end();
-
-  });
-
-  test('text_analyzer identifying house number should extract it and street', function(t) {
-    var sanitizer = proxyquire('../../../sanitizer/_synthesize_analysis', {
-      'pelias-text-analyzer': { parse: function(query) {
-        t.equals(query, 'Number Value Street Value Number Value');
-
-        return {
-          number: 'Number Value'
-        };
-      }
-    }});
-
-    const raw = {
-      address: 'Number Value Street Value Number Value'
-    };
-
-    const clean = {};
-
-    const expected_clean = {
-      parsed_text: {
-        number: 'Number Value',
-        street: 'Street Value Number Value'
-      }
-    };
-
-    const messages = sanitizer().sanitize(raw, clean);
-
-    t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, [], 'no errors');
-    t.deepEquals(messages.warnings, [], 'no warnings');
-    t.end();
-
-  });
-
-  test('text_analyzer identifying postalcode but not house number should assign to number and remove from address', function(t) {
-    var sanitizer = proxyquire('../../../sanitizer/_synthesize_analysis', {
-      'pelias-text-analyzer': { parse: function(query) {
-        t.equals(query, 'Number Value Street Value Number Value');
-
-        return {
-          postalcode: 'Number Value'
-        };
-      }
-    }});
-
-    const raw = {
-      address: 'Number Value Street Value Number Value'
-    };
-
-    const clean = {};
-
-    const expected_clean = {
-      parsed_text: {
-        number: 'Number Value',
-        street: 'Street Value Number Value'
-      }
-    };
-
-    const messages = sanitizer().sanitize(raw, clean);
-
-    t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, [], 'no errors');
-    t.deepEquals(messages.warnings, [], 'no warnings');
-    t.end();
-
-  });
-
-  test('text_analyzer not revealing possible number should move address to street', function(t) {
-    var sanitizer = proxyquire('../../../sanitizer/_synthesize_analysis', {
-      'pelias-text-analyzer': { parse: function(query) {
-        t.equals(query, 'Street Value');
-
-        return {};
-      }
-    }});
-
-    const raw = {
-      address: 'Street Value'
-    };
-
-    const clean = {};
-
-    const expected_clean = {
-      parsed_text: {
-        street: 'Street Value'
-      }
-    };
-
-    const messages = sanitizer().sanitize(raw, clean);
-
-    t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, [], 'no errors');
-    t.deepEquals(messages.warnings, [], 'no warnings');
-    t.end();
-
-  });
-
-  test('text_analyzer returning undefined on address resolution should treat as if no house number field was found', t => {
-    var sanitizer = proxyquire('../../../sanitizer/_synthesize_analysis', {
-      'pelias-text-analyzer': { parse: function(query) {
-        t.equals(query, 'Street Value');
-
-        return undefined;
-      }
-    }});
-
-    const raw = {
-      address: 'Street Value'
-    };
-
-    const clean = {};
-
-    const expected_clean = {
-      parsed_text: {
-        street: 'Street Value'
       }
     };
 
