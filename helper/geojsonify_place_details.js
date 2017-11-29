@@ -57,7 +57,7 @@ const DETAILS_PROPS = [
   { name: 'marinearea_a',      type: 'string' },
   { name: 'bounding_box',      type: 'default' },
   { name: 'label',             type: 'string' },
-  { name: 'category',          type: 'array',     condition: checkCategoryParam }
+  { name: 'category',          type: 'array' }
 ];
 
 // returns true IFF source a country_gid property
