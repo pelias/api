@@ -498,11 +498,12 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
 
   });
 
-  test('category property should not be output when params does not contain \'category\' property', t => {
+  test('category property should be output even when params does not contain \'category\' property', t => {
     const source = {
       category: [ 1, 2 ]
     };
     const expected = {
+      category: [ 1, 2 ]
     };
 
     const clean = {};
@@ -514,11 +515,12 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
 
   });
 
-  test('category property should not be output when params is not an object', t => {
+  test('category property should be output when params is not an object', t => {
     const source = {
       category: [ 1, 2 ]
     };
     const expected = {
+      category: [ 1, 2 ]
     };
 
     const clean = 'this is not an object';
