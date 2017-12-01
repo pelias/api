@@ -38,7 +38,7 @@ function setup( apiConfig, esclient ){
     const cmd = req.clean.ids.map( function(id) {
       return {
         _index: apiConfig.indexName,
-        _type: id.layers,
+        _type: id.layer,
         _id: id.id
       };
     });

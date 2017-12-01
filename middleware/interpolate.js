@@ -57,6 +57,8 @@ function setup(service, should_execute) {
     // perform interpolations asynchronously for all relevant hits
     const start = (new Date()).getTime();
 
+    logger.info(`[interpolation] [street_results] count=${street_results.length}`);
+
     // call the interpolation service asynchronously on every street result
     async.map(street_results, error_intercepting_service(service, req), (err, interpolation_results) => {
 

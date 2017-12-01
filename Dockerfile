@@ -1,5 +1,5 @@
 # base image
-FROM pelias/libpostal_baseimage
+FROM pelias/baseimage
 
 # maintainer information
 LABEL maintainer="pelias@mapzen.com"

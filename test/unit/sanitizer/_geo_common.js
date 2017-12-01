@@ -216,8 +216,8 @@ module.exports.tests.rect = function(test, common) {
   test('valid rect quad', function (t) {
     var clean = {};
     var params = {
-      'boundary.rect.min_lat': -40.659,
-      'boundary.rect.max_lat': -41.614,
+      'boundary.rect.min_lat': -41.614,
+      'boundary.rect.max_lat': -40.659,
       'boundary.rect.min_lon': 174.612,
       'boundary.rect.max_lon': 176.333
     };
@@ -283,6 +283,21 @@ module.exports.tests.rect = function(test, common) {
     t.end();
   });
 
+  test('invalid rect - max/min switched', function (t) {
+    var clean = {};
+    var params = {
+      'boundary.rect.max_lat': 52.2387,
+      'boundary.rect.max_lon': 14.1367,
+      'boundary.rect.min_lat': 52.7945,
+      'boundary.rect.min_lon': 12.6398
+    };
+    var mandatory = false;
+
+    t.throws( function() {
+      sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
+    });
+    t.end();
+  });
 };
 
 module.exports.tests.circle = function(test, common) {
