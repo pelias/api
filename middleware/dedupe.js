@@ -64,13 +64,13 @@ function dedupeResults(req, res, next) {
 
 function isPreferred(existing, candidateReplacement) {
   // NOTE: we are assuming here that the layer for both records is the same
-
-  var isOA = _.flow(_.property('source'), _.eq.bind(null, 'openaddresses'));
-  var hasZip = _.bind(_.has, null, _.bind.placeholder, 'address_parts.zip');
+  const hasZip = _.bind(_.has, null, _.bind.placeholder, 'address_parts.zip');
 
   // https://github.com/pelias/api/issues/872
-  if (isOA(existing) && isOA(candidateReplacement)) {
-    return hasZip(candidateReplacement) && !hasZip(existing);
+  const candidateHasZip = hasZip(candidateReplacement);
+  const existingHasZip = hasZip(existing);
+  if (candidateHasZip !== existingHasZip) {
+    return candidateHasZip;
   }
 
   //bind the trumps function to the data items to keep the rest of the function clean
