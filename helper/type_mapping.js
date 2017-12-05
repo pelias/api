@@ -30,7 +30,7 @@ var SOURCE_ALIASES = {
   'osm': ['openstreetmap'],
   'oa': ['openaddresses'],
   'gn': ['geonames'],
-  'gnm': ['geonames-mil'],
+  'gnm': ['geonamesmil'],
   'wof': ['whosonfirst']
 };
 
