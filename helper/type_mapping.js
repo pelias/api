@@ -20,7 +20,7 @@ var SOURCES = [
   'openstreetmap',
   'openaddresses',
   'geonames',
-  'geonames-mil',
+  'geonamesmil',
   'whosonfirst'];
 
 /*
@@ -54,7 +54,7 @@ var LAYERS_BY_SOURCE = {
   openaddresses: [ 'address' ],
   geonames: [ 'country', 'macroregion', 'region', 'county','localadmin',
     'locality','borough', 'neighbourhood', 'venue' ],
-  geonames-mil: [ 'country', 'macroregion', 'region', 'county','localadmin',
+  geonamesmil: [ 'country', 'macroregion', 'region', 'county','localadmin',
     'locality','borough', 'neighbourhood', 'venue' ],
   whosonfirst: [ 'continent', 'empire', 'country', 'dependency', 'macroregion', 'region',
     'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',

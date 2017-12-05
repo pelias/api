@@ -43,7 +43,7 @@ function normalizeParentIds(place) {
         // it's always WOF ids and hardcode to that
         if (place.source === 'geonames' && place.source_id === placetype_ids[0]) {
           source = place.source;
-        } elseif (place.source === 'geonames-mil' && place.source_id === placetype_ids[0]) {
+        } elseif (place.source === 'geonamesmil' && place.source_id === placetype_ids[0]) {
           source = place.source; {
         }
 
