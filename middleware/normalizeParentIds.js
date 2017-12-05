@@ -44,7 +44,7 @@ function normalizeParentIds(place) {
         if (place.source === 'geonames' && place.source_id === placetype_ids[0]) {
           source = place.source;
         } elseif (place.source === 'geonamesmil' && place.source_id === placetype_ids[0]) {
-          source = place.source; {
+          source = place.source;
         }
 
         place[`${placeType}_gid`] = [ makeNewId(source, placeType, placetype_ids[0]) ];
