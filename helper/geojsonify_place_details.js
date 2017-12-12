@@ -57,7 +57,8 @@ const DETAILS_PROPS = [
   { name: 'marinearea_a',      type: 'string' },
   { name: 'bounding_box',      type: 'default' },
   { name: 'label',             type: 'string' },
-  { name: 'category',          type: 'array'} //,     condition: checkCategoryParam } Entur: Always return categories
+  { name: 'category',          type: 'array'}, //,     condition: checkCategoryParam } Entur: Always return categories
+  { name: 'tariff_zones',      type: 'array'} // Entur: Custom type tariff_zones
 ];
 
 // returns true IFF source a country_gid property
