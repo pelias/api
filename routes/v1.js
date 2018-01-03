@@ -29,12 +29,12 @@ var controllers = {
   coarse_reverse: require('../controller/coarse_reverse'),
   mdToHTML: require('../controller/markdownToHtml'),
   libpostal: require('../controller/libpostal'),
-  structured_libpostal: require('../controller/structured_libpostal'),
   place: require('../controller/place'),
   placeholder: require('../controller/placeholder'),
   search: require('../controller/search'),
   search_with_ids: require('../controller/search_with_ids'),
-  status: require('../controller/status')
+  status: require('../controller/status'),
+  convert: require('../controller/convert')
 };
 
 var queries = {
@@ -97,7 +97,6 @@ const PlaceHolder = require('../service/configurations/PlaceHolder');
 const PointInPolygon = require('../service/configurations/PointInPolygon');
 const Language = require('../service/configurations/Language');
 const Interpolation = require('../service/configurations/Interpolation');
-const Libpostal = require('../service/configurations/Libpostal');
 
 /**
  * Append routes to app
@@ -124,18 +123,6 @@ function addRoutes(app, peliasConfig) {
   const interpolationService = serviceWrapper(interpolationConfiguration);
   const isInterpolationEnabled = _.constant(interpolationConfiguration.isEnabled());
 
-  // standard libpostal should use req.clean.text for the `address` parameter
-  const libpostalConfiguration = new Libpostal(
-    _.defaultTo(peliasConfig.api.services.libpostal, {}),
-    _.property('clean.text'));
-  const libpostalService = serviceWrapper(libpostalConfiguration);
-
-  // structured libpostal should use req.clean.parsed_text.address for the `address` parameter
-  const structuredLibpostalConfiguration = new Libpostal(
-    _.defaultTo(peliasConfig.api.services.libpostal, {}),
-    _.property('clean.parsed_text.address'));
-  const structuredLibpostalService = serviceWrapper(structuredLibpostalConfiguration);
-
   // fallback to coarse reverse when regular reverse didn't return anything
   const coarseReverseShouldExecute = all(
     isPipServiceEnabled, not(hasRequestErrors), not(hasResponseData)
@@ -144,12 +131,6 @@ function addRoutes(app, peliasConfig) {
   const libpostalShouldExecute = all(
     not(hasRequestErrors),
     not(isRequestSourcesOnlyWhosOnFirst)
-  );
-
-  // for libpostal to execute for structured requests, req.clean.parsed_text.address must exist
-  const structuredLibpostalShouldExecute = all(
-    not(hasRequestErrors),
-    hasParsedTextProperties.all('address')
   );
 
   // execute placeholder if libpostal only parsed as admin-only and needs to
@@ -276,7 +257,7 @@ function addRoutes(app, peliasConfig) {
       sanitizers.search.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.calcSize(),
-      controllers.libpostal(libpostalService, libpostalShouldExecute),
+      controllers.libpostal(libpostalShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersDontApply, placeholderIdsLookupShouldExecute),
       controllers.search_with_ids(peliasConfig.api, esclient, queries.address_using_ids, searchWithIdsShouldExecute),
@@ -306,7 +287,6 @@ function addRoutes(app, peliasConfig) {
       sanitizers.structured_geocoding.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.calcSize(),
-      controllers.structured_libpostal(structuredLibpostalService, structuredLibpostalShouldExecute),
       controllers.search(peliasConfig.api, esclient, queries.structured_geocoding, not(hasResponseDataOrRequestErrors)),
       postProc.trimByGranularityStructured(),
       postProc.distances('focus.point.'),
@@ -398,6 +378,9 @@ function addRoutes(app, peliasConfig) {
     ]),
     status: createRouter([
       controllers.status
+    ]),
+    convert: createRouter([
+      controllers.convert
     ])
   };
 
@@ -407,6 +390,7 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'attribution',          routers.attribution );
   app.get (        '/attribution',         routers.attribution );
   app.get (        '/status',              routers.status );
+  app.get ( base + 'convert',              routers.convert );
 
   // backend dependent endpoints
   app.get ( base + 'place',                routers.place );
