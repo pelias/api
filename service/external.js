@@ -1,18 +1,23 @@
-const request = require('request');
-const logger = require('pelias-logger').get('api');
-
 "use strict";
 
-async function geotrans(coord) { 
-    let result;
-    request(`http://10.0.2.62:3150?datum=WGE&coord=${coord}`, function (error, response, body) {
-        logger.info(response.body);
-        result = response.body;
-    });
-    return result;
-    
-}
+const axios = require('axios');
+const geotransIP = process.env.GEOTRANS_IP;
 
+function geotrans(coord) { 
+    let result;
+    return axios.get(`http://${geotransIP}:3150`, {
+        params:{
+            'datum':'WGE',
+            'coord':coord
+        }
+    })
+    .then(function (response){
+        return response.data;
+    }).catch(function (reason){
+        return reason;
+    });
+}
+  
 module.exports = {
     geotrans: geotrans
 };
