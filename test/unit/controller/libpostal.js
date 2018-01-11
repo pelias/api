@@ -186,6 +186,10 @@ module.exports.tests.success_conditions = (test, common) => {
           value: 'house value'
         },
         {
+          label: 'unit',
+          value: 'unit value'
+        },
+        {
           label: 'house_number',
           value: 'house_number value'
         },
@@ -244,6 +248,7 @@ module.exports.tests.success_conditions = (test, common) => {
             island: 'island value',
             category: 'category value',
             query: 'house value',
+            unit: 'unit value',
             number: 'house_number value',
             street: 'road value',
             neighbourhood: 'suburb value',

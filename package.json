@@ -62,7 +62,6 @@
     "pelias-model": "sweco-semhul/model#adding-address-unit",
     "pelias-query": "sweco-semhul/query#adding-address-unit",
     "pelias-sorting": "1.1.0",
-    "pelias-text-analyzer": "sweco-semhul/text-analyzer#adding-address-unit",
     "predicates": "^2.0.0",
     "retry": "^0.10.1",
     "stats-lite": "^2.0.4",
