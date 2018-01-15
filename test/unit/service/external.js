@@ -34,7 +34,7 @@ module.exports.tests.functionality = (test, common) => {
       });
       
     });
-    /*test('error thrown', (t) => {
+    test('response received', (t) => {
       var service = proxyquire('../../../service/external', {
         'logger': {
           get: (section) => {
@@ -44,12 +44,12 @@ module.exports.tests.functionality = (test, common) => {
       });
 
       service.geotrans('18TXM9963493438').then(function(response){
-        
-        t.equal(response, { 'type': 'Feature', 'geometry': { 'type': 'Point', 'coordinates': [ -72.57553258519015, 42.367593344066776 ] }, 'properties': { 'name': '18TXM9963493438' } }, 'Geotrans conversion succeeds and properties are added');
+        let res = { 'type': 'Feature', 'geometry': { 'type': 'Point', 'coordinates': [ -72.57553258519015, 42.367593344066776 ] }, 'properties': { 'name': '18TXM9963493438' } };
+        t.equal(response.toString(), res.toString(), 'Geotrans conversion succeeds and properties are added');
         t.end();
       });
       
-    });*/
+    });
   };
 
 module.exports.all = (tape, common) => {
