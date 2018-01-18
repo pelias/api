@@ -22,6 +22,13 @@ function dedupeResults(req, res, next) {
       if (hit && hit.name && hit.name.display && hit.name.default !== hit.name.display)  {
         hit.alias = hit.name.default;
         hit.name.default = hit.name.display;
+        // Entur This is an alias, strip alias suffix from source-id
+        if (hit._id) {
+            var startOfAliasSuffix = hit._id.lastIndexOf('-');
+            if (startOfAliasSuffix > 0) {
+                hit._id = hit._id.substr(0, startOfAliasSuffix);
+            }
+        }
     }
 
     if (_.isEmpty(uniqueResults)) {
