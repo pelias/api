@@ -39,12 +39,14 @@ function normalizeParentIds(place) {
         const placetype_ids = _.get(place, `${placeType}_gid`, [null]);
 
         // looking forward to the day we can remove all geonames specific hacks, but until then...
-        // geonames sometimes has its own ids in the parent hierarchy, so it's dangerous to assume that 
+        // geonames sometimes has its own ids in the parent hierarchy, so it's dangerous to assume that
         // it's always WOF ids and hardcode to that
         if (place.source === 'geonames' && place.source_id === placetype_ids[0]) {
           source = place.source;
+        } else if (place.source === 'geonamesmil' && place.source_id === placetype_ids[0]) {
+          source = place.source;
         }
-        
+
         place[`${placeType}_gid`] = [ makeNewId(source, placeType, placetype_ids[0]) ];
       }
     });

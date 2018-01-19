@@ -77,6 +77,7 @@ function isPreferred(existing, candidateReplacement) {
   var trumpsFunc = trumps.bind(null, existing, candidateReplacement);
 
   return trumpsFunc('geonames', 'whosonfirst') || // WOF has bbox and is generally preferred
+         trumpsFunc('geonamesmil', 'whosonfirst') || // WOF has bbox and is generally preferred
          trumpsFunc('openstreetmap', 'openaddresses') || // addresses are better in OA
          trumpsFunc('whosonfirst', 'openstreetmap'); // venues are better in OSM, at this time
 }

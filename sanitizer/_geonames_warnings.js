@@ -31,6 +31,19 @@ function _sanitize( raw, clean ){
 
   }
 
+  // the analysis is admin-only, so add errors or warnings if geonames.mil was requested
+  if (_.isEqual(clean.sources, ['geonamesmil'])) {
+    // if requested sources is only geonames, return an error
+    messages.errors.push('input contains only administrative area data, ' +
+      'no results will be returned when sources=geonamesmil');
+
+  } else if (_.includes(clean.sources, 'geonamesmil')) {
+    // if there are other sources besides geonames, return an warning
+    messages.warnings.push('input contains only administrative area data, ' +
+      'geonamesmil results will not be returned');
+
+  }
+
   return messages;
 }
 

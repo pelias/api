@@ -132,6 +132,7 @@ $ curl localhost:9200/pelias/_count?pretty
 }
 ```
 
+<!---
 ### Continuous Integration
 
 Travis tests every release against Node.js versions `4` and `6`.
@@ -144,3 +145,4 @@ Travis tests every release against Node.js versions `4` and `6`.
 We rely on semantic-release and Greenkeeper to maintain our module and dependency versions.
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/pelias/api.svg)](https://greenkeeper.io/)
+ --->

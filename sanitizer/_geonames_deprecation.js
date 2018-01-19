@@ -29,6 +29,14 @@ function _sanitize( raw, clean, opts ) {
     messages.warnings.push(coarse_reverse_message);
   }
 
+  if (_.isEqual(clean.sources, ['geonamesmil']) || _.isEqual(clean.sources, ['gnm'])) {
+    messages.errors.push(coarse_reverse_message);
+
+  } else if (_.includes(clean.sources, 'geonamesmil') || _.includes(clean.sources, 'gnm')) {
+    clean.sources = _.without(clean.sources, 'geonamesmil', 'gnm');
+    messages.warnings.push(coarse_reverse_message);
+  }
+
   return messages;
 
 }
