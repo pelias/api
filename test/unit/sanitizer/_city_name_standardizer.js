@@ -48,7 +48,7 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
-  test('\'saint\' should be abbreviated to \'st\' wherever it appears in the city', function(t) {
+  test('\'st\' should be expanded to \'saint\' wherever it appears in the city', function(t) {
     const raw = {};
 
     const clean = {
@@ -56,7 +56,7 @@ module.exports.tests.text_parser = function(test, common) {
         query: 'saint query value',
         neighbourhood: 'saint neighbourhood value',
         borough: 'saint borough value',
-        city: 'SainT city sAiNt value saInt',
+        city: 'st city ST value St',
         county: 'saint county value',
         state: 'saint state value',
         postalcode: 'saint postalcode value',
@@ -69,7 +69,7 @@ module.exports.tests.text_parser = function(test, common) {
         query: 'saint query value',
         neighbourhood: 'saint neighbourhood value',
         borough: 'saint borough value',
-        city: 'st city st value st',
+        city: 'saint city saint value saint',
         county: 'saint county value',
         state: 'saint state value',
         postalcode: 'saint postalcode value',
@@ -86,7 +86,7 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
-  test('\'sainte\' should be abbreviated to \'ste\' wherever it appears in the city', function(t) {
+  test('\'ste\' should be expanded to \'sainte\' wherever it appears in the city', function(t) {
     const raw = {};
 
     const clean = {
@@ -94,7 +94,7 @@ module.exports.tests.text_parser = function(test, common) {
         query: 'sainte query value',
         neighbourhood: 'sainte neighbourhood value',
         borough: 'sainte borough value',
-        city: 'SaintE city sAinTe value saINte',
+        city: 'ste city STE value StE',
         county: 'sainte county value',
         state: 'sainte state value',
         postalcode: 'sainte postalcode value',
@@ -107,7 +107,7 @@ module.exports.tests.text_parser = function(test, common) {
         query: 'sainte query value',
         neighbourhood: 'sainte neighbourhood value',
         borough: 'sainte borough value',
-        city: 'ste city ste value ste',
+        city: 'sainte city sainte value sainte',
         county: 'sainte county value',
         state: 'sainte state value',
         postalcode: 'sainte postalcode value',
@@ -200,18 +200,18 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
-  test('mixture of \'mt\', \'ft\', \'saint\', and \'sainte\' should be expanded/abbreviated', function(t) {
+  test('mixture of \'mt\', \'ft\', \'st\', and \'st\' should be expanded', function(t) {
     const raw = {};
 
     const clean = {
       parsed_text: {
-        city: 'mt. ft saint sainte mt ft.'
+        city: 'mt. ft st ste mt ft.'
       }
     };
 
     const expected_clean = {
       parsed_text: {
-        city: 'mount fort st ste mount fort'
+        city: 'mount fort saint sainte mount fort'
       }
     };
 
