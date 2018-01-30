@@ -166,6 +166,50 @@ module.exports.tests.dedupe = function(test, common) {
     t.false(isDifferent(item1, item2), 'should be the same');
     t.end();
   });
+
+  test('catch diff address by unit', function(t) {
+    var item1 = {
+      'address_parts': {
+        'unit': 'A',
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210'
+      }
+    };
+    var item2 = {
+      'address_parts': {
+        'unit': 'B',
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210'
+      }
+    };
+
+    t.true(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
+  test('catch diff address by unit', function(t) {
+    var item1 = {
+      'address_parts': {
+        'unit': 'A',
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210'
+      }
+    };
+    var item2 = {
+      'address_parts': {
+        'unit': 'A',
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210'
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {

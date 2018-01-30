@@ -236,6 +236,33 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
+  test('valid address, unit', function(t) {
+    var raw = {
+      text: 'Shop 8, 431 St Kilda Rd Melbourne'
+    };
+    var clean = {};
+
+    var expected_clean = {
+      text: 'Shop 8, 431 St Kilda Rd Melbourne',
+      parser: 'addressit',
+      parsed_text: {
+        name: 'Shop 8',
+        unit: '8',
+        number: '431',
+        street: 'St Kilda Rd',
+        regions: [ 'Melbourne' ],
+        admin_parts: '431 St Kilda Rd Melbourne'
+      }
+    };
+
+    var messages = sanitizer.sanitize(raw, clean);
+
+    t.deepEqual(messages, { errors: [], warnings: [] } );
+    t.deepEqual(clean, expected_clean);
+    t.end();
+
+  });
+
   test('valid address, house number', function(t) {
     var raw = {
       text: '123 main st new york ny'

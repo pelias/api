@@ -90,8 +90,28 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
     }
   };
 
+  var dkAddressWithUnit = {
+    '_id': 'test5',
+    '_type': 'test',
+    'name': { 'default': '26 Nikolaj Plads 2 th' },
+    'center_point': { 'lon': 12.580921, 'lat': 55.678665 },
+    'address_parts': {
+       'zip': '1067',
+       'unit': '2 th',
+       'number': '26',
+       'street': 'Nikolaj Plads'
+    },
+    'parent': {
+      'region': ['København'],
+      'locality': ['København K'],
+      'country_a': ['DNK'],
+      'county': ['Region Hovedstaden'],
+      'country': ['Denmark']
+    }
+  };
+
   var req = {},
-      res = { data: [ ukAddress, deAddress, nlAddress, unknownCountryAddress ] },
+      res = { data: [ ukAddress, deAddress, nlAddress, unknownCountryAddress, dkAddressWithUnit ] },
       middleware = localNamingConventions();
 
   test('flipNumberAndStreet', function(t) {
@@ -112,6 +132,11 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
       // addresses without a known country (either due to missing data or admin lookup
       // being disabled), don't have the name flipped
       t.equal( res.data[3].name.default, '123 Main Street', 'standard name');
+
+      // DNK address should have the housenumber and street name flipped, too
+      // this definition comes from pelias configuration
+      // In this case address have unit and it should also be added to flipped address name
+      t.equal( res.data[4].name.default, 'Nikolaj Plads 26 2 th', 'flipped name' );
 
       t.end();
     });

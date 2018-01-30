@@ -19,6 +19,11 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
     vs.var( 'input:address', parsed_text.address );
   }
 
+  // unit - an apartment, unit, office, lot, or other secondary unit designator
+  if( ! _.isEmpty(parsed_text.unit) ){
+    vs.var( 'input:unit', parsed_text.unit );
+  }
+
   // house number
   if( ! _.isEmpty(parsed_text.number) ){
     vs.var( 'input:housenumber', parsed_text.number );

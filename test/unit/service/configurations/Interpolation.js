@@ -115,6 +115,43 @@ module.exports.tests.all = (test, common) => {
 
   });
 
+  test('getParameters should return unit when req.clean.parsed_text.unit is set', t => {
+    const configBlob = {
+      url: 'base url'
+    };
+
+    const interpolation = new Interpolation(configBlob);
+
+    const req = {
+      clean: {
+        parsed_text: {
+          unit: 'parsed unit value',
+          number: 'parsed number value',
+          street: 'parsed street value'
+        }
+      }
+    };
+
+    const hit = {
+      address_parts: {
+      },
+      center_point: {
+        lat: 12.121212,
+        lon: 21.212121
+      }
+    };
+
+    t.deepEquals(interpolation.getParameters(req, hit), {
+      unit: 'parsed unit value',
+      number: 'parsed number value',
+      street: 'parsed street value',
+      lat: 12.121212,
+      lon: 21.212121
+    });
+    t.end();
+
+  });
+
   test('baseUrl ending in / should not have double /\'s return by getUrl', t => {
     const configBlob = {
       url: 'http://localhost:1234/'
