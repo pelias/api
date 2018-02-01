@@ -15,7 +15,7 @@ module.exports.tests.warning_message_1 = function(test, common) {
        'replaced by Who\'s on First, an actively maintained data project based on Quattroshapes' +
        'Your existing queries WILL CONTINUE TO WORK for the foreseeable future, but results will ' +
        'be coming from Who\'s on First and `sources=quattroshapes` will be interpreted as ' +
-       '`sources=whosonfirst`. If you have any questions, please email search@mapzen.com.']
+       '`sources=whosonfirst`. If you have any questions, please email pelias.team@gmail.com.']
     }, 'warning emitted');
 
     t.end();
@@ -35,7 +35,7 @@ module.exports.tests.warning_message_2 = function(test, common) {
        'replaced by Who\'s on First, an actively maintained data project based on Quattroshapes' +
        'Your existing queries WILL CONTINUE TO WORK for the foreseeable future, but results will ' +
        'be coming from Who\'s on First and `sources=quattroshapes` will be interpreted as ' +
-       '`sources=whosonfirst`. If you have any questions, please email search@mapzen.com.']
+       '`sources=whosonfirst`. If you have any questions, please email pelias.team@gmail.com.']
     }, 'warning emitted');
 
     t.end();
