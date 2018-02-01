@@ -28,6 +28,9 @@ module.exports.tests.completely_valid = (test, common) => {
           },
           interpolation: {
             url: 'http://localhost'
+          },
+          libpostal: {
+            url: 'http://localhost'
           }
         },
         defaultParameters: {
@@ -419,7 +422,7 @@ module.exports.tests.api_validation = (test, common) => {
   });
 
   // api.pipService has been moved to api.services.pip.url
-  test('any api.pipService value should be allowed', (t) => {
+  test('any api.pipService value should fail', (t) => {
     [null, 17, {}, [], true, 'http://localhost'].forEach((value) => {
       var config = {
         api: {
@@ -543,7 +546,7 @@ module.exports.tests.api_services_validation = (test, common) => {
 
 module.exports.tests.service_validation = (test, common) => {
   // these tests apply for all the individual service definitions
-  const services = ['pip', 'placeholder', 'interpolation'];
+  const services = ['pip', 'placeholder', 'interpolation', 'libpostal'];
 
   test('timeout and retries not specified should default to 250 and 3', (t) => {
     services.forEach(service => {
@@ -572,7 +575,7 @@ module.exports.tests.service_validation = (test, common) => {
 
   });
 
-  test('when api.services.service is defined, url is required', (t) => {
+  test('when api.services.<service> is defined, url is required', (t) => {
     services.forEach(service => {
       const config = {
         api: {
@@ -596,7 +599,7 @@ module.exports.tests.service_validation = (test, common) => {
 
   });
 
-  test('non-string api.services.pip.url should throw error', (t) => {
+  test('non-string api.services.<service>.url should throw error', (t) => {
     services.forEach(service => {
       [null, 17, {}, [], true].forEach(value => {
         const config = {
@@ -626,7 +629,7 @@ module.exports.tests.service_validation = (test, common) => {
 
   });
 
-  test('non-http/https api.services.pip.url should throw error', (t) => {
+  test('non-http/https api.services.<service>.url should throw error', (t) => {
     services.forEach(service => {
       ['ftp', 'git', 'unknown'].forEach((scheme) => {
         const config = {
@@ -656,7 +659,7 @@ module.exports.tests.service_validation = (test, common) => {
 
   });
 
-  test('non-url children of api.services.pip should be disallowed', (t) => {
+  test('non-url/timeout/retries children of api.services.<service> should be disallowed', (t) => {
     services.forEach(service => {
       const config = {
         api: {
