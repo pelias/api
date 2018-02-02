@@ -6,10 +6,11 @@ const collectDetails = require('./geojsonify_place_details');
 const _ = require('lodash');
 const Document = require('pelias-model').Document;
 
-function geojsonifyPlaces( params, docs ){
-
-  // flatten & expand data for geojson conversion
-  const geodata = docs
+function geojsonifyPlaces(   params, docs ){
+  console.log("===params===");
+  console.log(params); 
+  // Check for center_point as indication of WOF data being valid
+  var geodata = docs
     .filter(doc => {
       if (!_.has(doc, 'center_point')) {
         logger.warn('No doc or center_point property');
@@ -17,16 +18,40 @@ function geojsonifyPlaces( params, docs ){
       } else {
         return true;
       }
-    })
-    .map(geojsonifyPlace.bind(null, params));
+    }).map(geojsonifyPlace.bind(null, params));
 
+  //Check for polygon data
+  const polygonData = docs
+  .filter(doc =>{
+     if(_.has(doc, 'polygon')){
+       return true;
+     }
+  }).map(geojsonifyPlace.bind(null, params));
+
+
+  const pointData = docs
+  .filter(doc => {
+    if(!_.has(doc, 'polygon')){
+      return true;
+    }
+  }).map(geojsonifyPlace.bind(null, params));
+
+  
+
+  const pointGeojson = GeoJSON.parse( pointData, { Point: ['lat', 'lng'] });
+  const polygonGeojson             = GeoJSON.parse( polygonData, { Polygon: 'polygon' });
+  polygonGeojson.features = pointGeojson.features.concat(polygonGeojson.features);
+  const geojson = polygonGeojson;
+  
+  
+  
   // get all the bounding_box corners as well as single points
   // to be used for computing the overall bounding_box for the FeatureCollection
   const extentPoints = extractExtentPoints(geodata);
 
-  // convert to geojson
-  const geojson             = GeoJSON.parse( geodata, { Point: ['lat', 'lng'] });
+  
   const geojsonExtentPoints = GeoJSON.parse( extentPoints, { Point: ['lat', 'lng'] });
+  
 
   // to insert the bbox property at the top level of each feature, it must be done separately after
   // initial geojson construction is finished
@@ -48,14 +73,16 @@ function geojsonifyPlace(params, place) {
     source_id: place.source_id,
     bounding_box: place.bounding_box,
     lat: parseFloat(place.center_point.lat),
-    lng: parseFloat(place.center_point.lon)
+    lng: parseFloat(place.center_point.lon),
   };
-
   // assign name, logging a warning if it doesn't exist
   if (_.has(place, 'name.default')) {
     doc.name = place.name.default;
   } else {
     logger.warn(`doc ${doc.gid} does not contain name.default`);
+  }
+  if (_.has(place, 'polygon')) {
+    doc.polygon = place.polygon;
   }
 
   // assign all the details info into the doc
