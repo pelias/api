@@ -6,11 +6,13 @@ const collectDetails = require('./geojsonify_place_details');
 const _ = require('lodash');
 const Document = require('pelias-model').Document;
 
-function geojsonifyPlaces(   params, docs ){
-  console.log("===params===");
-  console.log(params); 
-  // Check for center_point as indication of WOF data being valid
-  var geodata = docs
+function geojsonifyPlaces(params, docs, geometriesParam){
+  var geometries = [];
+  if(geometriesParam){
+    geometries = geometriesParam.split(',');
+  }
+  // Check for center_point as a measure to weed out non-geo data.
+  const geodata = docs
     .filter(doc => {
       if (!_.has(doc, 'center_point')) {
         logger.warn('No doc or center_point property');
@@ -28,7 +30,7 @@ function geojsonifyPlaces(   params, docs ){
      }
   }).map(geojsonifyPlace.bind(null, params));
 
-
+  //Check for point data
   const pointData = docs
   .filter(doc => {
     if(!_.has(doc, 'polygon')){
@@ -36,31 +38,27 @@ function geojsonifyPlaces(   params, docs ){
     }
   }).map(geojsonifyPlace.bind(null, params));
 
-  
+  //Parse both arrays
+  var pointGeojson = GeoJSON.parse( pointData, { Point: ['lat', 'lng'] });
+  const polygonGeojson = GeoJSON.parse( polygonData, { Polygon: 'polygon' });
 
-  const pointGeojson = GeoJSON.parse( pointData, { Point: ['lat', 'lng'] });
-  const polygonGeojson             = GeoJSON.parse( polygonData, { Polygon: 'polygon' });
-  polygonGeojson.features = pointGeojson.features.concat(polygonGeojson.features);
-  const geojson = polygonGeojson;
-  
-  
+  if(_.indexOf(geometries, 'polygon') > 0){
+    pointGeojson.features = polygonGeojson.features.concat(pointGeojson.features);
+  }
   
   // get all the bounding_box corners as well as single points
   // to be used for computing the overall bounding_box for the FeatureCollection
   const extentPoints = extractExtentPoints(geodata);
-
-  
   const geojsonExtentPoints = GeoJSON.parse( extentPoints, { Point: ['lat', 'lng'] });
   
-
   // to insert the bbox property at the top level of each feature, it must be done separately after
   // initial geojson construction is finished
-  addBBoxPerFeature(geojson);
+  addBBoxPerFeature(pointGeojson);
 
   // bounding box calculations
-  computeBBox(geojson, geojsonExtentPoints);
+  computeBBox(pointGeojson, geojsonExtentPoints);
 
-  return geojson;
+  return pointGeojson;
 }
 
 function geojsonifyPlace(params, place) {

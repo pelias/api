@@ -37,7 +37,6 @@ function setup(peliasConfig, basePath) {
  * @returns {*}
  */
 function convertToGeocodeJSON(req, res, next, opts) {
-
   res.body = { geocoding: {} };
 
   // REQUIRED. A semver.org compliant version number. Describes the version of
@@ -73,7 +72,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
   res.body.geocoding.timestamp = new Date().getTime();
 
   // convert docs to geojson and merge with geocoding block
-  _.extend(res.body, geojsonify(req.clean, res.data || []));
+  _.extend(res.body, geojsonify(req.clean, res.data || [], req.query.geometries));
 
   next();
 }
