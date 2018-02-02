@@ -1,4 +1,3 @@
-
 const GeoJSON = require('geojson');
 const extent = require('@mapbox/geojson-extent');
 const logger = require('pelias-logger').get('geojsonify');
@@ -8,10 +7,11 @@ const Document = require('pelias-model').Document;
 
 function geojsonifyPlaces(params, docs, geometriesParam){
   var geometries = [];
+  //Gather query param
   if(geometriesParam){
     geometries = geometriesParam.split(',');
   }
-  // Check for center_point as a measure to weed out non-geo data.
+  // Weed out non-geo data.
   const geodata = docs
     .filter(doc => {
       if (!_.has(doc, 'center_point')) {
@@ -23,28 +23,40 @@ function geojsonifyPlaces(params, docs, geometriesParam){
     }).map(geojsonifyPlace.bind(null, params));
 
   //Check for polygon data
-  const polygonData = docs
-  .filter(doc =>{
-     if(_.has(doc, 'polygon')){
-       return true;
-     }
-  }).map(geojsonifyPlace.bind(null, params));
+  var polygonData = [];
+  var pointData = [];
+  _.forEach(docs, doc => {
 
-  //Check for point data
-  const pointData = docs
-  .filter(doc => {
-    if(!_.has(doc, 'polygon')){
-      return true;
+    if(_.has(doc, 'polygon')){
+      polygonData.push(doc);
+
     }
-  }).map(geojsonifyPlace.bind(null, params));
+    else{
+      pointData.push(doc);
 
-  //Parse both arrays
-  var pointGeojson = GeoJSON.parse( pointData, { Point: ['lat', 'lng'] });
-  const polygonGeojson = GeoJSON.parse( polygonData, { Polygon: 'polygon' });
+    }
+  });
+  polygonData = polygonData.map(geojsonifyPlace.bind(null, params));
+  pointData = pointData.map(geojsonifyPlace.bind(null, params));
+  console.log(JSON.stringify(polygonData));
+  //Schemas for geojson parsing library
+  const pointSchema = { Point: ['lat', 'lng'] };
+  const polygonSchema = { Polygon: 'polygon' };
+  //Interpret point features as points no matter what
+  var pointGeojson = GeoJSON.parse( pointData, pointSchema);
+  var polygonGeojson;
+  //Determine whether to treat polygons as polygons or centerpoints
+  var selectedSchema;
 
-  if(_.indexOf(geometries, 'polygon') > 0){
-    pointGeojson.features = polygonGeojson.features.concat(pointGeojson.features);
+  if(_.indexOf(geometries, 'polygon') > -1){
+    polygonGeojson = GeoJSON.parse(polygonData, polygonSchema);
   }
+  else{
+    polygonGeojson = GeoJSON.parse(polygonData, pointSchema);
+  }
+  //Parse and concatenate accordingly
+
+  pointGeojson.features = (polygonGeojson.features).concat(pointGeojson.features);
   
   // get all the bounding_box corners as well as single points
   // to be used for computing the overall bounding_box for the FeatureCollection
