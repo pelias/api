@@ -6,6 +6,7 @@ const _ = require('lodash');
 const Document = require('pelias-model').Document;
 
 function geojsonifyPlaces(params, docs, geometriesParam){
+  //Default to empty
   var geometries = [];
   //Gather query param
   if(geometriesParam){
@@ -21,40 +22,18 @@ function geojsonifyPlaces(params, docs, geometriesParam){
         return true;
       }
     }).map(geojsonifyPlace.bind(null, params));
+  
+  var parsedDocs = parseDocs(docs, geometries);
 
-  //Check for polygon data
-  var polygonData = [];
-  var pointData = [];
-  _.forEach(docs, doc => {
-
-    if(_.has(doc, 'polygon')){
-      polygonData.push(doc);
-
-    }
-    else{
-      pointData.push(doc);
-
-    }
-  });
-  polygonData = polygonData.map(geojsonifyPlace.bind(null, params));
-  pointData = pointData.map(geojsonifyPlace.bind(null, params));
-  console.log(JSON.stringify(polygonData));
+  var polygonData = parsedDocs.polygons.map(geojsonifyPlace.bind(null, params));
+  var pointData = parsedDocs.points.map(geojsonifyPlace.bind(null, params));
   //Schemas for geojson parsing library
   const pointSchema = { Point: ['lat', 'lng'] };
   const polygonSchema = { Polygon: 'polygon' };
   //Interpret point features as points no matter what
   var pointGeojson = GeoJSON.parse( pointData, pointSchema);
-  var polygonGeojson;
-  //Determine whether to treat polygons as polygons or centerpoints
-  var selectedSchema;
-
-  if(_.indexOf(geometries, 'polygon') > -1){
-    polygonGeojson = GeoJSON.parse(polygonData, polygonSchema);
-  }
-  else{
-    polygonGeojson = GeoJSON.parse(polygonData, pointSchema);
-  }
-  //Parse and concatenate accordingly
+  
+  var polygonGeojson = GeoJSON.parse(polygonData, polygonSchema);
 
   pointGeojson.features = (polygonGeojson.features).concat(pointGeojson.features);
   
@@ -71,6 +50,28 @@ function geojsonifyPlaces(params, docs, geometriesParam){
   computeBBox(pointGeojson, geojsonExtentPoints);
 
   return pointGeojson;
+}
+
+function parseDocs(docs, geometries){
+  
+    //Check for polygon data 
+    var polygonData = [];
+    var pointData = [];
+    _.forEach(docs, doc => {
+      if(_.has(doc, 'polygon')){
+        if(_.indexOf(geometries, 'polygon') > -1){
+          polygonData.push(doc);
+        }
+        else{
+          delete doc.polygon;
+          pointData.push(doc);
+        }
+      }
+      else{
+        pointData.push(doc);
+      }
+    });
+    return { polygons: polygonData, points: pointData };
 }
 
 function geojsonifyPlace(params, place) {
