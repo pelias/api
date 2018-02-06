@@ -70,51 +70,47 @@ function setup( apiConfig, esclient, query, should_execute ){
           return;
         }
 
-        // if execution has gotten this far then one of three things happened:
-        // - the request didn't time out
-        // - maxRetries has been hit so we're giving up
-        // - another error occurred
-        // in either case, handle the error or results
-
-        // error handler
+        // error handler, return immediately
         if( err ){
-          if (_.isObject(err) && err.message) {
-            req.errors.push( err.message );
-          } else {
-            req.errors.push( err );
-          }
+          req.errors.push(_.defaultTo(err.message, err));
+          return;
         }
-        // set response data
-        else {
-          // log that a retry was successful
-          // most requests succeed on first attempt so this declutters log files
-          if (currentAttempt > 1) {
-            logger.info(`succeeded on retry ${currentAttempt-1}`);
-          }
 
-          const messageParts = [
-            '[controller:search]',
-            `[queryType:${renderedQuery.type}]`,
-            `[es_result_count:${_.defaultTo(docs, []).length}]`
-          ];
+        // if execution has gotten this far then one of three things happened:
+        // - success! (the request didn't time out)
+        // - maxRetries has been hit so we're giving up (too many timeouts), 
+        //   docs will be empty
 
-          // if there are docs, concatenate them onto the end of existing results
-          if (docs) {
-            res.data = _.concat(_.defaultTo(res.data, []), docs);
-          }
-          res.meta = meta || {};
-          // store the query_type for subsequent middleware
-          res.meta.query_type = renderedQuery.type;
-
-          logger.info(messageParts.join(' '));
-          debugLog.push(req, {queryType: {
-            [renderedQuery.type] : {
-              es_result_count: parseInt(messageParts[2].slice(17, -1))
-            }
-          }});
+        // log that a retry was successful
+        // most requests succeed on first attempt so this declutters log files
+        if (currentAttempt > 1) {
+          logger.info(`succeeded on retry ${currentAttempt-1}`);
         }
+
+        const messageParts = [
+          '[controller:search]',
+          `[queryType:${renderedQuery.type}]`,
+          `[es_result_count:${_.defaultTo(docs, []).length}]`
+        ];
+
+        // if there are docs, concatenate them onto the end of existing results
+        if (docs) {
+          res.data = _.concat(_.defaultTo(res.data, []), docs);
+        }
+        res.meta = meta || {};
+        // store the query_type for subsequent middleware
+        res.meta.query_type = renderedQuery.type;
+
+        logger.info(messageParts.join(' '));
+        debugLog.push(req, {queryType: {
+          [renderedQuery.type] : {
+            es_result_count: parseInt(messageParts[2].slice(17, -1))
+          }
+        }});
+
         logger.debug('[ES response]', docs);
         next();
+
       });
       debugLog.stopTimer(req, initialTime);
     });
