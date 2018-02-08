@@ -24,7 +24,6 @@ function geojsonifyPlaces(params, docs, geometriesParam){
     }).map(geojsonifyPlace.bind(null, params));
   
   var parsedDocs = parseDocs(docs, geometries);
-
   var polygonData = parsedDocs.polygons.map(geojsonifyPlace.bind(null, params));
   var pointData = parsedDocs.points.map(geojsonifyPlace.bind(null, params));
   //Schemas for geojson parsing library
@@ -93,7 +92,7 @@ function geojsonifyPlace(params, place) {
     logger.warn(`doc ${doc.gid} does not contain name.default`);
   }
   if (_.has(place, 'polygon')) {
-    doc.polygon = place.polygon;
+    doc.polygon = [ place.polygon.coordinates ];
   }
 
   // assign all the details info into the doc
