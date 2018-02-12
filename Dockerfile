@@ -15,6 +15,11 @@ ENV HOME=/opt/pelias
 WORKDIR ${WORK}
 COPY . ${WORK}
 
+# install node 8.x
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+    apt-get install -y nodejs
+
+
 # Build and set permissions for arbitrary non-root user
 RUN npm install && \
   npm test && \
