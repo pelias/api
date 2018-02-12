@@ -7,32 +7,28 @@ const Document = require('pelias-model').Document;
 
 function geojsonifyPlaces(params, docs, geometriesParam){
   //Default to empty
-  var geometries = [];
+  let geometries = [];
   //Gather query param
   if(geometriesParam){
     geometries = geometriesParam.split(',');
   }
   // Weed out non-geo data.
   const geodata = docs
-    .filter(doc => {
-      if (!_.has(doc, 'center_point')) {
-        logger.warn('No doc or center_point property');
-        return false;
-      } else {
-        return true;
-      }
-    }).map(geojsonifyPlace.bind(null, params));
+    .filter(doc => !!_.has(doc, 'center_point'))
+    .map(geojsonifyPlace.bind(null, params));
   
-  var parsedDocs = parseDocs(docs, geometries);
-  var polygonData = parsedDocs.polygons.map(geojsonifyPlace.bind(null, params));
-  var pointData = parsedDocs.points.map(geojsonifyPlace.bind(null, params));
+  let parsedDocs = parseDocs(docs, geometries);
+  
+
+  const polygonData = parsedDocs.polygons.map(geojsonifyPlace.bind(null, params));
+  const pointData = parsedDocs.points.map(geojsonifyPlace.bind(null, params));
+
   //Schemas for geojson parsing library
   const pointSchema = { Point: ['lat', 'lng'] };
   const polygonSchema = { Polygon: 'polygon' };
   //Interpret point features as points no matter what
-  var pointGeojson = GeoJSON.parse( pointData, pointSchema);
-  
-  var polygonGeojson = GeoJSON.parse(polygonData, polygonSchema);
+  let pointGeojson = GeoJSON.parse( pointData, pointSchema);
+  let polygonGeojson = GeoJSON.parse(polygonData, polygonSchema);
 
   pointGeojson.features = (polygonGeojson.features).concat(pointGeojson.features);
   
@@ -54,8 +50,8 @@ function geojsonifyPlaces(params, docs, geometriesParam){
 function parseDocs(docs, geometries){
   
     //Check for polygon data 
-    var polygonData = [];
-    var pointData = [];
+    let polygonData = [];
+    let pointData = [];
     _.forEach(docs, doc => {
       if(_.has(doc, 'polygon')){
         if(_.indexOf(geometries, 'polygon') > -1){
@@ -75,7 +71,7 @@ function parseDocs(docs, geometries){
 
 function geojsonifyPlace(params, place) {
   // setup the base doc
-  const doc = {
+  let doc = {
     id: place._id,
     gid: new Document(place.source, place.layer, place._id).getGid(),
     layer: place.layer,
@@ -116,7 +112,6 @@ function addBBoxPerFeature(geojson) {
         feature.properties.bounding_box.max_lat
       ];
     }
-
     delete feature.properties.bounding_box;
   });
 }
@@ -136,12 +131,11 @@ function extractExtentPoints(geodata) {
       extentPoints.push({
         lng: place.bounding_box.min_lon,
         lat: place.bounding_box.min_lat
-      });
-      extentPoints.push({
+      },
+      {
         lng: place.bounding_box.max_lon,
         lat: place.bounding_box.max_lat
       });
-
     }
     else {
       // otherwise, use the point for the extent
@@ -149,7 +143,6 @@ function extractExtentPoints(geodata) {
         lng: place.lng,
         lat: place.lat
       });
-
     }
     return extentPoints;
 
@@ -167,7 +160,7 @@ function computeBBox(geojson, geojsonExtentPoints) {
   // @note: extent() sometimes throws Errors for unusual data
   // eg: https://github.com/pelias/pelias/issues/84
   try {
-    var bbox = extent( geojsonExtentPoints );
+    const bbox = extent( geojsonExtentPoints );
     if( !!bbox ){
       geojson.bbox = bbox;
     }

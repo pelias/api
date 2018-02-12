@@ -19,6 +19,8 @@ COPY . ${WORK}
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
     apt-get install -y nodejs
 
+# remove old node reference
+RUN rm /usr/local/bin/node && ln -s /usr/bin/nodejs /usr/local/bin/node
 
 # Build and set permissions for arbitrary non-root user
 RUN npm install && \
