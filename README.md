@@ -23,6 +23,15 @@ Note: Pelias requires Node.js v4 or newer
 npm install
 ```
 
+## Install GeoTrans MGRS Converter
+
+Note: This is required for use of the `convert` endpoint.
+[See VeniceGeo Repo](https://github.com/venicegeo/geotrans-mgrs-converter)
+
+Once you have the GeoTrans container running, you will need to set the `ENV GEOTRANS_IP` in this repository's docker file.
+You can set this to your host (as long as port 3150 is exposed) or the GeoTrans container's IP.
+
+
 ## scripts
 
 The API ships with several convenience commands (runnable via `npm`):
