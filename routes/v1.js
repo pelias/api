@@ -34,7 +34,8 @@ var controllers = {
   placeholder: require('../controller/placeholder'),
   search: require('../controller/search'),
   search_with_ids: require('../controller/search_with_ids'),
-  status: require('../controller/status')
+  status: require('../controller/status'),
+  convert: require('../controller/convert')
 };
 
 var queries = {
@@ -398,6 +399,9 @@ function addRoutes(app, peliasConfig) {
     ]),
     status: createRouter([
       controllers.status
+    ]),
+    convert: createRouter([
+      controllers.convert
     ])
   };
 
@@ -407,6 +411,7 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'attribution',          routers.attribution );
   app.get (        '/attribution',         routers.attribution );
   app.get (        '/status',              routers.status );
+  app.get ( base + 'convert',              routers.convert );
 
   // backend dependent endpoints
   app.get ( base + 'place',                routers.place );
