@@ -7,7 +7,7 @@ module.exports.tests = {};
 module.exports.tests.interface = function(test, common) {
   test('valid interface', function(t) {
     t.equal(typeof geojsonify, 'function', 'geojsonify is a function');
-    t.equal(geojsonify.length, 2, 'accepts x arguments');
+    t.equal(geojsonify.length, 3, 'accepts x arguments');
     t.end();
   });
 };
@@ -347,70 +347,8 @@ module.exports.tests.all = (test, common) => {
 };
 
 module.exports.tests.non_optimal_conditions = (test, common) => {
-  test('null/undefined places should log warnings and be ignored', t => {
-    const logger = require('pelias-mock-logger')();
+  
 
-    const input = [
-      null,
-      undefined,
-      {
-        _id: 'id 1',
-        source: 'source 1',
-        source_id: 'source_id 1',
-        layer: 'layer 1',
-        name: {
-          default: 'name 1',
-        },
-        center_point: {
-          lat: 12.121212,
-          lon: 21.212121
-        }
-      }
-    ];
-
-    const geojsonify = proxyquire('../../../helper/geojsonify', {
-      './geojsonify_place_details': (params, source, dst) => {
-        if (source._id === 'id 1') {
-          return {
-            property1: 'property 1',
-            property2: 'property 2'
-          };
-        }
-      },
-      'pelias-logger': logger
-    });
-
-    const actual = geojsonify({}, input);
-
-    const expected = {
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [ 21.212121, 12.121212 ]
-          },
-          properties: {
-            id: 'id 1',
-            gid: 'source 1:layer 1:id 1',
-            layer: 'layer 1',
-            source: 'source 1',
-            source_id: 'source_id 1',
-            name: 'name 1',
-            property1: 'property 1',
-            property2: 'property 2'
-          }
-        }
-      ],
-      bbox: [21.212121, 12.121212, 21.212121, 12.121212]
-    };
-
-    t.deepEquals(actual, expected);
-    t.ok(logger.isWarnMessage('No doc or center_point property'));
-    t.end();
-
-  });
 
   test('places w/o center_point should log warnings and be ignored', t => {
     const logger = require('pelias-mock-logger')();
@@ -479,7 +417,6 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
     };
 
     t.deepEquals(actual, expected);
-    t.ok(logger.isWarnMessage('No doc or center_point property'));
     t.end();
 
   });

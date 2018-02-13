@@ -14,11 +14,9 @@ function geojsonifyPlaces(params, docs, geometriesParam){
   }
   // Weed out non-geo data.
   const geodata = docs
-    .filter(doc => !!_.has(doc, 'center_point'))
-    .map(geojsonifyPlace.bind(null, params));
+    .filter(doc => !!_.has(doc, 'center_point'));
   
-  let parsedDocs = parseDocs(docs, geometries);
-  
+  let parsedDocs = parseDocs(geodata, geometries);
 
   const polygonData = parsedDocs.polygons.map(geojsonifyPlace.bind(null, params));
   const pointData = parsedDocs.points.map(geojsonifyPlace.bind(null, params));
@@ -34,7 +32,7 @@ function geojsonifyPlaces(params, docs, geometriesParam){
   
   // get all the bounding_box corners as well as single points
   // to be used for computing the overall bounding_box for the FeatureCollection
-  const extentPoints = extractExtentPoints(geodata);
+  const extentPoints = extractExtentPoints(geodata.map(geojsonifyPlace.bind(null, params)));
   const geojsonExtentPoints = GeoJSON.parse( extentPoints, { Point: ['lat', 'lng'] });
   
   // to insert the bbox property at the top level of each feature, it must be done separately after
@@ -78,9 +76,9 @@ function geojsonifyPlace(params, place) {
     source: place.source,
     source_id: place.source_id,
     bounding_box: place.bounding_box,
-    lat: parseFloat(place.center_point.lat),
-    lng: parseFloat(place.center_point.lon),
   };
+  
+  
   // assign name, logging a warning if it doesn't exist
   if (_.has(place, 'name.default')) {
     doc.name = place.name.default;
@@ -89,6 +87,13 @@ function geojsonifyPlace(params, place) {
   }
   if (_.has(place, 'polygon')) {
     doc.polygon = [ place.polygon.coordinates ];
+  }
+  else{
+    if(place.center_point){
+      doc.lat = parseFloat(place.center_point.lat);
+      doc.lng = parseFloat(place.center_point.lon);
+    }
+    
   }
 
   // assign all the details info into the doc
