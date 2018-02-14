@@ -3,8 +3,7 @@ language: node_js
 notifications:
   email: false
 node_js:
-  - 4
-  - 6
+  - 8
 matrix:
   fast_finish: true
 env:
@@ -12,7 +11,7 @@ env:
     - BUILD_LEADER_ID=2
 script: npm run travis
 before_install:
-  - npm i -g npm@^3.0.0
+  - npm i -g npm
 before_script:
   - npm prune
 after_success:
