@@ -26,6 +26,11 @@ module.exports.tests.functionality = (test, common) => {
           get: (section) => {
             t.equal(section, 'api');
           }
+        },
+        'axios': {
+          get: (url, params) => {
+            return Promise.resolve({data: 'ERROR: Invalid MGRS String'});
+          }
         }
       });
       service.geotrans('4CFG').then(function(response){
@@ -39,6 +44,25 @@ module.exports.tests.functionality = (test, common) => {
         'logger': {
           get: (section) => {
             t.equal(section, 'api');
+          }
+        },
+        'axios': {
+          get: (url, params) => {
+            return Promise.resolve({
+              data: {
+                'type': 'Feature',
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [
+                    -72.57553258519015,
+                    42.367593344066776
+                  ]
+                },
+                'properties': {
+                  'name': '18TXM9963493438'
+                }
+              }
+            });
           }
         }
       });
