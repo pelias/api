@@ -14,6 +14,7 @@ var tests = [
   require('./controller/coarse_reverse'),
   require('./controller/index'),
   require('./controller/libpostal'),
+  require('./controller/structured_libpostal'),
   require('./controller/place'),
   require('./controller/placeholder'),
   require('./controller/search'),
@@ -100,10 +101,12 @@ var tests = [
   require('./sanitizer/wrap'),
   require('./service/configurations/Interpolation'),
   require('./service/configurations/Language'),
+  require('./service/configurations/Libpostal'),
   require('./service/configurations/PlaceHolder'),
   require('./service/configurations/PointInPolygon'),
   require('./service/mget'),
-  require('./service/search')
+  require('./service/search'),
+  require('./service/external')
 ];
 
 tests.map(function(t) {
