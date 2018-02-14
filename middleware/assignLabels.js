@@ -16,14 +16,7 @@ function assignLabel(req, res, next, labelGenerator) {
   }
 
   res.data.forEach(function (result) {
-      // Entur: Use display name as default name when set. To display alias documents by their proper name
-      if (result && result.alias && result.alias !== result.name.default) {
-          var resCopy = result.copy();
-          resCopy.name.default = result.name.display;
-          result.label = labelGenerator(resCopy);
-      } else {
-          result.label = labelGenerator(result);
-      }
+    result.label = labelGenerator(result);
   });
 
   next();
