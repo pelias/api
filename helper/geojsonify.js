@@ -45,6 +45,13 @@ function geojsonifyPlaces(params, docs, geometriesParam){
   return pointGeojson;
 }
 
+/**
+ * Separate polygons and points if geometries parameters indicates to do so
+ *
+ * @param {array} docs raw documents being fed to geojsonify
+ * @param {string} geometries RES parameter string to split and parse as array
+ * @returns {object} Returns object of polygons and points arrays accordingly
+ */
 function parseDocs(docs, geometries){
   
     //Check for polygon data 

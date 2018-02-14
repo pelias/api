@@ -1,6 +1,6 @@
-var url = require('url');
-var geojsonify = require('../helper/geojsonify');
-var _ = require('lodash');
+const url = require('url');
+const geojsonify = require('../helper/geojsonify');
+const _ = require('lodash');
 
 /**
  * Returns a middleware function that converts elasticsearch
@@ -12,7 +12,7 @@ var _ = require('lodash');
  */
 function setup(peliasConfig, basePath) {
 
-  var opts = {
+  const opts = {
     config: peliasConfig || require('pelias-config').generate().api,
     basePath: basePath || '/'
   };
@@ -72,7 +72,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
   res.body.geocoding.timestamp = new Date().getTime();
 
   // convert docs to geojson and merge with geocoding block
-  var geometries = req.query.geometries || undefined;
+  let geometries = req.query.geometries || undefined;
   _.extend(res.body, geojsonify(req.clean, res.data || [], geometries));
 
   next();
