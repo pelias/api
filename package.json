@@ -65,7 +65,8 @@
     "predicates": "^2.0.0",
     "retry": "^0.10.1",
     "stats-lite": "^2.0.4",
-    "through2": "^2.0.3"
+    "through2": "^2.0.3",
+    "axios": "^0.17.1"
   },
   "devDependencies": {
     "ciao": "^1.0.0",
