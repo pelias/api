@@ -575,6 +575,179 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
 
 };
 
+module.exports.tests.polygons = (test, common) => {
+  test('polygon should be interpreted as such, and not point', t => {
+    const logger = require('pelias-mock-logger')();
+
+    const input = [
+      null,
+      undefined,
+      {
+        _id: 'id 1',
+        source: 'source 1',
+        source_id: 'source_id 1',
+        layer: 'layer 1',
+        name: {
+          default: 'name 1',
+        },
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        },
+        polygon: {
+          coordinates: [
+            
+              [0,1],
+              [0.5,1],
+              [1,0],
+              [1,0.5],
+              [0,1]
+            
+          ]
+        },
+        bounding_box: {
+          min_lon: 0,
+          max_lon: 1,
+          min_lat: 0,
+          max_lat: 1
+        }
+      }
+    ];
+
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      './geojsonify_place_details': (params, source, dst) => {
+        if (source._id === 'id 1') {
+          return {
+            property1: 'property 1',
+            property2: 'property 2'
+          };
+        }
+      },
+      'pelias-logger': logger
+    });
+
+    const actual = geojsonify({}, input, 'point,polygon');
+
+    const expected = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [ 
+              [
+                [0,1],
+                [0.5,1],
+                [1,0],
+                [1,0.5],
+                [0,1]
+              ]
+            ]
+          },
+          properties: {
+            id: 'id 1',
+            gid: 'source 1:layer 1:id 1',
+            layer: 'layer 1',
+            source: 'source 1',
+            source_id: 'source_id 1',
+            name: 'name 1',
+            property1: 'property 1',
+            property2: 'property 2'
+          },
+          bbox: [0,0,1,1]
+        }
+      ],
+      bbox: [0,0,1,1]
+    };
+
+    t.deepEquals(actual, expected);
+    t.end();
+
+  });
+  test('polygon should be not be interpreted as polygon if the parameter is not specified', t => {
+    const logger = require('pelias-mock-logger')();
+
+    const input = [
+      null,
+      undefined,
+      {
+        _id: 'id 1',
+        source: 'source 1',
+        source_id: 'source_id 1',
+        layer: 'layer 1',
+        name: {
+          default: 'name 1',
+        },
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        },
+        polygon: {
+          coordinates: [
+            
+              [0,1],
+              [0.5,1],
+              [1,0],
+              [1,0.5],
+              [0,1]
+            
+          ]
+        },
+        bounding_box: {
+          min_lon: 0,
+          max_lon: 1,
+          min_lat: 0,
+          max_lat: 1
+        }
+      }
+    ];
+
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      './geojsonify_place_details': (params, source, dst) => {
+        if (source._id === 'id 1') {
+          return {
+            property1: 'property 1',
+            property2: 'property 2'
+          };
+        }
+      },
+      'pelias-logger': logger
+    });
+
+    const actual = geojsonify({}, input, 'point');
+
+    const expected = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [ 21.212121, 12.121212 ]
+          },
+          properties: {
+            id: 'id 1',
+            gid: 'source 1:layer 1:id 1',
+            layer: 'layer 1',
+            source: 'source 1',
+            source_id: 'source_id 1',
+            name: 'name 1',
+            property1: 'property 1',
+            property2: 'property 2'
+          },
+          bbox: [0,0,1,1]
+        }
+      ],
+      bbox: [0,0,1,1]
+    };
+
+    t.deepEquals(actual, expected);
+    t.end();
+
+  });
+
+};
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
     return tape(`geojsonify: ${name}`, testFunction);
