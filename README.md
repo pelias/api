@@ -31,6 +31,9 @@ Note: This is required for use of the `convert` endpoint.
 Once you have the GeoTrans container running, you will need to set the `ENV GEOTRANS_IP` in this repository's docker file.
 You can set this to your host (as long as port 3150 is exposed) or the GeoTrans container's IP.
 
+## Build and run Pelias-API alone
+
+```docker build -t pelias-api . && docker run -it -p 3100:3100 pelias-api```
 
 ## scripts
 
