@@ -48,82 +48,6 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
-  test('\'saint\' should be abbreviated to \'st\' wherever it appears in the city', function(t) {
-    const raw = {};
-
-    const clean = {
-      parsed_text: {
-        query: 'saint query value',
-        neighbourhood: 'saint neighbourhood value',
-        borough: 'saint borough value',
-        city: 'SainT city sAiNt value saInt',
-        county: 'saint county value',
-        state: 'saint state value',
-        postalcode: 'saint postalcode value',
-        country: 'saint country value'
-      }
-    };
-
-    const expected_clean = {
-      parsed_text: {
-        query: 'saint query value',
-        neighbourhood: 'saint neighbourhood value',
-        borough: 'saint borough value',
-        city: 'st city st value st',
-        county: 'saint county value',
-        state: 'saint state value',
-        postalcode: 'saint postalcode value',
-        country: 'saint country value'
-      }
-    };
-
-    const messages = sanitizer.sanitize(raw, clean);
-
-    t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, [], 'no errors');
-    t.deepEquals(messages.warnings, [], 'no warnings');
-    t.end();
-
-  });
-
-  test('\'sainte\' should be abbreviated to \'ste\' wherever it appears in the city', function(t) {
-    const raw = {};
-
-    const clean = {
-      parsed_text: {
-        query: 'sainte query value',
-        neighbourhood: 'sainte neighbourhood value',
-        borough: 'sainte borough value',
-        city: 'SaintE city sAinTe value saINte',
-        county: 'sainte county value',
-        state: 'sainte state value',
-        postalcode: 'sainte postalcode value',
-        country: 'sainte country value'
-      }
-    };
-
-    const expected_clean = {
-      parsed_text: {
-        query: 'sainte query value',
-        neighbourhood: 'sainte neighbourhood value',
-        borough: 'sainte borough value',
-        city: 'ste city ste value ste',
-        county: 'sainte county value',
-        state: 'sainte state value',
-        postalcode: 'sainte postalcode value',
-        country: 'sainte country value'
-      }
-    };
-
-    const messages = sanitizer.sanitize(raw, clean);
-
-    t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, [], 'no errors');
-    t.deepEquals(messages.warnings, [], 'no warnings');
-    t.end();
-
-  });
-
   test('\'ft\' should be expanded to \'fort\' wherever it appears in the city', function(t) {
     const raw = {};
 
@@ -200,18 +124,18 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
-  test('mixture of \'mt\', \'ft\', \'saint\', and \'sainte\' should be expanded/abbreviated', function(t) {
+  test('mixture of \'mt\', \'ft\' should be expanded', function(t) {
     const raw = {};
 
     const clean = {
       parsed_text: {
-        city: 'mt. ft saint sainte mt ft.'
+        city: 'mt. ft mt ft.'
       }
     };
 
     const expected_clean = {
       parsed_text: {
-        city: 'mount fort st ste mount fort'
+        city: 'mount fort mount fort'
       }
     };
 
