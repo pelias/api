@@ -26,7 +26,7 @@ function _sanitize( raw, clean, opts ) {
        'replaced by Who\'s on First, an actively maintained data project based on Quattroshapes' +
        'Your existing queries WILL CONTINUE TO WORK for the foreseeable future, but results will ' +
        'be coming from Who\'s on First and `sources=quattroshapes` will be interpreted as ' +
-       '`sources=whosonfirst`. If you have any questions, please email search@mapzen.com.');
+       '`sources=whosonfirst`. If you have any questions, please email pelias.team@gmail.com.');
 
        // user requested 'quattroshapes', we will give them 'whosonfirst' instead.
        sources = _.without(sources, 'quattroshapes', 'qs');

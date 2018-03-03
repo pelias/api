@@ -2,7 +2,7 @@
 FROM pelias/baseimage
 
 # maintainer information
-LABEL maintainer="pelias@mapzen.com"
+LABEL maintainer="pelias.team@gmail.com"
 
 EXPOSE 3100
 
