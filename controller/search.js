@@ -12,6 +12,39 @@ function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
 
+function filterByParentIds(req, renderedQuery) {
+    if (!req || !req.query) {
+        return;
+    }
+    if (!renderedQuery || !renderedQuery.body || !renderedQuery.body.query || !renderedQuery.body.query.bool) {
+        return;
+    }
+    var countyIds = req.query['boundary.county_ids'];
+    var localityIds = req.query['boundary.locality_ids'];
+    if (countyIds || localityIds) {
+        if (!renderedQuery.body.query.bool.must) {
+            renderedQuery.body.query.bool.must = [];
+        }
+
+        if (countyIds) {
+            var countyTerms = {
+                terms: {
+                    'parent.county_id': countyIds.split(',')
+                }
+            };
+            renderedQuery.body.query.bool.must.push(countyTerms);
+        }
+
+        if (localityIds) {
+            var localityTerms = {
+                terms: {
+                    'parent.locality_id': localityIds.split(',')
+                }
+            };
+            renderedQuery.body.query.bool.must.push(localityTerms);
+        }
+    }
+}
 function setup( apiConfig, esclient, query, should_execute ){
   function controller( req, res, next ){
     if (!should_execute(req, res)) {
@@ -28,6 +61,9 @@ function setup( apiConfig, esclient, query, should_execute ){
     logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
 
     const renderedQuery = query(req.clean);
+
+    // ENTUR: Filter results based on county / locality in input params
+     filterByParentIds(req, renderedQuery);
 
     // if there's no query to call ES with, skip the service
     if (_.isUndefined(renderedQuery)) {
