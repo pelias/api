@@ -106,6 +106,12 @@ function collectProperties( params, source ) {
       }
     }
 
+    // Entur Add popularity and _score to output if this is debug mode
+    if (params.enableDebug) {
+      result.popularity = source.popularity;
+      result._score = source._score;
+    }
+
     return result;
 
   }, {});
