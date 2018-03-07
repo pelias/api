@@ -1,0 +1,22 @@
+module.exports = {
+  trimByGranularity: require('./trimByGranularity'),
+  trimByGranularityStructured: require('./trimByGranularityStructured'),
+  distances: require('./distance'),
+  confidenceScores: require('./confidenceScore'),
+  confidenceScoresFallback: require('./confidenceScoreFallback'),
+  confidenceScoresReverse: require('./confidenceScoreReverse'),
+  accuracy: require('./accuracy'),
+  dedupe: require('./dedupe'),
+  interpolate: require('./interpolate'),
+  localNamingConventions: require('./localNamingConventions'),
+  renamePlacenames: require('./renamePlacenames'),
+  geocodeJSON: require('./geocodeJSON'),
+  sendJSON: require('./sendJSON'),
+  parseBoundingBox: require('./parseBBox'),
+  normalizeParentIds: require('./normalizeParentIds'),
+  assignLabels: require('./assignLabels'),
+  changeLanguage: require('./changeLanguage'),
+  sortResponseData: require('./sortResponseData'),
+  calcSize: require('./sizeCalculator'),
+  requestLanguage: require('./requestLanguage')
+};
