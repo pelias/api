@@ -8,15 +8,15 @@ var MIN_QUERY_SIZE = 20;
  * Utility for calculating query result size
  * incorporating padding for dedupe process
  */
-function setup() {
- return function setQuerySize(req, res, next) {
-   if (_.isUndefined(req.clean) || _.isUndefined(req.clean.size)) {
-     return next();
-   }
+function setup(min_size) {
+  return function setQuerySize(req, res, next) {
+    if (_.isUndefined(req.clean) || _.isUndefined(req.clean.size)) {
+      return next();
+    }
 
-   req.clean.querySize = calculateSize(req.clean.size);
-   next();
- };
+    req.clean.querySize = calculateSize(req.clean.size, min_size);
+    next();
+  };
 }
 
 /**
