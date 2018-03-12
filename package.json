@@ -12,7 +12,7 @@
     "coverage": "node_modules/.bin/istanbul cover test/unit/run.js",
     "docs": "./bin/generate-docs",
     "lint": "jshint .",
-    "start": "node index.js",
+    "start": "./bin/start",
     "test": "npm run unit",
     "travis": "npm run check-dependencies && npm test",
     "unit": "./bin/units",
