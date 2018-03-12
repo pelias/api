@@ -22,4 +22,4 @@ COPY . ${WORK}
 RUN npm test
 
 # start service
-CMD [ "npm", "start" ]
+CMD [ "./bin/start" ]
