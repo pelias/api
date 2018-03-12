@@ -349,7 +349,7 @@ function addRoutes(app, peliasConfig) {
     reverse: createRouter([
       sanitizers.reverse.middleware,
       middleware.requestLanguage,
-      middleware.calcSize(),
+      middleware.calcSize(2),
       controllers.search(peliasConfig.api, esclient, queries.reverse, nonCoarseReverseShouldExecute),
       controllers.coarse_reverse(pipService, coarseReverseShouldExecute),
       postProc.distances('point.'),
