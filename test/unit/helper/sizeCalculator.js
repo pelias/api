@@ -1,11 +1,10 @@
-
-var calcSize = require('../../../middleware/sizeCalculator.js')();
+var calcSizeMiddleware = require('../../../middleware/sizeCalculator.js');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
   test('interface', function(t) {
-    t.equal(typeof calcSize, 'function', 'valid function');
+    t.equal(typeof calcSizeMiddleware, 'function', 'valid function');
     t.end();
   });
 };
@@ -24,6 +23,7 @@ module.exports.tests.valid = function(test, common) {
 
   test('size=0', function (t) {
     setup(0);
+    const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 20);
       t.end();
@@ -32,6 +32,7 @@ module.exports.tests.valid = function(test, common) {
 
   test('size=1', function (t) {
     setup(1);
+    const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 20);
       t.end();
@@ -40,6 +41,7 @@ module.exports.tests.valid = function(test, common) {
 
   test('size=10', function (t) {
     setup(10);
+    const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 20);
       t.end();
@@ -48,6 +50,7 @@ module.exports.tests.valid = function(test, common) {
 
   test('size=20', function (t) {
     setup(20);
+    const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 40);
       t.end();
@@ -56,6 +59,7 @@ module.exports.tests.valid = function(test, common) {
 
   test('no size', function (t) {
     setup();
+    const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.hasOwnProperty('querySize'), false);
       t.end();
