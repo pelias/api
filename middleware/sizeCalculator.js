@@ -2,7 +2,7 @@ var _ = require('lodash');
 
 var SIZE_PADDING = 2;
 
-var MIN_QUERY_SIZE = 20;
+var DEFAULT_MIN_QUERY_SIZE = 20;
 
 /**
  * Utility for calculating query result size
@@ -10,7 +10,7 @@ var MIN_QUERY_SIZE = 20;
  */
 function setup(min_size) {
   if (min_size === undefined) {
-    min_size = MIN_QUERY_SIZE;
+    min_size = DEFAULT_MIN_QUERY_SIZE;
   }
 
   return function setQuerySize(req, res, next) {
