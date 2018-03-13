@@ -101,7 +101,5 @@ module.exports = function middleware( req, res, next ){
     defaulted: req.language.defaulted
   };
 
-  logger.debug( '[lang] \'%s\' via \'%s\'', lang.iso6391, via );
-
   next();
 };

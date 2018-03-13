@@ -50,7 +50,6 @@ function setup( apiConfig, esclient, query, should_execute ){
       body: renderedQuery.body
     };
 
-    logger.debug( '[ES req]', cmd );
     debugLog.push(req, {ES_req: cmd});
 
     operation.attempt((currentAttempt) => {
@@ -110,7 +109,6 @@ function setup( apiConfig, esclient, query, should_execute ){
             }
           }});
         }
-        logger.debug('[ES response]', docs);
         next();
       });
       debugLog.stopTimer(req, initialTime);

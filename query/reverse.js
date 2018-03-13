@@ -2,7 +2,6 @@ const peliasQuery = require('pelias-query');
 const defaults = require('./reverse_defaults');
 const check = require('check-types');
 const _ = require('lodash');
-const logger = require('pelias-logger').get('api');
 
 //------------------------------
 // reverse geocode query
