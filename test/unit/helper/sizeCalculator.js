@@ -11,7 +11,7 @@ module.exports.tests.interface = function(test, common) {
 
 module.exports.tests.valid = function(test, common) {
   var req = { clean: {} };
-  function setup(val) {
+  function setupQuery(val) {
     if (isNaN(val)) {
       delete req.clean.size;
     }
@@ -22,7 +22,7 @@ module.exports.tests.valid = function(test, common) {
   }
 
   test('size=0', function (t) {
-    setup(0);
+    setupQuery(0);
     const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 20);
@@ -31,7 +31,7 @@ module.exports.tests.valid = function(test, common) {
   });
 
   test('size=1', function (t) {
-    setup(1);
+    setupQuery(1);
     const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 20);
@@ -40,7 +40,7 @@ module.exports.tests.valid = function(test, common) {
   });
 
   test('size=10', function (t) {
-    setup(10);
+    setupQuery(10);
     const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 20);
@@ -49,7 +49,7 @@ module.exports.tests.valid = function(test, common) {
   });
 
   test('size=20', function (t) {
-    setup(20);
+    setupQuery(20);
     const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 40);
@@ -58,7 +58,7 @@ module.exports.tests.valid = function(test, common) {
   });
 
   test('no size', function (t) {
-    setup();
+    setupQuery();
     const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.hasOwnProperty('querySize'), false);
@@ -67,7 +67,7 @@ module.exports.tests.valid = function(test, common) {
   });
 
   test('no size, min query size 10', function (t) {
-    setup();
+    setupQuery();
     const calcSize = calcSizeMiddleware(10);
     calcSize(req, {}, function () {
       t.equal(req.clean.hasOwnProperty('querySize'), false);
@@ -76,7 +76,7 @@ module.exports.tests.valid = function(test, common) {
   });
 
   test('size 5, min query size 10', function (t) {
-    setup(5);
+    setupQuery(5);
     const calcSize = calcSizeMiddleware(10);
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 10);
@@ -85,7 +85,7 @@ module.exports.tests.valid = function(test, common) {
   });
 
   test('size 3, min query size 2', function (t) {
-    setup(3);
+    setupQuery(3);
     const calcSize = calcSizeMiddleware(2);
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 6);
