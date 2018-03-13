@@ -142,9 +142,6 @@ function setup(service, should_execute) {
         return next();
       }
 
-      // log how many results there were
-      logger.info(`[controller:coarse_reverse][queryType:pip][result_count:${_.size(results)}]`);
-
       // now keep everything from the response that is equal to or less granular
       // than the most granular layer requested.  that is, if effective_layers=['county'],
       // remove neighbourhoods, boroughs, localities, localadmins

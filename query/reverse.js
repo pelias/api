@@ -4,7 +4,6 @@ const peliasQuery = require('pelias-query');
 const defaults = require('./reverse_defaults');
 const check = require('check-types');
 const _ = require('lodash');
-const logger = require('pelias-logger').get('api');
 
 //------------------------------
 // reverse geocode query
@@ -29,25 +28,20 @@ function generateQuery( clean ){
 
   const vs = new peliasQuery.Vars( defaults );
 
-  let logStr = '[query:reverse] ';
-
   // set size
   if( clean.querySize ){
     vs.var( 'size', clean.querySize);
-    logStr += '[param:querySize] ';
   }
 
   // sources
   if( check.array(clean.sources) && clean.sources.length ) {
     vs.var('sources', clean.sources);
-    logStr += '[param:sources] ';
   }
 
   // layers
   if( check.array(clean.layers) && clean.layers.length ) {
     // only include non-coarse layers
     vs.var( 'layers', _.intersection(clean.layers, ['address', 'street', 'venue']));
-    logStr += '[param:layers] ';
   }
 
   // focus point to score by distance
@@ -57,7 +51,6 @@ function generateQuery( clean ){
       'focus:point:lat': clean['point.lat'],
       'focus:point:lon': clean['point.lon']
     });
-    logStr += '[param:focus_point] ';
   }
 
   // bounding circle
@@ -83,7 +76,6 @@ function generateQuery( clean ){
             'boundary:circle:radius': clean['boundary.circle.radius'] + 'km'
           });
         }
-    logStr += '[param:boundary_circle] ';
   }
 
   // boundary country
@@ -91,16 +83,12 @@ function generateQuery( clean ){
     vs.set({
       'boundary:country': clean['boundary.country']
     });
-    logStr += '[param:boundary_country] ';
   }
 
   // categories
   if (clean.categories) {
     vs.var('input:categories', clean.categories);
-    logStr += '[param:categories] ';
   }
-
-  logger.info(logStr);
 
   return {
     type: 'reverse',

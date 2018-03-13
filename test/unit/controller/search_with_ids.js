@@ -17,7 +17,7 @@ module.exports.tests.interface = (test, common) => {
 
 module.exports.tests.success = (test, common) => {
   test('successful request to search service should replace data and meta', (t) => {
-    t.plan(5);
+    t.plan(4);
 
     const logger = mocklogger();
 
@@ -78,8 +78,6 @@ module.exports.tests.success = (test, common) => {
           query_type: 'this is the query type'
         }
       });
-
-      t.ok(logger.isInfoMessage('[controller:search] [queryType:this is the query type] [es_result_count:2]'));
 
       t.end();
     };
@@ -148,7 +146,7 @@ module.exports.tests.success = (test, common) => {
   });
 
   test('undefined docs in response should not overwrite existing results', (t) => {
-    t.plan(1+3); // ensures that search service was called, then req+res+logger tests
+    t.plan(1+2); // ensures that search service was called, then req+res tests
 
     const logger = mocklogger();
 
@@ -198,8 +196,6 @@ module.exports.tests.success = (test, common) => {
         meta: { key: 'value' }
       });
 
-      t.notOk(logger.isInfoMessage(/[controller:search] [queryType:this is the query type] [es_result_count:0]/));
-
       t.end();
     };
 
@@ -208,7 +204,7 @@ module.exports.tests.success = (test, common) => {
   });
 
   test('empty docs in response should not overwrite existing results', (t) => {
-    t.plan(4);
+    t.plan(3);
 
     const logger = mocklogger();
 
@@ -257,8 +253,6 @@ module.exports.tests.success = (test, common) => {
         meta: { key: 'value' }
       });
 
-      t.notOk(logger.isInfoMessage(/[controller:search] [queryType:this is the query type] [es_result_count:0]/));
-
       t.end();
     };
 
@@ -267,7 +261,7 @@ module.exports.tests.success = (test, common) => {
   });
 
   test('successful request on retry to search service should log info message', (t) => {
-    t.plan(3+2+2); // 3 search service calls, 2 log messages, 1 req, 1 res
+    t.plan(3+2); // 3 search service calls, 1 req, 1 res
 
     const logger = mocklogger();
 
@@ -339,9 +333,6 @@ module.exports.tests.success = (test, common) => {
         }
       });
 
-      t.ok(logger.isInfoMessage('[controller:search] [queryType:this is the query type] [es_result_count:2]'));
-      t.ok(logger.isInfoMessage('succeeded on retry 2'));
-
       t.end();
     };
 
@@ -353,8 +344,8 @@ module.exports.tests.success = (test, common) => {
 
 module.exports.tests.service_errors = (test, common) => {
   test('default # of request timeout retries should be 3', (t) => {
-    // test for 1 initial search service, 3 retries, 1 log messages, 1 req, and 1 res
-    t.plan(1 + 3 + 1 + 2);
+    // test for 1 initial search service, 3 retries, 1 req, and 1 res
+    t.plan(1 + 3 + 2);
 
     const logger = mocklogger();
 
@@ -387,13 +378,6 @@ module.exports.tests.service_errors = (test, common) => {
     const res = {};
 
     const next = () => {
-      t.deepEqual(logger.getInfoMessages(), [
-        '[req] endpoint=undefined {}',
-        'request timed out on attempt 1, retrying',
-        'request timed out on attempt 2, retrying',
-        'request timed out on attempt 3, retrying'
-      ]);
-
       t.deepEqual(req, {
         clean: {},
         errors: [timeoutError.message],

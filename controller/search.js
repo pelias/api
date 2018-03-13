@@ -21,11 +21,6 @@ function setup( apiConfig, esclient, query, should_execute ){
     const debugLog = new Debug('controller:search');
 
     let cleanOutput = _.cloneDeep(req.clean);
-    if (logging.isDNT(req)) {
-      cleanOutput = logging.removeFields(cleanOutput);
-    }
-    // log clean parameters for stats
-    logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
 
     const renderedQuery = query(req.clean);
 
@@ -54,7 +49,6 @@ function setup( apiConfig, esclient, query, should_execute ){
       body: renderedQuery.body
     };
 
-    logger.debug( '[ES req]', cmd );
     debugLog.push(req, {ES_req: cmd});
 
     operation.attempt((currentAttempt) => {
@@ -103,14 +97,12 @@ function setup( apiConfig, esclient, query, should_execute ){
             `[es_result_count:${_.get(res, 'data', []).length}]`
           ];
 
-          logger.info(messageParts.join(' '));
           debugLog.push(req, {queryType: {
             [renderedQuery.type] : {
               es_result_count: parseInt(messageParts[2].slice(17, -1))
             }
           }});
         }
-        logger.debug('[ES response]', docs);
         next();
       });
       debugLog.stopTimer(req, initialTime);

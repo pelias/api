@@ -21,8 +21,6 @@ function setup( apiConfig, esclient, query, should_execute ){
     if (logging.isDNT(req)) {
       logging.removeFields(cleanOutput);
     }
-    // log clean parameters for stats
-    logger.info('[req]', `endpoint=${req.path}`, cleanOutput);
 
     const renderedQuery = query(req.clean, res);
 
