@@ -65,6 +65,33 @@ module.exports.tests.valid = function(test, common) {
       t.end();
     });
   });
+
+  test('no size, min query size 10', function (t) {
+    setup();
+    const calcSize = calcSizeMiddleware(10);
+    calcSize(req, {}, function () {
+      t.equal(req.clean.hasOwnProperty('querySize'), false);
+      t.end();
+    });
+  });
+
+  test('size 5, min query size 10', function (t) {
+    setup(5);
+    const calcSize = calcSizeMiddleware(10);
+    calcSize(req, {}, function () {
+      t.equal(req.clean.querySize, 10);
+      t.end();
+    });
+  });
+
+  test('size 3, min query size 2', function (t) {
+    setup(3);
+    const calcSize = calcSizeMiddleware(2);
+    calcSize(req, {}, function () {
+      t.equal(req.clean.querySize, 6);
+      t.end();
+    });
+  });
 };
 
 module.exports.all = function (tape, common) {
