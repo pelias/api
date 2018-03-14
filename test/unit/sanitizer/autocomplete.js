@@ -41,7 +41,7 @@ module.exports.tests.sanitizers = function(test, common) {
         };
       },
       '../sanitizer/_size': function () {
-        if (_.isEqual(_.values(arguments), [10, 10, 10])) {
+        if (_.isEqual(_.values(arguments), [1, 100, 10])) {
           return {
             sanitize: () => {
               called_sanitizers.push('_size');

@@ -65,6 +65,12 @@ function setup( apiConfig, esclient, query, should_execute ){
     // ENTUR: Filter results based on county / locality in input params
      filterByParentIds(req, renderedQuery);
 
+     //  ENTUR: Be sure to fetch more results than user has requested to allow for deduping.
+      // TODO dirty, move to autocomplete specific context
+     if (req.path && req.path.includes('autocomplete')) {
+          renderedQuery.body.size = req.clean.querySize;
+     }
+
     // if there's no query to call ES with, skip the service
     if (_.isUndefined(renderedQuery)) {
       debugLog.push(req, 'No query to call ES with. Skipping');
