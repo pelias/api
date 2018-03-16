@@ -2,10 +2,10 @@
 
 const logger = require( 'pelias-logger' ).get( 'api' );
 const axios = require('axios');
-const geotransIP = process.env.GEOTRANS_IP;
+const geotransURL = process.env.GEOTRANS_URL;
 
 function geotrans(coord) { 
-    let url = `http://${geotransIP}:3150`;
+    let url = geotransURL;
     logger.info(`GET ${url}`);
     return axios.get(url, {
         params:{
