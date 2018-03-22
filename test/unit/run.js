@@ -32,6 +32,7 @@ var tests = [
   require('./controller/predicates/is_request_sources_only_whosonfirst'),
   require('./helper/debug'),
   require('./helper/diffPlaces'),
+  require('./helper/fieldValue'),
   require('./helper/geojsonify_place_details'),
   require('./helper/geojsonify'),
   require('./helper/logging'),

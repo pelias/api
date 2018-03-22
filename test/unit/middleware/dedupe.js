@@ -223,41 +223,71 @@ module.exports.tests.trump = function(test, common) {
     });
   });
 
-test('osm with zip trumps openaddresses without zip', function (t) {
-  var req = {
-    clean: {
-      text: '100 Main St',
-      size: 100
-    }
-  };
-  var res = {
-    data:  [
-      {
-        'name': { 'default': '100 Main St' },
-        'source': 'openaddresses',
-        'source_id': '123456',
-        'layer': 'address',
-        'address_parts': {}
-      },
-      {
-        'name': { 'default': '100 Main St' },
-        'source': 'openstreetmap',
-        'source_id': '654321',
-        'layer': 'address',
-        'address_parts': {
-          'zip': '54321'
-        }
+  test('osm with zip trumps openaddresses without zip', function (t) {
+    var req = {
+      clean: {
+        text: '100 Main St',
+        size: 100
       }
-    ]
-  };
+    };
+    var res = {
+      data:  [
+        {
+          'name': { 'default': '100 Main St' },
+          'source': 'openaddresses',
+          'source_id': '123456',
+          'layer': 'address',
+          'address_parts': {}
+        },
+        {
+          'name': { 'default': '100 Main St' },
+          'source': 'openstreetmap',
+          'source_id': '654321',
+          'layer': 'address',
+          'address_parts': {
+            'zip': '54321'
+          }
+        }
+      ]
+    };
 
-  var expectedCount = 1;
-  dedupe(req, res, function () {
-    t.equal(res.data.length, expectedCount, 'results have fewer items than before');
-    t.deepEqual(res.data[0].source_id, '654321', 'openstreetmap result with zip won');
+    var expectedCount = 1;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'results have fewer items than before');
+      t.deepEqual(res.data[0].source_id, '654321', 'openstreetmap result with zip won');
+      t.end();
+    });
+  });
+
+  test('works with name aliases', function (t) {
+    var req = {
+      clean: {
+        text: '100 Main St',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': { 'default': ['100 Main St'] }, // note the array
+          'source': 'openaddresses',
+          'source_id': '123456'
+        },
+        {
+          'name': { 'default': '100 Main St' },
+          'source': 'openstreetmap',
+          'source_id': '654321'
+        }
+      ]
+    };
+
+    t.doesNotThrow(() => {
+      dedupe(req, res, () => {});
+    });
+
+    t.equal(res.data.length, 1, 'results have fewer items than before');
     t.end();
   });
-});
 };
 
 module.exports.all = function (tape, common) {
