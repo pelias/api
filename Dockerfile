@@ -6,8 +6,6 @@ USER pelias
 # maintainer information
 LABEL maintainer="pelias.team@gmail.com"
 
-EXPOSE 3100
-
 # Where the app is built and run inside the docker fs
 ENV WORK=/home/pelias
 WORKDIR ${WORK}
