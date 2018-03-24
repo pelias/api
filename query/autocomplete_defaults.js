@@ -31,7 +31,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'focus:offset': '0km',
   'focus:scale': '250km',
   'focus:decay': 0.5,
-  'focus:weight': 15,
+  'focus:weight': process.env.AUTOCOMPLETE_FOCUS_WEIGHT || 15,
 
   'function_score:score_mode': 'avg',
   'function_score:boost_mode': 'replace',
