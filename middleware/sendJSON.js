@@ -59,8 +59,8 @@ function sendJSONResponse(req, res, next) {
             statusCode = Math.max( statusCode, 500 );
             break; // break on first match
           }
-          logger.warn( 'unknown geocoding error string:', err );
         }
+        logger.warn( 'unknown geocoding error string:', err );
       } else {
         logger.warn( 'unknown geocoding error type:', typeof err, err );
       }
