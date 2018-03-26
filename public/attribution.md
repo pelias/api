@@ -1,5 +1,5 @@
 ## Attribution
-* Geocoding by [Pelias](https://mapzen.com/pelias) from [Mapzen](https://mapzen.com)
+* Geocoding by [Pelias](https://pelias.io).
 * Data from
    * [OpenStreetMap](http://www.openstreetmap.org/copyright) © OpenStreetMap contributors under [ODbL](http://opendatacommons.org/licenses/odbl/)
    * [OpenAddresses](http://openaddresses.io) under a [Creative Commons Zero](https://github.com/openaddresses/openaddresses/blob/master/sources/LICENSE) public domain designation
