@@ -1,5 +1,6 @@
-var check = require('check-types');
-var _ = require('lodash');
+const check = require('check-types');
+const _ = require('lodash');
+const field = require('../helper/fieldValue');
 
 var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL', 'CZE'];
 
@@ -49,7 +50,7 @@ function flipNumberAndStreet(place) {
       flipped  = ( place.address_parts.street + ' ' + place.address_parts.number );
 
   // flip street name and housenumber
-  if( place.name.default === standard ){
+  if( field.getStringValue(place.name.default) === standard ){
     place.name.default = flipped;
   }
 }

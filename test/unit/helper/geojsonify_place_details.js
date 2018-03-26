@@ -108,7 +108,7 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
   });
 
   test('\'empty\' string-type values should be output as \'\'', t => {
-    [ [], {}, '', 17, true, null, undefined ].forEach(empty_value => {
+    [ [], {}, '', true, null, undefined ].forEach(empty_value => {
       const source = {
         housenumber: empty_value,
         street: empty_value,

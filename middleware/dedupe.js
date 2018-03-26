@@ -1,6 +1,7 @@
-var logger = require('pelias-logger').get('api');
-var _ = require('lodash');
-var isDifferent = require('../helper/diffPlaces').isDifferent;
+const logger = require('pelias-logger').get('api');
+const _ = require('lodash');
+const isDifferent = require('../helper/diffPlaces').isDifferent;
+const field = require('../helper/fieldValue');
 
 function setup() {
   return dedupeResults;
@@ -38,7 +39,7 @@ function dedupeResults(req, res, next) {
         logger.info('[dupe][replacing]', {
           query: req.clean.text,
           previous: uniqueResults[dupeIndex].source,
-          hit: hit.name.default + ' ' + hit.source + ':' + hit._id
+          hit: field.getStringValue(hit.name.default) + ' ' + hit.source + ':' + hit._id
         });
         // replace previous dupe item with current hit
         uniqueResults[dupeIndex] = hit;
@@ -48,7 +49,7 @@ function dedupeResults(req, res, next) {
         logger.info('[dupe][skipping]', {
           query: req.clean.text,
           previous: uniqueResults[dupeIndex].source,
-          hit: hit.name.default + ' ' + hit.source + ':' + hit._id
+          hit: field.getStringValue(hit.name.default) + ' ' + hit.source + ':' + hit._id
         });
       }
     }
