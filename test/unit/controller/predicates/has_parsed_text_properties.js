@@ -1,5 +1,3 @@
-'use strict';
-
 const _ = require('lodash');
 const has_parsed_text_properties = require('../../../../controller/predicates/has_parsed_text_properties');
 

@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = () => {
   const stack = new Error().stack.split('\n');
   let targetLine;

@@ -2,8 +2,6 @@
  * Create a middleware that prints access logs via pelias-logger.
  */
 
-'use strict';
-
 var url = require( 'url' );
 
 var _ = require( 'lodash' );

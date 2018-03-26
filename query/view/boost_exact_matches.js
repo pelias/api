@@ -1,4 +1,3 @@
-
 var peliasQuery = require('pelias-query'),
     searchDefaults = require('../search_defaults');
 

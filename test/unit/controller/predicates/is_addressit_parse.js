@@ -1,5 +1,3 @@
-'use strict';
-
 const _ = require('lodash');
 const is_addressit_parse = require('../../../../controller/predicates/is_addressit_parse');
 

@@ -1,4 +1,3 @@
-
 var peliasQuery = require('pelias-query'),
     check = require('check-types');
 

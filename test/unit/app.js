@@ -1,5 +1,3 @@
-'use strict';
-
 const proxyquire = require('proxyquire').noCallThru();
 
 module.exports.tests = {};

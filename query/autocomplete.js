@@ -1,5 +1,3 @@
-'use strict';
-
 const peliasQuery = require('pelias-query');
 const defaults = require('./autocomplete_defaults');
 const textParser = require('./text_parser_addressit');

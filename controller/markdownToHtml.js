@@ -1,4 +1,3 @@
-
 var markdown = require('markdown').markdown;
 var fs = require('fs');
 

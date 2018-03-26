@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = class MockQuery {
   constructor() {
     this._score_functions = [];

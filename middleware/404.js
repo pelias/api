@@ -1,4 +1,3 @@
-
 // handle not found errors
 function middleware(req, res) {
   res.header('Cache-Control','public');

@@ -1,5 +1,3 @@
-'use strict';
-
 const _ = require('lodash');
 const is_only_non_admin_layers = require('../../../../controller/predicates/is_only_non_admin_layers');
 

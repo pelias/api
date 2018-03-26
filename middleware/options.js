@@ -1,4 +1,3 @@
-
 /**
   this functionality is required by CORS as the browser will send an
   HTTP OPTIONS request before performing the CORS request.

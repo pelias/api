@@ -1,5 +1,3 @@
-'use strict';
-
 const proxyquire =  require('proxyquire').noCallThru();
 const libpostal = require('../../../controller/structured_libpostal');
 const _ = require('lodash');

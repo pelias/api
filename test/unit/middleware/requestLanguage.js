@@ -1,4 +1,3 @@
-
 var middleware = require('../../../middleware/requestLanguage');
 module.exports.tests = {};
 

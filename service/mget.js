@@ -1,4 +1,3 @@
-
 /**
 
   query must be an array of hashes, structured like so:

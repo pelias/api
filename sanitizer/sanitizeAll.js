@@ -1,4 +1,3 @@
-'use strict';
 function sanitize( req, sanitizers ){
   // init an object to store clean (sanitized) input parameters if not initialized
   req.clean = req.clean || {};

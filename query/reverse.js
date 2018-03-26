@@ -1,5 +1,3 @@
-'use strict';
-
 const peliasQuery = require('pelias-query');
 const defaults = require('./reverse_defaults');
 const check = require('check-types');
