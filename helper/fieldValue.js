@@ -17,7 +17,7 @@ function getStringValue(property) {
     return property;
   }
 
-  // array value, take first item in array (at this time only used for admin values)
+  // array value, take first item in array (at this time only used for admin & name values)
   if (_.isArray(property)) {
     return property[0];
   }

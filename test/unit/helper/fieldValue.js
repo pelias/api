@@ -11,6 +11,9 @@ module.exports.tests.getStringValue = function(test) {
     t.equal(field.getStringValue(['']), '', 'array with empty string');
     t.equal(field.getStringValue(-0), '-0', 'number');
     t.equal(field.getStringValue(+0), '0', 'number');
+
+    // note: this behaviour is not desirable, it was inherited during a refactor
+    // see: https://github.com/pelias/api/pull/1102
     t.equal(field.getStringValue({foo: 'bar'}), '[object Object]', '_.toString');
     t.end();
   });
