@@ -1,4 +1,3 @@
-
 const _ = require('lodash');
 const logger = require( 'pelias-logger' ).get( 'api' );
 

@@ -1,4 +1,3 @@
-
 const _ = require('lodash');
 const has_request_parameter = require('../../../../controller/predicates/has_request_parameter');
 

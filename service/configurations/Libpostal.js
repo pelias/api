@@ -1,4 +1,3 @@
-
 const url = require('url');
 
 const ServiceConfiguration = require('pelias-microservice-wrapper').ServiceConfiguration;

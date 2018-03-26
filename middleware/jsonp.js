@@ -1,4 +1,3 @@
-
 function middleware(req, res, next){
 
   // store old json function

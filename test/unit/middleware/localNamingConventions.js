@@ -1,4 +1,3 @@
-
 const proxyquire = require('proxyquire');
 
 var customConfig = {

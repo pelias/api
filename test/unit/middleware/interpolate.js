@@ -1,4 +1,3 @@
-
 const setup = require('../../../middleware/interpolate');
 const proxyquire =  require('proxyquire').noCallThru();
 const _  = require('lodash');

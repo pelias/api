@@ -1,4 +1,3 @@
-
 const setup = require('../../../controller/coarse_reverse');
 const proxyquire =  require('proxyquire').noCallThru();
 const _  = require('lodash');

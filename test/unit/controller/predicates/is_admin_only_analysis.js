@@ -1,4 +1,3 @@
-
 const _ = require('lodash');
 const is_admin_only_analysis = require('../../../../controller/predicates/is_admin_only_analysis');
 

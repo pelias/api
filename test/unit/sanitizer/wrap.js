@@ -1,4 +1,3 @@
-
 var wrap = require('../../../sanitizer/wrap');
 
 module.exports.tests = {};

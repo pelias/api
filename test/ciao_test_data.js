@@ -1,4 +1,3 @@
-
 /**
   Test data required by the ciao test suite.
 

@@ -1,4 +1,3 @@
-
 var peliasQuery = require('pelias-query'),
     ngrams_strict = require('./ngrams_strict');
 

@@ -1,4 +1,3 @@
-
 const Joi = require('joi');
 const schema = require('../../schema');
 const _ = require('lodash');

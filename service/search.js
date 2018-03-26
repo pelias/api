@@ -1,4 +1,3 @@
-
 /**
 
   cmd can be any valid ES query command

@@ -1,4 +1,3 @@
-
 const setup = require('../../../middleware/changeLanguage');
 const proxyquire =  require('proxyquire').noCallThru();
 const _  = require('lodash');

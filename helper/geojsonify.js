@@ -1,4 +1,3 @@
-
 const GeoJSON = require('geojson');
 const extent = require('@mapbox/geojson-extent');
 const logger = require('pelias-logger').get('geojsonify');

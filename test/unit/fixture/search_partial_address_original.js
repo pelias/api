@@ -1,4 +1,3 @@
-
 var vs = require('../../../query/search_defaults');
 
 module.exports = {
