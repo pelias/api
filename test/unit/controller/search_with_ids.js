@@ -1,4 +1,3 @@
-'use strict';
 
 const setup = require('../../../controller/search_with_ids');
 const proxyquire =  require('proxyquire').noCallThru();

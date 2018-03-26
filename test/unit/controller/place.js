@@ -1,4 +1,3 @@
-'use strict';
 
 const setup = require('../../../controller/place');
 const proxyquire =  require('proxyquire').noCallThru();

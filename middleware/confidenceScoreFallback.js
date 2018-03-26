@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  *
  * Basic confidence score should be computed and returned for each item in the results.

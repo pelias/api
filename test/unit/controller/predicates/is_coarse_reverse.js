@@ -1,4 +1,3 @@
-'use strict';
 
 const _ = require('lodash');
 const is_coarse_reverse = require('../../../../controller/predicates/is_coarse_reverse');

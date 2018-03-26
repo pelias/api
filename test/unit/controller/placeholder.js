@@ -1,4 +1,3 @@
-'use strict';
 
 const placeholder = require('../../../controller/placeholder');
 const proxyquire =  require('proxyquire').noCallThru();

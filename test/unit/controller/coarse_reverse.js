@@ -1,4 +1,3 @@
-'use strict';
 
 const setup = require('../../../controller/coarse_reverse');
 const proxyquire =  require('proxyquire').noCallThru();
