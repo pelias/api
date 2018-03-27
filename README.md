@@ -28,8 +28,8 @@ npm install
 Note: This is required for use of the `convert` endpoint.
 [See VeniceGeo Repo](https://github.com/venicegeo/geotrans-mgrs-converter)
 
-Once you have the GeoTrans container running, you will need to set the `ENV GEOTRANS_IP` in this repository's docker file.
-You can set this to your host (as long as port 3150 is exposed) or the GeoTrans container's IP.
+Once you have the GeoTrans container running, you will need to set the `ENV GEOTRANS_URL` in this repository's docker file.
+You can set these to your host:port or the GeoTrans container's IP and port at which it is exposed.
 
 ## Build and run Pelias-API alone
 
