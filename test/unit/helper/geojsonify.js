@@ -578,7 +578,22 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
 module.exports.tests.polygons = (test, common) => {
   test('polygon should be interpreted as such, and not point', t => {
     const logger = require('pelias-mock-logger')();
-
+    let coords = [
+      [
+          [100.0, 0.0],
+          [101.0, 0.0],
+          [101.0, 1.0],
+          [100.0, 1.0],
+          [100.0, 0.0]
+      ],
+      [
+          [100.8, 0.8],
+          [100.8, 0.2],
+          [100.2, 0.2],
+          [100.2, 0.8],
+          [100.8, 0.8]
+      ]
+  ];
     const input = [
       null,
       undefined,
@@ -594,16 +609,11 @@ module.exports.tests.polygons = (test, common) => {
           lat: 12.121212,
           lon: 21.212121
         },
-        polygon: {
-          coordinates: [
-            
-              [0,1],
-              [0.5,1],
-              [1,0],
-              [1,0.5],
-              [0,1]
-            
-          ]
+        geometry: 
+          {
+            'type': 'Polygon',
+            'coordinates': coords
+          
         },
         bounding_box: {
           min_lon: 0,
@@ -635,15 +645,7 @@ module.exports.tests.polygons = (test, common) => {
           type: 'Feature',
           geometry: {
             type: 'Polygon',
-            coordinates: [ 
-              [
-                [0,1],
-                [0.5,1],
-                [1,0],
-                [1,0.5],
-                [0,1]
-              ]
-            ]
+            coordinates: coords
           },
           properties: {
             id: 'id 1',

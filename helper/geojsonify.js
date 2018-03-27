@@ -7,29 +7,30 @@ const Document = require('pelias-model').Document;
 
 function geojsonifyPlaces(params, docs, geometriesParam){
   //Default to empty
-  let geometries = [];
+  let requestedGeometries = [];
   //Gather query param
   if(geometriesParam){
-    geometries = geometriesParam.split(',');
+    requestedGeometries = geometriesParam.split(',');
   }
   // Weed out non-geo data.
   const geodata = docs
     .filter(doc => !!_.has(doc, 'center_point'));
   
-  let parsedDocs = parseDocs(geodata, geometries);
+  let parsedDocs = parseDocs(geodata, requestedGeometries);
 
   const polygonData = parsedDocs.polygons.map(geojsonifyPlace.bind(null, params));
   const pointData = parsedDocs.points.map(geojsonifyPlace.bind(null, params));
 
   //Schemas for geojson parsing library
   const pointSchema = { Point: ['lat', 'lng'] };
-  const polygonSchema = { Polygon: 'polygon' };
+  //const polygonSchema = 'geometry';
   //Interpret point features as points no matter what
   let pointGeojson = GeoJSON.parse( pointData, pointSchema);
-  let polygonGeojson = GeoJSON.parse(polygonData, polygonSchema);
+  let polygonGeojson = generatePolygonGeojson(polygonData);
 
-  pointGeojson.features = (polygonGeojson.features).concat(pointGeojson.features);
-  
+  //Create final combined geojson object
+  pointGeojson.features = (polygonGeojson).concat(pointGeojson.features);
+
   // get all the bounding_box corners as well as single points
   // to be used for computing the overall bounding_box for the FeatureCollection
   const extentPoints = extractExtentPoints(geodata.map(geojsonifyPlace.bind(null, params)));
@@ -49,21 +50,21 @@ function geojsonifyPlaces(params, docs, geometriesParam){
  * Separate polygons and points if geometries parameters indicates to do so
  *
  * @param {array} docs raw documents being fed to geojsonify
- * @param {string} geometries RES parameter string to split and parse as array
+ * @param {string} requestedGeometries RES parameter string to split and parse as array
  * @returns {object} Returns object of polygons and points arrays accordingly
  */
-function parseDocs(docs, geometries){
+function parseDocs(docs, requestedGeometries){
   
     //Check for polygon data 
     let polygonData = [];
     let pointData = [];
     _.forEach(docs, doc => {
-      if(_.has(doc, 'polygon')){
-        if(_.indexOf(geometries, 'polygon') > -1){
+      if(_.has(doc, 'geometry')){
+        if(_.indexOf(requestedGeometries, 'polygon') > -1){
           polygonData.push(doc);
         }
         else{
-          delete doc.polygon;
+          delete doc.geometry;
           pointData.push(doc);
         }
       }
@@ -72,6 +73,26 @@ function parseDocs(docs, geometries){
       }
     });
     return { polygons: polygonData, points: pointData };
+}
+
+/**
+ * Generate polygon geojson object from ES document determined to have a polygon feature.
+ *
+ * @param {array} polygonData documents of data deemed to have polygons in them.
+ * @returns {object} Returns geoJSON polygon or multi-polygon features in an array.
+ */
+function generatePolygonGeojson(polygonData){
+  let polygonGeojson = [];
+  _.forEach(polygonData, (polygonPlace)=>{
+    let properties = _.assign({}, polygonPlace);
+    delete properties.geometry;
+    polygonGeojson.push({
+      'type':'Feature',
+      'geometry':polygonPlace.geometry,
+      'properties':properties
+    });
+  });
+  return polygonGeojson;
 }
 
 function geojsonifyPlace(params, place) {
@@ -92,8 +113,8 @@ function geojsonifyPlace(params, place) {
   } else {
     logger.warn(`doc ${doc.gid} does not contain name.default`);
   }
-  if (_.has(place, 'polygon')) {
-    doc.polygon = [ place.polygon.coordinates ];
+  if (_.has(place, 'geometry')) {
+    doc.geometry = place.geometry;
   }
   else{
     if(place.center_point){
