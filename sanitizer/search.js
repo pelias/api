@@ -15,6 +15,7 @@ module.exports.middleware = (_api_pelias_config) => {
         private: require('../sanitizer/_flag_bool')('private', false),
         location_bias: require('../sanitizer/_location_bias')(_api_pelias_config.defaultParameters),
         geo_search: require('../sanitizer/_geo_search')(),
+        geometries: require('../sanitizer/_geometries')(),
         boundary_country: require('../sanitizer/_boundary_country')(),
         categories: require('../sanitizer/_categories')(),
         // this can go away once geonames has been abrogated

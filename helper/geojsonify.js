@@ -6,30 +6,29 @@ const _ = require('lodash');
 const Document = require('pelias-model').Document;
 
 function geojsonifyPlaces(params, docs, geometriesParam){
-  //Default to empty
-  let requestedGeometries = [];
-  //Gather query param
+  let requestedGeometries;
   if(geometriesParam){
     requestedGeometries = geometriesParam.split(',');
   }
+  else{
+    requestedGeometries = ['point'];
+  }
   // Weed out non-geo data.
-  const geodata = docs
-    .filter(doc => !!_.has(doc, 'center_point'));
+  const geodata = docs.filter(doc => !!_.has(doc, 'center_point'));
   
+  // Initial parse to separate polygons and points on basis of request parameter.
   let parsedDocs = parseDocs(geodata, requestedGeometries);
 
+  // Construct docs 
   const polygonData = parsedDocs.polygons.map(geojsonifyPlace.bind(null, params));
   const pointData = parsedDocs.points.map(geojsonifyPlace.bind(null, params));
 
-  //Schemas for geojson parsing library
-  const pointSchema = { Point: ['lat', 'lng'] };
-  //const polygonSchema = 'geometry';
-  //Interpret point features as points no matter what
-  let pointGeojson = GeoJSON.parse( pointData, pointSchema);
+  // Produce final place documents
+  let pointGeojson = GeoJSON.parse( pointData, { Point: ['lat', 'lng'] });
   let polygonGeojson = generatePolygonGeojson(polygonData);
 
   //Create final combined geojson object
-  pointGeojson.features = (polygonGeojson).concat(pointGeojson.features);
+  pointGeojson.features = polygonGeojson.concat(pointGeojson.features);
 
   // get all the bounding_box corners as well as single points
   // to be used for computing the overall bounding_box for the FeatureCollection
@@ -54,22 +53,28 @@ function geojsonifyPlaces(params, docs, geometriesParam){
  * @returns {object} Returns object of polygons and points arrays accordingly
  */
 function parseDocs(docs, requestedGeometries){
-  
     //Check for polygon data 
     let polygonData = [];
     let pointData = [];
+    const requestedPolygons = _.indexOf(requestedGeometries, 'polygon') > -1;
+    const requestedPoints = _.indexOf(requestedGeometries, 'point') > -1;
+
     _.forEach(docs, doc => {
-      if(_.has(doc, 'geometry')){
-        if(_.indexOf(requestedGeometries, 'polygon') > -1){
+            
+      if(_.has(doc, 'polygon')){
+        if(requestedPolygons){
           polygonData.push(doc);
         }
         else{
-          delete doc.geometry;
-          pointData.push(doc);
+          //Classify permanently as point data
+          delete doc.polygon;
+          if(requestedPoints){
+            pointData.push(doc);
+          }
         }
       }
-      else{
-        pointData.push(doc);
+      else if(requestedPoints){
+          pointData.push(doc);
       }
     });
     return { polygons: polygonData, points: pointData };
@@ -83,17 +88,18 @@ function parseDocs(docs, requestedGeometries){
  */
 function generatePolygonGeojson(polygonData){
   let polygonGeojson = [];
-  _.forEach(polygonData, (polygonPlace)=>{
+  _.forEach(polygonData, polygonPlace => {
     let properties = _.assign({}, polygonPlace);
-    delete properties.geometry;
+    delete properties.polygon;
     polygonGeojson.push({
       'type':'Feature',
-      'geometry':polygonPlace.geometry,
+      'geometry':polygonPlace.polygon,
       'properties':properties
     });
   });
   return polygonGeojson;
 }
+
 
 function geojsonifyPlace(params, place) {
   // setup the base doc
@@ -106,27 +112,22 @@ function geojsonifyPlace(params, place) {
     bounding_box: place.bounding_box,
   };
   
-  
   // assign name, logging a warning if it doesn't exist
   if (_.has(place, 'name.default')) {
     doc.name = place.name.default;
   } else {
     logger.warn(`doc ${doc.gid} does not contain name.default`);
   }
-  if (_.has(place, 'geometry')) {
-    doc.geometry = place.geometry;
+  // assign geometry property if polygon data exists.
+  if (_.has(place, 'polygon')) {
+    doc.geometry = place.polygon;
   }
-  else{
-    if(place.center_point){
+  else if(place.center_point){
       doc.lat = parseFloat(place.center_point.lat);
-      doc.lng = parseFloat(place.center_point.lon);
-    }
-    
+      doc.lng = parseFloat(place.center_point.lon);  
   }
-
   // assign all the details info into the doc
   Object.assign(doc, collectDetails(params, place));
-
   return doc;
 }
 

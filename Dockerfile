@@ -42,7 +42,7 @@ RUN npm install && \
 # Don't run as root, because there's no reason to (https://docs.docker.com/engine/articles/dockerfile_best-practices/#user).
 # This also reveals permission problems on local Docker.
 RUN chown -R 9999:9999 ${WORK}
-# USER 9999
+USER 9999
 
 # start service
 CMD [ "npm", "start" ]
