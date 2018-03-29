@@ -26,7 +26,6 @@ function geojsonifyPlaces(params, docs, geometriesParam){
   // Produce final place documents
   let pointGeojson = GeoJSON.parse( pointData, { Point: ['lat', 'lng'] });
   let polygonGeojson = generatePolygonGeojson(polygonData);
-
   //Create final combined geojson object
   pointGeojson.features = polygonGeojson.concat(pointGeojson.features);
 
@@ -89,11 +88,10 @@ function parseDocs(docs, requestedGeometries){
 function generatePolygonGeojson(polygonData){
   let polygonGeojson = [];
   _.forEach(polygonData, polygonPlace => {
-    let properties = _.assign({}, polygonPlace);
-    delete properties.polygon;
+    let properties = _.cloneDeep(_.omit(polygonPlace, ['geometry']));
     polygonGeojson.push({
       'type':'Feature',
-      'geometry':polygonPlace.polygon,
+      'geometry':polygonPlace.geometry,
       'properties':properties
     });
   });
