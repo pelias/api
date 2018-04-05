@@ -46,37 +46,30 @@ The API recognizes the following properties under the top-level `api` key in you
 |`services`|*no*||service definitions for [point-in-polygon](https://github.com/pelias/pip-service), [libpostal](https://github.com/whosonfirst/go-whosonfirst-libpostal), [placeholder](https://github.com/pelias/placeholder), and [interpolation](https://github.com/pelias/interpolation) services.  If missing (which is not recommended), the services will not be called.|
 |`defaultParameters.focus.point.lon` <br> `defaultParameters.focus.point.lat`|no | |default coordinates for focus point
 
-Example configuration file would look something like this:
+A good starting configuration file includes this section (fill in the service and Elasticsearch hosts as needed):
 
 ```
 {
   "esclient": {
-    "keepAlive": true,
-    "requestTimeout": "1200000",
-    "hosts": [
-      {
-        "protocol": "http",
-        "host": "somesemachine.elb.amazonaws.com",
-        "port": 9200
-      }
-    ]
+    "hosts": [{
+      "host": "elasticsearch"
+    }]
   },
   "api": {
-    "host": "localhost:3100/v1/",
-    "indexName": "foobar",  
-    "relativeScores": true,
     "services": {
-      "pip": {
-        "url": "http://mypipservice.com:3000"
-      },
       "placeholder": {
-        "url": "http://myplaceholderservice.com:5000"
+        "url": "http://placeholder:4100"
+      },
+      "libpostal": {
+        "url": "http://libpostal:8080"
+      },
+      "pip": {
+        "url": "http://pip-service:4200"
       },
       "interpolation": {
-        "url": "http://myinterpolationservice.com:3000",
-        "timeout": 2500
+        "url": "http://interpolation:4300"
       }
-    }
+    },
     "defaultParameters": {
       "focus.point.lat": 12.121212,
       "focus.point.lon": 21.212121
