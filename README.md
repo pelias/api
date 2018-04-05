@@ -17,7 +17,7 @@ Full documentation for the Pelias API lives in the [pelias/documentation](https:
 
 ## Install Dependencies
 
-Note: Pelias requires Node.js v4 or newer
+Note: Pelias requires Node.js v6 or newer
 
 ```bash
 npm install
@@ -127,7 +127,7 @@ $ curl localhost:9200/pelias/_count?pretty
 
 ### Continuous Integration
 
-Travis tests every release against Node.js versions `4` and `6`.
+Travis tests every release against all supported Node.js versions.
 
 [![Build Status](https://travis-ci.org/pelias/api.png?branch=master)](https://travis-ci.org/pelias/api)
 
