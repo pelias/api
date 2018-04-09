@@ -1,5 +1,3 @@
-'use strict';
-
 const _ = require('lodash');
 const has_results_at_layers = require('../../../../controller/predicates/has_results_at_layers');
 

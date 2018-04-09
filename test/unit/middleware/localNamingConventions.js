@@ -1,5 +1,4 @@
-
-var proxyquire = require('proxyquire');
+const proxyquire = require('proxyquire');
 
 var customConfig = {
   generate: function generate() {
@@ -40,7 +39,7 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
   var deAddress = {
     '_id': 'test2',
     '_type': 'test',
-    'name': { 'default': '23 Grolmanstraße' },
+    'name': { 'default': ['23 Grolmanstraße'] },
     'center_point': { 'lon': 13.321487, 'lat': 52.506781 },
     'address_parts': {
        'zip': '10623',

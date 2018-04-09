@@ -24,7 +24,7 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ '\'notlayer\' is an invalid layers parameter. Valid options: coarse,address,venue,street,country,macroregion,region,county,localadmin,locality,borough,neighbourhood,continent,dependency,macrocounty,macrohood,microhood,disputed,postalcode' ]
+json.geocoding.errors.should.eql [ '\'notlayer\' is an invalid layers parameter. Valid options: coarse,address,venue,street,country,macroregion,region,county,localadmin,locality,borough,neighbourhood,continent,empire,dependency,macrocounty,macrohood,microhood,disputed,postalcode,ocean,marinearea' ]
 
 #? expected warnings
 should.not.exist json.geocoding.warnings

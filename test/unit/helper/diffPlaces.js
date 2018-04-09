@@ -166,6 +166,22 @@ module.exports.tests.dedupe = function(test, common) {
     t.false(isDifferent(item1, item2), 'should be the same');
     t.end();
   });
+
+  test('works with name aliases', function(t) {
+    var item1 = {
+      'name': {
+        'default': ['a','b'] // note the array
+      }
+    };
+    var item2 = {
+      'name': {
+        'default': 'a'
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {

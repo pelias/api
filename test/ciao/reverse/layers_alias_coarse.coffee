@@ -31,6 +31,7 @@ should.not.exist json.geocoding.warnings
 #? inputs
 json.geocoding.query['size'].should.eql 10
 json.geocoding.query.layers.should.eql [ "continent",
+  "empire",
   "country",
   "dependency",
   "macroregion",
@@ -44,5 +45,7 @@ json.geocoding.query.layers.should.eql [ "continent",
   "neighbourhood",
   "microhood",
   "disputed",
-  "postalcode"
+  "postalcode",
+  "ocean",
+  "marinearea"
 ]

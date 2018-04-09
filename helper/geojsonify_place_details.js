@@ -1,6 +1,5 @@
-'use strict';
-
 const _ = require('lodash');
+const field = require('./fieldValue');
 
 // Properties to be copied
 // If a property is identified as a single string, assume it should be presented as a string in response
@@ -89,10 +88,10 @@ function collectProperties( params, source ) {
 
       switch (prop.type) {
         case 'string':
-          value = getStringValue(source[prop.name]);
+          value = field.getStringValue(source[prop.name]);
           break;
         case 'array':
-          value = getArrayValue(source[prop.name]);
+          value = field.getArrayValue(source[prop.name]);
           break;
         // default behavior is to copy property exactly as is
         default:
@@ -108,37 +107,6 @@ function collectProperties( params, source ) {
 
   }, {});
 
-}
-
-function getStringValue(property) {
-  // isEmpty check works for all types of values: strings, arrays, objects
-  if (_.isEmpty(property)) {
-    return '';
-  }
-
-  if (_.isString(property)) {
-    return property;
-  }
-
-  // array value, take first item in array (at this time only used for admin values)
-  if (_.isArray(property)) {
-    return property[0];
-  }
-
-  return _.toString(property);
-}
-
-function getArrayValue(property) {
-  // isEmpty check works for all types of values: strings, arrays, objects
-  if (_.isEmpty(property)) {
-    return '';
-  }
-
-  if (_.isArray(property)) {
-    return property;
-  }
-
-  return [property];
 }
 
 module.exports = collectProperties;

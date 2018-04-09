@@ -1,4 +1,3 @@
-
 var _ = require('lodash'),
     check = require('check-types');
 

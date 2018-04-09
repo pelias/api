@@ -1,4 +1,3 @@
-
 var defaults = require('../../../query/autocomplete_defaults');
 
 module.exports.tests = {};

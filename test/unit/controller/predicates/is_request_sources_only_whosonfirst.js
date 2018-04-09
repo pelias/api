@@ -1,5 +1,3 @@
-'use strict';
-
 const _ = require('lodash');
 const is_request_sources_only_whosonfirst = require('../../../../controller/predicates/is_request_sources_only_whosonfirst');
 

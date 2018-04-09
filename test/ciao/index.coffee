@@ -19,4 +19,4 @@ response.should.have.header 'Server'
 response.headers.server.should.match /Pelias\/\d{1,2}\.\d{1,2}\.\d{1,2}/
 
 #? vanity header correctly set
-response.should.have.header 'X-Powered-By','mapzen'
+response.should.have.header 'X-Powered-By','pelias'

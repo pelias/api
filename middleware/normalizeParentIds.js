@@ -1,5 +1,3 @@
-'use strict';
-
 const logger = require('pelias-logger').get('api');
 const Document = require('pelias-model').Document;
 const placeTypes = require('../helper/placeTypes');

@@ -1,6 +1,7 @@
-var logger = require('pelias-logger').get('api');
-var _ = require('lodash');
-var isDifferent = require('../helper/diffPlaces').isDifferent;
+const logger = require('pelias-logger').get('api');
+const _ = require('lodash');
+const isDifferent = require('../helper/diffPlaces').isDifferent;
+const field = require('../helper/fieldValue');
 
 function setup() {
   return dedupeResults;
@@ -38,7 +39,7 @@ function dedupeResults(req, res, next) {
         logger.info('[dupe][replacing]', {
           query: req.clean.text,
           previous: uniqueResults[dupeIndex].source,
-          hit: hit.name.default + ' ' + hit.source + ':' + hit._id
+          hit: field.getStringValue(hit.name.default) + ' ' + hit.source + ':' + hit._id
         });
         // replace previous dupe item with current hit
         uniqueResults[dupeIndex] = hit;
@@ -48,7 +49,7 @@ function dedupeResults(req, res, next) {
         logger.info('[dupe][skipping]', {
           query: req.clean.text,
           previous: uniqueResults[dupeIndex].source,
-          hit: hit.name.default + ' ' + hit.source + ':' + hit._id
+          hit: field.getStringValue(hit.name.default) + ' ' + hit.source + ':' + hit._id
         });
       }
     }
@@ -64,13 +65,13 @@ function dedupeResults(req, res, next) {
 
 function isPreferred(existing, candidateReplacement) {
   // NOTE: we are assuming here that the layer for both records is the same
-
-  var isOA = _.flow(_.property('source'), _.eq.bind(null, 'openaddresses'));
-  var hasZip = _.bind(_.has, null, _.bind.placeholder, 'address_parts.zip');
+  const hasZip = _.bind(_.has, null, _.bind.placeholder, 'address_parts.zip');
 
   // https://github.com/pelias/api/issues/872
-  if (isOA(existing) && isOA(candidateReplacement)) {
-    return hasZip(candidateReplacement) && !hasZip(existing);
+  const candidateHasZip = hasZip(candidateReplacement);
+  const existingHasZip = hasZip(existing);
+  if (candidateHasZip !== existingHasZip) {
+    return candidateHasZip;
   }
 
   //bind the trumps function to the data items to keep the rest of the function clean

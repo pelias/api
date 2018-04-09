@@ -1,4 +1,3 @@
-
 var setup = require('../../../controller/markdownToHtml');
 
 module.exports.tests = {};

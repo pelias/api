@@ -1,6 +1,6 @@
 
 #> sources filter
-path: '/v1/reverse?point.lat=1&point.lon=2&sources=openstreetmap,geonames'
+path: '/v1/reverse?point.lat=1&point.lon=2&sources=openstreetmap,openaddresses'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -30,4 +30,4 @@ should.not.exist json.geocoding.warnings
 
 #? inputs
 json.geocoding.query['size'].should.eql 10
-json.geocoding.query.sources.should.eql ["openstreetmap", "geonames"]
+json.geocoding.query.sources.should.eql ["openstreetmap", "openaddresses"]
