@@ -23,6 +23,19 @@ Note: Pelias requires Node.js v4 or newer
 npm install
 ```
 
+## Runtime Dependencies
+
+As of February 2018, the Pelias Libpostal microservice is required to perform queries. This is available at Dockerhub under `pelias/go-whosonfirst-libpostal` and requires exposure of 8080. To run the Pelias suite locally we recommend running `docker-compose up` from the [Venicegeo Pelias Dockerfiles repository](https://github.com/venicegeo/pelias-dockerfiles).
+
+YAML snippet:
+```bash
+image: pelias/go-whosonfirst-libpostal
+container_name: pelias_libpostal
+restart: always
+ports: [ "8080:8080" ]
+networks: [ "pelias" ]
+```
+
 ## Install GeoTrans MGRS Converter
 
 Note: This is required for use of the `convert` endpoint.
