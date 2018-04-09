@@ -69,10 +69,6 @@ A good starting configuration file includes this section (fill in the service an
       "interpolation": {
         "url": "http://interpolation:4300"
       }
-    },
-    "defaultParameters": {
-      "focus.point.lat": 12.121212,
-      "focus.point.lon": 21.212121
     }
   },
   "logger": {
