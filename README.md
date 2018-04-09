@@ -1,11 +1,11 @@
 >This repository is part of the [Pelias](https://github.com/pelias/pelias)
->project. Pelias is an open-source, open-data geocoder built by
->[Mapzen](https://www.mapzen.com/) that also powers [Mapzen Search](https://mapzen.com/projects/search). Our
->official user documentation is [here](https://mapzen.com/documentation/search/).
+>project. Pelias is an open-source, open-data geocoder originally sponsored by
+>[Mapzen](https://www.mapzen.com/). Our official user documentation is
+>[here](https://github.com/pelias/documentation).
 
 # Pelias API Server
 
-This is the API server for the Pelias project. It's the service that runs to process user HTTP requests and return results as GeoJSON by querying Elasticsearch.
+This is the API server for the Pelias project. It's the service that runs to process user HTTP requests and return results as GeoJSON by querying Elasticsearch and the other Pelias services.
 
 [![NPM](https://nodei.co/npm/pelias-api.png?downloads=true&stars=true)](https://nodei.co/npm/pelias-api)
 
@@ -13,11 +13,11 @@ This is the API server for the Pelias project. It's the service that runs to pro
 
 ## Documentation
 
-See the [Mapzen Search documentation](https://mapzen.com/documentation/search/).
+Full documentation for the Pelias API lives in the [pelias/documentation](https://github.com/pelias/documentation) repository.
 
 ## Install Dependencies
 
-Note: Pelias requires Node.js v4 or newer
+Note: Pelias requires Node.js v6 or newer
 
 ```bash
 npm install
@@ -43,43 +43,32 @@ The API recognizes the following properties under the top-level `api` key in you
 |`indexName`|*no*|*pelias*|name of the Elasticsearch index to be used when building queries|
 |`relativeScores`|*no*|true|if set to true, confidence scores will be normalized, realistically at this point setting this to false is not tested or desirable
 |`accessLog`|*no*||name of the format to use for access logs; may be any one of the [predefined values](https://github.com/expressjs/morgan#predefined-formats) in the `morgan` package. Defaults to `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.|
-|`services`|*no*||service definitions for [point-in-polygon](https://github.com/pelias/pip-service), and [placeholder](https://github.com/pelias/placeholder), and [interpolation](https://github.com/pelias/interpolation) services.  If missing (which is not recommended), the services will not be called.|
+|`services`|*no*||service definitions for [point-in-polygon](https://github.com/pelias/pip-service), [libpostal](https://github.com/whosonfirst/go-whosonfirst-libpostal), [placeholder](https://github.com/pelias/placeholder), and [interpolation](https://github.com/pelias/interpolation) services.  If missing (which is not recommended), the services will not be called.|
 |`defaultParameters.focus.point.lon` <br> `defaultParameters.focus.point.lat`|no | |default coordinates for focus point
 
-Example configuration file would look something like this:
+A good starting configuration file includes this section (fill in the service and Elasticsearch hosts as needed):
 
 ```
 {
   "esclient": {
-    "keepAlive": true,
-    "requestTimeout": "1200000",
-    "hosts": [
-      {
-        "protocol": "http",
-        "host": "somesemachine.elb.amazonaws.com",
-        "port": 9200
-      }
-    ]
+    "hosts": [{
+      "host": "elasticsearch"
+    }]
   },
   "api": {
-    "host": "localhost:3100/v1/",
-    "indexName": "foobar",  
-    "relativeScores": true,
     "services": {
-      "pip": {
-        "url": "http://mypipservice.com:3000"
-      },
       "placeholder": {
-        "url": "http://myplaceholderservice.com:5000"
+        "url": "http://placeholder:4100"
+      },
+      "libpostal": {
+        "url": "http://libpostal:8080"
+      },
+      "pip": {
+        "url": "http://pip-service:4200"
       },
       "interpolation": {
-        "url": "http://myinterpolationservice.com:3000",
-        "timeout": 2500
+        "url": "http://interpolation:4300"
       }
-    }
-    "defaultParameters": {
-      "focus.point.lat": 12.121212,
-      "focus.point.lon": 21.212121
     }
   },
   "logger": {
@@ -134,7 +123,7 @@ $ curl localhost:9200/pelias/_count?pretty
 
 ### Continuous Integration
 
-Travis tests every release against Node.js versions `4` and `6`.
+Travis tests every release against all supported Node.js versions.
 
 [![Build Status](https://travis-ci.org/pelias/api.png?branch=master)](https://travis-ci.org/pelias/api)
 
