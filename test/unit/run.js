@@ -72,6 +72,7 @@ var tests = [
   require('./sanitizer/_geonames_deprecation'),
   require('./sanitizer/_geonames_warnings'),
   require('./sanitizer/_geo_common'),
+  require('./sanitizer/_geometries'),
   require('./sanitizer/_geo_reverse'),
   require('./sanitizer/_groups'),
   require('./sanitizer/_ids'),
