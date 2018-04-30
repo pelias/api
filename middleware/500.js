@@ -1,4 +1,4 @@
-var check = require('check-types'),
+const check = require('check-types'),
     logger = require( 'pelias-logger' ).get( 'api' );
 
 // handle application errors
@@ -11,7 +11,7 @@ function middleware(err, req, res, next) {
     res.status(500);
   }
 
-  var error = ( err && err.message ) ? err.message : err;
+  let error = ( err && err.message ) ? err.message : err;
   res.header('Cache-Control','public');
   res.json({ error: check.nonEmptyString( error ) ? error : 'internal server error' });
 }

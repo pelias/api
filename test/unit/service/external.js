@@ -68,7 +68,14 @@ module.exports.tests.functionality = (test, common) => {
       });
 
       service.geotrans('18TXM9963493438').then(function(response){
-        let res = { 'type': 'Feature', 'geometry': { 'type': 'Point', 'coordinates': [ -72.57553258519015, 42.367593344066776 ] }, 'properties': { 'name': '18TXM9963493438' } };
+        let res = { 
+          'type': 'Feature', 
+          'geometry': { 
+            'type': 'Point', 
+            'coordinates': [ -72.57553258519015, 42.367593344066776 ] }, 
+            'properties': { 'name': '18TXM9963493438' 
+          } 
+        };
         t.equal(response.toString(), res.toString(), 'Geotrans conversion succeeds and properties are added');
         t.end();
       });

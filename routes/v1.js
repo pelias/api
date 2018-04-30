@@ -1,13 +1,38 @@
-var Router = require('express').Router;
-var elasticsearch = require('elasticsearch');
+const Router = require('express').Router,
+      elasticsearch = require('elasticsearch'),
+      all = require('predicates').all,
+      any = require('predicates').any,
+      not = require('predicates').not,
+      _ = require('lodash'),
+      jwt = require('jsonwebtoken'),
+      jwtChecker = require('express-jwt'),
+      peliasConfig = require( 'pelias-config' ).generate(require('../schema')),
+      authService = require('../service/auth');
 
-const all = require('predicates').all;
-const any = require('predicates').any;
-const not = require('predicates').not;
-const _ = require('lodash');
+
+
+/** START TEMPORARY: GENERATE UNIQUE ACCESS TOKEN */
+function createAccessToken() {
+  return jwt.sign({
+    exp: Math.floor(Date.now() / 1000) + (60 * 60),
+    jti: genJti(), // unique identifier for the token
+    alg: 'HS256'
+  }, process.env.JWT_SECRET);
+}
+
+// Generate Unique Identifier for the access token
+function genJti() {
+  let jti = '';
+  let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < 16; i++) {
+      jti += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return jti;
+}
+/** END TEMPORARY */
 
 /** ----------------------- sanitizers ----------------------- **/
-var sanitizers = {
+const sanitizers = {
   autocomplete: require('../sanitizer/autocomplete'),
   place: require('../sanitizer/place'),
   search: require('../sanitizer/search'),
@@ -18,14 +43,14 @@ var sanitizers = {
 };
 
 /** ----------------------- middleware ------------------------ **/
-var middleware = {
+const middleware = {
   calcSize: require('../middleware/sizeCalculator'),
   requestLanguage: require('../middleware/requestLanguage')
 };
 
 /** ----------------------- controllers ----------------------- **/
 
-var controllers = {
+const controllers = {
   coarse_reverse: require('../controller/coarse_reverse'),
   mdToHTML: require('../controller/markdownToHtml'),
   libpostal: require('../controller/libpostal'),
@@ -38,7 +63,7 @@ var controllers = {
   convert: require('../controller/convert')
 };
 
-var queries = {
+const queries = {
   cascading_fallback: require('../query/search'),
   very_old_prod: require('../query/search_original'),
   structured_geocoding: require('../query/structured_geocoding'),
@@ -49,7 +74,7 @@ var queries = {
 
 /** ----------------------- controllers ----------------------- **/
 
-var postProc = {
+const postProc = {
   trimByGranularity: require('../middleware/trimByGranularity'),
   trimByGranularityStructured: require('../middleware/trimByGranularityStructured'),
   distances: require('../middleware/distance'),
@@ -106,6 +131,7 @@ const Libpostal = require('../service/configurations/Libpostal');
  * @param {object} app
  * @param {object} peliasConfig
  */
+
 function addRoutes(app, peliasConfig) {
   const esclient = elasticsearch.Client(peliasConfig.esclient);
 
@@ -262,11 +288,11 @@ function addRoutes(app, peliasConfig) {
   const geometricFiltersApply = true;
   const geometricFiltersDontApply = false;
 
-  var base = '/v1/';
+  const base = '/v1/';
 
   /** ------------------------- routers ------------------------- **/
 
-  var routers = {
+  const routers = {
     index: createRouter([
       controllers.mdToHTML(peliasConfig.api, './public/apiDoc.md')
     ]),
@@ -405,23 +431,31 @@ function addRoutes(app, peliasConfig) {
     ])
   };
 
+  //Set authorization method based on pelias config
+  let authMethod = authService.determineAuth();
 
   // static data endpoints
-  app.get ( base,                          routers.index );
-  app.get ( base + 'attribution',          routers.attribution );
-  app.get (        '/attribution',         routers.attribution );
-  app.get (        '/status',              routers.status );
-  app.get ( base + 'convert',              routers.convert );
+  app.get ( base, routers.index );
+  app.get ( base + 'attribution', routers.attribution );
+  app.get ( '/attribution', routers.attribution );
+  app.get ( '/status', routers.status );
 
   // backend dependent endpoints
-  app.get ( base + 'place',                routers.place );
-  app.get ( base + 'autocomplete',         routers.autocomplete );
-  app.get ( base + 'search',               routers.search );
-  app.post( base + 'search',               routers.search );
-  app.get ( base + 'search/structured',    routers.structured );
-  app.get ( base + 'reverse',              routers.reverse );
-  app.get ( base + 'nearby',               routers.nearby );
+  app.get ( base + 'place', routers.place );
+  app.get ( base + 'autocomplete', routers.autocomplete );
+  app.get ( base + 'search', authMethod, routers.search );
+  app.post( base + 'search', authMethod, routers.search );
+  app.get ( base + 'search/structured', authMethod, routers.structured );
+  app.get ( base + 'reverse', authMethod, routers.reverse );
+  app.get ( base + 'nearby', routers.nearby );
+  app.get ( base + 'convert', authMethod, routers.convert );
 
+  // temporary
+  app.get ( base + 'generatejwt', (req, res) => {
+    res.status(201).send({
+      access_token: createAccessToken()
+    });
+  });
 }
 
 /**
@@ -432,11 +466,10 @@ function addRoutes(app, peliasConfig) {
  */
 function createRouter(functions) {
   var router = Router(); // jshint ignore:line
-  functions.forEach(function (f) {
+  functions.forEach((f) => {
     router.use(f);
   });
   return router;
 }
-
 
 module.exports.addRoutes = addRoutes;

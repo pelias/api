@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const logger = require( 'pelias-logger' ).get( 'api' );
 const axios = require('axios');

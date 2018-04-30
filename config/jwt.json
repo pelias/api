@@ -1,0 +1,7 @@
+{
+  "secret": "Pelias JWT test",
+  "audience": "nodejs-jwt-auth",
+  "issuer": "https://gxisaccess.io",
+  "sub":"test",
+  "dn":"dn"
+}

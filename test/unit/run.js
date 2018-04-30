@@ -107,7 +107,8 @@ var tests = [
   require('./service/configurations/PointInPolygon'),
   require('./service/mget'),
   require('./service/search'),
-  require('./service/external')
+  require('./service/external'),
+  require('./service/auth')
 ];
 
 tests.map(function(t) {

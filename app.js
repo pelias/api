@@ -1,6 +1,7 @@
-var app = require('express')();
+const app = require('express')();
+const jwt = require('jsonwebtoken');
 
-var peliasConfig = require( 'pelias-config' ).generate(require('./schema'));
+const peliasConfig = require( 'pelias-config' ).generate(require('./schema'));
 
 if( peliasConfig.api.accessLog ){
   app.use( require( './middleware/access_log' ).createAccessLogger( peliasConfig.api.accessLog ) );
@@ -16,10 +17,10 @@ app.use( require('./middleware/jsonp') );
 /** ----------------------- routes ----------------------- **/
 
 
-var defaultRoutes = require('./routes/default');
+const defaultRoutes = require('./routes/default');
 defaultRoutes.addRoutes(app);
 
-var v1 = require('./routes/v1');
+const v1 = require('./routes/v1');
 v1.addRoutes(app, peliasConfig);
 
 /** ----------------------- error middleware ----------------------- **/
