@@ -3,18 +3,19 @@ const Debug = require('../helper/debug');
 const debugLog = new Debug('controller:libpostal');
 const logger = require('pelias-logger').get('api');
 
-// if there's a house_number in the libpostal response, return it
-// otherwise return the postcode field (which may be undefined)
-function findHouseNumberField(response) {
-  const house_number_field = response.find(f => f.label === 'house_number');
+// Find field in libpostal response 
+function findField(response, field, replacementField) {
+  const libpostalField = response.find(f => f.label === field);
 
-  if (house_number_field) {
-    return house_number_field;
+  if (libpostalField) {
+    return libpostalField;
+  } else if(replacementField) {
+    return response.find(f => f.label === replacementField);
+  } else {
+    return;
   }
-
-  return response.find(f => f.label === 'postcode');
-
 }
+
 
 function setup(libpostalService, should_execute) {
   function controller( req, res, next ){
@@ -35,7 +36,9 @@ function setup(libpostalService, should_execute) {
         // libpostal parses some inputs, like `3370 cobbe ave`, as a postcode+street
         // so because we're treating the entire field as a street address, it's safe
         // to assume that an identified postcode is actually a house number.
-        const house_number_field = findHouseNumberField(response);
+        // if there's a house_number in the libpostal response, return it
+        // otherwise return the postcode field (which may be undefined)
+        const house_number_field = findField(response, 'house_number', 'postcode');
 
         // if we're fairly certain that libpostal identified a house number
         // (from either the house_number or postcode field), place it into the
@@ -47,6 +50,14 @@ function setup(libpostalService, should_execute) {
 
           // remove the first instance of the number and trim whitespace
           req.clean.parsed_text.street = _.trim(_.replace(req.clean.parsed_text.address, req.clean.parsed_text.number, ''));
+
+          // If libpostal have parsed unit then add it for search
+          const unit_field = findField(response, 'unit');
+          if(unit_field) {
+            req.clean.parsed_text.unit = unit_field.value;
+            // Removing unit from street and trim
+            req.clean.parsed_text.street = _.trim(_.replace(req.clean.parsed_text.street, req.clean.parsed_text.unit, ''));
+          }
 
         } else {
           // otherwise no house number was identifiable, so treat the entire input
