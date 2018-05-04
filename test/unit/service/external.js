@@ -37,7 +37,7 @@ module.exports.tests.functionality = (test, common) => {
         t.equal(response, 'ERROR: Invalid MGRS String', 'Geotrans conversion throws error when an invalid coordinate is given');
         t.end();
       });
-      
+
     });
     test('response received', (t) => {
       var service = proxyquire('../../../service/external', {
@@ -68,29 +68,31 @@ module.exports.tests.functionality = (test, common) => {
       });
 
       service.geotrans('18TXM9963493438').then(function(response){
-        let res = { 
-          'type': 'Feature', 
-          'geometry': { 
-            'type': 'Point', 
-            'coordinates': [ -72.57553258519015, 42.367593344066776 ] }, 
-            'properties': { 'name': '18TXM9963493438' 
-          } 
+
+        let res = {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [ -72.57553258519015, 42.367593344066776 ]
+          },
+          'properties': {
+            'name': '18TXM9963493438'
+          }
         };
         t.equal(response.toString(), res.toString(), 'Geotrans conversion succeeds and properties are added');
         t.end();
       });
-      
+
     });
   };
 
 module.exports.all = (tape, common) => {
-    
+
       function test(name, testFunction) {
         return tape('SERVICE /external ' + name, testFunction);
       }
-    
+
       for( var testCase in module.exports.tests ){
         module.exports.tests[testCase](test, common);
       }
     };
-    

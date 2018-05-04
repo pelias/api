@@ -16,7 +16,12 @@ function addStandardTargetsToAliases(standard, aliases) {
  */
 
 // a list of all sources
-var SOURCES = ['openstreetmap', 'openaddresses', 'geonames', 'whosonfirst'];
+var SOURCES = [
+  'openstreetmap',
+  'openaddresses',
+  'geonames',
+  'geographicnames',
+  'whosonfirst'];
 
 /*
  * A list of alternate names for sources, mostly used to save typing
@@ -25,6 +30,7 @@ var SOURCE_ALIASES = {
   'osm': ['openstreetmap'],
   'oa': ['openaddresses'],
   'gn': ['geonames'],
+  'gndb': ['geographicnames'],
   'wof': ['whosonfirst']
 };
 
@@ -47,6 +53,8 @@ var LAYERS_BY_SOURCE = {
  openstreetmap: [ 'address', 'venue', 'street' ],
  openaddresses: [ 'address' ],
  geonames: [ 'country','macroregion', 'region', 'county','localadmin',
+  'locality','borough', 'neighbourhood', 'venue' ],
+ geographicnames: [ 'country', 'macroregion', 'region', 'county','localadmin',
   'locality','borough', 'neighbourhood', 'venue' ],
  whosonfirst: [ 'continent', 'empire', 'country', 'dependency', 'macroregion', 'region',
    'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',

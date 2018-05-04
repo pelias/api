@@ -29,7 +29,7 @@ module.exports.tests.no_sources = function(test, common) {
     };
 
     var expected_error = 'sources parameter cannot be an empty string. ' +
-       'Valid options: osm,oa,gn,wof,openstreetmap,openaddresses,geonames,whosonfirst';
+       'Valid options: osm,oa,gn,gndb,wof,openstreetmap,openaddresses,geonames,geographicnames,whosonfirst';
 
     var messages = sanitizer.sanitize(req.query, req.clean);
 
@@ -104,7 +104,7 @@ module.exports.tests.invalid_sources = function(test, common) {
     var expected_messages = {
       errors: [
         '\'notasource\' is an invalid sources parameter. ' +
-        'Valid options: osm,oa,gn,wof,openstreetmap,openaddresses,geonames,whosonfirst'
+        'Valid options: osm,oa,gn,gndb,wof,openstreetmap,openaddresses,geonames,geographicnames,whosonfirst'
       ],
       warnings: []
     };
