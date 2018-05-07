@@ -428,7 +428,7 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'reverse', authMethod, routers.reverse );
   app.get ( base + 'nearby', routers.nearby );
   app.get ( base + 'convert', authMethod, routers.convert );
-
+}
 /**
  * Helper function for creating routers
  *
