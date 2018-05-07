@@ -10,27 +10,6 @@ const Router = require('express').Router,
       authService = require('../service/auth');
 
 
-
-/** START TEMPORARY: GENERATE UNIQUE ACCESS TOKEN */
-function createAccessToken() {
-  return jwt.sign({
-    exp: Math.floor(Date.now() / 1000) + (60 * 60),
-    jti: genJti(), // unique identifier for the token
-    alg: 'HS256'
-  }, process.env.JWT_SECRET);
-}
-
-// Generate Unique Identifier for the access token
-function genJti() {
-  let jti = '';
-  let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (let i = 0; i < 16; i++) {
-      jti += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return jti;
-}
-/** END TEMPORARY */
-
 /** ----------------------- sanitizers ----------------------- **/
 const sanitizers = {
   autocomplete: require('../sanitizer/autocomplete'),
@@ -449,14 +428,6 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'reverse', authMethod, routers.reverse );
   app.get ( base + 'nearby', routers.nearby );
   app.get ( base + 'convert', authMethod, routers.convert );
-
-  // temporary
-  app.get ( base + 'generatejwt', (req, res) => {
-    res.status(201).send({
-      access_token: createAccessToken()
-    });
-  });
-}
 
 /**
  * Helper function for creating routers
