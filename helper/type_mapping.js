@@ -1,6 +1,17 @@
 const _ = require('lodash');
 
-function addStandardTargetsToAliases(standard, aliases) {
+var TypeMapping = function(){
+  this.sources = [];
+  this.source_aliases = {};
+  this.layers = [];
+  this.layers_by_source = {};
+  this.layer_aliases = {};
+  this.source_mapping = {};
+  this.layer_mapping = {};
+  this.layers_by_source = {};
+};
+
+TypeMapping.addStandardTargetsToAliases = function(standard, aliases) {
   var combined = _.extend({}, aliases);
   standard.forEach(function(target) {
     if (combined[target] === undefined) {
@@ -9,78 +20,78 @@ function addStandardTargetsToAliases(standard, aliases) {
   });
 
   return combined;
-}
+};
 
-/*
- * Sources
- */
+TypeMapping.prototype.setSources = function( sources ){ this.sources = sources; };
+TypeMapping.prototype.setSourceAliases = function( aliases ){ this.source_aliases = aliases; };
+TypeMapping.prototype.setLayersBySource = function( lbs ){ this.layers_by_source = lbs; };
+TypeMapping.prototype.setLayerAliases = function( aliases ){ this.layer_aliases = aliases; };
+TypeMapping.prototype.generateDynamicMappings = function(){
+
+  /*
+   * Create an object that contains all sources or aliases. The key is the source or alias,
+   * the value is either that source, or the canonical name for that alias if it's an alias.
+   */
+  this.source_mapping = TypeMapping.addStandardTargetsToAliases(this.sources, this.source_aliases);
+
+  // create a list of all layers by combining each entry from this.layers_by_source
+  this.layers = _.uniq(Object.keys(this.layers_by_source).reduce(function(acc, key) {
+    return acc.concat(this.layers_by_source[key]);
+  }.bind(this), []));
+
+  /*
+   * Create the an object that has a key for each possible layer or alias,
+   * and returns either that layer, or all the layers in the alias
+   */
+  this.layer_mapping = TypeMapping.addStandardTargetsToAliases(this.layers, this.layer_aliases);
+};
+
+// instantiate a new type mapping
+var tm = new TypeMapping();
 
 // a list of all sources
-var SOURCES = ['openstreetmap', 'openaddresses', 'geonames', 'whosonfirst'];
+tm.setSources([ 'openstreetmap', 'openaddresses', 'geonames', 'whosonfirst' ]);
 
 /*
  * A list of alternate names for sources, mostly used to save typing
  */
-var SOURCE_ALIASES = {
-  'osm': ['openstreetmap'],
-  'oa': ['openaddresses'],
-  'gn': ['geonames'],
-  'wof': ['whosonfirst']
-};
-
-/*
- * Create an object that contains all sources or aliases. The key is the source or alias,
- * the value is either that source, or the canonical name for that alias if it's an alias.
- */
-var SOURCE_MAPPING = addStandardTargetsToAliases(SOURCES, SOURCE_ALIASES);
-
-/*
- * Layers
- */
+tm.setSourceAliases({
+  'osm': [ 'openstreetmap' ],
+  'oa':  [ 'openaddresses' ],
+  'gn':  [ 'geonames' ],
+  'wof': [ 'whosonfirst' ]
+});
 
 /*
  * A list of all layers in each source. This is used for convenience elswhere
  * and to determine when a combination of source and layer parameters is
  * not going to match any records and will return no results.
  */
-var LAYERS_BY_SOURCE = {
- openstreetmap: [ 'address', 'venue', 'street' ],
- openaddresses: [ 'address' ],
- geonames: [ 'country','macroregion', 'region', 'county','localadmin',
-  'locality','borough', 'neighbourhood', 'venue' ],
- whosonfirst: [ 'continent', 'empire', 'country', 'dependency', 'macroregion', 'region',
-   'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
-   'neighbourhood', 'microhood', 'disputed', 'venue', 'postalcode',
-   'continent', 'ocean', 'marinearea']
-};
+tm.setLayersBySource({
+  openstreetmap: [ 'address', 'venue', 'street' ],
+  openaddresses: [ 'address' ],
+  geonames: [ 'country','macroregion', 'region', 'county','localadmin',
+    'locality','borough', 'neighbourhood', 'venue' ],
+  whosonfirst: [ 'continent', 'empire', 'country', 'dependency', 'macroregion',
+    'region', 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 
+    'borough', 'neighbourhood', 'microhood', 'disputed', 'venue', 'postalcode', 
+    'continent', 'ocean', 'marinearea' ]
+});
 
 /*
  * A list of layer aliases that can be used to support specific use cases
  * (like coarse geocoding) * or work around the fact that different sources
  * may have layers that mean the same thing but have a different name
  */
-var LAYER_ALIASES = {
+tm.setLayerAliases({
   'coarse': [ 'continent', 'empire', 'country', 'dependency', 'macroregion',
     'region', 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood',
     'borough', 'neighbourhood', 'microhood', 'disputed', 'postalcode',
-    'continent', 'ocean', 'marinearea']
-};
+    'continent', 'ocean', 'marinearea' ]
+});
 
-// create a list of all layers by combining each entry from LAYERS_BY_SOURCE
-var LAYERS = _.uniq(Object.keys(LAYERS_BY_SOURCE).reduce(function(acc, key) {
-  return acc.concat(LAYERS_BY_SOURCE[key]);
-}, []));
+// generate the dynamic mappings
+tm.generateDynamicMappings();
 
-/*
- * Create the an object that has a key for each possible layer or alias,
- * and returns either that layer, or all the layers in the alias
- */
-var LAYER_MAPPING = addStandardTargetsToAliases(LAYERS, LAYER_ALIASES);
-
-module.exports = {
-  sources: SOURCES,
-  layers: LAYERS,
-  source_mapping: SOURCE_MAPPING,
-  layer_mapping: LAYER_MAPPING,
-  layers_by_source: LAYERS_BY_SOURCE
-};
+// export singleton
+module.exports = tm;
