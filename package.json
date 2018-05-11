@@ -1,6 +1,6 @@
 {
   "name": "pelias-api",
-  "version": "0.0.0-semantic-release",
+  "version": "0.0.0-development",
   "author": "pelias",
   "description": "Pelias API",
   "homepage": "https://github.com/pelias/api",
