@@ -90,5 +90,8 @@
     "validate",
     "test",
     "check-dependencies"
-  ]
+  ],
+  "release": {
+    "branch": "production"
+  }
 }
