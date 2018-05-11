@@ -11,8 +11,6 @@ matrix:
 script: npm run travis
 before_install:
   - npm i -g npm
-before_script:
-  - npm prune
 after_success:
   - npx semantic-release
 branches:
