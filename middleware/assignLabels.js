@@ -1,4 +1,4 @@
-var defaultLabelGenerator = require('pelias-labels');
+const defaultLabelGenerator = require('pelias-labels');
 
 function setup(labelGenerator) {
   function middleware(req, res, next) {

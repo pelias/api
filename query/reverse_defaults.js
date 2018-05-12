@@ -1,4 +1,3 @@
-
 var peliasQuery = require('pelias-query');
 var _ = require('lodash');
 

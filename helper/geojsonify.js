@@ -1,10 +1,10 @@
-
 const GeoJSON = require('geojson');
 const extent = require('@mapbox/geojson-extent');
 const logger = require('pelias-logger').get('geojsonify');
 const collectDetails = require('./geojsonify_place_details');
 const _ = require('lodash');
 const Document = require('pelias-model').Document;
+const field = require('./fieldValue');
 
 function geojsonifyPlaces( params, docs ){
 
@@ -53,7 +53,7 @@ function geojsonifyPlace(params, place) {
 
   // assign name, logging a warning if it doesn't exist
   if (_.has(place, 'name.default')) {
-    doc.name = place.name.default;
+    doc.name = field.getStringValue(place.name.default);
   } else {
     logger.warn(`doc ${doc.gid} does not contain name.default`);
   }

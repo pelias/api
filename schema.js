@@ -1,4 +1,3 @@
-'use strict';
 
 const Joi = require('joi');
 
@@ -38,6 +37,11 @@ module.exports = Joi.object().keys({
         retries: Joi.number().integer().optional().default(3).min(0),
       }).unknown(false).requiredKeys('url'),
       interpolation: Joi.object().keys({
+        url: Joi.string().uri({ scheme: /https?/ }),
+        timeout: Joi.number().integer().optional().default(250).min(0),
+        retries: Joi.number().integer().optional().default(3).min(0),
+      }).unknown(false).requiredKeys('url'),
+      libpostal: Joi.object().keys({
         url: Joi.string().uri({ scheme: /https?/ }),
         timeout: Joi.number().integer().optional().default(250).min(0),
         retries: Joi.number().integer().optional().default(3).min(0),

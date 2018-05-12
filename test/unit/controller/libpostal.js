@@ -1,103 +1,50 @@
-'use strict';
-
 const proxyquire =  require('proxyquire').noCallThru();
+const libpostal = require('../../../controller/libpostal');
 const _ = require('lodash');
+const mock_logger = require('pelias-mock-logger');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
-  test('valid interface', t => {
-    const controller = proxyquire('../../../controller/libpostal', {
-      'pelias-text-analyzer': {
-        parse: () => undefined
-      }
-    });
-
-    t.equal(typeof controller, 'function', 'libpostal is a function');
-    t.equal(typeof controller(), 'function', 'libpostal returns a controller');
+  test('valid interface', (t) => {
+    t.equal(typeof libpostal, 'function', 'libpostal is a function');
+    t.equal(typeof libpostal(), 'function', 'libpostal returns a controller');
     t.end();
-
   });
-
 };
 
-module.exports.tests.should_execute = (test, common) => {
-  test('should_execute returning false should not call text-analyzer', t => {
-    const should_execute = (req, res) => {
+module.exports.tests.early_exit_conditions = (test, common) => {
+  test('should_execute returning false should not call service', t => {
+    const service = () => {
+      t.fail('service should not have been called');
+    };
+
+    const should_execute = (req) => {
       // req and res should be passed to should_execute
       t.deepEquals(req, {
         clean: {
           text: 'original query'
         }
       });
-      t.deepEquals(res, { b: 2 });
+
       return false;
     };
 
-    const controller = proxyquire('../../../controller/libpostal', {
-      'pelias-text-analyzer': {
-        parse: () => {
-          t.fail('parse should not have been called');
-        }
-      }
-    })(should_execute);
+    const controller = libpostal(service, should_execute);
 
     const req = {
       clean: {
         text: 'original query'
       }
     };
-    const res = { b: 2 };
 
-    controller(req, res, () => {
+    controller(req, undefined, () => {
       t.deepEquals(req, {
         clean: {
           text: 'original query'
         }
       }, 'req should not have been modified');
-      t.deepEquals(res, { b: 2 });
-      t.end();
-    });
 
-  });
-
-  test('should_execute returning false should not call text-analyzer', t => {
-    t.plan(5);
-
-    const should_execute = (req, res) => {
-      // req and res should be passed to should_execute
-      t.deepEquals(req, {
-        clean: {
-          text: 'original query'
-        }
-      });
-      t.deepEquals(res, { b: 2 });
-      return true;
-    };
-
-    const controller = proxyquire('../../../controller/libpostal', {
-      'pelias-text-analyzer': {
-        parse: (query) => {
-          t.equals(query, 'original query');
-          return undefined;
-        }
-      }
-    })(should_execute);
-
-    const req = {
-      clean: {
-        text: 'original query'
-      }
-    };
-    const res = { b: 2 };
-
-    controller(req, res, () => {
-      t.deepEquals(req, {
-        clean: {
-          text: 'original query'
-        }
-      }, 'req should not have been modified');
-      t.deepEquals(res, { b: 2 });
       t.end();
     });
 
@@ -105,177 +52,251 @@ module.exports.tests.should_execute = (test, common) => {
 
 };
 
-module.exports.tests.parse_is_called = (test, common) => {
-  test('parse returning undefined should not overwrite clean.parsed_text', t => {
-    const controller = proxyquire('../../../controller/libpostal', {
-      'pelias-text-analyzer': {
-        parse: () => undefined
-      }
-    })(() => true);
+module.exports.tests.error_conditions = (test, common) => {
+  test('service returning error should append and not modify req.clean', t => {
+    const service = (req, callback) => {
+      callback('libpostal service error', []);
+    };
+
+    const controller = libpostal(service, () => true);
 
     const req = {
       clean: {
-        parsed_text: 'original parsed_text'
-      }
+        text: 'original query'
+      },
+      errors: []
     };
-    const res = 'this is the response';
 
-    controller(req, res, () => {
+    controller(req, undefined, () => {
       t.deepEquals(req, {
         clean: {
-          parsed_text: 'original parsed_text'
-        }
-      });
-      t.deepEquals(res, 'this is the response');
+          text: 'original query'
+        },
+        errors: ['libpostal service error']
+      }, 'req should not have been modified');
+
       t.end();
-    });
 
-  });
-
-  test('parse returning something should overwrite clean.parsed_text', t => {
-    const controller = proxyquire('../../../controller/libpostal', {
-      'pelias-text-analyzer': {
-        parse: () => 'replacement parsed_text'
-      }
-    })(() => true);
-
-    const req = {
-      clean: {
-        parsed_text: 'original parsed_text'
-      }
-    };
-    const res = 'this is the response';
-
-    controller(req, res, () => {
-      t.deepEquals(req, {
-        clean: {
-          parser: 'libpostal',
-          parsed_text: 'replacement parsed_text'
-        }
-      });
-      t.deepEquals(res, 'this is the response');
-      t.end();
     });
 
   });
 
 };
 
-module.exports.tests.iso2_conversion = (test, common) => {
-  test('no country in parse response should not leave country unset', t => {
+module.exports.tests.failure_conditions = (test, common) => {
+  test('service returning 2 or more of a label should return undefined and log message', t => {
+    const logger = mock_logger();
+
+    const service = (req, callback) => {
+      const response = [
+        {
+          label: 'road',
+          value: 'road value 1'
+        },
+        {
+          label: 'city',
+          value: 'city value'
+        },
+        {
+          label: 'road',
+          value: 'road value 2'
+        }
+      ];
+
+      callback(null, response);
+    };
+
     const controller = proxyquire('../../../controller/libpostal', {
-      'pelias-text-analyzer': {
-        parse: () => ({
-          locality: 'this is the locality'
-        })
-      },
-      'iso3166-1': {
-        is2: () => t.fail('should not have been called'),
-        to3: () => t.fail('should not have been called')
-      }
-    })(() => true);
+      'pelias-logger': logger
+    })(service, () => true);
 
     const req = {
       clean: {
-        parsed_text: 'original parsed_text'
-      }
+        text: 'query value'
+      },
+      errors: []
     };
-    const res = 'this is the response';
 
-    controller(req, res, () => {
+    controller(req, undefined, () => {
+      t.ok(logger.isWarnMessage('discarding libpostal parse of \'query value\' due to duplicate field assignments'));
+
       t.deepEquals(req, {
         clean: {
-          parser: 'libpostal',
-          parsed_text: {
-            locality: 'this is the locality'
-          }
-        }
-      });
-      t.deepEquals(res, 'this is the response');
+          text: 'query value'
+        },
+        errors: []
+      }, 'req should not have been modified');
+
       t.end();
+
     });
 
   });
 
-  test('unknown country should not be converted', t => {
-    t.plan(3);
+  test('service returning empty array should not set parsed_text or parser', t => {
+    const logger = mock_logger();
+
+    const service = (req, callback) => {
+      callback(null, []);
+    };
 
     const controller = proxyquire('../../../controller/libpostal', {
-      'pelias-text-analyzer': {
-        parse: () => ({
-          country: 'unknown country code'
-        })
-      },
-      'iso3166-1': {
-        is2: country => {
-          t.equals(country, 'UNKNOWN COUNTRY CODE');
-          return false;
-        },
-        to3: () => t.fail('should not have been called')
-      }
-    })(() => true);
+      'pelias-logger': logger
+    })(service, () => true);
 
     const req = {
       clean: {
-        parsed_text: 'original parsed_text'
-      }
+        text: 'query value'
+      },
+      errors: []
     };
-    const res = 'this is the response';
 
-    controller(req, res, () => {
+    controller(req, undefined, () => {
       t.deepEquals(req, {
         clean: {
-          parser: 'libpostal',
-          parsed_text: {
-            country: 'unknown country code'
-          }
-        }
-      });
-      t.deepEquals(res, 'this is the response');
+          text: 'query value'
+        },
+        errors: []
+      }, 'req should not have been modified');
+
       t.end();
+
     });
 
   });
 
-  test('ISO2 country should be converted to ISO3', t => {
-    t.plan(4);
+};
 
-    const controller = proxyquire('../../../controller/libpostal', {
-      'pelias-text-analyzer': {
-        parse: () => ({
-          country: 'ISO2 COUNTRY CODE'
-        })
-      },
-      'iso3166-1': {
-        is2: country => {
-          t.equals(country, 'ISO2 COUNTRY CODE');
-          return true;
+module.exports.tests.success_conditions = (test, common) => {
+  test('service returning valid response should convert and append', t => {
+    const service = (req, callback) => {
+      const response = [
+        {
+          label: 'island',
+          value: 'island value'
         },
-        to3: country => {
-          t.equals(country, 'ISO2 COUNTRY CODE');
-          return 'ISO3 COUNTRY CODE';
+        {
+          label: 'category',
+          value: 'category value'
+        },
+        {
+          label: 'house',
+          value: 'house value'
+        },
+        {
+          label: 'house_number',
+          value: 'house_number value'
+        },
+        {
+          label: 'road',
+          value: 'road value'
+        },
+        {
+          label: 'suburb',
+          value: 'suburb value'
+        },
+        {
+          label: 'city_district',
+          value: 'city_district value'
+        },
+        {
+          label: 'city',
+          value: 'city value'
+        },
+        {
+          label: 'state_district',
+          value: 'state_district value'
+        },
+        {
+          label: 'state',
+          value: 'state value'
+        },
+        {
+          label: 'postcode',
+          value: 'postcode value'
+        },
+        {
+          label: 'country',
+          value: 'country value'
         }
-      }
-    })(() => true);
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
 
     const req = {
       clean: {
-        parsed_text: 'original parsed_text'
-      }
+        text: 'original query'
+      },
+      errors: []
     };
-    const res = 'this is the response';
 
-    controller(req, res, () => {
+    controller(req, undefined, () => {
       t.deepEquals(req, {
         clean: {
+          text: 'original query',
           parser: 'libpostal',
           parsed_text: {
-            country: 'ISO3 COUNTRY CODE'
+            island: 'island value',
+            category: 'category value',
+            query: 'house value',
+            number: 'house_number value',
+            street: 'road value',
+            neighbourhood: 'suburb value',
+            borough: 'city_district value',
+            city: 'city value',
+            county: 'state_district value',
+            state: 'state value',
+            postalcode: 'postcode value',
+            country: 'country value'
           }
-        }
-      });
-      t.deepEquals(res, 'this is the response');
+        },
+        errors: []
+      }, 'req should not have been modified');
+
       t.end();
+
+    });
+
+  });
+
+  test('ISO-2 country should be converted to ISO-3', t => {
+    const service = (req, callback) => {
+      const response = [
+        {
+          label: 'country',
+          value: 'ca'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
+
+    const req = {
+      clean: {
+        text: 'original query'
+      },
+      errors: []
+    };
+
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: 'original query',
+          parser: 'libpostal',
+          parsed_text: {
+            country: 'CAN'
+          }
+        },
+        errors: []
+      }, 'req should not have been modified');
+
+      t.end();
+
     });
 
   });

@@ -1,4 +1,3 @@
-
 var check = require('check-types');
 
 /**

@@ -104,6 +104,33 @@ module.exports.tests.serialization = function(test, common) {
 
   });
 
+  test('support name aliases', function(t) {
+    var assignLabels = require('../../../middleware/assignLabels')();
+
+    var res = {
+      data: [{
+        name: {
+          default: ['name1','name2']
+        }
+      }]
+    };
+
+    var expected = {
+      data: [{
+        name: {
+          default: ['name1','name2']
+        },
+        label: 'name1'
+      }]
+    };
+
+    assignLabels({}, res, function () {
+      t.deepEqual(res, expected);
+      t.end();
+    });
+
+  });
+
 };
 
 module.exports.all = function (tape, common) {

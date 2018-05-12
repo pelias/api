@@ -1,5 +1,3 @@
-'use strict';
-
 const sanitizer = require('../../../sanitizer/_geo_reverse')();
 const defaults = require('../../../query/reverse_defaults');
 

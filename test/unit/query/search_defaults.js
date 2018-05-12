@@ -1,4 +1,3 @@
-
 var defaults = require('../../../query/search_defaults');
 
 module.exports.tests = {};

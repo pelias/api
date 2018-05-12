@@ -1,4 +1,3 @@
-
 var sanitizeAll = require('../sanitizer/sanitizeAll'),
     sanitizers = {
       singleScalarParameters: require('../sanitizer/_single_scalar_parameters')(),

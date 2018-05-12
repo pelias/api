@@ -1,4 +1,3 @@
-
 var defaults = require('../../../query/reverse_defaults');
 
 module.exports.tests = {};

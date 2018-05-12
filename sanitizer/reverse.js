@@ -1,4 +1,3 @@
-
 var type_mapping = require('../helper/type_mapping');
 var sanitizeAll = require('../sanitizer/sanitizeAll'),
     sanitizers = {

@@ -1,5 +1,3 @@
-'use strict';
-
 const _ = require('lodash');
 const has_request_errors = require('../../../../controller/predicates/has_request_errors');
 

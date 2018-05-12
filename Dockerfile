@@ -1,29 +1,23 @@
 # base image
-FROM pelias/libpostal_baseimage
+FROM pelias/baseimage
+RUN useradd -ms /bin/bash pelias
+USER pelias
 
 # maintainer information
-LABEL maintainer="pelias@mapzen.com"
-
-EXPOSE 3100
+LABEL maintainer="pelias.team@gmail.com"
 
 # Where the app is built and run inside the docker fs
-ENV WORK=/opt/pelias
-
-# Used indirectly for saving npm logs etc.
-ENV HOME=/opt/pelias
-
+ENV WORK=/home/pelias
 WORKDIR ${WORK}
+
+# copy package.json first to prevent npm install being rerun when only code changes
+COPY ./package.json ${WORK}
+RUN npm install
+
 COPY . ${WORK}
 
-# Build and set permissions for arbitrary non-root user
-RUN npm install && \
-  npm test && \
-  chmod -R a+rwX .
-
-# Don't run as root, because there's no reason to (https://docs.docker.com/engine/articles/dockerfile_best-practices/#user).
-# This also reveals permission problems on local Docker.
-RUN chown -R 9999:9999 ${WORK}
-USER 9999
+# only allow containers to succeed if tests pass
+RUN npm test
 
 # start service
-CMD [ "npm", "start" ]
+CMD [ "./bin/start" ]

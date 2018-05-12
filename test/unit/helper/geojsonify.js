@@ -638,6 +638,51 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
 
 };
 
+// ensure that if elasticsearch returns an array of values for name.default
+// .. that we handle this case and select the first element for the label.
+module.exports.tests.nameAliases = function(test, common) {
+  test('name aliases', function(t) {
+    var aliases = [{
+      '_type': 'example',
+      '_id': '1',
+      'source': 'example',
+      'layer': 'example',
+      'name': {
+        'default': ['Example1', 'Example2'] // note the array
+      },
+      'center_point': {
+        'lon': 0,
+        'lat': 0
+      }
+    }];
+
+    const expected = {
+      type: 'FeatureCollection',
+      features: [{
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [ 0, 0 ]
+        },
+        properties: {
+          id: '1',
+          gid: 'example:example:1',
+          layer: 'example',
+          source: 'example',
+          source_id: undefined,
+          name: 'Example1'
+        }
+      }],
+      bbox: [ 0, 0, 0, 0 ]
+    };
+
+    var actual = geojsonify( {}, aliases );
+    t.deepEquals(actual, expected);
+    t.end();
+  });
+
+};
+
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
     return tape(`geojsonify: ${name}`, testFunction);

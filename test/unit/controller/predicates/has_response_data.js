@@ -1,5 +1,3 @@
-'use strict';
-
 const _ = require('lodash');
 const has_response_data = require('../../../../controller/predicates/has_response_data');
 

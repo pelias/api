@@ -1,18 +1,17 @@
-
-var calcSize = require('../../../middleware/sizeCalculator.js')();
+var calcSizeMiddleware = require('../../../middleware/sizeCalculator.js');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
   test('interface', function(t) {
-    t.equal(typeof calcSize, 'function', 'valid function');
+    t.equal(typeof calcSizeMiddleware, 'function', 'valid function');
     t.end();
   });
 };
 
 module.exports.tests.valid = function(test, common) {
   var req = { clean: {} };
-  function setup(val) {
+  function setupQuery(val) {
     if (isNaN(val)) {
       delete req.clean.size;
     }
@@ -23,7 +22,8 @@ module.exports.tests.valid = function(test, common) {
   }
 
   test('size=0', function (t) {
-    setup(0);
+    setupQuery(0);
+    const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 20);
       t.end();
@@ -31,7 +31,8 @@ module.exports.tests.valid = function(test, common) {
   });
 
   test('size=1', function (t) {
-    setup(1);
+    setupQuery(1);
+    const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 20);
       t.end();
@@ -39,7 +40,8 @@ module.exports.tests.valid = function(test, common) {
   });
 
   test('size=10', function (t) {
-    setup(10);
+    setupQuery(10);
+    const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 20);
       t.end();
@@ -47,7 +49,8 @@ module.exports.tests.valid = function(test, common) {
   });
 
   test('size=20', function (t) {
-    setup(20);
+    setupQuery(20);
+    const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.querySize, 40);
       t.end();
@@ -55,9 +58,37 @@ module.exports.tests.valid = function(test, common) {
   });
 
   test('no size', function (t) {
-    setup();
+    setupQuery();
+    const calcSize = calcSizeMiddleware();
     calcSize(req, {}, function () {
       t.equal(req.clean.hasOwnProperty('querySize'), false);
+      t.end();
+    });
+  });
+
+  test('no size, min query size 10', function (t) {
+    setupQuery();
+    const calcSize = calcSizeMiddleware(10);
+    calcSize(req, {}, function () {
+      t.equal(req.clean.hasOwnProperty('querySize'), false);
+      t.end();
+    });
+  });
+
+  test('size 5, min query size 10', function (t) {
+    setupQuery(5);
+    const calcSize = calcSizeMiddleware(10);
+    calcSize(req, {}, function () {
+      t.equal(req.clean.querySize, 10);
+      t.end();
+    });
+  });
+
+  test('size 3, min query size 2', function (t) {
+    setupQuery(3);
+    const calcSize = calcSizeMiddleware(2);
+    calcSize(req, {}, function () {
+      t.equal(req.clean.querySize, 6);
       t.end();
     });
   });
