@@ -1,6 +1,6 @@
 {
   "name": "pelias-api",
-  "version": "0.0.0-semantic-release",
+  "version": "0.0.0-development",
   "author": "pelias",
   "description": "Pelias API",
   "homepage": "https://github.com/pelias/api",
@@ -14,12 +14,10 @@
     "lint": "jshint .",
     "start": "./bin/start",
     "test": "npm run unit",
-    "travis": "npm run check-dependencies && npm test",
+    "travis": "npm test",
     "unit": "./bin/units",
     "validate": "npm ls",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "config": "node -e \"console.log(JSON.stringify(require( 'pelias-config' ).generate(require('./schema')), null, 2))\"",
-    "check-dependencies": "node_modules/.bin/npm-check --production --ignore pelias-interpolation",
     "prune": "npm prune"
   },
   "repository": {
@@ -72,7 +70,6 @@
     "difflet": "^1.0.1",
     "istanbul": "^0.4.2",
     "jshint": "^2.5.6",
-    "npm-check": "git://github.com/orangejulius/npm-check.git#disable-update-check",
     "nsp": "^3.0.0",
     "pelias-mock-logger": "1.2.0",
     "precommit-hook": "^3.0.0",
@@ -88,7 +85,9 @@
     "lint",
     "prune",
     "validate",
-    "test",
-    "check-dependencies"
-  ]
+    "test"
+  ],
+  "release": {
+    "branch": "production"
+  }
 }
