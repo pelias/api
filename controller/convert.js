@@ -8,15 +8,11 @@ const external = require('../service/external');
 function converter( req, res, next) {
     try{
         external.geotrans(req.query).then(function(gtResult){
-            if(typeof gtResult === 'string' && gtResult.indexOf('ERROR') > -1){
-                res.send(gtResult);
-                throw gtResult;
-            }
-            else{
-                res.send(addQueryProperties(gtResult, req.query));
-            }
+            res.send(addQueryProperties(gtResult, req.query));
         }).catch(function(error){
-            res.send({'error':error});
+            if(error.response){
+                res.send(error.response.data);
+            }
         });
     }
     catch(error){

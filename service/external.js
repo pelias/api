@@ -9,15 +9,6 @@ function geotrans(query) {
     logger.info(`GET ${url}`);
     return axios.get(url, {
         params:query
-    })
-    .then(function (response){
-        logger.info('200');
-        logger.info(response.data);
-        return response.data;
-    }).catch(function (reason){
-        logger.info('ERROR');
-        logger.info(reason);
-        return reason;
     });
 }
   
