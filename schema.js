@@ -16,6 +16,8 @@ const Joi = require('joi');
 module.exports = Joi.object().keys({
   api: Joi.object().keys({
     version: Joi.string(),
+    releasesUrl: Joi.string(),
+    documentationUrl: Joi.string(),
     indexName: Joi.string(),
     host: Joi.string(),
     accessLog: Joi.string(),

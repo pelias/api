@@ -6,8 +6,12 @@ function setup(peliasConfig, markdownFile){
 
   var styleString = '<style>html{font-family:monospace}</style>';
   var text = '# Pelias API\n';
-  text += '### Version: [' + peliasConfig.version + '](https://github.com/venicegeo/pelias-api/releases)\n';
-  text += fs.readFileSync( markdownFile, 'utf8');
+  text += '### Version: [' + peliasConfig.version + '](' +
+      (peliasConfig.releasesUrl || 'https://github.com/venicegeo/pelias-api/releases') + ')\n';
+  text += '### [View our documentation on GitHub](' +
+      (peliasConfig.documentationUrl || 'https://github.com/venicegeo/pelias-documentation/blob/master/README.md') +
+      ')\n';
+  text += fs.readFileSync(markdownFile, 'utf8');
   var html = styleString + markdown.toHTML(text);
 
   function controller( req, res ) {
