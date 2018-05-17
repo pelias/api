@@ -34,7 +34,7 @@ module.exports.tests.functionality = (test, common) => {
         }
       });
       service.geotrans({'from':'decdeg','to':'mgrs','q':'4CFG'}).then(function(response){
-        t.equal(response, {'data': 'ERROR: Invalid MGRS String'}, 'Geotrans conversion throws error when an invalid coordinate is given');
+        t.equal(response.data, 'ERROR: Invalid MGRS String', 'Geotrans conversion throws error when an invalid coordinate is given');
         t.end();
       });
 
