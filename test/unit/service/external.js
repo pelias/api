@@ -33,7 +33,7 @@ module.exports.tests.functionality = (test, common) => {
           }
         }
       });
-      service.geotrans('4CFG').then(function(response){
+      service.geotrans({'from':'decdeg','to':'mgrs','q':'4CFG'}).then(function(response){
         t.equal(response, 'ERROR: Invalid MGRS String', 'Geotrans conversion throws error when an invalid coordinate is given');
         t.end();
       });
@@ -67,7 +67,7 @@ module.exports.tests.functionality = (test, common) => {
         }
       });
 
-      service.geotrans('18TXM9963493438').then(function(response){
+      service.geotrans({'from':'decdeg','to':'mgrs','q':'18TXM9963493438'}).then(function(response){
 
         let res = {
           'type': 'Feature',
