@@ -4,6 +4,7 @@ var sanitizeAll = require('../sanitizer/sanitizeAll'),
       singleScalarParameters: require('../sanitizer/_single_scalar_parameters')(),
       debug: require('../sanitizer/_debug')(),
       ids: require('../sanitizer/_ids')(),
+      geometries: require('../sanitizer/_geometries')(),
       private: require('../sanitizer/_flag_bool')('private', false),
       request_language: require('../sanitizer/_request_language')()
     };
