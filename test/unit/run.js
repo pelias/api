@@ -36,6 +36,7 @@ var tests = [
   require('./helper/geojsonify_place_details'),
   require('./helper/geojsonify'),
   require('./helper/logging'),
+  require('./helper/TypeMapping'),
   require('./helper/type_mapping'),
   require('./helper/stackTraceLine'),
   require('./middleware/access_log'),
