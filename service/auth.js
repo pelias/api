@@ -20,7 +20,7 @@ function determineAuth() {
       return (req, res, done) => {
         if(req.header('Authorization')){
           let jwtPayload = jwt.decode(req.header('Authorization').split(' ')[1]);
-          if(jwtPayload.dn === process.env.GEOAXIS_DN && checkTime(jwtPayload.exp)){
+          if(process.env.GEOAXIS_DN.split(';').indexOf(jwtPayload.dn) !== -1 && checkTime(jwtPayload.exp)){
             done();
           }
           else if(!checkTime(jwtPayload.exp)){
