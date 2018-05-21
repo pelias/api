@@ -8,7 +8,7 @@ const external = require('../service/external');
 function converter( req, res, next) {
     try{
         external.geotrans(req.query).then(function(gtResult){
-            res.send(addQueryProperties(gtResult, req.query));
+            res.send(addQueryProperties(gtResult.data, req.query));
         }).catch(function(error){
             if(error.response){
                 res.send(error.response.data);
