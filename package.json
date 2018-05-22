@@ -59,7 +59,7 @@
     "pelias-microservice-wrapper": "1.4.0",
     "pelias-model": "5.3.2",
     "pelias-query": "9.1.1",
-    "pelias-sorting": "1.1.0",
+    "pelias-sorting": "1.2.0",
     "predicates": "^2.0.0",
     "retry": "^0.10.1",
     "stable": "^0.1.8",
