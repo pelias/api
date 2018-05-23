@@ -20,11 +20,13 @@ function determineAuth() {
       return (req, res, done) => {
         if(req.header('Authorization')){
           let jwtPayload = jwt.decode(req.header('Authorization').split(' ')[1]);
-          if(process.env.GEOAXIS_DN.split(';').indexOf(jwtPayload.dn) !== -1 && checkTime(jwtPayload.exp)){
-            done();
-          }
-          else if(!checkTime(jwtPayload.exp)){
-            res.status(401).send({ error: 'Expired token' });
+          if (jwtPayload){
+            if(process.env.GEOAXIS_DN.split(';').indexOf(jwtPayload.dn) !== -1 && checkTime(jwtPayload.exp)){
+              done();
+            }
+            else if(!checkTime(jwtPayload.exp)){
+              res.status(401).send({ error: 'Expired token' });
+            }
           }
           else {
             res.status(401).send({ error: 'Invalid token' });
@@ -33,7 +35,6 @@ function determineAuth() {
         else{
           res.status(401).send({ error: 'Missing token' });
         }
-        let jwtPayload = jwt.decode(req.header('Authorization').split(' ')[1]);
         
       };
     }
