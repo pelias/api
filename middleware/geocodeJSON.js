@@ -50,7 +50,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
   res.body.geocoding.attribution = opts.config.attributionURL || url.format({
     protocol: req.protocol,
     host: req.get('host'),
-    pathname: opts.basePath + 'attribution'
+    pathname: 'attribution'
   });
 
   // OPTIONAL. Default: null. The query that has been issued to trigger the
