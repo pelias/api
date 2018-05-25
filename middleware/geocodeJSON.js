@@ -47,7 +47,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
   // OPTIONAL. Default: null. The attribution of the data. In case of multiple sources,
   // and then multiple attributions, can be an object with one key by source.
   // Can be a URI on the server, which outlines attribution details.
-  res.body.geocoding.attribution = url.format({
+  res.body.geocoding.attribution = opts.config.attributionURL || url.format({
     protocol: req.protocol,
     host: req.get('host'),
     pathname: opts.basePath + 'attribution'
