@@ -65,8 +65,8 @@ TypeMapping.prototype.setLayerAliases = function( aliases ){
   this.layer_aliases = aliases;
 };
 
-// generate dynamic mappings after setters have been run
-TypeMapping.prototype.generateDynamicMappings = function(){
+// generate mappings after setters have been run
+TypeMapping.prototype.generateMappings = function(){
   this.sources = Object.keys( this.layers_by_source );
   this.source_mapping = TypeMapping.addStandardTargetsToAliases(this.sources, this.source_aliases);
   this.layers = _.uniq(Object.keys(this.layers_by_source).reduce(function(acc, key) {
@@ -85,8 +85,8 @@ TypeMapping.prototype.loadTargets = function( targetsBlock ){
   this.setLayersBySource( targetsBlock.layers_by_source || {} );
   this.setLayerAliases( targetsBlock.layer_aliases || {} );
 
-  // generate the dynamic mappings
-  this.generateDynamicMappings();
+  // generate the mappings
+  this.generateMappings();
 };
 
 // load values from either pelias config file or from elasticsearch

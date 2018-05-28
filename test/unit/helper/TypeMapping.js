@@ -13,8 +13,8 @@ module.exports.tests.interface = function(test) {
     t.equal(typeof TypeMapping.prototype.setLayersBySource, 'function', 'setLayersBySource() is a function');
     t.equal(typeof TypeMapping.prototype.setLayerAliases, 'function', 'setLayerAliases() is a function');
 
-    t.equal(typeof TypeMapping.prototype.generateDynamicMappings, 'function', 'generateDynamicMappings() is a function');
-    
+    t.equal(typeof TypeMapping.prototype.generateMappings, 'function', 'generateMappings() is a function');
+
     t.equal(typeof TypeMapping.prototype.loadTargets, 'function', 'loadTargets() is a function');
     t.equal(typeof TypeMapping.prototype.load, 'function', 'load() is a function');
 
@@ -105,47 +105,47 @@ module.exports.tests.setLayerAliases = function(test) {
   });
 };
 
-module.exports.tests.generateDynamicMappings = function(test) {
-  test('generateDynamicMappings - no-op', function(t) {
+module.exports.tests.generateMappings = function(test) {
+  test('generateMappings - no-op', function(t) {
     var tm = new TypeMapping();
     t.deepEqual(tm.sources, []);
     t.deepEqual(tm.source_mapping, {});
     t.deepEqual(tm.layers, []);
     t.deepEqual(tm.layer_mapping, {});
-    tm.generateDynamicMappings();
+    tm.generateMappings();
     t.deepEqual(tm.sources, []);
     t.deepEqual(tm.source_mapping, {});
     t.deepEqual(tm.layers, []);
     t.deepEqual(tm.layer_mapping, {});
     t.end();
   });
-  test('generateDynamicMappings - sources', function(t) {
+  test('generateMappings - sources', function(t) {
     var tm = new TypeMapping();
     tm.layers_by_source = { foo: ['foo'], faz: ['faz'] };
-    tm.generateDynamicMappings();
+    tm.generateMappings();
     t.deepEqual(tm.sources, ['foo', 'faz']);
     t.end();
   });
-  test('generateDynamicMappings - source_mapping', function(t) {
+  test('generateMappings - source_mapping', function(t) {
     var tm = new TypeMapping();
     tm.layers_by_source = { foo: ['foo'], faz: ['faz'] };
     tm.source_aliases = { foo: ['foo','f'], bar: ['bar', 'b'], baz: ['baz'] };
-    tm.generateDynamicMappings();
+    tm.generateMappings();
     t.deepEqual(tm.source_mapping, { foo: ['foo', 'f'], bar: ['bar', 'b'], baz: ['baz'], faz: ['faz'] });
     t.end();
   });
-  test('generateDynamicMappings - layers', function(t) {
+  test('generateMappings - layers', function(t) {
     var tm = new TypeMapping();
     tm.layers_by_source = { foo: ['foo'], faz: ['faz'] };
-    tm.generateDynamicMappings();
+    tm.generateMappings();
     t.deepEqual(tm.layers, ['foo','faz']);
     t.end();
   });
-  test('generateDynamicMappings - layer_mapping', function(t) {
+  test('generateMappings - layer_mapping', function(t) {
     var tm = new TypeMapping();
     tm.layers_by_source = { foo: ['foo'], faz: ['faz'] };
     tm.layer_aliases = { foo: ['foo','f'], bar: ['bar', 'b'], baz: ['baz'] };
-    tm.generateDynamicMappings();
+    tm.generateMappings();
     t.deepEqual(tm.layer_mapping, { foo: ['foo', 'f'], bar: ['bar', 'b'], baz: ['baz'], faz: ['faz'] });
     t.end();
   });
