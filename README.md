@@ -69,7 +69,8 @@ The API recognizes the following properties under the top-level `api` key in you
 |`relativeScores`|*no*|true|if set to true, confidence scores will be normalized, realistically at this point setting this to false is not tested or desirable
 |`accessLog`|*no*||name of the format to use for access logs; may be any one of the [predefined values](https://github.com/expressjs/morgan#predefined-formats) in the `morgan` package. Defaults to `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.|
 |`services`|*no*||service definitions for [point-in-polygon](https://github.com/pelias/pip-service), and [placeholder](https://github.com/pelias/placeholder), and [interpolation](https://github.com/pelias/interpolation) services.  If missing (which is not recommended), the services will not be called.|
-|`defaultParameters.focus.point.lon` <br> `defaultParameters.focus.point.lat`|no | |default coordinates for focus point
+|`defaultParameters.focus.point.lon` <br> `defaultParameters.focus.point.lat`|*no*| |default coordinates for focus point|
+|`auth`|*no*|false|Enables authentication for Pelias API access. Currently, only GeoAXIS JWTs are supported - set to `"geoaxis_jwt"`. |
 
 Example configuration file would look something like this:
 
@@ -105,7 +106,8 @@ Example configuration file would look something like this:
     "defaultParameters": {
       "focus.point.lat": 12.121212,
       "focus.point.lon": 21.212121
-    }
+    },
+    "auth": "geoaxis_jwt"
   },
   "logger": {
     "level": "debug"
