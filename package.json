@@ -62,6 +62,7 @@
     "pelias-sorting": "1.1.0",
     "predicates": "^2.0.0",
     "retry": "^0.10.1",
+    "stable": "^0.1.8",
     "stats-lite": "^2.0.4",
     "through2": "^2.0.3"
   },
