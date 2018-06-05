@@ -53,7 +53,7 @@
     "markdown": "0.5.0",
     "morgan": "^1.8.2",
     "pelias-categories": "1.2.0",
-    "pelias-config": "3.0.1",
+    "pelias-config": "3.0.2",
     "pelias-labels": "1.8.0",
     "pelias-logger": "0.4.1",
     "pelias-microservice-wrapper": "1.4.0",
