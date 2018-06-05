@@ -226,6 +226,10 @@ function addRoutes(app, peliasConfig) {
     isAddressItParse
   );
 
+  const languageWasSpecified = function(req, res) {
+    return !req.clean.lang.defaulted;
+  };
+
   // get language adjustments if:
   // - there's a response
   // - theres's a lang parameter in req.clean
@@ -233,6 +237,7 @@ function addRoutes(app, peliasConfig) {
     hasResponseData,
     not(hasRequestErrors),
     isChangeLanguageEnabled,
+    languageWasSpecified,
     hasRequestParameter('lang')
   );
 
