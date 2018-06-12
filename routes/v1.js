@@ -420,13 +420,13 @@ function addRoutes(app, peliasConfig) {
   app.get ( '/status', routers.status );
 
   // backend dependent endpoints
-  app.get ( base + 'place', routers.place );
-  app.get ( base + 'autocomplete', routers.autocomplete );
+  app.get ( base + 'place', authMethod, routers.place );
+  app.get ( base + 'autocomplete', authMethod, routers.autocomplete );
   app.get ( base + 'search', authMethod, routers.search );
   app.post( base + 'search', authMethod, routers.search );
   app.get ( base + 'search/structured', authMethod, routers.structured );
   app.get ( base + 'reverse', authMethod, routers.reverse );
-  app.get ( base + 'nearby', routers.nearby );
+  app.get ( base + 'nearby', authMethod, routers.nearby );
   app.get ( base + 'convert', authMethod, routers.convert );
 }
 /**
