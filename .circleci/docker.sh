@@ -6,17 +6,12 @@ DATE=`date +%Y-%m-%d`
 DOCKER_REPOSITORY="pelias"
 DOCKER_PROJECT="${DOCKER_REPOSITORY}/${CIRCLE_PROJECT_REPONAME}"
 
-# skip builds on greenkeeper branches
-if [[ -z "${CIRCLE_BRANCH##*greenkeeper*}" ]]; then
-	exit 0
-fi
-
 # the name of the image that represents the "branch", that is an image that will be updated over time with the git branch
 # the production branch is changed to "latest", otherwise the git branch becomes the name of the version
 if [[ "${CIRCLE_BRANCH}" == "production" ]]; then
 	DOCKER_BRANCH_IMAGE_VERSION="latest"
 else
-	DOCKER_BRANCH_IMAGE_VERSION="${CIRCLE_BRANCH}"
+	DOCKER_BRANCH_IMAGE_VERSION="${CIRCLE_BRANCH/\//-}" #slashes are not valid in docker tags. replace with dashes
 fi
 DOCKER_BRANCH_IMAGE_NAME="${DOCKER_PROJECT}:${DOCKER_BRANCH_IMAGE_VERSION}"
 
