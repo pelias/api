@@ -166,11 +166,11 @@ function addRoutes(app, peliasConfig) {
         hasRequestCategories
       )
     ),
-    any(
-      // only geodisambiguate if libpostal returned only admin areas or libpostal was skipped
-      isAdminOnlyAnalysis,
-      isRequestSourcesOnlyWhosOnFirst
-    )
+    isRequestSourcesOnlyWhosOnFirst
+    // all(
+    //   only geodisambiguate if libpostal was skipped libpostal returned only admin areas or
+    //   isAdminOnlyAnalysis,
+    // )
   );
 
   // execute placeholder if libpostal identified address parts but ids need to
