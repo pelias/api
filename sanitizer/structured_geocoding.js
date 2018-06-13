@@ -15,6 +15,7 @@ module.exports.middleware = (_api_pelias_config) => {
         sources: require('../sanitizer/_targets')('sources', type_mapping.source_mapping),
         // depends on the layers and sources sanitizers, must be run after them
         sources_and_layers: require('../sanitizer/_sources_and_layers')(),
+        geometries: require('../sanitizer/_geometries')(),
         private: require('../sanitizer/_flag_bool')('private', false),
         location_bias: require('../sanitizer/_location_bias')(_api_pelias_config.defaultParameters),
         geo_search: require('../sanitizer/_geo_search')(),

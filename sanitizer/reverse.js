@@ -9,6 +9,7 @@ var sanitizeAll = require('../sanitizer/sanitizeAll'),
       sources: require('../sanitizer/_targets')('sources', type_mapping.source_mapping),
       // depends on the layers and sources sanitizers, must be run after them
       sources_and_layers: require('../sanitizer/_sources_and_layers')(),
+      geometries: require('../sanitizer/_geometries')(),
       geonames_deprecation: require('../sanitizer/_geonames_deprecation')(),
       size: require('../sanitizer/_size')(/* use defaults*/),
       private: require('../sanitizer/_flag_bool')('private', false),
