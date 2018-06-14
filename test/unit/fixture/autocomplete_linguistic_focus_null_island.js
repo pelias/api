@@ -46,21 +46,7 @@ module.exports = {
             'weight': 15
           }],
           'score_mode': 'avg',
-          'boost_mode': 'replace',
-          'filter': {
-            'or': [
-              {
-                'term': {
-                  'layer': 'venue'
-                }
-              },
-              {
-                'term': {
-                  'layer': 'address'
-                }
-              }
-            ]
-          }
+          'boost_mode': 'replace'
         }
       },{
         'function_score': {
