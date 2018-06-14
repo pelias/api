@@ -1,8 +1,7 @@
 ## Attribution
-* Geocoding by [Pelias](https://mapzen.com/pelias) from [Mapzen](https://mapzen.com)
+* Geocoding by [Pelias](https://pelias.io).
 * Data from
-   * [OpenStreetMap](http://www.openstreetmap.org/copyright) © OpenStreetMap contributors under [ODbL](http://opendatacommons.org/licenses/odbl/)
-   * [OpenAddresses](http://openaddresses.io) under a [Creative Commons Zero](https://github.com/openaddresses/openaddresses/blob/master/sources/LICENSE) public domain designation
-   * [GeoNames](http://www.geonames.org/) under [CC-BY-3.0](https://creativecommons.org/licenses/by/2.0/)
-   * [WhosOnFirst](http://whosonfirst.mapzen.com) under [various licenses](https://github.com/whosonfirst/whosonfirst-data/blob/master/LICENSE.md)
-   * [Geographic Names Database](http://geonames.nga.mil/gns/html/index.html)
+   * [OpenStreetMap](http://www.openstreetmap.org/copyright) © OpenStreetMap contributors under [ODbL](http://opendatacommons.org/licenses/odbl/). Also see the [OSM Geocoding Guidelines](https://wiki.osmfoundation.org/wiki/Licence/Community_Guidelines/Geocoding_-_Guideline) for acceptable use.
+   * [OpenAddresses](http://openaddresses.io) under [various public-domain and share-alike licenses](http://results.openaddresses.io/)
+   * [GeoNames](http://www.geonames.org/) under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
+   * [WhosOnFirst](https://www.whosonfirst.org/) under [various CC-BY or CC-0 equivalent licenses](https://whosonfirst.org/docs/licenses/)
