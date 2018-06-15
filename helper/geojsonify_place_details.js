@@ -112,6 +112,11 @@ function collectProperties( params, source ) {
       result._score = source._score;
     }
 
+    // Entur Add alias if default alias has been defined
+    if (_.has(source, 'alias_name.default')) {
+        result.alias = source.alias_name.default;
+    }
+
     return result;
 
   }, {});
