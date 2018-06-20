@@ -470,30 +470,6 @@ function addRoutes(app, peliasConfig) {
    *       bbox:
    *         type: array
    *         items: number
-   *   convertReturn:
-   *     properties:
-   *       type:
-   *         type: string
-   *       geometry:
-   *         type: object
-   *       properties:
-   *         type: object
-   *         $ref: '#/definitions/convertPropertiesObject'
-   *       bbox:
-   *         type: array
-   *         items: number
-   *   convertPropertiesObject:
-   *     properties:
-   *       from:
-   *         type: string
-   *       to:
-   *         type: string
-   *       name:
-   *         type: string
-   *   convertErrorReturn: 
-   *     properties:
-   *       errors:
-   *         type: string
 */
 
   /**
