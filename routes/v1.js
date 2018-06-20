@@ -402,21 +402,503 @@ function addRoutes(app, peliasConfig) {
   };
 
 
-  // static data endpoints
-  app.get ( base,                          routers.index );
-  app.get ( base + 'attribution',          routers.attribution );
-  app.get (        '/attribution',         routers.attribution );
-  app.get (        '/status',              routers.status );
+//Models
+/**
+   * @swagger
+   * definitions:
+   *   standardPeliasReturn:
+   *     properties:
+   *       geocoding:
+   *         type: object
+   *         $ref: '#/definitions/geocodingObject'
+   *       type:
+   *         type: string
+   *       features:
+   *         type: array
+   *         items:
+   *           $ref: '#/definitions/featureObject'
+   *       bbox:
+   *         type: array
+   *         items: number
+   *   standardPeliasErrorReturn:
+   *     properties:
+   *       geocoding:
+   *         type: object
+   *         $ref: '#/definitions/geocodingErrorObject'
+   *       type:
+   *         type: string
+   *       features:
+   *         type: array
+   *         items:
+   *           $ref: '#/definitions/featureObject'
+   *       bbox:
+   *         type: array
+   *         items: number
+   *   geocodingObject:
+   *     properties:
+   *       version:
+   *         type: string
+   *       attribution:
+   *         type: string
+   *       query:
+   *         type: object
+   *       engine:
+   *         type: object
+   *       timestamp:
+   *         type: string
+   *   geocodingErrorObject:
+   *     properties:
+   *       version:
+   *         type: string
+   *       attribution:
+   *         type: string
+   *       query:
+   *         type: object
+   *       errors:
+   *         type: array
+   *         items: string
+   *       timestamp:
+   *         type: string
+   *   featureObject:
+   *     properties:
+   *       type:
+   *         type: string
+   *       geometry:
+   *         type: object
+   *       properties:
+   *         type: object
+   *       bbox:
+   *         type: array
+   *         items: number
+   *   convertReturn:
+   *     properties:
+   *       type:
+   *         type: string
+   *       geometry:
+   *         type: object
+   *       properties:
+   *         type: object
+   *         $ref: '#/definitions/convertPropertiesObject'
+   *       bbox:
+   *         type: array
+   *         items: number
+   *   convertPropertiesObject:
+   *     properties:
+   *       from:
+   *         type: string
+   *       to:
+   *         type: string
+   *       name:
+   *         type: string
+   *   convertErrorReturn: 
+   *     properties:
+   *       errors:
+   *         type: string
+*/
+
+  /**
+   * @swagger
+   * /v1:
+   *   get:
+   *     tags: 
+   *       - v1
+   *     operationId: v1
+   *     produces:
+   *       - application/json
+   *     summary: Landing page
+   *     responses:
+   *       200:
+   *         description: 200 ok
+   *         examples: 
+   *           application/json: { "markdown": "# Pelias API\n### Version: [1.0](https://github.com/venicegeo/pelias-api/releases)\n### 
+   * [View our documentation on GitHub](https://github.com/venicegeo/pelias-documentation/blob/master/README.md)\n", "html": "<style>ht
+   * ml{font-family:monospace}</style><h1>Pelias API</h1>\n\n<h3>Version: <a href=\"https://github.com/venicegeo/pelias-api/releases\">
+   * 1.0</a></h3>\n\n<h3><a href=\"https://github.com/venicegeo/pelias-documentation/blob/master/README.md\">View our documentation 
+   * on GitHub</a></h3>" }
+   */
+  app.get ( base, routers.index );
+  /**
+   * @swagger
+   * /v1/attribution:
+   *   get:
+   *     tags: 
+   *       - v1
+   *     operationId: attribution
+   *     produces:
+   *       - application/json
+   *     summary: landing page w/attribution
+   *     responses:
+   *       200:
+   *         description: 200 ok
+   *         examples: 
+   *           application/json: {
+   * "markdown": "# Pelias API\n### Version: [1.0](https://github.com/venicegeo/pelias-api/releases)\n
+   * ### [View our documentation on GitHub](https://github.com/venicegeo/pelias-documentation/blob/master/README.md)\n
+   * ## Attribution\n* Geocoding by [Pelias](https://pelias.io).\n* Data from\n   * [OpenStreetMap](http://www.openstreetmap.org/copyright)
+   * © OpenStreetMap contributors under [ODbL](http://opendatacommons.org/licenses/odbl/). Also see the [OSM Geocoding Guidelines]
+   * (https://wiki.osmfoundation.org/wiki/Licence/Community_Guidelines/Geocoding_-_Guideline) for acceptable use.\n   
+   * * [OpenAddresses](http://openaddresses.io) under [various public-domain and share-alike licenses](http://results.openaddresses.io/)\n 
+   * * [GeoNames](http://www.geonames.org/) under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)\n   * [WhosOnFirst]
+   * (https://www.whosonfirst.org/) under [various CC-BY or CC-0 equivalent licenses](https://whosonfirst.org/docs/licenses/)",
+   * "html": "<style>html{font-family:monospace}</style><h1>Pelias API</h1>\n\n<h3>Version: 
+   * <a href=\"https://github.com/venicegeo/pelias-api/releases\">1.0</a></h3>\n\n<h3>
+   * <a href=\"https://github.com/venicegeo/pelias-documentation/blob/master/README.md\">View our documentation on GitHub</a></h3>\n\n
+   * <h2>Attribution</h2>\n\n<ul><li>Geocoding by <a href=\"https://pelias.io\">Pelias</a>.</li><li>Data from<ul><li>
+   * <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> © OpenStreetMap contributors under 
+   * <a href=\"http://opendatacommons.org/licenses/odbl/\">ODbL</a>. Also see the <a href=\"https://wiki.osmfoundation.org/wiki/
+   * Licence/Community_Guidelines/Geocoding_-_Guideline\">OSM Geocoding Guidelines</a> for acceptable use.</li><li>
+   * <a href=\"http://openaddresses.io\">OpenAddresses</a> under <a href=\"http://results.openaddresses.io/\">various 
+   * public-domain and share-alike licenses</a></li><li><a href=\"http://www.geonames.org/\">GeoNames</a> under 
+   * <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC-BY-4.0</a></li><li><a href=\"https://www.whosonfirst.org/\">
+   * WhosOnFirst</a> under <a href=\"https://whosonfirst.org/docs/licenses/\">various CC-BY or CC-0 equivalent licenses</a>
+   * </li></ul></li></ul>"
+}
+   */
+  app.get ( base + 'attribution', routers.attribution );
+  app.get ( '/attribution', routers.attribution );
+  /**
+   * @swagger
+   * /status:
+   *   get:
+   *     tags: 
+   *       - base
+   *     operationId: attribution
+   *     produces:
+   *       - text/plain
+   *     summary: Landing page w/attribution
+   *     responses:
+   *       200:
+   *         description: 200 ok
+   *         examples: 
+   *           text/plain: "status: ok"
+   */
+  app.get ( '/status', routers.status );
 
   // backend dependent endpoints
-  app.get ( base + 'place',                routers.place );
-  app.get ( base + 'autocomplete',         routers.autocomplete );
-  app.get ( base + 'search',               routers.search );
-  app.post( base + 'search',               routers.search );
-  app.get ( base + 'search/structured',    routers.structured );
-  app.get ( base + 'reverse',              routers.reverse );
-  app.get ( base + 'nearby',               routers.nearby );
 
+
+  /**
+   * @swagger
+   * /v1/place:
+   *   get:
+   *     tags: 
+   *       - v1
+   *     operationId: place
+   *     produces:
+   *       - application/json
+   *     summary: For querying specific place ID(s)
+   *     parameters:
+   *       - name: ids
+   *         description: for details on a place returned from a previous query
+   *         in: query
+   *         required: true
+   *         type: array
+   *         items: {"type":"string", "pattern":"^[A-z]*.:[A-z]*.:[0-9]*$"}
+   * 
+   *     responses:
+   *       200:
+   *         description: 200 ok
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasReturn'
+   *       400:
+   *         description: 400 bad request
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasErrorReturn'
+   */
+  app.get ( base + 'place', routers.place );
+  /**
+   * @swagger
+   * /v1/autocomplete:
+   *   get:
+   *     tags: 
+   *       - v1
+   *     operationId: autocomplete
+   *     summary: to give real-time result suggestions without having to type the whole location
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: text
+   *         description: Text query
+   *         in: query
+   *         required: true
+   *         type: string
+   *       - name: focus.point.lat
+   *         description: Focus point latitude
+   *         in: query
+   *         type: number
+   *       - name: focus.point.lon
+   *         description: Focus point longitude
+   *         in: query
+   *         type: number
+   *       - name: boundary.rect.min_lon
+   *         description: Bounding box minimum longitude
+   *         in: query
+   *         type: number
+   *       - name: boundary.rect.max_lon
+   *         description: Bounding box maximum longitude
+   *         in: query
+   *         type: number
+   *       - name: boundary.rect.min_lat
+   *         description: Bounding box minimum latitude
+   *         in: query
+   *         type: number
+   *       - name: boundary.rect.max_lat
+   *         description: Bounding box maximum latitude
+   *         in: query
+   *         type: number
+   *       - name: sources
+   *         description: Sources
+   *         in: query
+   *         type: string
+   *         enum: [openstreetmap, openaddresses, whosonfirst, geonames]
+   *       - name: layers
+   *         description: Layers
+   *         in: query
+   *         type: string
+   *         enum: [venue, address, street, country, macroregion, region, macrocounty, county, locality, localadmin, borough, 
+   *           neighbourhood, coarse]
+   *       - name: boundary.county
+   *         description: Country boundary
+   *         in: query
+   *         type: string
+   *     responses:
+   *       200:
+   *         description: 200 ok
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasReturn'
+   *       400:
+   *         description: 400 bad request
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasErrorReturn'
+   */
+  app.get ( base + 'autocomplete', routers.autocomplete );
+  /**
+   * @swagger
+   * /v1/search:
+   *   get:
+   *     tags: 
+   *       - v1
+   *     operationId: search
+   *     summary: to find a place by searching for an address or name
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: text
+   *         description: Text query
+   *         in: query
+   *         required: true
+   *         type: string
+   *       - name: size
+   *         description: used to limit the number of results returned.
+   *         in: query
+   *         type: number
+   *     responses:
+   *       200:
+   *         description: 200 ok
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasReturn'
+   *       400:
+   *         description: 400 bad request
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasErrorReturn'
+   *   post:
+   *     tags: 
+   *       - v1
+   *     operationId: search
+   *     summary: to find a place by searching for an address or name
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: text
+   *         description: Text query
+   *         in: query
+   *         required: true
+   *         type: string
+   *       - name: size
+   *         description: used to limit the number of results returned.
+   *         in: query
+   *         type: number
+   *     responses:
+   *       200:
+   *         description: 200 ok
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasReturn'
+   *       400:
+   *         description: 400 bad request
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasErrorReturn'
+   */
+
+  app.get ( base + 'search', routers.search );
+  app.post( base + 'search', routers.search );
+  /**
+   * @swagger
+   * /v1/search/structured:
+   *   get:
+   *     tags: 
+   *       - v1
+   *     operationId: structured
+   *     summary: to find a place with data already separated into housenumber, street, city, etc.
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: text
+   *         description: Text query
+   *         in: query
+   *         required: true
+   *         type: string
+   *       - name: venue
+   *         description: WOF Venue
+   *         in: query
+   *         type: string
+   *       - name: address
+   *         description: can contain a full address with house number or only a street name.
+   *         in: query
+   *         type: string
+   *       - name: neighbourhood
+   *         description: vernacular geographic entities that may not necessarily be official administrative divisions but are important 
+   *           nonetheless.
+   *         in: query
+   *         type: string
+   *       - name: borough
+   *         description: mostly known in the context of New York City, even though they may exist in other cities, such as Mexico City.
+   *         in: query
+   *         type: string
+   *       - name: locality
+   *         description: equivalent to what are commonly referred to as cities.
+   *         in: query
+   *         type: string
+   *       - name: county
+   *         description: administrative divisions between localities and regions.
+   *         in: query
+   *         type: string
+   *       - name: region
+   *         description: the first-level administrative divisions within countries, analogous to states and provinces in the United States
+   *           and Canada, respectively, though most other countries contain regions as well
+   *         in: query
+   *         type: string
+   *       - name: postalcode
+   *         description: used to aid in sorting mail with the format dictated by an administrative division
+   *         in: query
+   *         type: string
+   *       - name: country
+   *         description: highest-level administrative divisions supported in a search. In addition to full names, countries have common 
+   *           two- and three-letter abbreviations that are also supported values for the country parameter.
+   *         in: query
+   *         type: string
+   *     responses:
+   *       200:
+   *         description: 200 ok
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasReturn'
+   *       400:
+   *         description: 400 bad request
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasErrorReturn'
+   */
+  app.get ( base + 'search/structured', routers.structured );
+  /**
+   * @swagger
+   * /v1/reverse:
+   *   get:
+   *     tags: 
+   *       - v1
+   *     operationId: reverse
+   *     summary: to find what is located at a certain coordinate location
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: point.lat
+   *         description: Latitude (decimal degrees)
+   *         in: query
+   *         required: true
+   *         type: string
+   *       - name: point.lon
+   *         description: Longitude (decimal degrees)
+   *         in: query
+   *         required: true
+   *         type: string
+   *       - name: boundary.circle.radius
+   *         description: Bounding circle radius
+   *         in: query
+   *         type: number
+   *       - name: size
+   *         description: used to limit the number of results returned.
+   *         in: query
+   *         type: number
+   *       - name: sources
+   *         description: one or more valid source names
+   *         in: query
+   *         type: string
+   *         enum: [openstreetmap, openaddresses, whosonfirst, geonames]
+   *       - name: layers
+   *         description: Layers
+   *         in: query
+   *         type: string
+   *         enum: [venue, address, street, country, macroregion, region, macrocounty, county, locality, localadmin, borough, 
+   *           neighbourhood, coarse]
+   *       - name: boundary.county
+   *         description: Country boundary
+   *         in: query
+   *         type: string
+   *     responses:
+   *       200:
+   *         description: 200 ok
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasReturn'
+   *       400:
+   *         description: 400 bad request
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasErrorReturn'
+   */
+  app.get ( base + 'reverse', routers.reverse );
+  /**
+   * @swagger
+   * /v1/nearby:
+   *   get:
+   *     tags: 
+   *       - v1 
+   *     operationId: nearby
+   *     summary: reverse geocode search including surrounding areas
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: point.lat
+   *         description: Latitude (decimal degrees)
+   *         in: query
+   *         required: true
+   *         type: string
+   *       - name: point.lon
+   *         description: Longitude (decimal degrees)
+   *         in: query
+   *         required: true
+   *         type: string
+   *     responses:
+   *       200:
+   *         description: 200 ok
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasReturn'
+   *       400:
+   *         description: 400 bad request
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/standardPeliasErrorReturn'
+   * 
+   */
+  app.get ( base + 'nearby', routers.nearby );
 }
 
 /**
