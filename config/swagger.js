@@ -1,4 +1,4 @@
-const options = { 
+var options = { 
     'swaggerDefinition' : {
     'info': {
         'description': 'Swagger documentation for Pelias API',

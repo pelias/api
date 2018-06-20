@@ -1,7 +1,7 @@
-const app = require('express')();
-const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerUi = require('express-swaggerize-ui');    
-const peliasConfig = require( 'pelias-config' ).generate(require('./schema'));
+var app = require('express')();
+var swaggerJSDoc = require('swagger-jsdoc');
+var swaggerUi = require('express-swaggerize-ui');    
+var peliasConfig = require( 'pelias-config' ).generate(require('./schema'));
 
 if( peliasConfig.api.accessLog ){
   app.use( require( './middleware/access_log' ).createAccessLogger( peliasConfig.api.accessLog ) );
@@ -27,10 +27,10 @@ app.use( require('./middleware/jsonp') );
 /** ----------------------- routes ----------------------- **/
 
 
-const defaultRoutes = require('./routes/default');
+var defaultRoutes = require('./routes/default');
 defaultRoutes.addRoutes(app);
 
-const v1 = require('./routes/v1');
+var v1 = require('./routes/v1');
 v1.addRoutes(app, peliasConfig);
 
 /** ----------------------- error middleware ----------------------- **/
