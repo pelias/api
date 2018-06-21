@@ -114,7 +114,7 @@ function collectProperties( params, source ) {
 
     // Entur Add alias if default alias has been defined
     if (_.has(source, 'alias_name.default')) {
-        result.alias = source.alias_name.default;
+        result.popular_name = source.alias_name.default;
     }
 
     return result;
