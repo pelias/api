@@ -76,9 +76,7 @@ module.exports.tests.false_conditions = (test, common) => {
 
     t.notOk(is_request_sources_includes_whosonfirst(req));
     t.end();
-
-  })
-
+  });
 };
 
 module.exports.all = (tape, common) => {
