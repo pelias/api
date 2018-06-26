@@ -80,6 +80,9 @@ const hasRequestCategories = require('../controller/predicates/has_request_param
 const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin_layers');
 // this can probably be more generalized
 const isRequestSourcesOnlyWhosOnFirst = require('../controller/predicates/is_request_sources_only_whosonfirst');
+const isRequestSourcesIncludesWhosOnFirst = require('../controller/predicates/is_request_sources_includes_whosonfirst');
+const isRequestSourcesUndefined = require('../controller/predicates/is_request_sources_undefined');
+
 const hasRequestParameter = require('../controller/predicates/has_request_parameter');
 const hasParsedTextProperties = require('../controller/predicates/has_parsed_text_properties');
 
@@ -167,9 +170,14 @@ function addRoutes(app, peliasConfig) {
       )
     ),
     any(
-      // only geodisambiguate if libpostal returned only admin areas or libpostal was skipped
-      isAdminOnlyAnalysis,
-      isRequestSourcesOnlyWhosOnFirst
+      isRequestSourcesOnlyWhosOnFirst,
+      all(
+        isAdminOnlyAnalysis,
+        any(
+          isRequestSourcesUndefined,
+          isRequestSourcesIncludesWhosOnFirst
+        )
+      )
     )
   );
 
