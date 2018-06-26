@@ -5,9 +5,8 @@ const stackTraceLine = require('../../helper/stackTraceLine');
 
 // returns true IFF there are no requested sources
 module.exports = (req, res) => {
-  const is_request_sources_undefined = _.isEqual(
-    _.get(req, 'clean.sources', []),
-    []
+  const is_request_sources_undefined = _.isEmpty(
+    _.get(req, 'clean.sources')
   );
   debugLog.push(req, () => ({
     reply: is_request_sources_undefined,
