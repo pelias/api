@@ -13,11 +13,12 @@ function _sanitize( raw, clean ){
   // invalid input 'text'
   // must call `!check.nonEmptyString` since `check.emptyString` returns
   //  `false` for `undefined` and `null`
-  if( !check.nonEmptyString( raw.text ) ){
-    messages.errors.push('invalid param \'text\': text length, must be >0');
+  const text =  _.trim( _.trim( raw.text ), QUOTES );
 
+  if( !check.nonEmptyString( text ) ){
+    messages.errors.push('invalid param \'text\': text length, must be >0');
   } else {
-    clean.text = _.trim( _.trim( raw.text ), QUOTES );
+    clean.text = text;
   }
 
   return messages;
