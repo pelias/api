@@ -44,6 +44,19 @@ query.score( peliasQuery.view.focus( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.pop_subquery ) );
 query.score( peliasQuery.view.population( views.pop_subquery ) );
 
+const boostView = require( './view/boost_sources_and_layers' );
+
+const boostConfig = {}; //TODO: empty config to make functional tests pass for now
+// example useful config:
+//const boostConfig = {
+  //layer: {
+    //stops: 5,
+    //fare: 5,
+    //station: 1
+  //},
+//};
+query.score( boostView(boostConfig) );
+
 // non-scoring hard filters
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
