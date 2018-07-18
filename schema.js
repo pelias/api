@@ -20,6 +20,10 @@ module.exports = Joi.object().keys({
     accessLog: Joi.string(),
     relativeScores: Joi.boolean(),
     requestRetries: Joi.number().integer().min(0),
+    customBoosts: Joi.object().keys({
+      layer: Joi.object(),
+      source: Joi.object()
+    }),
     localization: Joi.object().keys({
       flipNumberAndStreetCountries: Joi.array().items(Joi.string().regex(/^[A-Z]{3}$/))
     }).unknown(false),
