@@ -9,6 +9,13 @@ module.exports.tests.empty_config = function(test, common) {
     t.equal(query, null, 'query is empty');
     t.end();
   });
+
+  test('undefined configuration returns empty query', function(t) {
+    const view_instance = boost_sources_and_layers(undefined);
+    const query = view_instance();
+    t.equal(query, null, 'query is empty');
+    t.end();
+  });
 };
 
 module.exports.tests.single_item_config = function(test, common) {

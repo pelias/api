@@ -24,6 +24,9 @@ function generateTermQuery(field, value, boost) {
 
 module.exports = function( configuration ) {
   return function( ) {
+    if (!configuration) {
+      return null;
+    }
     const filters = [];
     ['source', 'layer'].forEach(function(target) {
       if (configuration[target]) {
