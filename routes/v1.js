@@ -267,7 +267,6 @@ function addRoutes(app, peliasConfig) {
 
   // helpers to replace vague booleans
   const geometricFiltersApply = true;
-  const geometricFiltersDontApply = false;
 
   var base = '/v1/';
 
@@ -286,7 +285,7 @@ function addRoutes(app, peliasConfig) {
       middleware.calcSize(),
       controllers.libpostal(libpostalService, libpostalShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
-      controllers.placeholder(placeholderService, geometricFiltersDontApply, placeholderIdsLookupShouldExecute),
+      controllers.placeholder(placeholderService, geometricFiltersApply, placeholderIdsLookupShouldExecute),
       controllers.search_with_ids(peliasConfig.api, esclient, queries.address_using_ids, searchWithIdsShouldExecute),
       // 3rd parameter is which query module to use, use fallback first, then
       //  use original search strategy if first query didn't return anything
