@@ -26,14 +26,6 @@ module.exports.tests.sanitize = function(test, common) {
           }
         };
       },
-      '../sanitizer/_deprecate_quattroshapes': function () {
-        return {
-          sanitize: () => {
-            called_sanitizers.push('_deprecate_quattroshapes');
-            return { errors: [], warnings: [] };
-          }
-        };
-      },
       '../sanitizer/_targets': function (type) {
         if (['layers', 'sources'].indexOf(type) !== -1) {
           return {
@@ -123,7 +115,6 @@ module.exports.tests.sanitize = function(test, common) {
     const expected_sanitizers = [
       '_single_scalar_parameters',
       '_debug',
-      '_deprecate_quattroshapes',
       '_targets/layers',
       '_targets/sources',
       '_sources_and_layers',

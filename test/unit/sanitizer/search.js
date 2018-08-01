@@ -14,14 +14,6 @@ module.exports.tests.sanitize = (test, common) => {
     // the object contains a key called {function} sanitize,
     // which pushes the name of the sanitizer to {array} called_sanitizers
     const search = proxyquire('../../../sanitizer/search', {
-      '../sanitizer/_deprecate_quattroshapes': function () {
-        return {
-          sanitize: () => {
-            called_sanitizers.push('_deprecate_quattroshapes');
-            return { errors: [], warnings: [] };
-          }
-        };
-      },
       '../sanitizer/_single_scalar_parameters': function () {
         return {
           sanitize: () => {
@@ -148,7 +140,6 @@ module.exports.tests.sanitize = (test, common) => {
     const expected_sanitizers = [
       '_single_scalar_parameters',
       '_debug',
-      '_deprecate_quattroshapes',
       '_text',
       '_size',
       '_targets/layers',

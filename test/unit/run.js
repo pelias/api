@@ -92,7 +92,6 @@ var tests = [
   require('./sanitizer/_text'),
   require('./sanitizer/_text_addressit'),
   require('./sanitizer/_tokenizer'),
-  require('./sanitizer/_deprecate_quattroshapes'),
   require('./sanitizer/_categories'),
   require('./sanitizer/nearby'),
   require('./sanitizer/autocomplete'),

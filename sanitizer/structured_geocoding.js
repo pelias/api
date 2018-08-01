@@ -6,7 +6,6 @@ module.exports.middleware = (_api_pelias_config) => {
   var sanitizers = {
         singleScalarParameters: require('../sanitizer/_single_scalar_parameters')(),
         debug: require('../sanitizer/_debug')(),
-        quattroshapes_deprecation: require('../sanitizer/_deprecate_quattroshapes')(),
         synthesize_analysis: require('../sanitizer/_synthesize_analysis')(),
         iso2_to_iso3: require('../sanitizer/_iso2_to_iso3')(),
         city_name_standardizer: require('../sanitizer/_city_name_standardizer')(),
