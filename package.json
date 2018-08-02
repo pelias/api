@@ -6,6 +6,7 @@
   "homepage": "https://github.com/pelias/api",
   "license": "MIT",
   "main": "index.js",
+  "bin": "./bin/start",
   "scripts": {
     "audit": "npm shrinkwrap; node node_modules/nsp/bin/nsp check; rm npm-shrinkwrap.json;",
     "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao",
