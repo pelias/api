@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const iso3166 = require('iso3166-1');
+const iso3166 = require('../helper/iso3166');
 const Debug = require('../helper/debug');
 const debugLog = new Debug('controller:libpostal');
 const logger = require('pelias-logger').get('api');
@@ -91,8 +91,8 @@ function setup(libpostalService, should_execute) {
           return o;
         }, {});
 
-        if (_.has(req.clean.parsed_text, 'country') && iso3166.is2(_.toUpper(req.clean.parsed_text.country))) {
-          req.clean.parsed_text.country = iso3166.to3(_.toUpper(req.clean.parsed_text.country));
+        if (_.has(req.clean.parsed_text, 'country') && iso3166.isISO2Code(req.clean.parsed_text.country)) {
+          req.clean.parsed_text.country = iso3166.convertISO2ToISO3(req.clean.parsed_text.country);
         }
 
         debugLog.push(req, {parsed_text: req.clean.parsed_text});
