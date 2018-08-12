@@ -45,6 +45,39 @@ function filterByParentIds(req, renderedQuery) {
         }
     }
 }
+function filterByTariffZones(req, renderedQuery) {
+    if (!req || !req.query) {
+        return;
+    }
+    if (!renderedQuery || !renderedQuery.body || !renderedQuery.body.query || !renderedQuery.body.query.bool) {
+        return;
+    }
+    var tariffZoneIds = req.query.tariff_zone_ids;
+    var tariffZoneAuthorities = req.query.tariff_zone_authorities;
+    if (tariffZoneIds || tariffZoneAuthorities) {
+        if (!renderedQuery.body.query.bool.must) {
+            renderedQuery.body.query.bool.must = [];
+        }
+
+        if (tariffZoneIds) {
+            var tariffZoneIdsTerms = {
+                terms: {
+                    'tariff_zones': tariffZoneIds.split(',')
+                }
+            };
+            renderedQuery.body.query.bool.must.push(tariffZoneIdsTerms);
+        }
+
+        if (tariffZoneAuthorities) {
+            var tariffZoneAuthoritiesTerms = {
+                terms: {
+                    'tariff_zone_authorities': tariffZoneAuthorities.split(',')
+                }
+            };
+            renderedQuery.body.query.bool.must.push(tariffZoneAuthoritiesTerms);
+        }
+    }
+}
 function setup( apiConfig, esclient, query, should_execute ){
   function controller( req, res, next ){
     if (!should_execute(req, res)) {
@@ -60,10 +93,15 @@ function setup( apiConfig, esclient, query, should_execute ){
     // log clean parameters for stats
     logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
 
+    // ENTUR: logger.info(JSON.stringify(cmd.body)); // Useful debug logging of elasticsearch query
+
     const renderedQuery = query(req.clean);
 
     // ENTUR: Filter results based on county / locality in input params
      filterByParentIds(req, renderedQuery);
+
+     // ENTUR: Filter results based on tariff zones in input params
+     filterByTariffZones(req, renderedQuery);
 
      //  ENTUR: Be sure to fetch more results than user has requested to allow for deduping.
       // TODO dirty, move to autocomplete specific context
