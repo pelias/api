@@ -291,7 +291,7 @@ module.exports.tests.success = (test, common) => {
       };
 
       t.deepEquals(res, expected_res);
-      t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:2]'));
+      t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:2]'));
       t.end();
     });
 
@@ -355,7 +355,7 @@ module.exports.tests.success = (test, common) => {
       };
 
       t.deepEquals(res, expected_res);
-      t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:1]'));
+      t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:1]'));
       t.end();
     });
 
@@ -415,7 +415,7 @@ module.exports.tests.success = (test, common) => {
       };
 
       t.deepEquals(res, expected_res);
-      t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:1]'));
+      t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:1]'));
       t.end();
     });
 
@@ -473,7 +473,7 @@ module.exports.tests.success = (test, common) => {
       };
 
       t.deepEquals(res, expected_res);
-      t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:1]'));
+      t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:1]'));
       t.end();
     });
 
@@ -538,7 +538,7 @@ module.exports.tests.success = (test, common) => {
         };
 
         t.deepEquals(res, expected_res);
-        t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:1]'));
+        t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:1]'));
       });
 
     });
@@ -607,7 +607,7 @@ module.exports.tests.success = (test, common) => {
       };
 
       t.deepEquals(res, expected_res);
-      t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:1]'));
+      t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:1]'));
       t.end();
     });
 
@@ -1403,7 +1403,7 @@ module.exports.tests.result_filtering = (test, common) => {
       };
 
       t.deepEquals(res, expected_res);
-      t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:3]'));
+      t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:3]'));
       t.end();
     });
 
@@ -1538,7 +1538,7 @@ module.exports.tests.result_filtering = (test, common) => {
       };
 
       t.deepEquals(res, expected_res);
-      t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:3]'));
+      t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:3]'));
       t.end();
     });
 
@@ -1680,7 +1680,7 @@ module.exports.tests.result_filtering = (test, common) => {
       };
 
       t.deepEquals(res, expected_res);
-      t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:2]'));
+      t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:2]'));
       t.end();
     });
 
@@ -1852,7 +1852,7 @@ module.exports.tests.result_filtering = (test, common) => {
       };
 
       t.deepEquals(res, expected_res);
-      t.ok(logger.isInfoMessage('[controller:placeholder] [result_count:3]'));
+      t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:3]'));
       t.end();
     });
 
@@ -2356,7 +2356,7 @@ module.exports.tests.error_conditions = (test, common) => {
     controller(req, res, () => {
       t.deepEquals(res, {}, 'res should not have been modified');
       t.deepEquals(req.errors, ['placeholder service error']);
-      t.notOk(logger.isInfoMessage(/\\[controller:placeholder\\] \\[result_count:\\d+\\]/));
+      t.notOk(logger.isDebugMessage(/\\[controller:placeholder\\] \\[result_count:\\d+\\]/));
       t.end();
     });
 
@@ -2385,7 +2385,7 @@ module.exports.tests.error_conditions = (test, common) => {
     controller(req, res, () => {
       t.deepEquals(res, {}, 'res should not have been modified');
       t.deepEquals(req.errors, ['placeholder service error']);
-      t.notOk(logger.isInfoMessage(/\\[controller:placeholder\\] \\[result_count:\\d+\\]/));
+      t.notOk(logger.isDebugMessage(/\\[controller:placeholder\\] \\[result_count:\\d+\\]/));
       t.end();
     });
 
@@ -2410,7 +2410,7 @@ module.exports.tests.error_conditions = (test, common) => {
     controller(req, res, () => {
       t.deepEquals(res, {}, 'res should not have been modified');
       t.deepEquals(req.errors, [{ error_key: 'error_value' }]);
-      t.notOk(logger.isInfoMessage(/\\[controller:placeholder\\] \\[result_count:\\d+\\]/));
+      t.notOk(logger.isDebugMessage(/\\[controller:placeholder\\] \\[result_count:\\d+\\]/));
       t.end();
     });
 

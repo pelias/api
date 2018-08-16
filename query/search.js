@@ -120,10 +120,10 @@ function generateQuery( clean ){
   //console.log(JSON.stringify(q, null, 2));
 
   if (q !== undefined) {
-    logger.info(logStr);
+    logger.debug(logStr);
   }
   else {
-    logger.info('[parser:libpostal] query type not supported');
+    logger.debug('[parser:libpostal] query type not supported');
   }
 
   return q;

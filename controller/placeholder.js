@@ -265,7 +265,7 @@ function setup(placeholderService, do_geometric_filters_apply, should_execute) {
           `[result_count:${_.defaultTo(res.data, []).length}]`
         ];
 
-        logger.info(messageParts.join(' '));
+        logger.debug(messageParts.join(' '));
         debugLog.push(req, messageParts[1].slice(1,-1));
         debugLog.push(req, res.data);
       }
