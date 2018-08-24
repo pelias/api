@@ -80,6 +80,9 @@ const hasRequestCategories = require('../controller/predicates/has_request_param
 const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin_layers');
 // this can probably be more generalized
 const isRequestSourcesOnlyWhosOnFirst = require('../controller/predicates/is_request_sources_only_whosonfirst');
+const isRequestSourcesIncludesWhosOnFirst = require('../controller/predicates/is_request_sources_includes_whosonfirst');
+const isRequestSourcesUndefined = require('../controller/predicates/is_request_sources_undefined');
+
 const hasRequestParameter = require('../controller/predicates/has_request_parameter');
 const hasParsedTextProperties = require('../controller/predicates/has_parsed_text_properties');
 
@@ -167,9 +170,14 @@ function addRoutes(app, peliasConfig) {
       )
     ),
     any(
-      // only geodisambiguate if libpostal returned only admin areas or libpostal was skipped
-      isAdminOnlyAnalysis,
-      isRequestSourcesOnlyWhosOnFirst
+      isRequestSourcesOnlyWhosOnFirst,
+      all(
+        isAdminOnlyAnalysis,
+        any(
+          isRequestSourcesUndefined,
+          isRequestSourcesIncludesWhosOnFirst
+        )
+      )
     )
   );
 
@@ -259,7 +267,6 @@ function addRoutes(app, peliasConfig) {
 
   // helpers to replace vague booleans
   const geometricFiltersApply = true;
-  const geometricFiltersDontApply = false;
 
   var base = '/v1/';
 
@@ -278,7 +285,7 @@ function addRoutes(app, peliasConfig) {
       middleware.calcSize(),
       controllers.libpostal(libpostalService, libpostalShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
-      controllers.placeholder(placeholderService, geometricFiltersDontApply, placeholderIdsLookupShouldExecute),
+      controllers.placeholder(placeholderService, geometricFiltersApply, placeholderIdsLookupShouldExecute),
       controllers.search_with_ids(peliasConfig.api, esclient, queries.address_using_ids, searchWithIdsShouldExecute),
       // 3rd parameter is which query module to use, use fallback first, then
       //  use original search strategy if first query didn't return anything

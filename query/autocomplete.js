@@ -7,7 +7,6 @@ const logger = require('pelias-logger').get('api');
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
   ngrams_strict:              require('./view/ngrams_strict'),
-  focus_selected_layers:      require('./view/focus_selected_layers'),
   ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
   pop_subquery:               require('./view/pop_subquery'),
@@ -42,7 +41,7 @@ query.score( peliasQuery.view.admin('neighbourhood') );
 
 // scoring boost
 query.score( views.boost_exact_matches );
-query.score( views.focus_selected_layers( views.ngrams_strict ) );
+query.score( peliasQuery.view.focus( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.pop_subquery ) );
 query.score( peliasQuery.view.population( views.pop_subquery ) );
 
