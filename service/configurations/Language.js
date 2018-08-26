@@ -15,11 +15,17 @@ class Language extends ServiceConfiguration {
       Array.prototype.push.apply(acc, _.values(_.pickBy(doc.parent, (v, k) => _.endsWith(k, '_id') ) ) );
       return acc;
     }, []);
-
-    return {
+    const lang = _.get(req, 'clean.lang.iso6393');
+    const parameters = {
       // arrays will be nested, so flatten first, then uniqify, and finally join elements with comma
       ids: _.uniq(_.flattenDeep(ids)).join(',')
     };
+
+    if (lang) {
+      parameters.lang = lang;
+    }
+
+    return parameters;
 
   }
 
