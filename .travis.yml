@@ -18,4 +18,4 @@ jobs:
   include:
     - stage: release
       node_js: 10
-      script: npx semantic-release
+      script: curl "https://raw.githubusercontent.com/pelias/ci-tools/master/semantic-release.sh" | bash -
