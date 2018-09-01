@@ -55,7 +55,7 @@
     "pelias-categories": "^1.2.0",
     "pelias-config": "^3.0.2",
     "pelias-labels": "^1.8.0",
-    "pelias-logger": "^0.4.2",
+    "pelias-logger": "^1.2.0",
     "pelias-microservice-wrapper": "^1.4.0",
     "pelias-model": "^5.5.2",
     "pelias-query": "^9.1.1",
