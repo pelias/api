@@ -3,9 +3,13 @@ const defaults = require('./search_defaults');
 const textParser = require('./text_parser_addressit');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
+const config = require('pelias-config').generate().api;
 
 var placeTypes = require('../helper/placeTypes');
 
+var views = {
+  custom_boosts:              require('./view/boost_sources_and_layers'),
+};
 // region_a is also an admin field. addressit tries to detect
 // region_a, in which case we use a match query specifically for it.
 // but address it doesn't know about all of them so it helps to search
@@ -38,6 +42,9 @@ query.score( peliasQuery.view.address('postcode') );
 query.score( peliasQuery.view.admin('country_a') );
 query.score( peliasQuery.view.admin('region_a') );
 query.score( peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin') );
+
+const boostConfig = config.customBoosts || {};
+query.score( views.custom_boosts(config.customBoosts) );
 
 // non-scoring hard filters
 query.filter( peliasQuery.view.boundary_circle );

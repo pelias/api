@@ -68,6 +68,7 @@ var tests = [
   require('./query/reverse'),
   require('./query/reverse_defaults'),
   require('./query/search'),
+  require('./query/search_with_custom_boosts'),
   require('./query/search_defaults'),
   require('./query/search_original'),
   require('./query/structured_geocoding'),
