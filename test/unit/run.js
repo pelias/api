@@ -64,6 +64,7 @@ var tests = [
   require('./query/address_search_using_ids'),
   require('./query/autocomplete'),
   require('./query/autocomplete_defaults'),
+  require('./query/autocomplete_with_custom_boosts'),
   require('./query/reverse'),
   require('./query/reverse_defaults'),
   require('./query/search'),
