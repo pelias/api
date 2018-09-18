@@ -58,7 +58,7 @@ function setup( apiConfig, esclient, query, should_execute ){
     operation.attempt((currentAttempt) => {
       const initialTime = debugLog.beginTimer(req, `Attempt ${currentAttempt}`);
       // query elasticsearch
-      searchService( esclient, cmd, function( err, docs, meta ){
+      searchService( esclient, cmd, function( err, docs, meta, data ){
         // returns true if the operation should be attempted again
         // (handles bookkeeping of maxRetries)
         // only consider for status 408 (request timeout)
@@ -100,6 +100,18 @@ function setup( apiConfig, esclient, query, should_execute ){
             `[queryType:${renderedQuery.type}]`,
             `[es_result_count:${_.get(res, 'data', []).length}]`
           ];
+
+          const message = {
+            controller: 'search',
+            queryType: renderedQuery.type,
+            es_hits: _.get(data, 'hits.total'),
+            result_count: _.get(res, 'data', []).length,
+            es_took: _.get(data, 'took', undefined),
+            response_time: _.get(data, 'response_time', undefined),
+            params: req.clean,
+            text_length: _.get(req, 'clean.text.length', 0)
+          };
+          logger.info('elasticsearch', message);
 
           logger.info(messageParts.join(' '));
           debugLog.push(req, {queryType: {
