@@ -79,8 +79,9 @@ A good starting configuration file includes this section (fill in the service an
     "level": "debug"
   }
 }
-The `timeout` and `retry` values, as showin in the `pip` service section, are optional but configurable for all services (see [pelias/microservice-wrapper](https://github.com/pelias/microservice-wrapper) for more details).
 ```
+
+The `timeout` and `retry` values, as showin in the `pip` service section, are optional but configurable for all services (see [pelias/microservice-wrapper](https://github.com/pelias/microservice-wrapper) for more details).
 
 
 ## Contributing
