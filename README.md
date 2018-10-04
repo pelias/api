@@ -66,7 +66,9 @@ A good starting configuration file includes this section (fill in the service an
         "url": "http://libpostal:8080"
       },
       "pip": {
-        "url": "http://pip-service:4200"
+        "url": "http://pip-service:4200",
+        "timeout": 1000,
+        "retries": 2
       },
       "interpolation": {
         "url": "http://interpolation:4300"
@@ -78,6 +80,8 @@ A good starting configuration file includes this section (fill in the service an
   }
 }
 ```
+
+The `timeout` and `retry` values, as showin in the `pip` service section, are optional but configurable for all services (see [pelias/microservice-wrapper](https://github.com/pelias/microservice-wrapper) for more details).
 
 
 ## Contributing

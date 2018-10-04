@@ -303,6 +303,62 @@ module.exports.tests.success_conditions = (test, common) => {
 
 };
 
+module.exports.tests.bug_fixes = (test, common) => {
+  test('bug fix: incorrect parsing of diagonal directionals', t => {
+    const service = (req, callback) => {
+      const response =[
+        {
+          'label': 'house_number',
+          'value': '4004'
+        },
+        {
+          'label': 'road',
+          'value': 'nw'
+        },
+        {
+          'label': 'suburb',
+          'value': 'beaverton-hillsdale'
+        },
+        {
+          'label': 'city',
+          'value': 'portland'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
+
+    const req = {
+      clean: {
+        text: 'original query'
+      },
+      errors: []
+    };
+
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: 'original query',
+          parser: 'libpostal',
+          parsed_text: {
+            number: '4004',
+            street: 'nw beaverton-hillsdale',
+            city: 'portland'
+          }
+        },
+        errors: []
+      }, 'req should not have been modified');
+
+      t.end();
+
+    });
+
+  });
+
+};
+
 module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {

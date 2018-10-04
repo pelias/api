@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const iso3166 = require('iso3166-1');
+const iso3166 = require('../helper/iso3166');
 const Debug = require('../helper/debug');
 const debugLog = new Debug('controller:libpostal');
 const logger = require('pelias-logger').get('api');
@@ -70,6 +70,7 @@ function setup(libpostalService, should_execute) {
     const initialTime = debugLog.beginTimer(req);
 
     libpostalService(req, (err, response) => {
+
       if (err) {
         // push err.message or err onto req.errors
         req.errors.push( _.get(err, 'message', err) );
@@ -82,6 +83,10 @@ function setup(libpostalService, should_execute) {
         return next();
 
       } else {
+
+        // apply fixes for known bugs in libpostal
+        response = patchBuggyResponses(response);
+
         req.clean.parser = 'libpostal';
         req.clean.parsed_text = response.reduce(function(o, f) {
           if (field_mapping.hasOwnProperty(f.label)) {
@@ -91,8 +96,8 @@ function setup(libpostalService, should_execute) {
           return o;
         }, {});
 
-        if (_.has(req.clean.parsed_text, 'country') && iso3166.is2(_.toUpper(req.clean.parsed_text.country))) {
-          req.clean.parsed_text.country = iso3166.to3(_.toUpper(req.clean.parsed_text.country));
+        if (_.has(req.clean.parsed_text, 'country') && iso3166.isISO2Code(req.clean.parsed_text.country)) {
+          req.clean.parsed_text.country = iso3166.convertISO2ToISO3(req.clean.parsed_text.country);
         }
 
         debugLog.push(req, {parsed_text: req.clean.parsed_text});
@@ -107,6 +112,31 @@ function setup(libpostalService, should_execute) {
   }
 
   return controller;
+}
+
+const DIAGONAL_DIRECTIONALS = ['ne','nw','se','sw'];
+
+// apply fixes for known bugs in libpostal
+function patchBuggyResponses(response){
+  if( !Array.isArray(response) || !response.length ){ return response; }
+
+  // known bug where the street name is only a directional, in this case we will merge it
+  // with the subsequent element.
+  // note: the bug only affects diagonals, not N,S,E,W
+  // https://github.com/OpenTransitTools/trimet-mod-pelias/issues/20#issuecomment-417732128
+  for( var i=0; i<response.length-1; i++ ){ // dont bother checking the last element
+    if( 'road' !== response[i].label ){ continue; }
+    if( 'string' !== typeof response[i].value ){ continue; }
+    if( 2 !== response[i].value.length ){ continue; }
+    if( DIAGONAL_DIRECTIONALS.includes( response[i].value.toLowerCase() ) ){
+       if( 'string' !== typeof response[i+1].value ){ continue; }
+      response[i].value += ' ' + response[i+1].value; // merge elements
+      response.splice(i+1, 1); // remove merged element
+      break;
+    }
+  }
+
+  return response;
 }
 
 module.exports = setup;

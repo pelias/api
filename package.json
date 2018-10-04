@@ -8,7 +8,6 @@
   "main": "index.js",
   "bin": "./bin/start",
   "scripts": {
-    "audit": "npm shrinkwrap; node node_modules/nsp/bin/nsp check; rm npm-shrinkwrap.json;",
     "ciao": "node node_modules/ciao/bin/ciao -c test/ciao.json test/ciao",
     "coverage": "node_modules/.bin/istanbul cover test/unit/run.js",
     "docs": "./bin/generate-docs",
@@ -47,7 +46,6 @@
     "geojson": "^0.5.0",
     "geolib": "^2.0.18",
     "iso-639-3": "^1.0.0",
-    "iso3166-1": "^0.3.0",
     "joi": "^13.1.3",
     "locale": "^0.1.0",
     "lodash": "^4.17.4",
@@ -56,7 +54,7 @@
     "pelias-categories": "^1.2.0",
     "pelias-config": "^3.0.2",
     "pelias-labels": "^1.8.0",
-    "pelias-logger": "^0.4.2",
+    "pelias-logger": "^1.2.0",
     "pelias-microservice-wrapper": "^1.4.0",
     "pelias-model": "^5.5.2",
     "pelias-query": "^9.1.1",
@@ -72,16 +70,13 @@
     "difflet": "^1.0.1",
     "istanbul": "^0.4.2",
     "jshint": "^2.5.6",
-    "nsp": "^3.0.0",
     "pelias-mock-logger": "^1.3.0",
     "precommit-hook": "^3.0.0",
     "proxyquire": "^2.0.0",
-    "semantic-release": "^15.1.4",
     "source-map": "^0.7.0",
     "tap-dot": "^2.0.0",
     "tape": "^4.5.1",
-    "tmp": "^0.0.33",
-    "uglify-js": "^3.0.4"
+    "tmp": "^0.0.33"
   },
   "pre-commit": [
     "lint",

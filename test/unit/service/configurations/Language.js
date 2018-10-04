@@ -117,6 +117,24 @@ module.exports.tests.all = (test, common) => {
 
   });
 
+
+  test('getParameters should return lang when req.clean.lang.iso6393 is defined', (t) => {
+    const configBlob = {
+      url: 'http://localhost:1234',
+      timeout: 17,
+      retries: 19
+    };
+
+    const req = {clean: {lang: {iso6393: 'eng' }}};
+    const res = { };
+
+    const language = new Language(configBlob);
+
+    t.deepEquals(language.getParameters(req, res), { ids: '', lang: 'eng' });
+    t.end();
+
+  });
+
   test('getHeaders should return empty object', (t) => {
     const configBlob = {
       url: 'base url',
