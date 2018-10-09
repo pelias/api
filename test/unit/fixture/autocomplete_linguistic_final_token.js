@@ -23,6 +23,16 @@ module.exports = {
           }
         }
       },{
+        'match': {
+          'phrase.default': {
+            'analyzer': 'peliasPhrase',
+            'boost': 1,
+            'slop': 3,
+            'query': 'one t',
+            'type': 'phrase'
+          }
+        }
+      },{
         'function_score': {
           'query': {
             'match_all': {}

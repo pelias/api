@@ -63,6 +63,7 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.ngrams_last_token_only( vs ) ],
       should: [
+        views.boost_exact_matches(true)( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -83,7 +84,7 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
-        views.boost_exact_matches( vs ),
+        views.boost_exact_matches(false)( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -104,6 +105,7 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.ngrams_last_token_only( vs ) ],
       should: [
+        views.boost_exact_matches(true)( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -124,7 +126,7 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
-        views.boost_exact_matches( vs ),
+        views.boost_exact_matches(false)( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -145,6 +147,7 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.ngrams_last_token_only( vs ) ],
       should: [
+        views.boost_exact_matches(true)( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -165,7 +168,7 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
-        views.boost_exact_matches( vs ),
+        views.boost_exact_matches(false)( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -191,7 +194,8 @@ module.exports.tests.multiple_tokens = function(test, common) {
         views.ngrams_last_token_only( vs )
       ],
       should: [
-        views.boost_exact_matches( vs ),
+        views.boost_exact_matches(false)( vs ),
+        views.boost_exact_matches(true)( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -214,7 +218,7 @@ module.exports.tests.multiple_tokens = function(test, common) {
         views.phrase_first_tokens_only( vs )
       ],
       should: [
-        views.boost_exact_matches( vs ),
+        views.boost_exact_matches(false)( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -238,7 +242,8 @@ module.exports.tests.multiple_tokens = function(test, common) {
         views.ngrams_last_token_only( vs )
       ],
       should: [
-        views.boost_exact_matches( vs ),
+        views.boost_exact_matches(false)( vs ),
+        views.boost_exact_matches(true)( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -261,7 +266,7 @@ module.exports.tests.multiple_tokens = function(test, common) {
         views.phrase_first_tokens_only( vs )
       ],
       should: [
-        views.boost_exact_matches( vs ),
+        views.boost_exact_matches(false)( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]

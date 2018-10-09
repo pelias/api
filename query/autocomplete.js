@@ -42,7 +42,8 @@ query.score( peliasQuery.view.admin('locality') );
 query.score( peliasQuery.view.admin('neighbourhood') );
 
 // scoring boost
-query.score( views.boost_exact_matches );
+query.score( views.boost_exact_matches(false) );
+query.score( views.boost_exact_matches(true) );
 query.score( peliasQuery.view.focus( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.pop_subquery ) );
 query.score( peliasQuery.view.population( views.pop_subquery ) );

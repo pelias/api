@@ -41,6 +41,17 @@ module.exports = {
           }
         },
         {
+          'match': {
+            'phrase.default': {
+              'analyzer' : 'peliasPhrase',
+              'type' : 'phrase',
+              'boost' : 1,
+              'slop' : 3,
+              'query' : 'one two three'
+            }
+          }
+        },
+        {
         'function_score': {
           'query': {
             'match_all': {}
