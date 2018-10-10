@@ -67,31 +67,31 @@
               "score_mode": "first",
               "boost_mode": "replace"
             }
-          },
-          {
-            "bool": {
-              "should": [
-                {
-                  "constant_score": {
-                    "boost": 5,
-                    "query": {
-                      "term": {
-                        "source": "openstreetmap"
-                      }
-                    }
+          },{
+            "function_score": {
+              "query": {
+                "match_all": {}
+              },
+              "min_score": 1,
+              "boost": 5,
+              "max_boost": 50,
+              "score_mode": "sum",
+              "boost_mode": "multiply",
+              "functions": [{
+                "filter": {
+                  "match": {
+                    "source": "openstreetmap"
                   }
                 },
-                {
-                  "constant_score": {
-                    "boost": 3,
-                    "query": {
-                      "term": {
-                        "layer": "transit"
-                      }
-                    }
+                "weight": 5
+              },{
+                "filter": {
+                  "match": {
+                    "layer": "transit"
                   }
-                }
-              ]
+                },
+                "weight": 3
+              }]
             }
           }
         ]

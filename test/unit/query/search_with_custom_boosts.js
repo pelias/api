@@ -36,8 +36,6 @@ module.exports.tests.query = function(test, common) {
     });
 
     const actual_query = JSON.parse( JSON.stringify( search_query_module(clean) ) );
-    console.log(JSON.stringify(actual_query.body.query.bool, null, 2));
-
     t.deepEqual(actual_query, expected_query, 'query as expected');
     t.pass();
     t.end();

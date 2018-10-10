@@ -1,50 +1,62 @@
+const query = require('pelias-query');
+const vs = new query.Vars(require('../../../../query/search_defaults'));
 const boost_sources_and_layers = require('../../../../query/view/boost_sources_and_layers');
 
 module.exports.tests = {};
 
 module.exports.tests.empty_config = function(test, common) {
   test('empty configuration returns empty query', function(t) {
-    const view_instance = boost_sources_and_layers({});
-    const query = view_instance();
-    t.equal(query, null, 'query is empty');
+    const view = boost_sources_and_layers({});
+    const rendered = view(vs);
+    t.equal(rendered, null, 'query is empty');
     t.end();
   });
 
   test('undefined configuration returns empty query', function(t) {
-    const view_instance = boost_sources_and_layers(undefined);
-    const query = view_instance();
-    t.equal(query, null, 'query is empty');
+    const view = boost_sources_and_layers(undefined);
+    const rendered = view(vs);
+    t.equal(rendered, null, 'query is empty');
     t.end();
   });
 };
 
 module.exports.tests.single_item_config = function(test, common) {
-  test('config with single layer entry returns single term query with boost', function(t) {
+  test('config with single layer entry produces a single scoring function with weight', function(t) {
     const config = {
       layer: {
         locality: 5
       }
     };
     const expected_query = {
-      constant_score: {
-        boost: 5,
-        query: {
-          term: {
-            layer: 'locality'
-          }
-        }
+      'function_score': {
+        'query': {
+          'match_all': {}
+        },
+        'functions': [{
+          'filter': {
+            'match': {
+              'layer': 'locality'
+            }
+          },
+          'weight': 5
+        }],
+        'boost':      vs.var('custom:boosting:boost'),
+        'max_boost':  vs.var('custom:boosting:max_boost'),
+        'score_mode': vs.var('custom:boosting:score_mode'),
+        'boost_mode': vs.var('custom:boosting:boost_mode'),
+        'min_score':  vs.var('custom:boosting:min_score')
       }
     };
 
-    const view_instance = boost_sources_and_layers(config);
+    const view = boost_sources_and_layers(config);
 
-    t.deepEquals(view_instance(), expected_query, 'query is a single term query');
+    t.deepEquals(view(vs), expected_query, 'query contains a single scoring function');
     t.end();
   });
 };
 
 module.exports.tests.mulitple_item_config = function(test, common) {
-  test('config with multiple items returns bool query with multiple should conditions', function(t) {
+  test('config with multiple items produces multiple scoring functions', function(t) {
     const config = {
       source: {
         whosonfirst: 6
@@ -55,40 +67,42 @@ module.exports.tests.mulitple_item_config = function(test, common) {
       },
     };
     const expected_query = {
-      bool: {
-        should: [{
-          constant_score: {
-            boost: 6,
-            query: {
-              term: {
-                source: 'whosonfirst',
-              }
+      'function_score': {
+        'query': {
+          'match_all': {}
+        },
+        'functions': [{
+          'filter': {
+            'match': {
+              'source': 'whosonfirst'
             }
-          }
-        }, {
-          constant_score: {
-            boost: 2,
-            query: {
-              term: {
-                layer: 'country'
-              }
-            }
-          }
+          },
+          'weight': 6
         },{
-          constant_score: {
-            boost: 0.5,
-            query: {
-              term: {
-                layer: 'borough'
-              }
+          'filter': {
+            'match': {
+              'layer': 'country'
             }
-          }
-        }]
+          },
+          'weight': 2
+        },{
+          'filter': {
+            'match': {
+              'layer': 'borough'
+            }
+          },
+          'weight': 0.5
+        }],
+        'boost':      vs.var('custom:boosting:boost'),
+        'max_boost':  vs.var('custom:boosting:max_boost'),
+        'score_mode': vs.var('custom:boosting:score_mode'),
+        'boost_mode': vs.var('custom:boosting:boost_mode'),
+        'min_score':  vs.var('custom:boosting:min_score')
       }
     };
-    const view_instance = boost_sources_and_layers(config);
+    const view = boost_sources_and_layers(config);
 
-    t.deepEquals(view_instance(), expected_query, 'query is a bool query with multiple term queres');
+    t.deepEquals(view(vs), expected_query, 'query contains multiple scoring functions');
     t.end();
 
   });

@@ -45,9 +45,7 @@ query.score( views.boost_exact_matches );
 query.score( peliasQuery.view.focus( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.pop_subquery ) );
 query.score( peliasQuery.view.population( views.pop_subquery ) );
-
-const boostConfig = config.customBoosts || {};
-query.score( views.custom_boosts(config.customBoosts) );
+query.score( views.custom_boosts( config.customBoosts ) );
 
 // non-scoring hard filters
 query.filter( peliasQuery.view.sources );

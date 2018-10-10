@@ -166,11 +166,11 @@ function isPostalCodeWithCountry(vs) {
     var isSet = (layer) => {
         return vs.isset(`input:${layer}`);
     };
-    
+
     var allowedFields = ['postcode', 'country'];
     var disallowedFields = ['query', 'category', 'housenumber', 'street', 'locality',
                           'neighbourhood', 'borough', 'county', 'region'];
-        
+
     return allowedFields.every(isSet) &&
         !disallowedFields.some(isSet);
 }
