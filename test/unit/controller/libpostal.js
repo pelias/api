@@ -357,6 +357,45 @@ module.exports.tests.bug_fixes = (test, common) => {
 
   });
 
+  test('bug fix: recast label for "zoo" from borough/city_district to house', t => {
+    const service = (req, callback) => {
+      const response =[
+        {
+          'label': 'city_district',
+          'value': 'zoo'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
+
+    const req = {
+      clean: {
+        text: 'original query'
+      },
+      errors: []
+    };
+
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: 'original query',
+          parser: 'libpostal',
+          parsed_text: {
+            query: 'zoo'
+          }
+        },
+        errors: []
+      }, 'req should not have been modified');
+
+      t.end();
+
+    });
+
+  });
+
 };
 
 module.exports.all = (tape, common) => {

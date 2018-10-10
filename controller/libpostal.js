@@ -114,11 +114,28 @@ function setup(libpostalService, should_execute) {
   return controller;
 }
 
+const RECAST_LABELS = [{ value: 'zoo', label: { to: 'house' } }];
 const DIAGONAL_DIRECTIONALS = ['ne','nw','se','sw'];
 
 // apply fixes for known bugs in libpostal
 function patchBuggyResponses(response){
   if( !Array.isArray(response) || !response.length ){ return response; }
+
+  // recast labels for certain values, currently only applied to parses which return a single label.
+  // the RECAST_LABELS array contains match/replace conditions which are applied in order.
+  // the 'value' and 'label.to' properties are mandatory, they define the value to match on and
+  // the replacement label to assign. you may optionally also provide 'label.from' which will restrict
+  // replacements to only records with BOTH a matching 'value' and a matching 'label.from'.
+  if( response.length === 1 ){
+    let first = response[0];
+    for( var ii=0; ii<RECAST_LABELS.length; ii++ ){
+      let recast = RECAST_LABELS[ii];
+      if( !recast.hasOwnProperty('label') || !recast.label.hasOwnProperty('to') ){ continue; }
+      if( recast.value !== first.value ){ continue; }
+      if( recast.label.hasOwnProperty('from') && recast.label.from !== first.label ){ continue; }
+      response[0].label = recast.label.to;
+    }
+  }
 
   // known bug where the street name is only a directional, in this case we will merge it
   // with the subsequent element.
@@ -129,7 +146,7 @@ function patchBuggyResponses(response){
     if( 'string' !== typeof response[i].value ){ continue; }
     if( 2 !== response[i].value.length ){ continue; }
     if( DIAGONAL_DIRECTIONALS.includes( response[i].value.toLowerCase() ) ){
-       if( 'string' !== typeof response[i+1].value ){ continue; }
+      if( 'string' !== typeof response[i+1].value ){ continue; }
       response[i].value += ' ' + response[i+1].value; // merge elements
       response.splice(i+1, 1); // remove merged element
       break;
