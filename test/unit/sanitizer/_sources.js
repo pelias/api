@@ -1,5 +1,15 @@
-var type_mapping = require('../../../helper/type_mapping');
-var sanitizer = require( '../../../sanitizer/_targets' )('sources', type_mapping.source_mapping);
+const fake_type_mapping = {
+  osm:['openstreetmap'],
+  oa: ['openaddresses'],
+  gn: ['geonames'],
+  wof: ['whosonfirst'],
+  openstreetmap:['openstreetmap'],
+  openaddresses: ['openaddresses'],
+  geonames: ['geonames'],
+  whosonfirst: ['whosonfirst']
+};
+
+var sanitizer = require( '../../../sanitizer/_targets' )('sources', fake_type_mapping);
 
 var success_messages = { error: false };
 
