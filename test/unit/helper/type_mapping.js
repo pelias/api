@@ -1,4 +1,3 @@
-var check = require('check-types');
 var type_mapping = require('../../../helper/type_mapping');
 
 module.exports.tests = {};
