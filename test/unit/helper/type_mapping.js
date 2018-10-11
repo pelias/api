@@ -1,4 +1,20 @@
-var type_mapping = require('../../../helper/type_mapping');
+const proxyquire = require('proxyquire').noCallThru();
+
+const realPeliasConfig = require('pelias-config');
+
+const defaultPeliasConfig = {
+  generate: function() {
+    return realPeliasConfig.defaults;
+  }
+};
+
+// test the actual module, rather than the singleton wrapper
+var TypeMapping = proxyquire('../../../helper/TypeMapping', {
+  'pelias-config': defaultPeliasConfig
+});
+
+const type_mapping = new TypeMapping();
+type_mapping.load();
 
 module.exports.tests = {};
 
