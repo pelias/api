@@ -1,19 +1,34 @@
-var check = require('check-types');
-var type_mapping = require('../../../helper/type_mapping');
+const proxyquire = require('proxyquire').noCallThru();
+
+const realPeliasConfig = require('pelias-config');
+
+const defaultPeliasConfig = {
+  generate: function() {
+    return realPeliasConfig.defaults;
+  }
+};
+
+// test the actual module, rather than the singleton wrapper
+var TypeMapping = proxyquire('../../../helper/TypeMapping', {
+  'pelias-config': defaultPeliasConfig
+});
+
+const type_mapping = new TypeMapping();
+type_mapping.load();
 
 module.exports.tests = {};
 
 module.exports.tests.interfaces = function(test, common) {
-  
+
   test('complete sources', function(t) {
     t.deepEquals(type_mapping.sources, [ 'openstreetmap', 'openaddresses', 'geonames', 'whosonfirst' ]);
     t.end();
   });
 
   test('complete layers', function(t) {
-    t.deepEquals(type_mapping.layers, [ 'address', 'venue', 'street', 'country', 'macroregion', 
-      'region', 'county', 'localadmin', 'locality', 'borough', 'neighbourhood', 'continent', 
-      'empire', 'dependency', 'macrocounty', 'macrohood', 'microhood', 'disputed', 
+    t.deepEquals(type_mapping.layers, [ 'address', 'venue', 'street', 'country', 'macroregion',
+      'region', 'county', 'localadmin', 'locality', 'borough', 'neighbourhood', 'continent',
+      'empire', 'dependency', 'macrocounty', 'macrohood', 'microhood', 'disputed',
       'postalcode', 'ocean', 'marinearea' ]);
     t.end();
   });
@@ -46,8 +61,8 @@ module.exports.tests.interfaces = function(test, common) {
 
   test('complete layer mapping', function(t) {
     t.deepEquals(type_mapping.layer_mapping, {
-      coarse: [ 'continent', 'empire', 'country', 'dependency', 'macroregion', 'region', 
-        'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough', 
+      coarse: [ 'continent', 'empire', 'country', 'dependency', 'macroregion', 'region',
+        'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
         'neighbourhood', 'microhood', 'disputed', 'postalcode', 'continent', 'ocean', 'marinearea'
       ],
       address: [ 'address' ],
@@ -94,11 +109,11 @@ module.exports.tests.interfaces = function(test, common) {
     t.deepEquals(type_mapping.layers_by_source, {
       openstreetmap: [ 'address', 'venue', 'street' ],
       openaddresses: [ 'address' ],
-      geonames: [ 'country', 'macroregion', 'region', 'county', 'localadmin', 
+      geonames: [ 'country', 'macroregion', 'region', 'county', 'localadmin',
         'locality', 'borough', 'neighbourhood', 'venue' ],
-      whosonfirst: [ 'continent', 'empire', 'country', 'dependency', 'macroregion', 
-        'region', 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 
-        'borough', 'neighbourhood', 'microhood', 'disputed', 'venue', 'postalcode', 
+      whosonfirst: [ 'continent', 'empire', 'country', 'dependency', 'macroregion',
+        'region', 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood',
+        'borough', 'neighbourhood', 'microhood', 'disputed', 'venue', 'postalcode',
         'continent', 'ocean', 'marinearea' ]
     });
     t.end();
