@@ -33,7 +33,17 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
   // and not present
   if (!bbox_present) { return; }
 
+  sanitize_bbox_min_max(raw, key_prefix);
+  sanitize_bbox_bounds(raw, key_prefix);
+
+  // use sanitize_coord to set values in `clean`
+  properties.forEach(function(prop) {
+    sanitize_coord(prop, clean, raw, true);
+  });
+}
+
   // validate max is greater than min for lat and lon
+function sanitize_bbox_min_max(raw, key_prefix) {
   ['lat', 'lon'].forEach(function(dimension) {
     const max = parseFloat(raw[`${key_prefix}.max_${dimension}`]);
     const min = parseFloat(raw[`${key_prefix}.min_${dimension}`]);
@@ -41,13 +51,6 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
     if (max < min) {
       throw new Error(`min_${dimension} is larger than max_${dimension} in ${key_prefix}`);
     }
-  });
-
-  sanitize_bbox_bounds(raw, key_prefix);
-
-  // use sanitize_coord to set values in `clean`
-  properties.forEach(function(prop) {
-    sanitize_coord(prop, clean, raw, true);
   });
 }
 
