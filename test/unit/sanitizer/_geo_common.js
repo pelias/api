@@ -243,7 +243,7 @@ module.exports.tests.rect = function(test, common) {
 
     t.throws( function(){
       sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
-    });
+    },/boundary.rect.min_lat \(0\) must be less than boundary.rect.max_lat \(0\)/);
     t.end();
   });
 
@@ -294,7 +294,7 @@ module.exports.tests.rect = function(test, common) {
 
     t.throws( function() {
       sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
-    });
+    },/boundary.rect.min_lat \(52.7945\) must be less than boundary.rect.max_lat \(52.2387\)/, 'should error when min >= max');
     t.end();
   });
 
