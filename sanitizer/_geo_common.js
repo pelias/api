@@ -34,12 +34,6 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
   // and not present
   if (!bbox_present) { return; }
 
-  // check each property individually. now that it is known a bbox is present,
-  // all properties must exist, so pass the true flag for coord_is_required
-  properties.forEach(function(prop) {
-    sanitize_coord(prop, clean, raw, true);
-  });
-
   var min_lat = parseFloat( raw[key_prefix + '.' + 'min_lat'] );
   var max_lat = parseFloat( raw[key_prefix + '.' + 'max_lat'] );
   if (min_lat > max_lat) {
@@ -51,6 +45,11 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
   if (min_lon > max_lon) {
     throw new Error( util.format( 'min_lon is larger than max_lon in \'%s\'', key_prefix ) );
   }
+
+  // use sanitize_coord to set values in `clean`
+  properties.forEach(function(prop) {
+    sanitize_coord(prop, clean, raw, true);
+  });
 }
 
 /**
