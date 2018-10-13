@@ -48,7 +48,7 @@ function sanitize_bbox_min_max(raw, key_prefix) {
     const max = parseFloat(raw[`${key_prefix}.max_${dimension}`]);
     const min = parseFloat(raw[`${key_prefix}.min_${dimension}`]);
 
-    if (max < min) {
+    if (max <= min) {
       throw new Error(`min_${dimension} is larger than max_${dimension} in ${key_prefix}`);
     }
   });

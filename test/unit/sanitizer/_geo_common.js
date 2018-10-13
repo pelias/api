@@ -241,13 +241,12 @@ module.exports.tests.rect = function(test, common) {
     };
     var mandatory = false;
 
-    sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
-    t.equal(clean['boundary.rect.min_lat'], params['boundary.rect.min_lat'], 'min_lat approved');
-    t.equal(clean['boundary.rect.max_lat'], params['boundary.rect.max_lat'], 'min_lat approved');
-    t.equal(clean['boundary.rect.min_lon'], params['boundary.rect.min_lon'], 'min_lat approved');
-    t.equal(clean['boundary.rect.max_lon'], params['boundary.rect.max_lon'], 'min_lat approved');
+    t.throws( function(){
+      sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
+    });
     t.end();
   });
+
   test('invalid rect - partially specified', function (t) {
     var clean = {};
     var params = {
@@ -290,6 +289,22 @@ module.exports.tests.rect = function(test, common) {
       'boundary.rect.max_lon': 14.1367,
       'boundary.rect.min_lat': 52.7945,
       'boundary.rect.min_lon': 12.6398
+    };
+    var mandatory = false;
+
+    t.throws( function() {
+      sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
+    });
+    t.end();
+  });
+
+  test('invalid rect - max/min equal', function (t) {
+    var clean = {};
+    var params = {
+      'boundary.rect.max_lat': 52,
+      'boundary.rect.max_lon': 14,
+      'boundary.rect.min_lat': 52,
+      'boundary.rect.min_lon': 12
     };
     var mandatory = false;
 
