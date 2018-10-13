@@ -43,9 +43,31 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
     }
   });
 
+  sanitize_bbox_bounds(raw, key_prefix);
+
   // use sanitize_coord to set values in `clean`
   properties.forEach(function(prop) {
     sanitize_coord(prop, clean, raw, true);
+  });
+}
+
+// validate lat/lon values are within bounds
+function sanitize_bbox_bounds(raw, key_prefix) {
+  const bounds = [ { dimension: 'lat', range: 90},
+                   { dimension: 'lon', range: 180}];
+
+  bounds.forEach(function(bound) {
+    const values = {
+      max: parseFloat(raw[`${key_prefix}.max_${bound.dimension}`]),
+      min: parseFloat(raw[`${key_prefix}.min_${bound.dimension}`])
+    };
+
+    ['min', 'max'].forEach(function(prefix) {
+      if (Math.abs(values[prefix]) > bound.range) {
+        const key =`${key_prefix}.${prefix}_${bound.dimension}`;
+        throw new Error(`${key} value ${values[prefix]} is outside range -${bound.range},${bound.range}`);
+      }
+    });
   });
 }
 
