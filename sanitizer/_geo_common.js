@@ -34,17 +34,15 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
   // and not present
   if (!bbox_present) { return; }
 
-  var min_lat = parseFloat( raw[key_prefix + '.' + 'min_lat'] );
-  var max_lat = parseFloat( raw[key_prefix + '.' + 'max_lat'] );
-  if (min_lat > max_lat) {
-    throw new Error( util.format( 'min_lat is larger than max_lat in \'%s\'', key_prefix ) );
-  }
+  // validate max is greater than min for lat and lon
+  ['lat', 'lon'].forEach(function(dimension) {
+    const max = parseFloat(raw[`${key_prefix}.max_${dimension}`]);
+    const min = parseFloat(raw[`${key_prefix}.min_${dimension}`]);
 
-  var min_lon = parseFloat( raw[key_prefix + '.' + 'min_lon'] );
-  var max_lon = parseFloat( raw[key_prefix + '.' + 'max_lon'] );
-  if (min_lon > max_lon) {
-    throw new Error( util.format( 'min_lon is larger than max_lon in \'%s\'', key_prefix ) );
-  }
+    if (max < min) {
+      throw new Error(`min_${dimension} is larger than max_${dimension} in ${key_prefix}`);
+    }
+  });
 
   // use sanitize_coord to set values in `clean`
   properties.forEach(function(prop) {
