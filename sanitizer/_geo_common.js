@@ -2,7 +2,6 @@
  * helper sanitizer methods for geo parameters
  */
 var groups = require('./_groups'),
-    util = require('util'),
     check = require('check-types'),
     wrap = require('./wrap'),
     _ = require('lodash');
@@ -124,7 +123,7 @@ function sanitize_coord( key, clean, raw, latlon_is_required ) {
     clean[key] = parsedValue;
   }
   else if (latlon_is_required) {
-    throw new Error( util.format( 'missing param \'%s\'', key ) );
+    throw new Error(`missing param '${key}'`);
   }
 }
 
