@@ -26,7 +26,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'phrase:boost': 1,
   'phrase:slop': 3,
 
-  'focus:function': 'linear',
+  'focus:function': 'exp',
   'focus:offset': '0km',
   'focus:scale': '250km',
   'focus:decay': 0.5,

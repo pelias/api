@@ -32,7 +32,7 @@ module.exports = {
             }
           },
           'functions': [{
-            'linear': {
+            'exp': {
               'center_point': {
                 'origin': {
                   'lat': 29.49136,
