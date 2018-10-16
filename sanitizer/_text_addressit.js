@@ -3,6 +3,9 @@ var parser = require('addressit');
 var _      = require('lodash');
 var logger = require('pelias-logger').get('api');
 
+// ref: https://en.wikipedia.org/wiki/Quotation_mark
+const QUOTES = `"'«»‘’‚‛“”„‟‹›⹂「」『』〝〞〟﹁﹂﹃﹄＂＇｢｣`;
+
 // validate texts, convert types and apply defaults
 function _sanitize( raw, clean ){
 
@@ -10,7 +13,8 @@ function _sanitize( raw, clean ){
   var messages = { errors: [], warnings: [] };
 
   // invalid input 'text'
-  if( !check.nonEmptyString( raw.text ) ){
+  const text =  _.trim( _.trim( raw.text ), QUOTES );
+  if( !check.nonEmptyString( text ) ){
     messages.errors.push('invalid param \'text\': text length, must be >0');
   }
 
@@ -18,7 +22,7 @@ function _sanitize( raw, clean ){
   else {
 
     // valid text
-    clean.text = raw.text;
+    clean.text = text;
     clean.parser = 'addressit';
 
     // remove anything that may have been parsed before
