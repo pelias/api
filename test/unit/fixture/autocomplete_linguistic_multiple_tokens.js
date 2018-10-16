@@ -8,6 +8,7 @@ module.exports = {
             'type': 'phrase',
             'boost': 1,
             'slop': 3,
+            'cutoff_frequency': 0.01,
             'query': 'one two'
           }
         }
@@ -22,6 +23,7 @@ module.exports = {
                 'query': 'three',
                 'type': 'phrase',
                 'operator': 'and',
+                'cutoff_frequency': 0.01,
                 'slop': 3
               }
             }
@@ -36,6 +38,7 @@ module.exports = {
               'type' : 'phrase',
               'boost' : 1,
               'slop' : 3,
+              'cutoff_frequency': 0.01,
               'query' : 'one two'
             }
           }

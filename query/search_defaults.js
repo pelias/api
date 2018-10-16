@@ -20,11 +20,13 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'ngram:analyzer': 'peliasQueryFullToken',
   'ngram:field': 'name.default',
   'ngram:boost': 1,
+  'ngram:cutoff_frequency': 0.01,
 
   'phrase:analyzer': 'peliasPhrase',
   'phrase:field': 'phrase.default',
   'phrase:boost': 1,
   'phrase:slop': 2,
+  'phrase:cutoff_frequency': 0.01,
 
   'focus:function': 'exp',
   'focus:offset': '0km',
@@ -38,50 +40,62 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'address:housenumber:analyzer': 'peliasHousenumber',
   'address:housenumber:field': 'address_parts.number',
   'address:housenumber:boost': 2,
+  'address:housenumber:cutoff_frequency': 0.01,
 
   'address:street:analyzer': 'peliasStreet',
   'address:street:field': 'address_parts.street',
   'address:street:boost': 5,
+  'address:street:cutoff_frequency': 0.01,
 
   'address:postcode:analyzer': 'peliasZip',
   'address:postcode:field': 'address_parts.zip',
   'address:postcode:boost': 20,
+  'address:postcode:cutoff_frequency': 0.01,
 
   'admin:country_a:analyzer': 'standard',
   'admin:country_a:field': 'parent.country_a',
   'admin:country_a:boost': 1,
+  'admin:country_a:cutoff_frequency': 0.01,
 
   'admin:country:analyzer': 'peliasAdmin',
   'admin:country:field': 'parent.country',
   'admin:country:boost': 1,
+  'admin:country:cutoff_frequency': 0.01,
 
   'admin:region:analyzer': 'peliasAdmin',
   'admin:region:field': 'parent.region',
   'admin:region:boost': 1,
+  'admin:region:cutoff_frequency': 0.01,
 
   'admin:region_a:analyzer': 'peliasAdmin',
   'admin:region_a:field': 'parent.region_a',
   'admin:region_a:boost': 1,
+  'admin:region_a:cutoff_frequency': 0.01,
 
   'admin:county:analyzer': 'peliasAdmin',
   'admin:county:field': 'parent.county',
   'admin:county:boost': 1,
+  'admin:county:cutoff_frequency': 0.01,
 
   'admin:localadmin:analyzer': 'peliasAdmin',
   'admin:localadmin:field': 'parent.localadmin',
   'admin:localadmin:boost': 1,
+  'admin:localadmin:cutoff_frequency': 0.01,
 
   'admin:locality:analyzer': 'peliasAdmin',
   'admin:locality:field': 'parent.locality',
   'admin:locality:boost': 1,
+  'admin:locality:cutoff_frequency': 0.01,
 
   'admin:borough:analyzer': 'peliasAdmin',
   'admin:borough:field': 'parent.borough',
   'admin:borough:boost': 1,
+  'admin:borough:cutoff_frequency': 0.01,
 
   'admin:neighbourhood:analyzer': 'peliasAdmin',
   'admin:neighbourhood:field': 'parent.neighbourhood',
   'admin:neighbourhood:boost': 1,
+  'admin:neighbourhood:cutoff_frequency': 0.01,
 
   'popularity:field': 'popularity',
   'popularity:modifier': 'log1p',

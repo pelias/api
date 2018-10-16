@@ -7,6 +7,7 @@ module.exports = {
         'match': {
           'name.default': {
             'query': '1 water st',
+            'cutoff_frequency': 0.01,
             'analyzer': 'peliasQueryFullToken',
             'boost': 1
           }
@@ -16,6 +17,7 @@ module.exports = {
         'match': {
           'phrase.default': {
             'query': '1 water st',
+            'cutoff_frequency': 0.01,
             'analyzer': 'peliasPhrase',
             'type': 'phrase',
             'slop': 2,
@@ -28,6 +30,7 @@ module.exports = {
             'match': {
               'phrase.default': {
                 'query': '1 water st',
+                'cutoff_frequency': 0.01,
                 'analyzer': 'peliasPhrase',
                 'type': 'phrase',
                 'slop': 2,
@@ -53,6 +56,7 @@ module.exports = {
             'match': {
               'phrase.default': {
                 'query': '1 water st',
+                'cutoff_frequency': 0.01,
                 'analyzer': 'peliasPhrase',
                 'type': 'phrase',
                 'slop': 2,
@@ -76,6 +80,7 @@ module.exports = {
         'match': {
           'address_parts.number': {
             'query': '1',
+            'cutoff_frequency': 0.01,
             'boost': vs['address:housenumber:boost'],
             'analyzer': vs['address:housenumber:analyzer']
           }
@@ -84,6 +89,7 @@ module.exports = {
         'match': {
           'address_parts.street': {
             'query': 'water st',
+            'cutoff_frequency': 0.01,
             'boost': vs['address:street:boost'],
             'analyzer': vs['address:street:analyzer']
           }
@@ -92,6 +98,7 @@ module.exports = {
         'match': {
           'parent.region_a': {
             'query': 'NY',
+            'cutoff_frequency': 0.01,
             'boost': vs['admin:region_a:boost'],
             'analyzer': vs['admin:region_a:analyzer']
           }

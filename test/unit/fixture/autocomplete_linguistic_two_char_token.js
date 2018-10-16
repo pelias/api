@@ -9,6 +9,7 @@ module.exports = {
                 'analyzer': 'peliasQueryPartialToken',
                 'boost': 100,
                 'query': 'te',
+                'cutoff_frequency': 0.01,
                 'type': 'phrase',
                 'operator': 'and',
                 'slop': 3
