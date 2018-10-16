@@ -56,14 +56,14 @@ module.exports.tests.query = (test, common) => {
     t.notOk(query.body.vs.isset('input:categories'));
 
     t.deepEquals(query.body.score_functions, [
-      'boundary_country view'
     ]);
 
     t.deepEquals(query.body.filter_functions, [
       'boundary_circle view',
       'sources view',
       'layers view',
-      'categories view'
+      'categories view',
+      'boundary_country view'
     ]);
 
     t.deepEquals(query.body.sort_functions, [

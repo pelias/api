@@ -21,7 +21,6 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 // mandatory matches
 query.score( views.phrase_first_tokens_only, 'must' );
 query.score( views.ngrams_last_token_only, 'must' );
-query.score( peliasQuery.view.boundary_country, 'must' );
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );
@@ -49,6 +48,7 @@ query.score( peliasQuery.view.population( views.pop_subquery ) );
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.boundary_rect );
+query.filter( peliasQuery.view.boundary_country );
 
 // --------------------------------
 
