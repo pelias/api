@@ -339,6 +339,20 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
+  test('whitespace-only input counts as empty', (t) => {
+    const raw = { text: ' ' };
+    const clean = {};
+
+    const expected_clean = {};
+
+    const messages = sanitizer.sanitize(raw, clean);
+
+    t.deepEquals(clean, expected_clean);
+    t.deepEquals(messages.errors, ['invalid param \'text\': text length, must be >0']);
+    t.deepEquals(messages.warnings, [], 'no warnings');
+    t.end();
+  });
+
   test('return an array of expected parameters in object form for validation', (t) => {
     const expected = [{ name: 'text' }];
     const validParameters = sanitizer.expected();
