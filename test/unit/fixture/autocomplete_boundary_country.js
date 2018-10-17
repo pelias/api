@@ -16,13 +16,6 @@ module.exports = {
             }
           }
         }
-      }, {
-        'match': {
-          'parent.country_a': {
-            'analyzer': 'standard',
-            'query': 'ABC'
-          }
-        }
       }],
       'should':[{
         'function_score': {
@@ -57,6 +50,14 @@ module.exports = {
             },
             'weight': 3
           }]
+        }
+      }],
+      'filter': [{
+        'match': {
+          'parent.country_a': {
+            'analyzer': 'standard',
+            'query': 'ABC'
+          }
         }
       }]
     }

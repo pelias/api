@@ -4,14 +4,6 @@ module.exports = {
       'must': [
         {
           'match': {
-            'parent.country_a': {
-              'analyzer': 'standard',
-              'query': 'ABC'
-            }
-          }
-        },
-        {
-          'match': {
             'name.default': {
               'query': 'test',
               'boost': 1,
@@ -87,6 +79,14 @@ module.exports = {
             'layer': [
               'test'
             ]
+          }
+        },
+        {
+          'match': {
+            'parent.country_a': {
+              'analyzer': 'standard',
+              'query': 'ABC'
+            }
           }
         }
       ]

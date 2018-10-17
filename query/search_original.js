@@ -18,7 +18,6 @@ var adminFields = placeTypes.concat(['region_a']);
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
-query.score( peliasQuery.view.boundary_country, 'must' );
 query.score( peliasQuery.view.ngrams, 'must' );
 
 // scoring boost
@@ -46,6 +45,7 @@ query.filter( peliasQuery.view.boundary_rect );
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.categories );
+query.filter( peliasQuery.view.boundary_country );
 
 // --------------------------------
 

@@ -10,7 +10,7 @@ const logger = require('pelias-logger').get('api');
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
-query.score( peliasQuery.view.boundary_country, 'must' );
+// (none)
 
 // scoring boost
 query.sort( peliasQuery.view.sort_distance );
@@ -20,6 +20,7 @@ query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.categories );
+query.filter( peliasQuery.view.boundary_country );
 
 // --------------------------------
 
