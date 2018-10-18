@@ -51,6 +51,41 @@ module.exports.tests.sanity_checks = function(test, common) {
 
     t.end();
   });
+
+  test('just a comma - should error', function(t) {
+
+    var clean = { text: ',' };
+    var messages = sanitizer.sanitize({}, clean);
+
+    // no tokens produced
+    t.deepEquals(clean.tokens, [], 'no tokens');
+    t.deepEquals(clean.tokens_complete, [], 'no tokens');
+    t.deepEquals(clean.tokens_incomplete, [], 'no tokens');
+
+    // helpful error message
+    t.deepEquals(messages.errors, ['invalid `text` input: must contain more than just delimiters'], 'error produced');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+
+    t.end();
+  });
+
+  test('several commas - should error', function(t) {
+
+    var clean = { text: ',,,\\\/   ,,' };
+    var messages = sanitizer.sanitize({}, clean);
+
+    // no tokens produced
+    t.deepEquals(clean.tokens, [], 'no tokens');
+    t.deepEquals(clean.tokens_complete, [], 'no tokens');
+    t.deepEquals(clean.tokens_incomplete, [], 'no tokens');
+
+    // helpful error message
+    t.deepEquals(messages.errors, ['invalid `text` input: must contain more than just delimiters'], 'error produced');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+
+    t.end();
+  });
+
   test('clean.parsed_text set but clean.parsed_text.name invalid', function(t) {
 
     var clean = { parsed_text: { text: {} } };
