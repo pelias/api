@@ -62,6 +62,9 @@ function _sanitize( raw, clean ){
     clean.tokens = text
       .split(/[\s,\\\/]+/) // split on delimeters
       .filter(function(el){return el;}); // remove empty elements
+  } else {
+    // text is empty, this sanitizer should be a no-op
+    return messages;
   }
 
   /**
@@ -96,6 +99,9 @@ function _sanitize( raw, clean ){
       }
     }
 
+  } else {
+    // set error if no substantial tokens were found
+    messages.errors.push('invalid `text` input: must contain more than just delimiters');
   }
 
   return messages;
