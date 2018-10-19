@@ -54,6 +54,7 @@ query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.boundary_rect );
 query.filter( peliasQuery.view.boundary_country );
+query.filter( peliasQuery.view.boundary_circle );
 
 // --------------------------------
 
@@ -112,6 +113,18 @@ function generateQuery( clean ){
       'focus:point:lat': clean['focus.point.lat'],
       'focus:point:lon': clean['focus.point.lon']
     });
+
+    // search only near the focus.point for short inputs
+    // this reduces the numer of documents hit and keeps latency low
+    const hardLimitTextLength = config.get('api.autocomplete.focusHardLimitTextLength') || 0;
+    const distanceMultplier   = config.get('api.autocomplete.focusHardLimitMultiplier') || 50;
+    if (clean.text.length < hardLimitTextLength) {
+      vs.set({
+        'boundary:circle:lat': clean['focus.point.lat'],
+        'boundary:circle:lon': clean['focus.point.lon'],
+        'boundary:circle:radius': `${50 * clean.text.length}km`
+      });
+    }
   }
 
   // boundary rect
