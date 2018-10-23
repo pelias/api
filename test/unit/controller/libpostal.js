@@ -359,7 +359,7 @@ module.exports.tests.bug_fixes = (test, common) => {
 
   test('bug fix: recast label for "zoo" from borough/city_district to house', t => {
     const service = (req, callback) => {
-      const response =[
+      const response = [
         {
           'label': 'city_district',
           'value': 'zoo'
@@ -385,6 +385,130 @@ module.exports.tests.bug_fixes = (test, common) => {
           parser: 'libpostal',
           parsed_text: {
             query: 'zoo'
+          }
+        },
+        errors: []
+      }, 'req should not have been modified');
+
+      t.end();
+
+    });
+
+  });
+
+  test('bug fix: correctly parse australian-style unit numbers', t => {
+    const service = (req, callback) => {
+      const response = [
+        {
+          'label': 'house_number',
+          'value': '11/1015'
+        },
+        {
+          'label': 'road',
+          'value': 'nudgee road'
+        },
+        {
+          'label': 'suburb',
+          'value': 'banyo'
+        },
+        {
+          'label': 'postcode',
+          'value': '4014'
+        },
+        {
+          'label': 'state',
+          'value': 'qld'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
+
+    const req = {
+      clean: {
+        text: 'original query'
+      },
+      errors: []
+    };
+
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: 'original query',
+          parser: 'libpostal',
+          parsed_text: {
+            // unit: '11',
+            number: '1015',
+            street: 'nudgee road',
+            neighbourhood: 'banyo',
+            postalcode: '4014',
+            state: 'qld'
+          }
+        },
+        errors: []
+      }, 'req should not have been modified');
+
+      t.end();
+
+    });
+
+  });
+
+  test('bug fix: correctly parse australian-style unit numbers - no-op if "unit" already assigned', t => {
+    const service = (req, callback) => {
+      const response = [
+        {
+          'label': 'unit',
+          'value': '99'
+        },
+        {
+          'label': 'house_number',
+          'value': '11/1015'
+        },
+        {
+          'label': 'road',
+          'value': 'nudgee road'
+        },
+        {
+          'label': 'suburb',
+          'value': 'banyo'
+        },
+        {
+          'label': 'postcode',
+          'value': '4014'
+        },
+        {
+          'label': 'state',
+          'value': 'qld'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
+
+    const req = {
+      clean: {
+        text: 'original query'
+      },
+      errors: []
+    };
+
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: 'original query',
+          parser: 'libpostal',
+          parsed_text: {
+            // unit: '999',
+            number: '11/1015',
+            street: 'nudgee road',
+            neighbourhood: 'banyo',
+            postalcode: '4014',
+            state: 'qld'
           }
         },
         errors: []

@@ -157,6 +157,19 @@ function patchBuggyResponses(response){
     }
   }
 
+  // known bug where Australian unit numbers are incorrectly included in the house_number label
+  // note: in the case where a 'unit' label already exists, do nothing.
+  // https://github.com/pelias/pelias/issues/753
+  let unit = _.get(idx, 'unit');
+  let house_number = _.get(idx, 'house_number');
+  if( _.isPlainObject(house_number) && !_.isPlainObject(unit) && _.isString(house_number.value) ){
+    let split = _.trim(_.trim(house_number.value),'/').split('/');
+    if( split.length === 2 ){
+      response[house_number._pos].value = split[1]; // second part (house number)
+      response.push({ label: 'unit', value: split[0] }); // first part (unit number)
+    }
+  }
+
   return response;
 }
 
