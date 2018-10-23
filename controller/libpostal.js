@@ -17,7 +17,8 @@ var field_mapping = {
   state_district: 'county',
   state:          'state',
   postcode:       'postalcode',
-  country:        'country'
+  country:        'country',
+  unit:           'unit',
 };
 
 // This controller calls the hosted libpostal service and converts the response
@@ -136,19 +137,37 @@ function patchBuggyResponses(response){
     });
   }
 
+  // generate an index to avoid multiple iterations over the response array
+  let idx = {};
+  response.forEach((res, pos) => idx[res.label] = _.assign({ _pos: pos }, res));
+
   // known bug where the street name is only a directional, in this case we will merge it
   // with the subsequent element.
   // note: the bug only affects diagonals, not N,S,E,W
   // https://github.com/OpenTransitTools/trimet-mod-pelias/issues/20#issuecomment-417732128
-  for( var i=0; i<response.length-1; i++ ){ // dont bother checking the last element
-    if( 'road' !== response[i].label ){ continue; }
-    if( 'string' !== typeof response[i].value ){ continue; }
-    if( 2 !== response[i].value.length ){ continue; }
-    if( DIAGONAL_DIRECTIONALS.includes( response[i].value.toLowerCase() ) ){
-      if( 'string' !== typeof response[i+1].value ){ continue; }
-      response[i].value += ' ' + response[i+1].value; // merge elements
-      response.splice(i+1, 1); // remove merged element
-      break;
+  if( response.length > 1 ){
+    let road = _.get(idx, 'road');
+    if( _.isPlainObject(road) && _.isString(road.value) && road.value.length === 2 ){
+      if( DIAGONAL_DIRECTIONALS.includes( road.value.toLowerCase() ) ){
+        let subsequentElement = response[road._pos+1];
+        if( _.isString(subsequentElement.value) ){
+          response[road._pos].value += ' ' + subsequentElement.value; // merge elements
+          response.splice(road._pos+1, 1); // remove merged element
+        }
+      }
+    }
+  }
+
+  // known bug where Australian unit numbers are incorrectly included in the house_number label
+  // note: in the case where a 'unit' label already exists, do nothing.
+  // https://github.com/pelias/pelias/issues/753
+  let unit = _.get(idx, 'unit');
+  let house_number = _.get(idx, 'house_number');
+  if( _.isPlainObject(house_number) && !_.isPlainObject(unit) && _.isString(house_number.value) ){
+    let split = _.trim(_.trim(house_number.value),'/').split('/');
+    if( split.length === 2 ){
+      response[house_number._pos].value = _.trim(split[1]); // second part (house number)
+      response.push({ label: 'unit', value: _.trim(split[0]) }); // first part (unit number)
     }
   }
 
