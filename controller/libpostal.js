@@ -150,7 +150,7 @@ function patchBuggyResponses(response){
     if( _.isPlainObject(road) && _.isString(road.value) && road.value.length === 2 ){
       if( DIAGONAL_DIRECTIONALS.includes( road.value.toLowerCase() ) ){
         let subsequentElement = response[road._pos+1];
-        if( _.isString(subsequentElement.value) ){
+        if( subsequentElement && _.isString(subsequentElement.value) ){
           response[road._pos].value += ' ' + subsequentElement.value; // merge elements
           response.splice(road._pos+1, 1); // remove merged element
         }
