@@ -128,13 +128,12 @@ function patchBuggyResponses(response){
   // replacements to only records with BOTH a matching 'value' and a matching 'label.from'.
   if( response.length === 1 ){
     let first = response[0];
-    for( var ii=0; ii<RECAST_LABELS.length; ii++ ){
-      let recast = RECAST_LABELS[ii];
-      if( !recast.hasOwnProperty('label') || !recast.label.hasOwnProperty('to') ){ continue; }
-      if( recast.value !== first.value ){ continue; }
-      if( recast.label.hasOwnProperty('from') && recast.label.from !== first.label ){ continue; }
-      response[0].label = recast.label.to;
-    }
+    RECAST_LABELS.forEach(recast => {
+      if( !_.has(recast, 'label') || !_.has(recast.label, 'to') ){ return; }
+      if( recast.value !== first.value ){ return; }
+      if( _.has(recast.label, 'from') && recast.label.from !== first.label ){ return; }
+      first.label = recast.label.to;
+    });
   }
 
   // known bug where the street name is only a directional, in this case we will merge it
