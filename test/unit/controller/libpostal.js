@@ -456,6 +456,126 @@ module.exports.tests.bug_fixes = (test, common) => {
 
   });
 
+  test('bug fix: correctly parse australian-style unit numbers - with plus', t => {
+    const service = (req, callback) => {
+      const response = [
+        {
+          'label': 'house_number',
+          'value': '2+3/32'
+        },
+        {
+          'label': 'road',
+          'value': 'dixon street'
+        },
+        {
+          'label': 'suburb',
+          'value': 'strathpine'
+        },
+        {
+          'label': 'postcode',
+          'value': '4500'
+        },
+        {
+          'label': 'state',
+          'value': 'qld'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
+
+    const req = {
+      clean: {
+        text: 'original query'
+      },
+      errors: []
+    };
+
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: 'original query',
+          parser: 'libpostal',
+          parsed_text: {
+            unit: '2+3',
+            number: '32',
+            street: 'dixon street',
+            neighbourhood: 'strathpine',
+            postalcode: '4500',
+            state: 'qld'
+          }
+        },
+        errors: []
+      }, 'req should not have been modified');
+
+      t.end();
+
+    });
+
+  });
+
+  test('bug fix: correctly parse australian-style unit numbers - with unit spelled out', t => {
+    const service = (req, callback) => {
+      const response = [
+        {
+          'label': 'house_number',
+          'value': 'unit 3 /30'
+        },
+        {
+          'label': 'road',
+          'value': 'dan rees street'
+        },
+        {
+          'label': 'suburb',
+          'value': 'wallsend'
+        },
+        {
+          'label': 'postcode',
+          'value': '2287'
+        },
+        {
+          'label': 'state',
+          'value': 'nsw'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
+
+    const req = {
+      clean: {
+        text: 'original query'
+      },
+      errors: []
+    };
+
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: 'original query',
+          parser: 'libpostal',
+          parsed_text: {
+            unit: 'unit 3',
+            number: '30',
+            street: 'dan rees street',
+            neighbourhood: 'wallsend',
+            postalcode: '2287',
+            state: 'nsw'
+          }
+        },
+        errors: []
+      }, 'req should not have been modified');
+
+      t.end();
+
+    });
+
+  });
+
   test('bug fix: correctly parse australian-style unit numbers - no-op if "unit" already assigned', t => {
     const service = (req, callback) => {
       const response = [
