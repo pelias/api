@@ -439,7 +439,7 @@ module.exports.tests.bug_fixes = (test, common) => {
           text: 'original query',
           parser: 'libpostal',
           parsed_text: {
-            // unit: '11',
+            unit: '11',
             number: '1015',
             street: 'nudgee road',
             neighbourhood: 'banyo',
@@ -503,7 +503,7 @@ module.exports.tests.bug_fixes = (test, common) => {
           text: 'original query',
           parser: 'libpostal',
           parsed_text: {
-            // unit: '999',
+            unit: '99',
             number: '11/1015',
             street: 'nudgee road',
             neighbourhood: 'banyo',

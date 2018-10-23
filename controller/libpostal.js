@@ -17,7 +17,8 @@ var field_mapping = {
   state_district: 'county',
   state:          'state',
   postcode:       'postalcode',
-  country:        'country'
+  country:        'country',
+  unit:           'unit',
 };
 
 // This controller calls the hosted libpostal service and converts the response
