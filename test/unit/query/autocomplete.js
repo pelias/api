@@ -92,6 +92,54 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  test('valid lingustic autocomplete one character token', function(t) {
+    var query = generate({
+      text: 't',
+      tokens: ['t'],
+      tokens_complete: [],
+      tokens_incomplete: ['t']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_linguistic_one_char_token');
+
+    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_one_char_token');
+    t.end();
+  });
+
+  test('valid lingustic autocomplete two character token', function(t) {
+    var query = generate({
+      text: 'te',
+      tokens: ['te'],
+      tokens_complete: [],
+      tokens_incomplete: ['te']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_linguistic_two_char_token');
+
+    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_two_char_token');
+    t.end();
+  });
+
+  test('valid lingustic autocomplete three character token', function(t) {
+    var query = generate({
+      text: 'tes',
+      tokens: ['tes'],
+      tokens_complete: [],
+      tokens_incomplete: ['tes']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_linguistic_three_char_token');
+
+    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_three_char_token');
+    t.end();
+  });
+
   test('autocomplete + focus', function(t) {
     var query = generate({
       text: 'test',
