@@ -357,6 +357,49 @@ module.exports.tests.bug_fixes = (test, common) => {
 
   });
 
+  test('bug fix: incorrect parsing of diagonal directionals - no subsequent element', t => {
+    const service = (req, callback) => {
+      const response = [
+        {
+          'label': 'test',
+          'value': 'test'
+        },
+        {
+          'label': 'road',
+          'value': 'nw'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
+
+    const req = {
+      clean: {
+        text: 'original query'
+      },
+      errors: []
+    };
+
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: 'original query',
+          parser: 'libpostal',
+          parsed_text: {
+            street: 'nw'
+          }
+        },
+        errors: []
+      }, 'req should not have been modified');
+
+      t.end();
+
+    });
+
+  });
+
   test('bug fix: recast label for "zoo" from borough/city_district to house', t => {
     const service = (req, callback) => {
       const response = [
