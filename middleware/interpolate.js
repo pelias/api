@@ -3,6 +3,8 @@ const logger = require( 'pelias-logger' ).get( 'api' );
 const source_mapping = require('../helper/type_mapping').source_mapping;
 const _ = require('lodash');
 const stable = require('stable');
+const Debug = require('../helper/debug');
+const debugLog = new Debug('middleware:interpolate');
 
 /**
 example response from interpolation web service:
@@ -57,6 +59,7 @@ function setup(service, should_execute) {
 
     // perform interpolations asynchronously for all relevant hits
     const start = (new Date()).getTime();
+    const initialTime = debugLog.beginTimer(req);
 
     logger.info(`[interpolation] [street_results] count=${street_results.length}`);
 
@@ -71,12 +74,14 @@ function setup(service, should_execute) {
         // note: leave this hit unmodified
         if (!_.has(interpolation_result, 'properties')) {
           logger.debug(`[interpolation] [miss] ${req.clean.parsed_text}`);
+          debugLog.push(req, 'miss');
           return;
         }
 
         // the interpolation service returned a valid result, debug log for posterity
         // note: we now merge those values with the existing 'street' record
         logger.debug(`[interpolation] [hit] ${req.clean.parsed_text} ${JSON.stringify(interpolation_result)}`);
+        debugLog.push(req, interpolation_result);
 
         // -- metadata --
         source_result.layer = 'address';
@@ -126,6 +131,7 @@ function setup(service, should_execute) {
 
       // log the execution time, continue
       logger.info( `[interpolation] [took] ${(new Date()).getTime() - start} ms`);
+      debugLog.stopTimer(req, initialTime);
       next();
 
     });
