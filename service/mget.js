@@ -23,12 +23,6 @@ function service( esclient, query, cb ){
 
   // query elasticsearch
   esclient.mget( cmd, function( err, data ){
-
-    // log total ms elasticsearch reported the query took to execute
-    if( data && data.took ){
-      logger.verbose( 'time elasticsearch reported:', data.took / 1000 );
-    }
-
     // handle elasticsearch errors
     if( err ){
       logger.error( `elasticsearch error ${err}`);
