@@ -6,9 +6,6 @@ aliases:
   - &test
     name: Test
     command: npm run test
-  - &build
-    name: Build
-    command: npm run build
   - &GCP-auth
     name: GCP Authenticate
     command: |
@@ -61,7 +58,7 @@ jobs:
       - checkout
       - restore-cache: *restore-dependency-cache
       - run: *test
-  build:
+  docker-build:
     docker:
       - image: eu.gcr.io/carbon-1287/circleci-toolbox-image
         auth:
@@ -70,7 +67,6 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-dependency-cache
-      - run: *build
       - run: *GCP-auth
       - setup_remote_docker:
           docker_layer_caching: true
@@ -87,7 +83,7 @@ workflows:
           context: org-carbon
           requires:
             - install
-      - build:
+      - docker-build:
           context: org-carbon
           requires:
             - test
