@@ -13,6 +13,8 @@ RUN apt-get install curl autoconf automake libtool pkg-config
 
 RUN mkdir -p /var/log/esclient/
 
+RUN git clone https://github.com/openvenues/libpostal.git
+
 # Install libpostal
 COPY libpostal /root/.pelias/libpostal
 RUN cd /root/.pelias/libpostal \

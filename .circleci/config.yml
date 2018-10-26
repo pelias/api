@@ -19,9 +19,10 @@ aliases:
   - &docker-build-and-push
     name: Docker build and push
     command: |
-      echo 'export CIRCLE_PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME"' >> $BASH_ENV
       echo 'export CIRCLE_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
       /tools/docker_build_push.sh
+    environment:
+      CIRCLE_PROJECT_REPONAME: "pelias"
   - &save-dependency-cache
     paths:
       - node_modules
