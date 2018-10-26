@@ -16,7 +16,7 @@ RUN mkdir -p /var/log/esclient/
 # Install libpostal
 
 RUN git clone https://github.com/openvenues/libpostal.git /root/.pelias/libpostal \
-    cd /root/.pelias/libpostal \
+    && cd /root/.pelias/libpostal \
     && ./bootstrap.sh \
     && ./configure --datadir=/root/.pelias/libpostal \
     && make \
