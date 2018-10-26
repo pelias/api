@@ -22,7 +22,12 @@ function service( esclient, query, cb ){
   };
 
   // query elasticsearch
+  const startTime = new Date();
   esclient.mget( cmd, function( err, data ){
+    if (data) {
+      data.response_time = new Date() - startTime;
+    }
+
     // handle elasticsearch errors
     if( err ){
       logger.error( `elasticsearch error ${err}`);
@@ -50,7 +55,7 @@ function service( esclient, query, cb ){
     }
 
     // fire callback
-    return cb( null, docs );
+    return cb( null, docs, data );
   });
 
 }

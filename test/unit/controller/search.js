@@ -268,8 +268,7 @@ module.exports.tests.success = function(test, common) {
       t.deepEquals(res.meta, { key: 'value', query_type: 'this is the query type' });
 
       t.ok(infoMesssages.find((msg) => {
-        console.log(msg);
-        return _.get(msg, 'json.retries') === 3;
+        return _.get(msg, 'json.retries') === 2;
       }));
 
       t.end();
@@ -337,7 +336,7 @@ module.exports.tests.timeout = function(test, common) {
       t.equal(searchServiceCallCount, 3+1);
 
       t.ok(infoMesssages.find(function(msg) {
-        return _.get(msg, 'json.retries') === 3;
+        return _.get(msg, 'json.retries') === 2;
       }));
 
       t.deepEqual(req, {
