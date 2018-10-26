@@ -176,7 +176,7 @@ function generateQuery( clean, res ){
   }
 
   return {
-    type: 'fallback',
+    type: 'address_search_using_ids',
     body: addressUsingIdsQuery.render(vs)
   };
 

@@ -49,7 +49,7 @@ module.exports.tests.base_query = (test, common) => {
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.equals(generatedQuery.type, 'fallback');
+    t.equals(generatedQuery.type, 'address_search_using_ids');
 
     t.equals(generatedQuery.body.vs.var('input:housenumber').toString(), 'housenumber value');
     t.equals(generatedQuery.body.vs.var('input:street').toString(), 'street value');

@@ -131,7 +131,7 @@ function generateQuery( clean ){
   }
 
   return {
-    type: 'original',
+    type: 'search_original',
     body: query.render(vs)
   };
 }

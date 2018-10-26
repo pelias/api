@@ -116,7 +116,7 @@ function generateQuery( clean ){
 function getQuery(vs) {
   if (hasStreet(vs) || isPostalCodeOnly(vs) || isPostalCodeWithCountry(vs)) {
     return {
-      type: 'fallback',
+      type: 'search_fallback',
       body: fallbackQuery.render(vs)
     };
   }
