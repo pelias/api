@@ -1,0 +1,42 @@
+{
+  "esclient": {
+    "keepAlive": true,
+    "maxRetries": "3",
+    "deadTimeout": "3000",
+    "maxSockets": "20",
+    "hosts": [
+      {
+        "env": "dev",
+        "protocol": "http",
+        "host": "localhost",
+        "port": 9200
+      },
+      {
+        "env": "production",
+        "protocol": "http",
+        "host": "localhost",
+        "port": 9200
+      }
+    ],
+    "log": [{
+      "type": "stdio",
+      "level": [ "error", "warning" ]
+    },{
+      "type": "file",
+      "level": [ "error", "warning" ],
+      "path": "/var/log/esclient/esclient.log"
+    }]
+  },
+  "logger": {
+    "level": "info"
+  },
+  "elasticsearch": {
+    "settings": {
+      "index": {
+        "number_of_replicas": "0",
+        "number_of_shards": "1",
+        "index.index_concurrency": "24"
+      }
+    }
+  }
+}

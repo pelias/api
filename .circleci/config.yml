@@ -1,12 +1,97 @@
 version: 2
+aliases:
+  - &install-dependencies
+    name: Install Node Dependencies
+    command: npm install
+  - &test
+    name: Test
+    command: npm run test
+  - &build
+    name: Build
+    command: npm run build
+  - &GCP-auth
+    name: GCP Authenticate
+    command: |
+      echo 'export GCLOUD_SERVICE_KEY="$GCLOUD_SERVICE_KEY"' >> $BASH_ENV
+      /tools/gcp_authenticate.sh
+  - &docker-login
+    name: Docker login
+    command: |
+      echo 'export GCLOUD_SERVICE_KEY="$GCLOUD_SERVICE_KEY"' >> $BASH_ENV
+      /tools/docker_login.sh
+  - &docker-build-and-push
+    name: Docker build and push
+    command: |
+      echo 'export CIRCLE_PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME"' >> $BASH_ENV
+      echo 'export CIRCLE_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
+      /tools/docker_build_push.sh
+  - &save-dependency-cache
+    paths:
+      - node_modules
+    key: node_modules-{{ arch }}-{{ .Branch }}-{{ checksum "package.json" }}
+  - &restore-dependency-cache
+    name: Restore dependency cache
+    keys:
+      - node_modules-{{ arch }}-{{ .Branch }}-{{ checksum "package.json" }}
+  - &post-hook
+    name: Notify about build and docker image pushed
+    command: |
+      echo 'export CIRCLE_PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME"' >> $BASH_ENV
+      echo 'export CIRCLE_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
+      echo 'export BUILD_STATUS_API_KEY="$BUILD_STATUS_API_KEY"' >> $BASH_ENV
+      /tools/build_notify.sh
 jobs:
-  build:
-    working_directory: /app
+  install:
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: eu.gcr.io/carbon-1287/circleci-toolbox-image
+        auth:
+          username: _json_key
+          password: $GCLOUD_SERVICE_KEY
     steps:
       - checkout
-      - setup_remote_docker
-      - run:
-          name: Build and push image to Docker Hub
-          command: sh .circleci/docker.sh
+      - run: *install-dependencies
+      - save-cache: *save-dependency-cache
+  test:
+    docker:
+      - image: eu.gcr.io/carbon-1287/circleci-toolbox-image
+        auth:
+          username: _json_key
+          password: $GCLOUD_SERVICE_KEY
+    steps:
+      - checkout
+      - restore-cache: *restore-dependency-cache
+      - run: *test
+  build:
+    docker:
+      - image: eu.gcr.io/carbon-1287/circleci-toolbox-image
+        auth:
+          username: _json_key
+          password: $GCLOUD_SERVICE_KEY
+    steps:
+      - checkout
+      - restore-cache: *restore-dependency-cache
+      - run: *build
+      - run: *GCP-auth
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: *docker-login
+      - run: *docker-build-and-push
+      - run: *post-hook
+workflows:
+  version: 2
+  install-test-build-deploy:
+    jobs:
+      - install:
+          context: org-carbon
+      - test:
+          context: org-carbon
+          requires:
+            - install
+      - build:
+          context: org-carbon
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+              - master

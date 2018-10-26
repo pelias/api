@@ -1,29 +1,51 @@
-# base image
-FROM pelias/libpostal_baseimage
+FROM node:8.2.1
+MAINTAINER Rutebanken
 
-# maintainer information
-LABEL maintainer="pelias@mapzen.com"
+RUN wget --quiet https://github.com/Yelp/dumb-init/releases/download/v1.0.1/dumb-init_1.0.1_amd64.deb
+RUN dpkg -i dumb-init_*.deb
+RUN npm set progress=false
 
-EXPOSE 3100
+# Install other dependencies:
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends git unzip python python-dev python-pip python-virtualenv \
+  build-essential software-properties-common curl wget apt-utils gdal-bin vim
+RUN apt-get install curl autoconf automake libtool pkg-config
 
-# Where the app is built and run inside the docker fs
-ENV WORK=/opt/pelias
+RUN mkdir -p /var/log/esclient/
 
-# Used indirectly for saving npm logs etc.
-ENV HOME=/opt/pelias
+# Install libpostal
+COPY libpostal /root/.pelias/libpostal
+RUN cd /root/.pelias/libpostal \
+    && ./bootstrap.sh \
+    && ./configure --datadir=/root/.pelias/libpostal \
+    && make \
+    && make install \
+    && ldconfig
 
-WORKDIR ${WORK}
-COPY . ${WORK}
+# Install node-gyp
+RUN npm install -g node-gyp
 
-# Build and set permissions for arbitrary non-root user
-RUN npm install && \
-  npm test && \
-  chmod -R a+rwX .
+# Install node bindings
+RUN npm install openvenues/node-postal
 
-# Don't run as root, because there's no reason to (https://docs.docker.com/engine/articles/dockerfile_best-practices/#user).
-# This also reveals permission problems on local Docker.
-RUN chown -R 9999:9999 ${WORK}
-USER 9999
 
-# start service
-CMD [ "npm", "start" ]
+# Install the pelias-api
+COPY . /root/.pelias/pelias-api
+RUN cd /root/.pelias/pelias-api \
+	&& npm install \
+	&& ln -s /root/.pelias/pelias-api/public /root/public
+
+## setting workdir
+WORKDIR /root
+
+#  Copying pelias config file
+ADD .circleci/pelias.json pelias.json
+
+ENV PORT 3000
+EXPOSE 3000
+
+CMD [ "dumb-init","node","/root/.pelias/pelias-api/index.js" ]
+
+# Can be run with:
+# docker run -it --rm -e NODE_ENV=dev --link elasticsearch:pelias-es eu.gcr.io/carbon-1287/pelias:latest
+# Notice that it bombs with NODE_ENV=production
