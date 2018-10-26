@@ -116,7 +116,7 @@ function setup( apiConfig, esclient, query, should_execute ){
           logger.info(messageParts.join(' '));
           debugLog.push(req, {queryType: {
             [renderedQuery.type] : {
-              es_result_count: parseInt(messageParts[2].slice(17, -1))
+              es_result_count: _.get(res, 'data', []).length
             }
           }});
         }
