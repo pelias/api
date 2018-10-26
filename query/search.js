@@ -114,9 +114,6 @@ function generateQuery( clean ){
 }
 
 function getQuery(vs) {
-
-  logger.info(`[query:search] [search_input_type:${determineQueryType(vs)}]`);
-
   if (hasStreet(vs) || isPostalCodeOnly(vs) || isPostalCodeWithCountry(vs)) {
     return {
       type: 'fallback',

@@ -99,18 +99,14 @@ function generateQuery( clean, res ){
   const vs = new peliasQuery.Vars( defaults );
   const results = _.defaultTo(res.data, []);
 
-  const logParts = ['query:address_search_using_ids', 'parser:libpostal'];
-
   // sources
   if( !_.isEmpty(clean.sources) ) {
     vs.var( 'sources', clean.sources);
-    logParts.push('param:sources');
   }
 
   // size
   if( clean.querySize ) {
     vs.var( 'size', clean.querySize );
-    logParts.push('param:querySize');
   }
 
   if( ! _.isEmpty(clean.parsed_text.number) ){
@@ -178,9 +174,6 @@ function generateQuery( clean, res ){
       'boundary:country': clean['boundary.country']
     });
   }
-
-  // format the log parts into a single coherent string
-  logger.info(logParts.map(part => `[${part}]`).join(' '));
 
   return {
     type: 'fallback',

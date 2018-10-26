@@ -67,9 +67,6 @@ module.exports.tests.success = function(test, common) {
       t.deepEquals(res.data, [{}, {}]);
       t.deepEquals(res.meta, { key: 'value', query_type: 'this is the query type' });
 
-      t.ok(infoMesssages.find((msg) => {
-        return msg === '[controller:search] [queryType:this is the query type] [es_result_count:2]';
-      }));
       t.end();
     };
 
@@ -131,9 +128,6 @@ module.exports.tests.success = function(test, common) {
       t.deepEquals(res.data, [{}, {}]);
       t.deepEquals(res.meta, { query_type: 'this is the query type' });
 
-      t.ok(infoMesssages.find((msg) => {
-        return msg === '[controller:search] [queryType:this is the query type] [es_result_count:2]';
-      }));
       t.end();
     };
 
@@ -195,9 +189,6 @@ module.exports.tests.success = function(test, common) {
       t.equals(res.data, undefined);
       t.deepEquals(res.meta, { key: 'value', query_type: 'this is the query type' });
 
-      t.ok(infoMesssages.find((msg) => {
-        return msg === '[controller:search] [queryType:this is the query type] [es_result_count:0]';
-      }));
       t.end();
     };
 
@@ -274,10 +265,6 @@ module.exports.tests.success = function(test, common) {
       });
       t.deepEquals(res.data, [{}, {}]);
       t.deepEquals(res.meta, { key: 'value', query_type: 'this is the query type' });
-
-      t.ok(infoMesssages.find((msg) => {
-        return msg === '[controller:search] [queryType:this is the query type] [es_result_count:2]';
-      }));
 
       t.ok(infoMesssages.find((msg) => {
         return msg === 'succeeded on retry 2';

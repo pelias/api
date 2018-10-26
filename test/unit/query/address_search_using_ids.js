@@ -67,7 +67,6 @@ module.exports.tests.base_query = (test, common) => {
       'sources view'
     ]);
 
-    t.deepEquals(logger.getInfoMessages(), ['[query:address_search_using_ids] [parser:libpostal]']);
     t.end();
 
   });
@@ -102,7 +101,6 @@ module.exports.tests.other_parameters = (test, common) => {
     const generatedQuery = generateQuery(clean, res);
 
     t.equals(generatedQuery.body.vs.var('size').toString(), 'querySize value');
-    t.deepEquals(logger.getInfoMessages(), ['[query:address_search_using_ids] [parser:libpostal] [param:querySize]']);
     t.end();
 
   });
@@ -135,7 +133,6 @@ module.exports.tests.other_parameters = (test, common) => {
     const generatedQuery = generateQuery(clean, res);
 
     t.deepEquals(generatedQuery.body.vs.var('sources').toString(), ['source 1', 'source 2']);
-    t.deepEquals(logger.getInfoMessages(), ['[query:address_search_using_ids] [parser:libpostal] [param:sources]']);
     t.end();
 
   });

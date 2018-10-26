@@ -36,7 +36,6 @@ function setup(service, should_execute) {
     service(req, res, (err, translations) => {
       // if there's an error, log it and bail
       if (err) {
-        logger.info(`[middleware:language][error]`);
         logger.error(err);
         return next();
       }

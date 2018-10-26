@@ -22,8 +22,6 @@ function setup( apiConfig, esclient, query, should_execute ){
     if (logging.isDNT(req)) {
       cleanOutput = logging.removeFields(cleanOutput);
     }
-    // log clean parameters for stats
-    logger.info('[req]', 'endpoint=' + req.path, cleanOutput);
 
     const renderedQuery = query(req.clean);
 
@@ -113,7 +111,6 @@ function setup( apiConfig, esclient, query, should_execute ){
           };
           logger.info('elasticsearch', message);
 
-          logger.info(messageParts.join(' '));
           debugLog.push(req, {queryType: {
             [renderedQuery.type] : {
               es_result_count: _.get(res, 'data', []).length
