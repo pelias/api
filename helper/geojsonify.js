@@ -135,8 +135,8 @@ function computeBBox(geojson, geojsonExtentPoints) {
       geojson.bbox = bbox;
     }
   } catch( e ){
-    console.error( 'bbox error', e.message, e.stack );
-    console.error( 'geojson', JSON.stringify( geojsonExtentPoints, null, 2 ) );
+    logger.error( 'bbox error', e.message, e.stack );
+    logger.error( 'geojson', geojsonExtentPoints );
   }
 }
 
