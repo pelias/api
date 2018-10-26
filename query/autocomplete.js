@@ -60,18 +60,14 @@ function generateQuery( clean ){
 
   const vs = new peliasQuery.Vars( defaults );
 
-  let logStr = '[query:autocomplete] [parser:addressit] ';
-
   // sources
   if( check.array(clean.sources) && clean.sources.length ){
     vs.var( 'sources', clean.sources );
-    logStr += '[param:sources] ';
   }
 
   // layers
   if( check.array(clean.layers) && clean.layers.length ){
     vs.var( 'layers', clean.layers);
-    logStr += '[param:layers] ';
   }
 
   // boundary country
@@ -79,7 +75,6 @@ function generateQuery( clean ){
     vs.set({
       'boundary:country': clean['boundary.country']
     });
-    logStr += '[param:boundary_country] ';
   }
 
   // pass the input tokens to the views so they can choose which tokens
@@ -112,7 +107,6 @@ function generateQuery( clean ){
       'focus:point:lat': clean['focus.point.lat'],
       'focus:point:lon': clean['focus.point.lon']
     });
-    logStr += '[param:focus_point] ';
   }
 
   // boundary rect
@@ -126,15 +120,12 @@ function generateQuery( clean ){
       'boundary:rect:bottom': clean['boundary.rect.min_lat'],
       'boundary:rect:left': clean['boundary.rect.min_lon']
     });
-    logStr += '[param:boundary_rect] ';
   }
 
   // run the address parser
   if( clean.parsed_text ){
     textParser( clean.parsed_text, vs );
   }
-
-  logger.info(logStr);
 
   return {
     type: 'autocomplete',
