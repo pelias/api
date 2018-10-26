@@ -259,7 +259,7 @@ module.exports.tests.success = (test, common) => {
   });
 
   test('successful request on retry to search service should log info message', (t) => {
-    t.plan(3+1+2); // 3 search service calls, 1 log messages, 1 req, 1 res
+    t.plan(3+2); // 3 search service calls, 1 req, 1 res
 
     const logger = mocklogger();
 
@@ -330,8 +330,6 @@ module.exports.tests.success = (test, common) => {
           query_type: 'this is the query type'
         }
       });
-
-      t.ok(logger.isInfoMessage('succeeded on retry 2'));
 
       t.end();
     };

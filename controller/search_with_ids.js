@@ -64,6 +64,7 @@ function setup( apiConfig, esclient, query, should_execute ){
           es_took: _.get(data, 'took', undefined),
           response_time: _.get(data, 'response_time', undefined),
           params: req.clean,
+          retries: currentAttempt - 1,
           text_length: _.get(req, 'clean.text.length', 0)
         };
         logger.info('elasticsearch', message);
@@ -72,7 +73,6 @@ function setup( apiConfig, esclient, query, should_execute ){
         // (handles bookkeeping of maxRetries)
         // only consider for status 408 (request timeout)
         if (isRequestTimeout(err) && operation.retry(err)) {
-          logger.info(`request timed out on attempt ${currentAttempt}, retrying`);
           debugLog.stopTimer(req, initialTime, `request timed out on attempt ${currentAttempt}, retrying`);
           return;
         }
@@ -89,12 +89,6 @@ function setup( apiConfig, esclient, query, should_execute ){
           req.errors.push( _.get(err, 'message', err));
         }
         else {
-          // log that a retry was successful
-          // most requests succeed on first attempt so this declutters log files
-          if (currentAttempt > 1) {
-            logger.info(`succeeded on retry ${currentAttempt-1}`);
-          }
-
           // because this is used in response to placeholder, there may already
           // be results.  if there are no results from this ES call, don't overwrite
           // what's already there from placeholder.

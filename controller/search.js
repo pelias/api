@@ -57,11 +57,23 @@ function setup( apiConfig, esclient, query, should_execute ){
       const initialTime = debugLog.beginTimer(req, `Attempt ${currentAttempt}`);
       // query elasticsearch
       searchService( esclient, cmd, function( err, docs, meta, data ){
+        const message = {
+          controller: 'search',
+          queryType: renderedQuery.type,
+          es_hits: _.get(data, 'hits.total'),
+          result_count: _.get(res, 'data', []).length,
+          es_took: _.get(data, 'took', undefined),
+          response_time: _.get(data, 'response_time', undefined),
+          params: req.clean,
+          retries: currentAttempt - 1,
+          text_length: _.get(req, 'clean.text.length', 0)
+        };
+        logger.info('elasticsearch', message);
+
         // returns true if the operation should be attempted again
         // (handles bookkeeping of maxRetries)
         // only consider for status 408 (request timeout)
         if (isRequestTimeout(err) && operation.retry(err)) {
-          logger.info(`request timed out on attempt ${currentAttempt}, retrying`);
           debugLog.stopTimer(req, initialTime, 'request timed out, retrying');
           return;
         }
@@ -82,12 +94,6 @@ function setup( apiConfig, esclient, query, should_execute ){
         }
         // set response data
         else {
-          // log that a retry was successful
-          // most requests succeed on first attempt so this declutters log files
-          if (currentAttempt > 1) {
-            logger.info(`succeeded on retry ${currentAttempt-1}`);
-          }
-
           res.data = docs;
           res.meta = meta || {};
           // store the query_type for subsequent middleware
@@ -98,19 +104,6 @@ function setup( apiConfig, esclient, query, should_execute ){
             `[queryType:${renderedQuery.type}]`,
             `[es_result_count:${_.get(res, 'data', []).length}]`
           ];
-
-          const message = {
-            controller: 'search',
-            queryType: renderedQuery.type,
-            es_hits: _.get(data, 'hits.total'),
-            result_count: _.get(res, 'data', []).length,
-            es_took: _.get(data, 'took', undefined),
-            response_time: _.get(data, 'response_time', undefined),
-            params: req.clean,
-            text_length: _.get(req, 'clean.text.length', 0)
-          };
-          logger.info('elasticsearch', message);
-
           debugLog.push(req, {queryType: {
             [renderedQuery.type] : {
               es_result_count: _.get(res, 'data', []).length
