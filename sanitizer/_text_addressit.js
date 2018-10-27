@@ -108,9 +108,11 @@ function parse(query) {
   });
 
   // if all we found was regions, ignore it as it is not enough information to make smarter decisions
-  if (Object.keys(parsed_text).length === 1 && !_.isUndefined(parsed_text.regions))
-  {
-    logger.info('Ignoring address parser output, regions only');
+  if (Object.keys(parsed_text).length === 1 && !_.isUndefined(parsed_text.regions)) {
+    logger.info('Ignoring address parser output, regions only', {
+      text: query.text,
+      parsed: parsed_text
+    });
     return null;
   }
 
