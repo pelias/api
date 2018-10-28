@@ -50,7 +50,7 @@ module.exports.tests.query = (test, common) => {
       }
     })(clean);
 
-    t.equals(query.type, 'fallback', 'query type set');
+    t.equals(query.type, 'structured', 'query type set');
     t.equals(query.body.vs.var('input:name').toString(), 'text value');
     t.equals(query.body.vs.var('sources').toString(), 'sources value');
     t.equals(query.body.vs.var('layers').toString(), 'layers value');

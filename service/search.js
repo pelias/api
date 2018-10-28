@@ -9,11 +9,10 @@ var logger = require( 'pelias-logger' ).get( 'api' );
 function service( esclient, cmd, cb ){
 
   // query elasticsearch
+  const startTime = new Date();
   esclient.search( cmd, function( err, data ){
-
-    // log total ms elasticsearch reported the query took to execute
-    if( data && data.took ){
-      logger.verbose( 'time elasticsearch reported:', data.took / 1000 );
+    if (data) {
+      data.response_time = new Date() - startTime;
     }
 
     // handle elasticsearch errors
@@ -45,7 +44,7 @@ function service( esclient, cmd, cb ){
     }
 
     // fire callback
-    return cb( null, docs, meta );
+    return cb( null, docs, meta, data );
   });
 
 }

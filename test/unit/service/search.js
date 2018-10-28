@@ -174,7 +174,7 @@ module.exports.tests.success_conditions = (test, common) => {
       search: (cmd, callback) => {
         t.deepEquals(cmd, 'this is the query');
 
-        callback(undefined, undefined);
+        callback(undefined, {});
 
       }
     };

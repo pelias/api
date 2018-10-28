@@ -32,7 +32,6 @@ function generateQuery( clean ){
 
   const vs = new peliasQuery.Vars( defaults );
 
-  let logStr = '[query:search] [parser:libpostal] ';
 
   // input text
   vs.var( 'input:name', clean.text );
@@ -40,25 +39,21 @@ function generateQuery( clean ){
   // sources
   if( check.array(clean.sources) && clean.sources.length ) {
     vs.var( 'sources', clean.sources);
-    logStr += '[param:sources] ';
   }
 
   // layers
   if( check.array(clean.layers) && clean.layers.length ) {
     vs.var('layers', clean.layers);
-    logStr += '[param:layers] ';
   }
 
   // categories
   if (clean.categories) {
     vs.var('input:categories', clean.categories);
-    logStr += '[param:categories] ';
   }
 
   // size
   if( clean.querySize ) {
     vs.var( 'size', clean.querySize );
-    logStr += '[param:querySize] ';
   }
 
   // focus point
@@ -68,7 +63,6 @@ function generateQuery( clean ){
       'focus:point:lat': clean['focus.point.lat'],
       'focus:point:lon': clean['focus.point.lon']
     });
-    logStr += '[param:focus_point] ';
   }
 
   // boundary rect
@@ -82,7 +76,6 @@ function generateQuery( clean ){
       'boundary:rect:bottom': clean['boundary.rect.min_lat'],
       'boundary:rect:left': clean['boundary.rect.min_lon']
     });
-    logStr += '[param:boundary_rect] ';
   }
 
   // boundary circle
@@ -99,7 +92,6 @@ function generateQuery( clean ){
         'boundary:circle:radius': Math.round( clean['boundary.circle.radius'] ) + 'km'
       });
     }
-    logStr += '[param:boundary_circle] ';
   }
 
   // boundary country
@@ -107,7 +99,6 @@ function generateQuery( clean ){
     vs.set({
       'boundary:country': clean['boundary.country']
     });
-    logStr += '[param:boundary_country] ';
   }
 
   // run the address parser
@@ -119,23 +110,13 @@ function generateQuery( clean ){
 
   //console.log(JSON.stringify(q, null, 2));
 
-  if (q !== undefined) {
-    logger.debug(logStr);
-  }
-  else {
-    logger.debug('[parser:libpostal] query type not supported');
-  }
-
   return q;
 }
 
 function getQuery(vs) {
-
-  logger.info(`[query:search] [search_input_type:${determineQueryType(vs)}]`);
-
   if (hasStreet(vs) || isPostalCodeOnly(vs) || isPostalCodeWithCountry(vs)) {
     return {
-      type: 'fallback',
+      type: 'search_fallback',
       body: fallbackQuery.render(vs)
     };
   }

@@ -32,13 +32,19 @@ function setup(service, should_execute) {
       return next();
     }
 
+    const start = Date.now();
     service(req, res, (err, translations) => {
       // if there's an error, log it and bail
       if (err) {
-        logger.info(`[middleware:language][error]`);
         logger.error(err);
         return next();
       }
+
+      logger.info('language', {
+        response_time: Date.now() - start,
+        language: req.clean.lang.iso6391,
+        controller: 'language', //technically middleware, but this is consistent with other log lines
+      });
 
       // otherwise, update all the docs with translations
       updateDocs(req, res, _.defaultTo(translations, []));

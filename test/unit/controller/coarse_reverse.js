@@ -71,7 +71,7 @@ module.exports.tests.error_conditions = (test, common) => {
     // passing res=undefined verifies that it wasn't interacted with
     controller(req, undefined, next);
 
-    t.ok(logger.isErrorMessage('this is an error'));
+    t.ok(logger.hasErrorMessages('this is an error'));
     t.end();
 
   });
@@ -903,7 +903,7 @@ module.exports.tests.failure_conditions = (test, common) => {
   });
 
   test('service returns 0 length name', (t) => {
-    t.plan(6);
+    t.plan(4);
 
     const service = (req, callback) => {
       t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
@@ -946,9 +946,7 @@ module.exports.tests.failure_conditions = (test, common) => {
     t.deepEquals(res, expected);
 
     // logger messages
-    t.true(logger.hasMessages('info'), '[controller:coarse_reverse][error]');
     t.true(logger.hasMessages('error'), 'invalid document type, expecting: truthy, got: ');
-    t.true(logger.hasMessages('info'), '{ neighbourhood: [ { id: 20, name: \'\' } ] }');
 
     t.end();
 

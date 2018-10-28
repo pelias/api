@@ -104,7 +104,7 @@ function generateQuery( clean ){
 
 function getQuery(vs) {
   return {
-    type: 'fallback',
+    type: 'structured',
     body: structuredQuery.render(vs)
   };
 }

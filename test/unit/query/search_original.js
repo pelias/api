@@ -24,7 +24,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_bbox_original');
 
-    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.type, 'search_original', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_focus_bbox');
     t.end();
   });
@@ -42,7 +42,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_bbox_original');
 
-    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.type, 'search_original', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_bbox');
     t.end();
   });
@@ -56,7 +56,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_only_original');
 
-    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.type, 'search_original', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_only');
     t.end();
   });
@@ -71,7 +71,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_original');
 
-    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.type, 'search_original', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_focus');
     t.end();
   });
@@ -86,7 +86,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_linguistic_focus_null_island_original');
 
-    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.type, 'search_original', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_focus_null_island');
     t.end();
   });
@@ -108,7 +108,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_full_address_original');
 
-    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.type, 'search_original', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_full_address');
     t.end();
   });
@@ -127,7 +127,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_partial_address_original');
 
-    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.type, 'search_original', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_partial_address');
     t.end();
   });
@@ -146,7 +146,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_regions_address_original');
 
-    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.type, 'search_original', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_regions_address');
     t.end();
   });
@@ -161,7 +161,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_boundary_country_original');
 
-    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.type, 'search_original', 'query type set');
     t.deepEqual(compiled.body, expected, 'search: valid boundary.country query');
     t.end();
   });
@@ -175,7 +175,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_with_source_filtering_original');
 
-    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.type, 'search_original', 'query type set');
     t.deepEqual(compiled.body, expected, 'search: valid search query with source filtering');
     t.end();
   });
@@ -189,7 +189,7 @@ module.exports.tests.query = function(test, common) {
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_with_category_filtering_original');
 
-    t.deepEqual(compiled.type, 'original', 'query type set');
+    t.deepEqual(compiled.type, 'search_original', 'query type set');
     t.deepEqual(compiled.body, expected, 'valid search query with category filtering');
     t.end();
   });
