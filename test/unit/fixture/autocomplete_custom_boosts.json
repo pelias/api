@@ -1,0 +1,106 @@
+{
+  "type": "autocomplete",
+  "body": {
+    "query": {
+      "bool": {
+        "must": [
+          {
+            "match": {
+              "name.default": {
+                "analyzer": "peliasQueryFullToken",
+                "type": "phrase",
+                "boost": 1,
+                "slop": 3,
+                "query": "foo"
+              }
+            }
+          }
+        ],
+        "should": [
+          {
+            "match": {
+              "phrase.default": {
+                "analyzer": "peliasPhrase",
+                "type": "phrase",
+                "boost": 1,
+                "slop": 3,
+                "query": "foo"
+              }
+            }
+          },
+          {
+            "function_score": {
+              "query": {
+                "match_all": {}
+              },
+              "max_boost": 20,
+              "functions": [
+                {
+                  "field_value_factor": {
+                    "modifier": "log1p",
+                    "field": "popularity",
+                    "missing": 1
+                  },
+                  "weight": 1
+                }
+              ],
+              "score_mode": "first",
+              "boost_mode": "replace"
+            }
+          },
+          {
+            "function_score": {
+              "query": {
+                "match_all": {}
+              },
+              "max_boost": 20,
+              "functions": [
+                {
+                  "field_value_factor": {
+                    "modifier": "log1p",
+                    "field": "population",
+                    "missing": 1
+                  },
+                  "weight": 3
+                }
+              ],
+              "score_mode": "first",
+              "boost_mode": "replace"
+            }
+          },{
+            "function_score": {
+              "query": {
+                "match_all": {}
+              },
+              "min_score": 1,
+              "boost": 5,
+              "max_boost": 50,
+              "score_mode": "sum",
+              "boost_mode": "multiply",
+              "functions": [{
+                "filter": {
+                  "match": {
+                    "source": "openstreetmap"
+                  }
+                },
+                "weight": 5
+              },{
+                "filter": {
+                  "match": {
+                    "layer": "transit"
+                  }
+                },
+                "weight": 3
+              }]
+            }
+          }
+        ]
+      }
+    },
+    "size": 20,
+    "track_scores": true,
+    "sort": [
+      "_score"
+    ]
+  }
+}

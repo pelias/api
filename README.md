@@ -39,13 +39,14 @@ The API recognizes the following properties under the top-level `api` key in you
 
 |parameter|required|default|description|
 |---|---|---|---|
-|`indexName`|*no*|*pelias*|name of the Elasticsearch index to be used when building queries|
-|`relativeScores`|*no*|true|if set to true, confidence scores will be normalized, realistically at this point setting this to false is not tested or desirable
-|`accessLog`|*no*||name of the format to use for access logs; may be any one of the [predefined values](https://github.com/expressjs/morgan#predefined-formats) in the `morgan` package. Defaults to `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.|
 |`services`|*no*||service definitions for [point-in-polygon](https://github.com/pelias/pip-service), [libpostal](https://github.com/whosonfirst/go-whosonfirst-libpostal), [placeholder](https://github.com/pelias/placeholder), and [interpolation](https://github.com/pelias/interpolation) services.  If missing (which is not recommended), the services will not be called.|
 |`defaultParameters.focus.point.lon` <br> `defaultParameters.focus.point.lat`|no | |default coordinates for focus point
 |`targets.layers_by_source` <br> `targets.source_aliases` <br> `targets.layer_aliases`|no | |custom values for which `sources` and `layers` the API accepts ([more info](https://github.com/pelias/api/pull/1131)).
+|`customBoosts` | no | `{}` | Allows configuring boosts for specific sources and layers, in order to influence result order. See [Configurable Boosts](#custom-boosts) below for details |
+|`indexName`|*no*|*pelias*|name of the Elasticsearch index to be used when building queries|
 |`attributionURL`|no| (autodetected)|The full URL to use for the attribution link returned in all Pelias responses. Pelias will attempt to autodetect this host, but it will often be correct if, for example, there is a proxy between Pelias and its users. This parameter allows setting a specific URL to avoid any such issues|
+|`accessLog`|*no*||name of the format to use for access logs; may be any one of the [predefined values](https://github.com/expressjs/morgan#predefined-formats) in the `morgan` package. Defaults to `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.|
+|`relativeScores`|*no*|true|if set to true, confidence scores will be normalized, realistically at this point setting this to false is not tested or desirable
 
 A good starting configuration file includes this section (fill in the service and Elasticsearch hosts as needed):
 
@@ -81,6 +82,38 @@ A good starting configuration file includes this section (fill in the service an
 ```
 
 The `timeout` and `retry` values, as show in in the `pip` service section, are optional but configurable for all services (see [pelias/microservice-wrapper](https://github.com/pelias/microservice-wrapper) for more details).
+
+### Custom Boosts
+
+The `customBoosts` config section allows influencing the sorting of results returned from most Pelias queries. Every Pelias record has a `source` and `layer` value, and this section allows prioritizing certain `sources` and `layers`.
+
+First, keep in mind:
+1. This will not affect _all_ Pelias queries. In particular, when using the `/v1/search` endpoint, queries for administrative areas (cities, countries, etc) will likely not be affected
+2. Custom boosts allow _influencing_ results, but not completely controlling them. Very good matches that aren't in a boosted `source` or `layer` may still be returned first.
+
+The basic form of the configuration looks like this:
+
+```js
+{
+  "api":
+    "customBoosts": {
+      "layer": {
+        "layername": 5,
+        "layername2": 3
+      },
+      "source": {
+        "sourcename": 5
+      }
+    }
+  }
+}
+```
+
+There are subsections for both `layer` and `source`, and each subsection must be an object. Keys in those objects represent the sources and layers to be boosted, and the value associated with those keys must be a numeric value.
+
+Boost values are essentially multipliers, so values greater than `1` will cause a source or layer to be returned more often, and higher in results. Boosts of the value `1` are the same as no boost, and boosts between `0` and `1` will de-prioritize matching records.
+
+Recommended boost values are between 1 and 5. Higher boosts are likely to cause unexpected impact without really improving results much.
 
 ## Configuration via Environment variable
 

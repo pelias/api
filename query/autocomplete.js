@@ -3,9 +3,11 @@ const defaults = require('./autocomplete_defaults');
 const textParser = require('./text_parser_addressit');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
+const config = require('pelias-config').generate().api;
 
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
+  custom_boosts:              require('./view/boost_sources_and_layers'),
   ngrams_strict:              require('./view/ngrams_strict'),
   ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
@@ -43,6 +45,7 @@ query.score( views.boost_exact_matches );
 query.score( peliasQuery.view.focus( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.pop_subquery ) );
 query.score( peliasQuery.view.population( views.pop_subquery ) );
+query.score( views.custom_boosts( config.customBoosts ) );
 
 // non-scoring hard filters
 query.filter( peliasQuery.view.sources );

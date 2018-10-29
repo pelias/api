@@ -1,4 +1,14 @@
-var generate = require('../../../query/autocomplete');
+const proxyquire = require('proxyquire').noCallThru();
+const realPeliasConfig = require('pelias-config');
+const defaultPeliasConfig = {
+  generate: function() {
+    return realPeliasConfig.defaults;
+  }
+};
+
+var generate = proxyquire('../../../query/autocomplete', {
+  'pelias-config': defaultPeliasConfig
+});
 
 module.exports.tests = {};
 
