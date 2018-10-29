@@ -13,16 +13,6 @@ RUN apt-get install curl autoconf automake libtool pkg-config
 
 RUN mkdir -p /var/log/esclient/
 
-# Install libpostal
-
-RUN git clone https://github.com/openvenues/libpostal.git /root/.pelias/libpostal \
-    && cd /root/.pelias/libpostal \
-    && ./bootstrap.sh \
-    && ./configure --datadir=/root/.pelias/libpostal \
-    && make \
-    && make install \
-    && ldconfig
-
 # Install node-gyp
 RUN npm install -g node-gyp
 
