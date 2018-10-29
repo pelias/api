@@ -22,7 +22,7 @@ function computeScores(req, res, next) {
   // later add disambiguation to this list
   if (check.undefined(req.clean) || check.undefined(res) ||
       check.undefined(res.data) || check.undefined(res.meta) ||
-      res.meta.query_type !== 'fallback') {
+      res.meta.query_type !== 'search_fallback') {
     return next();
   }
 

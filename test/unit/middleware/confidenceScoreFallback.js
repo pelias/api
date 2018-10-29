@@ -47,7 +47,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'original'
+        query_type: 'search_fallback'
       }
     };
 
@@ -89,7 +89,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -127,7 +127,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -163,7 +163,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -197,7 +197,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -230,7 +230,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -265,7 +265,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -300,7 +300,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -336,7 +336,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -360,7 +360,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         layer: 'locality'
       }],
       meta: {
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -384,7 +384,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         layer: 'localadmin'
       }],
       meta: {
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -408,7 +408,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         layer: 'region'
       }],
       meta: {
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -433,7 +433,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         layer: 'country'
       }],
       meta: {
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -461,7 +461,7 @@ module.exports.tests.confidenceScore = function(test, common) {
                 layer: 'postalcode'
             }],
             meta: {
-                query_type: 'fallback'
+                query_type: 'search_fallback'
             }
         };
         confidenceScore(req, res, function() {});
@@ -485,7 +485,7 @@ module.exports.tests.confidenceScore = function(test, common) {
                 layer: 'postalcode'
             }],
             meta: {
-                query_type: 'fallback'
+                query_type: 'search_fallback'
             }
         };
         confidenceScore(req, res, function() {});
