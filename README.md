@@ -34,12 +34,11 @@ The API ships with several convenience commands (runnable via `npm`):
   * `npm run coverage`: generate code coverage reports
   * `npm run config`: dump the configuration to the command line, which is useful for debugging configuration issues
 
-## pelias-config
+## Configuration via pelias-config
 The API recognizes the following properties under the top-level `api` key in your `pelias.json` config file:
 
 |parameter|required|default|description|
 |---|---|---|---|
-|`host`|*yes*||specifies the url under which the http service is to run|
 |`indexName`|*no*|*pelias*|name of the Elasticsearch index to be used when building queries|
 |`relativeScores`|*no*|true|if set to true, confidence scores will be normalized, realistically at this point setting this to false is not tested or desirable
 |`accessLog`|*no*||name of the format to use for access logs; may be any one of the [predefined values](https://github.com/expressjs/morgan#predefined-formats) in the `morgan` package. Defaults to `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.|
@@ -83,6 +82,14 @@ A good starting configuration file includes this section (fill in the service an
 
 The `timeout` and `retry` values, as showin in the `pip` service section, are optional but configurable for all services (see [pelias/microservice-wrapper](https://github.com/pelias/microservice-wrapper) for more details).
 
+## Configuration via Environment variable
+
+Most Pelias configuration is done through pelias-config, however the API has additional environment variables that affect its operation:
+
+| environment variable | default | description |
+| --- | --- | --- |
+| HOST | `undefined` | The network interface the Pelias API will bind to. Defaults to whatever the current Node.js default is, which is currently to listen on all interfaces. See the [Node.js Net documentation](https://nodejs.org/api/net.html#net_server_listen_port_host_backlog_callback) for more info. |
+| PORT | 3100 | The TCP port the Pelias API will use for incoming network connections. |
 
 ## Contributing
 
