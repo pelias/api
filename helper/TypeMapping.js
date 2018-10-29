@@ -1,6 +1,9 @@
 const _ = require('lodash');
 const elasticsearch = require('elasticsearch');
 
+// a list of the canonical sources included in the default Pelias configuration
+const CANONICAL_SOURCES = ['whosonfirst', 'openstreetmap', 'openaddresses', 'geonames'];
+
 var TypeMapping = function(){
 
   // A list of all sources
@@ -73,6 +76,22 @@ TypeMapping.prototype.generateMappings = function(){
     return acc.concat(this.layers_by_source[key]);
   }.bind(this), []));
   this.layer_mapping = TypeMapping.addStandardTargetsToAliases(this.layers, this.layer_aliases);
+};
+
+// return a list of all sources which are part of the canonical Pelias configuration
+TypeMapping.prototype.getCanonicalSources = function(){
+  return CANONICAL_SOURCES;
+};
+
+// generate a list of all layers which are part of the canonical Pelias configuration
+TypeMapping.prototype.getCanonicalLayers = function(){
+  var canonicalLayers = [];
+  for( var source in this.layers_by_source ){
+    if( _.includes( CANONICAL_SOURCES, source ) ){
+      canonicalLayers = _.uniq( canonicalLayers.concat( this.layers_by_source[source] ) );
+    }
+  }
+  return canonicalLayers;
 };
 
 // load values from targets block

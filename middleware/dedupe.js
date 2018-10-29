@@ -1,6 +1,7 @@
 const logger = require('pelias-logger').get('api');
 const _ = require('lodash');
 const isDifferent = require('../helper/diffPlaces').isDifferent;
+const canonicalSources = require('../helper/type_mapping').getCanonicalSources();
 const field = require('../helper/fieldValue');
 
 function dedupeResults(req, res, next) {
@@ -73,6 +74,10 @@ function isPreferred(existingHit, candidateHit) {
   // https://github.com/pelias/api/issues/872
   if( !_.has(existingHit, 'address_parts.zip') &&
        _.has(candidateHit, 'address_parts.zip') ){ return true; }
+
+  // prefer non-canonical sources over canonical ones
+  if( !_.includes(canonicalSources, candidateHit.source) &&
+       _.includes(canonicalSources, existingHit.source) ){ return true; }
 
   // prefer certain sources over others
   switch( existingHit.source ){

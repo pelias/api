@@ -1,5 +1,6 @@
 var data = require('../fixture/dedupe_elasticsearch_results');
 var nonAsciiData = require('../fixture/dedupe_elasticsearch_nonascii_results');
+var customLayerData = require('../fixture/dedupe_elasticsearch_custom_layer_results');
 var dedupe = require('../../../middleware/dedupe')();
 
 module.exports.tests = {};
@@ -56,10 +57,29 @@ module.exports.tests.dedupe = function(test, common) {
       t.end();
     });
   });
+
+  test('deduplicate between custom layers and venue layers', function(t) {
+    var req = {
+      clean: {
+        size: 20
+      }
+    };
+    var res = {
+      data: customLayerData
+    };
+    var expected = customLayerData[1]; // non-canonical record
+
+    dedupe(req, res, function () {
+      t.equal(res.data.length, 1, 'only one result displayed');
+      t.equal(res.data[0], expected, 'non-canonical data is preferred');
+      t.end();
+    });
+  });
 };
 
-module.exports.tests.trump = function(test, common) {
-  test('whosonfirst trumps geonames, replace', function (t) {
+
+module.exports.tests.priority = function(test, common) {
+  test('whosonfirst takes priority over geonames, replace', function (t) {
     var req = {
       clean: {
         text: 'Lancaster',
@@ -91,7 +111,7 @@ module.exports.tests.trump = function(test, common) {
     });
   });
 
-  test('whosonfirst trumps geonames, no replace', function (t) {
+  test('whosonfirst takes priority over geonames, no replace', function (t) {
     var req = {
       clean: {
         text: 'Lancaster',
@@ -123,7 +143,7 @@ module.exports.tests.trump = function(test, common) {
     });
   });
 
-  test('openstreetmap trumps whosonfirst venues', function (t) {
+  test('openstreetmap takes priority over whosonfirst venues', function (t) {
     var req = {
       clean: {
         text: 'Lancaster Dairy Farm',
@@ -155,7 +175,7 @@ module.exports.tests.trump = function(test, common) {
     });
   });
 
-  test('openaddresses trumps openstreetmap', function (t) {
+  test('openaddresses takes priority over openstreetmap', function (t) {
     var req = {
       clean: {
         text: '100 Main St',
@@ -187,7 +207,7 @@ module.exports.tests.trump = function(test, common) {
     });
   });
 
-  test('openaddresses with zip trumps openaddresses without zip', function (t) {
+  test('openaddresses with zip takes priority over openaddresses without zip', function (t) {
     var req = {
       clean: {
         text: '100 Main St',
@@ -223,7 +243,7 @@ module.exports.tests.trump = function(test, common) {
     });
   });
 
-  test('osm with zip trumps openaddresses without zip', function (t) {
+  test('osm with zip takes priority over openaddresses without zip', function (t) {
     var req = {
       clean: {
         text: '100 Main St',

@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const placeTypes = require('./placeTypes');
+const canonicalLayers = require('../helper/type_mapping').getCanonicalLayers();
 const field = require('../helper/fieldValue');
 
 /**
@@ -7,7 +8,15 @@ const field = require('../helper/fieldValue');
  * Returns false if the objects are the same, else true.
  */
 function isLayerDifferent(item1, item2){
-  return isPropertyDifferent(item1, item2, 'layer');
+  if( isPropertyDifferent(item1, item2, 'layer') ){
+    // consider all custom layers to be analogous to a venue
+    if( ( item1.layer === 'venue' || !_.includes( canonicalLayers, item1.layer ) ) &&
+        ( item2.layer === 'venue' || !_.includes( canonicalLayers, item2.layer ) ) ){
+      return false;
+    }
+    return true;
+  }
+  return false;
 }
 
 /**
