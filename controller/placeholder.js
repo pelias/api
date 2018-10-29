@@ -250,7 +250,7 @@ function setup(placeholderService, do_geometric_filters_apply, should_execute) {
         // boundary.country filter must happen after synthesis since multiple
         //  lineages may produce different country docs
         res.meta = {
-          query_type: 'fallback'
+          query_type: 'search_fallback'
         };
 
         res.data = results

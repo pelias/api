@@ -47,7 +47,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'original'
+        query_type: 'search_fallback'
       }
     };
 
@@ -89,7 +89,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -127,7 +127,83 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
+      }
+    };
+
+    confidenceScore(req, res, function() {});
+    t.equal(res.data[0].confidence, 1.0, 'max score was set');
+    t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
+    t.end();
+  });
+
+  test('placeholder style search queries should get confidence score', function(t) {
+    var req = {
+      clean: {
+        text: '123 Main St, City, NM',
+        parsed_text: {
+          number: 123,
+          street: 'Main St',
+          city: 'City',
+          state: 'NM'
+        }
+      }
+    };
+    var res = {
+      data: [{
+        _score: 10,
+        found: true,
+        value: 1,
+        layer: 'address',
+        center_point: { lat: 100.1, lon: -50.5 },
+        name: { default: 'test name1' },
+        parent: {
+          country: ['country1'],
+          region: ['region1'],
+          county: ['city1']
+        }
+      }],
+      meta: {
+        scores: [10],
+        query_type: 'address_search_with_ids'
+      }
+    };
+
+    confidenceScore(req, res, function() {});
+    t.equal(res.data[0].confidence, 1.0, 'max score was set');
+    t.equal(res.data[0].match_type, 'exact', 'exact match indicated');
+    t.end();
+  });
+
+  test('structured search queries should get confidence score', function(t) {
+    var req = {
+      clean: {
+        text: '123 Main St, City, NM',
+        parsed_text: {
+          number: 123,
+          street: 'Main St',
+          city: 'City',
+          state: 'NM'
+        }
+      }
+    };
+    var res = {
+      data: [{
+        _score: 10,
+        found: true,
+        value: 1,
+        layer: 'address',
+        center_point: { lat: 100.1, lon: -50.5 },
+        name: { default: 'test name1' },
+        parent: {
+          country: ['country1'],
+          region: ['region1'],
+          county: ['city1']
+        }
+      }],
+      meta: {
+        scores: [10],
+        query_type: 'structured'
       }
     };
 
@@ -163,7 +239,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -197,7 +273,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -230,7 +306,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -265,7 +341,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -300,7 +376,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -336,7 +412,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -360,7 +436,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         layer: 'locality'
       }],
       meta: {
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -384,7 +460,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         layer: 'localadmin'
       }],
       meta: {
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -408,7 +484,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         layer: 'region'
       }],
       meta: {
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -433,7 +509,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         layer: 'country'
       }],
       meta: {
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -461,7 +537,7 @@ module.exports.tests.confidenceScore = function(test, common) {
                 layer: 'postalcode'
             }],
             meta: {
-                query_type: 'fallback'
+                query_type: 'search_fallback'
             }
         };
         confidenceScore(req, res, function() {});
@@ -485,7 +561,7 @@ module.exports.tests.confidenceScore = function(test, common) {
                 layer: 'postalcode'
             }],
             meta: {
-                query_type: 'fallback'
+                query_type: 'search_fallback'
             }
         };
         confidenceScore(req, res, function() {});

@@ -47,7 +47,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'original'
+        query_type: 'search_original'
       }
     };
 
@@ -89,7 +89,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'original'
+        query_type: 'search_original'
       }
     };
 
@@ -125,7 +125,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'original'
+        query_type: 'search_original'
       }
     };
 
@@ -134,7 +134,7 @@ module.exports.tests.confidenceScore = function(test, common) {
     t.end();
   });
 
-  test('should only work for original query_type', function(t) {
+  test('should only work for search_original query_type', function(t) {
     var req = {
       clean: {
         text: '123 Main St, City, NM',
@@ -161,7 +161,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'fallback'
+        query_type: 'search_fallback'
       }
     };
 
@@ -191,7 +191,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'original'
+        query_type: 'search_original'
       }
     };
 
@@ -223,7 +223,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'original'
+        query_type: 'search_original'
       }
     };
 
