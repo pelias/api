@@ -130,7 +130,7 @@ function generateQuery( clean ){
 
   // run the address parser
   if( clean.parsed_text ){
-    textParser( clean.parsed_text, vs );
+    textParser( clean, vs );
   }
 
   return {

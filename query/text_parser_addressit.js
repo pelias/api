@@ -15,58 +15,58 @@ var adminFields = placeTypes.concat([
 **/
 
 // all the address parsing logic
-function addParsedVariablesToQueryVariables( parsed_text, vs ){
+function addParsedVariablesToQueryVariables( clean, vs ){
 
   // is it a street address?
-  var isStreetAddress = parsed_text.hasOwnProperty('number') && parsed_text.hasOwnProperty('street');
+  var isStreetAddress = clean.parsed_text.hasOwnProperty('number') && clean.parsed_text.hasOwnProperty('street');
   if( isStreetAddress ){
-    vs.var( 'input:name', parsed_text.number + ' ' + parsed_text.street );
+    vs.var( 'input:name', clean.parsed_text.number + ' ' + clean.parsed_text.street );
   }
 
   // ?
-  else if( parsed_text.admin_parts ) {
-    vs.var( 'input:name', parsed_text.name );
+  else if( clean.parsed_text.admin_parts ) {
+    vs.var( 'input:name', clean.parsed_text.name );
   }
 
   // ?
   else {
     logger.warn( 'chaos monkey asks: what happens now?', {
-      parsed_text: parsed_text
+      params: clean
     });
   }
 
   // ==== add parsed matches [address components] ====
 
   // house number
-  if( parsed_text.hasOwnProperty('number') ){
-    vs.var( 'input:housenumber', parsed_text.number );
+  if( clean.parsed_text.hasOwnProperty('number') ){
+    vs.var( 'input:housenumber', clean.parsed_text.number );
   }
 
   // street name
-  if( parsed_text.hasOwnProperty('street') ){
-    vs.var( 'input:street', parsed_text.street );
+  if( clean.parsed_text.hasOwnProperty('street') ){
+    vs.var( 'input:street', clean.parsed_text.street );
   }
 
   // postal code
-  if( parsed_text.hasOwnProperty('postalcode') ){
-    vs.var( 'input:postcode', parsed_text.postalcode );
+  if( clean.parsed_text.hasOwnProperty('postalcode') ){
+    vs.var( 'input:postcode', clean.parsed_text.postalcode );
   }
 
   // ==== add parsed matches [admin components] ====
 
   // city
-  if( parsed_text.hasOwnProperty('city') ){
-    vs.var( 'input:county', parsed_text.city );
+  if( clean.parsed_text.hasOwnProperty('city') ){
+    vs.var( 'input:county', clean.parsed_text.city );
   }
 
   // state
-  if( parsed_text.hasOwnProperty('state') ){
-    vs.var( 'input:region_a', parsed_text.state );
+  if( clean.parsed_text.hasOwnProperty('state') ){
+    vs.var( 'input:region_a', clean.parsed_text.state );
   }
 
   // country
-  if( parsed_text.hasOwnProperty('country') ){
-    vs.var( 'input:country_a', parsed_text.country );
+  if( clean.parsed_text.hasOwnProperty('country') ){
+    vs.var( 'input:country_a', clean.parsed_text.country );
   }
 
   // ==== deal with the 'leftover' components ====
@@ -74,11 +74,11 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
 
   // a concept called 'leftovers' which is just 'admin_parts' /or 'regions'.
   var leftoversString = '';
-  if( parsed_text.hasOwnProperty('admin_parts') ){
-    leftoversString = parsed_text.admin_parts;
+  if( clean.parsed_text.hasOwnProperty('admin_parts') ){
+    leftoversString = clean.parsed_text.admin_parts;
   }
-  else if( parsed_text.hasOwnProperty('regions') ){
-    leftoversString = parsed_text.regions.join(' ');
+  else if( clean.parsed_text.hasOwnProperty('regions') ){
+    leftoversString = clean.parsed_text.regions.join(' ');
   }
 
   // if we have 'leftovers' then assign them to any fields which
