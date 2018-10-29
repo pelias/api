@@ -21,8 +21,11 @@ function computeScores(req, res, next) {
   // do nothing if no result data set or if the query is not of the fallback variety
   // later add disambiguation to this list
   if (check.undefined(req.clean) || check.undefined(res) ||
-      check.undefined(res.data) || check.undefined(res.meta) ||
-      res.meta.query_type !== 'search_fallback') {
+      check.undefined(res.data) || check.undefined(res.meta)) {
+    return next();
+  }
+
+  if (['search_fallback', 'address_search_with_ids', 'structured'].includes(res.meta.queryType)) {
     return next();
   }
 
