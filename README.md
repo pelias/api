@@ -46,7 +46,7 @@ The API recognizes the following properties under the top-level `api` key in you
 |`services`|*no*||service definitions for [point-in-polygon](https://github.com/pelias/pip-service), [libpostal](https://github.com/whosonfirst/go-whosonfirst-libpostal), [placeholder](https://github.com/pelias/placeholder), and [interpolation](https://github.com/pelias/interpolation) services.  If missing (which is not recommended), the services will not be called.|
 |`defaultParameters.focus.point.lon` <br> `defaultParameters.focus.point.lat`|no | |default coordinates for focus point
 |`targets.layers_by_source` <br> `targets.source_aliases` <br> `targets.layer_aliases`|no | |custom values for which `sources` and `layers` the API accepts ([more info](https://github.com/pelias/api/pull/1131)).
-|`attributionURL`|no| (autodetedted)|The full URL to use for the attribution link returned in all Pelias responses. Pelias will attempt to autodetect this host, but it will often be correct if, for example, there is a proxy between Pelias and its users. This parameter allows setting a specific URL to avoid any such issues|
+|`attributionURL`|no| (autodetected)|The full URL to use for the attribution link returned in all Pelias responses. Pelias will attempt to autodetect this host, but it will often be correct if, for example, there is a proxy between Pelias and its users. This parameter allows setting a specific URL to avoid any such issues|
 
 A good starting configuration file includes this section (fill in the service and Elasticsearch hosts as needed):
 
