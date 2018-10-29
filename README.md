@@ -64,7 +64,7 @@ Example configuration file would look something like this:
   },
   "api": {
     "host": "localhost:3100/v1/",
-    "indexName": "foobar",  
+    "indexName": "foobar",
     "relativeScores": true,
     "textAnalyzer": "libpostal",
     "services": {
