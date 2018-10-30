@@ -1,7 +1,7 @@
 var data = require('../fixture/dedupe_elasticsearch_results');
 var nonAsciiData = require('../fixture/dedupe_elasticsearch_nonascii_results');
 var customLayerData = require('../fixture/dedupe_elasticsearch_custom_layer_results');
-var onlyPostalcodeDiffers = require('../fixture/dedupe_only_postalcode_differs');
+var onlyPostalcodeDiffersData = require('../fixture/dedupe_only_postalcode_differs');
 var dedupe = require('../../../middleware/dedupe')();
 
 module.exports.tests = {};
@@ -84,9 +84,9 @@ module.exports.tests.dedupe = function(test, common) {
       }
     };
     var res = {
-      data: onlyPostalcodeDiffers
+      data: onlyPostalcodeDiffersData
     };
-    var expected = onlyPostalcodeDiffers[1]; // non-canonical record
+    var expected = onlyPostalcodeDiffersData[1]; // record with postcode
 
     dedupe(req, res, function () {
       t.equal(res.data.length, 1, 'only one result displayed');
