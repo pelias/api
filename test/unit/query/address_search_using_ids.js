@@ -29,6 +29,7 @@ module.exports.tests.base_query = (test, common) => {
     const clean = {
       parsed_text: {
         number: 'housenumber value',
+        postalcode: 'postcode value',
         street: 'street value'
       }
     };
@@ -52,6 +53,7 @@ module.exports.tests.base_query = (test, common) => {
     t.equals(generatedQuery.type, 'address_search_using_ids');
 
     t.equals(generatedQuery.body.vs.var('input:housenumber').toString(), 'housenumber value');
+    t.equals(generatedQuery.body.vs.var('input:postcode').toString(), 'postcode value');
     t.equals(generatedQuery.body.vs.var('input:street').toString(), 'street value');
     t.notOk(generatedQuery.body.vs.isset('sources'));
     t.equals(generatedQuery.body.vs.var('size').toString(), 20);
