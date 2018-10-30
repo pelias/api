@@ -1,6 +1,7 @@
 var data = require('../fixture/dedupe_elasticsearch_results');
 var nonAsciiData = require('../fixture/dedupe_elasticsearch_nonascii_results');
 var customLayerData = require('../fixture/dedupe_elasticsearch_custom_layer_results');
+var onlyPostalcodeDiffers = require('../fixture/dedupe_only_postalcode_differs');
 var dedupe = require('../../../middleware/dedupe')();
 
 module.exports.tests = {};
@@ -72,6 +73,24 @@ module.exports.tests.dedupe = function(test, common) {
     dedupe(req, res, function () {
       t.equal(res.data.length, 1, 'only one result displayed');
       t.equal(res.data[0], expected, 'non-canonical data is preferred');
+      t.end();
+    });
+  });
+
+  test('test records with no address except one has postalcode', function(t) {
+    var req = {
+      clean: {
+        size: 20
+      }
+    };
+    var res = {
+      data: onlyPostalcodeDiffers
+    };
+    var expected = onlyPostalcodeDiffers[1]; // non-canonical record
+
+    dedupe(req, res, function () {
+      t.equal(res.data.length, 1, 'only one result displayed');
+      t.equal(res.data[0], expected, 'record with postalcode is preferred');
       t.end();
     });
   });
