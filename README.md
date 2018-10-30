@@ -17,7 +17,9 @@ Full documentation for the Pelias API lives in the [pelias/documentation](https:
 
 ## Install Dependencies
 
-Note: Pelias requires Node.js v6 or newer
+The Pelias API has no dependencies beyond Node.js
+
+See [Pelias Software requirements](https://github.com/pelias/documentation/blob/master/requirements.md) for the supported and recommended versions.
 
 ```bash
 npm install

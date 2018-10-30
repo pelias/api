@@ -9,4 +9,4 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build and push image to Docker Hub
-          command: apk --no-cache add curl && curl "https://raw.githubusercontent.com/pelias/ci-tools/master/build-docker-images.sh" | sh -
+          command: apk --no-cache add curl bash && curl "https://raw.githubusercontent.com/pelias/ci-tools/master/build-docker-images.sh" | bash -
