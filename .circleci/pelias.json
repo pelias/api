@@ -30,6 +30,9 @@
   "logger": {
     "level": "info"
   },
+  "api": {
+    "textAnalyzer": "addressit"
+  },
   "elasticsearch": {
     "settings": {
       "index": {
