@@ -33,7 +33,7 @@
     "url": "https://github.com/pelias/api/issues"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.0.0"
   },
   "dependencies": {
     "@mapbox/geojson-extent": "^0.3.1",
