@@ -43,16 +43,31 @@ function isFallbackQuery(results) {
   });
 }
 
-function hasRecordsAtLayers(results, layer) {
-  return results.some( result => {
-    return result._matched_queries[0] === 'fallback.' + layer;
+// build inverted index which maps 'matched_queries' to documents
+// eg. { "fallback.street": [ doc1, doc4, doc8 ] }
+function buildInvertedIndex(results) {
+  let idx = {};
+  results.forEach((result, ord) => {
+    if( _.isArray( result._matched_queries ) ){
+      result._matched_queries.forEach( matchedQuery => {
+        if( !_.isArray( idx[matchedQuery] ) ){ idx[matchedQuery] = []; }
+        idx[matchedQuery].push( result );
+      });
+    }
   });
+  return idx;
 }
 
-function retainRecordsAtLayers(results, layer) {
-  return results.filter( result => {
-    return result._matched_queries[0] === 'fallback.' + layer;
-  });
+// find the most granular possible layer by working through the $layers array in
+// order and returning the first one which matches the results.
+// note: returns undefined on failure to match any of the layers
+function findMostGranularMatchedQuery(idx) {
+  for( let i=0; i<layers.length; i++ ){
+    let matchedQueryName = 'fallback.' + layers[i];
+    if( _.has( idx, matchedQueryName ) ){
+      return matchedQueryName;
+    }
+  }
 }
 
 function setup() {
@@ -63,37 +78,35 @@ function setup() {
       return next();
     }
 
-    // start at the most granular possible layer.  if there are results at a layer
-    // then remove everything not at that layer.
-    for( let i=0; i<layers.length; i++ ){
-      let layer = layers[i];
-      if( hasRecordsAtLayers( res.data, layer ) ){
+    // build an index to avoid iterating over the data multiple times
+    let idx = buildInvertedIndex(res.data);
 
-        // filter records to only contain those from target layer
-        let filtered = retainRecordsAtLayers(res.data, layer);
+    // find the most granular match from the layers list
+    let mostGranularMatchedQuery = findMostGranularMatchedQuery(idx);
 
-        // the filter was applied but the length remained the same
-        if( filtered.length === res.data.length ){ break; }
+    // we could not find a 'most granular match', no-op
+    if( !mostGranularMatchedQuery ){ return next(); }
 
-        // logging / debugging
-        let logInfo = {
-          unfiltered_length: res.data.length,
-          filtered_length: filtered.length,
-          unfiltered: res.data.map( hit => hit._matched_queries ),
-          filtered: filtered.map( hit => hit._matched_queries )
-        };
-        logger.debug('[middleware][trimByGranularity]', logInfo);
-        debugLog.push(req, logInfo);
+    // remove any documents which don't have a matching fallback layer match.
+    let filtered = idx[mostGranularMatchedQuery];
 
-        // update data to only contain filtered records
-        res.data = filtered;
+    // the filter was applied but the length remained the same, no-op
+    if( filtered.length === res.data.length ){ return next(); }
 
-        // stop iteration upon first successful match
-        break;
-      }
-    }
+    // logging / debugging
+    let logInfo = {
+      unfiltered_length: res.data.length,
+      filtered_length: filtered.length,
+      unfiltered: res.data.map( hit => hit._matched_queries ),
+      filtered: filtered.map( hit => hit._matched_queries )
+    };
+    logger.debug('[middleware][trimByGranularity]', logInfo);
+    debugLog.push(req, logInfo);
 
-   next();
+    // update data to only contain filtered records
+    res.data = filtered;
+
+    next();
  };
 }
 
