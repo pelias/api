@@ -27,6 +27,11 @@ var TypeMapping = function(){
   this.layer_aliases = {};
 
   /*
+   * A list of the canonical sources included in the default Pelias configuration
+   */
+  this.canonical_sources = [];
+
+  /*
    * An object that contains all sources or aliases. The key is the source or alias,
    * the value is either that source, or the canonical name for that alias if it's an alias.
    */
@@ -65,6 +70,11 @@ TypeMapping.prototype.setLayerAliases = function( aliases ){
   this.layer_aliases = aliases;
 };
 
+// canonical sources setter
+TypeMapping.prototype.setCanonicalSources = function( sources ){
+  this.canonical_sources = sources;
+};
+
 // generate mappings after setters have been run
 TypeMapping.prototype.generateMappings = function(){
   this.sources = Object.keys( this.layers_by_source );
@@ -73,6 +83,17 @@ TypeMapping.prototype.generateMappings = function(){
     return acc.concat(this.layers_by_source[key]);
   }.bind(this), []));
   this.layer_mapping = TypeMapping.addStandardTargetsToAliases(this.layers, this.layer_aliases);
+};
+
+// generate a list of all layers which are part of the canonical Pelias configuration
+TypeMapping.prototype.getCanonicalLayers = function(){
+  var canonicalLayers = [];
+  for( var source in this.layers_by_source ){
+    if( _.includes( this.canonical_sources, source ) ){
+      canonicalLayers = _.uniq( canonicalLayers.concat( this.layers_by_source[source] ) );
+    }
+  }
+  return canonicalLayers;
 };
 
 // load values from targets block
@@ -84,6 +105,7 @@ TypeMapping.prototype.loadTargets = function( targetsBlock ){
   this.setSourceAliases( targetsBlock.source_aliases || {} );
   this.setLayersBySource( targetsBlock.layers_by_source || {} );
   this.setLayerAliases( targetsBlock.layer_aliases || {} );
+  this.setCanonicalSources( targetsBlock.canonical_sources || [] );
 
   // generate the mappings
   this.generateMappings();
