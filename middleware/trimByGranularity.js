@@ -1,4 +1,7 @@
-var _ = require('lodash');
+const _ = require('lodash');
+const logger = require('pelias-logger').get('api');
+const Debug = require('../helper/debug');
+const debugLog = new Debug('middleware:trimByGranularity');
 
 // This middleware component trims the results array by granularity when
 // FallbackQuery was used.  FallbackQuery is used for inputs like
@@ -13,7 +16,7 @@ var _ = require('lodash');
 // this component removes results that aren't the most granular.
 
 // layers in increasing order of granularity
-var layers = [
+const layers = [
   'venue',
   'address',
   'street',
@@ -33,7 +36,7 @@ var layers = [
 // this helper method returns `true` if every result has a matched_query
 //  starting with `fallback.`
 function isFallbackQuery(results) {
-  return results.every(function(result) {
+  return results.every( result => {
     return result.hasOwnProperty('_matched_queries') &&
             !_.isEmpty(result._matched_queries) &&
             _.startsWith(result._matched_queries[0], 'fallback.');
@@ -41,32 +44,54 @@ function isFallbackQuery(results) {
 }
 
 function hasRecordsAtLayers(results, layer) {
-  return results.some(function(result) {
+  return results.some( result => {
     return result._matched_queries[0] === 'fallback.' + layer;
   });
 }
 
 function retainRecordsAtLayers(results, layer) {
-  return results.filter(function(result) {
+  return results.filter( result => {
     return result._matched_queries[0] === 'fallback.' + layer;
   });
 }
 
 function setup() {
- return function trim(req, res, next) {
-   // don't do anything if there are no results or there are non-fallback.* named queries
-   // there should never be a mixture of fallback.* and non-fallback.* named queries
-   if (_.isUndefined(res.data) || !isFallbackQuery(res.data)) {
-     return next();
-   }
+  return function trim(req, res, next) {
+    // don't do anything if there are no results or there are non-fallback.* named queries
+    // there should never be a mixture of fallback.* and non-fallback.* named queries
+    if( !_.isArray(res.data) || !res.data.length || !isFallbackQuery(res.data) ){
+      return next();
+    }
 
-   // start at the most granular possible layer.  if there are results at a layer
-   // then remove everything not at that layer.
-   layers.forEach(function(layer) {
-     if (hasRecordsAtLayers(res.data, layer )) {
-       res.data = retainRecordsAtLayers(res.data, layer);
-     }
-   });
+    // start at the most granular possible layer.  if there are results at a layer
+    // then remove everything not at that layer.
+    for( let i=0; i<layers.length; i++ ){
+      let layer = layers[i];
+      if( hasRecordsAtLayers( res.data, layer ) ){
+
+        // filter records to only contain those from target layer
+        let filtered = retainRecordsAtLayers(res.data, layer);
+
+        // the filter was applied but the length remained the same
+        if( filtered.length === res.data.length ){ break; }
+
+        // logging / debugging
+        let logInfo = {
+          unfiltered_length: res.data.length,
+          filtered_length: filtered.length,
+          unfiltered: res.data.map( hit => hit._matched_queries ),
+          filtered: filtered.map( hit => hit._matched_queries )
+        };
+        logger.debug('[middleware][trimByGranularity]', logInfo);
+        debugLog.push(req, logInfo);
+
+        // update data to only contain filtered records
+        res.data = filtered;
+
+        // stop iteration upon first successful match
+        break;
+      }
+    }
 
    next();
  };
