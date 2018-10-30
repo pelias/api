@@ -1,7 +1,7 @@
 const logger = require('pelias-logger').get('api');
 const _ = require('lodash');
 const isDifferent = require('../helper/diffPlaces').isDifferent;
-const canonicalSources = require('../helper/type_mapping').getCanonicalSources();
+const canonical_sources = require('../helper/type_mapping').canonical_sources;
 const field = require('../helper/fieldValue');
 
 function dedupeResults(req, res, next) {
@@ -13,7 +13,7 @@ function dedupeResults(req, res, next) {
   if( _.isUndefined(res) || !_.isArray(res.data) || _.isEmpty(res.data) ){ return next(); }
 
   // loop through data items and only copy unique items to unique
-  // note: the first reqults must always be unique!
+  // note: the first results must always be unique!
   let unique = [ res.data[0] ];
 
   // convenience function to search unique array for an existing element which matches a hit
@@ -76,8 +76,8 @@ function isPreferred(existingHit, candidateHit) {
        _.has(candidateHit, 'address_parts.zip') ){ return true; }
 
   // prefer non-canonical sources over canonical ones
-  if( !_.includes(canonicalSources, candidateHit.source) &&
-       _.includes(canonicalSources, existingHit.source) ){ return true; }
+  if( !_.includes(canonical_sources, candidateHit.source) &&
+       _.includes(canonical_sources, existingHit.source) ){ return true; }
 
   // prefer certain sources over others
   switch( existingHit.source ){
