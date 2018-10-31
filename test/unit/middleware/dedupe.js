@@ -362,6 +362,146 @@ module.exports.tests.priority = function(test, common) {
     t.equal(res.data.length, 1, 'results have fewer items than before');
     t.end();
   });
+
+  test('locality takes priority over country, replace', function (t) {
+    var req = {
+      clean: {
+        text: 'Singapore',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': { 'default': 'Singapore' },
+          'source': 'whosonfirst',
+          'source_id': '123456',
+          'layer': 'country'
+        },
+        {
+          'name': { 'default': 'Singapore' },
+          'source': 'whosonfirst',
+          'source_id': '654321',
+          'layer': 'locality'
+        }
+      ]
+    };
+
+    var expectedCount = 1;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'results have fewer items than before');
+      t.deepEqual(res.data[0].layer, 'locality', 'locality result won');
+      t.end();
+    });
+  });
+
+  test('locality takes priority over county, replace', function (t) {
+    var req = {
+      clean: {
+        text: 'Auckland',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': { 'default': 'Auckland' },
+          'source': 'whosonfirst',
+          'source_id': '123456',
+          'layer': 'county'
+        },
+        {
+          'name': { 'default': 'Auckland' },
+          'source': 'whosonfirst',
+          'source_id': '654321',
+          'layer': 'locality'
+        }
+      ]
+    };
+
+    var expectedCount = 1;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'results have fewer items than before');
+      t.deepEqual(res.data[0].layer, 'locality', 'locality result won');
+      t.end();
+    });
+  });
+
+  test('localadmin takes priority over region, replace', function (t) {
+    var req = {
+      clean: {
+        text: 'Bern',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': { 'default': 'Bern' },
+          'source': 'whosonfirst',
+          'source_id': '123456',
+          'layer': 'region'
+        },
+        {
+          'name': { 'default': 'Bern' },
+          'source': 'whosonfirst',
+          'source_id': '654321',
+          'layer': 'localadmin'
+        }
+      ]
+    };
+
+    var expectedCount = 1;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'results have fewer items than before');
+      t.deepEqual(res.data[0].layer, 'localadmin', 'localadmin result won');
+      t.end();
+    });
+  });
+
+  test('locality takes priority over county, neighbourhood and localadmin, replace', function (t) {
+    var req = {
+      clean: {
+        text: 'Parramatta',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': { 'default': 'Parramatta' },
+          'source': 'whosonfirst',
+          'source_id': '123456',
+          'layer': 'county'
+        },
+        {
+          'name': { 'default': 'Parramatta' },
+          'source': 'whosonfirst',
+          'source_id': '7890',
+          'layer': 'neighbourhood'
+        },
+        {
+          'name': { 'default': 'Parramatta' },
+          'source': 'whosonfirst',
+          'source_id': '0987',
+          'layer': 'localadmin'
+        },
+        {
+          'name': { 'default': 'Parramatta' },
+          'source': 'whosonfirst',
+          'source_id': '654321',
+          'layer': 'locality'
+        }
+      ]
+    };
+
+    var expectedCount = 1;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'results have fewer items than before');
+      t.deepEqual(res.data[0].layer, 'locality', 'locality result won');
+      t.end();
+    });
+  });
 };
 
 module.exports.all = function (tape, common) {

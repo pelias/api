@@ -4,6 +4,10 @@ const isDifferent = require('../helper/diffPlaces').isDifferent;
 const canonical_sources = require('../helper/type_mapping').canonical_sources;
 const field = require('../helper/fieldValue');
 
+// when performing inter-layer deduping, layers coming earlier in this list take
+// preference to those appearing later or not at all.
+const layerPreferences = [ 'locality', 'country', 'localadmin', 'region', 'neighbourhood' ];
+
 function dedupeResults(req, res, next) {
 
   // do nothing if request data is invalid
@@ -81,19 +85,28 @@ function isPreferred(existingHit, candidateHit) {
   if( !_.includes(canonical_sources, candidateHit.source) &&
        _.includes(canonical_sources, existingHit.source) ){ return true; }
 
-  // prefer certain sources over others
-  switch( existingHit.source ){
-    // sources are the same
-    case candidateHit.source: return false;
-    // WOF has bbox and is generally preferred
-    case 'geonames': return candidateHit.source === 'whosonfirst';
-    // addresses are generally better in OA
-    case 'openstreetmap': return candidateHit.source === 'openaddresses';
-    // venues are better in OSM
-    case 'whosonfirst': return candidateHit.source === 'openstreetmap';
-    // no preference, keep existing hit
-    default: return false;
+  // prefer certain layers over others
+  if( existingHit.layer !== candidateHit.layer && _.isArray( layerPreferences ) ){
+    for( let i=0; i<layerPreferences.length; i++ ){
+      if( existingHit.layer === layerPreferences[i] ){ return false; }
+      if( candidateHit.layer === layerPreferences[i] ){ return true; }
+    }
   }
+
+  // prefer certain sources over others
+  if( existingHit.source !== candidateHit.source ){
+    switch( existingHit.source ){
+      // WOF has bbox and is generally preferred
+      case 'geonames': return candidateHit.source === 'whosonfirst';
+      // addresses are generally better in OA
+      case 'openstreetmap': return candidateHit.source === 'openaddresses';
+      // venues are better in OSM
+      case 'whosonfirst': return candidateHit.source === 'openstreetmap';
+    }
+  }
+
+  // no preference, keep existing hit
+  return false;
 }
 
 module.exports = function() {

@@ -14,6 +14,10 @@ function isLayerDifferent(item1, item2){
         ( item2.layer === 'venue' || !_.includes( canonicalLayers, item2.layer ) ) ){
       return false;
     }
+    // consider some layers to be synonymous
+    if( _.includes( placeTypes, item1.layer ) && _.includes( placeTypes, item2.layer ) ){
+      return false;
+    }
     return true;
   }
   return false;
