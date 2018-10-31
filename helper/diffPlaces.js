@@ -39,11 +39,26 @@ function isParentHierarchyDifferent(item1, item2){
   if( !isPojo1 || !isPojo2 ){ return false; }
 
   // else both have parent info
-  // iterate over all the placetypes, comparing between items
-  return placeTypes.some( placeType => {
 
-    // skip the parent field corresponding to the item placetype
-    if( placeType === item1.layer ){ return false; }
+  // iterate over all the placetypes, comparing between items
+
+  // we only want to check parent items representing places less granular
+  // than the highest matched layer.
+  // eg. if we are comparing layer=address & layer=country then we only
+  // check for differences in layers above country, so continent, planet etc.
+  let highestLayerIndex = Math.min(
+    placeTypes.findIndex(el => el === item1.layer),
+    placeTypes.findIndex(el => el === item2.layer)
+  );
+
+  // in the case where we couldn't find either later in the $placeTypes array
+  // we will enforce that all parent fields are checked.
+  if( highestLayerIndex === -1 ){ highestLayerIndex = Infinity; }
+
+  return placeTypes.some((placeType, pos) => {
+
+    // skip layers that are less granular than the highest matched layer
+    if( pos > highestLayerIndex ){ return false; }
 
     // ensure the parent ids are the same for all placetypes
     return isPropertyDifferent( item1.parent, item2.parent, placeType + '_id' );
