@@ -46,10 +46,10 @@ query.score( views.boost_exact_matches );
 query.score( peliasQuery.view.focus( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.pop_subquery ) );
 query.score( peliasQuery.view.population( views.pop_subquery ) );
-//query.score( views.custom_boosts( config.get('api.customBoosts') ) );
+query.score( views.custom_boosts( config.get('api.customBoosts') ) );
 
 // non-scoring hard filters
-query.filter( views.max_character_count_layer_filter(['address'], config.get('autocomplete.exclude_address_length' ) ) );
+query.filter( views.max_character_count_layer_filter(['address'], config.get('api.autocomplete.exclude_address_length' ) ) );
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.boundary_rect );

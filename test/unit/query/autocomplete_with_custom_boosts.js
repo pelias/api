@@ -1,4 +1,5 @@
 const proxyquire = require('proxyquire');
+const realPeliasConfig = require('pelias-config');
 
 module.exports.tests = {};
 
@@ -12,20 +13,22 @@ module.exports.tests.query = function(test, common) {
       querySize: 10
     };
 
+    const custom_config ={
+      api: {
+        customBoosts: {
+          source: {
+            openstreetmap: 5
+          },
+          layer: {
+            transit: 3
+          }
+        }
+      }
+    };
+
     const config_with_boosts = {
       generate: function() {
-        return {
-          api: {
-            customBoosts: {
-              source: {
-                openstreetmap: 5
-              },
-              layer: {
-                transit: 3
-              }
-            }
-          }
-        };
+        return realPeliasConfig.generateCustom(custom_config);
       }
     };
 
