@@ -54,7 +54,7 @@ function isParentHierarchyDifferent(item1, item2){
  * Compare the name properties if they exist.
  * Returns false if the objects are the same, else true.
  */
-function isNameDifferent(item1, item2){
+function isNameDifferent(item1, item2, requestLanguage){
   let names1 = _.get(item1, 'name');
   let names2 = _.get(item2, 'name');
 
@@ -72,15 +72,17 @@ function isNameDifferent(item1, item2){
   // else both have name info
 
   // iterate over all the languages in item2, comparing them to the
-  // 'default' name of item1
+  // 'default' name of item1 and also against the language requested by the user.
   for( let lang in names2 ){
     if( !isPropertyDifferent({[lang]: names1.default}, names2, lang) ){ return false; }
+    if( requestLanguage && !isPropertyDifferent({[lang]: names1[requestLanguage]}, names2, lang) ){ return false; }
   }
 
   // iterate over all the languages in item1, comparing them to the
-  // 'default' name of item2
+  // 'default' name of item2 and also against the language requested by the user.
   for( let lang in names1 ){
     if( !isPropertyDifferent({[lang]: names2.default}, names1, lang) ){ return false; }
+    if( requestLanguage && !isPropertyDifferent({[lang]: names2[requestLanguage]}, names1, lang) ){ return false; }
   }
 
   return true;
@@ -119,11 +121,12 @@ function isAddressDifferent(item1, item2){
 
 /**
  * Compare the two records and return true if they differ and false if same.
+ * Optionally provide $requestLanguage (req.clean.lang.iso6393) to improve name deduplication.
  */
-function isDifferent(item1, item2){
+function isDifferent(item1, item2, requestLanguage){
   if( isLayerDifferent( item1, item2 ) ){ return true; }
   if( isParentHierarchyDifferent( item1, item2 ) ){ return true; }
-  if( isNameDifferent( item1, item2 ) ){ return true; }
+  if( isNameDifferent( item1, item2, requestLanguage ) ){ return true; }
   if( isAddressDifferent( item1, item2 ) ){ return true; }
   return false;
 }
