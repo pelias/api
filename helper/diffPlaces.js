@@ -70,17 +70,20 @@ function isNameDifferent(item1, item2){
   if( !isPojo1 || !isPojo2 ){ return false; }
 
   // else both have name info
-  // iterate over all the languages in item1, comparing between items
-  return Object.keys(names1).some( lang => {
 
-    // do not consider absence of an additional name as a difference
-    // but strictly enfore that 'default' must be present and match
-    if( _.has(names2, lang) || lang === 'default' ){
+  // iterate over all the languages in item2, comparing them to the
+  // 'default' name of item1
+  for( let lang in names2 ){
+    if( !isPropertyDifferent({[lang]: names1.default}, names2, lang) ){ return false; }
+  }
 
-      // do not consider absence of an additional name as a difference
-      return isPropertyDifferent(names1, names2, lang);
-    }
-  });
+  // iterate over all the languages in item1, comparing them to the
+  // 'default' name of item2
+  for( let lang in names1 ){
+    if( !isPropertyDifferent({[lang]: names2.default}, names1, lang) ){ return false; }
+  }
+
+  return true;
 }
 
 /**
@@ -133,12 +136,25 @@ function isPropertyDifferent(item1, item2, prop ){
   // if neither item has prop, we consider them the same
   if( !_.has(item1, prop) && !_.has(item2, prop) ){ return false; }
 
-  // handle arrays and other non-string values
-  var prop1 = field.getStringValue( _.get( item1, prop ) );
-  var prop2 = field.getStringValue( _.get( item2, prop ) );
+  // read property values, casting scalar values to arrays
+  var prop1 = field.getArrayValue( _.get( item1, prop ) );
+  var prop2 = field.getArrayValue( _.get( item2, prop ) );
 
-  // compare strings
-  return normalizeString(prop1) !== normalizeString(prop2);
+  // iterate over all properties in both sets, comparing each
+  // item in turn, return false on first match.
+  // handles non-string values
+  for( let i=0; i<prop1.length; i++ ){
+    let prop1StringValue = field.getStringValue( prop1[i] );
+    for( let j=0; j<prop2.length; j++ ){
+      let prop2StringValue = field.getStringValue( prop2[j] );
+      if( normalizeString( prop1StringValue ) === normalizeString( prop2StringValue ) ){
+        return false;
+      }
+    }
+  }
+
+  // we did not find any matching values, consider them different
+  return true;
 }
 
 /**

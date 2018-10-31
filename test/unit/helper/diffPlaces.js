@@ -128,6 +128,50 @@ module.exports.tests.dedupe = function(test, common) {
     t.end();
   });
 
+  test('improved matching across languages - if default name is the same, consider this a match', function(t) {
+    var item1 = {
+      'name': {
+        'default': 'Bern',
+        'eng': 'Bern',
+        'deu': 'Kanton Bern',
+        'fra': 'Berne'
+      }
+    };
+    var item2 = {
+      'name': {
+        'default': 'Bern',
+        'eng': 'Berne',
+        'deu': 'Bundesstadt', // note: this is wrong, see: https://github.com/whosonfirst-data/whosonfirst-data/issues/1363
+        'fra': 'Berne'
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+
+  test('improved matching across languages - default names differ but match another language', function(t) {
+    var item1 = {
+      'name': {
+        'default': 'Berne',
+        'eng': 'Bern',
+        'deu': 'Kanton Bern',
+        'fra': 'Berne'
+      }
+    };
+    var item2 = {
+      'name': {
+        'default': 'Bern',
+        'eng': 'Berne',
+        'deu': 'Bundesstadt',
+        'fra': 'Berne'
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+
   test('catch diff address', function(t) {
     var item1 = {
       'address_parts': {
@@ -162,6 +206,14 @@ module.exports.tests.dedupe = function(test, common) {
         'street': 'Main Street'
       }
     };
+
+    t.false(isDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+
+  test('completely empty objects', function(t) {
+    var item1 = {};
+    var item2 = {};
 
     t.false(isDifferent(item1, item2), 'should be the same');
     t.end();

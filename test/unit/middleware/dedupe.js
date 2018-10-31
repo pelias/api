@@ -111,6 +111,24 @@ module.exports.tests.dedupe = function(test, common) {
       t.end();
     });
   });
+
+  test('test records with no address except one has postalcode', function(t) {
+    var req = {
+      clean: {
+        size: 20
+      }
+    };
+    var res = {
+      data: onlyPostalcodeDiffersData
+    };
+    var expected = onlyPostalcodeDiffersData[1]; // record with postcode
+
+    dedupe(req, res, function () {
+      t.equal(res.data.length, 1, 'only one result displayed');
+      t.equal(res.data[0], expected, 'record with postalcode is preferred');
+      t.end();
+    });
+  });
 };
 
 
