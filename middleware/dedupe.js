@@ -17,7 +17,7 @@ function dedupeResults(req, res, next) {
   let unique = [ res.data[0] ];
 
   // convenience function to search unique array for an existing element which matches a hit
-  let findMatch = (hit) => unique.findIndex(elem => !isDifferent(elem, hit));
+  let findMatch = (hit) => unique.findIndex(elem => !isDifferent(elem, hit, _.get(req, 'clean.lang.iso6393') ));
 
   // iterate over res.data using an old-school for loop starting at index 1
   // we can call break at any time to end the iterator

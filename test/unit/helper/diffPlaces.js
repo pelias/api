@@ -150,6 +150,42 @@ module.exports.tests.dedupe = function(test, common) {
     t.end();
   });
 
+  test('improved matching across languages - if default different, but user language matches default, consider this a match', function(t) {
+    var item1 = {
+      'name': {
+        'default': 'English Name',
+        'eng': 'A Name'
+      }
+    };
+    var item2 = {
+      'name': {
+        'default': 'A Name'
+      }
+    };
+
+    t.false(isDifferent(item1, item2, 'eng'), 'should be the same');
+    t.end();
+  });
+
+
+  test('improved matching across languages - if default different, but user language matches (fra), consider this a match', function(t) {
+    var item1 = {
+      'name': {
+        'default': 'Name',
+        'fra': 'French Name'
+      }
+    };
+    var item2 = {
+      'name': {
+        'default': 'Another Name',
+        'fra': 'French Name'
+      }
+    };
+
+    t.false(isDifferent(item1, item2, 'fra'), 'should be the same');
+    t.end();
+  });
+
   test('improved matching across languages - default names differ but match another language', function(t) {
     var item1 = {
       'name': {
