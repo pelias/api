@@ -70,7 +70,7 @@ module.exports.tests.default_error_status = function(test, common) {
 
     res.status = function( code ){
       return { json: function( body ){
-        t.equal( code, 400, '400 Bad Request' );
+        t.equal( code, 500, '500 Internal Server Error is default error' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};
@@ -214,7 +214,7 @@ module.exports.tests.unknown_exception = function(test, common) {
 
     res.status = function( code ){
       return { json: function( body ){
-        t.equal( code, 400, '400 Bad Request' );
+        t.equal( code, 500, '500 error returned' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};

@@ -41,7 +41,6 @@
     "async": "^2.0.0",
     "check-types": "^7.0.0",
     "elasticsearch": "^15.0.0",
-    "elasticsearch-exceptions": "0.0.4",
     "express": "^4.8.8",
     "geojson": "^0.5.0",
     "geolib": "^2.0.18",

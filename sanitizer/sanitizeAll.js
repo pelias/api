@@ -1,3 +1,5 @@
+const PeliasParameterError = require('./PeliasParameterError');
+
 function sanitize( req, sanitizers ){
   // init an object to store clean (sanitized) input parameters if not initialized
   req.clean = req.clean || {};
@@ -18,6 +20,19 @@ function sanitize( req, sanitizers ){
     if( sanity.errors.length ){
       req.errors = req.errors.concat( sanity.errors );
     }
+
+    // all errors must be returned as PeliasParameterError object to trigger HTTP 400 errors
+    req.errors = req.errors.map(function(error) {
+      // replace any existing Error objects with the right class
+      // preserve the message and stack trace
+      if (error instanceof Error) {
+        const new_error = new PeliasParameterError(error.message);
+        new_error.stack = error.stack;
+        return new_error;
+      } else {
+        return new PeliasParameterError(error);
+      }
+    });
 
     // if warnings occurred then set them
     // on the req object.

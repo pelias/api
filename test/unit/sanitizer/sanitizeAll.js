@@ -1,6 +1,13 @@
 var sanitizeAll = require('../../../sanitizer/sanitizeAll');
+const PeliasParameterError = require('../../../sanitizer/PeliasParameterError');
 
 module.exports.tests = {};
+
+function makeErrors(errors) {
+  return errors.map(function(error) {
+    return new PeliasParameterError(error);
+  });
+}
 
 module.exports.tests.all = function(test, common) {
   test('req.clean/errors/warnings should be initialized when they are not', function(t) {
@@ -31,12 +38,16 @@ module.exports.tests.all = function(test, common) {
         a: 'first sanitizer',
         b: 'second sanitizer'
       },
-      errors: ['error 1', 'error 2', 'error 3'],
+      errors: makeErrors(['error 1', 'error 2', 'error 3']),
       warnings: ['warning 1', 'warning 2', 'warning 3']
     };
 
+
     sanitizeAll.runAllChecks(req, sanitizers);
-    t.deepEquals(req, expected_req);
+    t.deepEquals(req, expected_req, 'error messages are as expected');
+    t.ok(req.errors[0] instanceof PeliasParameterError, 'error has correct class');
+    t.ok(req.errors[1] instanceof PeliasParameterError, 'error has correct class');
+    t.ok(req.errors[2] instanceof PeliasParameterError, 'error has correct class');
     t.end();
 
   });
@@ -77,7 +88,7 @@ module.exports.tests.all = function(test, common) {
         a: 'first sanitizer',
         b: 'second sanitizer'
       },
-      errors: ['pre-existing error', 'error 1', 'error 2', 'error 3'],
+      errors: makeErrors(['pre-existing error', 'error 1', 'error 2', 'error 3']),
       warnings: ['pre-existing warning', 'warning 1', 'warning 2', 'warning 3']
     };
 
@@ -85,6 +96,35 @@ module.exports.tests.all = function(test, common) {
     t.deepEquals(req, expected_req);
     t.end();
   });
+
+  test('Error objects should be converted to correct type', function(t) {
+    var req = {};
+    var sanitizers = {
+      'first': {
+        sanitize: function(){
+          req.clean.a = 'first sanitizer';
+          return {
+            errors: [new Error('error 1'), 'error 2'],
+            warnings: []
+          };
+        }
+      }
+    };
+
+    var expected_req = {
+      clean: {
+        a: 'first sanitizer'
+      },
+      errors: makeErrors(['error 1', 'error 2']),
+      warnings: []
+    };
+
+    sanitizeAll.runAllChecks(req, sanitizers);
+    t.deepEquals(req, expected_req);
+    t.end();
+
+  });
+
 
   test('req.query should be passed to individual sanitizers when available', function(t) {
     var req = {
