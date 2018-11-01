@@ -1,6 +1,7 @@
 const logger = require('pelias-logger').get('api');
 const _ = require('lodash');
 const isDifferent = require('../helper/diffPlaces').isDifferent;
+const layerPreferences = require('../helper/diffPlaces').layerPreferences;
 const canonical_sources = require('../helper/type_mapping').canonical_sources;
 const field = require('../helper/fieldValue');
 

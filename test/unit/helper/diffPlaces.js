@@ -80,7 +80,7 @@ module.exports.tests.dedupe = function(test, common) {
     t.end();
   });
 
-  test('isParentHierarchyDifferent: do compare parentage at the same level as the item placetypes', function(t) {
+  test('isParentHierarchyDifferent: do not compare parentage at the same level as the item placetypes', function(t) {
     var item1 = {
       'layer': 'country',
       'parent': {
@@ -94,7 +94,7 @@ module.exports.tests.dedupe = function(test, common) {
       }
     };
 
-    t.true(isDifferent(item1, item2), 'should be different');
+    t.false(isDifferent(item1, item2), 'should be different');
     t.end();
   });
 
@@ -111,24 +111,6 @@ module.exports.tests.dedupe = function(test, common) {
       'parent': {
         'localadmin_id': '56789',
         'ocean_id': '98765'
-      }
-    };
-
-    t.true(isDifferent(item1, item2), 'should be different');
-    t.end();
-  });
-
-  test('isParentHierarchyDifferent: consider parentage at same level as placetype for comparison', function(t) {
-    var item1 = {
-      'layer': 'country',
-      'parent': {
-        'country_id': '12345'
-      }
-    };
-    var item2 = {
-      'layer': 'country',
-      'parent': {
-        'country_id': '54321'
       }
     };
 
