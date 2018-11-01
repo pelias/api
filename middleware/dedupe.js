@@ -1,12 +1,9 @@
 const logger = require('pelias-logger').get('api');
 const _ = require('lodash');
 const isDifferent = require('../helper/diffPlaces').isDifferent;
+const layerPreferences = require('../helper/diffPlaces').layerPreferences;
 const canonical_sources = require('../helper/type_mapping').canonical_sources;
 const field = require('../helper/fieldValue');
-
-// when performing inter-layer deduping, layers coming earlier in this list take
-// preference to those appearing later or not at all.
-const layerPreferences = [ 'locality', 'country', 'localadmin', 'region', 'neighbourhood' ];
 
 function dedupeResults(req, res, next) {
 

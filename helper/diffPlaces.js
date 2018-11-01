@@ -3,6 +3,21 @@ const placeTypes = require('./placeTypes');
 const canonicalLayers = require('../helper/type_mapping').getCanonicalLayers();
 const field = require('../helper/fieldValue');
 
+// only consider these layers as synonymous for deduplication purposes.
+// when performing inter-layer deduping, layers coming earlier in this list take
+// preference to those appearing later.
+const layerPreferences = [
+  'locality',
+  'country',
+  'localadmin',
+  'county',
+  'region',
+  'neighbourhood',
+  'macrocounty',
+  'macroregion',
+  'empire'
+];
+
 /**
  * Compare the layer properties if they exist.
  * Returns false if the objects are the same, else true.
@@ -15,7 +30,7 @@ function isLayerDifferent(item1, item2){
       return false;
     }
     // consider some layers to be synonymous
-    if( _.includes( placeTypes, item1.layer ) && _.includes( placeTypes, item2.layer ) ){
+    if( _.includes( layerPreferences, item1.layer ) && _.includes( layerPreferences, item2.layer ) ){
       return false;
     }
     return true;
@@ -61,8 +76,8 @@ function isParentHierarchyDifferent(item1, item2){
 
   return placeTypes.some((placeType, pos) => {
 
-    // skip layers that are less granular than the highest matched layer
-    if( pos > highestLayerIndex ){ return false; }
+    // skip layers that are less granular than, or equal to the highest matched layer
+    if( pos >= highestLayerIndex ){ return false; }
 
     // ensure the parent ids are the same for all placetypes
     return isPropertyDifferent( item1.parent, item2.parent, placeType + '_id' );
@@ -187,3 +202,4 @@ function normalizeString(str){
 }
 
 module.exports.isDifferent = isDifferent;
+module.exports.layerPreferences = layerPreferences;

@@ -363,6 +363,36 @@ module.exports.tests.priority = function(test, common) {
     t.end();
   });
 
+  test('continent and locality not considered synonymous, do not replace', function (t) {
+    var req = {
+      clean: {
+        text: 'Asia',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': { 'default': 'Asia' },
+          'source': 'whosonfirst',
+          'source_id': '123456',
+          'layer': 'continent'
+        },
+        {
+          'name': { 'default': 'Asia' },
+          'source': 'whosonfirst',
+          'source_id': '654321',
+          'layer': 'locality'
+        }
+      ]
+    };
+
+    var expectedCount = 2;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'no deduplication applied');
+      t.end();
+    });
+  });
   test('locality takes priority over country, replace', function (t) {
     var req = {
       clean: {
