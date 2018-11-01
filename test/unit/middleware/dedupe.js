@@ -532,6 +532,72 @@ module.exports.tests.priority = function(test, common) {
       t.end();
     });
   });
+
+  test('real-world test case Vientiane: two regions and one locality', function (t) {
+    var req = {
+      clean: {
+        text: 'Vientiane',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': {
+            'default': 'Vientiane',
+            'eng': 'Viangchan'
+          },
+          'source': 'whosonfirst',
+          'source_id': '85673437',
+          'layer': 'region',
+          'parent': {
+            'continent_id': 102191569,
+            'country_id': 85632241,
+            'region_id': 85673437
+          },
+        },
+        {
+          'name': {
+            'default': 'Vientiane (prefecture)',
+            'eng': 'Viangchan',
+            'dut': 'Vientiane'
+          },
+          'source': 'whosonfirst',
+          'source_id': '85673433',
+          'layer': 'region',
+          'parent': {
+            'continent_id': 102191569,
+            'country_id': 85632241,
+            'region_id': 85673433
+          },
+        },
+        {
+          'name': {
+            'default': 'Vientiane',
+            'eng': 'Vientiane',
+            'dut': 'Vientiane'
+          },
+          'source': 'whosonfirst',
+          'source_id': '421168913',
+          'layer': 'locality',
+          'parent': {
+            'continent_id': 102191569,
+            'country_id': 85632241,
+            'region_id': 85673433,
+            'county_id': 1092027747,
+            'locality_id': 21168913
+          },
+        }
+      ]
+    };
+
+    var expectedCount = 1;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'results have fewer items than before');
+      t.deepEqual(res.data[0].layer, 'locality', 'locality result won');
+      t.end();
+    });
+  });
 };
 
 module.exports.all = function (tape, common) {
