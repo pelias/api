@@ -25,6 +25,9 @@ json.features.should.be.instanceof Array
 #? expected errors
 should.not.exist json.geocoding.errors
 
+# expected warnings
+should.not.exist json.geocoding.warnings
+
 #? inputs
 json.geocoding.query['size'].should.eql 10
 json.geocoding.query['point.lat'].should.eql 40.744243
