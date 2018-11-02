@@ -1,4 +1,7 @@
-var _ = require('lodash');
+const _ = require('lodash');
+const logger = require('pelias-logger').get('api');
+const Debug = require('../helper/debug');
+const debugLog = new Debug('middleware:trimByGranularity');
 
 // This middleware component trims the results array by granularity when
 // FallbackQuery was used.  FallbackQuery is used for inputs like
@@ -13,7 +16,7 @@ var _ = require('lodash');
 // this component removes results that aren't the most granular.
 
 // layers in increasing order of granularity
-var layers = [
+const layers = [
   'venue',
   'address',
   'street',
@@ -33,42 +36,77 @@ var layers = [
 // this helper method returns `true` if every result has a matched_query
 //  starting with `fallback.`
 function isFallbackQuery(results) {
-  return results.every(function(result) {
+  return results.every( result => {
     return result.hasOwnProperty('_matched_queries') &&
             !_.isEmpty(result._matched_queries) &&
             _.startsWith(result._matched_queries[0], 'fallback.');
   });
 }
 
-function hasRecordsAtLayers(results, layer) {
-  return results.some(function(result) {
-    return result._matched_queries[0] === 'fallback.' + layer;
+// build inverted index which maps 'matched_queries' to documents
+// eg. { "fallback.street": [ doc1, doc4, doc8 ] }
+function buildInvertedIndex(results) {
+  let idx = {};
+  results.forEach((result, ord) => {
+    if( _.isArray( result._matched_queries ) ){
+      result._matched_queries.forEach( matchedQuery => {
+        if( !_.isArray( idx[matchedQuery] ) ){ idx[matchedQuery] = []; }
+        idx[matchedQuery].push( result );
+      });
+    }
   });
+  return idx;
 }
 
-function retainRecordsAtLayers(results, layer) {
-  return results.filter(function(result) {
-    return result._matched_queries[0] === 'fallback.' + layer;
-  });
+// find the most granular possible layer by working through the $layers array in
+// order and returning the first one which matches the results.
+// note: returns undefined on failure to match any of the layers
+function findMostGranularMatchedQuery(idx) {
+  for( let i=0; i<layers.length; i++ ){
+    let matchedQueryName = 'fallback.' + layers[i];
+    if( _.has( idx, matchedQueryName ) ){
+      return matchedQueryName;
+    }
+  }
 }
 
 function setup() {
- return function trim(req, res, next) {
-   // don't do anything if there are no results or there are non-fallback.* named queries
-   // there should never be a mixture of fallback.* and non-fallback.* named queries
-   if (_.isUndefined(res.data) || !isFallbackQuery(res.data)) {
-     return next();
-   }
+  return function trim(req, res, next) {
+    // don't do anything if there are no results or there are non-fallback.* named queries
+    // there should never be a mixture of fallback.* and non-fallback.* named queries
+    if( !_.isArray(res.data) || !res.data.length || !isFallbackQuery(res.data) ){
+      return next();
+    }
 
-   // start at the most granular possible layer.  if there are results at a layer
-   // then remove everything not at that layer.
-   layers.forEach(function(layer) {
-     if (hasRecordsAtLayers(res.data, layer )) {
-       res.data = retainRecordsAtLayers(res.data, layer);
-     }
-   });
+    // build an index to avoid iterating over the data multiple times
+    let idx = buildInvertedIndex(res.data);
 
-   next();
+    // find the most granular match from the layers list
+    let mostGranularMatchedQuery = findMostGranularMatchedQuery(idx);
+
+    // we could not find a 'most granular match', no-op
+    if( !mostGranularMatchedQuery ){ return next(); }
+
+    // remove any documents which don't have a matching fallback layer match.
+    let filtered = idx[mostGranularMatchedQuery];
+
+    // the filter was applied but the length remained the same, no-op
+    if( filtered.length === res.data.length ){ return next(); }
+
+    // logging / debugging
+    let logInfo = {
+      unfiltered_length: res.data.length,
+      filtered_length: filtered.length,
+      unfiltered: res.data.map( hit => hit._matched_queries ),
+      filtered: filtered.map( hit => hit._matched_queries )
+    };
+    logger.debug('[middleware][trimByGranularity]', logInfo);
+    debugLog.push(req, logInfo);
+
+    // update data to only contain filtered records
+    res.data = filtered;
+
+    next();
  };
 }
 
