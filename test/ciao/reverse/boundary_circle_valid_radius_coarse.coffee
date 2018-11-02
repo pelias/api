@@ -26,7 +26,9 @@ json.features.should.be.instanceof Array
 should.not.exist json.geocoding.errors
 
 #? expected warnings
-should.not.exist json.geocoding.warnings
+json.geocoding.warnings.should.eql [
+  'boundary.circle.radius is not applicable for coarse reverse'
+]
 
 #? inputs
 json.geocoding.query['size'].should.eql 10
