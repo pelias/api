@@ -1,71 +1,49 @@
-var check = require('check-types'),
-    es = require('elasticsearch'),
-    logger = require( 'pelias-logger' ).get( 'api' ),
-    exceptions = require('elasticsearch-exceptions/lib/exceptions/SupportedExceptions');
+const _ = require('lodash');
+const es = require('elasticsearch');
+const logger = require( 'pelias-logger' ).get( 'api' );
+const PeliasParameterError = require('../sanitizer/PeliasParameterError');
 
-// create a list of regular expressions to match against.
-// note: list created when the server starts up; for performance reasons.
-var exceptionRegexList = exceptions.map( function( exceptionName ){
-  return new RegExp( '^' + exceptionName );
-});
+function isParameterError(error) {
+  return error instanceof PeliasParameterError;
+}
+
+function isTimeoutError(error) {
+  return error instanceof es.errors.RequestTimeout;
+}
+
+function isElasticsearchError(error) {
+  const knownErrors = [ es.errors.NoConnections,
+                        es.errors.ConnectionFault ];
+
+  return knownErrors.some(function(esError) {
+    return error instanceof esError;
+  });
+}
 
 function sendJSONResponse(req, res, next) {
 
   // do nothing if no result data set
-  if (!res || !check.object(res.body) || !check.object(res.body.geocoding)) {
+  const geocoding = _.get(res, 'body.geocoding');
+
+  if (!_.isPlainObject(geocoding)) {
     return next();
   }
 
-  // default status
-  var statusCode = 200; // 200 OK
+  const errors = geocoding.errors || [];
 
-  // vary status code whenever an error was reported
-  var geocoding = res.body.geocoding;
+  const errorCodes = errors.map(function(error) {
+    if (isParameterError(error)) {
+      return 400;
+    } else if (isTimeoutError(error)) {
+      return 408;
+    } else if (isElasticsearchError(error)) {
+      return 502;
+    } else {
+      return 500;
+    }
+  });
 
-  if( check.array( geocoding.errors ) && geocoding.errors.length ){
-
-    // default status for errors is 400 Bad Request
-    statusCode = 400; // 400 Bad Request
-
-    // iterate over all reported errors
-    geocoding.errors.forEach( function( err ){
-
-      // custom status codes for instances of the Error() object.
-      if( err instanceof Error ){
-        /*
-          elasticsearch errors
-          see: https://github.com/elastic/elasticsearch-js/blob/master/src/lib/errors.js
-
-          408 Request Timeout
-          500 Internal Server Error
-          502 Bad Gateway
-        */
-        if( err instanceof es.errors.RequestTimeout ){ statusCode = Math.max( statusCode, 408 ); }
-        else if( err instanceof es.errors.NoConnections ){ statusCode = Math.max( statusCode, 502 ); }
-        else if( err instanceof es.errors.ConnectionFault ){ statusCode = Math.max( statusCode, 502 ); }
-        else {
-          logger.warn( 'unknown geocoding error object:', err.constructor.name, err );
-          statusCode = Math.max( statusCode, 500 );
-        }
-
-      /*
-        some elasticsearch errors are only returned as strings (not instances of Error).
-        in this case we (unfortunately) need to match the exception at position 0 inside the string.
-      */
-      } else if( check.string( err ) ){
-        for( var i=0; i<exceptionRegexList.length; i++ ){
-          // check error string against a list of known elasticsearch exceptions
-          if( err.match( exceptionRegexList[i] ) ){
-            statusCode = Math.max( statusCode, 500 );
-            break; // break on first match
-          }
-        }
-        logger.warn( 'unknown geocoding error string:', err );
-      } else {
-        logger.warn( 'unknown geocoding error type:', typeof err, err );
-      }
-    });
-  }
+  const statusCode = Math.max(200, ...errorCodes);
 
   // respond
   return res.status(statusCode).json(res.body);
