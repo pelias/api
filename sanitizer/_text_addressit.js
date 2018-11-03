@@ -29,7 +29,7 @@ function _sanitize( raw, clean ){
     delete clean.parsed_text;
 
     // parse text with query parser
-    var parsed_text = parse(clean.text);
+    var parsed_text = parse(clean.text, clean);
     if (check.assigned(parsed_text)) {
       clean.parsed_text = parsed_text;
     }
@@ -51,7 +51,7 @@ module.exports = () => ({
 // this is the addressit functionality from https://github.com/pelias/text-analyzer/blob/master/src/addressItParser.js
 var DELIM = ',';
 
-function parse(query) {
+function parse(query, clean) {
   var getAdminPartsBySplittingOnDelim = function(queryParts) {
     // naive approach - for admin matching during query time
     // split 'flatiron, new york, ny' into 'flatiron' and 'new york, ny'
@@ -110,12 +110,10 @@ function parse(query) {
   // if all we found was regions, ignore it as it is not enough information to make smarter decisions
   if (Object.keys(parsed_text).length === 1 && !_.isUndefined(parsed_text.regions)) {
     logger.info('Ignoring address parser output, regions only', {
-      text: query.text,
-      parsed: parsed_text
+      params: clean
     });
     return null;
   }
 
   return parsed_text;
-
 }
