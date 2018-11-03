@@ -69,8 +69,7 @@ function setup(service, should_execute) {
     const logInfo = {
       controller: 'interpolation', //technically middleware, but stay consistent with other log lines
       street_count: street_results.length,
-      params: req.clean,
-      responses: []
+      params: req.clean
     };
 
     // call the interpolation service asynchronously on every street result
@@ -78,29 +77,27 @@ function setup(service, should_execute) {
       // iterate the interpolation results, mapping back into the source results
       interpolation_results.forEach((interpolation_result, idx) => {
         const source_result = street_results[idx];
-        const debugLogInfo = {
-          outcome: 'hit', //assume hit, update later if not
-          text: req.clean.parsed_text,
-          result: interpolation_result
-        };
         const resultLogInfo = {
+          controller: 'interpolation',
+          street_name: street_results[idx].name.default,
+          street_id: street_results[idx].source_id,
           outcome: 'hit', //assume hit, update later if not
+          idx: idx,
           response_time: _.get(interpolation_result, 'metadata.response_time')
         };
 
         // invalid / not useful response, debug log for posterity
         // note: leave this hit unmodified
         if (!_.has(interpolation_result, 'properties')) {
-          debugLogInfo.outcome = 'miss';
           resultLogInfo.outcome = 'miss';
-          logger.debug('interpolation', debugLogInfo);
           debugLog.push(req, 'miss');
+          logger.info('interpolation response', resultLogInfo);
           return;
         }
 
-        // the interpolation service returned a valid result, debug log for posterity
-        // note: we now merge those values with the existing 'street' record
-        logger.debug('interpolation', debugLogInfo);
+        // the interpolation service returned a valid result
+        // we now merge those values with the existing 'street' record
+        logger.info('interpolation response', resultLogInfo);
         debugLog.push(req, interpolation_result);
 
         // -- metadata --
