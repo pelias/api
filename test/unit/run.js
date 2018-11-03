@@ -74,6 +74,7 @@ var tests = [
   require('./query/structured_geocoding'),
   require('./query/text_parser'),
   require('./query/view/boost_sources_and_layers'),
+  require('./query/view/max_character_count_layer_filter'),
   require('./sanitizer/_boundary_country'),
   require('./sanitizer/_debug'),
   require('./sanitizer/_flag_bool'),

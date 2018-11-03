@@ -3,7 +3,7 @@ const defaults = require('./autocomplete_defaults');
 const textParser = require('./text_parser_addressit');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
-const config = require('pelias-config').generate().api;
+const config = require('pelias-config').generate();
 
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
@@ -12,7 +12,8 @@ var views = {
   ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
   pop_subquery:               require('./view/pop_subquery'),
-  boost_exact_matches:        require('./view/boost_exact_matches')
+  boost_exact_matches:        require('./view/boost_exact_matches'),
+  max_character_count_layer_filter:   require('./view/max_character_count_layer_filter')
 };
 
 //------------------------------
@@ -45,9 +46,10 @@ query.score( views.boost_exact_matches );
 query.score( peliasQuery.view.focus( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.pop_subquery ) );
 query.score( peliasQuery.view.population( views.pop_subquery ) );
-query.score( views.custom_boosts( config.customBoosts ) );
+query.score( views.custom_boosts( config.get('api.customBoosts') ) );
 
 // non-scoring hard filters
+query.filter( views.max_character_count_layer_filter(['address'], config.get('api.autocomplete.exclude_address_length' ) ) );
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.boundary_rect );
