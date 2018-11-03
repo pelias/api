@@ -112,9 +112,15 @@ function generateQuery( clean, res ){
   if( ! _.isEmpty(clean.parsed_text.number) ){
     vs.var( 'input:housenumber', clean.parsed_text.number );
   }
+
+  if( ! _.isEmpty(clean.parsed_text.unit) ){
+    vs.var( 'input:unit', clean.parsed_text.unit );
+  }
+
   if( ! _.isEmpty(clean.parsed_text.postalcode) ){
     vs.var( 'input:postcode', clean.parsed_text.postalcode );
   }
+
   vs.var( 'input:street', clean.parsed_text.street );
 
   // find the first granularity band for which there are results
