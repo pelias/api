@@ -42,6 +42,7 @@
     "check-types": "^7.0.0",
     "elasticsearch": "^15.0.0",
     "express": "^4.8.8",
+    "express-swaggerize-ui": "^1.0.2",
     "geojson": "^0.5.0",
     "geolib": "^2.0.18",
     "iso-639-3": "^1.0.0",
@@ -62,6 +63,7 @@
     "retry": "^0.12.0",
     "stable": "^0.1.8",
     "stats-lite": "^2.0.4",
+    "swagger-jsdoc": "^1.9.7",
     "through2": "^2.0.3"
   },
   "devDependencies": {
