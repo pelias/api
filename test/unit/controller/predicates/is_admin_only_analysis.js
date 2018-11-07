@@ -45,15 +45,15 @@ module.exports.tests.false_conditions = (test, common) => {
   });
 
   test('parsed_text with non-admin properties should return false', (t) => {
-    ['number', 'street', 'query', 'category', 'postalcode'].forEach((property) => {
+    ['unit', 'number', 'street', 'query', 'category', 'postalcode'].forEach((property) => {
       const req = {
         clean: {
-          parsed_text: {}
+          parsed_text: {
+            [property]: `${property} value`
+          }
         }
       };
       const res = {};
-
-      req.clean.parsed_text[property] = `${property} value`;
 
       t.notOk(is_admin_only_analysis(req, res));
 
