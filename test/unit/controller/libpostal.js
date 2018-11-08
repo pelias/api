@@ -683,6 +683,100 @@ module.exports.tests.bug_fixes = (test, common) => {
 
   });
 
+  test('bug fix: recast entirely numeric input - 9', t => {
+    const service = (req, callback) => {
+      callback(null, [{
+        'label': 'city',
+        'value': '9'
+      }]);
+    };
+    const controller = libpostal(service, () => true);
+    const req = {
+      clean: {
+        text: '9'
+      },
+      errors: []
+    };
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: '9',
+          parser: 'libpostal',
+          parsed_text: {
+            query: '9'
+          }
+        },
+        errors: []
+      }, 'req should not have been modified');
+
+      t.end();
+    });
+  });
+
+  test('bug fix: recast entirely numeric input - 99', t => {
+    const service = (req, callback) => {
+      callback(null, [{
+        'label': 'suburb',
+        'value': '99'
+      }]);
+    };
+    const controller = libpostal(service, () => true);
+    const req = {
+      clean: {
+        text: '99'
+      },
+      errors: []
+    };
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: '99',
+          parser: 'libpostal',
+          parsed_text: {
+            query: '99'
+          }
+        },
+        errors: []
+      }, 'req should not have been modified');
+
+      t.end();
+    });
+  });
+
+  test('bug fix: do not skip parse if there are more than one numeric label', t => {
+    const service = (req, callback) => {
+      callback(null, [{
+        'label': 'city',
+        'value': '9'
+      },{
+        'label': 'suburb',
+        'value': '99'
+      }]);
+    };
+    const controller = libpostal(service, () => true);
+    const req = {
+      clean: {
+        text: '9 99'
+      },
+      errors: []
+    };
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: '9 99',
+          parser: 'libpostal',
+          parsed_text: {
+            city: '9',
+            neighbourhood: '99'
+          }
+        },
+        errors: []
+      }, 'req should not have been modified');
+
+      t.end();
+    });
+  });
+
 };
 
 module.exports.all = (tape, common) => {
