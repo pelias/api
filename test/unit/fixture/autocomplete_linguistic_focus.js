@@ -32,14 +32,14 @@ module.exports = {
             }
           },
           'functions': [{
-            'linear': {
+            'exp': {
               'center_point': {
                 'origin': {
                   'lat': 29.49136,
                   'lon': -82.50622
                 },
                 'offset': '0km',
-                'scale': '250km',
+                'scale': '50km',
                 'decay': 0.5
               }
             },

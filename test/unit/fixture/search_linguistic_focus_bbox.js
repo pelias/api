@@ -55,7 +55,7 @@ module.exports = {
       'functions': [
         {
           'weight': 2,
-          'linear': {
+          'exp': {
             'center_point': {
               'origin': {
                 'lat': 29.49136,
