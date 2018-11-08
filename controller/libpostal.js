@@ -117,18 +117,32 @@ function setup(libpostalService, should_execute) {
 
 const RECAST_LABELS = [{ value: 'zoo', label: { to: 'house' } }];
 const DIAGONAL_DIRECTIONALS = ['ne','nw','se','sw'];
+const IS_NUMERIC_REGEXP = /^\d+$/;
 
 // apply fixes for known bugs in libpostal
 function patchBuggyResponses(response){
   if( !Array.isArray(response) || !response.length ){ return response; }
 
-  // recast labels for certain values, currently only applied to parses which return a single label.
-  // the RECAST_LABELS array contains match/replace conditions which are applied in order.
-  // the 'value' and 'label.to' properties are mandatory, they define the value to match on and
-  // the replacement label to assign. you may optionally also provide 'label.from' which will restrict
-  // replacements to only records with BOTH a matching 'value' and a matching 'label.from'.
+  // patches which are only applied when a single label is generated
   if( response.length === 1 ){
     let first = response[0];
+
+    // given only a number, libpostal will attempt to classify it.
+    // if we find a single label which is entirely numeric then it's recast to the
+    // libpostal label 'house', which is mapped to 'query' in our schema.
+    // note: there is a possibility that the number is correctly parsed as
+    // a unit or housenumber, but this case is rare and the parse inconsistent.
+    // eg: libpostal parses: 99=neighbourhood, 9=city
+    if( IS_NUMERIC_REGEXP.test(( first.value || '' )) ){
+      first.label = 'house';
+      return response;
+    }
+
+    // recast labels for certain values, currently only applied to parses which return a single label.
+    // the RECAST_LABELS array contains match/replace conditions which are applied in order.
+    // the 'value' and 'label.to' properties are mandatory, they define the value to match on and
+    // the replacement label to assign. you may optionally also provide 'label.from' which will restrict
+    // replacements to only records with BOTH a matching 'value' and a matching 'label.from'.
     RECAST_LABELS.forEach(recast => {
       if( !_.has(recast, 'label') || !_.has(recast.label, 'to') ){ return; }
       if( recast.value !== first.value ){ return; }
