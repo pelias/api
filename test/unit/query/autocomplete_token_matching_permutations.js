@@ -130,6 +130,47 @@ module.exports.tests.single_token = function(test, common) {
       ]
     });
   });
+
+  test('nsw incomplete', function(t) {
+
+    var clean = {
+      text: 'nsw',
+      tokens: ['nsw'],
+      tokens_complete: [],
+      tokens_incomplete: ['nsw']
+    };
+
+    var vs = vars( clean );
+
+    assert( t, generate( clean ), {
+      must: [ views.ngrams_last_token_only( vs ) ],
+      should: [
+        peliasQuery.view.popularity( views.pop_subquery )( vs ),
+        peliasQuery.view.population( views.pop_subquery )( vs )
+      ]
+    });
+  });
+
+  test('nsw complete', function(t) {
+
+    var clean = {
+      text: 'nsw',
+      tokens: ['nsw'],
+      tokens_complete: ['nsw'],
+      tokens_incomplete: []
+    };
+
+    var vs = vars( clean );
+
+    assert( t, generate( clean ), {
+      must: [ views.phrase_first_tokens_only( vs ) ],
+      should: [
+        views.boost_exact_matches( vs ),
+        peliasQuery.view.popularity( views.pop_subquery )( vs ),
+        peliasQuery.view.population( views.pop_subquery )( vs )
+      ]
+    });
+  });
 };
 
 module.exports.tests.multiple_tokens = function(test, common) {

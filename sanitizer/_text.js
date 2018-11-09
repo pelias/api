@@ -1,4 +1,3 @@
-const check = require('check-types');
 const _ = require('lodash');
 
 // ref: https://en.wikipedia.org/wiki/Quotation_mark
@@ -11,11 +10,9 @@ function _sanitize( raw, clean ){
   const messages = { errors: [], warnings: [] };
 
   // invalid input 'text'
-  // must call `!check.nonEmptyString` since `check.emptyString` returns
-  //  `false` for `undefined` and `null`
   const text =  _.trim( _.trim( raw.text ), QUOTES );
 
-  if( !check.nonEmptyString( text ) ){
+  if( !_.isString(text) || _.isEmpty(text) ){
     messages.errors.push('invalid param \'text\': text length, must be >0');
   } else {
     clean.text = text;
