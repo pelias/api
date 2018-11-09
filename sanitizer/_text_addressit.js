@@ -1,4 +1,3 @@
-const check = require('check-types');
 const addressit = require('addressit');
 const _      = require('lodash');
 const logger = require('pelias-logger').get('api');
@@ -30,7 +29,7 @@ function _sanitize( raw, clean ){
 
   // invalid input 'text'
   const text =  _.trim( _.trim( raw.text ), QUOTES );
-  if( !check.nonEmptyString( text ) ){
+  if( !_.isString(text) || _.isEmpty(text) ){
     messages.errors.push('invalid param \'text\': text length, must be >0');
   }
 
@@ -57,7 +56,7 @@ var naïve = function(tokens) {
     // 1. slice away all parts after the first one
     // 2. trim spaces from each part just in case
     // 3. join the parts back together with appropriate delimiter and spacing
-    parsed_text.admin_parts = tokens.slice(1).join(DELIM + ' ');
+    parsed_text.admin_parts = tokens.slice(1).join(`${DELIM} `);
   }
 
   return parsed_text;

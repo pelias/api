@@ -85,7 +85,70 @@ module.exports.tests.sanity_checks = function(test, common) {
 
     t.end();
   });
+  test('clean.parsed_text not set', function(t) {
 
+    var clean = {};
+    var messages = sanitizer.sanitize({}, clean);
+
+    // no tokens produced
+    t.deepEquals(clean.tokens, [], 'no tokens');
+    t.deepEquals(clean.tokens_complete, [], 'no tokens');
+    t.deepEquals(clean.tokens_incomplete, [], 'no tokens');
+
+    // no errors/warnings produced
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+
+    t.end();
+  });
+  test('clean.parsed_text set to null', function(t) {
+
+    var clean = { parsed_text: null };
+    var messages = sanitizer.sanitize({}, clean);
+
+    // no tokens produced
+    t.deepEquals(clean.tokens, [], 'no tokens');
+    t.deepEquals(clean.tokens_complete, [], 'no tokens');
+    t.deepEquals(clean.tokens_incomplete, [], 'no tokens');
+
+    // no errors/warnings produced
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+
+    t.end();
+  });
+  test('clean.parsed_text set empty object', function(t) {
+
+    var clean = { parsed_text: {} };
+    var messages = sanitizer.sanitize({}, clean);
+
+    // no tokens produced
+    t.deepEquals(clean.tokens, [], 'no tokens');
+    t.deepEquals(clean.tokens_complete, [], 'no tokens');
+    t.deepEquals(clean.tokens_incomplete, [], 'no tokens');
+
+    // no errors/warnings produced
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+
+    t.end();
+  });
+  test('clean.parsed_text set empty object, text set', function(t) {
+
+    var clean = { parsed_text: {}, text: 'nsw' };
+    var messages = sanitizer.sanitize({}, clean);
+
+    // no tokens produced
+    t.deepEquals(clean.tokens, ['nsw'], 'no tokens');
+    t.deepEquals(clean.tokens_complete, [], 'no tokens');
+    t.deepEquals(clean.tokens_incomplete, ['nsw'], 'no tokens');
+
+    // no errors/warnings produced
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+
+    t.end();
+  });
   test('clean.parsed_text set but clean.parsed_text.name invalid', function(t) {
 
     var clean = { parsed_text: { text: {} } };
