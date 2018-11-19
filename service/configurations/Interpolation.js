@@ -5,7 +5,7 @@ const debugLog = new Debug('interpolation:request');
 
 const ServiceConfiguration = require('pelias-microservice-wrapper').ServiceConfiguration;
 
-class Language extends ServiceConfiguration {
+class Interpolation extends ServiceConfiguration {
   constructor(o) {
     super('interpolation', o);
   }
@@ -29,4 +29,4 @@ class Language extends ServiceConfiguration {
 
 }
 
-module.exports = Language;
+module.exports = Interpolation;
