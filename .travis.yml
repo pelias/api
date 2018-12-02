@@ -1,5 +1,5 @@
-sudo: false
 language: node_js
+dist: xenial
 notifications:
   email: false
 node_js:
