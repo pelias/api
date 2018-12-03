@@ -22,6 +22,11 @@ function dedupeResults(req, res, next) {
   // iterate over res.data using an old-school for loop starting at index 1
   // we can call break at any time to end the iterator
   for( let i=1; i<res.data.length; i++){
+
+    // stop iterating when requested size has been reached in unique
+    if( unique.length >= req.clean.size ){ break; }
+
+    // pointer to hit at location $i
     let hit = res.data[i];
 
     // if there are multiple items in results, loop through them to find a dupe
@@ -55,9 +60,6 @@ function dedupeResults(req, res, next) {
         hit: field.getStringValue(hit.name.default) + ' ' + hit.source + ':' + hit._id
       });
     }
-
-    // stop iterating when requested size has been reached in unique
-    if( unique.length >= req.clean.size ){ break; }
   }
 
   // replace the original data with only the unique hits

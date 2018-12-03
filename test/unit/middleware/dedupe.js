@@ -59,6 +59,23 @@ module.exports.tests.dedupe = function(test, common) {
     });
   });
 
+  test('truncate results based on size 1', function(t) {
+    var req = {
+      clean: {
+        text: 'lampeter strasburg high school',
+        size: 1
+      }
+    };
+    var res = {
+      data: data
+    };
+
+    dedupe(req, res, function () {
+      t.equal(res.data.length, req.clean.size, 'should only return 1 result');
+      t.end();
+    });
+  });
+
   test('deduplicate between custom layers and venue layers', function(t) {
     var req = {
       clean: {
