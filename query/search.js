@@ -22,6 +22,7 @@ fallbackQuery.filter( peliasQuery.view.boundary_rect );
 fallbackQuery.filter( peliasQuery.view.sources );
 fallbackQuery.filter( peliasQuery.view.layers );
 fallbackQuery.filter( peliasQuery.view.categories );
+fallbackQuery.filter( peliasQuery.view.boundary_wof );
 // --------------------------------
 
 /**
@@ -98,6 +99,13 @@ function generateQuery( clean ){
   if( check.string(clean['boundary.country']) ){
     vs.set({
       'boundary:country': clean['boundary.country']
+    });
+  }
+
+  // boundary wof
+  if ( check.integer(clean['boundary.wof']) ){
+    vs.set({
+      'boundary:wof': clean['boundary.wof']
     });
   }
 

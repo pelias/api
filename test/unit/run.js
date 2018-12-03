@@ -99,6 +99,7 @@ var tests = [
   require('./sanitizer/_text_addressit'),
   require('./sanitizer/_tokenizer'),
   require('./sanitizer/_categories'),
+  require('./sanitizer/_boundary_wof'),
   require('./sanitizer/nearby'),
   require('./sanitizer/autocomplete'),
   require('./sanitizer/structured_geocoding'),

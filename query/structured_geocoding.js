@@ -21,6 +21,7 @@ structuredQuery.filter( peliasQuery.view.boundary_rect );
 structuredQuery.filter( peliasQuery.view.sources );
 structuredQuery.filter( peliasQuery.view.layers );
 structuredQuery.filter( peliasQuery.view.categories );
+structuredQuery.filter( peliasQuery.view.boundary_wof );
 // --------------------------------
 
 /**
@@ -87,6 +88,13 @@ function generateQuery( clean ){
   if( check.string(clean['boundary.country']) ){
     vs.set({
       'boundary:country': clean['boundary.country']
+    });
+  }
+
+  // boundary wof
+  if ( check.integer(clean['boundary.wof']) ){
+    vs.set({
+      'boundary:wof': clean['boundary.wof']
     });
   }
 
