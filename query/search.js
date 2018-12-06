@@ -33,7 +33,6 @@ function generateQuery( clean ){
 
   const vs = new peliasQuery.Vars( defaults );
 
-
   // input text
   vs.var( 'input:name', clean.text );
 
@@ -122,7 +121,7 @@ function generateQuery( clean ){
 }
 
 function getQuery(vs) {
-  if (hasStreet(vs) || isPostalCodeOnly(vs) || isPostalCodeWithCountry(vs)) {
+  if (hasStreet(vs) || isPostalCodeOnly(vs) || isPostalCodeWithCountry(vs) || isVenuePlusAdmin(vs)) {
     return {
       type: 'search_fallback',
       body: fallbackQuery.render(vs)
@@ -135,52 +134,58 @@ function getQuery(vs) {
 
 }
 
-function determineQueryType(vs) {
-  if (vs.isset('input:housenumber') && vs.isset('input:street')) {
-    return 'address';
-  }
-  else if (vs.isset('input:street')) {
-    return 'street';
-  }
-  else if (vs.isset('input:query')) {
-    return 'venue';
-  }
-  else if (['neighbourhood', 'borough', 'postcode', 'county', 'region','country'].some(
-    layer => vs.isset(`input:${layer}`)
-  )) {
-    return 'admin';
-  }
-  return 'other';
-}
+// function determineQueryType(vs) {
+//   if (vs.isset('input:housenumber') && vs.isset('input:street')) {
+//     return 'address';
+//   }
+//   else if (vs.isset('input:street')) {
+//     return 'street';
+//   }
+//   else if (vs.isset('input:query')) {
+//     return 'venue';
+//   }
+//   else if (['neighbourhood', 'borough', 'postcode', 'county', 'region','country'].some(
+//     layer => vs.isset(`input:${layer}`)
+//   )) {
+//     return 'admin';
+//   }
+//   return 'other';
+// }
 
 function hasStreet(vs) {
   return vs.isset('input:street');
 }
 
 function isPostalCodeOnly(vs) {
-  var isSet = layer => vs.isset(`input:${layer}`);
+  let isSet = layer => vs.isset(`input:${layer}`);
 
   var allowedFields = ['postcode'];
   var disallowedFields = ['query', 'category', 'housenumber', 'street',
     'neighbourhood', 'borough', 'county', 'region', 'country'];
 
-  return allowedFields.every(isSet) &&
-    !disallowedFields.some(isSet);
-
+  return allowedFields.every(isSet) && !disallowedFields.some(isSet);
 }
 
-
 function isPostalCodeWithCountry(vs) {
-    var isSet = (layer) => {
-        return vs.isset(`input:${layer}`);
-    };
+  let isSet = layer => vs.isset(`input:${layer}`);
 
-    var allowedFields = ['postcode', 'country'];
-    var disallowedFields = ['query', 'category', 'housenumber', 'street', 'locality',
-                          'neighbourhood', 'borough', 'county', 'region'];
+  var allowedFields = ['postcode', 'country'];
+  var disallowedFields = ['query', 'category', 'housenumber', 'street', 'locality',
+                        'neighbourhood', 'borough', 'county', 'region'];
 
-    return allowedFields.every(isSet) &&
-        !disallowedFields.some(isSet);
+  return allowedFields.every(isSet) && !disallowedFields.some(isSet);
+}
+
+// venue queries such as 'starbucks nyc' which are parsed as 'query' and one
+// or more admin properties such as 'locality' etc.
+function isVenuePlusAdmin(vs) {
+  if( !vs.isset('input:query') ){ return false; }
+
+  var allowedFields = ['neighbourhood', 'borough', 'locality', 'county', 'region', 'country'];
+  var disallowedFields = ['postcode', 'category', 'housenumber', 'street'];
+
+  let isSet = layer => vs.isset(`input:${layer}`);
+  return allowedFields.some(isSet) && !disallowedFields.some(isSet);
 }
 
 module.exports = generateQuery;

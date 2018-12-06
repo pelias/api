@@ -285,7 +285,7 @@ module.exports.tests.city_state = function(test, common) {
 
   });
 
-  test('city/state with query should return undefined', function(t) {
+  test('city/state with query should return venue matching query', function(t) {
     var clean = {
       parsed_text: {
         city: 'city value',
@@ -296,7 +296,11 @@ module.exports.tests.city_state = function(test, common) {
 
     var query = generate(clean);
 
-    t.equals(query, undefined, 'should have returned undefined');
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_venue_plus_state.json');
+
+    t.deepEqual(compiled.type, 'search_fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'valid search query with category filtering');
     t.end();
 
   });
@@ -443,7 +447,7 @@ module.exports.tests.city_country = function(test, common) {
 
   });
 
-  test('city/country with query should return undefined', function(t) {
+  test('city/country with query should return venue matching query', function(t) {
     var clean = {
       parsed_text: {
         city: 'city value',
@@ -454,7 +458,11 @@ module.exports.tests.city_country = function(test, common) {
 
     var query = generate(clean);
 
-    t.equals(query, undefined, 'should have returned undefined');
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_venue_plus_country.json');
+
+    t.deepEqual(compiled.type, 'search_fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'valid search query with category filtering');
     t.end();
 
   });
