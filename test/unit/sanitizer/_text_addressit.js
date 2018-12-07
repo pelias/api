@@ -32,7 +32,7 @@ module.exports.tests.text_parser = function(test, common) {
       var clean = {};
 
       var expected_clean = {
-        text: query.name + ', ' + query.admin_parts,
+        text: raw.text.trim(),
         parser: 'addressit',
         parsed_text: {
           name: query.name,
@@ -57,7 +57,7 @@ module.exports.tests.text_parser = function(test, common) {
       var clean = {};
 
       var expected_clean = {
-        text: query.name + ',' + query.admin_parts,
+        text: raw.text.trim(),
         parser: 'addressit',
         parsed_text: {
           name: query.name,
@@ -75,6 +75,30 @@ module.exports.tests.text_parser = function(test, common) {
 
     });
 
+    test('naive parsing ' + query + ' with leading and trailing junk', function(t) {
+      var raw = {
+        text: ' , ' + query.name + ',' + query.admin_parts + ' , '
+      };
+      var clean = {};
+
+      var expected_clean = {
+        text: raw.text.trim(),
+        parser: 'addressit',
+        parsed_text: {
+          name: query.name,
+          regions: [ query.name ],
+          admin_parts: query.admin_parts,
+          state: query.state
+        }
+      };
+
+      var messages = sanitizer.sanitize(raw, clean);
+
+      t.deepEqual(messages, { errors: [], warnings: [] } );
+      t.deepEqual(clean, expected_clean);
+      t.end();
+
+    });
   });
 
   var nonUSQueries = [
