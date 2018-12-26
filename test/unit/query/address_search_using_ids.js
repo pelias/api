@@ -20,7 +20,7 @@ const views = {
   boundary_circle: 'boundary_circle view',
   boundary_rect: 'boundary_rect view',
   sources: 'sources view',
-  boundary_wof: 'boundary_wof view'
+  boundary_gid: 'boundary_gid view'
 };
 
 module.exports.tests.base_query = (test, common) => {
@@ -68,7 +68,7 @@ module.exports.tests.base_query = (test, common) => {
       'boundary_circle view',
       'boundary_rect view',
       'sources view',
-      'boundary_wof view'
+      'boundary_gid view'
     ]);
 
     t.end();
@@ -541,7 +541,7 @@ module.exports.tests.boundary_filters = (test, common) => {
 
   });
 
-  test('boundary.wof available should add to query', (t) => {
+  test('boundary.gid available should add to query', (t) => {
     const logger = mock_logger();
 
     const clean = {
@@ -549,7 +549,7 @@ module.exports.tests.boundary_filters = (test, common) => {
         number: 'housenumber value',
         street: 'street value'
       },
-      'boundary.wof': 123
+      'boundary.gid': '123'
     };
     const res = {};
 
@@ -567,7 +567,7 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.equals(generatedQuery.body.vs.var('boundary:wof').toString(), 123);
+    t.equals(generatedQuery.body.vs.var('boundary:gid').toString(), '123');
 
     t.end();
 

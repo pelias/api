@@ -22,7 +22,7 @@ fallbackQuery.filter( peliasQuery.view.boundary_rect );
 fallbackQuery.filter( peliasQuery.view.sources );
 fallbackQuery.filter( peliasQuery.view.layers );
 fallbackQuery.filter( peliasQuery.view.categories );
-fallbackQuery.filter( peliasQuery.view.boundary_wof );
+fallbackQuery.filter( peliasQuery.view.boundary_gid );
 // --------------------------------
 
 /**
@@ -102,10 +102,10 @@ function generateQuery( clean ){
     });
   }
 
-  // boundary wof
-  if ( check.integer(clean['boundary.wof']) ){
+  // boundary gid
+  if ( check.string(clean['boundary.gid']) ){
     vs.set({
-      'boundary:wof': clean['boundary.wof']
+      'boundary:gid': clean['boundary.gid']
     });
   }
 

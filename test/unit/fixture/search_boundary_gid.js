@@ -33,7 +33,7 @@ module.exports = {
                     'fields': [
                       'parent.*_id'
                     ],
-                    'query': 123
+                    'query': '123'
                   }
                 }
               ]

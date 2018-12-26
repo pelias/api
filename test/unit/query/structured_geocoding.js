@@ -14,7 +14,7 @@ const views = {
   sources: 'sources view',
   layers: 'layers view',
   categories: 'categories view',
-  boundary_wof: 'boundary_wof view'
+  boundary_gid: 'boundary_gid view'
 };
 
 module.exports.tests = {};
@@ -82,7 +82,7 @@ module.exports.tests.query = (test, common) => {
       'sources view',
       'layers view',
       'categories view',
-      'boundary_wof view'
+      'boundary_gid view'
     ]);
 
     t.end();
@@ -600,13 +600,13 @@ module.exports.tests.boundary_country = (test, common) => {
 
 };
 
-module.exports.tests.boundary_wof = (test, common) => {
-  test('boundary.wof available should set boundary:wof', t => {
+module.exports.tests.boundary_gid = (test, common) => {
+  test('boundary.gid available should set boundary:gid', t => {
     const clean = {
       text: 'text value',
       sources: 'sources value',
       layers: 'layers value',
-      'boundary.wof': 123
+      'boundary.gid': '123'
     };
 
     const query = proxyquire('../../../query/structured_geocoding', {
@@ -623,7 +623,7 @@ module.exports.tests.boundary_wof = (test, common) => {
       }
     })(clean);
 
-    t.equals(query.body.vs.var('boundary:wof').toString(), 123);
+    t.equals(query.body.vs.var('boundary:gid').toString(), '123');
 
     t.end();
 

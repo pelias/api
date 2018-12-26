@@ -293,20 +293,20 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
-  test('valid boundary.wof search', function(t) {
+  test('valid boundary.gid search', function(t) {
     var query = generate({
       text: 'test',
       tokens: ['test'],
       tokens_complete: [],
       tokens_incomplete: ['test'],
-      'boundary.wof': 123
+      'boundary.gid': '123'
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/autocomplete_boundary_wof');
+    var expected = require('../fixture/autocomplete_boundary_gid');
 
     t.deepEqual(compiled.type, 'autocomplete', 'query type set');
-    t.deepEqual(compiled.body, expected, 'autocomplete: valid boundary.wof query');
+    t.deepEqual(compiled.body, expected, 'autocomplete: valid boundary.gid query');
     t.end();
   });
 };

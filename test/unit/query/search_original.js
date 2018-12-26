@@ -204,18 +204,18 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
-  test('valid boundary.wof filter', function(t) {
+  test('valid boundary.gid filter', function(t) {
     var query = generate({
       text: 'test', querySize: 10,
       layers: ['test'],
-      'boundary.wof': 123
+      'boundary.gid': '123'
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_boundary_wof_original');
+    var expected = require('../fixture/search_boundary_gid_original');
 
     t.deepEqual(compiled.type, 'search_original', 'query type set');
-    t.deepEqual(compiled.body, expected, 'search: valid boundary.wof filter');
+    t.deepEqual(compiled.body, expected, 'search: valid boundary.gid filter');
     t.end();
   });
 };

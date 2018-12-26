@@ -19,7 +19,7 @@ module.exports.middleware = (_api_pelias_config) => {
       boundary_country: require('../sanitizer/_boundary_country')(),
       categories: require('../sanitizer/_categories')(),
       request_language: require('../sanitizer/_request_language')(),
-      boundary_wof: require('../sanitizer/_boundary_wof')()
+      boundary_gid: require('../sanitizer/_boundary_gid')()
     };
 
   return ( req, res, next ) => {

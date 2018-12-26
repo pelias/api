@@ -573,22 +573,22 @@ module.exports.tests.city_country = function(test, common) {
     t.end();
   });
 
-  test('valid boundary.wof filter', function(t) {
+  test('valid boundary.gid filter', function(t) {
     var clean = {
       parsed_text: {
         street: 'street value'
       },
       'text': 'test',
-      'boundary.wof': 123
+      'boundary.gid': '123'
     };
 
     var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_boundary_wof');
+    var expected = require('../fixture/search_boundary_gid');
 
     t.deepEqual(compiled.type, 'search_fallback', 'query type set');
-    t.deepEqual(compiled.body, expected, 'search: valid boundary.wof filter');
+    t.deepEqual(compiled.body, expected, 'search: valid boundary.gid filter');
     t.end();
   });
 

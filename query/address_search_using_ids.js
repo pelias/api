@@ -18,7 +18,7 @@ addressUsingIdsQuery.filter( peliasQuery.view.boundary_country );
 addressUsingIdsQuery.filter( peliasQuery.view.boundary_circle );
 addressUsingIdsQuery.filter( peliasQuery.view.boundary_rect );
 addressUsingIdsQuery.filter( peliasQuery.view.sources );
-addressUsingIdsQuery.filter( peliasQuery.view.boundary_wof );
+addressUsingIdsQuery.filter( peliasQuery.view.boundary_gid );
 // --------------------------------
 
 // This query is a departure from traditional Pelias queries where textual
@@ -185,10 +185,10 @@ function generateQuery( clean, res ){
     });
   }
 
-  // boundary wof
-  if ( check.integer(clean['boundary.wof']) ){
+  // boundary gid
+  if ( check.string(clean['boundary.gid']) ){
     vs.set({
-      'boundary:wof': clean['boundary.wof']
+      'boundary:gid': clean['boundary.gid']
     });
   }
 

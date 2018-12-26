@@ -1,6 +1,6 @@
 
-#> bounding wof_id
-path: '/v1/search?text=a&boundary.wof=85869245'
+#> bounding gid
+path: '/v1/search?text=a&boundary.gid=whosonfirst:neighbourhood:85869245'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -31,4 +31,4 @@ should.not.exist json.geocoding.warnings
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10
-json.geocoding.query['boundary.wof'].should.eql 85869245
+json.geocoding.query['boundary.gid'].should.eql '85869245'

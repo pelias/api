@@ -55,7 +55,7 @@ module.exports = {
       'filter': [{
         'multi_match': {
           'fields': ['parent.*_id'],
-          'query': 123
+          'query': '123'
         }
       }]
     }

@@ -1,6 +1,6 @@
 
-#> bounding wof_id
-path: '/v1/autocomplete?text=a&boundary.wof=abc'
+#> bounding gid
+path: '/v1/search?text=a&boundary.gid=abc::'
 
 #? 200 ok
 response.statusCode.should.be.equal 400
@@ -24,7 +24,7 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 json.geocoding.errors.should.eql [
-  'abc is not a valid integer'
+  'abc:: does not follow source:layer:id format'
 ]
 
 #? expected warnings
@@ -33,4 +33,4 @@ should.not.exist json.geocoding.warnings
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
 json.geocoding.query['size'].should.eql 10
-should.not.exist json.geocoding.query['boundary.wof']
+should.not.exist json.geocoding.query['boundary.gid']

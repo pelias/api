@@ -134,10 +134,10 @@ module.exports.tests.sanitize = (test, common) => {
           }
         };
       },
-      '../sanitizer/_boundary_wof': () => {
+      '../sanitizer/_boundary_gid': () => {
         return {
           sanitize: () => {
-            called_sanitizers.push('_boundary_wof');
+            called_sanitizers.push('_boundary_gid');
             return { errors: [], warnings: [] };
           }
         };
@@ -160,7 +160,7 @@ module.exports.tests.sanitize = (test, common) => {
       '_categories',
       '_geonames_warnings',
       '_request_language',
-      '_boundary_wof'
+      '_boundary_gid'
     ];
 
     const req = {};
