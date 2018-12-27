@@ -573,6 +573,9 @@ module.exports.tests.city_country = function(test, common) {
     t.end();
   });
 
+};
+
+module.exports.tests.boundary_gid = function(test, common) {
   test('valid boundary.gid filter', function(t) {
     var clean = {
       parsed_text: {
