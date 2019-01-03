@@ -101,14 +101,13 @@ function getBoundaryCountryFilter(clean, do_geometric_filters_apply) {
 function matchesBoundaryGid(boundaryGid, hierarchy) {
   function idMatches(k, v) {
     return k.id === parseInt(boundaryGid);
-  };
+  }
   return !boundaryGid || _.some(_.map(hierarchy, idMatches));
 }
 
 // return true if the result does not have a lineage
 // OR at least one lineage matches the requested boundary.gid
 function atLeastOneLineageMatchesBoundaryGid(boundaryGid, result) {
-    logger.debug('[result linage]', result.lineage);
   return !result.lineage || result.lineage.some(_.partial(matchesBoundaryGid, boundaryGid));
 }
 
