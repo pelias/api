@@ -21,6 +21,7 @@ query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.categories );
 query.filter( peliasQuery.view.boundary_country );
+query.filter( peliasQuery.view.boundary_gid );
 
 // --------------------------------
 
@@ -82,6 +83,13 @@ function generateQuery( clean ){
   if( check.string(clean['boundary.country']) ){
     vs.set({
       'boundary:country': clean['boundary.country']
+    });
+  }
+
+  // boundary gid
+  if ( check.string(clean['boundary.gid']) ){
+    vs.set({
+      'boundary:gid': clean['boundary.gid']
     });
   }
 

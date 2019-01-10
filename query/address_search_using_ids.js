@@ -18,6 +18,7 @@ addressUsingIdsQuery.filter( peliasQuery.view.boundary_country );
 addressUsingIdsQuery.filter( peliasQuery.view.boundary_circle );
 addressUsingIdsQuery.filter( peliasQuery.view.boundary_rect );
 addressUsingIdsQuery.filter( peliasQuery.view.sources );
+addressUsingIdsQuery.filter( peliasQuery.view.boundary_gid );
 // --------------------------------
 
 // This query is a departure from traditional Pelias queries where textual
@@ -181,6 +182,13 @@ function generateQuery( clean, res ){
   if( check.string(clean['boundary.country']) ){
     vs.set({
       'boundary:country': clean['boundary.country']
+    });
+  }
+
+  // boundary gid
+  if ( check.string(clean['boundary.gid']) ){
+    vs.set({
+      'boundary:gid': clean['boundary.gid']
     });
   }
 

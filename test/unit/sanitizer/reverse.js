@@ -101,6 +101,14 @@ module.exports.tests.sanitize = function(test, common) {
             return { errors: [], warnings: [] };
           }
         };
+      },
+      '../sanitizer/_boundary_gid': () => {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_boundary_gid');
+            return { errors: [], warnings: [] };
+          }
+        };
       }
     });
 
@@ -115,7 +123,8 @@ module.exports.tests.sanitize = function(test, common) {
       '_flag_bool',
       '_geo_reverse',
       '_boundary_country',
-      '_request_language'
+      '_request_language',
+      '_boundary_gid'
     ];
 
     const req = {};

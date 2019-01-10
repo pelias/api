@@ -575,6 +575,28 @@ module.exports.tests.city_country = function(test, common) {
 
 };
 
+module.exports.tests.boundary_gid = function(test, common) {
+  test('valid boundary.gid filter', function(t) {
+    var clean = {
+      parsed_text: {
+        street: 'street value'
+      },
+      'text': 'test',
+      'boundary.gid': '123'
+    };
+
+    var query = generate(clean);
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_boundary_gid');
+
+    t.deepEqual(compiled.type, 'search_fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search: valid boundary.gid filter');
+    t.end();
+  });
+
+};
+
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
     return tape('search query ' + name, testFunction);

@@ -13,7 +13,8 @@ const views = {
   boundary_rect: 'boundary_rect view',
   sources: 'sources view',
   layers: 'layers view',
-  categories: 'categories view'
+  categories: 'categories view',
+  boundary_gid: 'boundary_gid view'
 };
 
 module.exports.tests = {};
@@ -80,7 +81,8 @@ module.exports.tests.query = (test, common) => {
       'boundary_rect view',
       'sources view',
       'layers view',
-      'categories view'
+      'categories view',
+      'boundary_gid view'
     ]);
 
     t.end();
@@ -591,6 +593,37 @@ module.exports.tests.boundary_country = (test, common) => {
     })(clean);
 
     t.equals(query.body.vs.var('boundary:country').toString(), 'boundary country value');
+
+    t.end();
+
+  });
+
+};
+
+module.exports.tests.boundary_gid = (test, common) => {
+  test('boundary.gid available should set boundary:gid', t => {
+    const clean = {
+      text: 'text value',
+      sources: 'sources value',
+      layers: 'layers value',
+      'boundary.gid': '123'
+    };
+
+    const query = proxyquire('../../../query/structured_geocoding', {
+      'pelias-query': {
+        layout: {
+          StructuredFallbackQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './search_defaults': { },
+      './text_parser': () => {
+        t.fail('text_parser should not have been called');
+      }
+    })(clean);
+
+    t.equals(query.body.vs.var('boundary:gid').toString(), '123');
 
     t.end();
 

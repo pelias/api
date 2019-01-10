@@ -19,7 +19,8 @@ module.exports.middleware = (_api_pelias_config) => {
         geo_search: require('../sanitizer/_geo_search')(),
         boundary_country: require('../sanitizer/_boundary_country')(),
         categories: require('../sanitizer/_categories')(),
-        request_language: require('../sanitizer/_request_language')()
+        request_language: require('../sanitizer/_request_language')(),
+        boundary_gid: require('../sanitizer/_boundary_gid')()
       };
 
   return ( req, res, next ) => {

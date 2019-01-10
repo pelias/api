@@ -19,7 +19,8 @@ const views = {
   boundary_country: 'boundary_country view',
   boundary_circle: 'boundary_circle view',
   boundary_rect: 'boundary_rect view',
-  sources: 'sources view'
+  sources: 'sources view',
+  boundary_gid: 'boundary_gid view'
 };
 
 module.exports.tests.base_query = (test, common) => {
@@ -66,7 +67,8 @@ module.exports.tests.base_query = (test, common) => {
       'boundary_country view',
       'boundary_circle view',
       'boundary_rect view',
-      'sources view'
+      'sources view',
+      'boundary_gid view'
     ]);
 
     t.end();
@@ -534,6 +536,38 @@ module.exports.tests.boundary_filters = (test, common) => {
     t.equals(generatedQuery.body.vs.var('boundary:circle:lat').toString(), 12.121212);
     t.equals(generatedQuery.body.vs.var('boundary:circle:lon').toString(), 21.212121);
     t.equals(generatedQuery.body.vs.var('boundary:circle:radius').toString(), '18km');
+
+    t.end();
+
+  });
+
+  test('boundary.gid available should add to query', (t) => {
+    const logger = mock_logger();
+
+    const clean = {
+      parsed_text: {
+        number: 'housenumber value',
+        street: 'street value'
+      },
+      'boundary.gid': '123'
+    };
+    const res = {};
+
+    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
+      'pelias-logger': logger,
+      'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      }
+
+    });
+
+    const generatedQuery = generateQuery(clean, res);
+
+    t.equals(generatedQuery.body.vs.var('boundary:gid').toString(), '123');
 
     t.end();
 

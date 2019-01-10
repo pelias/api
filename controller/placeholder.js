@@ -97,6 +97,31 @@ function getBoundaryCountryFilter(clean, do_geometric_filters_apply) {
 
 }
 
+// return true if the boundary.gid matches any id in the hierarchy
+function matchesBoundaryGid(boundaryGid, hierarchy) {
+  function idMatches(k, v) {
+    return k.id === parseInt(boundaryGid);
+  }
+  return !boundaryGid || _.some(_.map(hierarchy, idMatches));
+}
+
+// return true if the result does not have a lineage
+// OR at least one lineage matches the requested boundary.gid
+function atLeastOneLineageMatchesBoundaryGid(boundaryGid, result) {
+  return !result.lineage || result.lineage.some(_.partial(matchesBoundaryGid, boundaryGid));
+}
+
+// return a function that detects if a result has at least one lineage in boundary.gid
+function getBoundaryGidFilter(clean, do_geometric_filters_apply) {
+  if ( do_geometric_filters_apply && _.has(clean, 'boundary.gid') ) {
+    return _.partial(atLeastOneLineageMatchesBoundaryGid, clean['boundary.gid']);
+  }
+
+  // there's no boundary.gid filter, so return a function that always returns true
+  return () => true;
+
+}
+
 // return a function that detects if a result is inside a bbox if a bbox is available
 function getBoundaryRectangleFilter(clean, do_geometric_filters_apply) {
   // check to see if boundary.rect.min_lat/min_lon/max_lat/max_lon are all available
@@ -266,6 +291,8 @@ function setup(placeholderService, do_geometric_filters_apply, should_execute) {
                     .filter(getBoundaryRectangleFilter(req.clean, do_geometric_filters_apply))
                     // filter out results that aren't in the boundary.circle
                     .filter(getBoundaryCircleFilter(req.clean, do_geometric_filters_apply))
+                    // filter out results that don't have the boundary.gid in the lineage
+                    .filter(getBoundaryGidFilter(req.clean, do_geometric_filters_apply))
                     // convert results to ES docs
                     .map(_.partial(synthesizeDocs, boundaryCountry));
 

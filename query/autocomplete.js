@@ -54,6 +54,7 @@ query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.boundary_rect );
 query.filter( peliasQuery.view.boundary_country );
+query.filter( peliasQuery.view.boundary_gid );
 
 // --------------------------------
 
@@ -124,6 +125,13 @@ function generateQuery( clean ){
       'boundary:rect:right': clean['boundary.rect.max_lon'],
       'boundary:rect:bottom': clean['boundary.rect.min_lat'],
       'boundary:rect:left': clean['boundary.rect.min_lon']
+    });
+  }
+
+  // boundary gid
+  if( check.string(clean['boundary.gid']) ){
+    vs.set({
+      'boundary:gid': clean['boundary.gid']
     });
   }
 
