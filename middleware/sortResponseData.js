@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const stable = require('stable');
 
 const logger = require('pelias-logger').get('api');
 
@@ -12,8 +13,8 @@ function setup(comparator, should_execute) {
     // capture the pre-sort order
     const presort_order = res.data.map(_.property('_id'));
 
-    // sort operates on array in place
-    res.data.sort(comparator(req.clean));
+    // stable operates on array in place
+    stable.inplace(res.data, comparator(req.clean));
 
     // capture the post-sort order
     const postsort_order = res.data.map(_.property('_id'));
