@@ -591,10 +591,51 @@ module.exports.tests.priority = function(test, common) {
       ]
     };
 
-    var expectedCount = 1;
+    var expectedCount = 2;
     dedupe(req, res, function () {
       t.equal(res.data.length, expectedCount, 'results have fewer items than before');
-      t.deepEqual(res.data[0].layer, 'locality', 'locality result won');
+      t.deepEqual(res.data[1].layer, 'locality', 'locality result not removed');
+      t.end();
+    });
+  });
+
+  test('real-world test case Pennsylvania: records without shared hierarchy should not be deduped', function (t) {
+    var req = {
+      clean: {
+        text: 'Pennsylvania',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': {
+            'default': 'Pennsylvania'
+          },
+          'source': 'whosonfirst',
+          'source_id': '85688481',
+          'layer': 'region',
+          'parent': {
+            'region_id': 85688481
+          },
+        },
+        {
+          'name': {
+            'default': 'Pennsylvania'
+          },
+          'source': 'whosonfirst',
+          'source_id': '404499535',
+          'layer': 'localadmin',
+          'parent': {
+            'region_id': 4 //not the same as above
+          }
+        }
+      ]
+    };
+
+    var expectedCount = 2;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'results are not deduped');
       t.end();
     });
   });

@@ -61,23 +61,23 @@ function isParentHierarchyDifferent(item1, item2){
 
   // iterate over all the placetypes, comparing between items
 
-  // we only want to check parent items representing places less granular
-  // than the highest matched layer.
-  // eg. if we are comparing layer=address & layer=country then we only
-  // check for differences in layers above country, so continent, planet etc.
-  let highestLayerIndex = Math.min(
+  // only check layers higher than the lower of the two record layers
+  // eg. if we are comparing layer=locality & layer=country then we only
+  // check for differences in layers localadmin, region, country, etc.
+  const lowestRecordLayer = Math.min(
     placeTypes.findIndex(el => el === item1.layer),
     placeTypes.findIndex(el => el === item2.layer)
   );
 
   // in the case where we couldn't find either layer in the $placeTypes array
   // we will enforce that all parent fields are checked.
-  if( highestLayerIndex === -1 ){ highestLayerIndex = Infinity; }
+  const lowestLayerToCheck = lowestRecordLayer === -1 ? Infinity : lowestRecordLayer + 1;
 
   return placeTypes.some((placeType, pos) => {
 
-    // skip layers that are less granular than, or equal to the highest matched layer
-    if( pos >= highestLayerIndex ){ return false; }
+    // skip layers that are less granular than lowest layer to check
+    // note: "higher" layers have smaller indices
+    if( pos >= lowestLayerToCheck){ return false; }
 
     // ensure the parent ids are the same for all placetypes
     return isPropertyDifferent( item1.parent, item2.parent, placeType + '_id' );

@@ -94,7 +94,7 @@ module.exports.tests.dedupe = function(test, common) {
       }
     };
 
-    t.false(isDifferent(item1, item2), 'should be different');
+    t.true(isDifferent(item1, item2), 'should be different');
     t.end();
   });
 
@@ -115,6 +115,31 @@ module.exports.tests.dedupe = function(test, common) {
     };
 
     t.true(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
+  test('isParentHierarchyDifferent: do compare parentage at higher levels than the lowest item placetypes', function(t) {
+    var item1 = {
+      name: {
+        default: 'theplace'
+      },
+      'layer': 'localadmin',
+      'parent': {
+        'localadmin_id': '12345',
+        'country_id': '5'
+      }
+    };
+    var item2 = {
+      name: {
+        default: 'theplace'
+      },
+      'layer': 'country',
+      'parent': {
+        'country_id': '5'
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should be different');
     t.end();
   });
 
