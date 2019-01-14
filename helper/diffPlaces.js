@@ -54,7 +54,7 @@ function isParentHierarchyDifferent(item1, item2){
   if( !isPojo1 && !isPojo2 ){ return false; }
 
   // if only one has parent info, we consider them the same
-  // note: this really shouldn't happen as at least on parent should exist
+  // note: this really shouldn't happen as at least one parent should exist
   if( !isPojo1 || !isPojo2 ){ return false; }
 
   // else both have parent info
@@ -70,7 +70,7 @@ function isParentHierarchyDifferent(item1, item2){
     placeTypes.findIndex(el => el === item2.layer)
   );
 
-  // in the case where we couldn't find either later in the $placeTypes array
+  // in the case where we couldn't find either layer in the $placeTypes array
   // we will enforce that all parent fields are checked.
   if( highestLayerIndex === -1 ){ highestLayerIndex = Infinity; }
 
