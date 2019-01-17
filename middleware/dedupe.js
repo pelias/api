@@ -1,6 +1,7 @@
 const logger = require('pelias-logger').get('api');
 const _ = require('lodash');
 const isDifferent = require('../helper/diffPlaces').isDifferent;
+const layerPreferences = require('../helper/diffPlaces').layerPreferences;
 const canonical_sources = require('../helper/type_mapping').canonical_sources;
 const field = require('../helper/fieldValue');
 
@@ -17,7 +18,7 @@ function dedupeResults(req, res, next) {
   let unique = [ res.data[0] ];
 
   // convenience function to search unique array for an existing element which matches a hit
-  let findMatch = (hit) => unique.findIndex(elem => !isDifferent(elem, hit));
+  let findMatch = (hit) => unique.findIndex(elem => !isDifferent(elem, hit, _.get(req, 'clean.lang.iso6393') ));
 
   // iterate over res.data using an old-school for loop starting at index 1
   // we can call break at any time to end the iterator
@@ -81,19 +82,28 @@ function isPreferred(existingHit, candidateHit) {
   if( !_.includes(canonical_sources, candidateHit.source) &&
        _.includes(canonical_sources, existingHit.source) ){ return true; }
 
-  // prefer certain sources over others
-  switch( existingHit.source ){
-    // sources are the same
-    case candidateHit.source: return false;
-    // WOF has bbox and is generally preferred
-    case 'geonames': return candidateHit.source === 'whosonfirst';
-    // addresses are generally better in OA
-    case 'openstreetmap': return candidateHit.source === 'openaddresses';
-    // venues are better in OSM
-    case 'whosonfirst': return candidateHit.source === 'openstreetmap';
-    // no preference, keep existing hit
-    default: return false;
+  // prefer certain layers over others
+  if( existingHit.layer !== candidateHit.layer && _.isArray( layerPreferences ) ){
+    for( let i=0; i<layerPreferences.length; i++ ){
+      if( existingHit.layer === layerPreferences[i] ){ return false; }
+      if( candidateHit.layer === layerPreferences[i] ){ return true; }
+    }
   }
+
+  // prefer certain sources over others
+  if( existingHit.source !== candidateHit.source ){
+    switch( existingHit.source ){
+      // WOF has bbox and is generally preferred
+      case 'geonames': return candidateHit.source === 'whosonfirst';
+      // addresses are generally better in OA
+      case 'openstreetmap': return candidateHit.source === 'openaddresses';
+      // venues are better in OSM
+      case 'whosonfirst': return candidateHit.source === 'openstreetmap';
+    }
+  }
+
+  // no preference, keep existing hit
+  return false;
 }
 
 module.exports = function() {
