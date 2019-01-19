@@ -7,6 +7,7 @@ module.exports = {
         'match': {
           'name.default': {
             'query': 'soho grand',
+            'cutoff_frequency': 0.01,
             'analyzer': 'peliasQueryFullToken',
             'boost': 1
           }
@@ -16,6 +17,7 @@ module.exports = {
         'match': {
           'phrase.default': {
             'query': 'soho grand',
+            'cutoff_frequency': 0.01,
             'analyzer': 'peliasPhrase',
             'type': 'phrase',
             'slop': 2,
@@ -28,6 +30,7 @@ module.exports = {
             'match': {
               'phrase.default': {
                 'query': 'soho grand',
+                'cutoff_frequency': 0.01,
                 'analyzer': 'peliasPhrase',
                 'type': 'phrase',
                 'slop': 2,
@@ -53,6 +56,7 @@ module.exports = {
             'match': {
               'phrase.default': {
                 'query': 'soho grand',
+                'cutoff_frequency': 0.01,
                 'analyzer': 'peliasPhrase',
                 'type': 'phrase',
                 'slop': 2,
@@ -77,6 +81,7 @@ module.exports = {
           'parent.region_a': {
             'analyzer': 'peliasAdmin',
             'boost': 1,
+            'cutoff_frequency': 0.01,
             'query': 'NY'
           }
         }

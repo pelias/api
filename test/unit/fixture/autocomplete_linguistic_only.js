@@ -11,6 +11,7 @@ module.exports = {
                 'query': 'test',
                 'type': 'phrase',
                 'operator': 'and',
+                'cutoff_frequency': 0.01,
                 'slop': 3
               }
             }

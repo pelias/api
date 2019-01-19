@@ -5,6 +5,7 @@ module.exports = {
         'match': {
           'name.default': {
             'analyzer': 'peliasQueryFullToken',
+            'cutoff_frequency': 0.01,
             'type': 'phrase',
             'boost': 1,
             'slop': 3,
@@ -17,6 +18,7 @@ module.exports = {
           'match': {
             'address_parts.street': {
               'query': 'k road',
+              'cutoff_frequency': 0.01,
               'boost': 5,
               'analyzer': 'peliasStreet'
             }
@@ -25,6 +27,7 @@ module.exports = {
           'match': {
             'parent.country': {
               'query': 'laird',
+              'cutoff_frequency': 0.01,
               'boost': 800,
               'analyzer': 'peliasAdmin'
             }
@@ -33,6 +36,7 @@ module.exports = {
           'match': {
             'parent.region': {
               'query': 'laird',
+              'cutoff_frequency': 0.01,
               'boost': 600,
               'analyzer': 'peliasAdmin'
             }
@@ -41,6 +45,7 @@ module.exports = {
           'match': {
             'parent.region_a': {
               'query': 'laird',
+              'cutoff_frequency': 0.01,
               'boost': 600,
               'analyzer': 'peliasAdmin'
             }
@@ -49,6 +54,7 @@ module.exports = {
           'match': {
             'parent.county': {
               'query': 'laird',
+              'cutoff_frequency': 0.01,
               'boost': 400,
               'analyzer': 'peliasAdmin'
             }
@@ -57,6 +63,7 @@ module.exports = {
           'match': {
             'parent.borough': {
               'analyzer': 'peliasAdmin',
+              'cutoff_frequency': 0.01,
               'boost': 600,
               'query': 'laird'
             }
@@ -65,6 +72,7 @@ module.exports = {
           'match': {
             'parent.localadmin': {
               'query': 'laird',
+              'cutoff_frequency': 0.01,
               'boost': 200,
               'analyzer': 'peliasAdmin'
             }
@@ -73,6 +81,7 @@ module.exports = {
           'match': {
             'parent.locality': {
               'query': 'laird',
+              'cutoff_frequency': 0.01,
               'boost': 200,
               'analyzer': 'peliasAdmin'
             }
@@ -81,6 +90,7 @@ module.exports = {
           'match': {
             'parent.neighbourhood': {
               'query': 'laird',
+              'cutoff_frequency': 0.01,
               'boost': 200,
               'analyzer': 'peliasAdmin'
             }
@@ -93,6 +103,7 @@ module.exports = {
               'type' : 'phrase',
               'boost' : 1,
               'slop' : 3,
+              'cutoff_frequency': 0.01,
               'query' : 'k road'
             }
           }

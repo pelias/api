@@ -7,6 +7,7 @@ module.exports = {
         'match': {
           'name.default': {
             'query': '123 main st',
+            'cutoff_frequency': 0.01,
             'analyzer': 'peliasQueryFullToken',
             'boost': 1
           }
@@ -16,6 +17,7 @@ module.exports = {
         'match': {
           'phrase.default': {
             'query': '123 main st',
+            'cutoff_frequency': 0.01,
             'analyzer': 'peliasPhrase',
             'type': 'phrase',
             'slop': 2,
@@ -29,6 +31,7 @@ module.exports = {
             'match': {
               'phrase.default': {
                 'query': '123 main st',
+                'cutoff_frequency': 0.01,
                 'analyzer': 'peliasPhrase',
                 'type': 'phrase',
                 'slop': 2,
@@ -54,6 +57,7 @@ module.exports = {
             'match': {
               'phrase.default': {
                 'query': '123 main st',
+                'cutoff_frequency': 0.01,
                 'analyzer': 'peliasPhrase',
                 'type': 'phrase',
                 'slop': 2,
@@ -77,6 +81,7 @@ module.exports = {
         'match': {
           'address_parts.number': {
             'query': '123',
+            'cutoff_frequency': 0.01,
             'boost': vs['address:housenumber:boost'],
             'analyzer': vs['address:housenumber:analyzer']
           }
@@ -85,6 +90,7 @@ module.exports = {
         'match': {
           'address_parts.street': {
             'query': 'main st',
+            'cutoff_frequency': 0.01,
             'boost': vs['address:street:boost'],
             'analyzer': vs['address:street:analyzer']
           }
@@ -93,6 +99,7 @@ module.exports = {
         'match': {
           'address_parts.zip': {
             'query': '10010',
+            'cutoff_frequency': 0.01,
             'boost': vs['address:postcode:boost'],
             'analyzer': vs['address:postcode:analyzer']
           }
@@ -101,6 +108,7 @@ module.exports = {
         'match': {
           'parent.country_a': {
             'query': 'USA',
+            'cutoff_frequency': 0.01,
             'boost': vs['admin:country_a:boost'],
             'analyzer': vs['admin:country_a:analyzer']
           }
@@ -109,6 +117,7 @@ module.exports = {
         'match': {
           'parent.region_a': {
             'query': 'NY',
+            'cutoff_frequency': 0.01,
             'boost': vs['admin:region_a:boost'],
             'analyzer': vs['admin:region_a:analyzer']
           }

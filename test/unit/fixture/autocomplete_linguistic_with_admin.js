@@ -9,6 +9,7 @@ module.exports = {
               'type': 'phrase',
               'boost': 1,
               'slop': 3,
+              'cutoff_frequency': 0.01,
               'query': 'one two'
             }
           }
@@ -20,6 +21,7 @@ module.exports = {
             'parent.country': {
               'analyzer': 'peliasAdmin',
               'boost': 800,
+              'cutoff_frequency': 0.01,
               'query': 'three'
             }
           }
@@ -28,6 +30,7 @@ module.exports = {
           'match': {
             'parent.region': {
               'analyzer': 'peliasAdmin',
+              'cutoff_frequency': 0.01,
               'boost': 600,
               'query': 'three'
             }
@@ -37,6 +40,7 @@ module.exports = {
           'match': {
             'parent.region_a': {
               'analyzer': 'peliasAdmin',
+              'cutoff_frequency': 0.01,
               'boost': 600,
               'query': 'three'
             }
@@ -46,6 +50,7 @@ module.exports = {
           'match': {
             'parent.county': {
               'analyzer': 'peliasAdmin',
+              'cutoff_frequency': 0.01,
               'boost': 400,
               'query': 'three'
             }
@@ -55,6 +60,7 @@ module.exports = {
           'match': {
             'parent.borough': {
               'analyzer': 'peliasAdmin',
+              'cutoff_frequency': 0.01,
               'boost': 600,
               'query': 'three'
             }
@@ -64,6 +70,7 @@ module.exports = {
           'match': {
             'parent.localadmin': {
               'analyzer': 'peliasAdmin',
+              'cutoff_frequency': 0.01,
               'boost': 200,
               'query': 'three'
             }
@@ -73,6 +80,7 @@ module.exports = {
           'match': {
             'parent.locality': {
               'analyzer': 'peliasAdmin',
+              'cutoff_frequency': 0.01,
               'boost': 200,
               'query': 'three'
             }
@@ -82,6 +90,7 @@ module.exports = {
           'match': {
             'parent.neighbourhood': {
               'analyzer': 'peliasAdmin',
+              'cutoff_frequency': 0.01,
               'boost': 200,
               'query': 'three'
             }
@@ -91,6 +100,7 @@ module.exports = {
           'match': {
             'phrase.default': {
               'analyzer' : 'peliasPhrase',
+              'cutoff_frequency': 0.01,
               'type' : 'phrase',
               'boost' : 1,
               'slop' : 3,
