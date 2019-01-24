@@ -4,6 +4,7 @@ const logger = require('pelias-logger').get('geojsonify');
 const collectDetails = require('./geojsonify_place_details');
 const _ = require('lodash');
 const Document = require('pelias-model').Document;
+const codec = require('pelias-model').codec;
 const field = require('./fieldValue');
 
 function geojsonifyPlaces( params, docs ){
@@ -60,6 +61,22 @@ function geojsonifyPlace(params, place) {
 
   // assign all the details info into the doc
   Object.assign(doc, collectDetails(params, place));
+
+  // add addendum data if available
+  // note: this should be the last assigned property, for aesthetic reasons.
+  if (_.has(place, 'addendum')) {
+    let addendum = {};
+    for(let namespace in place.addendum){
+      try {
+        addendum[namespace] = codec.decode(place.addendum[namespace]);
+      } catch( e ){
+        logger.warn(`doc ${doc.gid} failed to decode addendum namespace ${namespace}`);
+      }
+    }
+    if( Object.keys(addendum).length ){
+      doc.addendum = addendum;
+    }
+  }
 
   return doc;
 }

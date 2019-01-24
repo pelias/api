@@ -1,6 +1,6 @@
 const geojsonify = require('../../../helper/geojsonify');
-
 const proxyquire = require('proxyquire').noCallThru();
+const codec = require('pelias-model').codec;
 
 module.exports.tests = {};
 
@@ -681,6 +681,103 @@ module.exports.tests.nameAliases = function(test, common) {
     t.end();
   });
 
+};
+
+// ensure addendums aree decoded and printed properly
+module.exports.tests.addendum = function(test, common) {
+  test('addendum: not set in source', function(t) {
+    var example = [{
+      '_type': 'geoname',
+      '_id': '6295630',
+      'source': 'whosonfirst',
+      'layer': 'continent',
+      'name': {
+        'default': 'Earth'
+      },
+      'center_point': {
+        'lon': 0,
+        'lat': 0
+      }
+    }];
+
+    let collection = geojsonify({}, example);
+    t.false(collection.features[0].properties.addendum);
+    t.end();
+  });
+  test('addendum: set in source', function(t) {
+    var example = [{
+      '_type': 'geoname',
+      '_id': '6295630',
+      'source': 'whosonfirst',
+      'layer': 'continent',
+      'name': {
+        'default': 'Earth'
+      },
+      'center_point': {
+        'lon': 0,
+        'lat': 0
+      },
+      'addendum': {
+        'wikipedia': codec.encode({ slug: 'HackneyCityFarm' }),
+        'geonames': codec.encode({ foreignkey: 1 })
+      }
+    }];
+
+    let collection = geojsonify({}, example);
+    t.deepEqual(collection.features[0].properties.addendum, {
+      wikipedia: { slug: 'HackneyCityFarm' },
+      geonames: { foreignkey: 1 }
+    });
+    t.end();
+  });
+  test('addendum: partially corrupted', function(t) {
+    var example = [{
+      '_type': 'geoname',
+      '_id': '6295630',
+      'source': 'whosonfirst',
+      'layer': 'continent',
+      'name': {
+        'default': 'Earth'
+      },
+      'center_point': {
+        'lon': 0,
+        'lat': 0
+      },
+      'addendum': {
+        'wikipedia': codec.encode({ slug: 'HackneyCityFarm' }),
+        'geonames': 'INVALID ENCODING'
+      }
+    }];
+
+    let collection = geojsonify({}, example);
+    t.deepEqual(collection.features[0].properties.addendum, {
+      wikipedia: { slug: 'HackneyCityFarm' }
+    });
+    t.end();
+  });
+  test('addendum: all corrupted', function(t) {
+    var example = [{
+      '_type': 'geoname',
+      '_id': '6295630',
+      'source': 'whosonfirst',
+      'layer': 'continent',
+      'name': {
+        'default': 'Earth'
+      },
+      'center_point': {
+        'lon': 0,
+        'lat': 0
+      },
+      'addendum': {
+        'wikipedia': 'INVALID ENCODING',
+        'geonames': 'INVALID ENCODING'
+      }
+    }];
+
+    let collection = geojsonify({}, example);
+    t.false(collection.features[0].properties.addendum);
+    t.end();
+  });
 };
 
 module.exports.all = (tape, common) => {
