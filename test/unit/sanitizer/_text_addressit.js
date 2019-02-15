@@ -36,9 +36,7 @@ module.exports.tests.text_parser = function(test, common) {
         parser: 'addressit',
         parsed_text: {
           name: query.name,
-          regions: [ query.name ],
-          admin_parts: query.admin_parts,
-          state: query.state
+          admin_parts: query.admin_parts
         }
       };
 
@@ -61,9 +59,7 @@ module.exports.tests.text_parser = function(test, common) {
         parser: 'addressit',
         parsed_text: {
           name: query.name,
-          regions: [ query.name ],
-          admin_parts: query.admin_parts,
-          state: query.state
+          admin_parts: query.admin_parts
         }
       };
 
@@ -86,9 +82,7 @@ module.exports.tests.text_parser = function(test, common) {
         parser: 'addressit',
         parsed_text: {
           name: query.name,
-          regions: [ query.name ],
-          admin_parts: query.admin_parts,
-          state: query.state
+          admin_parts: query.admin_parts
         }
       };
 
@@ -117,7 +111,6 @@ module.exports.tests.text_parser = function(test, common) {
         parser: 'addressit',
         parsed_text: {
           name: query.name,
-          regions: [ query.name, query.admin_parts ],
           admin_parts: query.admin_parts
         }
       };
@@ -141,7 +134,6 @@ module.exports.tests.text_parser = function(test, common) {
         parser: 'addressit',
         parsed_text: {
           name: query.name,
-          regions: [ query.name, query.admin_parts ],
           admin_parts: query.admin_parts
         }
       };
@@ -251,8 +243,6 @@ module.exports.tests.text_parser = function(test, common) {
       text: 'main particle new york',
       parser: 'addressit',
       parsed_text: {
-        regions: [ 'main particle' ],
-        state: 'NY'
       }
     };
 
@@ -274,10 +264,6 @@ module.exports.tests.text_parser = function(test, common) {
       text: '123 main st new york ny',
       parser: 'addressit',
       parsed_text: {
-        number: '123',
-        street: 'main st',
-        state: 'NY',
-        regions: [ 'new york' ]
       }
     };
 
@@ -299,11 +285,6 @@ module.exports.tests.text_parser = function(test, common) {
       text: '123 main st new york ny 10010',
       parser: 'addressit',
       parsed_text: {
-        number: '123',
-        street: 'main st',
-        state: 'NY',
-        postalcode: '10010',
-        regions: [ 'new york' ]
       }
     };
 
@@ -325,10 +306,6 @@ module.exports.tests.text_parser = function(test, common) {
       parser: 'addressit',
       parsed_text: {
         name: '339 W Main St',
-        number: '339',
-        street: 'W Main St',
-        postalcode: '06410',
-        regions: [ 'Cheshire' ],
         admin_parts: 'Cheshire, 06410'
       }
     };
@@ -351,10 +328,6 @@ module.exports.tests.text_parser = function(test, common) {
       parser: 'addressit',
       parsed_text: {
         name: '339 W Main St',
-        number: '339',
-        street: 'W Main St',
-        state: 'PA',
-        regions: [ 'Lancaster' ],
         admin_parts: 'Lancaster, PA'
       }
     };

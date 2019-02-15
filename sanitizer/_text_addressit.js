@@ -1,4 +1,3 @@
-const addressit = require('addressit');
 const _      = require('lodash');
 const logger = require('pelias-logger').get('api');
 
@@ -75,20 +74,7 @@ function parse(clean) {
   // join tokens back togther with normalized delimiters
   var joined = tokens.join(`${DELIM} `);
 
-  // query addressit - perform full address parsing
   // except on queries so short they obviously can't contain an address
-  if( joined.length >= ADDRESSIT_MIN_CHAR_LENGTH ) {
-    var parsed = addressit(joined);
-
-    // copy fields from addressit response to parsed_text
-    for( var attr in parsed ){
-      if( 'text' === attr ){ continue; } // ignore 'text'
-      if( !_.isEmpty( parsed[ attr ] ) && _.isUndefined( parsed_text[ attr ] ) ){
-        parsed_text[ attr ] = parsed[ attr ];
-      }
-    }
-  }
-
   // if all we found was regions, ignore it as it is not enough information to make smarter decisions
   if( Object.keys(parsed_text).length === 1 && !_.isUndefined(parsed_text.regions) ){
     logger.info('Ignoring address parser output, regions only', {
