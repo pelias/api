@@ -3,7 +3,9 @@ class PeliasParameterError extends Error {
     super(message);
   }
 
-  toString() {
+  // syntax had to be changed due to jshint bug
+  // https://github.com/jshint/jshint/issues/3358
+  ['toString']() {
     return this.message;
   }
 
