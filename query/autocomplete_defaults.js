@@ -53,47 +53,47 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'address:postcode:cutoff_frequency': 0.01,
 
   'admin:country_a:analyzer': 'standard',
-  'admin:country_a:field': 'parent.country_a',
+  'admin:country_a:field': 'parent.country_a.ngram',
   'admin:country_a:boost': 1000,
   'admin:country_a:cutoff_frequency': 0.01,
 
   'admin:country:analyzer': 'peliasAdmin',
-  'admin:country:field': 'parent.country',
+  'admin:country:field': 'parent.country.ngram',
   'admin:country:boost': 800,
   'admin:country:cutoff_frequency': 0.01,
 
   'admin:region:analyzer': 'peliasAdmin',
-  'admin:region:field': 'parent.region',
+  'admin:region:field': 'parent.region.ngram',
   'admin:region:boost': 600,
   'admin:region:cutoff_frequency': 0.01,
 
   'admin:region_a:analyzer': 'peliasAdmin',
-  'admin:region_a:field': 'parent.region_a',
+  'admin:region_a:field': 'parent.region_a.ngram',
   'admin:region_a:boost': 600,
   'admin:region_a:cutoff_frequency': 0.01,
 
   'admin:county:analyzer': 'peliasAdmin',
-  'admin:county:field': 'parent.county',
+  'admin:county:field': 'parent.county.ngram',
   'admin:county:boost': 400,
   'admin:county:cutoff_frequency': 0.01,
 
   'admin:localadmin:analyzer': 'peliasAdmin',
-  'admin:localadmin:field': 'parent.localadmin',
+  'admin:localadmin:field': 'parent.localadmin.ngram',
   'admin:localadmin:boost': 200,
   'admin:localadmin:cutoff_frequency': 0.01,
 
   'admin:locality:analyzer': 'peliasAdmin',
-  'admin:locality:field': 'parent.locality',
+  'admin:locality:field': 'parent.locality.ngram',
   'admin:locality:boost': 200,
   'admin:locality:cutoff_frequency': 0.01,
 
   'admin:neighbourhood:analyzer': 'peliasAdmin',
-  'admin:neighbourhood:field': 'parent.neighbourhood',
+  'admin:neighbourhood:field': 'parent.neighbourhood.ngram',
   'admin:neighbourhood:boost': 200,
   'admin:neighbourhood:cutoff_frequency': 0.01,
 
   'admin:borough:analyzer': 'peliasAdmin',
-  'admin:borough:field': 'parent.borough',
+  'admin:borough:field': 'parent.borough.ngram',
   'admin:borough:boost': 600,
   'admin:borough:cutoff_frequency': 0.01,
 

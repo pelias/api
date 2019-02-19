@@ -55,7 +55,7 @@ module.exports = {
       }],
       'filter': [{
         'match': {
-          'parent.country_a': {
+          'parent.country_a.ngram': {
             'analyzer': 'standard',
             'query': 'ABC'
           }
