@@ -224,8 +224,7 @@ function addRoutes(app, peliasConfig) {
   // defer to addressit for analysis IF there's no response AND placeholder should not have executed
   const shouldDeferToAddressIt = all(
     not(hasRequestErrors),
-    not(hasResponseData),
-    not(placeholderShouldHaveExecuted)
+    not(hasResponseData)
   );
 
   // call very old prod query if addressit was the parser
