@@ -25,7 +25,7 @@ module.exports = {
           }
         }, {
           'match': {
-            'parent.country': {
+            'parent.country.ngram': {
               'query': 'laird',
               'cutoff_frequency': 0.01,
               'boost': 800,
@@ -34,7 +34,7 @@ module.exports = {
           }
         }, {
           'match': {
-            'parent.region': {
+            'parent.region.ngram': {
               'query': 'laird',
               'cutoff_frequency': 0.01,
               'boost': 600,
@@ -43,7 +43,7 @@ module.exports = {
           }
         }, {
           'match': {
-            'parent.region_a': {
+            'parent.region_a.ngram': {
               'query': 'laird',
               'cutoff_frequency': 0.01,
               'boost': 600,
@@ -52,7 +52,7 @@ module.exports = {
           }
         }, {
           'match': {
-            'parent.county': {
+            'parent.county.ngram': {
               'query': 'laird',
               'cutoff_frequency': 0.01,
               'boost': 400,
@@ -61,7 +61,7 @@ module.exports = {
           }
         }, {
           'match': {
-            'parent.borough': {
+            'parent.borough.ngram': {
               'analyzer': 'peliasAdmin',
               'cutoff_frequency': 0.01,
               'boost': 600,
@@ -70,7 +70,7 @@ module.exports = {
           }
         }, {
           'match': {
-            'parent.localadmin': {
+            'parent.localadmin.ngram': {
               'query': 'laird',
               'cutoff_frequency': 0.01,
               'boost': 200,
@@ -79,7 +79,7 @@ module.exports = {
           }
         }, {
           'match': {
-            'parent.locality': {
+            'parent.locality.ngram': {
               'query': 'laird',
               'cutoff_frequency': 0.01,
               'boost': 200,
@@ -88,7 +88,7 @@ module.exports = {
           }
         }, {
           'match': {
-            'parent.neighbourhood': {
+            'parent.neighbourhood.ngram': {
               'query': 'laird',
               'cutoff_frequency': 0.01,
               'boost': 200,
