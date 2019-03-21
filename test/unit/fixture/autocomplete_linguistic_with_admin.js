@@ -18,7 +18,7 @@ module.exports = {
       'should': [
         {
           'match': {
-            'parent.country': {
+            'parent.country.ngram': {
               'analyzer': 'peliasAdmin',
               'boost': 800,
               'cutoff_frequency': 0.01,
@@ -28,7 +28,7 @@ module.exports = {
         },
         {
           'match': {
-            'parent.region': {
+            'parent.region.ngram': {
               'analyzer': 'peliasAdmin',
               'cutoff_frequency': 0.01,
               'boost': 600,
@@ -38,7 +38,7 @@ module.exports = {
         },
         {
           'match': {
-            'parent.region_a': {
+            'parent.region_a.ngram': {
               'analyzer': 'peliasAdmin',
               'cutoff_frequency': 0.01,
               'boost': 600,
@@ -48,7 +48,7 @@ module.exports = {
         },
         {
           'match': {
-            'parent.county': {
+            'parent.county.ngram': {
               'analyzer': 'peliasAdmin',
               'cutoff_frequency': 0.01,
               'boost': 400,
@@ -58,7 +58,7 @@ module.exports = {
         },
         {
           'match': {
-            'parent.borough': {
+            'parent.borough.ngram': {
               'analyzer': 'peliasAdmin',
               'cutoff_frequency': 0.01,
               'boost': 600,
@@ -68,7 +68,7 @@ module.exports = {
         },
         {
           'match': {
-            'parent.localadmin': {
+            'parent.localadmin.ngram': {
               'analyzer': 'peliasAdmin',
               'cutoff_frequency': 0.01,
               'boost': 200,
@@ -78,7 +78,7 @@ module.exports = {
         },
         {
           'match': {
-            'parent.locality': {
+            'parent.locality.ngram': {
               'analyzer': 'peliasAdmin',
               'cutoff_frequency': 0.01,
               'boost': 200,
@@ -88,7 +88,7 @@ module.exports = {
         },
         {
           'match': {
-            'parent.neighbourhood': {
+            'parent.neighbourhood.ngram': {
               'analyzer': 'peliasAdmin',
               'cutoff_frequency': 0.01,
               'boost': 200,
