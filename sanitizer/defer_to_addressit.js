@@ -17,12 +17,6 @@ module.exports = (should_execute) => {
       return next();
     }
 
-    // log the query that caused a fallback since libpostal+new-queries didn't return anything
-    if (req.path === '/v1/search') {
-      const queryText = logging.isDNT(req) ? '[text removed]' : req.clean.text;
-      logger.info(`fallback queryText: ${queryText}`);
-    }
-
     sanitizeAll.sanitize(req, sanitizers);
     next();
 

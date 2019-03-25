@@ -102,11 +102,8 @@ function synthesizeDoc(results) {
     return esDoc.data;
 
   } catch( e ) {
-
     // an error occurred when generating a new Document
-    logger.info(`[controller:coarse_reverse][error]`);
-    logger.error(e);
-    logger.info(results);
+    logger.error('[controller:coarse_reverse][error]', e);
 
     return null;
   }
