@@ -75,7 +75,7 @@
     "source-map": "^0.7.0",
     "tap-dot": "^2.0.0",
     "tape": "^4.5.1",
-    "tmp": "^0.0.33"
+    "tmp": "^0.1.0"
   },
   "pre-commit": [
     "lint",
