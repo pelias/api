@@ -2,10 +2,9 @@ module.exports = function (vs) {
 
   // validate required params
   if (!vs.isset('input:name') ||
-    !vs.isset('phrase:analyzer') ||
-    !vs.isset('phrase:field') ||
-    !vs.isset('phrase:boost') ||
-    !vs.isset('phrase:slop')) {
+    !vs.isset('fuzzy:analyzer') ||
+    !vs.isset('fuzzy:field') ||
+    !vs.isset('fuzzy:boost')) {
     return null;
   }
 
@@ -13,26 +12,29 @@ module.exports = function (vs) {
   var view = { 'match': {} };
 
   // match query
-  view.match[vs.var('phrase:field')] = {
-    analyzer: vs.var('phrase:analyzer'),
-    boost: vs.var('phrase:boost'),
-    slop: vs.var('phrase:slop'),
+  view.match[vs.var('fuzzy:field')] = {
+    analyzer: vs.var('fuzzy:analyzer'),
+    boost: vs.var('fuzzy:boost'),
     query: vs.var('input:name')
   };
 
-  if (vs.isset('phrase:fuzziness')) {
-    view.match[vs.var('phrase:field')].fuzziness = vs.var('phrase:fuzziness');
+  if (vs.isset('fuzzy:operator')) {
+    view.match[vs.var('fuzzy:field')].operator = vs.var('fuzzy:operator');
+  }
 
-    if (vs.isset('phrase:prefix_length')) {
-      view.match[vs.var('phrase:field')].prefix_length = vs.var('phrase:prefix_length');
+  if (vs.isset('fuzzy:fuzziness')) {
+    view.match[vs.var('fuzzy:field')].fuzziness = vs.var('fuzzy:fuzziness');
+
+    if (vs.isset('fuzzy:prefix_length')) {
+      view.match[vs.var('fuzzy:field')].prefix_length = vs.var('fuzzy:prefix_length');
     }
-    if (vs.isset('phrase:max_expansions')) {
-      view.match[vs.var('phrase:field')].max_expansions = vs.var('phrase:max_expansions');
+    if (vs.isset('fuzzy:max_expansions')) {
+      view.match[vs.var('fuzzy:field')].max_expansions = vs.var('fuzzy:max_expansions');
     }
   }
 
-  if (vs.isset('phrase:cutoff_frequency')) {
-    view.match[vs.var('phrase:field')].cutoff_frequency = vs.var('phrase:cutoff_frequency');
+  if (vs.isset('fuzzy:cutoff_frequency')) {
+    view.match[vs.var('fuzzy:field')].cutoff_frequency = vs.var('fuzzy:cutoff_frequency');
   }
 
   return view;

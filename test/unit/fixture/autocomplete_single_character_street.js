@@ -5,12 +5,12 @@ module.exports = {
         'match': {
           'name.default': {
             'analyzer': 'peliasQueryFullToken',
-            'cutoff_frequency': 0.01,
             'boost': 1,
-            'slop': 3,
             'fuzziness': 1,
             'prefix_length': 1,
             'max_expansions': 10,
+            'operator': 'and',
+            'cutoff_frequency': 0.01,
             'query': 'k road'
           }
         }
@@ -105,7 +105,6 @@ module.exports = {
               'type' : 'phrase',
               'boost' : 1,
               'slop' : 3,
-              'fuzziness': 1,
               'cutoff_frequency': 0.01,
               'query' : 'k road'
             }
