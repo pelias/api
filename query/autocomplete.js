@@ -26,7 +26,7 @@ query.score( views.phrase_first_tokens_only, 'must' );
 query.score( views.ngrams_last_token_only, 'must' );
 
 // address components
-query.score( peliasQuery.view.address('housenumber') );
+query.score( peliasQuery.view.address('housenumber'), 'must' );
 query.score( peliasQuery.view.address('street') );
 query.score( peliasQuery.view.address('postcode') );
 
