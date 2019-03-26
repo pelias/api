@@ -1,5 +1,7 @@
 var peliasQuery = require('pelias-query');
 
+// @todo: is this view still being used?
+
 /**
   Ngrams view with the additional properties to enable:
   type:phrase -> tokens MUST appear in the same order in BOTH query and index

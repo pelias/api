@@ -8,11 +8,12 @@ module.exports = {
               'name.default': {
                 'analyzer': 'peliasQueryPartialToken',
                 'boost': 100,
-                'query': 'test',
-                'cutoff_frequency': 0.01,
-                'type': 'phrase',
+                'fuzziness': 1,
+                'prefix_length': 1,
+                'max_expansions': 10,
                 'operator': 'and',
-                'slop': 3
+                'cutoff_frequency': 0.01,
+                'query': 'test'
               }
             }
           }
