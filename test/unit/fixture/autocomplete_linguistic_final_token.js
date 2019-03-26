@@ -8,8 +8,10 @@ module.exports = {
             'cutoff_frequency': 0.01,
             'boost': 1,
             'slop': 3,
-            'query': 'one',
-            'type': 'phrase'
+            'fuzziness': 1,
+            'prefix_length': 1,
+            'max_expansions': 10,
+            'query': 'one'
           }
         }
       }],
@@ -20,6 +22,7 @@ module.exports = {
             'cutoff_frequency': 0.01,
             'boost': 1,
             'slop': 3,
+            'fuzziness': 1,
             'query': 'one',
             'type': 'phrase'
           }

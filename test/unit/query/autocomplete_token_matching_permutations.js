@@ -16,7 +16,7 @@ const defaults = new peliasQuery.Vars( require('../../../query/autocomplete_defa
 // additional views
 const views = {
   ngrams_last_token_only:     require('../../../query/view/ngrams_last_token_only'),
-  phrase_first_tokens_only:   require('../../../query/view/phrase_first_tokens_only'),
+  phrase_first_tokens_only: require('../../../query/view/phrase_first_tokens_only')(require('../../../query/view/fuzzy_match')),
   pop_subquery:               require('../../../query/view/pop_subquery'),
   boost_exact_matches:        require('../../../query/view/boost_exact_matches')
 };

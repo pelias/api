@@ -11,20 +11,25 @@ var peliasQuery = require('pelias-query');
   unaltered form by other views.
 **/
 
-module.exports = function( vs ){
+module.exports = function( view ){
+  return function( vs ){
 
-  // get a copy of the *complete* tokens produced from the input:name
-  var tokens = vs.var('input:name:tokens_complete').get();
+    // view to use for generating phrase query.
+    if (!view) { return null; } // view validation failed
 
-  // no valid tokens to use, fail now, don't render this view.
-  if( !tokens || tokens.length < 1 ){ return null; }
+    // get a copy of the *complete* tokens produced from the input:name
+    var tokens = vs.var('input:name:tokens_complete').get();
 
-  // make a copy Vars so we don't mutate the original
-  var vsCopy = new peliasQuery.Vars( vs.export() );
+    // no valid tokens to use, fail now, don't render this view.
+    if( !tokens || tokens.length < 1 ){ return null; }
 
-  // set the 'name' variable in the copy to all but the last token
-  vsCopy.var('input:name').set( tokens.join(' ') );
+    // make a copy Vars so we don't mutate the original
+    var vsCopy = new peliasQuery.Vars( vs.export() );
 
-  // return the view rendered using the copy
-  return peliasQuery.view.phrase( vsCopy );
+    // set the 'name' variable in the copy to all but the last token
+    vsCopy.var('input:name').set( tokens.join(' ') );
+
+    // return the view rendered using the copy
+    return view(vsCopy);
+  };
 };

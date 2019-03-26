@@ -10,7 +10,7 @@ var views = {
   custom_boosts:              require('./view/boost_sources_and_layers'),
   ngrams_strict:              require('./view/ngrams_strict'),
   ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
-  phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
+  phrase_first_tokens_only:   require('./view/phrase_first_tokens_only')(require('./view/fuzzy_match')),
   pop_subquery:               require('./view/pop_subquery'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter')
