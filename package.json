@@ -72,7 +72,6 @@
     "pelias-mock-logger": "^1.3.0",
     "precommit-hook": "^3.0.0",
     "proxyquire": "^2.0.0",
-    "source-map": "^0.7.0",
     "tap-dot": "^2.0.0",
     "tape": "^4.5.1"
   },
