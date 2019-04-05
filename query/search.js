@@ -48,7 +48,7 @@ function generateQuery( clean ){
   }
 
   // categories
-  if (clean.categories) {
+  if (clean.categories && !check.boolean(clean.categories)) {
     vs.var('input:categories', clean.categories);
   }
 

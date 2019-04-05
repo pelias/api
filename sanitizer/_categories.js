@@ -2,7 +2,6 @@ var check = require('check-types');
 var categoryTaxonomy = require('pelias-categories');
 
 var ERRORS = {
-  empty: 'Categories parameter cannot be left blank. See documentation of service for valid options.',
   invalid: 'Invalid categories parameter value(s). See documentation of service for valid options.'
 };
 
@@ -19,8 +18,8 @@ function _sanitize( raw, clean, categories ) {
     return messages;
   }
 
-  if (!check.nonEmptyString(raw.categories)) {
-    messages.errors.push(ERRORS.empty);
+  if (!check.nonEmptyString(raw.categories) || raw.categories === 'true') {
+    clean.categories = true;
     return messages;
   }
 

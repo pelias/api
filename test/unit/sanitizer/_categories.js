@@ -25,13 +25,10 @@ module.exports.tests.no_categories = function(test, common) {
       clean: { }
     };
 
-    var expected_error = 'Categories parameter cannot be left blank. See documentation of service for valid options.';
-
     var messages = sanitizer.sanitize(req.query, req.clean);
 
-    t.equal(req.clean.categories, undefined, 'no categories should be defined');
-    t.deepEqual(messages.errors.length, 1, 'error returned');
-    t.deepEqual(messages.errors[0], expected_error, 'error returned');
+    t.equal(req.clean.categories, true, 'empty parameter should return true');
+    t.deepEqual(messages.errors.length, 0, 'error returned');
     t.deepEqual(messages.warnings, [], 'no warnings returned');
     t.end();
   });
