@@ -75,7 +75,7 @@ function generateQuery( clean ){
   }
 
   // categories
-  if (clean.categories) {
+  if (clean.categories && clean.categories.length) {
     vs.var('input:categories', clean.categories);
   }
 
