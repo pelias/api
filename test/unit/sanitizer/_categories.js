@@ -25,14 +25,14 @@ module.exports.tests.no_categories = function(test, common) {
       clean: { }
     };
 
-    var expected_error = 'Categories parameter cannot be left blank. See documentation of service for valid options.';
+    var expected_warning = 'Categories parameter left blank, showing results from all categories.';
 
     var messages = sanitizer.sanitize(req.query, req.clean);
 
-    t.equal(req.clean.categories, undefined, 'no categories should be defined');
-    t.deepEqual(messages.errors.length, 1, 'error returned');
-    t.deepEqual(messages.errors[0], expected_error, 'error returned');
-    t.deepEqual(messages.warnings, [], 'no warnings returned');
+    t.deepEqual(req.clean.categories, [], 'empty categories array should be defined');
+    t.deepEqual(messages.errors, [], 'no errors returned');
+    t.deepEqual(messages.warnings.length, 1, 'warning returned');
+    t.deepEqual(messages.warnings[0], expected_warning, 'warning returned');
     t.end();
   });
 
@@ -44,14 +44,14 @@ module.exports.tests.no_categories = function(test, common) {
       clean: { }
     };
 
-    var expected_error = 'Invalid categories parameter value(s). See documentation of service for valid options.';
+    var expected_warning = 'Categories parameter left blank, showing results from all categories.';
 
     var messages = sanitizer.sanitize(req.query, req.clean);
 
-    t.equal(req.clean.categories, undefined, 'no categories should be defined');
-    t.deepEqual(messages.errors.length, 1, 'error returned');
-    t.deepEqual(messages.errors[0], expected_error, 'error returned');
-    t.deepEqual(messages.warnings, [], 'no warnings returned');
+    t.deepEqual(req.clean.categories, [], 'empty categories array should be defined');
+    t.deepEqual(messages.errors, [], 'no errors returned');
+    t.deepEqual(messages.warnings.length, 1, 'warning returned');
+    t.deepEqual(messages.warnings[0], expected_warning, 'warning returned');
     t.end();
   });
 };
@@ -124,16 +124,16 @@ module.exports.tests.invalid_categories = function(test, common) {
       clean: { }
     };
     var expected_messages = {
-      errors: [
-        'Invalid categories parameter value(s). See documentation of service for valid options.'
-      ],
-      warnings: []
+      errors: [],
+      warnings: [
+        'Categories parameter left blank, showing results from all categories.'
+      ]
     };
 
     var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
-    t.equal(req.clean.categories, undefined, 'clean.categories should remain empty');
+    t.deepEqual(req.clean.categories, [], 'empty categories array should be defined');
     t.end();
   });
 
@@ -145,16 +145,16 @@ module.exports.tests.invalid_categories = function(test, common) {
       clean: { }
     };
     var expected_messages = {
-      errors: [
-        'Invalid categories parameter value(s). See documentation of service for valid options.'
-      ],
-      warnings: []
+      errors: [],
+      warnings: [
+        'Categories parameter left blank, showing results from all categories.'
+      ]
     };
 
     var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
-    t.equal(req.clean.categories, undefined, 'clean.categories should remain empty');
+    t.deepEqual(req.clean.categories, [], 'empty categories array should be defined');
     t.end();
   });
 

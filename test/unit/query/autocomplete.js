@@ -235,6 +235,25 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  test('valid categories filter', function (t) {
+    var clean = {
+      text: 'test',
+      tokens: ['test'],
+      tokens_complete: [],
+      tokens_incomplete: ['test'],
+      categories: ['retail', 'food']
+    };
+
+    var query = generate(clean);
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_with_category_filtering');
+
+    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+    t.deepEqual(compiled.body, expected, 'valid autocomplete query with category filtering');
+    t.end();
+  });
+
   test('single character street address', function(t) {
     var query = generate({
       text: 'k road, laird',

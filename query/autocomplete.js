@@ -54,6 +54,7 @@ query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.boundary_rect );
 query.filter( peliasQuery.view.boundary_country );
+query.filter( peliasQuery.view.categories );
 query.filter( peliasQuery.view.boundary_gid );
 
 // --------------------------------
@@ -133,6 +134,11 @@ function generateQuery( clean ){
     vs.set({
       'boundary:gid': clean['boundary.gid']
     });
+  }
+
+  // categories
+  if (clean.categories && clean.categories.length) {
+    vs.var('input:categories', clean.categories);
   }
 
   // run the address parser
