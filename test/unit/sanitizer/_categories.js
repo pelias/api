@@ -54,6 +54,21 @@ module.exports.tests.no_categories = function(test, common) {
     t.deepEqual(messages.warnings[0], expected_warning, 'warning returned');
     t.end();
   });
+
+  test('categories is mix of valid categories and empty strings', function (t) {
+    var req = {
+      query: {
+        categories: ',food,'
+      },
+      clean: {}
+    };
+
+    var messages = sanitizer.sanitize(req.query, req.clean);
+    t.deepEqual(req.clean.categories, ['food'], 'junk trimmed');
+    t.deepEqual(messages.errors, [], 'no errors returned');
+    t.deepEqual(messages.warnings, [], 'no warnings returned');
+    t.end();
+  });
 };
 
 module.exports.tests.valid_categories = function(test, common) {
