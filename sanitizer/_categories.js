@@ -19,21 +19,20 @@ function _sanitize (raw, clean, categories) {
 
   // if categories string has been set
   // map input categories to valid format
-  try {
-    clean.categories = raw.categories.split(',')
-      .map(function (cat) {
-        return cat.toLowerCase().trim(); // lowercase inputs
-      })
-      .filter(function (cat) {
-        if (check.nonEmptyString(cat) && categories.isValidCategory(cat)) {
-          return true;
-        }
-        throw new Error('Empty string value');
-      });
-  } catch (err) {
-    // remove everything from the list if there was any error
+  clean.categories = raw.categories.split(',')
+    .map(cat => {
+      return cat.toLowerCase().trim(); // lowercase inputs
+    })
+    .filter(cat => {
+      if (check.nonEmptyString(cat) && categories.isValidCategory(cat)) {
+        return true;
+      }
+      return false;
+    });
+
+  if( !clean.categories.length ){
+    // display a warning that the input was empty
     messages.warnings.push(WARNINGS.empty);
-    clean.categories = [];
   }
 
   return messages;
