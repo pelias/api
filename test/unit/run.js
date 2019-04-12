@@ -94,6 +94,7 @@ var tests = [
   require('./sanitizer/_size'),
   require('./sanitizer/_sources'),
   require('./sanitizer/_sources_and_layers'),
+  require('./sanitizer/_single_token_address_filter'),
   require('./sanitizer/_synthesize_analysis'),
   require('./sanitizer/_text'),
   require('./sanitizer/_text_addressit'),

@@ -39,7 +39,7 @@ var TypeMapping = function(){
 
   /*
    * An object that has a key for each possible layer or alias,
-   * and returns either that layer, or gall the layers in the alias
+   * and returns either that layer, or all the layers in the alias
    */
   this.layer_mapping = {};
 };
