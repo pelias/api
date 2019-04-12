@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const check = require('check-types');
 
 /**
@@ -17,17 +18,17 @@ const check = require('check-types');
  * performance benefits.
  */
 
-function _setup(layerMapping) {
+function _setup(layersBySource) {
 
   // generate a deduplicated list of all layers except 'address'
-  let layers = Object.keys(layerMapping).reduce((l, key) => l.concat(layerMapping[key]), []);
-  layers = layers.filter((layer, pos) => layers.indexOf(layer) === pos); // dedupe
+  let layers = Object.keys(layersBySource).reduce((l, key) => l.concat(layersBySource[key]), []);
+  layers = _.uniq(layers); // dedupe
   layers = layers.filter(item => item !== 'address'); // exclude 'address'
 
   return {
     layers: layers,
-    sanitize: function _sanitize(_, clean) {
-      
+    sanitize: function _sanitize(__, clean) {
+
       // error & warning messages
       let messages = { errors: [], warnings: [] };
 
@@ -44,7 +45,28 @@ function _setup(layerMapping) {
       // check that only a single word was specified
       let totalWords = clean.text.split(/\s+/).filter(check.nonEmptyString).length;
       if (totalWords < 2) {
-        clean.layers = layers;
+
+        // handle the common case where neither source nor layers were specified
+        if (!check.array(clean.sources) || !check.nonEmptyArray(clean.sources)) {
+          clean.layers = layers;
+        }
+
+        // handle the case where 'sources' were explicitly specified
+        else if (check.array(clean.sources)) {
+
+          // we need to create a list of layers for the specified sources
+          let sourceLayers = clean.sources.reduce((l, key) => l.concat(layersBySource[key] || []), []);
+          sourceLayers = _.uniq(sourceLayers); // dedupe
+
+          // if the sources specified do not have any addresses or if removing the
+          // address layer would result in an empty list, then this is a no-op
+          if (sourceLayers.length < 2 || !sourceLayers.includes('address')) {
+            return messages;
+          }
+
+          // target all layers for the sources specified except 'address'
+          clean.layers = sourceLayers.filter(item => item !== 'address'); // exclude 'address'
+        }
       }
 
       return messages;
