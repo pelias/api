@@ -54,6 +54,33 @@ module.exports.tests.sanitize = function (test, common) {
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
+
+  test('sanitize - apply layer filter when clean.sources empty', (t) => {
+    let clean = { text: 'foo', sources: [] };
+    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
+    t.deepEqual(clean.layers, ['A', 'B', 'C']);
+    t.end();
+  });
+
+  test('sanitize - reduce target layers when clean.sources specified', (t) => {
+    let m = { A: ['A', 'address'], B: ['B', 'address'], C: ['C'] };
+    let s = sanitizer(m);
+
+    let clean = { text: 'foo', sources: [ 'A', 'C' ] };
+    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
+    t.deepEqual(clean.layers, ['A', 'C']);
+    t.end();
+  });
+
+  test('sanitize - do nothing for sources which do not have any addresses', (t) => {
+    let m = { A: ['address'], B: ['address'] };
+    let s = sanitizer(m);
+
+    let clean = { text: 'foo', sources: ['A', 'B'] };
+    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
+    t.false(clean.layers);
+    t.end();
+  });
 };
 
 module.exports.tests.tricky_inputs = function (test, common) {

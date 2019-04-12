@@ -13,8 +13,8 @@ var TypeMapping = function(){
   this.layers = [];
 
   /*
-   * A list of all layers in each source. This is used for convenience elswhere
-   * and to determine when a combination of source and layer parameters is
+   * A list of all layers in each source. This is used for convenience elsewhere
+   * to determine when a combination of source and layer parameters is
    * not going to match any records and will return no results.
    */
   this.layers_by_source = {};
