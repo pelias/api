@@ -8,6 +8,7 @@ module.exports.middleware = (_api_pelias_config) => {
         text: require('../sanitizer/_text')(),
         size: require('../sanitizer/_size')(/* use defaults*/),
         layers: require('../sanitizer/_targets')('layers', type_mapping.layer_mapping),
+        single_token_address_filter: require('../sanitizer/_single_token_address_filter')(type_mapping.layer_mapping),
         sources: require('../sanitizer/_targets')('sources', type_mapping.source_mapping),
         // depends on the layers and sources sanitizers, must be run after them
         sources_and_layers: require('../sanitizer/_sources_and_layers')(),
