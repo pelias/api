@@ -16,7 +16,12 @@ const check = require('check-types');
  * The address layer contains the most records by a large margin, so excluding
  * address results where they are not nessesary will provide significant
  * performance benefits.
+ * 
+ * Update: added warning message to inform user when this functionality is enabled
+ * Update: added additional check that enforces that the input must also contain at least one numeral
  */
+
+const ADDRESS_FILTER_WARNING = 'performance optimization: excluding \'address\' layer';
 
 function _setup(layersBySource) {
 
@@ -42,13 +47,20 @@ function _setup(layersBySource) {
         return messages;
       }
 
-      // check that only a single word was specified
+      // count the number of words specified
       let totalWords = clean.text.split(/\s+/).filter(check.nonEmptyString).length;
-      if (totalWords < 2) {
+
+      // check that at least one numeral was specified
+      let hasNumeral = /\d/.test(clean.text);
+
+      // if less than two words were specified /or no numeral is present
+      // then it is safe to apply the layer filter
+      if (totalWords < 2 || !hasNumeral) {
 
         // handle the common case where neither source nor layers were specified
         if (!check.array(clean.sources) || !check.nonEmptyArray(clean.sources)) {
           clean.layers = layers;
+          messages.warnings.push(ADDRESS_FILTER_WARNING);
         }
 
         // handle the case where 'sources' were explicitly specified
@@ -66,6 +78,7 @@ function _setup(layersBySource) {
 
           // target all layers for the sources specified except 'address'
           clean.layers = sourceLayers.filter(item => item !== 'address'); // exclude 'address'
+          messages.warnings.push(ADDRESS_FILTER_WARNING);
         }
       }
 

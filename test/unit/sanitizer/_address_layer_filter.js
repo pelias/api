@@ -1,5 +1,6 @@
-const sanitizer = require('../../../sanitizer/_single_token_address_filter');
+const sanitizer = require('../../../sanitizer/_address_layer_filter');
 const NO_MESSAGES = { errors: [], warnings: [] };
+const STD_MESSAGES = { errors: [], warnings: ['performance optimization: excluding \'address\' layer'] };
 
 module.exports.tests = {};
 
@@ -21,7 +22,7 @@ module.exports.tests.sanitize = function (test, common) {
   let s = sanitizer(m);
 
   test('sanitize - do nothing if clean.layers already specified', (t) => {
-    let clean = { text: 'example', layers: ['not empty'] };
+    let clean = { text: '1 example', layers: ['not empty'] };
     t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
     t.deepEqual(clean.layers, ['not empty']);
     t.end();
@@ -41,23 +42,30 @@ module.exports.tests.sanitize = function (test, common) {
     t.end();
   });
 
-  test('sanitize - do nothing for multi-word inputs', (t) => {
-    let clean = { text: 'foo bar' };
+  test('sanitize - do nothing for numeric multi-word inputs', (t) => {
+    let clean = { text: '2 b' };
     t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
     t.false(clean.layers);
     t.end();
   });
 
+  test('sanitize - apply layer filter for non-numeric multi-word inputs', (t) => {
+    let clean = { text: 'foo bar baz bing' };
+    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
+    t.deepEqual(clean.layers, ['A', 'B', 'C']);
+    t.end();
+  });
+
   test('sanitize - apply layer filter for single word inputs', (t) => {
     let clean = { text: 'foo' };
-    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
+    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
 
   test('sanitize - apply layer filter when clean.sources empty', (t) => {
     let clean = { text: 'foo', sources: [] };
-    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
+    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
@@ -67,7 +75,7 @@ module.exports.tests.sanitize = function (test, common) {
     let s = sanitizer(m);
 
     let clean = { text: 'foo', sources: [ 'A', 'C' ] };
-    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
+    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'C']);
     t.end();
   });
@@ -88,15 +96,15 @@ module.exports.tests.tricky_inputs = function (test, common) {
   let s = sanitizer(m);
 
   test('tricky inputs - extra whitespacee', (t) => {
-    let clean = { text: ' \t\n  foo \n\t ' };
-    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
+    let clean = { text: ' \t\n  12 \n\t ' };
+    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
 
   test('tricky inputs - trailing whitespacee', (t) => {
-    let clean = { text: 'foo ' };
-    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
+    let clean = { text: '12 ' };
+    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
@@ -104,7 +112,7 @@ module.exports.tests.tricky_inputs = function (test, common) {
 
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape('SANTIZE _single_token_address_filter ' + name, testFunction);
+    return tape('SANTIZE _address_layer_filter ' + name, testFunction);
   }
 
   for (var testCase in module.exports.tests) {
