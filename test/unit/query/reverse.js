@@ -462,7 +462,7 @@ module.exports.tests.boundary_country = (test, common) => {
 
   test('string boundary.country should set boundary:country', t => {
     const clean = {
-      'boundary.country': 'boundary country value'
+      'boundary.country': ['boundary country', 'value']
     };
 
     const query = proxyquire('../../../query/reverse', {

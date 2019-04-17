@@ -172,13 +172,33 @@ module.exports.tests.query = function(test, common) {
       },
       text: 'test', querySize: 10,
       layers: ['test'],
-      'boundary.country': 'ABC'
+      'boundary.country': ['ABC']
     };
 
     var query = generate(clean);
 
     var compiled = JSON.parse( JSON.stringify( query ) );
     var expected = require('../fixture/search_boundary_country');
+
+    t.deepEqual(compiled.type, 'search_fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search: valid boundary.country query');
+    t.end();
+  });
+
+  test('valid multi boundary.country search', function(t) {
+    var clean = {
+      parsed_text: {
+        street: 'street value'
+      },
+      text: 'test', querySize: 10,
+      layers: ['test'],
+      'boundary.country': ['ABC', 'DEF']
+    };
+
+    var query = generate(clean);
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/search_boundary_country_multi');
 
     t.deepEqual(compiled.type, 'search_fallback', 'query type set');
     t.deepEqual(compiled.body, expected, 'search: valid boundary.country query');

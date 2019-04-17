@@ -575,7 +575,7 @@ module.exports.tests.boundary_country = (test, common) => {
       text: 'text value',
       sources: 'sources value',
       layers: 'layers value',
-      'boundary.country': 'boundary country value'
+      'boundary.country': ['boundary country', 'value']
     };
 
     const query = proxyquire('../../../query/structured_geocoding', {

@@ -34,7 +34,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     var raw = { 'boundary.country': 'aq' };
     var clean = {};
     var errorsAndWarnings = sanitizer.sanitize(raw, clean);
-    t.equals(clean['boundary.country'], 'ATA', 'should be uppercased ISO3');
+    t.deepEquals(clean['boundary.country'], ['ATA'], 'should be uppercased ISO3');
     t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] }, 'no warnings or errors');
     t.end();
   });
@@ -43,7 +43,7 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     var raw = { 'boundary.country': 'aTa' };
     var clean = {};
     var errorsAndWarnings = sanitizer.sanitize(raw, clean);
-    t.equals(clean['boundary.country'], 'ATA', 'should be uppercased ISO3');
+    t.deepEquals(clean['boundary.country'], ['ATA'], 'should be uppercased ISO3');
     t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] }, 'no warnings or errors');
     t.end();
   });

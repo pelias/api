@@ -179,9 +179,9 @@ function generateQuery( clean, res ){
   }
 
   // boundary country
-  if( check.string(clean['boundary.country']) ){
+  if( check.nonEmptyArray(clean['boundary.country']) ){
     vs.set({
-      'boundary:country': clean['boundary.country']
+      'boundary:country': clean['boundary.country'].join(' ')
     });
   }
 
