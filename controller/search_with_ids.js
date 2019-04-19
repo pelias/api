@@ -65,7 +65,8 @@ function setup( apiConfig, esclient, query, should_execute ){
           response_time: _.get(data, 'response_time', undefined),
           params: req.clean,
           retries: currentAttempt - 1,
-          text_length: _.get(req, 'clean.text.length', 0)
+          text_length: _.get(req, 'clean.text.length', 0),
+          err: err
         };
         logger.info('elasticsearch', message);
 
