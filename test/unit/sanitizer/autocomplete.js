@@ -41,15 +41,15 @@ module.exports.tests.sanitizers = function(test, common) {
         };
       },
       '../sanitizer/_size': function () {
-        if (_.isEqual(_.values(arguments), [10, 10, 10])) {
+        if (_.isEmpty(arguments)) {
           return {
             sanitize: () => {
               called_sanitizers.push('_size');
               return { errors: [], warnings: [] };
-              }
+            }
           };
         } else {
-          throw new Error('incorrect parameters passed to _size');
+          throw new Error('should not have passed any parameters to _size');
         }
       },
       '../sanitizer/_targets': function (type) {
