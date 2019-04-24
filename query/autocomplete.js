@@ -53,6 +53,7 @@ query.filter( views.max_character_count_layer_filter(['address'], config.get('ap
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.boundary_rect );
+query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.boundary_country );
 query.filter( peliasQuery.view.categories );
 query.filter( peliasQuery.view.boundary_gid );
@@ -127,6 +128,22 @@ function generateQuery( clean ){
       'boundary:rect:bottom': clean['boundary.rect.min_lat'],
       'boundary:rect:left': clean['boundary.rect.min_lon']
     });
+  }
+
+  // boundary circle
+  // @todo: change these to the correct request variable names
+  if( check.number(clean['boundary.circle.lat']) &&
+      check.number(clean['boundary.circle.lon']) ){
+    vs.set({
+      'boundary:circle:lat': clean['boundary.circle.lat'],
+      'boundary:circle:lon': clean['boundary.circle.lon']
+    });
+
+    if( check.number(clean['boundary.circle.radius']) ){
+      vs.set({
+        'boundary:circle:radius': Math.round( clean['boundary.circle.radius'] ) + 'km'
+      });
+    }
   }
 
   // boundary gid

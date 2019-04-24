@@ -312,6 +312,25 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  test('autocomplete + circle around San Francisco', function(t) {
+    var query = generate({
+      text: 'test',
+      'boundary.circle.lat': 37.83239,
+      'boundary.circle.lon': -122.35698,
+      'boundary.circle.radius': 20,
+      tokens: ['test'],
+      tokens_complete: [],
+      tokens_incomplete: ['test']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_linguistic_circle_san_francisco');
+
+    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_focus_null_island');
+    t.end();
+  });
+
   test('valid boundary.gid search', function(t) {
     var query = generate({
       text: 'test',
