@@ -1551,7 +1551,7 @@ module.exports.tests.result_filtering = (test, common) => {
       t.deepEqual(req, {
         param1: 'param1 value',
         clean: {
-          'boundary.country': 'ABC'
+          'boundary.country': ['ABC']
         }
       });
 
@@ -1621,7 +1621,7 @@ module.exports.tests.result_filtering = (test, common) => {
     const req = {
       param1: 'param1 value',
       clean: {
-        'boundary.country': 'ABC'
+        'boundary.country': ['ABC']
       }
     };
     const res = { };
@@ -1693,7 +1693,7 @@ module.exports.tests.result_filtering = (test, common) => {
       t.deepEqual(req, {
         param1: 'param1 value',
         clean: {
-          'boundary.country': 'ABC'
+          'boundary.country': ['ABC']
         }
       });
 
@@ -1771,7 +1771,7 @@ module.exports.tests.result_filtering = (test, common) => {
     const req = {
       param1: 'param1 value',
       clean: {
-        'boundary.country': 'ABC'
+        'boundary.country': ['ABC']
       }
     };
     const res = { };

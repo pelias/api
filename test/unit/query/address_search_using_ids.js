@@ -374,7 +374,7 @@ module.exports.tests.boundary_filters = (test, common) => {
         number: 'housenumber value',
         street: 'street value'
       },
-      'boundary.country': 'boundary.country value'
+      'boundary.country': ['boundary.country', 'value']
     };
     const res = {};
 

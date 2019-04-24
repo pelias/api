@@ -77,7 +77,7 @@ function getLayersFilter(clean) {
 // return true if the hierarchy does not have a country.abbr
 // OR hierarchy country.abbr matches boundary.country
 function matchesBoundaryCountry(boundaryCountry, hierarchy) {
-  return !boundaryCountry || _.get(hierarchy, 'country.abbr') === boundaryCountry;
+  return !boundaryCountry || boundaryCountry.some(countryCode => _.get(hierarchy, 'country.abbr') === countryCode);
 }
 
 // return true if the result does not have a lineage

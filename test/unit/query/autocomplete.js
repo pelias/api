@@ -281,7 +281,7 @@ module.exports.tests.query = function(test, common) {
       tokens: ['test'],
       tokens_complete: [],
       tokens_incomplete: ['test'],
-      'boundary.country': 'ABC'
+      'boundary.country': ['ABC']
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
