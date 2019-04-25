@@ -95,15 +95,42 @@ module.exports.tests.tricky_inputs = function (test, common) {
   let m = { A: ['A'], B: ['B'], C: ['C'] };
   let s = sanitizer(m);
 
-  test('tricky inputs - extra whitespacee', (t) => {
+  test('tricky inputs - extra whitespace', (t) => {
     let clean = { text: ' \t\n  12 \n\t ' };
     t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
 
-  test('tricky inputs - trailing whitespacee', (t) => {
+  test('tricky inputs - trailing whitespace', (t) => {
     let clean = { text: '12 ' };
+    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
+    t.deepEqual(clean.layers, ['A', 'B', 'C']);
+    t.end();
+  });
+};
+
+// handle cases where a parser has run and removed admin tokens
+module.exports.tests.parsed_text = function (test, common) {
+  let m = { A: ['A'], B: ['B'], C: ['C'] };
+  let s = sanitizer(m);
+
+  test('naive parser - apply filter due to comma being present', (t) => {
+    let clean = { text: 'A', parsed_text: { name: '1', admin_parts: 'Avenue' } };
+    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
+    t.deepEqual(clean.layers, ['A', 'B', 'C']);
+    t.end();
+  });
+
+  test('addressit/libpostal - do not apply filter for numeric addresses', (t) => {
+    let clean = { text: 'A', parsed_text: { number: '1', street: 'Main St' } };
+    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
+    t.false(clean.layers);
+    t.end();
+  });
+
+  test('addressit/libpostal - apply filter for non-numeric addresses', (t) => {
+    let clean = { text: 'A', parsed_text: { number: 'Foo', street: 'Main St' } };
     t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();

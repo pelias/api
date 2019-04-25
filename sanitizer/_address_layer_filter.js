@@ -42,16 +42,38 @@ function _setup(layersBySource) {
         return messages;
       }
 
+      // default to using the full 'clean.text'
+      // note: this should already have superfluous characters removed
+      let input = clean.text;
+
       // no nothing if no input text specified in the request
-      if (!check.nonEmptyString(clean.text)) {
+      if (!check.nonEmptyString(input)) {
         return messages;
       }
 
+      // if a parser has removed tokens, use the parsed text instead, this
+      // is the text which will be queried against the 'name.default' field.
+      // @todo: this logic is duplicated from 'query/text_parser.js' and may
+      // be subject to change.
+      if (check.nonEmptyObject(clean.parsed_text)) {
+
+        // if 'addressit' or 'libpostal' identified input as a street address
+        var isStreetAddress = clean.parsed_text.hasOwnProperty('number') && clean.parsed_text.hasOwnProperty('street');
+        if (isStreetAddress) {
+          input = clean.parsed_text.number + ' ' + clean.parsed_text.street;
+        }
+
+        // else if the 'naive parser' was used, input is equal to 'name'
+        else if (check.nonEmptyString(clean.parsed_text.admin_parts) && check.nonEmptyString(clean.parsed_text.name)) {
+          input = clean.parsed_text.name;
+        }
+      }
+
       // count the number of words specified
-      let totalWords = clean.text.split(/\s+/).filter(check.nonEmptyString).length;
+      let totalWords = input.split(/\s+/).filter(check.nonEmptyString).length;
 
       // check that at least one numeral was specified
-      let hasNumeral = /\d/.test(clean.text);
+      let hasNumeral = /\d/.test(input);
 
       // if less than two words were specified /or no numeral is present
       // then it is safe to apply the layer filter
