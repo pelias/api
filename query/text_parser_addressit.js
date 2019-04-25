@@ -23,8 +23,9 @@ function addParsedVariablesToQueryVariables( clean, vs ){
     vs.var( 'input:name', clean.parsed_text.number + ' ' + clean.parsed_text.street );
   }
 
-  // ?
-  else if( clean.parsed_text.admin_parts ) {
+  // if the 'naive parser' was used, input is equal to 'name'
+  // see: 'sanitizer/_text_addressit.js' function 'naive'
+  else if (clean.parsed_text.admin_parts && clean.parsed_text.name ) {
     vs.var( 'input:name', clean.parsed_text.name );
   }
 
