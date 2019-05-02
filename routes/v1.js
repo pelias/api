@@ -11,7 +11,7 @@ var sanitizers = {
   autocomplete: require('../sanitizer/autocomplete'),
   place: require('../sanitizer/place'),
   search: require('../sanitizer/search'),
-  defer_to_addressit: require('../sanitizer/defer_to_addressit'),
+  defer_to_pelias_parser: require('../sanitizer/defer_to_pelias_parser'),
   structured_geocoding: require('../sanitizer/structured_geocoding'),
   reverse: require('../sanitizer/reverse'),
   nearby: require('../sanitizer/nearby')
@@ -75,7 +75,7 @@ const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
 const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_analysis');
 const hasResultsAtLayers = require('../controller/predicates/has_results_at_layers');
-const isAddressItParse = require('../controller/predicates/is_addressit_parse');
+const isPeliasItParse = require('../controller/predicates/is_pelias_parse');
 const hasRequestCategories = require('../controller/predicates/has_request_parameter')('categories');
 const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin_layers');
 // this can probably be more generalized
@@ -221,16 +221,16 @@ function addRoutes(app, peliasConfig) {
     not(placeholderShouldHaveExecuted)
   );
 
-  // defer to addressit for analysis IF there's no response AND placeholder should not have executed
-  const shouldDeferToAddressIt = all(
+  // defer to pelias parser for analysis IF there's no response AND placeholder should not have executed
+  const shouldDeferToPeliasParser = all(
     not(hasRequestErrors),
     not(hasResponseData)
   );
 
-  // call very old prod query if addressit was the parser
+  // call very old prod query if pelias parser was the parser
   const oldProdQueryShouldExecute = all(
     not(hasRequestErrors),
-    isAddressItParse
+    isPeliasItParse
   );
 
   // get language adjustments if:
@@ -289,7 +289,7 @@ function addRoutes(app, peliasConfig) {
       // 3rd parameter is which query module to use, use fallback first, then
       //  use original search strategy if first query didn't return anything
       controllers.search(peliasConfig.api, esclient, queries.cascading_fallback, fallbackQueryShouldExecute),
-      sanitizers.defer_to_addressit(shouldDeferToAddressIt),
+      sanitizers.defer_to_pelias_parser(shouldDeferToPeliasParser),
       controllers.search(peliasConfig.api, esclient, queries.very_old_prod, oldProdQueryShouldExecute),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),

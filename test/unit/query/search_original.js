@@ -106,12 +106,12 @@ module.exports.tests.query = function(test, common) {
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
       parsed_text: {
-        number: '123',
+        housenumber: '123',
         street: 'main st',
-        state: 'NY',
-        country: 'USA',
-        postalcode: '10010',
-        regions: [ 'new york' ]
+        region: 'new york',
+        locality: 'ny',
+        postcode: '10010',
+        admin_parts: 'new york ny US'
       }
     });
 
@@ -127,9 +127,9 @@ module.exports.tests.query = function(test, common) {
     var query = generate({ text: 'soho grand, new york',
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
-      parsed_text: { name: 'soho grand',
-        state: 'NY',
-        regions: [ 'soho grand' ],
+      parsed_text: {
+        name: 'soho grand',
+        region: 'new york',
         admin_parts: 'new york'
       }
     });
@@ -146,10 +146,12 @@ module.exports.tests.query = function(test, common) {
     var query = generate({ text: '1 water st manhattan ny',
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
-      parsed_text: { number: '1',
+      parsed_text: {
+        housenumber: '1',
         street: 'water st',
-        state: 'NY',
-        regions: [ 'manhattan' ]
+        locality: 'manhattan',
+        region: 'ny',
+        admin_parts: 'manhattan ny'
       }
     });
 
