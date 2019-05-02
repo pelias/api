@@ -57,7 +57,6 @@ module.exports.tests.query = function(test, common) {
       text: 'one two, three',
       parsed_text: {
         name: 'one two',
-        regions: [ 'one two', 'three' ],
         admin_parts: 'three'
       },
       tokens: ['one','two'],
@@ -258,9 +257,9 @@ module.exports.tests.query = function(test, common) {
     var query = generate({
       text: 'k road, laird',
       parsed_text: {
-        name: 'k road',
         street: 'k road',
-        regions: [ 'laird' ]
+        locality: 'laird',
+        admin_parts: 'laird'
       },
       tokens: ['k', 'road'],
       tokens_complete: ['k', 'road'],

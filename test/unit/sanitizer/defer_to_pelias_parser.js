@@ -11,11 +11,11 @@ module.exports.tests.sanitize = (test, common) => {
 
     // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
     //  were all called correctly
-    const defer_to_addressit = proxyquire('../../../sanitizer/defer_to_addressit', {
-      '../sanitizer/_text_addressit': function () {
+    const defer_to_pelias_parser = proxyquire('../../../sanitizer/defer_to_pelias_parser', {
+      '../sanitizer/_text_pelias_parser': function () {
         return {
           sanitize: () => {
-            t.fail('_text_addressit should not have been called');
+            t.fail('_text_pelias_parser should not have been called');
           }
         };
       },
@@ -29,25 +29,25 @@ module.exports.tests.sanitize = (test, common) => {
       }
     })(() => false);
 
-    defer_to_addressit({}, {}, () => {
+    defer_to_pelias_parser({}, {}, () => {
       t.equals(logger.getInfoMessages().length, 0);
       t.end();
     });
 
   });
 
-  test('verify that _text_addressit sanitizer was called when should_execute returns true', (t) => {
+  test('verify that _text_pelias_parser sanitizer was called when should_execute returns true', (t) => {
     t.plan(2);
 
     const logger = mock_logger();
 
     // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
     //  were all called correctly
-    const defer_to_addressit = proxyquire('../../../sanitizer/defer_to_addressit', {
-      '../sanitizer/_text_addressit': function () {
+    const defer_to_pelias_parser = proxyquire('../../../sanitizer/defer_to_pelias_parser', {
+      '../sanitizer/_text_pelias_parser': function () {
         return {
           sanitize: () => {
-            t.pass('_text_addressit should have been called');
+            t.pass('_text_pelias_parser should have been called');
             return { errors: [], warnings: [] };
           }
         };
@@ -73,7 +73,7 @@ module.exports.tests.sanitize = (test, common) => {
       }
     };
 
-    defer_to_addressit(req, {}, () => {
+    defer_to_pelias_parser(req, {}, () => {
       t.end();
     });
 
@@ -86,11 +86,11 @@ module.exports.tests.sanitize = (test, common) => {
 
     // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
     //  were all called correctly
-    const defer_to_addressit = proxyquire('../../../sanitizer/defer_to_addressit', {
-      '../sanitizer/_text_addressit': function () {
+    const defer_to_pelias_parser = proxyquire('../../../sanitizer/defer_to_pelias_parser', {
+      '../sanitizer/_text_pelias_parser': function () {
         return {
           sanitize: () => {
-            t.pass('_text_addressit should have been called');
+            t.pass('_text_pelias_parser should have been called');
             return { errors: [], warnings: [] };
           }
         };
@@ -113,7 +113,7 @@ module.exports.tests.sanitize = (test, common) => {
       }
     };
 
-    defer_to_addressit(req, {}, () => {
+    defer_to_pelias_parser(req, {}, () => {
       t.deepEquals(logger.getInfoMessages(), []);
       t.end();
     });
@@ -124,7 +124,7 @@ module.exports.tests.sanitize = (test, common) => {
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
-    return tape(`SANITIZE /defer_to_addressit ${name}`, testFunction);
+    return tape(`SANITIZE /defer_to_pelias_parser ${name}`, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

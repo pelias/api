@@ -36,14 +36,14 @@ function _sanitize( raw, clean ){
 
     // else handle the case where parsed_text.street was produced but
     // no parsed_text.name is produced.
-    // additionally, handle the case where parsed_text.number is present
+    // additionally, handle the case where parsed_text.housenumber is present
     // note: the addressit module may also produce parsed_text.unit info
     // for now, we discard that information as we don't have an appropriate
     else if( _.has(clean.parsed_text, 'street') ){
       text = [
-        clean.parsed_text.number,
+        clean.parsed_text.housenumber,
         clean.parsed_text.street
-      ].filter(function(el){return el;})
+      ].filter((el) => el)
       .join(' '); // remove empty elements
     }
   }

@@ -1,6 +1,6 @@
 const peliasQuery = require('pelias-query');
 const defaults = require('./autocomplete_defaults');
-const textParser = require('./text_parser_addressit');
+const textParser = require('./text_parser_pelias');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
 const config = require('pelias-config').generate();

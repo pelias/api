@@ -24,10 +24,10 @@ module.exports.tests.sanitizers = function(test, common) {
           }
         };
       },
-      '../sanitizer/_text_addressit': function () {
+      '../sanitizer/_text_pelias_parser': function () {
         return {
           sanitize: () => {
-            called_sanitizers.push('_text_addressit');
+            called_sanitizers.push('_text_pelias_parser');
             return { errors: [], warnings: [] };
           }
         };
@@ -142,7 +142,7 @@ module.exports.tests.sanitizers = function(test, common) {
     const expected_sanitizers = [
       '_single_scalar_parameters',
       '_debug',
-      '_text_addressit',
+      '_text_pelias_parser',
       '_tokenizer',
       '_size',
       '_targets/layers',
