@@ -77,16 +77,23 @@ function parse (clean) {
 
   // scan through the input text and 'bucket' characters in to one of two buckets:
   // prefix: all unparsed characters that came before any parsed fields
-  // postfix: all unparsed characters from the first admin field to the end of the string
+  // postfix: all characters from the first admin field to the end of the string
 
   // set cursor to the first classified character
   let cursor = mask.search(/\S/);
   if (cursor === -1) { cursor = body.length; }
   let prefix = _.trim(body.substr(0, cursor), ' ,');
 
-  // set cursor to the first character of the first classified admin field
-  cursor = mask.indexOf('A');
-  if (cursor === -1) { cursor = body.length; }
+  // solution includes address classification
+  // set cursor after the last classified address character
+  if (mask.search(/[NS]/) > -1) {
+    cursor = Math.max(mask.lastIndexOf('N'), mask.lastIndexOf('S')) + 1;
+  }
+  // solution includes admin classification
+  // set cursor to the first classified admin character
+  else if( mask.includes('A') ){ cursor = mask.indexOf('A'); }
+  // else set cursor to end-of-text
+  else { cursor = body.length; }
   let postfix = _.trim(body.substr(cursor), ' ,');
 
   // clean up spacing around commas
