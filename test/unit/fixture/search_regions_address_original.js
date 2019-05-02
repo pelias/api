@@ -96,15 +96,6 @@ module.exports = {
           }
         }
       }, {
-        'match': {
-          'parent.region_a': {
-            'query': 'NY',
-            'cutoff_frequency': 0.01,
-            'boost': vs['admin:region_a:boost'],
-            'analyzer': vs['admin:region_a:analyzer']
-          }
-        }
-      }, {
         'multi_match': {
             'fields': [
               'parent.country^1',
@@ -116,7 +107,7 @@ module.exports = {
               'parent.neighbourhood^1',
               'parent.region_a^1'
             ],
-            'query': 'manhattan',
+            'query': 'manhattan ny',
             'analyzer': 'peliasAdmin',
             'cutoff_frequency': 0.01
         }
