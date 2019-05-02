@@ -1,6 +1,6 @@
 const peliasQuery = require('pelias-query');
 const defaults = require('./search_defaults');
-const textParser = require('./text_parser_addressit');
+const textParser = require('./text_parser_pelias');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
 const config = require('pelias-config').generate().api;
@@ -37,8 +37,8 @@ query.score( peliasQuery.view.address('postcode') );
 // country_a and region_a are left as matches here because the text-analyzer
 // can sometimes detect them, in which case a query more specific than a
 // multi_match is appropriate.
-query.score( peliasQuery.view.admin('country_a') );
-query.score( peliasQuery.view.admin('region_a') );
+// query.score( peliasQuery.view.admin('country_a') );
+// query.score( peliasQuery.view.admin('region_a') );
 query.score( peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin') );
 query.score( views.custom_boosts( config.customBoosts ) );
 

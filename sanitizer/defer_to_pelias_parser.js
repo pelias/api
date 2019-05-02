@@ -1,7 +1,7 @@
 const sanitizeAll = require('../sanitizer/sanitizeAll'),
     sanitizers = {
       debug: require('../sanitizer/_debug')(),
-      text: require('../sanitizer/_text_addressit')()
+      text: require('../sanitizer/_text_pelias_parser')()
     };
 
 const logger = require('pelias-logger').get('api');

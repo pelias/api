@@ -77,15 +77,6 @@ module.exports = {
           }]
         }
       }, {
-        'match': {
-          'parent.region_a': {
-            'analyzer': 'peliasAdmin',
-            'boost': 1,
-            'cutoff_frequency': 0.01,
-            'query': 'NY'
-          }
-        }
-      }, {
         'multi_match': {
             'fields': [
               'parent.country^1',
