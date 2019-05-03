@@ -15,9 +15,9 @@ const adminFields = placeTypes.concat([
 function addParsedVariablesToQueryVariables(clean, vs) {
   // ==== add parsed matches [address components] ====
 
-  // prefix (any unparsed text before any matched fields)
-  if (!_.isEmpty(clean.parsed_text.name)) {
-    vs.var('input:query', clean.parsed_text.name);
+  // name
+  if (!_.isEmpty(clean.parsed_text.subject)) {
+    vs.var('input:name', clean.parsed_text.subject);
   }
 
   // housenumber
@@ -40,21 +40,6 @@ function addParsedVariablesToQueryVariables(clean, vs) {
     vs.var('input:postcode', clean.parsed_text.postcode);
   }
 
-  // ==== legacy components ====
-  // @todo: can we remove this functionality?
-
-  // is the 'name' label set?
-  if (clean.parsed_text.name) {
-    vs.var('input:name', clean.parsed_text.name);
-  }
-  else {
-    // is it a street address?
-    var isStreetAddress = !_.isEmpty(clean.parsed_text.housenumber) && !_.isEmpty(clean.parsed_text.street);
-    if (isStreetAddress) {
-      vs.var('input:name', clean.parsed_text.housenumber + ' ' + clean.parsed_text.street);
-    }
-  }
-
   // ==== add parsed matches [admin components] ====
 
   // // locality
@@ -73,13 +58,13 @@ function addParsedVariablesToQueryVariables(clean, vs) {
   // }
 
   // postfix
-  if (!_.isEmpty(clean.parsed_text.admin_parts)) {
+  if (!_.isEmpty(clean.parsed_text.admin)) {
     // assign postfix to any admin fields which currently don't have a value assigned.
     
     // cycle through fields and set fields which are still currently unset
     adminFields.forEach(key => {
       if (!vs.isset('input:' + key)) {
-        vs.var('input:' + key, clean.parsed_text.admin_parts);
+        vs.var('input:' + key, clean.parsed_text.admin);
       }
     });
   }
