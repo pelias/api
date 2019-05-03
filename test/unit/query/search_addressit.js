@@ -106,12 +106,13 @@ module.exports.tests.query = function(test, common) {
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
       parsed_text: {
+        subject: '123 main st',
         housenumber: '123',
         street: 'main st',
         region: 'new york',
         locality: 'ny',
         postcode: '10010',
-        admin_parts: 'new york ny US'
+        admin: 'new york ny US'
       }
     });
 
@@ -128,9 +129,10 @@ module.exports.tests.query = function(test, common) {
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
       parsed_text: {
+        subject: 'soho grand',
         name: 'soho grand',
         region: 'new york',
-        admin_parts: 'new york'
+        admin: 'new york'
       }
     });
 
@@ -147,11 +149,12 @@ module.exports.tests.query = function(test, common) {
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
       parsed_text: {
+        subject: '1 water st',
         housenumber: '1',
         street: 'water st',
         locality: 'manhattan',
         region: 'ny',
-        admin_parts: 'manhattan ny'
+        admin: 'manhattan ny'
       }
     });
 

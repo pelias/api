@@ -30,21 +30,8 @@ function _sanitize( raw, clean ){
     inputParserRanSuccessfully = true;
 
     // parsed_text.name is set, this is the highest priority, use this string
-    if( _.has(clean.parsed_text, 'name') ){
-      text = clean.parsed_text.name; // use this string instead
-    }
-
-    // else handle the case where parsed_text.street was produced but
-    // no parsed_text.name is produced.
-    // additionally, handle the case where parsed_text.housenumber is present
-    // note: the addressit module may also produce parsed_text.unit info
-    // for now, we discard that information as we don't have an appropriate
-    else if( _.has(clean.parsed_text, 'street') ){
-      text = [
-        clean.parsed_text.housenumber,
-        clean.parsed_text.street
-      ].filter((el) => el)
-      .join(' '); // remove empty elements
+    if( _.has(clean.parsed_text, 'subject') ){
+      text = clean.parsed_text.subject; // use this string instead
     }
   }
 

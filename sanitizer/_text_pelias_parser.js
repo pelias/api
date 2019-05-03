@@ -12,7 +12,7 @@ const _ = require('lodash');
   'name',
   'housenumber', 'street', 'postcode',
   'locality', 'region', 'country',
-  'admin_parts'
+  'admin'
 **/
 
 // validate texts, convert types and apply defaults
@@ -49,7 +49,7 @@ function parse (clean) {
   if (t.solution.length) { solution = t.solution[0]; }
 
   // 1. map the output of the parser in to parsed_text
-  let parsed_text = {};
+  let parsed_text = { subject: undefined };
 
   solution.pair.forEach(p => {
     let field = p.classification.label;
@@ -107,7 +107,8 @@ function parse (clean) {
   // handle the case where 'parsed_text' is completely empty
   // ie. the parser was not able to classify anything at all
   // note: this is common for venue names
-  if (Object.keys(parsed_text).length === 0) {
+  // note: length == 1 accounts for 'subject'
+  if (Object.keys(parsed_text).length === 1) {
     if (prefix.length && !postfix.length) {
       // if the prefix contains a comma
       // then only use the first part for the prefix for the
@@ -124,7 +125,44 @@ function parse (clean) {
 
   // 3. store the unparsed characters in fields which can be used for querying
   if (prefix.length) { parsed_text.name = prefix; }
-  if (postfix.length) { parsed_text.admin_parts = postfix; }
+  if (postfix.length) { parsed_text.admin = postfix; }
+
+  // 4. set 'subject', this is the text which will target the 'name.*'
+  // fields in elasticsearch queries
+
+  // an address query
+  if (!_.isEmpty(parsed_text.housenumber) && !_.isEmpty(parsed_text.street)) {
+    parsed_text.subject = `${parsed_text.housenumber} ${parsed_text.street}`;
+  }
+  // a street query
+  else if (!_.isEmpty(parsed_text.street)) {
+    parsed_text.subject = parsed_text.street;
+  }
+  // query with a name such as a venue query
+  else if (!_.isEmpty(parsed_text.name)){
+    parsed_text.subject = parsed_text.name;
+  }
+  // a postcode query
+  else if (!_.isEmpty(parsed_text.postcode)) {
+    parsed_text.subject = parsed_text.postcode;
+  }
+  // a locality query
+  else if (!_.isEmpty(parsed_text.locality)) {
+    parsed_text.subject = parsed_text.locality;
+  }
+  // a region query
+  else if (!_.isEmpty(parsed_text.region)) {
+    parsed_text.subject = parsed_text.region;
+  }
+  // a country query
+  else if (!_.isEmpty(parsed_text.country)) {
+    parsed_text.subject = parsed_text.country;
+  }
+  
+  // unknown query type
+  else {
+    parsed_text.subject = t.span.body;
+  }
 
   return parsed_text;
 }
