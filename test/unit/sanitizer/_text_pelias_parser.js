@@ -20,14 +20,14 @@ module.exports.tests.text_parser = function (test, common) {
   });
 
   var usQueries = [
-    { name: 'soho', admin_parts: 'new york', region: 'NY' },
-    { name: '123 main', admin_parts: 'new york', region: 'NY' }
+    { name: 'soho', admin: 'new york', region: 'NY' },
+    { name: '123 main', admin: 'new york', region: 'NY' }
   ];
 
   usQueries.forEach(function (query) {
     test('naive parsing ' + query, function (t) {
       var raw = {
-        text: query.name + ', ' + query.admin_parts
+        text: query.name + ', ' + query.admin
       };
       var clean = {};
 
@@ -35,9 +35,10 @@ module.exports.tests.text_parser = function (test, common) {
         text: raw.text.trim(),
         parser: 'pelias',
         parsed_text: {
+          subject: query.name,
           name: query.name,
-          region: query.admin_parts,
-          admin_parts: query.admin_parts
+          locality: query.admin,
+          admin: query.admin
         }
       };
 
@@ -51,7 +52,7 @@ module.exports.tests.text_parser = function (test, common) {
 
     test('naive parsing ' + query + ' without spaces', function (t) {
       var raw = {
-        text: query.name + ',' + query.admin_parts
+        text: query.name + ',' + query.admin
       };
       var clean = {};
 
@@ -59,9 +60,10 @@ module.exports.tests.text_parser = function (test, common) {
         text: raw.text.trim(),
         parser: 'pelias',
         parsed_text: {
+          subject: query.name,
           name: query.name,
-          region: query.admin_parts,
-          admin_parts: query.admin_parts
+          locality: query.admin,
+          admin: query.admin
         }
       };
 
@@ -75,7 +77,7 @@ module.exports.tests.text_parser = function (test, common) {
 
     test('naive parsing ' + query + ' with leading and trailing junk', function (t) {
       var raw = {
-        text: ' , ' + query.name + ',' + query.admin_parts + ' , '
+        text: ' , ' + query.name + ',' + query.admin + ' , '
       };
       var clean = {};
 
@@ -83,9 +85,10 @@ module.exports.tests.text_parser = function (test, common) {
         text: raw.text.trim(),
         parser: 'pelias',
         parsed_text: {
+          subject: query.name,
           name: query.name,
-          region: query.admin_parts,
-          admin_parts: query.admin_parts
+          locality: query.admin,
+          admin: query.admin
         }
       };
 
@@ -99,22 +102,23 @@ module.exports.tests.text_parser = function (test, common) {
   });
 
   var nonUSQueries = [
-    { name: 'chelsea', admin_parts: 'london' },
+    { name: 'chelsea', admin: 'london' },
   ];
 
   nonUSQueries.forEach(function (query) {
     test('naive parsing ' + query, function (t) {
       var raw = {
-        text: query.name + ', ' + query.admin_parts
+        text: query.name + ', ' + query.admin
       };
       var clean = {};
 
       var expected_clean = {
-        text: query.name + ', ' + query.admin_parts,
+        text: query.name + ', ' + query.admin,
         parser: 'pelias',
         parsed_text: {
+          subject: query.name,
           locality: query.name,
-          admin_parts: query.name + ', ' + query.admin_parts
+          admin: query.name + ', ' + query.admin
         }
       };
 
@@ -128,16 +132,17 @@ module.exports.tests.text_parser = function (test, common) {
 
     test('naive parsing ' + query + ' without spaces', function (t) {
       var raw = {
-        text: query.name + ',' + query.admin_parts
+        text: query.name + ',' + query.admin
       };
       var clean = {};
 
       var expected_clean = {
-        text: query.name + ',' + query.admin_parts,
+        text: query.name + ',' + query.admin,
         parser: 'pelias',
         parsed_text: {
+          subject: query.name,
           locality: query.name,
-          admin_parts: query.name + ', ' + query.admin_parts
+          admin: query.name + ', ' + query.admin
         }
       };
 
@@ -162,6 +167,7 @@ module.exports.tests.text_parser = function (test, common) {
       parser: 'pelias',
       text: 'yugolsavia',
       parsed_text: {
+        subject: 'yugolsavia',
         name: 'yugolsavia'
       }
     };
@@ -185,6 +191,7 @@ module.exports.tests.text_parser = function (test, common) {
       parser: 'pelias',
       text: 'small town',
       parsed_text: {
+        subject: 'small town',
         name: 'small town'
       }
     };
@@ -208,6 +215,7 @@ module.exports.tests.text_parser = function (test, common) {
       parser: 'pelias',
       text: '123 main',
       parsed_text: {
+        subject: '123 main',
         name: '123 main'
       }
     };
@@ -231,6 +239,7 @@ module.exports.tests.text_parser = function (test, common) {
       parser: 'pelias',
       text: 'main 123',
       parsed_text: {
+        subject: 'main 123',
         name: 'main 123'
       }
     };
@@ -254,9 +263,10 @@ module.exports.tests.text_parser = function (test, common) {
       text: 'main particle new york',
       parser: 'pelias',
       parsed_text: {
+        subject: 'main particle',
         name: 'main particle',
-        region: 'new york',
-        admin_parts: 'new york'
+        locality: 'new york',
+        admin: 'new york'
       }
     };
 
@@ -278,11 +288,12 @@ module.exports.tests.text_parser = function (test, common) {
       text: '123 main st new york ny',
       parser: 'pelias',
       parsed_text: {
+        subject: '123 main st',
         housenumber: '123',
         street: 'main st',
-        region: 'new york',
-        locality: 'ny',
-        admin_parts: 'new york ny'
+        locality: 'new york',
+        region: 'ny',
+        admin: 'new york ny'
       }
     };
 
@@ -304,12 +315,13 @@ module.exports.tests.text_parser = function (test, common) {
       text: '123 main st new york ny 10010',
       parser: 'pelias',
       parsed_text: {
+        subject: '123 main st',
         housenumber: '123',
         street: 'main st',
-        region: 'new york',
-        locality: 'ny',
+        locality: 'new york',
+        region: 'ny',
         postcode: '10010',
-        admin_parts: 'new york ny'
+        admin: 'new york ny'
       }
     };
 
@@ -330,11 +342,12 @@ module.exports.tests.text_parser = function (test, common) {
       text: '339 W Main St, Cheshire, 06410',
       parser: 'pelias',
       parsed_text: {
+        subject: '339 W Main St',
         housenumber: '339',
         street: 'W Main St',
+        locality: 'Cheshire',
         postcode: '06410',
-        region: 'Cheshire',
-        admin_parts: 'Cheshire'
+        admin: 'Cheshire'
       }
     };
 
@@ -355,11 +368,12 @@ module.exports.tests.text_parser = function (test, common) {
       text: '339 W Main St,Lancaster,PA',
       parser: 'pelias',
       parsed_text: {
+        subject: '339 W Main St',
         housenumber: '339',
         street: 'W Main St',
         locality: 'Lancaster',
         region: 'PA',
-        admin_parts: 'Lancaster, PA'
+        admin: 'Lancaster, PA'
       }
     };
 
@@ -396,8 +410,9 @@ module.exports.tests.text_parser = function (test, common) {
     const raw = { text: 'NSW' };
     const clean = {};
     const expected_clean = { text: 'NSW', parser: 'pelias', parsed_text: {
+      subject: 'NSW',
       region: 'NSW',
-      admin_parts: 'NSW'
+      admin: 'NSW'
     }};
     const messages = sanitizer.sanitize(raw, clean);
 

@@ -167,7 +167,7 @@ module.exports.tests.sanity_checks = function(test, common) {
   });
   test('favor clean.parsed_text.name over clean.text', function(t) {
 
-    var clean = { parsed_text: { name: 'foo' }, text: 'bar' };
+    var clean = { parsed_text: { subject: 'foo' }, text: 'bar' };
     var messages = sanitizer.sanitize({}, clean);
 
     // favor clean.parsed_text.name over clean.text
@@ -183,7 +183,9 @@ module.exports.tests.sanity_checks = function(test, common) {
   });
   test('favor clean.parsed_text street data over clean.text', function(t) {
 
-    var clean = { parsed_text: { housenumber: '190', street: 'foo st' }, text: 'bar' };
+    var clean = { parsed_text: {
+      housenumber: '190', street: 'foo st', subject: '190 foo st'
+    }, text: 'bar' };
     var messages = sanitizer.sanitize({}, clean);
 
     // favor clean.parsed_text.name over clean.text
@@ -199,7 +201,9 @@ module.exports.tests.sanity_checks = function(test, common) {
   });
   test('favor clean.parsed_text.name over clean.parsed_text street data', function(t) {
 
-    var clean = { parsed_text: { housenumber: '190', street: 'foo st', name: 'foo' }, text: 'bar' };
+    var clean = { parsed_text: {
+      housenumber: '190', street: 'foo st', subject: 'foo'
+    }, text: 'bar' };
     var messages = sanitizer.sanitize({}, clean);
 
     // favor clean.parsed_text.name over all other variables
