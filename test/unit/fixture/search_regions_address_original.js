@@ -116,7 +116,8 @@ module.exports = {
               'parent.region_a^1'
             ],
             'query': 'manhattan',
-            'analyzer': 'peliasAdmin'
+            'analyzer': 'peliasAdmin',
+            'cutoff_frequency': 0.01
         }
       }],
       'filter': [
