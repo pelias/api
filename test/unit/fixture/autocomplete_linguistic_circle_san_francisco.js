@@ -10,10 +10,11 @@ module.exports = {
                   'analyzer': 'peliasQueryPartialToken',
                   'boost': 100,
                   'query': 'test',
+                  'fuzziness': 1,
+                  'prefix_length': 1,
+                  'max_expansions': 10,
                   'cutoff_frequency': 0.01,
-                  'type': 'phrase',
-                  'operator': 'and',
-                  'slop': 3
+                  'operator': 'and'
                 }
               }
             }

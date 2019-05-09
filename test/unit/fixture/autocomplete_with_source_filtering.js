@@ -7,12 +7,13 @@ module.exports = {
             'match': {
               'name.default': {
                 'analyzer': 'peliasQueryPartialToken',
-                'cutoff_frequency': 0.01,
                 'boost': 100,
-                'query': 'test',
-                'type': 'phrase',
+                'fuzziness': 1,
+                'prefix_length': 1,
+                'max_expansions': 10,
                 'operator': 'and',
-                'slop': 3
+                'cutoff_frequency': 0.01,
+                'query': 'test'
               }
             }
           }

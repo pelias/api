@@ -6,9 +6,11 @@ module.exports = {
           'match': {
             'name.default': {
               'analyzer': 'peliasQueryFullToken',
-              'type': 'phrase',
               'boost': 1,
-              'slop': 3,
+              'fuzziness': 1,
+              'prefix_length': 1,
+              'max_expansions': 10,
+              'operator': 'and',
               'cutoff_frequency': 0.01,
               'query': 'one two'
             }
