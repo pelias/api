@@ -10,9 +10,10 @@ module.exports = {
                 'cutoff_frequency': 0.01,
                 'boost': 100,
                 'query': 'test',
-                'type': 'phrase',
-                'operator': 'and',
-                'slop': 3
+                'fuzziness': 1,
+                'prefix_length': 1,
+                'max_expansions': 10,
+                'operator': 'and'
               }
             }
           }
