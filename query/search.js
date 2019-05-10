@@ -122,7 +122,7 @@ function generateQuery( clean ){
 }
 
 function getQuery(vs) {
-  if (hasStreet(vs) || isPostalCodeOnly(vs) || isPostalCodeWithCountry(vs)) {
+  if (hasStreet(vs) || isPostalCodeOnly(vs) || isPostalCodeWithAdmin(vs)) {
     return {
       type: 'search_fallback',
       body: fallbackQuery.render(vs)
@@ -166,21 +166,18 @@ function isPostalCodeOnly(vs) {
 
   return allowedFields.every(isSet) &&
     !disallowedFields.some(isSet);
-
 }
 
 
-function isPostalCodeWithCountry(vs) {
+function isPostalCodeWithAdmin(vs) {
     var isSet = (layer) => {
         return vs.isset(`input:${layer}`);
     };
 
-    var allowedFields = ['postcode', 'country'];
-    var disallowedFields = ['query', 'category', 'housenumber', 'street', 'locality',
-                          'neighbourhood', 'borough', 'county', 'region'];
+    var disallowedFields = ['query', 'category', 'housenumber', 'street'];
 
-    return allowedFields.every(isSet) &&
-        !disallowedFields.some(isSet);
+    return isSet('postcode') &&
+      !disallowedFields.some(isSet);
 }
 
 module.exports = generateQuery;

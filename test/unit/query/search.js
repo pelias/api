@@ -396,7 +396,8 @@ module.exports.tests.city_state = function(test, common) {
 
     var query = generate(clean);
 
-    t.equals(query, undefined, 'should have returned undefined');
+    // query will be similar to other postalcode or admin queries, It's not worth creating another fixture
+    t.equals(typeof query, 'object', 'should return a query');
     t.end();
 
   });
@@ -533,22 +534,6 @@ module.exports.tests.city_country = function(test, common) {
         city: 'city value',
         country: 'country value',
         borough: 'borough value'
-      }
-    };
-
-    var query = generate(clean);
-
-    t.equals(query, undefined, 'should have returned undefined');
-    t.end();
-
-  });
-
-  test('city/country with postalcode should return undefined', function(t) {
-    var clean = {
-      parsed_text: {
-        city: 'city value',
-        country: 'country value',
-        postalcode: 'postalcode value'
       }
     };
 
