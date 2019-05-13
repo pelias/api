@@ -98,7 +98,8 @@ module.exports = {
               'parent.region_a^1'
             ],
             'query': 'new york',
-            'analyzer': 'peliasAdmin'
+            'analyzer': 'peliasAdmin',
+            'cutoff_frequency': 0.01
         }
       }],
       'filter': [
