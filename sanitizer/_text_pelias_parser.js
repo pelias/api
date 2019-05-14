@@ -100,10 +100,6 @@ function parse (clean) {
   prefix = prefix.split(/[,\n\t]/).join(', ');
   postfix = postfix.split(/[,\n\t]/).join(', ');
 
-  // squash multiple adjacent whitespace characters into a single space
-  prefix = prefix.replace(/\s\s+/g, ' ').trim();
-  postfix = postfix.replace(/\s\s+/g, ' ').trim();
-
   // handle the case where 'parsed_text' is completely empty
   // ie. the parser was not able to classify anything at all
   // note: this is common for venue names
@@ -122,6 +118,10 @@ function parse (clean) {
       }
     }
   }
+
+  // squash multiple adjacent whitespace characters into a single space
+  prefix = prefix.replace(/\s+/g, ' ').trim();
+  postfix = postfix.replace(/\s+/g, ' ').trim();
 
   // 3. store the unparsed characters in fields which can be used for querying
   if (prefix.length) { parsed_text.name = prefix; }
