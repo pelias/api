@@ -19,370 +19,155 @@ module.exports.tests.text_parser = function (test, common) {
     t.end();
   });
 
-  var usQueries = [
-    { name: 'soho', admin: 'new york', region: 'NY' },
-    { name: '123 main', admin: 'new york', region: 'NY' }
-  ];
+  let cases = [];
+  
+  // USA queries
+  cases.push(['soho, new york, NY', {
+    subject: 'soho',
+    name: 'soho',
+    locality: 'new york',
+    region: 'NY',
+    admin: 'new york, NY'
+  }]);
+  cases.push(['123 main st, new york, NY', {
+    subject: '123 main st',
+    housenumber: '123',
+    street: 'main st',
+    locality: 'new york',
+    region: 'NY',
+    admin: 'new york, NY'
+  }]);
 
-  usQueries.forEach(function (query) {
-    test('naive parsing ' + query, function (t) {
-      var raw = {
-        text: query.name + ', ' + query.admin
-      };
-      var clean = {};
+  // GBR queries
+  cases.push(['chelsea, london', {
+    subject: 'chelsea',
+    locality: 'chelsea',
+    admin: 'chelsea, london'
+  }]);
 
-      var expected_clean = {
-        text: raw.text.trim(),
-        parser: 'pelias',
-        parsed_text: {
-          subject: query.name,
-          name: query.name,
-          locality: query.admin,
-          admin: query.admin
+  // Query with one token
+  cases.push(['yugolsavia', {
+    subject: 'yugolsavia',
+    name: 'yugolsavia'
+  }]);
+
+  // Query with two tokens, no numbers
+  cases.push(['small town', {
+    subject: 'small town',
+    name: 'small town'
+  }]);
+
+  // Query with two tokens, number first
+  cases.push(['123 main', {
+    subject: '123 main',
+    name: '123 main'
+  }]);
+
+  // Query with two tokens, number second
+  cases.push(['main 123', {
+    subject: 'main 123',
+    name: 'main 123'
+  }]);
+
+  // Query with many tokens
+  cases.push(['main particle new york', {
+    subject: 'main particle',
+    name: 'main particle',
+    locality: 'new york',
+    admin: 'new york'
+  }]);
+
+  // Valid address with housenumber
+  cases.push(['123 main st new york ny', {
+    subject: '123 main st',
+    housenumber: '123',
+    street: 'main st',
+    locality: 'new york',
+    region: 'ny',
+    admin: 'new york ny'
+  }]);
+
+  // Valid address with postcode
+  cases.push(['123 main st new york ny 10010', {
+    subject: '123 main st',
+    housenumber: '123',
+    street: 'main st',
+    locality: 'new york',
+    region: 'ny',
+    postcode: '10010',
+    admin: 'new york ny'
+  }]);
+
+  // Valid address with leading 0 in postcode
+  cases.push(['339 W Main St, Cheshire, 06410', {
+    subject: '339 W Main St',
+    housenumber: '339',
+    street: 'W Main St',
+    locality: 'Cheshire',
+    postcode: '06410',
+    admin: 'Cheshire'
+  }]);
+
+  // Valid address with no spaces after comma
+  cases.push(['339 W Main St,Lancaster,PA', {
+    subject: '339 W Main St',
+    housenumber: '339',
+    street: 'W Main St',
+    locality: 'Lancaster',
+    region: 'PA',
+    admin: 'Lancaster, PA'
+  }]);
+
+  // Valid address without commas
+  cases.push(['123 main st new york ny', {
+    subject: '123 main st',
+    housenumber: '123',
+    street: 'main st',
+    locality: 'new york',
+    region: 'ny',
+    admin: 'new york ny'
+  }]);
+
+  // AUS - state only
+  cases.push(['NSW', {
+    subject: 'NSW',
+    region: 'NSW',
+    admin: 'NSW'
+  }]);
+
+  cases.forEach(testcase => {
+    let input = testcase[0];
+    let expected = testcase[1];
+
+    function assert(label, replacement, replaceAdmin) {
+      let text = input.replace(/\s+/, ' ');
+      let clone = Object.assign({}, expected);
+      if (Array.isArray(replacement) && replacement.length === 2) {
+        text = text.replace(replacement[0], replacement[1]);
+        if (replaceAdmin === true && clone.admin) {
+          clone.admin = clone.admin.replace(replacement[0], replacement[1]).trim();
         }
-      };
-
-      var messages = sanitizer.sanitize(raw, clean);
-
-      t.deepEqual(messages, { errors: [], warnings: [] });
-      t.deepEqual(clean, expected_clean);
-      t.end();
-
-    });
-
-    test('naive parsing ' + query + ' without spaces', function (t) {
-      var raw = {
-        text: query.name + ',' + query.admin
-      };
-      var clean = {};
-
-      var expected_clean = {
-        text: raw.text.trim(),
-        parser: 'pelias',
-        parsed_text: {
-          subject: query.name,
-          name: query.name,
-          locality: query.admin,
-          admin: query.admin
-        }
-      };
-
-      var messages = sanitizer.sanitize(raw, clean);
-
-      t.deepEqual(messages, { errors: [], warnings: [] });
-      t.deepEqual(clean, expected_clean);
-      t.end();
-
-    });
-
-    test('naive parsing ' + query + ' with leading and trailing junk', function (t) {
-      var raw = {
-        text: ' , ' + query.name + ',' + query.admin + ' , '
-      };
-      var clean = {};
-
-      var expected_clean = {
-        text: raw.text.trim(),
-        parser: 'pelias',
-        parsed_text: {
-          subject: query.name,
-          name: query.name,
-          locality: query.admin,
-          admin: query.admin
-        }
-      };
-
-      var messages = sanitizer.sanitize(raw, clean);
-
-      t.deepEqual(messages, { errors: [], warnings: [] });
-      t.deepEqual(clean, expected_clean);
-      t.end();
-
-    });
-  });
-
-  var nonUSQueries = [
-    { name: 'chelsea', admin: 'london' },
-  ];
-
-  nonUSQueries.forEach(function (query) {
-    test('naive parsing ' + query, function (t) {
-      var raw = {
-        text: query.name + ', ' + query.admin
-      };
-      var clean = {};
-
-      var expected_clean = {
-        text: query.name + ', ' + query.admin,
-        parser: 'pelias',
-        parsed_text: {
-          subject: query.name,
-          locality: query.name,
-          admin: query.name + ', ' + query.admin
-        }
-      };
-
-      var messages = sanitizer.sanitize(raw, clean);
-
-      t.deepEqual(messages, { errors: [], warnings: [] });
-      t.deepEqual(clean, expected_clean);
-      t.end();
-
-    });
-
-    test('naive parsing ' + query + ' without spaces', function (t) {
-      var raw = {
-        text: query.name + ',' + query.admin
-      };
-      var clean = {};
-
-      var expected_clean = {
-        text: query.name + ',' + query.admin,
-        parser: 'pelias',
-        parsed_text: {
-          subject: query.name,
-          locality: query.name,
-          admin: query.name + ', ' + query.admin
-        }
-      };
-
-      var messages = sanitizer.sanitize(raw, clean);
-
-      t.deepEqual(messages, { errors: [], warnings: [] });
-      t.deepEqual(clean, expected_clean);
-      t.end();
-
-    });
-
-  });
-
-  test('query with one token', function (t) {
-    var raw = {
-      text: 'yugolsavia'
-    };
-    var clean = {};
-    clean.parsed_text = 'this should be removed';
-
-    var expected_clean = {
-      parser: 'pelias',
-      text: 'yugolsavia',
-      parsed_text: {
-        subject: 'yugolsavia',
-        name: 'yugolsavia'
       }
-    };
-
-    var messages = sanitizer.sanitize(raw, clean);
-
-    t.deepEqual(messages, { errors: [], warnings: [] });
-    t.deepEqual(clean, expected_clean);
-    t.end();
-
-  });
-
-  test('query with two tokens, no numbers', function (t) {
-    var raw = {
-      text: 'small town'
-    };
-    var clean = {};
-    clean.parsed_text = 'this should be removed';
-
-    var expected_clean = {
-      parser: 'pelias',
-      text: 'small town',
-      parsed_text: {
-        subject: 'small town',
-        name: 'small town'
+      if (clone.admin) {
+        clone.admin = clone.admin.replace(/\s+/g, ' ').trim();
       }
-    };
+      test(`${label}: ${text}`, t => {
+        let raw = { text: text };
+        let clean = { parsed_text: 'this should be removed' };
+        let messages = sanitizer.sanitize(raw, clean);
 
-    var messages = sanitizer.sanitize(raw, clean);
+        t.deepEqual(messages, { errors: [], warnings: [] }, 'messages');
+        t.equal(clean.text, raw.text.trim(), 'text');
+        t.equal(clean.parser, 'pelias', 'parser');
+        t.deepEqual(clean.parsed_text, clone, `${label}: ${text}`);
+        t.end();
+      });
+    }
 
-    t.deepEqual(messages, { errors: [], warnings: [] });
-    t.deepEqual(clean, expected_clean);
-    t.end();
-
-  });
-
-  test('query with two tokens, number first', function (t) {
-    var raw = {
-      text: '123 main'
-    };
-    var clean = {};
-    clean.parsed_text = 'this should be removed';
-
-    var expected_clean = {
-      parser: 'pelias',
-      text: '123 main',
-      parsed_text: {
-        subject: '123 main',
-        name: '123 main'
-      }
-    };
-
-    var messages = sanitizer.sanitize(raw, clean);
-
-    t.deepEqual(messages, { errors: [], warnings: [] });
-    t.deepEqual(clean, expected_clean);
-    t.end();
-
-  });
-
-  test('query with two tokens, number second', function (t) {
-    var raw = {
-      text: 'main 123'
-    };
-    var clean = {};
-    clean.parsed_text = 'this should be removed';
-
-    var expected_clean = {
-      parser: 'pelias',
-      text: 'main 123',
-      parsed_text: {
-        subject: 'main 123',
-        name: 'main 123'
-      }
-    };
-
-    var messages = sanitizer.sanitize(raw, clean);
-
-    t.deepEqual(messages, { errors: [], warnings: [] });
-    t.deepEqual(clean, expected_clean);
-    t.end();
-
-  });
-
-  test('query with many tokens', function (t) {
-    var raw = {
-      text: 'main particle new york'
-    };
-    var clean = {};
-    clean.parsed_text = 'this should be removed';
-
-    var expected_clean = {
-      text: 'main particle new york',
-      parser: 'pelias',
-      parsed_text: {
-        subject: 'main particle',
-        name: 'main particle',
-        locality: 'new york',
-        admin: 'new york'
-      }
-    };
-
-    var messages = sanitizer.sanitize(raw, clean);
-
-    t.deepEqual(messages, { errors: [], warnings: [] });
-    t.deepEqual(clean, expected_clean);
-    t.end();
-
-  });
-
-  test('valid address, house number', function (t) {
-    var raw = {
-      text: '123 main st new york ny'
-    };
-    var clean = {};
-
-    var expected_clean = {
-      text: '123 main st new york ny',
-      parser: 'pelias',
-      parsed_text: {
-        subject: '123 main st',
-        housenumber: '123',
-        street: 'main st',
-        locality: 'new york',
-        region: 'ny',
-        admin: 'new york ny'
-      }
-    };
-
-    var messages = sanitizer.sanitize(raw, clean);
-
-    t.deepEqual(messages, { errors: [], warnings: [] });
-    t.deepEqual(clean, expected_clean);
-    t.end();
-
-  });
-
-  test('valid address, zipcode', function (t) {
-    var raw = {
-      text: '123 main st new york ny 10010'
-    };
-    var clean = {};
-
-    var expected_clean = {
-      text: '123 main st new york ny 10010',
-      parser: 'pelias',
-      parsed_text: {
-        subject: '123 main st',
-        housenumber: '123',
-        street: 'main st',
-        locality: 'new york',
-        region: 'ny',
-        postcode: '10010',
-        admin: 'new york ny'
-      }
-    };
-
-    var messages = sanitizer.sanitize(raw, clean);
-
-    t.deepEqual(messages, { errors: [], warnings: [] });
-    t.deepEqual(clean, expected_clean);
-    t.end();
-  });
-
-  test('valid address with leading 0s in zipcode', function (t) {
-    var raw = {
-      text: '339 W Main St, Cheshire, 06410'
-    };
-    var clean = {};
-
-    var expected_clean = {
-      text: '339 W Main St, Cheshire, 06410',
-      parser: 'pelias',
-      parsed_text: {
-        subject: '339 W Main St',
-        housenumber: '339',
-        street: 'W Main St',
-        locality: 'Cheshire',
-        postcode: '06410',
-        admin: 'Cheshire'
-      }
-    };
-
-    var messages = sanitizer.sanitize(raw, clean);
-
-    t.deepEqual(messages, { errors: [], warnings: [] });
-    t.deepEqual(clean, expected_clean);
-    t.end();
-  });
-
-  test('valid address without spaces after commas', function (t) {
-    var raw = {
-      text: '339 W Main St,Lancaster,PA'
-    };
-    var clean = {};
-
-    var expected_clean = {
-      text: '339 W Main St,Lancaster,PA',
-      parser: 'pelias',
-      parsed_text: {
-        subject: '339 W Main St',
-        housenumber: '339',
-        street: 'W Main St',
-        locality: 'Lancaster',
-        region: 'PA',
-        admin: 'Lancaster, PA'
-      }
-    };
-
-    var messages = sanitizer.sanitize(raw, clean);
-
-    t.deepEqual(messages, { errors: [], warnings: [] });
-    t.deepEqual(clean, expected_clean);
-    t.end();
-
+    assert('literal');
+    assert('no commas', [/,/g, ' '], true);
+    assert('no space after comma', [/,\s+/g, ',']);
+    assert('leading and trailing junk', [/^(.+)$/g, ' , $1 , ']);
   });
 
   test('whitespace-only input counts as empty', (t) => {
@@ -403,22 +188,6 @@ module.exports.tests.text_parser = function (test, common) {
     const expected = [{ name: 'text' }];
     const validParameters = sanitizer.expected();
     t.deepEquals(validParameters, expected);
-    t.end();
-  });
-
-  test('Australia - state only', (t) => {
-    const raw = { text: 'NSW' };
-    const clean = {};
-    const expected_clean = { text: 'NSW', parser: 'pelias', parsed_text: {
-      subject: 'NSW',
-      region: 'NSW',
-      admin: 'NSW'
-    }};
-    const messages = sanitizer.sanitize(raw, clean);
-
-    t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, []);
-    t.deepEquals(messages.warnings, [], 'no warnings');
     t.end();
   });
 };
