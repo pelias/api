@@ -22,16 +22,21 @@ function _sanitize( raw, clean ){
   var text = clean.text;
 
   // a boolean to track whether the input parser successfully ran; or not.
-  var inputParserRanSuccessfully = false;
+  var parserConsumedAllTokens = false;
 
   // if the text parser has run then we only tokenize the 'name' section
   // of the 'parsed_text' object, ignoring the 'admin' parts.
   if( _.isPlainObject(clean, 'parsed_text') && !_.isEmpty(clean.parsed_text) ) {
-    inputParserRanSuccessfully = true;
-
     // parsed_text.name is set, this is the highest priority, use this string
     if( _.has(clean.parsed_text, 'subject') ){
       text = clean.parsed_text.subject; // use this string instead
+
+      // when both housenumber and street fields are present then the pelias parser
+      // will simply set $subject to be a concatination of these fields.
+      // in this case we can be sure that all tokens were complete
+      if (_.has(clean.parsed_text, 'housenumber') && _.has(clean.parsed_text, 'street')){
+        parserConsumedAllTokens = true;
+      }
     }
   }
 
@@ -66,7 +71,7 @@ function _sanitize( raw, clean ){
   if( clean.tokens.length ){
 
     // if all the tokens are complete, simply copy them from clean.tokens
-    if( inputParserRanSuccessfully ){
+    if( parserConsumedAllTokens ){
 
       // all these tokens are complete!
       clean.tokens_complete = clean.tokens.slice();

@@ -29,6 +29,7 @@ module.exports.tests.text_parser = function (test, common) {
     region: 'NY',
     admin: 'new york, NY'
   }]);
+
   cases.push(['123 main st, new york, NY', {
     subject: '123 main st',
     housenumber: '123',
