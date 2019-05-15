@@ -65,6 +65,7 @@ function addParsedVariablesToQueryVariables(clean, vs) {
     adminFields.forEach(key => {
       if (!vs.isset('input:' + key)) {
         vs.var('input:' + key, clean.parsed_text.admin);
+        vs.var('input:' + key + '_a', clean.parsed_text.admin);
       }
     });
   }

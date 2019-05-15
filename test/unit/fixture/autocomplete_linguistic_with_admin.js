@@ -26,7 +26,9 @@ module.exports = {
               'parent.locality.ngram^1',
               'parent.borough.ngram^1',
               'parent.neighbourhood.ngram^1',
-              'parent.region_a.ngram^1'
+              'parent.locality_a.ngram^1',
+              'parent.region_a.ngram^1',
+              'parent.country_a.ngram^1'
             ],
             'query': 'three',
             'analyzer': 'peliasAdmin',

@@ -18,9 +18,8 @@ var views = {
   focus_point_filter:         require('./view/focus_point_distance_filter')
 };
 
-// region_a is also an admin field. pelias/parser tries to detect
-// region_a, in which case we use a match query specifically for it.
-var adminFields = placeTypes.concat(['region_a']);
+// add abbrevations for the fields pelias/parser is able to detect.
+var adminFields = placeTypes.concat(['locality_a', 'region_a', 'country_a']);
 
 //------------------------------
 // autocomplete query
