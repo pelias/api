@@ -13,9 +13,7 @@ module.exports = {
               'query': 'one two'
             }
           }
-        }
-      ],
-      'should': [
+        },
         {
           'multi_match': {
             'fields': [
@@ -34,7 +32,9 @@ module.exports = {
             'analyzer': 'peliasAdmin',
             'type': 'cross_fields'
           }
-        },
+        }
+      ],
+      'should': [
         {
           'match': {
             'phrase.default': {
