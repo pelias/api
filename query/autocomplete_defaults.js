@@ -92,6 +92,11 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'admin:locality:boost': 1,
   'admin:locality:cutoff_frequency': 0.01,
 
+  'admin:locality_a:analyzer': 'peliasAdmin',
+  'admin:locality_a:field': 'parent.locality_a.ngram',
+  'admin:locality_a:boost': 1,
+  'admin:locality_a:cutoff_frequency': 0.01,
+
   'admin:neighbourhood:analyzer': 'peliasAdmin',
   'admin:neighbourhood:field': 'parent.neighbourhood.ngram',
   'admin:neighbourhood:boost': 1,
