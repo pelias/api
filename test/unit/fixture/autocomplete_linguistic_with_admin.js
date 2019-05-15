@@ -17,83 +17,19 @@ module.exports = {
       ],
       'should': [
         {
-          'match': {
-            'parent.country.ngram': {
-              'analyzer': 'peliasAdmin',
-              'boost': 800,
-              'cutoff_frequency': 0.01,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.region.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 600,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.region_a.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 600,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.county.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 400,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.borough.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 600,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.localadmin.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 200,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.locality.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 200,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.neighbourhood.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 200,
-              'query': 'three'
-            }
+          'multi_match': {
+            'fields': [
+              'parent.country.ngram^800',
+              'parent.region.ngram^600',
+              'parent.county.ngram^400',
+              'parent.localadmin.ngram^200',
+              'parent.locality.ngram^200',
+              'parent.borough.ngram^600',
+              'parent.neighbourhood.ngram^200',
+              'parent.region_a.ngram^600'
+            ],
+            'query': 'three',
+            'analyzer': 'peliasAdmin'
           }
         },
         {
