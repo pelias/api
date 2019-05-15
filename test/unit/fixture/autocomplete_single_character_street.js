@@ -12,6 +12,24 @@ module.exports = {
             'query': 'k road'
           }
         }
+      }, {
+        'multi_match': {
+          'fields': [
+            'parent.country.ngram^1',
+            'parent.region.ngram^1',
+            'parent.county.ngram^1',
+            'parent.localadmin.ngram^1',
+            'parent.locality.ngram^1',
+            'parent.borough.ngram^1',
+            'parent.neighbourhood.ngram^1',
+            'parent.locality_a.ngram^1',
+            'parent.region_a.ngram^1',
+            'parent.country_a.ngram^1'
+          ],
+          'query': 'laird',
+          'analyzer': 'peliasAdmin',
+          'type': 'cross_fields'
+        }
       }],
       'should':[
         {
@@ -22,25 +40,6 @@ module.exports = {
               'boost': 5,
               'analyzer': 'peliasStreet'
             }
-          }
-        },
-        {
-          'multi_match': {
-            'fields': [
-              'parent.country.ngram^1',
-              'parent.region.ngram^1',
-              'parent.county.ngram^1',
-              'parent.localadmin.ngram^1',
-              'parent.locality.ngram^1',
-              'parent.borough.ngram^1',
-              'parent.neighbourhood.ngram^1',
-              'parent.locality_a.ngram^1',
-              'parent.region_a.ngram^1',
-              'parent.country_a.ngram^1'
-            ],
-            'query': 'laird',
-            'analyzer': 'peliasAdmin',
-            'type': 'cross_fields'
           }
         },
         {

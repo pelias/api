@@ -29,13 +29,13 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 query.score( views.phrase_first_tokens_only, 'must' );
 query.score( views.ngrams_last_token_only, 'must' );
 
+// admin components
+query.score(peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin'), 'must');
+
 // address components
 query.score( peliasQuery.view.address('housenumber') );
 query.score( peliasQuery.view.address('street') );
 query.score( peliasQuery.view.address('postcode') );
-
-// admin components
-query.score( peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin') );
 
 // scoring boost
 query.score( views.boost_exact_matches );
