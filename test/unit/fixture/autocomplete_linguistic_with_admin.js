@@ -31,6 +31,7 @@ module.exports = {
             'query': 'three',
             'analyzer': 'peliasAdmin',
             'type': 'cross_fields',
+            'operator': 'and',
             'cutoff_frequency': 0.01
           }
         },
