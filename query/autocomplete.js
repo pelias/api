@@ -4,6 +4,7 @@ const textParser = require('./text_parser_pelias');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
 const config = require('pelias-config').generate();
+const placeTypes = require('../helper/placeTypes');
 
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
@@ -15,6 +16,10 @@ var views = {
   boost_exact_matches:        require('./view/boost_exact_matches'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter')
 };
+
+// region_a is also an admin field. pelias/parser tries to detect
+// region_a, in which case we use a match query specifically for it.
+var adminFields = placeTypes.concat(['region_a']);
 
 //------------------------------
 // autocomplete query
@@ -31,15 +36,7 @@ query.score( peliasQuery.view.address('street') );
 query.score( peliasQuery.view.address('postcode') );
 
 // admin components
-query.score( peliasQuery.view.admin('country') );
-query.score( peliasQuery.view.admin('country_a') );
-query.score( peliasQuery.view.admin('region') );
-query.score( peliasQuery.view.admin('region_a') );
-query.score( peliasQuery.view.admin('county') );
-query.score( peliasQuery.view.admin('borough') );
-query.score( peliasQuery.view.admin('localadmin') );
-query.score( peliasQuery.view.admin('locality') );
-query.score( peliasQuery.view.admin('neighbourhood') );
+query.score( peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin') );
 
 // scoring boost
 query.score( views.boost_exact_matches );

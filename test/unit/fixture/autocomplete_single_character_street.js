@@ -23,77 +23,21 @@ module.exports = {
               'analyzer': 'peliasStreet'
             }
           }
-        }, {
-          'match': {
-            'parent.country.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 800,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        }, {
-          'match': {
-            'parent.region.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 600,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        }, {
-          'match': {
-            'parent.region_a.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 600,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        }, {
-          'match': {
-            'parent.county.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 400,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        }, {
-          'match': {
-            'parent.borough.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 600,
-              'query': 'laird'
-            }
-          }
-        }, {
-          'match': {
-            'parent.localadmin.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 200,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        }, {
-          'match': {
-            'parent.locality.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 200,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        }, {
-          'match': {
-            'parent.neighbourhood.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 200,
-              'analyzer': 'peliasAdmin'
-            }
+        },
+        {
+          'multi_match': {
+            'fields': [
+              'parent.country.ngram^800',
+              'parent.region.ngram^600',
+              'parent.county.ngram^400',
+              'parent.localadmin.ngram^200',
+              'parent.locality.ngram^200',
+              'parent.borough.ngram^600',
+              'parent.neighbourhood.ngram^200',
+              'parent.region_a.ngram^600'
+            ],
+            'query': 'laird',
+            'analyzer': 'peliasAdmin'
           }
         },
         {
