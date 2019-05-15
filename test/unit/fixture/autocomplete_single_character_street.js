@@ -27,14 +27,14 @@ module.exports = {
         {
           'multi_match': {
             'fields': [
-              'parent.country.ngram^800',
-              'parent.region.ngram^600',
-              'parent.county.ngram^400',
-              'parent.localadmin.ngram^200',
-              'parent.locality.ngram^200',
-              'parent.borough.ngram^600',
-              'parent.neighbourhood.ngram^200',
-              'parent.region_a.ngram^600'
+              'parent.country.ngram^1',
+              'parent.region.ngram^1',
+              'parent.county.ngram^1',
+              'parent.localadmin.ngram^1',
+              'parent.locality.ngram^1',
+              'parent.borough.ngram^1',
+              'parent.neighbourhood.ngram^1',
+              'parent.region_a.ngram^1'
             ],
             'query': 'laird',
             'analyzer': 'peliasAdmin',
