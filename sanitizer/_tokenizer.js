@@ -24,10 +24,10 @@ function _sanitize( raw, clean ){
   // a boolean to track whether the input parser successfully ran; or not.
   var parserConsumedAllTokens = false;
 
-  // if the text parser has run then we only tokenize the 'name' section
+  // if the text parser has run then we only tokenize the 'subject' section
   // of the 'parsed_text' object, ignoring the 'admin' parts.
   if( _.isPlainObject(clean, 'parsed_text') && !_.isEmpty(clean.parsed_text) ) {
-    // parsed_text.name is set, this is the highest priority, use this string
+    // parsed_text.subject is set, this is the highest priority, use this string
     if( _.has(clean.parsed_text, 'subject') ){
       text = clean.parsed_text.subject; // use this string instead
 
