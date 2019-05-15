@@ -149,7 +149,7 @@ module.exports.tests.sanity_checks = function(test, common) {
 
     t.end();
   });
-  test('clean.parsed_text set but clean.parsed_text.name invalid', function(t) {
+  test('clean.parsed_text set but clean.parsed_text.subject invalid', function(t) {
 
     var clean = { parsed_text: { text: {} } };
     var messages = sanitizer.sanitize({}, clean);
@@ -165,15 +165,15 @@ module.exports.tests.sanity_checks = function(test, common) {
 
     t.end();
   });
-  test('favor clean.parsed_text.name over clean.text', function(t) {
+  test('favor clean.parsed_text.subject over clean.text', function(t) {
 
     var clean = { parsed_text: { subject: 'foo' }, text: 'bar' };
     var messages = sanitizer.sanitize({}, clean);
 
-    // favor clean.parsed_text.name over clean.text
-    t.deepEquals(clean.tokens, [ 'foo' ], 'use clean.parsed_text.name');
-    t.deepEquals(clean.tokens_complete, [ 'foo' ], 'use clean.parsed_text.name');
-    t.deepEquals(clean.tokens_incomplete, [], 'no tokens');
+    // favor clean.parsed_text.subject over clean.text
+    t.deepEquals(clean.tokens, [ 'foo' ], 'use clean.parsed_text.subject');
+    t.deepEquals(clean.tokens_complete, [], 'complete');
+    t.deepEquals(clean.tokens_incomplete, [ 'foo' ], 'incomplete');
 
     // no errors/warnings produced
     t.deepEquals(messages.errors, [], 'no errors');
@@ -184,31 +184,15 @@ module.exports.tests.sanity_checks = function(test, common) {
   test('favor clean.parsed_text street data over clean.text', function(t) {
 
     var clean = { parsed_text: {
-      housenumber: '190', street: 'foo st', subject: '190 foo st'
+      subject: '190 foo st',
+      housenumber: '190',
+      street: 'foo st'
     }, text: 'bar' };
     var messages = sanitizer.sanitize({}, clean);
 
-    // favor clean.parsed_text.name over clean.text
+    // favor clean.parsed_text.subject over clean.text
     t.deepEquals(clean.tokens, [ '190', 'foo', 'st' ], 'use street name + housenumber');
     t.deepEquals(clean.tokens_complete, [ '190', 'foo', 'st' ], 'use street name + housenumber');
-    t.deepEquals(clean.tokens_incomplete, [], 'no tokens');
-
-    // no errors/warnings produced
-    t.deepEquals(messages.errors, [], 'no errors');
-    t.deepEquals(messages.warnings, [], 'no warnings');
-
-    t.end();
-  });
-  test('favor clean.parsed_text.name over clean.parsed_text street data', function(t) {
-
-    var clean = { parsed_text: {
-      housenumber: '190', street: 'foo st', subject: 'foo'
-    }, text: 'bar' };
-    var messages = sanitizer.sanitize({}, clean);
-
-    // favor clean.parsed_text.name over all other variables
-    t.deepEquals(clean.tokens, [ 'foo' ], 'use clean.parsed_text.name');
-    t.deepEquals(clean.tokens_complete, [ 'foo' ], 'use clean.parsed_text.name');
     t.deepEquals(clean.tokens_incomplete, [], 'no tokens');
 
     // no errors/warnings produced
