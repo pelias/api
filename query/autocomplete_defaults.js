@@ -54,7 +54,6 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   // generic multi_match config
   'multi_match:type': 'cross_fields',
-  'multi_match:cutoff_frequency': 0.01,
 
   'admin:country_a:analyzer': 'standard',
   'admin:country_a:field': 'parent.country_a.ngram',
