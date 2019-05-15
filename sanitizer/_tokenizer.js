@@ -37,6 +37,14 @@ function _sanitize( raw, clean ){
       if (_.has(clean.parsed_text, 'housenumber') && _.has(clean.parsed_text, 'street')){
         parserConsumedAllTokens = true;
       }
+    
+      // when $subject exactly equals one of the admin fields
+      else if (
+        text === clean.parsed_text.locality ||
+        text === clean.parsed_text.region ||
+        text === clean.parsed_text.country) {
+        parserConsumedAllTokens = true;
+      }
     }
   }
 
