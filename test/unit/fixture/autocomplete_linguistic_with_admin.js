@@ -29,7 +29,9 @@ module.exports = {
               'parent.region_a.ngram^600'
             ],
             'query': 'three',
-            'analyzer': 'peliasAdmin'
+            'analyzer': 'peliasAdmin',
+            'type': 'cross_fields',
+            'cutoff_frequency': 0.01
           }
         },
         {

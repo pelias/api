@@ -52,7 +52,8 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'address:postcode:boost': 2000,
   'address:postcode:cutoff_frequency': 0.01,
 
-  // generic multi_match cutoff_frequency
+  // generic multi_match config
+  'multi_match:type': 'cross_fields',
   'multi_match:cutoff_frequency': 0.01,
 
   'admin:country_a:analyzer': 'standard',
