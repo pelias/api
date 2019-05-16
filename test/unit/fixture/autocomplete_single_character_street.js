@@ -3,7 +3,7 @@ module.exports = {
     'bool': {
       'must': [{
         'match': {
-          'name.default': {
+          'phrase.default': {
             'analyzer': 'peliasQueryFullToken',
             'cutoff_frequency': 0.01,
             'type': 'phrase',
