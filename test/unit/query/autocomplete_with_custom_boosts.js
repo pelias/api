@@ -40,7 +40,7 @@ module.exports.tests.query = function(test, common) {
 
     const actual_query = JSON.parse( JSON.stringify( autocomplete_query_module(clean) ) );
 
-    t.deepEqual(actual_query, expected_query, 'query as expected');
+    t.deepEqual(actual_query, expected_query, 'autocomplete_custom_boosts');
     t.pass();
     t.end();
   });

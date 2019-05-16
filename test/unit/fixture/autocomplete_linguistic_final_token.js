@@ -14,17 +14,6 @@ module.exports = {
         }
       }],
       'should':[{
-        'match': {
-          'phrase.default': {
-            'analyzer': 'peliasPhrase',
-            'cutoff_frequency': 0.01,
-            'boost': 1,
-            'slop': 3,
-            'query': 'one',
-            'type': 'phrase'
-          }
-        }
-      },{
         'function_score': {
           'query': {
             'match_all': {}
