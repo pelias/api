@@ -172,8 +172,8 @@ module.exports.tests.sanity_checks = function(test, common) {
 
     // favor clean.parsed_text.subject over clean.text
     t.deepEquals(clean.tokens, [ 'foo' ], 'use clean.parsed_text.subject');
-    t.deepEquals(clean.tokens_complete, [], 'complete');
-    t.deepEquals(clean.tokens_incomplete, [ 'foo' ], 'incomplete');
+    t.deepEquals(clean.tokens_complete, [ 'foo' ], 'complete');
+    t.deepEquals(clean.tokens_incomplete, [ ], 'incomplete');
 
     // no errors/warnings produced
     t.deepEquals(messages.errors, [], 'no errors');
@@ -557,6 +557,32 @@ module.exports.tests.numeric_final_char = function (test, common) {
     // tokens produced
     t.deepEquals(clean.tokens, ['stop', '3'], 'tokens produced');
     t.deepEquals(clean.tokens_complete, ['stop', '3'], 'complete');
+    t.deepEquals(clean.tokens_incomplete, [], 'incomplete');
+
+    // no errors/warnings produced
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+
+    t.end();
+  });
+};
+
+module.exports.tests.subject_complete = function (test, common) {
+  test('subject complete', function (t) {
+
+    var clean = {
+      text: '혜화로, seoul',
+      parsed_text: {
+        subject: '혜화로',
+        locality: 'seoul',
+        admin: 'seoul'
+      }
+    };
+    var messages = sanitizer.sanitize({}, clean);
+
+    // tokens produced
+    t.deepEquals(clean.tokens, ['혜화로'], 'tokens produced');
+    t.deepEquals(clean.tokens_complete, ['혜화로'], 'complete');
     t.deepEquals(clean.tokens_incomplete, [], 'incomplete');
 
     // no errors/warnings produced

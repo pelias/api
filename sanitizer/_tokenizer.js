@@ -33,10 +33,19 @@ function _sanitize( raw, clean ){
 
       // note: we cannot be sure that the input is complete if a street is
       // detected because the parser will detect partially completed suffixes
-      // which are not safe to match against an ngrams index
-    
+      // which are not safe to match against a phrase index
+      if( _.has(clean.parsed_text, 'housenumber') && _.has(clean.parsed_text, 'street') ){
+        parserConsumedAllTokens = false;
+      }
+
+      // when $subject is not the end of $clean.text
+      // then there must be tokens coming afterwards
+      else if (!clean.text.endsWith(text)) {
+        parserConsumedAllTokens = true;
+      }
+
       // when $subject exactly equals one of the admin fields
-      if (
+      else if (
         text === clean.parsed_text.locality ||
         text === clean.parsed_text.region ||
         text === clean.parsed_text.country) {
