@@ -43,7 +43,7 @@ The API recognizes the following properties under the top-level `api` key in you
 |---|---|---|---|
 |`services`|*no*||Service definitions for [point-in-polygon](https://github.com/pelias/pip-service), [libpostal](https://github.com/whosonfirst/go-whosonfirst-libpostal), [placeholder](https://github.com/pelias/placeholder), and [interpolation](https://github.com/pelias/interpolation) services. For a description of when different Pelias services are recommended or required, see our [services documentation](https://github.com/pelias/documentation/blob/master/services.md).|
 |`defaultParameters.focus.point.lon` <br> `defaultParameters.focus.point.lat`|no | |default coordinates for focus point
-|`targets.layers_by_source` <br> `targets.source_aliases` <br> `targets.layer_aliases`|no | |custom values for which `sources` and `layers` the API accepts ([more info](https://github.com/pelias/api/pull/1131)).
+|`targets.layers_by_source` <br> `targets.source_aliases` <br> `targets.layer_aliases`|no | |custom values for which `sources` and `layers` the API accepts (See more info in the [Custom sources and layers](#custom-sources-and-layers) section below).
 |`customBoosts` | no | `{}` | Allows configuring boosts for specific sources and layers, in order to influence result order. See [Configurable Boosts](#custom-boosts) below for details |
 |`autocomplete.exclude_address_length` | no | 0 | As a performance optimization, this optional parameter allows excluding address results for queries below the configured length. Addresses are usually the bulk of the records in Elasticsearch, and searching across all of them for very short text inputs can be slow, with little benefit. Consider setting this to 1 or 2 if you have several million addresses in Pelias. |
 |`indexName`|*no*|*pelias*|name of the Elasticsearch index to be used when building queries|
@@ -85,6 +85,66 @@ A good starting configuration file includes this section (fill in the service an
 ```
 
 The `timeout` and `retry` values, as show in in the `pip` service section, are optional but configurable for all services (see [pelias/microservice-wrapper](https://github.com/pelias/microservice-wrapper) for more details).
+
+### Custom sources and layers
+
+Pelias allows importing your own data with custom values for `source` and `layer`, however you MUST tell Pelias about them via `pelias.json` using the `targets.layers_by_source`, `targets.source_aliases` and `targets.layer_aliases` configuration parameters.
+
+#### `layers_by_source`
+
+This parameter tells Pelias what type of records it can expect a given datasource to have. Anything put here will extend the default configuration which handles all the open data project Pelias supports out of the box. The parameter is an object where your custom source names are the keys, and the list of layers in that source are the values in an array. For example, if you have two custom sources, `mysource` which contains addresses and countries, and `mysource2` containing neighbourhoods, the following would work well:
+
+```
+"api": {
+  "targets": {
+    "layers_by_source": {
+      "mysource": ["address", "country"],
+      "mysource2": ["neighbourhood"]
+    }
+  }
+}
+```
+
+#### `source_aliases`
+
+An optional list of alternate names for sources. These 'aliases' are a convenient way to
+provide a short alias for a more verbose source name. An alias may refer to one
+or more sources. The keys on the left side represent a previously undefined
+'alias', while the values in the array on the right refer to sources previously
+defined in "layers_by_source".
+
+For example, to create an alias that allows conveniently searching the two open
+data projects who's name starts with "Open", use the following configuration:
+```
+{
+  "api": {
+    "targets": {
+      "source_aliases": {
+        "opensomething": [ "openstreetmap", "openaddresses" ]
+    }
+  }
+}
+```
+
+#### `layer_aliases`
+
+An optional list of alternate names for layers. These 'aliases' are a convenient way to
+provide a short alias for a more verbose layer name. An alias may refer to one
+or more layers. The keys on the left side represent a previously undefined
+'alias', while the values in the array on the right refer to layers previously
+defined in "layers_by_source"
+
+For example, to create a layer alias `water` that represents all the water layer types supported by Pelias:
+```
+{
+  "api": {
+    "targets": {
+      "layer_aliases": {
+        "water": [ "ocean", "marinearea" ]
+    }
+  }
+}
+```
 
 ### Custom Boosts
 
