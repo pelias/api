@@ -30,7 +30,8 @@ module.exports = {
             ],
             'query': 'three',
             'analyzer': 'peliasAdmin',
-            'type': 'cross_fields'
+            'type': 'cross_fields',
+            'cutoff_frequency': 0.01
           }
         }
       ],

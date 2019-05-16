@@ -28,7 +28,8 @@ module.exports = {
           ],
           'query': 'laird',
           'analyzer': 'peliasAdmin',
-          'type': 'cross_fields'
+          'type': 'cross_fields',
+          'cutoff_frequency': 0.01
         }
       }],
       'should':[
