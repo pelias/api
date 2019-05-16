@@ -38,7 +38,6 @@ query.score( peliasQuery.view.address('street') );
 query.score( peliasQuery.view.address('postcode') );
 
 // scoring boost
-query.score( views.boost_exact_matches );
 query.score( peliasQuery.view.focus( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.pop_subquery ) );
 query.score( peliasQuery.view.population( views.pop_subquery ) );

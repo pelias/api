@@ -36,18 +36,6 @@ module.exports = {
       ],
       'should': [
         {
-          'match': {
-            'phrase.default': {
-              'analyzer' : 'peliasPhrase',
-              'cutoff_frequency': 0.01,
-              'type' : 'phrase',
-              'boost' : 1,
-              'slop' : 3,
-              'query' : 'one two'
-            }
-          }
-        },
-        {
           'function_score': {
             'query': {
               'match_all': {}

@@ -43,18 +43,6 @@ module.exports = {
           }
         },
         {
-          'match': {
-            'phrase.default': {
-              'analyzer' : 'peliasPhrase',
-              'type' : 'phrase',
-              'boost' : 1,
-              'slop' : 3,
-              'cutoff_frequency': 0.01,
-              'query' : 'k road'
-            }
-          }
-        },
-        {
         'function_score': {
           'query': {
             'match_all': {}
