@@ -24,7 +24,6 @@ module.exports.tests.text_parser = function (test, common) {
   // USA queries
   cases.push(['soho, new york, NY', {
     subject: 'soho',
-    name: 'soho',
     locality: 'new york',
     region: 'NY',
     admin: 'new york, NY'
@@ -48,32 +47,27 @@ module.exports.tests.text_parser = function (test, common) {
 
   // Query with one token
   cases.push(['yugolsavia', {
-    subject: 'yugolsavia',
-    name: 'yugolsavia'
+    subject: 'yugolsavia'
   }]);
 
   // Query with two tokens, no numbers
   cases.push(['small town', {
-    subject: 'small town',
-    name: 'small town'
+    subject: 'small town'
   }]);
 
   // Query with two tokens, number first
   cases.push(['123 main', {
-    subject: '123 main',
-    name: '123 main'
+    subject: '123 main'
   }]);
 
   // Query with two tokens, number second
   cases.push(['main 123', {
-    subject: 'main 123',
-    name: 'main 123'
+    subject: 'main 123'
   }]);
 
   // Query with many tokens
   cases.push(['main particle new york', {
     subject: 'main particle',
-    name: 'main particle',
     locality: 'new york',
     admin: 'new york'
   }]);
