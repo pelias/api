@@ -428,13 +428,11 @@ module.exports.tests.final_token_single_gram = function(test, common) {
 
     // all but last token marked as 'complete'
     t.deepEquals(clean.tokens_complete, [
-      'grolmanstrasse',
+      'grolmanstrasse', '1'
     ], 'tokens produced');
 
     // last token marked as 'incomplete'
-    t.deepEquals(clean.tokens_incomplete, [
-      '1'
-    ], 'tokens produced');
+    t.deepEquals(clean.tokens_incomplete, [], 'tokens produced');
 
     // no errors/warnings produced
     t.deepEquals(messages.errors, [], 'no errors');
@@ -525,6 +523,41 @@ module.exports.tests.mixed_delimiter = function(test, common) {
       '133rd',
       'Avenue'
     ], 'tokens produced');
+
+    // no errors/warnings produced
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+
+    t.end();
+  });
+};
+
+module.exports.tests.numeric_final_char = function (test, common) {
+  test('numeric final char, single token', function (t) {
+
+    var clean = { text: '7-11', parsed_text: { subject: '7-11' } };
+    var messages = sanitizer.sanitize({}, clean);
+
+    // tokens produced
+    t.deepEquals(clean.tokens, ['7-11'], 'tokens produced');
+    t.deepEquals(clean.tokens_complete, ['7-11'], 'complete');
+    t.deepEquals(clean.tokens_incomplete, [], 'incomplete');
+
+    // no errors/warnings produced
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+
+    t.end();
+  });
+  test('numeric final char, multiple token', function (t) {
+
+    var clean = { text: 'stop 3', parsed_text: { subject: 'stop 3' } };
+    var messages = sanitizer.sanitize({}, clean);
+
+    // tokens produced
+    t.deepEquals(clean.tokens, ['stop', '3'], 'tokens produced');
+    t.deepEquals(clean.tokens_complete, ['stop', '3'], 'complete');
+    t.deepEquals(clean.tokens_incomplete, [], 'incomplete');
 
     // no errors/warnings produced
     t.deepEquals(messages.errors, [], 'no errors');

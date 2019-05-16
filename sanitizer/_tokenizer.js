@@ -48,6 +48,12 @@ function _sanitize( raw, clean ){
     }
   }
 
+  // if the final character is a numeral then consider all tokens
+  // as complete in order to avoid prefix matching numerals.
+  if (/[0-9]$/.test(text) ) {
+    parserConsumedAllTokens = true;
+  }
+
   // always set 'clean.tokens*' arrays for consistency and to avoid upstream errors.
   clean.tokens = [];
   clean.tokens_complete = [];
@@ -61,7 +67,7 @@ function _sanitize( raw, clean ){
     // see: settings.analysis.tokenizer.peliasNameTokenizer
     clean.tokens = text
       .split(/[\s,\\\/]+/) // split on delimeters
-      .filter(function(el){return el;}); // remove empty elements
+      .filter(el => el); // remove empty elements
   } else {
     // text is empty, this sanitizer should be a no-op
     return messages;
