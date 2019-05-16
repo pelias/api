@@ -149,14 +149,44 @@ function parse (clean) {
   // a locality query
   else if (!_.isEmpty(parsed_text.locality)) {
     parsed_text.subject = parsed_text.locality;
+
+    // remove the locality name from $admin
+    if ( parsed_text.admin ) {
+      let width = parsed_text.subject.length;
+      let cut = parsed_text.admin.substr(0, width);
+      if( cut === parsed_text.subject ){
+        parsed_text.admin = _.trim(parsed_text.admin.substr(width), ', ');
+        if( !parsed_text.admin.length ){ delete parsed_text.admin; }
+      }
+    }
   }
   // a region query
   else if (!_.isEmpty(parsed_text.region)) {
     parsed_text.subject = parsed_text.region;
+
+    // remove the region name from $admin
+    if (parsed_text.admin) {
+      let width = parsed_text.subject.length;
+      let cut = parsed_text.admin.substr(0, width);
+      if (cut === parsed_text.subject) {
+        parsed_text.admin = _.trim(parsed_text.admin.substr(width), ', ');
+        if( !parsed_text.admin.length ){ delete parsed_text.admin; }
+      }
+    }
   }
   // a country query
   else if (!_.isEmpty(parsed_text.country)) {
     parsed_text.subject = parsed_text.country;
+
+    // remove the country name from $admin
+    if (parsed_text.admin) {
+      let width = parsed_text.subject.length;
+      let cut = parsed_text.admin.substr(0, width);
+      if (cut === parsed_text.subject) {
+        parsed_text.admin = _.trim(parsed_text.admin.substr(width), ', ');
+        if (!parsed_text.admin.length) { delete parsed_text.admin; }
+      }
+    }
   }
   
   // unknown query type
