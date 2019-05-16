@@ -124,7 +124,7 @@ function parse (clean) {
   postfix = postfix.replace(/\s+/g, ' ').trim();
 
   // 3. store the unparsed characters in fields which can be used for querying
-  if (prefix.length) { parsed_text.name = prefix; }
+  // if (prefix.length) { parsed_text.name = prefix; }
   if (postfix.length) { parsed_text.admin = postfix; }
 
   // 4. set 'subject', this is the text which will target the 'name.*'
@@ -138,9 +138,9 @@ function parse (clean) {
   else if (!_.isEmpty(parsed_text.street)) {
     parsed_text.subject = parsed_text.street;
   }
-  // query with a name such as a venue query
-  else if (!_.isEmpty(parsed_text.name)){
-    parsed_text.subject = parsed_text.name;
+  // query with a $prefix such as a venue query
+  else if (!_.isEmpty(prefix)){
+    parsed_text.subject = prefix;
   }
   // a postcode query
   else if (!_.isEmpty(parsed_text.postcode)) {
