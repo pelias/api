@@ -20,6 +20,9 @@ var views = {
 // add abbrevations for the fields pelias/parser is able to detect.
 var adminFields = placeTypes.concat(['locality_a', 'region_a', 'country_a']);
 
+// add name field to improve venue matching
+adminFields = adminFields.concat(['add_name_to_multimatch']);
+
 //------------------------------
 // autocomplete query
 //------------------------------
@@ -157,6 +160,11 @@ function generateQuery( clean ){
   if( clean.parsed_text ){
     textParser( clean, vs );
   }
+
+  let isAdminSet = adminFields.some(field => vs.isset('input:' + field));
+  if ( isAdminSet ){ vs.var('input:add_name_to_multimatch', 'enabled'); }
+
+  vs.var('admin:add_name_to_multimatch:field', 'name.default');
 
   return {
     type: 'autocomplete',
