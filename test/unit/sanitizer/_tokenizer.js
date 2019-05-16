@@ -192,8 +192,8 @@ module.exports.tests.sanity_checks = function(test, common) {
 
     // favor clean.parsed_text.subject over clean.text
     t.deepEquals(clean.tokens, [ '190', 'foo', 'st' ], 'use street name + housenumber');
-    t.deepEquals(clean.tokens_complete, [ '190', 'foo', 'st' ], 'use street name + housenumber');
-    t.deepEquals(clean.tokens_incomplete, [], 'no tokens');
+    t.deepEquals(clean.tokens_complete, [ '190', 'foo' ], 'complete');
+    t.deepEquals(clean.tokens_incomplete, [ 'st' ], 'incomplete');
 
     // no errors/warnings produced
     t.deepEquals(messages.errors, [], 'no errors');
