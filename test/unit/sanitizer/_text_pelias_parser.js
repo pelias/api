@@ -43,7 +43,7 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['chelsea, london', {
     subject: 'chelsea',
     locality: 'chelsea',
-    admin: 'chelsea, london'
+    admin: 'london'
   }]);
 
   // Query with one token
@@ -132,8 +132,22 @@ module.exports.tests.text_parser = function (test, common) {
   // AUS - state only
   cases.push(['NSW', {
     subject: 'NSW',
-    region: 'NSW',
-    admin: 'NSW'
+    region: 'NSW'
+  }]);
+
+  // when admin name is $subject it should
+  // be removed from $admin
+  cases.push(['paris texas', {
+    subject: 'paris',
+    locality: 'paris',
+    region: 'texas',
+    admin: 'texas'
+  }]);
+  cases.push(['rome italy', {
+    subject: 'rome',
+    locality: 'rome',
+    country: 'italy',
+    admin: 'italy'
   }]);
 
   cases.forEach(testcase => {
