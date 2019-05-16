@@ -54,7 +54,10 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   // generic multi_match config
   'multi_match:type': 'cross_fields',
-  'multi_match:cutoff_frequency': 0.01,
+
+  // setting 'cutoff_frequency' will result in very common
+  // terms such as country not scoring at all
+  // 'multi_match:cutoff_frequency': 0.01,
 
   'admin:country_a:analyzer': 'standard',
   'admin:country_a:field': 'parent.country_a.ngram',
