@@ -31,15 +31,12 @@ function _sanitize( raw, clean ){
     if( _.has(clean.parsed_text, 'subject') ){
       text = clean.parsed_text.subject; // use this string instead
 
-      // when both housenumber and street fields are present then the pelias parser
-      // will simply set $subject to be a concatination of these fields.
-      // in this case we can be sure that all tokens were complete
-      if (_.has(clean.parsed_text, 'housenumber') && _.has(clean.parsed_text, 'street')){
-        parserConsumedAllTokens = true;
-      }
+      // note: we cannot be sure that the input is complete if a street is
+      // detected because the parser will detect partially completed suffixes
+      // which are not safe to match against an ngrams index
     
       // when $subject exactly equals one of the admin fields
-      else if (
+      if (
         text === clean.parsed_text.locality ||
         text === clean.parsed_text.region ||
         text === clean.parsed_text.country) {
