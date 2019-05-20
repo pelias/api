@@ -188,6 +188,11 @@ function generateQuery( clean ){
   let isAdminSet = adminFields.some(field => vs.isset('input:' + field));
   if ( isAdminSet ){ vs.var('input:add_name_to_multimatch', 'enabled'); }
 
+  // Search in the user lang
+  if(clean.lang && check.string(clean.lang.iso6391)) {
+    vs.var('lang_multi_match:lang', clean.lang.iso6391);
+  }
+
   return {
     type: 'autocomplete',
     body: query.render(vs)

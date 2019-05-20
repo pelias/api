@@ -2,13 +2,14 @@ module.exports = {
   'query': {
     'bool': {
       'must': [{
-        'match_phrase': {
-          'phrase.default': {
-            'analyzer': 'peliasQuery',
-            'boost': 1,
-            'slop': 3,
-            'query': 'k road'
-          }
+        'multi_match': {
+          'fields': ['name.default^1', 'name.en^2'],
+          'analyzer': 'peliasQuery',
+          'query': 'k road',
+          'cutoff_frequency': 0.01,
+          'type': 'phrase',
+          'operator': 'and',
+          'slop': 3
         }
       }, {
         'multi_match': {

@@ -63,6 +63,9 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   // terms such as country not scoring at all
   // 'multi_match:cutoff_frequency': 0.01,
 
+  'lang_multi_match:lang': 'en',
+  'lang_multi_match:boost': 1,
+
   'admin:country_a:analyzer': 'standard',
   'admin:country_a:field': 'parent.country_a.ngram',
   'admin:country_a:boost': 1,
