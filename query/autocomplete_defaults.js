@@ -65,6 +65,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   'lang_multi_match:lang': 'en',
   'lang_multi_match:boost': 1,
+  'lang_multi_match:field': 'name.default',
 
   'admin:country_a:analyzer': 'standard',
   'admin:country_a:field': 'parent.country_a.ngram',

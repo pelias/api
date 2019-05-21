@@ -1,4 +1,5 @@
-var peliasQuery = require('pelias-query');
+const peliasQuery = require('pelias-query');
+const lang_multi_match = require('./lang_multi_match');
 
 /**
   Ngrams view with the additional properties to enable:
@@ -9,17 +10,11 @@ var peliasQuery = require('pelias-query');
 
 module.exports = function( vs ){
 
-  // validate required params
-  if( !vs.isset('phrase:slop') ){
-    return null;
-  }
+  // make a copy Vars so we don't mutate the original
+  const vsCopy = new peliasQuery.Vars( vs.export() );
 
-  vs.var('match_phrase:ngrams_strict:input', vs.var('input:name').get());
-  vs.var('match_phrase:ngrams_strict:field', vs.var('ngram:field').get());
+  vsCopy.var('lang_multi_match:analyzer').set(vs.var('ngram:analyzer').get());
+  vsCopy.var('lang_multi_match:boost').set(vs.var('ngram:boost').get());
 
-  vs.var('match_phrase:ngrams_strict:analyzer', vs.var('ngram:analyzer').get());
-  vs.var('match_phrase:ngrams_strict:slop', vs.var('phrase:slop').get());
-  vs.var('match_phrase:ngrams_strict:boost', vs.var('ngram:boost').get());
-
-  return peliasQuery.view.leaf.match_phrase('ngrams_strict')(vs);
+  return lang_multi_match( vsCopy );
 };

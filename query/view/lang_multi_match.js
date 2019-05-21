@@ -11,16 +11,22 @@ module.exports = function( vs ){
   // validate required params
   if( !vs.isset('phrase:slop') ||
       !vs.isset('lang_multi_match:boost') ||
-      !vs.isset('lang_multi_match:analyzer') ){
+      !vs.isset('lang_multi_match:analyzer') ||
+      !vs.isset('lang_multi_match:field') ){
     return null;
   }
 
   const boost = vs.var('lang_multi_match:boost');
   const lang = vs.var('lang_multi_match:lang');
+  const fields = ['default', lang].map(ext => {
+    const parts = vs.var('lang_multi_match:field').get().split('.');
+    parts[parts.length - 1] = ext;
+    return { field: parts.join('.'), boost: boost };
+  });
 
   const view = peliasQuery.view.multi_match(
     vs,
-    [{ field: 'name.default', boost: boost }, { field: `name.${lang}`, boost: boost * 2 }],
+    fields,
     vs.var('lang_multi_match:analyzer'),
     'input:name'
   );

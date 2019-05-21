@@ -5,7 +5,7 @@ module.exports = {
         'constant_score': {
           'filter': {
             'multi_match': {
-              'fields': ['name.default^100', 'name.en^200'],
+              'fields': ['name.default^100', 'name.en^100'],
               'analyzer': 'peliasQuery',
               'query': 'test',
               'cutoff_frequency': 0.01,
@@ -19,13 +19,14 @@ module.exports = {
       'should': [{
         'function_score': {
           'query': {
-            'match_phrase': {
-              'name.default': {
-                'analyzer': 'peliasQuery',
-                'boost': 100,
-                'query': 'test',
-                'slop': 3
-              }
+            'multi_match': {
+              'fields': ['name.default^100', 'name.en^100'],
+              'analyzer': 'peliasQuery',
+              'cutoff_frequency': 0.01,
+              'query': 'test',
+              'type': 'phrase',
+              'operator': 'and',
+              'slop': 3
             }
           },
           'functions': [{
@@ -78,48 +79,6 @@ module.exports = {
             },
             'weight': 3
           }]
-        }
-      }],
-      'filter': [{
-        'bool': {
-          'minimum_should_match': 1,
-          'should': [
-            {
-              'terms': {
-                'layer': [
-                  'venue',
-                  'country',
-                  'macroregion',
-                  'region',
-                  'county',
-                  'localadmin',
-                  'locality',
-                  'borough',
-                  'neighbourhood',
-                  'continent',
-                  'empire',
-                  'dependency',
-                  'macrocounty',
-                  'macrohood',
-                  'microhood',
-                  'disputed',
-                  'postalcode',
-                  'ocean',
-                  'marinearea'
-                ]
-              }
-            },
-            {
-              'geo_distance': {
-                'distance': '600km',
-                'distance_type': 'plane',
-                'center_point': {
-                  'lat': 29.49136,
-                  'lon': -82.50622
-                }
-              }
-            }
-          ]
         }
       }]
     }
