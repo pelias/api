@@ -11,7 +11,29 @@ const Debug = require('../helper/debug');
 function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
+function filterByCategories(req, renderedQuery) {
+    if (!req || !req.query) {
+        return;
+    }
+    if (!renderedQuery || !renderedQuery.body || !renderedQuery.body.query || !renderedQuery.body.query.bool) {
+        return;
+    }
+    var categories = req.query.categories;
+    if (categories) {
+        if (!renderedQuery.body.query.bool.must) {
+            renderedQuery.body.query.bool.must = [];
+        }
 
+        var categoriesTerms = {
+            terms: {
+                'category': categories.split(',')
+            }
+        };
+        renderedQuery.body.query.bool.must.push(categoriesTerms);
+
+
+    }
+}
 function filterByParentIds(req, renderedQuery) {
     if (!req || !req.query) {
         return;
@@ -102,6 +124,9 @@ function setup( apiConfig, esclient, query, should_execute ){
 
      // ENTUR: Filter results based on tariff zones in input params
      filterByTariffZones(req, renderedQuery);
+
+      // ENTUR: Filter results based on tariff zones in input params
+      filterByCategories(req, renderedQuery);
 
      //  ENTUR: Be sure to fetch more results than user has requested to allow for deduping.
       // TODO dirty, move to autocomplete specific context
