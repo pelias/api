@@ -1,4 +1,4 @@
-FROM node:8.2.1
+FROM node:8.16.0
 MAINTAINER Rutebanken
 
 RUN wget --quiet https://github.com/Yelp/dumb-init/releases/download/v1.0.1/dumb-init_1.0.1_amd64.deb
