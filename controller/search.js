@@ -19,7 +19,7 @@ function filterByCategories(req, renderedQuery) {
         return;
     }
     var categories = req.query.categories;
-    if (categories) {
+    if (categories && 'NO_FILTER' !== categories) {
         if (!renderedQuery.body.query.bool.must) {
             renderedQuery.body.query.bool.must = [];
         }
@@ -125,8 +125,8 @@ function setup( apiConfig, esclient, query, should_execute ){
      // ENTUR: Filter results based on tariff zones in input params
      filterByTariffZones(req, renderedQuery);
 
-      // ENTUR: Filter results based on tariff zones in input params
-      filterByCategories(req, renderedQuery);
+     // ENTUR: Filter results based on tariff zones in input params
+     filterByCategories(req, renderedQuery);
 
      //  ENTUR: Be sure to fetch more results than user has requested to allow for deduping.
       // TODO dirty, move to autocomplete specific context
