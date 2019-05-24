@@ -21,7 +21,7 @@ module.exports.tests.computeDistance = function(test, common) {
       ]
     };
 
-    var expected = 742.348;
+    var expected = 742.735;
     distance(req, res, function () {
       t.equal(res.data[0].distance, expected, 'correct distance computed');
       t.end();
