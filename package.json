@@ -38,7 +38,7 @@
   "dependencies": {
     "@mapbox/geojson-extent": "^0.3.1",
     "addressit": "1.7.0",
-    "async": "^2.0.0",
+    "async": "^3.0.1",
     "check-types": "^8.0.0",
     "elasticsearch": "^15.0.0",
     "express": "^4.8.8",
