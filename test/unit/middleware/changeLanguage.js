@@ -133,7 +133,9 @@ module.exports.tests.success_conditions = (test, common) => {
     const req = {
       clean: {
         lang: {
-          iso6393: 'requested language'
+          iso6393: 'requested language',
+          iso6391: 'requested language',
+          defaulted: false
         }
       }
     };
@@ -179,6 +181,32 @@ module.exports.tests.success_conditions = (test, common) => {
             layer13_id: [undefined],
             layer13: ['original name for layer13']
           }
+        },
+        // doc with name that will be translated
+        {
+          name: {
+            default: 'original name for 4th result',
+            'requested language': 'translated name'
+          },
+          // note that this is address!
+          layer: 'address',
+          parent: {
+            layer1_id: ['1'],
+            layer1: ['original name for layer1']
+          }
+        },
+        // doc with name that will be translated
+        {
+          name: {
+            default: 'original name for 5th result',
+            'random language': 'translated name'
+          },
+          // note that this is address!
+          layer: 'address',
+          parent: {
+            layer1_id: ['1'],
+            layer1: ['original name for layer1']
+          }
         }
       ]
     };
@@ -222,6 +250,28 @@ module.exports.tests.success_conditions = (test, common) => {
               layer12: ['original name for layer12'],
               layer13_id: [undefined],
               layer13: ['original name for layer13']
+            }
+          },
+          {
+            name: {
+              default: 'translated name',
+              'requested language': 'translated name'
+            },
+            layer: 'address',
+            parent: {
+              layer1_id: ['1'],
+              layer1: ['replacement name for layer1']
+            }
+          },
+          {
+            name: {
+              default: 'original name for 5th result',
+              'random language': 'translated name'
+            },
+            layer: 'address',
+            parent: {
+              layer1_id: ['1'],
+              layer1: ['replacement name for layer1']
             }
           }
         ]
