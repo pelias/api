@@ -78,6 +78,7 @@ const hasResultsAtLayers = require('../controller/predicates/has_results_at_laye
 const isAddressItParse = require('../controller/predicates/is_addressit_parse');
 const hasRequestCategories = require('../controller/predicates/has_request_parameter')('categories');
 const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin_layers');
+const isRequestLayersAnyAddressRelated = require('../controller/predicates/is_request_layers_any_address_related');
 // this can probably be more generalized
 const isRequestSourcesOnlyWhosOnFirst = require('../controller/predicates/is_request_sources_only_whosonfirst');
 const isRequestSourcesIncludesWhosOnFirst = require('../controller/predicates/is_request_sources_includes_whosonfirst');
@@ -186,6 +187,7 @@ function addRoutes(app, peliasConfig) {
   const placeholderIdsLookupShouldExecute = all(
     not(hasResponseDataOrRequestErrors),
     isPlaceholderServiceEnabled,
+    isRequestLayersAnyAddressRelated,
     // check clean.parsed_text for several conditions that must all be true
     all(
       // run placeholder if clean.parsed_text has 'street'
@@ -201,6 +203,8 @@ function addRoutes(app, peliasConfig) {
     not(hasRequestErrors),
     // don't search-with-ids if there's a query or category
     not(hasParsedTextProperties.any('query', 'category')),
+    // at least one layer allowed by the query params must be related to addresses
+    isRequestLayersAnyAddressRelated,
     // there must be a street
     hasParsedTextProperties.any('street')
   );
