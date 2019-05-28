@@ -1,3 +1,5 @@
+// a list of administrative placetypes
+// TODO: turn this into configuration (https://github.com/pelias/api/issues/1161)
 module.exports = [
   'ocean',
   'marinearea',
