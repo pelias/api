@@ -34,7 +34,7 @@ function _sanitize( raw, clean ){
       // note: we cannot be sure that the input is complete if a street is
       // detected because the parser will detect partially completed suffixes
       // which are not safe to match against a phrase index
-      if( _.has(clean.parsed_text, 'housenumber') && _.has(clean.parsed_text, 'street') ){
+      if( _.has(clean.parsed_text, 'street') ){
         parserConsumedAllTokens = false;
       }
 
