@@ -144,6 +144,14 @@ module.exports.tests.text_parser = function (test, common) {
     admin: 'italy'
   }]);
 
+  // university
+  cases.push(['Union College, Kentucky', {
+    subject: 'Union College',
+    place: 'Union College',
+    region: 'Kentucky',
+    admin: 'Kentucky'
+  }]);
+
   cases.forEach(testcase => {
     let input = testcase[0];
     let expected = testcase[1];

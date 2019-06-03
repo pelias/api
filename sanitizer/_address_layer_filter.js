@@ -21,6 +21,8 @@ const check = require('check-types');
  * Update: added additional check that enforces that the input must also contain at least one numeral
  */
 
+ // note: this runs before libpostal (which is a service)
+
 const ADDRESS_FILTER_WARNING = 'performance optimization: excluding \'address\' layer';
 
 function _setup(layersBySource) {
@@ -57,9 +59,15 @@ function _setup(layersBySource) {
       // be subject to change.
       if (check.nonEmptyObject(clean.parsed_text)) {
 
-        // if 'addressit' or 'libpostal' identified input as a street address
         var isStreetAddress = clean.parsed_text.hasOwnProperty('number') && clean.parsed_text.hasOwnProperty('street');
-        if (isStreetAddress) {
+
+        // use $subject where available (pelias parser)
+        if (_.has(clean, 'parsed_text.subject')) {
+          input = clean.parsed_text.subject;
+        }
+
+        // if 'addressit' or 'libpostal' identified input as a street address
+        else if (isStreetAddress) {
           input = clean.parsed_text.number + ' ' + clean.parsed_text.street;
         }
 
@@ -74,6 +82,11 @@ function _setup(layersBySource) {
 
       // check that at least one numeral was specified
       let hasNumeral = /\d/.test(input);
+
+      // do not consider numeric street names, such as '26 st' in numeric check.
+      if( _.has(clean, 'parsed_text.street') ){
+        hasNumeral = /\d/.test(input.replace(clean.parsed_text.street, ''));
+      }
 
       // if less than two words were specified /or no numeral is present
       // then it is safe to apply the layer filter
