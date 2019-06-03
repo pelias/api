@@ -16,6 +16,8 @@ module.exports = {
         'multi_match': {
           'fields': [
             'parent.country.ngram^1',
+            'parent.dependency.ngram^1',
+            'parent.macroregion.ngram^1',
             'parent.region.ngram^1',
             'parent.county.ngram^1',
             'parent.localadmin.ngram^1',

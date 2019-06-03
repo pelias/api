@@ -67,8 +67,21 @@ function parse (clean) {
 
   // generate a classification mask, eg:
   // 'Foo Cafe 10 Main St London 10010 Earth'
-  // '         NN SSSSSSS AAAAAA PPPPP      '
+  // '    VVVV NN SSSSSSS AAAAAA PPPPP      '
   let mask = solution.mask(t);
+
+  // special handling of intersection queries
+  // here we do not trust intersection parses which also contain another
+  // classification, such as a house number, postcode or admin field.
+  // this is to avoid errors for queries such as:
+  // eg 'air & space museum, washington, dc'
+  if (parsed_text.street && parsed_text.cross_street) {
+    if (Object.keys(parsed_text).length > 3) {
+      delete parsed_text.street;
+      delete parsed_text.cross_street;
+      mask = mask.replace(/S/g, ' ');
+    }
+  }
 
   // the entire input text as seen by the parser with any postcode classification(s) removed
   let body = t.span.body.split('')
@@ -79,8 +92,13 @@ function parse (clean) {
   // prefix: all unparsed characters that came before any parsed fields
   // postfix: all characters from the first admin field to the end of the string
 
-  // set cursor to the first classified character
-  let cursor = mask.search(/\S/);
+  // set cursor to the first classified character from selected classes
+  let cursor = mask.search(/[NSAP]/);
+
+  // >> solution includes venue classification
+  // set cursor after the venue name
+  if (mask.includes('V')) { cursor = mask.lastIndexOf('V') +1; }
+
   if (cursor === -1) { cursor = body.length; }
   let prefix = _.trim(body.substr(0, cursor), ' ,');
 
@@ -92,6 +110,9 @@ function parse (clean) {
   // solution includes admin classification
   // set cursor to the first classified admin character
   else if( mask.includes('A') ){ cursor = mask.indexOf('A'); }
+  // >> solution includes venue classification
+  // set cursor after the venue name
+  else if (mask.includes('V')) { cursor = mask.lastIndexOf('V') + 1; }
   // else set cursor to end-of-text
   else { cursor = body.length; }
   let postfix = _.trim(body.substr(cursor), ' ,');
@@ -133,6 +154,10 @@ function parse (clean) {
   // an address query
   if (!_.isEmpty(parsed_text.housenumber) && !_.isEmpty(parsed_text.street)) {
     parsed_text.subject = `${parsed_text.housenumber} ${parsed_text.street}`;
+  }
+  // an intersection query
+  else if (!_.isEmpty(parsed_text.street) && !_.isEmpty(parsed_text.cross_street)) {
+    parsed_text.subject = `${parsed_text.street} & ${parsed_text.cross_street}`;
   }
   // a street query
   else if (!_.isEmpty(parsed_text.street)) {
