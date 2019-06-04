@@ -16,16 +16,25 @@ module.exports = {
       {
         'constant_score': {
           'query': {
-            'match': {
-              'name.default': {
-                'analyzer': 'peliasQuery',
-                'boost': 100,
-                'query': 'three',
-                'type': 'phrase',
-                'operator': 'and',
-                'cutoff_frequency': 0.01,
-                'slop': 3
-              }
+            'multi_match': {
+              'fields': [
+                'parent.country.ngram^1',
+                'parent.dependency.ngram^1',
+                'parent.macroregion.ngram^1',
+                'parent.region.ngram^1',
+                'parent.county.ngram^1',
+                'parent.localadmin.ngram^1',
+                'parent.locality.ngram^1',
+                'parent.borough.ngram^1',
+                'parent.neighbourhood.ngram^1',
+                'parent.locality_a.ngram^1',
+                'parent.region_a.ngram^4',
+                'parent.country_a.ngram^4',
+                'name.default^1'
+              ],
+              'query': 'three',
+              'analyzer': 'peliasQuery',
+              'type': 'cross_fields'
             }
           }
         }
