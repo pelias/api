@@ -74,7 +74,7 @@ const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
 const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_analysis');
 const hasResultsAtLayers = require('../controller/predicates/has_results_at_layers');
-const isPeliasItParse = require('../controller/predicates/is_pelias_parse');
+const isPeliasParse = require('../controller/predicates/is_pelias_parse');
 const hasRequestCategories = require('../controller/predicates/has_request_parameter')('categories');
 const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin_layers');
 const isRequestLayersAnyAddressRelated = require('../controller/predicates/is_request_layers_any_address_related');
@@ -233,7 +233,7 @@ function addRoutes(app, peliasConfig) {
   // call search addressit query if addressit was the parser
   const searchAddressitShouldExecute = all(
     not(hasRequestErrors),
-    isPeliasItParse
+    isPeliasParse
   );
 
   // get language adjustments if:
