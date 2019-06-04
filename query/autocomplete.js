@@ -12,6 +12,8 @@ var views = {
   ngrams_strict:              require('./view/ngrams_strict'),
   ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
   ngrams_last_token_only_multi: require('./view/ngrams_last_token_only_multi'),
+  admin_multi_match_first: require('./view/admin_multi_match_first'),
+  admin_multi_match_last: require('./view/admin_multi_match_last'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
   pop_subquery:               require('./view/pop_subquery'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
@@ -34,7 +36,8 @@ query.score( views.phrase_first_tokens_only, 'must' );
 query.score( views.ngrams_last_token_only_multi( adminFields ), 'must' );
 
 // admin components
-query.score(peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin'), 'must');
+query.score( views.admin_multi_match_first( adminFields ), 'must');
+query.score( views.admin_multi_match_last( adminFields ), 'must');
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );

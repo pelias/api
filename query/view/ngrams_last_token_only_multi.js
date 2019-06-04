@@ -6,6 +6,9 @@ module.exports = function (adminFields){
 
   return function (vs) {
 
+    // return the simple view for address queries
+    if( vs.isset('input:street') ){ return ngrams_last_token_only(vs); }
+
     // get a copy of the *tokens_incomplete* tokens produced from the input:name
     var tokens = vs.var('input:name:tokens_incomplete').get();
 
