@@ -11,6 +11,7 @@ var views = {
   custom_boosts:              require('./view/boost_sources_and_layers'),
   ngrams_strict:              require('./view/ngrams_strict'),
   ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
+  ngrams_last_token_only_multi: require('./view/ngrams_last_token_only_multi'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
   pop_subquery:               require('./view/pop_subquery'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
@@ -30,7 +31,7 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
 query.score( views.phrase_first_tokens_only, 'must' );
-query.score( views.ngrams_last_token_only, 'must' );
+query.score( views.ngrams_last_token_only_multi( adminFields ), 'must' );
 
 // admin components
 query.score(peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin'), 'must');
