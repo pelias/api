@@ -45,12 +45,12 @@ function _sanitize( raw, clean ){
       }
 
       // when $subject exactly equals one of the admin fields
-      else if (
-        text === clean.parsed_text.locality ||
-        text === clean.parsed_text.region ||
-        text === clean.parsed_text.country) {
-        parserConsumedAllTokens = true;
-      }
+      // else if (
+      //   text === clean.parsed_text.locality ||
+      //   text === clean.parsed_text.region ||
+      //   text === clean.parsed_text.country) {
+      //   parserConsumedAllTokens = true;
+      // }
     }
   }
 
