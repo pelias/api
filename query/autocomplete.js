@@ -43,6 +43,7 @@ query.score( views.admin_multi_match_last( adminFields ), 'must');
 // address components
 query.score( peliasQuery.view.address('housenumber') );
 query.score( peliasQuery.view.address('street') );
+query.score( peliasQuery.view.address('cross_street') );
 query.score( peliasQuery.view.address('postcode') );
 
 // scoring boost
