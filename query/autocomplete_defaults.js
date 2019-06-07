@@ -47,6 +47,11 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'address:street:boost': 5,
   'address:street:cutoff_frequency': 0.01,
 
+  'address:cross_street:analyzer': 'peliasStreet',
+  'address:cross_street:field': 'address_parts.cross_street',
+  'address:cross_street:boost': 5,
+  'address:cross_street:cutoff_frequency': 0.01,
+
   'address:postcode:analyzer': 'peliasZip',
   'address:postcode:field': 'address_parts.zip',
   'address:postcode:boost': 2000,
