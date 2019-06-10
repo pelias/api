@@ -1,3 +1,4 @@
+const logger = require('pelias-logger').get('api');
 const Tokenizer = require('pelias-parser/tokenization/Tokenizer');
 const Solution = require('pelias-parser/solver/Solution');
 const AddressParser = require('pelias-parser/parser/AddressParser');
@@ -38,10 +39,18 @@ function _sanitize (raw, clean) {
 }
 
 function parse (clean) {
+  
   // parse text
+  let start = new Date();
   const t = new Tokenizer(clean.text);
   parser.classify(t);
   parser.solve(t);
+
+  // log summary info
+  logger.info('pelias_parser', {
+    took: (new Date()) - start,
+    solutions: t.solution.length
+  });
 
   // only use the first solution generated
   // @todo: we could expand this in the future to accomodate more solutions
