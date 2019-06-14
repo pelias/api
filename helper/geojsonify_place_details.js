@@ -59,6 +59,11 @@ const DETAILS_PROPS = [
   { name: 'category',          type: 'array',     condition: checkCategoryParam }
 ];
 
+const EXTENDED_PROPS = DETAILS_PROPS.concat([
+  { name: 'population', type: 'default' },
+  { name: 'popularity', type: 'default' }
+]);
+
 // returns true IFF source a country_gid property
 function hasCountry(params, source) {
   return source.hasOwnProperty('country_gid');
@@ -77,7 +82,12 @@ function checkCategoryParam(params) {
  * @param {object} dst
  */
 function collectProperties( params, source ) {
-  return DETAILS_PROPS.reduce((result, prop) => {
+  let props = DETAILS_PROPS;
+
+  // extended properties when debugging mode is enabled
+  if (params.enableDebug === true) { props = EXTENDED_PROPS; }
+
+  return props.reduce((result, prop) => {
     // if condition isn't met, don't set the property
     if (_.isFunction(prop.condition) && !prop.condition(params, source)) {
       return result;
