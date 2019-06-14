@@ -179,7 +179,7 @@ module.exports.tests.success = function(test, common) {
     })(config, esclient, query, () => { return true; });
 
     const req = { clean: { }, errors: [], warnings: [] };
-    const res = {};
+    const res = { meta: { query_type: 'this is the query type from a previous query'} };
 
     const next = () => {
       t.deepEqual(req, {
@@ -187,8 +187,13 @@ module.exports.tests.success = function(test, common) {
         errors: [],
         warnings: []
       });
-      t.equals(res.data, undefined);
-      t.deepEquals(res.meta, { key: 'value', query_type: 'this is the query type' });
+
+      t.equals(res.data, undefined, 'no data set');
+
+      const expected_meta = {
+        query_type: 'this is the query type from a previous query'
+      };
+      t.deepEquals(res.meta, expected_meta, 'previous query meta information left unchanged');
 
       t.end();
     };
