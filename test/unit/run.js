@@ -18,7 +18,6 @@ var tests = [
   require('./controller/place'),
   require('./controller/placeholder'),
   require('./controller/search'),
-  require('./controller/search_with_ids'),
   require('./controller/predicates/has_parsed_text_properties'),
   require('./controller/predicates/has_request_parameter'),
   require('./controller/predicates/has_response_data'),

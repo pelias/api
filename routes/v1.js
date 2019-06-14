@@ -33,7 +33,6 @@ var controllers = {
   place: require('../controller/place'),
   placeholder: require('../controller/placeholder'),
   search: require('../controller/search'),
-  search_with_ids: require('../controller/search_with_ids'),
   status: require('../controller/status')
 };
 
@@ -289,11 +288,10 @@ function addRoutes(app, peliasConfig) {
       controllers.libpostal(libpostalService, libpostalShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderIdsLookupShouldExecute),
-      controllers.search_with_ids(peliasConfig.api, esclient, queries.address_using_ids, searchWithIdsShouldExecute),
-      // 3rd parameter is which query module to use, use fallback first, then
-      //  use original search strategy if first query didn't return anything
+      // try 3 different query types: address search using ids, cascading fallback, addressit(very_old_prod)
+      controllers.search(peliasConfig.api, esclient, queries.address_using_ids, searchWithIdsShouldExecute),
       controllers.search(peliasConfig.api, esclient, queries.cascading_fallback, fallbackQueryShouldExecute),
-      sanitizers.defer_to_addressit(shouldDeferToAddressIt),
+      sanitizers.defer_to_addressit(shouldDeferToAddressIt), //run additional sanitizers needed for addressit parser
       controllers.search(peliasConfig.api, esclient, queries.very_old_prod, oldProdQueryShouldExecute),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),

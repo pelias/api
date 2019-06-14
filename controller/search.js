@@ -23,7 +23,10 @@ function setup( apiConfig, esclient, query, should_execute ){
       cleanOutput = logging.removeFields(cleanOutput);
     }
 
-    const renderedQuery = query(req.clean);
+    // rendering a query requires passing the `clean` object, which contains
+    // validated options from query parameters, and the `res` object, since
+    // some queries use the results of previous queries to Placeholder
+    const renderedQuery = query(req.clean, res);
 
     // if there's no query to call ES with, skip the service
     if (_.isUndefined(renderedQuery)) {
@@ -79,10 +82,10 @@ function setup( apiConfig, esclient, query, should_execute ){
         }
 
         // if execution has gotten this far then one of three things happened:
-        // - the request didn't time out
+        // - the request returned a response, either success or error
         // - maxRetries has been hit so we're giving up
         // - another error occurred
-        // in either case, handle the error or results
+        // in any case, handle the error or results
 
         // error handler
         if( err ){
@@ -94,11 +97,17 @@ function setup( apiConfig, esclient, query, should_execute ){
         }
         // set response data
         else {
-          res.data = docs;
-          res.meta = meta || {};
-          // store the query_type for subsequent middleware
-          res.meta.query_type = renderedQuery.type;
+          // because this controller may be called multiple times, there may already
+          // be results.  if there are no results from this ES call, don't overwrite
+          // what's already there from a previous call.
+          if (!_.isEmpty(docs)) {
+            res.data = docs;
+            res.meta = meta || {};
+            // store the query_type for subsequent middleware
+            res.meta.query_type = renderedQuery.type;
+          }
 
+          // put an entry in the debug log no matter the number of results
           debugLog.push(req, {queryType: {
             [renderedQuery.type] : {
               es_took: message.es_took,
@@ -114,7 +123,6 @@ function setup( apiConfig, esclient, query, should_execute ){
       });
       debugLog.stopTimer(req, initialTime);
     });
-
   }
 
   return controller;
