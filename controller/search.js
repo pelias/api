@@ -102,11 +102,15 @@ function setup( apiConfig, esclient, query, should_execute ){
           const messageParts = [
             '[controller:search]',
             `[queryType:${renderedQuery.type}]`,
-            `[es_result_count:${_.get(res, 'data', []).length}]`
+            `[es_result_count:${message.result_count}]`
           ];
           debugLog.push(req, {queryType: {
             [renderedQuery.type] : {
-              es_result_count: _.get(res, 'data', []).length
+              es_took: message.es_took,
+              response_time: message.response_time,
+              retries: message.retries,
+              es_hits: message.es_hits,
+              es_result_count: message.result_count
             }
           }});
         }
