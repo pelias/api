@@ -578,6 +578,55 @@ module.exports.tests.empire_specific = (test, common) => {
 
 };
 
+module.exports.tests.debug_flag = (test, common) => {
+
+  test('debug: no-op when debug flag disabled', t => {
+    const clean = {};
+    const source = { population: 100000, popularity: 1000 };
+    const expected = {};
+    const actual = geojsonify(clean, source);
+    t.deepEqual(actual, expected);
+    t.end();
+  });
+
+  test('debug: population and popularity set', t => {
+    const clean = { enableDebug: true };
+    const source = { population: 100000, popularity: 1000 };
+    const expected = { population: 100000, popularity: 1000 };
+    const actual = geojsonify(clean, source);
+    t.deepEqual(actual, expected);
+    t.end();
+  });
+
+  test('debug: only population set', t => {
+    const clean = { enableDebug: true };
+    const source = { population: 100000 };
+    const expected = { population: 100000 };
+    const actual = geojsonify(clean, source);
+    t.deepEqual(actual, expected);
+    t.end();
+  });
+
+  test('debug: only popularity set', t => {
+    const clean = { enableDebug: true };
+    const source = { popularity: 1000 };
+    const expected = { popularity: 1000 };
+    const actual = geojsonify(clean, source);
+    t.deepEqual(actual, expected);
+    t.end();
+  });
+
+  test('debug: neither property set', t => {
+    const clean = { enableDebug: true };
+    const source = {};
+    const expected = {};
+    const actual = geojsonify(clean, source);
+    t.deepEqual(actual, expected);
+    t.end();
+  });
+
+};
+
 module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {
