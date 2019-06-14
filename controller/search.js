@@ -99,11 +99,6 @@ function setup( apiConfig, esclient, query, should_execute ){
           // store the query_type for subsequent middleware
           res.meta.query_type = renderedQuery.type;
 
-          const messageParts = [
-            '[controller:search]',
-            `[queryType:${renderedQuery.type}]`,
-            `[es_result_count:${message.result_count}]`
-          ];
           debugLog.push(req, {queryType: {
             [renderedQuery.type] : {
               es_took: message.es_took,
