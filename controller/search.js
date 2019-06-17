@@ -47,6 +47,7 @@ function setup( apiConfig, esclient, query, should_execute ){
     const cmd = {
       index: apiConfig.indexName,
       searchType: 'dfs_query_then_fetch',
+      requestCache: true,
       body: renderedQuery.body
     };
 

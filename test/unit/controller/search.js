@@ -35,6 +35,7 @@ module.exports.tests.success = function(test, common) {
         t.deepEqual(cmd, {
           index: 'indexName value',
           searchType: 'dfs_query_then_fetch',
+          requestCache: true,
           body: 'this is the query body'
         });
 
@@ -97,6 +98,7 @@ module.exports.tests.success = function(test, common) {
         t.deepEqual(cmd, {
           index: 'indexName value',
           searchType: 'dfs_query_then_fetch',
+          requestCache: true,
           body: 'this is the query body'
         });
 
@@ -158,6 +160,7 @@ module.exports.tests.success = function(test, common) {
         t.deepEqual(cmd, {
           index: 'indexName value',
           searchType: 'dfs_query_then_fetch',
+          requestCache: true,
           body: 'this is the query body'
         });
 
@@ -227,6 +230,7 @@ module.exports.tests.success = function(test, common) {
         t.deepEqual(cmd, {
           index: 'indexName value',
           searchType: 'dfs_query_then_fetch',
+          requestCache: true,
           body: 'this is the query body'
         });
 
@@ -308,6 +312,7 @@ module.exports.tests.timeout = function(test, common) {
         t.deepEqual(cmd, {
           index: 'indexName value',
           searchType: 'dfs_query_then_fetch',
+          requestCache: true,
           body: 'this is the query body'
         });
 
