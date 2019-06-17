@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const elasticsearch = require('elasticsearch');
+const loadFromElasticsearch = require('./type_mapping_discovery');
 
 var TypeMapping = function(){
 
@@ -129,40 +129,8 @@ TypeMapping.prototype.load = function( done ){
     return;
   }
 
-  if( 'function' === typeof done ){ done(); }
-  return;
-
   // load values from elasticsearch
-
-  // create connection to elasticsearch
-  // const esclient = elasticsearch.Client(peliasConfig.esclient);
-
-  // const query = {
-  //   requestCache: true,
-  //   preference: '_replica_first',
-  //   timeout: '10s',
-  //   body: {
-  //     aggs: {
-  //       sources: {
-  //         terms: {
-  //           field: 'source',
-  //           size: 100
-  //         }
-  //       },
-  //       layers: {
-  //         terms: {
-  //           field: 'layer',
-  //           size: 100
-  //         }
-  //       }
-  //     },
-  //     size: 0
-  //   }
-  // };
-
-  // esclient.search( query, ( err, res ) => {
-  //   console.error( err, res );
-  // });
+  loadFromElasticsearch(this, done);
 };
 
 module.exports = TypeMapping;
