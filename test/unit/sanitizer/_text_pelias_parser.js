@@ -152,9 +152,211 @@ module.exports.tests.text_parser = function (test, common) {
     admin: 'Kentucky'
   }]);
 
+  // street (USA style)
+  cases.push(['M', { subject: 'M' }, true]);
+  cases.push(['Ma', { subject: 'Ma' }, true]);
+  cases.push(['Mai', { subject: 'Mai' }, true]);
+  cases.push(['Main', { subject: 'Main' }, true]);
+  cases.push(['Main ', { subject: 'Main' }, true]);
+  cases.push(['Main S', { subject: 'Main S' }, true]);
+  cases.push(['Main St', { subject: 'Main St' }, true]);
+  cases.push(['Main St S', { subject: 'Main St' }, true]);
+  // cases.push(['Main St Se', { subject: 'Main St' }, true]); // jitter on SE
+  cases.push(['Main St Sea', { subject: 'Main St' }, true]);
+  cases.push(['Main St Seat', { subject: 'Main St' }, true]);
+  cases.push(['Main St Seatt', { subject: 'Main St' }, true]);
+  cases.push(['Main St Seattl', { subject: 'Main St' }, true]);
+  cases.push(['Main St Seattle', { subject: 'Main St' }, true]);
+
+  // address (USA style)
+  cases.push(['1', { subject: '1' }, true]);
+  cases.push(['10', { subject: '10' }, true]);
+  cases.push(['10 ', { subject: '10' }, true]);
+  cases.push(['10 M', { subject: '10 M' }, true]);
+  cases.push(['10 Ma', { subject: '10 Ma' }, true]);
+  cases.push(['10 Mai', { subject: '10 Mai' }, true]);
+  cases.push(['10 Main', { subject: '10 Main' }, true]);
+  cases.push(['10 Main ', { subject: '10 Main' }, true]);
+  cases.push(['10 Main S', { subject: '10 Main S' }, true]);
+  cases.push(['10 Main St', { subject: '10 Main St' }, true]);
+  cases.push(['10 Main St S', { subject: '10 Main St' }, true]);
+  // cases.push(['10 Main St Se', { subject: '10 Main St' }, true]); // jitter issue
+  cases.push(['10 Main St Sea', { subject: '10 Main St' }, true]);
+  cases.push(['10 Main St Seat', { subject: '10 Main St' }, true]);
+  cases.push(['10 Main St Seatt', { subject: '10 Main St' }, true]);
+  cases.push(['10 Main St Seattl', { subject: '10 Main St' }, true]);
+  cases.push(['10 Main St Seattle', { subject: '10 Main St' }, true]);
+
+  // street (ESP style)
+  cases.push(['C', { subject: 'C' }, true]);
+  cases.push(['Ca', { subject: 'Ca' }, true]);
+  cases.push(['Cal', { subject: 'Cal' }, true]);
+  cases.push(['Call', { subject: 'Call' }, true]);
+  cases.push(['Calle', { subject: 'Calle' }, true]);
+  cases.push(['Calle ', { subject: 'Calle' }, true]);
+  cases.push(['Calle P', { subject: 'Calle P' }, true]);
+  cases.push(['Calle Pr', { subject: 'Calle Pr' }, true]);
+  cases.push(['Calle Pri', { subject: 'Calle Pri' }, true]);
+  cases.push(['Calle Prin', { subject: 'Calle Prin' }, true]);
+  cases.push(['Calle Princ', { subject: 'Calle Princ' }, true]);
+  cases.push(['Calle Princi', { subject: 'Calle Princi' }, true]);
+  cases.push(['Calle Princip', { subject: 'Calle Princip' }, true]);
+  cases.push(['Calle Principa', { subject: 'Calle Principa' }, true]);
+  cases.push(['Calle Principal', { subject: 'Calle Principal' }, true]);
+  cases.push(['Calle Principal ', { subject: 'Calle Principal' }, true]);
+  cases.push(['Calle Principal B', { subject: 'Calle Principal' }, true]);
+  // cases.push(['Calle Principal Ba', { subject: 'Calle Principal' }, true]); // jitter issue
+  cases.push(['Calle Principal Bar', { subject: 'Calle Principal' }, true]);
+  cases.push(['Calle Principal Barc', { subject: 'Calle Principal' }, true]);
+  // cases.push(['Calle Principal Barce', { subject: 'Calle Principal' }, true]); // jitter issue
+  // cases.push(['Calle Principal Barcel', { subject: 'Calle Principal' }, true]); // jitter issue
+  // cases.push(['Calle Principal Barcelo', { subject: 'Calle Principal' }, true]); // jitter issue
+  // cases.push(['Calle Principal Barcelon', { subject: 'Calle Principal' }, true]); // jitter issue
+  cases.push(['Calle Principal Barcelona', { subject: 'Calle Principal' }, true]);
+
+  // address (ESP style)
+  cases.push(['Calle Principal 20', { subject: '20 Calle Principal' }, true]);
+  cases.push(['Calle Principal 20', { subject: '20 Calle Principal' }, true]);
+  cases.push(['Calle Principal 20 ', { subject: '20 Calle Principal' }, true]);
+  cases.push(['Calle Principal 20 B', { subject: '20 Calle Principal' }, true]);
+  cases.push(['Calle Principal 20 Ba', { subject: '20 Calle Principal' }, true]);
+  cases.push(['Calle Principal 20 Bar', { subject: '20 Calle Principal' }, true]);
+  cases.push(['Calle Principal 20 Barc', { subject: '20 Calle Principal' }, true]);
+  cases.push(['Calle Principal 20 Barce', { subject: '20 Calle Principal' }, true]);
+  cases.push(['Calle Principal 20 Barcel', { subject: '20 Calle Principal' }, true]);
+  cases.push(['Calle Principal 20 Barcelo', { subject: '20 Calle Principal' }, true]);
+  cases.push(['Calle Principal 20 Barcelon', { subject: '20 Calle Principal' }, true]);
+  cases.push(['Calle Principal 20 Barcelona', { subject: '20 Calle Principal' }, true]);
+
+  // street (DEU style)
+  cases.push(['H', { subject: 'H' }, true]);
+  cases.push(['Ha', { subject: 'Ha' }, true]);
+  cases.push(['Hau', { subject: 'Hau' }, true]);
+  cases.push(['Haup', { subject: 'Haup' }, true]);
+  cases.push(['Haupt', { subject: 'Haupt' }, true]);
+  cases.push(['Haupts', { subject: 'Haupts' }, true]);
+  cases.push(['Hauptst', { subject: 'Hauptst' }, true]);
+  cases.push(['Hauptstr', { subject: 'Hauptstr' }, true]);
+  cases.push(['Hauptstra', { subject: 'Hauptstra' }, true]);
+  cases.push(['Hauptstraß', { subject: 'Hauptstraß' }, true]);
+  cases.push(['Hauptstraße', { subject: 'Hauptstraße' }, true]);
+  cases.push(['Hauptstraße ', { subject: 'Hauptstraße' }, true]);
+  cases.push(['Hauptstraße B', { subject: 'Hauptstraße' }, true]);
+  cases.push(['Hauptstraße Be', { subject: 'Hauptstraße' }, true]);
+  cases.push(['Hauptstraße Ber', { subject: 'Hauptstraße' }, true]);
+  cases.push(['Hauptstraße Berl', { subject: 'Hauptstraße' }, true]);
+  cases.push(['Hauptstraße Berli', { subject: 'Hauptstraße' }, true]);
+  cases.push(['Hauptstraße Berlin', { subject: 'Hauptstraße' }, true]);
+
+  // address (DEU style)
+  cases.push(['H', { subject: 'H' }, true]);
+  cases.push(['Ha', { subject: 'Ha' }, true]);
+  cases.push(['Hau', { subject: 'Hau' }, true]);
+  cases.push(['Haup', { subject: 'Haup' }, true]);
+  cases.push(['Haupt', { subject: 'Haupt' }, true]);
+  cases.push(['Haupts', { subject: 'Haupts' }, true]);
+  cases.push(['Hauptst', { subject: 'Hauptst' }, true]);
+  cases.push(['Hauptstr', { subject: 'Hauptstr' }, true]);
+  cases.push(['Hauptstra', { subject: 'Hauptstra' }, true]);
+  cases.push(['Hauptstraß', { subject: 'Hauptstraß' }, true]);
+  cases.push(['Hauptstraße', { subject: 'Hauptstraße' }, true]);
+  cases.push(['Hauptstraße ', { subject: 'Hauptstraße' }, true]);
+  cases.push(['Hauptstraße 5', { subject: '5 Hauptstraße' }, true]);
+  cases.push(['Hauptstraße 50', { subject: '50 Hauptstraße' }, true]);
+  cases.push(['Hauptstraße 50 ', { subject: '50 Hauptstraße' }, true]);
+  cases.push(['Hauptstraße 50 B', { subject: '50 Hauptstraße' }, true]);
+  cases.push(['Hauptstraße 50 Be', { subject: '50 Hauptstraße' }, true]);
+  cases.push(['Hauptstraße 50 Ber', { subject: '50 Hauptstraße' }, true]);
+  cases.push(['Hauptstraße 50 Berl', { subject: '50 Hauptstraße' }, true]);
+  cases.push(['Hauptstraße 50 Berli', { subject: '50 Hauptstraße' }, true]);
+  cases.push(['Hauptstraße 50 Berlin', { subject: '50 Hauptstraße' }, true]);
+
+  // venues
+  cases.push(['K', { subject: 'K' }, true]);
+  cases.push(['Ka', { subject: 'Ka' }, true]);
+  cases.push(['Kas', { subject: 'Kas' }, true]);
+  cases.push(['Kasc', { subject: 'Kasc' }, true]);
+  cases.push(['Kasch', { subject: 'Kasch' }, true]);
+  cases.push(['Kaschk', { subject: 'Kaschk' }, true]);
+  cases.push(['Kaschk ', { subject: 'Kaschk' }, true]);
+  // cases.push(['Kaschk B', { subject: 'Kaschk' }, true]); // jitter issue
+  cases.push(['Kaschk Be', { subject: 'Kaschk' }, true]);
+  // cases.push(['Kaschk Ber', { subject: 'Kaschk' }, true]); // jitter issue
+  // cases.push(['Kaschk Berl', { subject: 'Kaschk' }, true]); // jitter issue
+  // cases.push(['Kaschk Berli', { subject: 'Kaschk' }, true]); // jitter issue
+  cases.push(['Kaschk Berlin', { subject: 'Kaschk' }, true]);
+
+  cases.push(['A', { subject: 'A' }, true]);
+  cases.push(['Ai', { subject: 'Ai' }, true]);
+  cases.push(['Air', { subject: 'Air' }, true]);
+  cases.push(['Air ', { subject: 'Air' }, true]);
+  cases.push(['Air &', { subject: 'Air &' }, true]);
+  cases.push(['Air & ', { subject: 'Air &' }, true]);
+  cases.push(['Air & S', { subject: 'Air & S' }, true]);
+  cases.push(['Air & Sp', { subject: 'Air & Sp' }, true]);
+  cases.push(['Air & Spa', { subject: 'Air & Spa' }, true]);
+  cases.push(['Air & Spac', { subject: 'Air & Spac' }, true]);
+  cases.push(['Air & Space', { subject: 'Air & Space' }, true]);
+  cases.push(['Air & Space ', { subject: 'Air & Space' }, true]);
+  // cases.push(['Air & Space M', { subject: 'Air & Space M' }, true]); // jitter issue
+  // cases.push(['Air & Space Mu', { subject: 'Air & Space Mu' }, true]); // jitter issue
+  cases.push(['Air & Space Mus', { subject: 'Air & Space Mus' }, true]);
+  // cases.push(['Air & Space Muse', { subject: 'Air & Space Muse' }, true]); // jitter issue
+  // cases.push(['Air & Space Museu', { subject: 'Air & Space Museu' }, true]); // jitter issue
+  cases.push(['Air & Space Museum', { subject: 'Air & Space Museum' }, true]);
+  cases.push(['Air & Space Museum ', { subject: 'Air & Space Museum' }, true]);
+  cases.push(['Air & Space Museum D', { subject: 'Air & Space Museum' }, true]);
+  cases.push(['Air & Space Museum DC', { subject: 'Air & Space Museum' }, true]);
+
+  // admin areas
+  cases.push(['N', { subject: 'N' }, true]);
+  cases.push(['Ne', { subject: 'Ne' }, true]);
+  cases.push(['New', { subject: 'New' }, true]);
+  cases.push(['New ', { subject: 'New' }, true]);
+  cases.push(['New Y', { subject: 'New Y' }, true]);
+  // cases.push(['New Yo', { subject: 'New Yo' }, true]); // jitter issue
+  // cases.push(['New Yor', { subject: 'New Yor' }, true]); // jitter issue
+  cases.push(['New York', { subject: 'New York' }, true]);
+  cases.push(['New York N', { subject: 'New York' }, true]);
+  cases.push(['New York NY', { subject: 'New York' }, true]);
+  
+  cases.push(['B', { subject: 'B' }, true]);
+  cases.push(['Be', { subject: 'Be' }, true]);
+  cases.push(['Ber', { subject: 'Ber' }, true]);
+  cases.push(['Berl', { subject: 'Berl' }, true]);
+  cases.push(['Berli', { subject: 'Berli' }, true]);
+  cases.push(['Berlin', { subject: 'Berlin' }, true]);
+  cases.push(['Berlin ', { subject: 'Berlin' }, true]);
+  cases.push(['Berlin D', { subject: 'Berlin' }, true]);
+  cases.push(['Berlin De', { subject: 'Berlin' }, true]);
+  cases.push(['Berlin Deu', { subject: 'Berlin' }, true]);
+  cases.push(['Berlin Deut', { subject: 'Berlin' }, true]);
+  cases.push(['Berlin Deuts', { subject: 'Berlin' }, true]);
+  cases.push(['Berlin Deutsc', { subject: 'Berlin' }, true]);
+  cases.push(['Berlin Deutsch', { subject: 'Berlin' }, true]);
+  cases.push(['Berlin Deutschl', { subject: 'Berlin' }, true]);
+  cases.push(['Berlin Deutschla', { subject: 'Berlin' }, true]);
+  cases.push(['Berlin Deutschlan', { subject: 'Berlin' }, true]);
+  cases.push(['Berlin Deutschland', { subject: 'Berlin' }, true]);
+
+  // postcodes
+  cases.push(['2000', { subject: '2000' }, true]);
+  cases.push(['Sydney 2000', { subject: '2000' }, true]);
+  cases.push(['10010', { subject: '10010' }, true]);
+  cases.push(['New York 10010', { subject: '10010' }, true]);
+  cases.push(['10437', { subject: '10437' }, true]);
+  cases.push(['Berlin 10437', { subject: '10437' }, true]);
+  cases.push(['E81DN', { subject: 'E81DN' }, true]);
+  cases.push(['London E81DN', { subject: 'E81DN' }, true]);
+  cases.push(['e81dn', { subject: 'e81dn' }, true]);
+  cases.push(['london e81dn', { subject: 'e81dn' }, true]);
+  cases.push(['e8 1dn', { subject: 'e8 1dn' }, true]);
+  // cases.push(['london e8 1dn', { subject: 'e8 1dn' }, true]); // issue
+
   cases.forEach(testcase => {
     let input = testcase[0];
     let expected = testcase[1];
+    let subjectOnly = (testcase[2] === true);
 
     function assert(label, replacement, replaceAdmin) {
       let text = input.replace(/\s+/, ' ');
@@ -176,7 +378,11 @@ module.exports.tests.text_parser = function (test, common) {
         t.deepEqual(messages, { errors: [], warnings: [] }, 'messages');
         t.equal(clean.text, raw.text.trim(), 'text');
         t.equal(clean.parser, 'pelias', 'parser');
-        t.deepEqual(clean.parsed_text, clone, `${label}: ${text}`);
+        if( subjectOnly ){
+          t.equals(clean.parsed_text.subject, clone.subject, `${label}: ${text}`);
+        } else {
+          t.deepEqual(clean.parsed_text, clone, `${label}: ${text}`);
+        }
         t.end();
       });
     }
