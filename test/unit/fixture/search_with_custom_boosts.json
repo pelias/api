@@ -1,5 +1,5 @@
 {
-  "type": "search_original",
+  "type": "search_addressit",
   "body": {
     "query": {
       "bool": {
