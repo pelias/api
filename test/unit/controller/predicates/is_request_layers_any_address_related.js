@@ -11,15 +11,22 @@ module.exports.tests.true_conditions = (test, common) => {
     t.end();
   });
 
-  test('admin layers only should return true', t => {
-    const req = { clean: { layers: ['locality', 'county', 'country'] } };
+  test('street layer only should return true', t => {
+    const req = { clean: { layers: ['street'] } };
 
     t.ok(is_request_layers_any_address_related(req));
     t.end();
   });
 
-  test('street and admin layers', t => {
-    const req = { clean: { layers: ['street', 'locality', 'country'] } };
+  test('address and postalcode layers should return true', t => {
+    const req = { clean: { layers: ['address', 'postalcode'] } };
+
+    t.ok(is_request_layers_any_address_related(req));
+    t.end();
+  });
+
+  test('street and admin layers should return true', t => {
+    const req = { clean: { layers: ['street', 'macrocounty'] } };
 
     t.ok(is_request_layers_any_address_related(req));
     t.end();
@@ -40,6 +47,14 @@ module.exports.tests.false_conditions = (test, common) => {
     t.notOk(is_request_layers_any_address_related(req));
     t.end();
   });
+
+  test('admin layers only should return false', t => {
+    const req = { clean: { layers: ['locality', 'county', 'country'] } };
+
+    t.notOk(is_request_layers_any_address_related(req));
+    t.end();
+  });
+
 };
 
 module.exports.all = (tape, common) => {
