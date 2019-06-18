@@ -63,14 +63,6 @@ module.exports = {
             'missing': 1
           },
           'weight': 1
-        },
-        {
-          'field_value_factor': {
-            'modifier': 'log1p',
-            'field': 'population',
-            'missing': 1
-          },
-          'weight': 2
         }
       ],
       'score_mode': 'avg',

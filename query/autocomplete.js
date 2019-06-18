@@ -45,7 +45,6 @@ query.score( peliasQuery.view.admin('neighbourhood') );
 query.score( views.boost_exact_matches );
 query.score( peliasQuery.view.focus( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.pop_subquery ) );
-query.score( peliasQuery.view.population( views.pop_subquery ) );
 query.score( views.custom_boosts( config.get('api.customBoosts') ) );
 
 // non-scoring hard filters

@@ -11,7 +11,6 @@ const structuredQuery = new peliasQuery.layout.StructuredFallbackQuery();
 // scoring boost
 structuredQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
 structuredQuery.score( peliasQuery.view.popularity_only_function );
-structuredQuery.score( peliasQuery.view.population_only_function );
 // --------------------------------
 
 // non-scoring hard filters

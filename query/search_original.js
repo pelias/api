@@ -26,7 +26,6 @@ query.score( peliasQuery.view.ngrams, 'must' );
 query.score( peliasQuery.view.phrase );
 query.score( peliasQuery.view.focus( peliasQuery.view.phrase ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.phrase ) );
-query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );
