@@ -12,7 +12,6 @@ const logger = require('pelias-logger').get('api:type_mapping_discovery');
 
 const DISCOVERY_QUERY = {
   requestCache: true,
-  preference: '_replica_first',
   timeout: '10s',
   body: {
     aggs: {
