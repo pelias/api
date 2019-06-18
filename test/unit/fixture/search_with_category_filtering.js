@@ -12,7 +12,9 @@ module.exports = {
                 'must': [
                   {
                     'match_phrase': {
-                      'address_parts.street': 'street value'
+                      'address_parts.street': {
+                        'query': 'street value'
+                      }
                     }
                   }
                 ],

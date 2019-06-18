@@ -101,12 +101,16 @@ module.exports = {
                 'must': [
                   {
                     'match_phrase': {
-                      'address_parts.number': 'number value'
+                      'address_parts.number': {
+                        'query': 'number value'
+                      }
                     }
                   },
                   {
                     'match_phrase': {
-                      'address_parts.street': 'street value'
+                      'address_parts.street': {
+                        'query': 'street value'
+                      }
                     }
                   },
                   {
@@ -181,7 +185,9 @@ module.exports = {
                 'should': [
                   {
                     'match_phrase': {
-                      'address_parts.zip': 'postalcode value'
+                      'address_parts.zip': {
+                        'query': 'postalcode value'
+                      }
                     }
                   }
                 ],
@@ -268,7 +274,9 @@ module.exports = {
                 'must': [
                   {
                     'match_phrase': {
-                      'address_parts.street': 'street value'
+                      'address_parts.street': {
+                        'query': 'street value'
+                      }
                     }
                   },
                   {
@@ -343,7 +351,9 @@ module.exports = {
                 'should': [
                   {
                     'match_phrase': {
-                      'address_parts.zip': 'postalcode value'
+                      'address_parts.zip': {
+                        'query': 'postalcode value'
+                      }
                     }
                   }
                 ],
