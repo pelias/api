@@ -105,11 +105,6 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'popularity:max_boost': 20,
   'popularity:weight': 1,
 
-  'population:field': 'population',
-  'population:modifier': 'log1p',
-  'population:max_boost': 20,
-  'population:weight': 2,
-
   // used by fallback queries
   // @todo: it is also possible to specify layer boosting
   // via pelias/config, consider deprecating this config.

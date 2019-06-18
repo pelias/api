@@ -63,8 +63,7 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.ngrams_last_token_only( vs ) ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( views.pop_subquery )( vs )
       ]
     });
   });
@@ -84,8 +83,7 @@ module.exports.tests.single_token = function(test, common) {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
         views.boost_exact_matches( vs ),
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( views.pop_subquery )( vs )
       ]
     });
   });
@@ -104,8 +102,7 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.ngrams_last_token_only( vs ) ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( views.pop_subquery )( vs )
       ]
     });
   });
@@ -125,8 +122,7 @@ module.exports.tests.single_token = function(test, common) {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
         views.boost_exact_matches( vs ),
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( views.pop_subquery )( vs )
       ]
     });
   });
@@ -145,8 +141,7 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.ngrams_last_token_only( vs ) ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( views.pop_subquery )( vs )
       ]
     });
   });
@@ -166,8 +161,7 @@ module.exports.tests.single_token = function(test, common) {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
         views.boost_exact_matches( vs ),
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( views.pop_subquery )( vs )
       ]
     });
   });
@@ -192,8 +186,7 @@ module.exports.tests.multiple_tokens = function(test, common) {
       ],
       should: [
         views.boost_exact_matches( vs ),
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( views.pop_subquery )( vs )
       ]
     });
   });
@@ -215,8 +208,7 @@ module.exports.tests.multiple_tokens = function(test, common) {
       ],
       should: [
         views.boost_exact_matches( vs ),
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( views.pop_subquery )( vs )
       ]
     });
   });
@@ -239,8 +231,7 @@ module.exports.tests.multiple_tokens = function(test, common) {
       ],
       should: [
         views.boost_exact_matches( vs ),
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( views.pop_subquery )( vs )
       ]
     });
   });
@@ -262,8 +253,7 @@ module.exports.tests.multiple_tokens = function(test, common) {
       ],
       should: [
         views.boost_exact_matches( vs ),
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( views.pop_subquery )( vs )
       ]
     });
   });

@@ -48,32 +48,6 @@ module.exports = {
             'weight': 1
           }]
         }
-      },{
-        'function_score': {
-          'query': {
-            'match': {
-              'phrase.default': {
-                'query': 'test',
-                'cutoff_frequency': 0.01,
-                'analyzer': 'peliasPhrase',
-                'type': 'phrase',
-                'slop': 2,
-                'boost': 1
-              }
-            }
-          },
-          'max_boost': 20,
-          'score_mode': 'first',
-          'boost_mode': 'replace',
-          'functions': [{
-            'field_value_factor': {
-              'modifier': 'log1p',
-              'field': 'population',
-              'missing': 1
-            },
-            'weight': 2
-          }]
-        }
       }],
       'filter': [{
         'geo_bounding_box': {

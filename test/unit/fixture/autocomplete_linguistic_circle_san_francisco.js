@@ -42,28 +42,6 @@ module.exports = {
             'score_mode': 'first',
             'boost_mode': 'replace'
           }
-        },
-        {
-          'function_score': {
-            'query': {
-              'match_all': {
-
-              }
-            },
-            'max_boost': 20,
-            'functions': [
-              {
-                'field_value_factor': {
-                  'modifier': 'log1p',
-                  'field': 'population',
-                  'missing': 1
-                },
-                'weight': 3
-              }
-            ],
-            'score_mode': 'first',
-            'boost_mode': 'replace'
-          }
         }
       ],
       'filter': [

@@ -12,7 +12,6 @@ var fallbackQuery = new peliasQuery.layout.FallbackQuery();
 // scoring boost
 fallbackQuery.score( peliasQuery.view.focus_only_function( peliasQuery.view.phrase ) );
 fallbackQuery.score( peliasQuery.view.popularity_only_function );
-fallbackQuery.score( peliasQuery.view.population_only_function );
 // --------------------------------
 
 // non-scoring hard filters

@@ -35,23 +35,6 @@ module.exports = {
             'weight': 1
           }]
         }
-      },{
-        'function_score': {
-          'query': {
-            'match_all': {}
-          },
-          'max_boost': 20,
-          'score_mode': 'first',
-          'boost_mode': 'replace',
-          'functions': [{
-            'field_value_factor': {
-              'modifier': 'log1p',
-              'field': 'population',
-              'missing': 1
-            },
-            'weight': 3
-          }]
-        }
       }],
       'filter': [{
         'multi_match': {

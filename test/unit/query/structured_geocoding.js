@@ -7,7 +7,6 @@ const MockQuery = require('./MockQuery');
 const views = {
   focus_only_function: () => 'focus_only_function view',
   popularity_only_function: 'popularity_only_function view',
-  population_only_function: 'population_only_function view',
   boundary_country: 'boundary_country view',
   boundary_circle: 'boundary_circle view',
   boundary_rect: 'boundary_rect view',
@@ -71,8 +70,7 @@ module.exports.tests.query = (test, common) => {
 
     t.deepEquals(query.body.score_functions, [
       'focus_only_function view',
-      'popularity_only_function view',
-      'population_only_function view'
+      'popularity_only_function view'
     ]);
 
     t.deepEquals(query.body.filter_functions, [

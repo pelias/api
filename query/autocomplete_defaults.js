@@ -105,11 +105,6 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'popularity:max_boost': 20,
   'popularity:weight': 1,
 
-  'population:field': 'population',
-  'population:modifier': 'log1p',
-  'population:max_boost': 20,
-  'population:weight': 3,
-
   // boost_sources_and_layers view
   'custom:boosting:min_score': 1,           // score applied to documents which don't score anything via functions
   'custom:boosting:boost': 5,               // multiply score by this number to increase the strength of the boost
