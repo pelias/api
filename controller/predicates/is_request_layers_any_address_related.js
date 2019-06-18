@@ -3,12 +3,10 @@ const Debug = require('../../helper/debug');
 const debugLog = new Debug('controller:predicates:is_request_layers_any_address_related');
 const stackTraceLine = require('../../helper/stackTraceLine');
 
-const admin_placetypes = require('../../helper/placeTypes');
-
 // return true if any layers allowed by the query are related to an address query
-// this includes address, street, and any admin layers, but NOT venue and custom layers
+// this includes address and street but NOT venue, postalcode, admin, and custom layers
 module.exports = (req, res) => {
-  const address_related_layers = admin_placetypes.concat(['address', 'street']);
+  const address_related_layers = ['address', 'street'];
 
   const request_layers = _.get(req, 'clean.layers', []);
   let result;
