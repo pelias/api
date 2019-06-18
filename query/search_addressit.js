@@ -142,7 +142,7 @@ function generateQuery( clean ){
   }
 
   return {
-    type: 'search_original',
+    type: 'search_addressit',
     body: query.render(vs)
   };
 }

@@ -71,7 +71,7 @@ var tests = [
   require('./query/search'),
   require('./query/search_with_custom_boosts'),
   require('./query/search_defaults'),
-  require('./query/search_original'),
+  require('./query/search_addressit'),
   require('./query/structured_geocoding'),
   require('./query/text_parser'),
   require('./query/view/boost_sources_and_layers'),
