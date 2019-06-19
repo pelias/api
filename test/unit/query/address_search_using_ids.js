@@ -141,6 +141,35 @@ module.exports.tests.other_parameters = (test, common) => {
 
   });
 
+  test('address_parts.street slop defaults to 1', (t) => {
+    const logger = mock_logger();
+
+    const clean = {
+      parsed_text: {
+        number: 'housenumber value',
+        street: 'street value'
+      }
+    };
+    const res = {
+      data: []
+    };
+
+    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
+      'pelias-logger': logger,
+      'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      }
+    });
+
+    const generatedQuery = generateQuery(clean, res);
+
+    t.deepEquals(generatedQuery.body.vs.var('address:street:slop').toString(), 1);
+    t.end();
+  });
 };
 
 module.exports.tests.granularity_bands = (test, common) => {
