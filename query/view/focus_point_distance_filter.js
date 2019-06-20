@@ -20,6 +20,17 @@ module.exports = function( vs ) {
 
   const all_layers_except_address_and_street = _.without(type_mapping.layers, 'address', 'street');
 
+  const length_to_distance_mapping = {
+    1: '100km',
+    2: '200km',
+    3: '500km',
+    4: '750km',
+    5: '1000km',
+    6: '1600km',
+    7: '2000km',
+    8: '2500km'
+  };
+
   const query = {
     bool: {
       minimum_should_match: 1,
@@ -29,7 +40,7 @@ module.exports = function( vs ) {
         }
       },{
         geo_distance: {
-          distance: `${50 * text_length}km`,
+          distance: length_to_distance_mapping[text_length],
           [vs.var('centroid:field')]: {
             lat: vs.var('focus:point:lat'),
             lon: vs.var('focus:point:lon')

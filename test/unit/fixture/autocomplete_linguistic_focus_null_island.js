@@ -115,7 +115,7 @@ module.exports = {
           },
           {
             'geo_distance': {
-              'distance': '200km',
+              'distance': '750km',
               'center_point': {
                 'lat': 0,
                 'lon': 0
