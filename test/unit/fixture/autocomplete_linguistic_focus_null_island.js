@@ -92,7 +92,6 @@ module.exports = {
             'terms': {
               'layer': [
                 'venue',
-                'street',
                 'country',
                 'macroregion',
                 'region',
