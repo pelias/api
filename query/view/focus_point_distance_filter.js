@@ -23,12 +23,12 @@ module.exports = function( vs ) {
   const length_to_distance_mapping = {
     1: '100km',
     2: '200km',
-    3: '500km',
-    4: '750km',
-    5: '1000km',
-    6: '1600km',
-    7: '2000km',
-    8: '2500km'
+    3: '400km',
+    4: '600km',
+    5: '900km',
+    6: '1200km',
+    7: '1600km',
+    8: '2000km'
   };
 
   const query = {
