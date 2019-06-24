@@ -1,4 +1,5 @@
-var isDifferent= require('../../../helper/diffPlaces').isDifferent;
+const isDifferent = require('../../../helper/diffPlaces').isDifferent;
+const isGeographicallyDifferent = require('../../../helper/diffPlaces').isGeographicallyDifferent;
 
 module.exports.tests = {};
 
@@ -333,6 +334,242 @@ module.exports.tests.dedupe = function(test, common) {
     };
 
     t.false(isDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+};
+
+module.exports.tests.geo_dedupe = function(test, common) {
+  test('geo diff match same object', function(t) {
+    var item1 = {
+      'center_point': { 'lat': 42.797, 'lon': -74.75 },
+      'parent': {
+        'country': [ 'United States' ],
+        'county': [ 'Otsego County' ],
+        'region_a': [ 'NY' ],
+        'localadmin': [ 'Cherry Valley' ],
+        'county_id': [ '102082399' ],
+        'localadmin_id': [ '404522887' ],
+        'country_a': [ 'USA' ],
+        'region_id': [ '85688543' ],
+        'locality': [ 'Cherry Valley' ],
+        'locality_id': [ '85978799' ],
+        'region': [ 'New York' ],
+        'country_id': [ '85633793' ]
+      },
+      'name': {
+        'default': '1 Main Street'
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street'
+      },
+      'layer': 'address'
+    };
+
+    t.false(isGeographicallyDifferent(item1, item1), 'should be the same');
+    t.end();
+  });
+
+  test('geo diff catch diff name', function(t) {
+    var item1 = {
+      'name': {
+        'default': '1 Main St'
+      }
+    };
+    var item2 = {
+      'name': {
+        'default': '1 Broad St'
+      }
+    };
+
+    t.true(isGeographicallyDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
+  test('geo diff match diff capitalization in name', function(t) {
+    var item1 = {
+      'center_point': { 'lat': 42.797, 'lon': -74.75 },
+      'name': {
+        'default': '1 MAIN ST'
+      }
+    };
+    var item2 = {
+      'center_point': { 'lat': 42.797, 'lon': -74.75 },
+      'name': {
+        'default': '1 Main St'
+      }
+    };
+
+    t.false(isGeographicallyDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+
+  test('geo diff do not handle expansions', function(t) {
+    // we currently don't handle expansions and abbreviations and
+    // this is a test waiting to be updated as soon as we fix it
+
+    var item1 = {
+      'name': {
+        'default': '1 Main Street'
+      }
+    };
+    var item2 = {
+      'name': {
+        'default': '1 Main St'
+      }
+    };
+
+    t.true(isGeographicallyDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
+  test('geo diff missing names in other langs should not be a diff', function(t) {
+    var item1 = {
+      'center_point': { 'lat': 55.74, 'lon': 37.61 },
+      'name': {
+        'default': 'Moscow',
+        'rus': 'Москва'
+      }
+    };
+    var item2 = {
+      'center_point': { 'lat': 55.74, 'lon': 37.61 },
+      'name': {
+        'default': 'Moscow'
+      }
+    };
+
+    t.false(isGeographicallyDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+
+  test('geo diff improved matching across languages - if default name is the same, consider this a match', function(t) {
+    var item1 = {
+      'center_point': { 'lat': 0, 'lon': 0 },
+      'name': {
+        'default': 'Bern',
+        'eng': 'Bern',
+        'deu': 'Kanton Bern',
+        'fra': 'Berne'
+      }
+    };
+    var item2 = {
+      'center_point': { 'lat': 0, 'lon': 0 },
+      'name': {
+        'default': 'Bern',
+        'eng': 'Berne',
+        'deu': 'Bundesstadt', // note: this is wrong, see: https://github.com/whosonfirst-data/whosonfirst-data/issues/1363
+        'fra': 'Berne'
+      }
+    };
+
+    t.false(isGeographicallyDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+
+  test('geo diff improved matching across languages' +
+       ' - if default different, but user language matches default, consider this a match', function(t) {
+    var item1 = {
+      'center_point': { 'lat': 0, 'lon': 0 },
+      'name': {
+        'default': 'English Name',
+        'eng': 'A Name'
+      }
+    };
+    var item2 = {
+      'center_point': { 'lat': 0, 'lon': 0 },
+      'name': {
+        'default': 'A Name'
+      }
+    };
+
+    t.false(isGeographicallyDifferent(item1, item2, 'eng'), 'should be the same');
+    t.end();
+  });
+
+  test('geo diff improved matching across languages' +
+       ' - if default different, but user language matches (fra), consider this a match', function(t) {
+    var item1 = {
+      'center_point': { 'lat': 0, 'lon': 0 },
+      'name': {
+        'default': 'Name',
+        'fra': 'French Name'
+      }
+    };
+    var item2 = {
+      'center_point': { 'lat': 0, 'lon': 0 },
+      'name': {
+        'default': 'Another Name',
+        'fra': 'French Name'
+      }
+    };
+
+    t.false(isGeographicallyDifferent(item1, item2, 'fra'), 'should be the same');
+    t.end();
+  });
+
+  test('geo diff improved matching across languages - default names differ but match another language', function(t) {
+    var item1 = {
+      'center_point': { 'lat': 0, 'lon': 0 },
+      'name': {
+        'default': 'Berne',
+        'eng': 'Bern',
+        'deu': 'Kanton Bern',
+        'fra': 'Berne'
+      }
+    };
+    var item2 = {
+      'center_point': { 'lat': 0, 'lon': 0 },
+      'name': {
+        'default': 'Bern',
+        'eng': 'Berne',
+        'deu': 'Bundesstadt',
+        'fra': 'Berne'
+      }
+    };
+
+    t.false(isGeographicallyDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+
+  test('geo diff completely empty objects', function(t) {
+    var item1 = {};
+    var item2 = {};
+
+    t.false(isGeographicallyDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+
+  test('geo diff works with name aliases', function(t) {
+    var item1 = {
+      'name': {
+        'default': ['a','b'] // note the array
+      }
+    };
+    var item2 = {
+      'name': {
+        'default': 'a'
+      }
+    };
+
+    t.false(isGeographicallyDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+
+  test('geo diff same default name but items are far away', function(t) {
+    var item1 = {
+      'center_point': { 'lat': 45, 'lon': 45 },
+      'name': {
+        'default': 'Berne'
+      }
+    };
+    var item2 = {
+      'center_point': { 'lat': 0, 'lon': 0 },
+      'name': {
+        'default': 'Berne',
+      }
+    };
+
+    t.true(isGeographicallyDifferent(item1, item2), 'should not be the same');
     t.end();
   });
 };

@@ -3,6 +3,8 @@ const placeTypes = require('./placeTypes');
 const canonicalLayers = require('../helper/type_mapping').getCanonicalLayers();
 const field = require('../helper/fieldValue');
 const removeAccents = require('remove-accents');
+const getDistance = require('geolib').getDistance;
+const MIN_DISTANCE_TO_BE_DIFFERENTS = 1000; // 1km
 
 // only consider these layers as synonymous for deduplication purposes.
 // when performing inter-layer deduping, layers coming earlier in this list take
@@ -231,5 +233,20 @@ function normalizeString(str){
   return removeAccents(str.toLowerCase().split(/[ ,-]+/).join(' '));
 }
 
+/**
+ * Compare the two records and return true if they geographically differ and false if same.
+ * Optionally provide $requestLanguage (req.clean.lang.iso6393) to improve name deduplication.
+ */
+function isGeographicallyDifferent(item1, item2, requestLanguage) {
+  if( isNameDifferent( item1, item2, requestLanguage ) ) { return true; }
+  if ( _.has(item1, 'center_point') &&
+       _.has(item2, 'center_point') &&
+       getDistance(item1.center_point, item2.center_point) > MIN_DISTANCE_TO_BE_DIFFERENTS ) {
+     return true;
+   }
+  return false;
+}
+
 module.exports.isDifferent = isDifferent;
+module.exports.isGeographicallyDifferent = isGeographicallyDifferent;
 module.exports.layerPreferences = layerPreferences;

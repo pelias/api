@@ -1,6 +1,6 @@
 const logger = require('pelias-logger').get('api');
 const _ = require('lodash');
-const isDifferent = require('../helper/diffPlaces').isDifferent;
+const diffPlaces = require('../helper/diffPlaces');
 const layerPreferences = require('../helper/diffPlaces').layerPreferences;
 const canonical_sources = require('../helper/type_mapping').canonical_sources;
 const field = require('../helper/fieldValue');
@@ -37,6 +37,9 @@ function dedupeResults(req, res, next) {
 
   // maintain a skip-list
   const skip = [];
+
+  // choose the function for dedupe
+  const isDifferent = req.clean.dedupe === 'geo' ? diffPlaces.isGeographicallyDifferent : diffPlaces.isDifferent;
 
   // use the user agent language to improve deduplication
   const lang = _.get(req, 'clean.lang.iso6393');

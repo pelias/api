@@ -784,6 +784,266 @@ module.exports.tests.priority = function(test, common) {
       t.end();
     });
   });
+
+  test('real-world test case Cannes: records with the same name and same coordiante should be deduped with dedupe=geo', function (t) {
+    var req = {
+      clean: {
+        text: 'Cannes',
+        size: 100,
+        dedupe: 'geo'
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'center_point': { 'lon': 7.02, 'lat': 43.55 },
+          'parent': {
+            'region_id': 85683323,
+            'macrocounty_id': 404227597,
+            'county_id': 102072227,
+            'locality_id': 6446684,
+            'localadmin_id': 1159321933
+          },
+          'name': { 'default': 'Cannes' },
+          'source': 'geonames',
+          'source_id': '6446684',
+          'layer': 'locality',
+        },
+        {
+          'center_point': { 'lon': 7.01, 'lat': 43.55 },
+          'parent': {
+            'country_id': 85633147,
+            'locality_id': 101749251,
+            'region_id': 85683323,
+          },
+          'name': { 'default': 'Cannes' },
+          'source': 'whosonfirst',
+          'source_id': '101749251',
+          'layer': 'locality',
+        },
+        {
+          'center_point': { 'lon': 7.012, 'lat': 43.551 },
+          'parent': {
+            'region_id': 85683323,
+            'macrocounty_id': 404227597,
+            'county_id': 102072227,
+            'locality_id': 3028808,
+            'localadmin_id': 1159321933
+          },
+          'name': { 'default': 'Cannes' },
+          'source': 'geonames',
+          'source_id': '3028808',
+          'layer': 'locality',
+        }
+      ]
+    };
+
+    var expectedCount = 1;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'results are deduped');
+      t.end();
+    });
+  });
+
+  test('real-world test case Cannes: records with the same name and (almost) same coordiante should not be deduped', function (t) {
+    var req = {
+      clean: {
+        text: 'Cannes',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'center_point': { 'lon': 7.021, 'lat': 43.552 },
+          'parent': {
+            'region_id': 85683323,
+            'macrocounty_id': 404227597,
+            'county_id': 102072227,
+            'locality_id': 6446684,
+            'localadmin_id': 1159321933
+          },
+          'name': { 'default': 'Cannes' },
+          'source': 'geonames',
+          'source_id': '6446684',
+          'layer': 'locality',
+        },
+        {
+          'center_point': { 'lon': 7.003, 'lat': 43.557 },
+          'parent': {
+            'country_id': 85633147,
+            'locality_id': 101749251,
+            'region_id': 85683323,
+          },
+          'name': { 'default': 'Cannes' },
+          'source': 'whosonfirst',
+          'source_id': '101749251',
+          'layer': 'locality',
+        },
+        {
+          'center_point': { 'lon': 7.012, 'lat': 43.551 },
+          'parent': {
+            'region_id': 85683323,
+            'macrocounty_id': 404227597,
+            'county_id': 102072227,
+            'locality_id': 3028808,
+            'localadmin_id': 1159321933
+          },
+          'name': { 'default': 'Cannes' },
+          'source': 'geonames',
+          'source_id': '3028808',
+          'layer': 'locality',
+        }
+
+      ]
+    };
+
+    var expectedCount = 2;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'results are not deduped');
+      t.end();
+    });
+  });
+
+  test('real-world test case Place de la Bastille:' +
+    'records with the same name and near coordiantes should be deduped with dedupe=geo', function(t) {
+    var req = {
+      clean: {
+        text: 'Cannes',
+        size: 100,
+        dedupe: 'geo'
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'center_point': { 'lon': 2.369397, 'lat': 48.85291 },
+          'parent': {
+            'continent_id': ['102191581'],
+            'country_id': ['85633147'],
+            'macroregion_id': ['404227465'],
+            'region_id': ['85683497'],
+            'borough_id': ['1158894255'],
+            'locality_id': ['101751119'],
+            'localadmin_id': ['1159322569'],
+            'neighbourhood_id': ['85873807'],
+          },
+          'name': { 'default': 'Place de la Bastille' },
+          'source': 'openstreetmap',
+          'source_id': 'polyline:5788446',
+          'layer': 'street',
+        },
+        {
+          'center_point': { 'lon': 2.369484, 'lat': 48.852931 },
+          'parent': {
+            'continent_id': ['102191581'],
+            'country_id': ['85633147'],
+            'macroregion_id': ['404227465'],
+            'region_id': ['85683497'],
+            'borough_id': ['1158894255'],
+            'locality_id': ['101751119'],
+            'localadmin_id': ['1159322569'],
+            'neighbourhood_id': ['85873807'],
+          },
+          'name': { 'default': 'Place de la Bastille' },
+          'source': 'openstreetmap',
+          'source_id': 'polyline:24892926',
+          'layer': 'street',
+        },
+        {
+          'center_point': { 'lon': 2.368248, 'lat': 48.85274 },
+          'parent': {
+            'continent_id': ['102191581'],
+            'country_id': ['85633147'],
+            'macroregion_id': ['404227465'],
+            'region_id': ['85683497'],
+            'borough_id': ['1158894237'],
+            'locality_id': ['101751119'],
+            'localadmin_id': ['1159322569'],
+            'neighbourhood_id': ['85873807'],
+          },
+          'name': { 'default': 'Place de la Bastille' },
+          'source': 'openstreetmap',
+          'source_id': 'polyline:24893649',
+          'layer': 'street',
+        },
+        {
+          'center_point': { 'lon': 2.368732, 'lat': 48.853313 },
+          'parent': {
+            'continent_id': ['102191581'],
+            'country_id': ['85633147'],
+            'macroregion_id': ['404227465'],
+            'region_id': ['85683497'],
+            'borough_id': ['1158894237'],
+            'locality_id': ['101751119'],
+            'localadmin_id': ['1159322569'],
+            'neighbourhood_id': ['85873807'],
+          },
+          'name': { 'default': 'Place de la Bastille' },
+          'source': 'openstreetmap',
+          'source_id': 'polyline:5787367',
+          'layer': 'street',
+        },
+        {
+          'center_point': { 'lon': 2.368701, 'lat': 48.853394 },
+          'parent': {
+            'continent_id': ['102191581'],
+            'country_id': ['85633147'],
+            'macroregion_id': ['404227465'],
+            'region_id': ['85683497'],
+            'borough_id': ['1158894237'],
+            'locality_id': ['101751119'],
+            'localadmin_id': ['1159322569'],
+            'neighbourhood_id': ['85873807'],
+          },
+          'name': { 'default': 'Place de la Bastille' },
+          'source': 'openstreetmap',
+          'source_id': 'polyline:27627423',
+          'layer': 'street',
+        },
+        {
+          'center_point': { 'lon': 2.369266, 'lat': 48.853509 },
+          'parent': {
+            'continent_id': ['102191581'],
+            'country_id': ['85633147'],
+            'macroregion_id': ['404227465'],
+            'region_id': ['85683497'],
+            'borough_id': ['1158894253'],
+            'locality_id': ['101751119'],
+            'localadmin_id': ['1159322569'],
+            'neighbourhood_id': ['85873807'],
+          },
+          'name': { 'default': 'Place de la Bastille' },
+          'source': 'openstreetmap',
+          'source_id': 'polyline:5783673',
+          'layer': 'street',
+        },
+        {
+          'center_point': { 'lon': 2.349591, 'lat': 48.84449 },
+          'parent': {
+            'continent_id': ['102191581'],
+            'country_id': ['85633147'],
+            'macroregion_id': ['404227465'],
+            'region_id': ['85683497'],
+            'borough_id': ['1158894239'],
+            'locality_id': ['101751119'],
+            'localadmin_id': ['1159322569'],
+            'neighbourhood_id': ['85873819'],
+          },
+          'name': { 'default': 'Place de la Contrescarpe' },
+          'source': 'openstreetmap',
+          'source_id': 'polyline:5767052',
+          'layer': 'street',
+        },
+      ]
+    };
+
+    var expectedCount = 2;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'results are deduped');
+      t.end();
+    });
+  });
 };
 
 module.exports.all = function (tape, common) {
