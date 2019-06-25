@@ -41,6 +41,7 @@ module.exports = function( vs ) {
       },{
         geo_distance: {
           distance: length_to_distance_mapping[text_length],
+          distance_type: 'plane',
           [vs.var('centroid:field')]: {
             lat: vs.var('focus:point:lat'),
             lon: vs.var('focus:point:lon')

@@ -116,6 +116,7 @@ module.exports = {
           {
             'geo_distance': {
               'distance': '600km',
+              'distance_type': 'plane',
               'center_point': {
                 'lat': 0,
                 'lon': 0
