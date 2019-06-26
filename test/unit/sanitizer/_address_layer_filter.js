@@ -1,25 +1,15 @@
 const sanitizer = require('../../../sanitizer/_address_layer_filter');
+const TypeMapping = require('../../../helper/TypeMapping');
 const NO_MESSAGES = { errors: [], warnings: [] };
 const STD_MESSAGES = { errors: [], warnings: ['performance optimization: excluding \'address\' layer'] };
 
 module.exports.tests = {};
 
-module.exports.tests.enumerate_layers = function (test, common) {
-  test('enumerate layers', (t) => {
-    let m = { A: ['A', 'B'], B: ['B'], C: ['B', 'C'] };
-    t.deepEqual(sanitizer(m).layers, ['A','B','C']);
-    t.end();
-  });
-  test('enumerate layers - exclude "address"', (t) => {
-    let m = { A: ['A', 'B', 'address'], B: ['B'], C: ['B', 'address', 'C'] };
-    t.deepEqual(sanitizer(m).layers, ['A', 'B', 'C']);
-    t.end();
-  });
-};
-
 module.exports.tests.sanitize = function (test, common) {
-  let m = { A: ['A'], B: ['B'], C: ['C'] };
-  let s = sanitizer(m);
+  let tm = new TypeMapping();
+  tm.setLayersBySource({ A: ['A'], B: ['B'], C: ['C'] });
+  tm.generateMappings();
+  let s = sanitizer(tm);
 
   test('sanitize - do nothing if clean.layers already specified', (t) => {
     let clean = { text: '1 example', layers: ['not empty'] };
@@ -71,8 +61,10 @@ module.exports.tests.sanitize = function (test, common) {
   });
 
   test('sanitize - reduce target layers when clean.sources specified', (t) => {
-    let m = { A: ['A', 'address'], B: ['B', 'address'], C: ['C'] };
-    let s = sanitizer(m);
+    let tm = new TypeMapping();
+    tm.setLayersBySource({ A: ['A', 'address'], B: ['B', 'address'], C: ['C'] });
+    tm.generateMappings();
+    let s = sanitizer(tm);
 
     let clean = { text: 'foo', sources: [ 'A', 'C' ] };
     t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
@@ -81,8 +73,10 @@ module.exports.tests.sanitize = function (test, common) {
   });
 
   test('sanitize - do nothing for sources which do not have any addresses', (t) => {
-    let m = { A: ['address'], B: ['address'] };
-    let s = sanitizer(m);
+    let tm = new TypeMapping();
+    tm.setLayersBySource({ A: ['address'], B: ['address'] });
+    tm.generateMappings();
+    let s = sanitizer(tm);
 
     let clean = { text: 'foo', sources: ['A', 'B'] };
     t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
@@ -92,8 +86,10 @@ module.exports.tests.sanitize = function (test, common) {
 };
 
 module.exports.tests.tricky_inputs = function (test, common) {
-  let m = { A: ['A'], B: ['B'], C: ['C'] };
-  let s = sanitizer(m);
+  let tm = new TypeMapping();
+  tm.setLayersBySource({ A: ['A'], B: ['B'], C: ['C'] });
+  tm.generateMappings();
+  let s = sanitizer(tm);
 
   test('tricky inputs - extra whitespace', (t) => {
     let clean = { text: ' \t\n  12 \n\t ' };
@@ -112,8 +108,10 @@ module.exports.tests.tricky_inputs = function (test, common) {
 
 // handle cases where a parser has run and removed admin tokens
 module.exports.tests.parsed_text = function (test, common) {
-  let m = { A: ['A'], B: ['B'], C: ['C'] };
-  let s = sanitizer(m);
+  let tm = new TypeMapping();
+  tm.setLayersBySource({ A: ['A'], B: ['B'], C: ['C'] });
+  tm.generateMappings();
+  let s = sanitizer(tm);
 
   test('naive parser - apply filter due to comma being present', (t) => {
     let clean = { text: 'A', parsed_text: { name: '1', admin_parts: 'Avenue' } };

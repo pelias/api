@@ -8,8 +8,7 @@ function getValidKeys(mapping) {
 function _setup( paramName, targetMap ) {
   const opts = {
     paramName: paramName,
-    targetMap: targetMap,
-    targetMapKeysString: getValidKeys(targetMap)
+    targetMap: targetMap
   };
 
   return {
@@ -27,7 +26,7 @@ function _setup( paramName, targetMap ) {
         // param must be a valid non-empty string
         if( !check.nonEmptyString( targetsString ) ){
           messages.errors.push(
-            opts.paramName + ' parameter cannot be an empty string. Valid options: ' + opts.targetMapKeysString
+            opts.paramName + ' parameter cannot be an empty string. Valid options: ' + getValidKeys(opts.targetMap)
           );
         }
         else {
@@ -42,7 +41,7 @@ function _setup( paramName, targetMap ) {
             return !opts.targetMap.hasOwnProperty(target);
           }).forEach( function( target ){
             messages.errors.push(
-              '\'' + target + '\' is an invalid ' + opts.paramName + ' parameter. Valid options: ' + opts.targetMapKeysString
+              '\'' + target + '\' is an invalid ' + opts.paramName + ' parameter. Valid options: ' + getValidKeys(opts.targetMap)
             );
           });
 
@@ -61,7 +60,7 @@ function _setup( paramName, targetMap ) {
       // string is empty
       else if( check.string( targetsString ) ){
         messages.errors.push(
-          opts.paramName + ' parameter cannot be an empty string. Valid options: ' + opts.targetMapKeysString
+          opts.paramName + ' parameter cannot be an empty string. Valid options: ' + getValidKeys(opts.targetMap)
         );
       }
 
