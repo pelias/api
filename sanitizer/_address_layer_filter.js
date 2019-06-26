@@ -25,15 +25,9 @@ const check = require('check-types');
 
 const ADDRESS_FILTER_WARNING = 'performance optimization: excluding \'address\' layer';
 
-function _setup(layersBySource) {
-
-  // generate a deduplicated list of all layers except 'address'
-  let layers = Object.keys(layersBySource).reduce((l, key) => l.concat(layersBySource[key]), []);
-  layers = _.uniq(layers); // dedupe
-  layers = layers.filter(item => item !== 'address'); // exclude 'address'
+function _setup(tm) {
 
   return {
-    layers: layers,
     sanitize: function _sanitize(__, clean) {
 
       // error & warning messages
@@ -94,7 +88,7 @@ function _setup(layersBySource) {
 
         // handle the common case where neither source nor layers were specified
         if (!check.array(clean.sources) || !check.nonEmptyArray(clean.sources)) {
-          clean.layers = layers;
+          clean.layers = tm.layers.filter(item => item !== 'address'); // exclude 'address'
           messages.warnings.push(ADDRESS_FILTER_WARNING);
         }
 
@@ -102,7 +96,7 @@ function _setup(layersBySource) {
         else if (check.array(clean.sources)) {
 
           // we need to create a list of layers for the specified sources
-          let sourceLayers = clean.sources.reduce((l, key) => l.concat(layersBySource[key] || []), []);
+          let sourceLayers = clean.sources.reduce((l, key) => l.concat(tm.layers_by_source[key] || []), []);
           sourceLayers = _.uniq(sourceLayers); // dedupe
 
           // if the sources specified do not have any addresses or if removing the

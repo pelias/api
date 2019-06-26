@@ -13,7 +13,6 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   'boundary:circle:radius': '50km',
   'boundary:circle:distance_type': 'plane',
-  'boundary:circle:optimize_bbox': 'indexed',
 
   'boundary:rect:type': 'indexed',
 

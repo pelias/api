@@ -71,7 +71,6 @@ module.exports = {
           'geo_distance': {
             'distance': '20km',
             'distance_type': 'plane',
-            'optimize_bbox': 'indexed',
             'center_point': {
               'lat': 37.83239,
               'lon': -122.35698

@@ -9,7 +9,7 @@ module.exports.middleware = (_api_pelias_config) => {
         size: require('../sanitizer/_size')(/* use defaults*/),
         layers: require('../sanitizer/_targets')('layers', type_mapping.layer_mapping),
         sources: require('../sanitizer/_targets')('sources', type_mapping.source_mapping),
-        address_layer_filter: require('../sanitizer/_address_layer_filter')(type_mapping.layers_by_source),
+        address_layer_filter: require('../sanitizer/_address_layer_filter')(type_mapping),
         // depends on the layers and sources sanitizers, must be run after them
         sources_and_layers: require('../sanitizer/_sources_and_layers')(),
         private: require('../sanitizer/_flag_bool')('private', false),
