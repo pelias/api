@@ -78,9 +78,10 @@ module.exports.tests.addStandardTargetsToAliases = function(test) {
 module.exports.tests.setSourceAliases = function(test) {
   test('setter setSourceAliases', function(t) {
     var tm = new TypeMapping();
-    t.deepEqual(tm.source_aliases, {});
+    var ref = tm.source_aliases; // save inital pointer reference
+    t.deepEqual(ref, {});
     tm.setSourceAliases({ foo: ['foo', 'bar'] });
-    t.deepEqual(tm.source_aliases, { foo: ['foo', 'bar'] });
+    t.deepEqual(ref, { foo: ['foo', 'bar'] });
     t.end();
   });
 };
@@ -88,9 +89,10 @@ module.exports.tests.setSourceAliases = function(test) {
 module.exports.tests.setLayersBySource = function(test) {
   test('setter setLayersBySource', function(t) {
     var tm = new TypeMapping();
-    t.deepEqual(tm.layers_by_source, {});
+    var ref = tm.layers_by_source; // save inital pointer reference
+    t.deepEqual(ref, {});
     tm.setLayersBySource({ foo: ['foo', 'bar'] });
-    t.deepEqual(tm.layers_by_source, { foo: ['foo', 'bar'] });
+    t.deepEqual(ref, { foo: ['foo', 'bar'] });
     t.end();
   });
 };
@@ -98,9 +100,10 @@ module.exports.tests.setLayersBySource = function(test) {
 module.exports.tests.setLayerAliases = function(test) {
   test('setter setLayerAliases', function(t) {
     var tm = new TypeMapping();
-    t.deepEqual(tm.layer_aliases, {});
+    var ref = tm.layer_aliases; // save inital pointer reference
+    t.deepEqual(ref, {});
     tm.setLayerAliases({ foo: ['foo', 'bar'] });
-    t.deepEqual(tm.layer_aliases, { foo: ['foo', 'bar'] });
+    t.deepEqual(ref, { foo: ['foo', 'bar'] });
     t.end();
   });
 };
@@ -121,32 +124,36 @@ module.exports.tests.generateMappings = function(test) {
   });
   test('generateMappings - sources', function(t) {
     var tm = new TypeMapping();
+    var ref = tm.sources; // save inital pointer reference
     tm.layers_by_source = { foo: ['foo'], faz: ['faz'] };
     tm.generateMappings();
-    t.deepEqual(tm.sources, ['foo', 'faz']);
+    t.deepEqual(ref, ['foo', 'faz']);
     t.end();
   });
   test('generateMappings - source_mapping', function(t) {
     var tm = new TypeMapping();
+    var ref = tm.source_mapping; // save inital pointer reference
     tm.layers_by_source = { foo: ['foo'], faz: ['faz'] };
     tm.source_aliases = { foo: ['foo','f'], bar: ['bar', 'b'], baz: ['baz'] };
     tm.generateMappings();
-    t.deepEqual(tm.source_mapping, { foo: ['foo', 'f'], bar: ['bar', 'b'], baz: ['baz'], faz: ['faz'] });
+    t.deepEqual(ref, { foo: ['foo', 'f'], bar: ['bar', 'b'], baz: ['baz'], faz: ['faz'] });
     t.end();
   });
   test('generateMappings - layers', function(t) {
     var tm = new TypeMapping();
+    var ref = tm.layers; // save inital pointer reference
     tm.layers_by_source = { foo: ['foo'], faz: ['faz'] };
     tm.generateMappings();
-    t.deepEqual(tm.layers, ['foo','faz']);
+    t.deepEqual(ref, ['foo','faz']);
     t.end();
   });
   test('generateMappings - layer_mapping', function(t) {
     var tm = new TypeMapping();
+    var ref = tm.layer_mapping; // save inital pointer reference
     tm.layers_by_source = { foo: ['foo'], faz: ['faz'] };
     tm.layer_aliases = { foo: ['foo','f'], bar: ['bar', 'b'], baz: ['baz'] };
     tm.generateMappings();
-    t.deepEqual(tm.layer_mapping, { foo: ['foo', 'f'], bar: ['bar', 'b'], baz: ['baz'], faz: ['faz'] });
+    t.deepEqual(ref, { foo: ['foo', 'f'], bar: ['bar', 'b'], baz: ['baz'], faz: ['faz'] });
     t.end();
   });
 };
