@@ -36,6 +36,14 @@ module.exports.tests.success = (test, common) => {
             _index: 'indexName value',
             _type: 'layer2',
             _id: 'id2'
+          },
+          {
+            _index: 'indexName value',
+            _id: 'source1:layer1:id1'
+          },
+          {
+            _index: 'indexName value',
+            _id: 'source2:layer2:id2'
           }
         ]);
 
@@ -49,10 +57,12 @@ module.exports.tests.success = (test, common) => {
       clean: {
         ids: [
           {
+            source: 'source1',
             id: 'id1',
             layer: 'layer1'
           },
           {
+            source: 'source2',
             id: 'id2',
             layer: 'layer2'
           }
