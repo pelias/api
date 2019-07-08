@@ -42,8 +42,8 @@ function geojsonifyPlaces( params, docs ){
 function geojsonifyPlace(params, place) {
   // setup the base doc
   const doc = {
-    id: place._id,
-    gid: new Document(place.source, place.layer, place._id).getGid(),
+    id: place.source_id,
+    gid: new Document(place.source, place.layer, place.source_id).getGid(),
     layer: place.layer,
     source: place.source,
     source_id: place.source_id,

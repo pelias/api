@@ -20,6 +20,7 @@ module.exports.tests.earth = function(test, common) {
       '_id': '6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
+      'source_id': '6295630',
       'name': {
         'default': 'Earth'
       },
@@ -43,7 +44,7 @@ module.exports.tests.all = (test, common) => {
       {
         _id: 'id 1',
         source: 'source 1',
-        source_id: 'source_id 1',
+        source_id: 'id 1',
         layer: 'layer 1',
         name: {
           default: 'name 1',
@@ -56,7 +57,7 @@ module.exports.tests.all = (test, common) => {
       {
         _id: 'id 2',
         source: 'source 2',
-        source_id: 'source_id 2',
+        source_id: 'id 2',
         layer: 'layer 2',
         name: {
           default: 'name 2',
@@ -101,7 +102,7 @@ module.exports.tests.all = (test, common) => {
             gid: 'source 1:layer 1:id 1',
             layer: 'layer 1',
             source: 'source 1',
-            source_id: 'source_id 1',
+            source_id: 'id 1',
             name: 'name 1',
             property1: 'property 1',
             property2: 'property 2'
@@ -118,7 +119,7 @@ module.exports.tests.all = (test, common) => {
             gid: 'source 2:layer 2:id 2',
             layer: 'layer 2',
             source: 'source 2',
-            source_id: 'source_id 2',
+            source_id: 'id 2',
             name: 'name 2',
             property3: 'property 3',
             property4: 'property 4'
@@ -138,7 +139,7 @@ module.exports.tests.all = (test, common) => {
       {
         _id: 'id 1',
         source: 'source 1',
-        source_id: 'source_id 1',
+        source_id: 'id 1',
         layer: 'layer 1',
         name: {
           default: 'name 1',
@@ -157,7 +158,7 @@ module.exports.tests.all = (test, common) => {
       {
         _id: 'id 2',
         source: 'source 2',
-        source_id: 'source_id 2',
+        source_id: 'id 2',
         layer: 'layer 2',
         name: {
           default: 'name 2',
@@ -208,7 +209,7 @@ module.exports.tests.all = (test, common) => {
             gid: 'source 1:layer 1:id 1',
             layer: 'layer 1',
             source: 'source 1',
-            source_id: 'source_id 1',
+            source_id: 'id 1',
             name: 'name 1',
             property1: 'property 1',
             property2: 'property 2'
@@ -226,7 +227,7 @@ module.exports.tests.all = (test, common) => {
             gid: 'source 2:layer 2:id 2',
             layer: 'layer 2',
             source: 'source 2',
-            source_id: 'source_id 2',
+            source_id: 'id 2',
             name: 'name 2',
             property3: 'property 3',
             property4: 'property 4'
@@ -247,7 +248,7 @@ module.exports.tests.all = (test, common) => {
       {
         _id: 'id 1',
         source: 'source 1',
-        source_id: 'source_id 1',
+        source_id: 'id 1',
         layer: 'layer 1',
         name: {
           default: 'name 1',
@@ -260,7 +261,7 @@ module.exports.tests.all = (test, common) => {
       {
         _id: 'id 2',
         source: 'source 2',
-        source_id: 'source_id 2',
+        source_id: 'id 2',
         layer: 'layer 2',
         name: {
           default: 'name 2',
@@ -311,7 +312,7 @@ module.exports.tests.all = (test, common) => {
             gid: 'source 1:layer 1:id 1',
             layer: 'layer 1',
             source: 'source 1',
-            source_id: 'source_id 1',
+            source_id: 'id 1',
             name: 'name 1',
             property1: 'property 1',
             property2: 'property 2'
@@ -328,7 +329,7 @@ module.exports.tests.all = (test, common) => {
             gid: 'source 2:layer 2:id 2',
             layer: 'layer 2',
             source: 'source 2',
-            source_id: 'source_id 2',
+            source_id: 'id 2',
             name: 'name 2',
             property3: 'property 3',
             property4: 'property 4'
@@ -356,7 +357,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
       {
         _id: 'id 1',
         source: 'source 1',
-        source_id: 'source_id 1',
+        source_id: 'id 1',
         layer: 'layer 1',
         name: {
           default: 'name 1',
@@ -396,7 +397,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
             gid: 'source 1:layer 1:id 1',
             layer: 'layer 1',
             source: 'source 1',
-            source_id: 'source_id 1',
+            source_id: 'id 1',
             name: 'name 1',
             property1: 'property 1',
             property2: 'property 2'
@@ -419,7 +420,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
       {
         _id: 'id 1',
         source: 'source 1',
-        source_id: 'source_id 1',
+        source_id: 'id 1',
         layer: 'layer 1',
         name: {
           default: 'name 1',
@@ -428,7 +429,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
       {
         _id: 'id 2',
         source: 'source 2',
-        source_id: 'source_id 2',
+        source_id: 'id 2',
         layer: 'layer 2',
         name: {
           default: 'name 2',
@@ -468,7 +469,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
             gid: 'source 2:layer 2:id 2',
             layer: 'layer 2',
             source: 'source 2',
-            source_id: 'source_id 2',
+            source_id: 'id 2',
             name: 'name 2',
             property3: 'property 3',
             property4: 'property 4'
@@ -491,7 +492,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
       {
         _id: 'id 1',
         source: 'source 1',
-        source_id: 'source_id 1',
+        source_id: 'id 1',
         layer: 'layer 1',
         center_point: {
           lat: 12.121212,
@@ -501,7 +502,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
       {
         _id: 'id 2',
         source: 'source 2',
-        source_id: 'source_id 2',
+        source_id: 'id 2',
         layer: 'layer 2',
         name: {},
         center_point: {
@@ -512,7 +513,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
       {
         _id: 'id 3',
         source: 'source 3',
-        source_id: 'source_id 3',
+        source_id: 'id 3',
         layer: 'layer 3',
         name: {
           default: 'name 3',
@@ -563,7 +564,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
             gid: 'source 1:layer 1:id 1',
             layer: 'layer 1',
             source: 'source 1',
-            source_id: 'source_id 1',
+            source_id: 'id 1',
             property1: 'property 1',
             property2: 'property 2'
           }
@@ -579,7 +580,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
             gid: 'source 2:layer 2:id 2',
             layer: 'layer 2',
             source: 'source 2',
-            source_id: 'source_id 2',
+            source_id: 'id 2',
             property3: 'property 3',
             property4: 'property 4'
           }
@@ -595,7 +596,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
             gid: 'source 3:layer 3:id 3',
             layer: 'layer 3',
             source: 'source 3',
-            source_id: 'source_id 3',
+            source_id: 'id 3',
             name: 'name 3',
             property5: 'property 5',
             property6: 'property 6'
@@ -647,6 +648,7 @@ module.exports.tests.nameAliases = function(test, common) {
       '_id': '1',
       'source': 'example',
       'layer': 'example',
+      'source_id': '1',
       'name': {
         'default': ['Example1', 'Example2'] // note the array
       },
@@ -669,7 +671,7 @@ module.exports.tests.nameAliases = function(test, common) {
           gid: 'example:example:1',
           layer: 'example',
           source: 'example',
-          source_id: undefined,
+          source_id: '1',
           name: 'Example1'
         }
       }],
@@ -691,6 +693,7 @@ module.exports.tests.addendum = function(test, common) {
       '_id': '6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
+      'source_id': '6295630',
       'name': {
         'default': 'Earth'
       },
@@ -710,6 +713,7 @@ module.exports.tests.addendum = function(test, common) {
       '_id': '6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
+      'source_id': '6295630',
       'name': {
         'default': 'Earth'
       },
@@ -736,6 +740,7 @@ module.exports.tests.addendum = function(test, common) {
       '_id': '6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
+      'source_id': '6295630',
       'name': {
         'default': 'Earth'
       },
@@ -761,6 +766,7 @@ module.exports.tests.addendum = function(test, common) {
       '_id': '6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
+      'source_id': '6295630',
       'name': {
         'default': 'Earth'
       },

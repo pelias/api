@@ -117,8 +117,7 @@ function setup(service, should_execute) {
         )[0];
 
         // -- source_id --
-        // note: interpolated values have no source_id
-        delete source_result.source_id; // remove original street source_id
+        // note: interpolated values often have no source_id, so street id will be used
         if( interpolation_result.properties.hasOwnProperty( 'source_id' ) ){
           source_result.source_id = interpolation_result.properties.source_id;
         }

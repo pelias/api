@@ -502,7 +502,7 @@ module.exports.tests.success_conditions = (test, common) => {
 
   });
 
-  test('interpolation result without source_id should remove all together', t => {
+  test('interpolation result without source_id should default to street ID', t => {
     const service = (req, res, callback) => {
       if (res.id === 1) {
         callback(null, {
@@ -542,7 +542,7 @@ module.exports.tests.success_conditions = (test, common) => {
           name: {
             default: 'street name 1'
           },
-          // will be removed
+          // will be used in the case where interpolated result has no source_id
           source_id: 'original source_id',
           address_parts: {}
         }
@@ -562,6 +562,7 @@ module.exports.tests.success_conditions = (test, common) => {
               default: '17 street name 1'
             },
             source: 'openaddresses',
+            source_id: 'original source_id',
             address_parts: {
               number: 17
             },
