@@ -309,7 +309,7 @@ module.exports.tests.query = function(test, common) {
     var expected = require('../fixture/autocomplete_linguistic_bbox_san_francisco');
 
     t.deepEqual(compiled.type, 'autocomplete', 'query type set');
-    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_focus_null_island');
+    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_bbox_san_francisco');
     t.end();
   });
 
@@ -328,7 +328,7 @@ module.exports.tests.query = function(test, common) {
     var expected = require('../fixture/autocomplete_linguistic_circle_san_francisco');
 
     t.deepEqual(compiled.type, 'autocomplete', 'query type set');
-    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_focus_null_island');
+    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_circle_san_francisco');
     t.end();
   });
 
