@@ -57,32 +57,45 @@ TypeMapping.addStandardTargetsToAliases = function(standard, aliases) {
 
 // source alias setter
 TypeMapping.prototype.setSourceAliases = function( aliases ){
-  this.source_aliases = aliases;
+  safeReplace(this.source_aliases, aliases);
 };
 
 // layers-by-source alias setter
 TypeMapping.prototype.setLayersBySource = function( lbs ){
-  this.layers_by_source = lbs;
+  safeReplace(this.layers_by_source, lbs);
 };
 
 // layer alias setter
 TypeMapping.prototype.setLayerAliases = function( aliases ){
-  this.layer_aliases = aliases;
+  safeReplace(this.layer_aliases, aliases);
 };
 
 // canonical sources setter
 TypeMapping.prototype.setCanonicalSources = function( sources ){
-  this.canonical_sources = sources;
+  safeReplace(this.canonical_sources, sources);
 };
 
 // generate mappings after setters have been run
 TypeMapping.prototype.generateMappings = function(){
-  this.sources = Object.keys( this.layers_by_source );
-  this.source_mapping = TypeMapping.addStandardTargetsToAliases(this.sources, this.source_aliases);
-  this.layers = _.uniq(Object.keys(this.layers_by_source).reduce(function(acc, key) {
-    return acc.concat(this.layers_by_source[key]);
-  }.bind(this), []));
-  this.layer_mapping = TypeMapping.addStandardTargetsToAliases(this.layers, this.layer_aliases);
+
+  safeReplace(this.sources, Object.keys(this.layers_by_source) );
+
+  safeReplace(
+    this.source_mapping,
+    TypeMapping.addStandardTargetsToAliases(this.sources, this.source_aliases)
+  );
+
+  safeReplace(
+    this.layers,
+    _.uniq(Object.keys(this.layers_by_source).reduce(function (acc, key) {
+      return acc.concat(this.layers_by_source[key]);
+    }.bind(this), []))
+  );
+  
+  safeReplace(
+    this.layer_mapping,
+    TypeMapping.addStandardTargetsToAliases(this.layers, this.layer_aliases)
+  );
 };
 
 // generate a list of all layers which are part of the canonical Pelias configuration
@@ -132,5 +145,17 @@ TypeMapping.prototype.load = function( done ){
   // load values from elasticsearch
   loadFromElasticsearch(this, done);
 };
+
+// replace the contents of an object or array
+// while maintaining the original pointer reference
+function safeReplace(reference, replacement){
+  if (_.isObject(reference) && _.isObject(replacement) ){
+    for( let attr in reference ){ delete reference[attr]; }
+    for (let attr in replacement) { reference[attr] = replacement[attr]; }
+  } else if (_.isArray(reference) && _.isArray(replacement)) {
+    reference.length = 0;
+    replacement.forEach(el => reference.push(el));
+  }
+}
 
 module.exports = TypeMapping;

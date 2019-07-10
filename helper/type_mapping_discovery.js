@@ -64,6 +64,9 @@ module.exports = (tm, done) => {
         logger.info( 'total sources', sources.length );
         logger.info( 'successfully discovered type mapping from elasticsearch' );
         tm.setLayersBySource( layersBySource );
+
+        // (re)generate the mappings
+        tm.generateMappings();
       }
     }
 
