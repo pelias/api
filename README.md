@@ -95,16 +95,14 @@ Custom sources and layers are not automatically detected, you MUST set `targets.
 
 The `auto_discover` functionality sends a request to elasticsearch in order to automatically discover sources and layers from elasticsearch when the API server starts-up.
 
-Be aware that the query sent to elasticsearch can take several seconds to execute the first time against a large index, the query is cached in elasticsearch for subsequent requests.
+Be aware that the query sent to Elasticsearch can take several seconds to execute the first time against a large index, potentially impacting the performance of other queries hitting Elasticsearch at the same time. The query is cached in Elasticsearch for subsequent requests.
 
-If you are importing custom layers and are running a city or small region sized build then the start-up delay will likely not affect you, you can safely use `targets.auto_discover:true`.
+If you are importing custom layers and are running a city or small region sized build then the impact of this query will likely be negligible, you can safely use `targets.auto_discover:true`.
 
 For advanced users running a full-planet build with custom layers or sources, and also concerned about this start-up delay, you have two options:
 
 1. execute the `auto_discover` query once manually to prime the cache **or**
 2. set `targets.auto_discover: false` and manually define the layers as documented below.
-
-> note: manually assigning targets is an advanced configuration which should be avoided where possible.
 
 #### `layers_by_source`
 
