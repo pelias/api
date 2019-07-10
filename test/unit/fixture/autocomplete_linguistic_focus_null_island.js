@@ -6,7 +6,7 @@ module.exports = {
           'query': {
             'match': {
               'name.default': {
-                'analyzer': 'peliasQueryPartialToken',
+                'analyzer': 'peliasQuery',
                 'cutoff_frequency': 0.01,
                 'boost': 100,
                 'query': 'test',
@@ -23,7 +23,7 @@ module.exports = {
           'query': {
             'match': {
               'name.default': {
-                'analyzer': 'peliasQueryPartialToken',
+                'analyzer': 'peliasQuery',
                 'cutoff_frequency': 0.01,
                 'boost': 100,
                 'query': 'test',
