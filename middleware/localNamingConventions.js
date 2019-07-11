@@ -2,7 +2,7 @@ const check = require('check-types');
 const _ = require('lodash');
 const field = require('../helper/fieldValue');
 
-var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL', 'CZE', 'PRT', 'ESP', 'ROU', 'COL'];
+var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL', 'CZE', 'PRT', 'ESP', 'ROU', 'COL', 'NLD'];
 
 function setup() {
   var api = require('pelias-config').generate().api;
