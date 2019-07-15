@@ -24,7 +24,12 @@ function computeScores(req, res, next) {
     return next();
   }
 
-  if (['search_fallback', 'address_search_with_ids', 'structured'].includes(res.meta.queryType)) {
+
+  // this middleware only supports a few query types, others are handled by
+  // subsequent confidence score middleware
+  const supported_query_types = ['search_fallback', 'address_search_using_ids', 'structured'];
+
+  if (!supported_query_types.includes(res.meta.queryType)) {
     return next();
   }
 

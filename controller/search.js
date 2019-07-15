@@ -110,8 +110,8 @@ function setup( apiConfig, esclient, query, should_execute ){
           if (!_.isEmpty(docs)) {
             res.data = docs;
             res.meta = meta || {};
-            // store the query_type for subsequent middleware
-            res.meta.query_type = renderedQuery.type;
+            // store the queryType for subsequent middleware
+            res.meta.queryType = renderedQuery.type;
           }
 
           // put an entry in the debug log no matter the number of results

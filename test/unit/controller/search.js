@@ -66,7 +66,7 @@ module.exports.tests.success = function(test, common) {
         warnings: []
       });
       t.deepEquals(res.data, [{}, {}]);
-      t.deepEquals(res.meta, { key: 'value', query_type: 'this is the query type' });
+      t.deepEquals(res.meta, { key: 'value', queryType: 'this is the query type' });
 
       t.end();
     };
@@ -127,7 +127,7 @@ module.exports.tests.success = function(test, common) {
         warnings: []
       });
       t.deepEquals(res.data, [{}, {}]);
-      t.deepEquals(res.meta, { query_type: 'this is the query type' });
+      t.deepEquals(res.meta, { queryType: 'this is the query type' });
 
       t.end();
     };
@@ -179,7 +179,7 @@ module.exports.tests.success = function(test, common) {
     })(config, esclient, query, () => { return true; });
 
     const req = { clean: { }, errors: [], warnings: [] };
-    const res = { meta: { query_type: 'this is the query type from a previous query'} };
+    const res = { meta: { queryType: 'this is the query type from a previous query'} };
 
     const next = () => {
       t.deepEqual(req, {
@@ -191,7 +191,7 @@ module.exports.tests.success = function(test, common) {
       t.equals(res.data, undefined, 'no data set');
 
       const expected_meta = {
-        query_type: 'this is the query type from a previous query'
+        queryType: 'this is the query type from a previous query'
       };
       t.deepEquals(res.meta, expected_meta, 'previous query meta information left unchanged');
 
@@ -270,7 +270,7 @@ module.exports.tests.success = function(test, common) {
         warnings: []
       });
       t.deepEquals(res.data, [{}, {}]);
-      t.deepEquals(res.meta, { key: 'value', query_type: 'this is the query type' });
+      t.deepEquals(res.meta, { key: 'value', queryType: 'this is the query type' });
 
       t.ok(infoMesssages.find((msg) => {
         return _.get(msg, 'json.retries') === 2;

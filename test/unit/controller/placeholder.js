@@ -212,7 +212,7 @@ module.exports.tests.success = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -328,7 +328,7 @@ module.exports.tests.success = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -390,7 +390,7 @@ module.exports.tests.success = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -449,7 +449,7 @@ module.exports.tests.success = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -513,7 +513,7 @@ module.exports.tests.success = (test, common) => {
       controller(req, res, () => {
         const expected_res = {
           meta: {
-            query_type: 'search_fallback'
+            queryType: 'search_fallback'
           },
           data: [
             {
@@ -577,7 +577,7 @@ module.exports.tests.success = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -749,7 +749,7 @@ module.exports.tests.result_filtering = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -865,7 +865,7 @@ module.exports.tests.result_filtering = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -1063,7 +1063,7 @@ module.exports.tests.result_filtering = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -1177,7 +1177,7 @@ module.exports.tests.result_filtering = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -1328,7 +1328,7 @@ module.exports.tests.result_filtering = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -1460,7 +1460,7 @@ module.exports.tests.result_filtering = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -1606,7 +1606,7 @@ module.exports.tests.result_filtering = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -1754,7 +1754,7 @@ module.exports.tests.result_filtering = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -1878,7 +1878,7 @@ module.exports.tests.lineage_errors = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -1951,7 +1951,7 @@ module.exports.tests.lineage_errors = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -2023,7 +2023,7 @@ module.exports.tests.lineage_errors = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -2082,7 +2082,7 @@ module.exports.tests.geometry_errors = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -2140,7 +2140,7 @@ module.exports.tests.centroid_errors = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -2199,7 +2199,7 @@ module.exports.tests.centroid_errors = (test, common) => {
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          queryType: 'search_fallback'
         },
         data: [
           {
@@ -2268,7 +2268,7 @@ module.exports.tests.boundingbox_errors = (test, common) => {
       controller(req, res, () => {
         const expected_res = {
           meta: {
-            query_type: 'search_fallback'
+            queryType: 'search_fallback'
           },
           data: [
             {
