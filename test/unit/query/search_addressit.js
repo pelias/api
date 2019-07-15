@@ -200,7 +200,7 @@ module.exports.tests.query = function(test, common) {
     var expected = require('../fixture/search_with_category_filtering_original');
 
     t.deepEqual(compiled.type, 'search_addressit', 'query type set');
-    t.deepEqual(compiled.body, expected, 'valid search query with category filtering');
+    t.deepEqual(compiled.body, expected, 'correct search_with_category_filtering_original query');
     t.end();
   });
 
