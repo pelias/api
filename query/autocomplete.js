@@ -13,7 +13,8 @@ var views = {
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
   pop_subquery:               require('./view/pop_subquery'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
-  max_character_count_layer_filter:   require('./view/max_character_count_layer_filter')
+  max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
+  focus_point_filter:         require('./view/focus_point_distance_filter')
 };
 
 //------------------------------
@@ -57,6 +58,7 @@ query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.boundary_country );
 query.filter( peliasQuery.view.categories );
 query.filter( peliasQuery.view.boundary_gid );
+query.filter( views.focus_point_filter );
 
 // --------------------------------
 
