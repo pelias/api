@@ -10,7 +10,7 @@
               "boost": 1,
               "cutoff_frequency": 0.01,
               "minimum_should_match": "1<-1 3<-25%",
-              "analyzer": "peliasQueryFullToken"
+              "analyzer": "peliasQuery"
             }
           }
         }],
