@@ -229,6 +229,37 @@ module.exports.tests.priority = function(test, common) {
     });
   });
 
+  test('openstreetmap takes priority over geonames venues', function (t) {
+    var req = {
+      clean: {
+        text: 'Lancaster Dairy Farm',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': { 'default': 'Lancaster Dairy Farm' },
+          'source': 'geonames',
+          'source_id': '654321',
+          'layer': 'venue'
+        }, {
+          'name': { 'default': 'Lancaster Dairy Farm' },
+          'source': 'openstreetmap',
+          'source_id': '123456',
+          'layer': 'venue'
+        }
+      ]
+    };
+
+    var expectedCount = 1;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'results have fewer items than before');
+      t.deepEqual(res.data[0].source, 'openstreetmap', 'openstreetmap result won');
+      t.end();
+    });
+  });
+
   test('openaddresses takes priority over openstreetmap', function (t) {
     var req = {
       clean: {
