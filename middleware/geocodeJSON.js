@@ -61,6 +61,7 @@ function convertToGeocodeJSON(req, res, next, opts) {
   res.body.geocoding.query = req.clean;
 
   // remove arrays produced by the tokenizer (only intended to be used internally).
+  delete res.body.geocoding.query.tokens;
   delete res.body.geocoding.query.tokens_complete;
   delete res.body.geocoding.query.tokens_incomplete;
 
