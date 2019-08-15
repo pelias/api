@@ -31,6 +31,7 @@ query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
 // address components
 query.score( peliasQuery.view.address('housenumber') );
 query.score( peliasQuery.view.address('street') );
+query.score( peliasQuery.view.address('cross_street') );
 query.score( peliasQuery.view.address('postcode') );
 
 // admin components
