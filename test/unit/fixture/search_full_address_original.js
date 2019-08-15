@@ -8,7 +8,8 @@ module.exports = {
           'name.default': {
             'query': '123 main st',
             'cutoff_frequency': 0.01,
-            'analyzer': 'peliasQueryFullToken',
+            'minimum_should_match': '1<-1 3<-25%',
+            'analyzer': 'peliasQuery',
             'boost': 1
           }
         }

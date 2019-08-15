@@ -36,7 +36,7 @@ module.exports.tests.query = function(test, common) {
     });
 
     const actual_query = JSON.parse( JSON.stringify( search_query_module(clean) ) );
-    t.deepEqual(actual_query, expected_query, 'query as expected');
+    t.deepEqual(actual_query, expected_query, 'search_with_custom_boosts query as expected');
     t.pass();
     t.end();
   });

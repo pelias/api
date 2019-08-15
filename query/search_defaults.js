@@ -16,10 +16,11 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   'boundary:rect:type': 'indexed',
 
-  'ngram:analyzer': 'peliasQueryFullToken',
+  'ngram:analyzer': 'peliasQuery',
   'ngram:field': 'name.default',
   'ngram:boost': 1,
   'ngram:cutoff_frequency': 0.01,
+  'ngram:minimum_should_match': '1<-1 3<-25%',
 
   'phrase:analyzer': 'peliasPhrase',
   'phrase:field': 'phrase.default',

@@ -4,7 +4,7 @@ module.exports = {
       'must': [{
         'match': {
           'phrase.default': {
-            'analyzer': 'peliasQueryFullToken',
+            'analyzer': 'peliasQuery',
             'cutoff_frequency': 0.01,
             'type': 'phrase',
             'boost': 1,

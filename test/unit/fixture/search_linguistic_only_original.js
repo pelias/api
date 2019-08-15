@@ -7,7 +7,8 @@ module.exports = {
             'query': 'test',
             'cutoff_frequency': 0.01,
             'boost': 1,
-            'analyzer': 'peliasQueryFullToken'
+            'minimum_should_match': '1<-1 3<-25%',
+            'analyzer': 'peliasQuery'
           }
         }
       }],

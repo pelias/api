@@ -7,7 +7,8 @@ module.exports = {
             'name.default': {
               'query': 'test',
               'boost': 1,
-              'analyzer': 'peliasQueryFullToken',
+              'minimum_should_match': '1<-1 3<-25%',
+              'analyzer': 'peliasQuery',
               'cutoff_frequency': 0.01
             }
           }

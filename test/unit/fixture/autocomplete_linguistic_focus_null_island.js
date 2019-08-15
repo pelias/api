@@ -6,7 +6,7 @@ module.exports = {
           'query': {
             'match': {
               'name.default': {
-                'analyzer': 'peliasQueryPartialToken',
+                'analyzer': 'peliasQuery',
                 'cutoff_frequency': 0.01,
                 'boost': 100,
                 'query': 'test',
@@ -23,7 +23,7 @@ module.exports = {
           'query': {
             'match': {
               'name.default': {
-                'analyzer': 'peliasQueryPartialToken',
+                'analyzer': 'peliasQuery',
                 'cutoff_frequency': 0.01,
                 'boost': 100,
                 'query': 'test',
@@ -82,6 +82,46 @@ module.exports = {
               'missing': 1
             },
             'weight': 3
+          }]
+        }
+      }],
+      'filter': [{
+        'bool': {
+          'minimum_should_match': 1,
+          'should': [{
+            'terms': {
+              'layer': [
+                'venue',
+                'country',
+                'macroregion',
+                'region',
+                'county',
+                'localadmin',
+                'locality',
+                'borough',
+                'neighbourhood',
+                'continent',
+                'empire',
+                'dependency',
+                'macrocounty',
+                'macrohood',
+                'microhood',
+                'disputed',
+                'postalcode',
+                'ocean',
+                'marinearea'
+              ]
+            }
+          },
+          {
+            'geo_distance': {
+              'distance': '600km',
+              'distance_type': 'plane',
+              'center_point': {
+                'lat': 0,
+                'lon': 0
+              }
+            }
           }]
         }
       }]
