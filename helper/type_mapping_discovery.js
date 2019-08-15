@@ -35,7 +35,7 @@ const DISCOVERY_QUERY = {
 };
 
 module.exports = (tm, done) => {
-  const esclient = elasticsearch.Client(peliasConfig.esclient);
+  const esclient = elasticsearch.Client(_.extend({}, peliasConfig.esclient));
   esclient.search(DISCOVERY_QUERY, (err, res) => {
     
     // query error

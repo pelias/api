@@ -109,7 +109,7 @@ const Libpostal = require('../service/configurations/Libpostal');
  * @param {object} peliasConfig
  */
 function addRoutes(app, peliasConfig) {
-  const esclient = elasticsearch.Client(peliasConfig.esclient);
+  const esclient = elasticsearch.Client(_.extend({}, peliasConfig.esclient));
 
   const pipConfiguration = new PointInPolygon(_.defaultTo(peliasConfig.api.services.pip, {}));
   const pipService = serviceWrapper(pipConfiguration);
