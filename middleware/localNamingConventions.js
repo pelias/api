@@ -2,7 +2,42 @@ const check = require('check-types');
 const _ = require('lodash');
 const field = require('../helper/fieldValue');
 
-var flipNumberAndStreetCountries = ['DEU', 'FIN', 'SWE', 'NOR', 'DNK', 'ISL', 'CZE', 'PRT', 'ESP', 'ROU', 'COL', 'NLD'];
+var flipNumberAndStreetCountries = [
+  /* from the ID Editor config */
+  /* https://github.com/openstreetmap/iD/blob/master/data/address-formats.json */
+  'AUT' /* Austria */,
+  'CHE' /* Switzerland */,
+  'DEU' /* Germany */,
+  'SVN' /* Slovenia */ ,
+  'POL' /* Poland */,
+  'AND' /* Andorra */,
+  'BIH' /* Bosnia and Herzegovina */,
+  'BEL' /* Belgium */,
+  'CZE' /* Czechia */,
+  'DNK' /* Denmark */,
+  'ESP' /* Spain */,
+  'FIN' /* Finland */,
+  'GRC' /* Greece */,
+  'HRV' /* Croatia */,
+  'ISL' /* Iceland */,
+  'ITA' /* Italy */,
+  'LIE' /* Liechtenstein */,
+  'NLD' /* Netherlands */,
+  'NOR' /* Norway */,
+  'PRT' /* Portugal */,
+  'SWE' /* Sweden */,
+  'SVK' /* Slovakia */,
+  'SMR' /* San Marino */,
+  'VAT' /* Holy See */,
+  'BRA' /* Brazil */,
+  'TWN' /* Taiwan */,
+  'TUR' /* Turkey */,
+
+  /* Additional country codes not provided by ID Editor config */
+  'ROU' /* Romania */,
+  'COL' /* Colombia */,
+  'HUN' /* Hungary */
+];
 
 function setup() {
   var api = require('pelias-config').generate().api;
