@@ -217,7 +217,7 @@ module.exports.tests.success = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:123',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '123',
@@ -269,7 +269,7 @@ module.exports.tests.success = (test, common) => {
           },
           {
             _id: 'whosonfirst:locality:456',
-            _type: 'locality',
+            _type: 'doc',
             layer: 'locality',
             source: 'whosonfirst',
             source_id: '456',
@@ -335,7 +335,7 @@ module.exports.tests.success = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:123',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '123',
@@ -398,7 +398,7 @@ module.exports.tests.success = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:123',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '123',
@@ -458,7 +458,7 @@ module.exports.tests.success = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:123',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '123',
@@ -523,7 +523,7 @@ module.exports.tests.success = (test, common) => {
           data: [
             {
               _id: 'whosonfirst:neighbourhood:456',
-              _type: 'neighbourhood',
+              _type: 'doc',
               layer: 'neighbourhood',
               source: 'whosonfirst',
               source_id: '456',
@@ -588,7 +588,7 @@ module.exports.tests.success = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:1',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '1',
@@ -761,7 +761,7 @@ module.exports.tests.result_filtering = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:1',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '1',
@@ -778,7 +778,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:neighbourhood:10',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '10',
@@ -879,7 +879,7 @@ module.exports.tests.result_filtering = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:1',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '1',
@@ -896,7 +896,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:neighbourhood:2',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '2',
@@ -913,7 +913,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:neighbourhood:3',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '3',
@@ -1080,7 +1080,7 @@ module.exports.tests.result_filtering = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:1',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '1',
@@ -1097,7 +1097,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:neighbourhood:10',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '10',
@@ -1196,7 +1196,7 @@ module.exports.tests.result_filtering = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:1',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '1',
@@ -1213,7 +1213,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:neighbourhood:2',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '2',
@@ -1230,7 +1230,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:neighbourhood:3',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '3',
@@ -1350,7 +1350,7 @@ module.exports.tests.result_filtering = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:1',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '1',
@@ -1367,7 +1367,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:locality:3',
-            _type: 'locality',
+            _type: 'doc',
             layer: 'locality',
             source: 'whosonfirst',
             source_id: '3',
@@ -1384,7 +1384,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:county:5',
-            _type: 'county',
+            _type: 'doc',
             layer: 'county',
             source: 'whosonfirst',
             source_id: '5',
@@ -1485,7 +1485,7 @@ module.exports.tests.result_filtering = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:1',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '1',
@@ -1502,7 +1502,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:borough:2',
-            _type: 'borough',
+            _type: 'doc',
             layer: 'borough',
             source: 'whosonfirst',
             source_id: '2',
@@ -1519,7 +1519,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:locality:3',
-            _type: 'locality',
+            _type: 'doc',
             layer: 'locality',
             source: 'whosonfirst',
             source_id: '3',
@@ -1634,7 +1634,7 @@ module.exports.tests.result_filtering = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:locality:1',
-            _type: 'locality',
+            _type: 'doc',
             layer: 'locality',
             source: 'whosonfirst',
             source_id: '1',
@@ -1656,7 +1656,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:locality:4',
-            _type: 'locality',
+            _type: 'doc',
             layer: 'locality',
             source: 'whosonfirst',
             source_id: '4',
@@ -1784,7 +1784,7 @@ module.exports.tests.result_filtering = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:locality:1',
-            _type: 'locality',
+            _type: 'doc',
             layer: 'locality',
             source: 'whosonfirst',
             source_id: '1',
@@ -1806,7 +1806,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:locality:3',
-            _type: 'locality',
+            _type: 'doc',
             layer: 'locality',
             source: 'whosonfirst',
             source_id: '3',
@@ -1828,7 +1828,7 @@ module.exports.tests.result_filtering = (test, common) => {
           },
           {
             _id: 'whosonfirst:locality:4',
-            _type: 'locality',
+            _type: 'doc',
             layer: 'locality',
             source: 'whosonfirst',
             source_id: '4',
@@ -1911,7 +1911,7 @@ module.exports.tests.lineage_errors = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:123',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '123',
@@ -1985,7 +1985,7 @@ module.exports.tests.lineage_errors = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:123',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '123',
@@ -2058,7 +2058,7 @@ module.exports.tests.lineage_errors = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:123',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '123',
@@ -2118,7 +2118,7 @@ module.exports.tests.geometry_errors = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:123',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '123',
@@ -2177,7 +2177,7 @@ module.exports.tests.centroid_errors = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:123',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '123',
@@ -2237,7 +2237,7 @@ module.exports.tests.centroid_errors = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:123',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '123',
@@ -2307,7 +2307,7 @@ module.exports.tests.boundingbox_errors = (test, common) => {
           data: [
             {
               _id: 'whosonfirst:neighbourhood:123',
-              _type: 'neighbourhood',
+              _type: 'doc',
               layer: 'neighbourhood',
               source: 'whosonfirst',
               source_id: '123',

@@ -256,7 +256,7 @@ module.exports.tests.success_conditions = (test, common) => {
       data: [
         {
           _id: 'whosonfirst:neighbourhood:10',
-          _type: 'neighbourhood',
+          _type: 'doc',
           layer: 'neighbourhood',
           source: 'whosonfirst',
           source_id: '10',
@@ -374,7 +374,7 @@ module.exports.tests.success_conditions = (test, common) => {
       data: [
         {
           _id: 'whosonfirst:neighbourhood:10',
-          _type: 'neighbourhood',
+          _type: 'doc',
           layer: 'neighbourhood',
           source: 'whosonfirst',
           source_id: '10',
@@ -450,7 +450,7 @@ module.exports.tests.success_conditions = (test, common) => {
       data: [
         {
           _id: 'whosonfirst:neighbourhood:10',
-          _type: 'neighbourhood',
+          _type: 'doc',
           layer: 'neighbourhood',
           source: 'whosonfirst',
           source_id: '10',
@@ -525,7 +525,7 @@ module.exports.tests.success_conditions = (test, common) => {
       data: [
         {
           _id: 'whosonfirst:neighbourhood:10',
-          _type: 'neighbourhood',
+          _type: 'doc',
           layer: 'neighbourhood',
           source: 'whosonfirst',
           source_id: '10',
@@ -607,7 +607,7 @@ module.exports.tests.success_conditions = (test, common) => {
       data: [
         {
           _id: 'whosonfirst:neighbourhood:10',
-          _type: 'neighbourhood',
+          _type: 'doc',
           layer: 'neighbourhood',
           source: 'whosonfirst',
           source_id: '10',
@@ -689,7 +689,7 @@ module.exports.tests.success_conditions = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:10',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '10',
@@ -773,7 +773,7 @@ module.exports.tests.success_conditions = (test, common) => {
         data: [
           {
             _id: 'whosonfirst:neighbourhood:10',
-            _type: 'neighbourhood',
+            _type: 'doc',
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '10',
@@ -1002,7 +1002,7 @@ module.exports.tests.failure_conditions = (test, common) => {
         layer: 'neighbourhood',
         source_id: '20',
         _id: 'whosonfirst:neighbourhood:20',
-        _type: 'neighbourhood'
+        _type: 'doc'
       }]
     };
 
