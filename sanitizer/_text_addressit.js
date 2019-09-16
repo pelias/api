@@ -1,6 +1,7 @@
 const addressit = require('addressit');
 const _      = require('lodash');
 const logger = require('pelias-logger').get('api');
+const MAX_TEXT_LENGTH = 140;
 
 /**
   this module provides extremely basic parsing using two methods.
@@ -27,14 +28,22 @@ function _sanitize( raw, clean ){
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  // invalid input 'text'
-  const text =  _.trim( _.trim( raw.text ), QUOTES );
-  if( !_.isString(text) || _.isEmpty(text) ){
-    messages.errors.push('invalid param \'text\': text length, must be >0');
+  // remove superfluous whitespace & quotes
+  let text = _.trim( _.trim( raw.text ), QUOTES );
+
+  // validate input 'text'
+  if (!_.isString(text) || _.isEmpty(text)) {
+    messages.errors.push(`invalid param 'text': text length, must be >0`);
   }
 
   // valid input 'text'
   else {
+
+    // truncate text to $MAX_TEXT_LENGTH chars
+    if (text.length > MAX_TEXT_LENGTH) {
+      messages.warnings.push(`param 'text' truncated to ${MAX_TEXT_LENGTH} characters`);
+      text = text.substring(0, MAX_TEXT_LENGTH);
+    }
 
     // parse text with query parser
     clean.text = text;
