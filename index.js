@@ -8,3 +8,12 @@ const server = app.listen( port, host, () => {
   const listenAddress = server.address();
   logger.info( `pelias is now running on ${listenAddress.address}:${listenAddress.port}` );
 });
+
+function exitHandler() {
+  logger.info('Pelias API shutting down');
+
+  server.close();
+}
+
+process.on('SIGINT', exitHandler);
+process.on('SIGTERM', exitHandler);
