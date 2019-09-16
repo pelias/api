@@ -4,6 +4,7 @@ const Solution = require('pelias-parser/solver/Solution');
 const AddressParser = require('pelias-parser/parser/AddressParser');
 const parser = new AddressParser();
 const _ = require('lodash');
+const MAX_TEXT_LENGTH = 140;
 
 /**
   this module provides fulltext parsing using the pelias/parser module.
@@ -21,14 +22,23 @@ function _sanitize (raw, clean) {
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  // invalid input 'text'
-  const text = _.trim(raw.text);
-  if (!_.isString(text) || _.isEmpty(text)) {
-    messages.errors.push('invalid param \'text\': text length, must be >0');
+  // remove superfluous whitespace
+  let text = _.trim(raw.text);
+
+  // validate input 'text'
+  if( !_.isString(text) || _.isEmpty(text) ){
+    messages.errors.push(`invalid param 'text': text length, must be >0`);
   }
 
   // valid input 'text'
   else {
+
+    // truncate text to $MAX_TEXT_LENGTH chars
+    if (text.length > MAX_TEXT_LENGTH) {
+      messages.warnings.push(`param 'text' truncated to ${MAX_TEXT_LENGTH} characters`);
+      text = text.substring(0, MAX_TEXT_LENGTH);
+    }
+
     // parse text with pelias/parser
     clean.text = text;
     clean.parser = 'pelias';

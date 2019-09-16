@@ -10,9 +10,10 @@ function _sanitize( raw, clean ){
   // error & warning messages
   const messages = { errors: [], warnings: [] };
 
-  // invalid input 'text'
+  // remove superfluous whitespace and quotes
   let text =  _.trim( _.trim( raw.text ), QUOTES );
 
+  // validate input 'text'
   if( !_.isString(text) || _.isEmpty(text) ){
     messages.errors.push(`invalid param 'text': text length, must be >0`);
   } else {
