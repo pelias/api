@@ -50,7 +50,6 @@ module.exports.tests.error_conditions = (test, common) => {
             {
               found: true,
               _id: 'doc id',
-              _type: 'doc type',
               _source: {}
             }
           ]
@@ -107,7 +106,6 @@ module.exports.tests.success_conditions = (test, common) => {
             {
               found: true,
               _id: 'doc id 1',
-              _type: 'doc type 1',
               _source: {
                 random_key: 'value 1'
               }
@@ -115,13 +113,11 @@ module.exports.tests.success_conditions = (test, common) => {
             {
               found: false,
               _id: 'doc id 2',
-              _type: 'doc type 2',
               _source: {}
             },
             {
               found: true,
               _id: 'doc id 3',
-              _type: 'doc type 3',
               _source: {
                 random_key: 'value 3'
               }
@@ -137,12 +133,10 @@ module.exports.tests.success_conditions = (test, common) => {
     const expectedDocs = [
       {
         _id: 'doc id 1',
-        _type: 'doc type 1',
         random_key: 'value 1'
       },
       {
         _id: 'doc id 3',
-        _type: 'doc type 3',
         random_key: 'value 3'
       }
 

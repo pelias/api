@@ -35,7 +35,6 @@ function service( esclient, cmd, cb ){
         // map metadata in to _source so we
         // can serve it up to the consumer
         hit._source._id = hit._id;
-        hit._source._type = hit._type;
         hit._source._score = hit._score;
         hit._source._matched_queries = hit.matched_queries;
 

@@ -1,15 +1,3 @@
-/**
-
-  query must be an array of hashes, structured like so:
-
-  {
-    _index: 'myindex',
-    _type: 'mytype',
-    _id: 'myid'
-  }
-
-**/
-
 var logger = require( 'pelias-logger' ).get( 'api' );
 
 function service( esclient, query, cb ){
@@ -48,7 +36,6 @@ function service( esclient, query, cb ){
         // map metadata in to _source so we
         // can serve it up to the consumer
         doc._source._id = doc._id;
-        doc._source._type = doc._type;
 
         return doc._source;
       });

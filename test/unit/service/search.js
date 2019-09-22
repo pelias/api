@@ -44,7 +44,6 @@ module.exports.tests.error_conditions = (test, common) => {
             {
               found: true,
               _id: 'doc id',
-              _type: 'doc type',
               _source: {}
             }
           ]
@@ -97,7 +96,6 @@ module.exports.tests.success_conditions = (test, common) => {
               {
                 _score: 'score 1',
                 _id: 'doc id 1',
-                _type: 'doc type 1',
                 matched_queries: 'matched_queries 1',
                 _source: {
                   random_key: 'value 1'
@@ -106,7 +104,6 @@ module.exports.tests.success_conditions = (test, common) => {
               {
                 _score: 'score 2',
                 _id: 'doc id 2',
-                _type: 'doc type 2',
                 matched_queries: 'matched_queries 2',
                 _source: {
                   random_key: 'value 2'
@@ -125,14 +122,12 @@ module.exports.tests.success_conditions = (test, common) => {
       {
         _score: 'score 1',
         _id: 'doc id 1',
-        _type: 'doc type 1',
         random_key: 'value 1',
         _matched_queries: 'matched_queries 1'
       },
       {
         _score: 'score 2',
         _id: 'doc id 2',
-        _type: 'doc type 2',
         random_key: 'value 2',
         _matched_queries: 'matched_queries 2'
       }
@@ -266,7 +261,6 @@ module.exports.tests.success_conditions = (test, common) => {
               {
                 _score: 'score 1',
                 _id: 'doc id 1',
-                _type: 'doc type 1',
                 matched_queries: 'matched_queries 1',
                 _source: {
                   random_key: 'value 1'
@@ -275,7 +269,6 @@ module.exports.tests.success_conditions = (test, common) => {
               {
                 _score: 'score 2',
                 _id: 'doc id 2',
-                _type: 'doc type 2',
                 matched_queries: 'matched_queries 2',
                 _source: {
                   random_key: 'value 2'
