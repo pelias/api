@@ -13,7 +13,7 @@ const Joi = require('@hapi/joi');
 // * api.relativeScores (boolean)
 // * api.localization (flipNumberAndStreetCountries is array of 3 character strings)
 module.exports = Joi.object().keys({
-  api: Joi.object().keys({
+  api: Joi.object().required().keys({
     version: Joi.string(),
     indexName: Joi.string(),
     host: Joi.string(),
@@ -31,33 +31,33 @@ module.exports = Joi.object().keys({
     placeholderService: Joi.any().forbidden(), // got moved to services
     services: Joi.object().keys({
       pip: Joi.object().keys({
-        url: Joi.string().uri({ scheme: /https?/ }),
+        url: Joi.string().uri({ scheme: /https?/ }).required(),
         timeout: Joi.number().integer().optional().default(250).min(0),
         retries: Joi.number().integer().optional().default(3).min(0),
-      }).unknown(false).requiredKeys('url'),
+      }).unknown(false),
       placeholder: Joi.object().keys({
-        url: Joi.string().uri({ scheme: /https?/ }),
+        url: Joi.string().uri({ scheme: /https?/ }).required(),
         timeout: Joi.number().integer().optional().default(250).min(0),
         retries: Joi.number().integer().optional().default(3).min(0),
-      }).unknown(false).requiredKeys('url'),
+      }).unknown(false),
       interpolation: Joi.object().keys({
-        url: Joi.string().uri({ scheme: /https?/ }),
+        url: Joi.string().uri({ scheme: /https?/ }).required(),
         timeout: Joi.number().integer().optional().default(250).min(0),
         retries: Joi.number().integer().optional().default(3).min(0),
-      }).unknown(false).requiredKeys('url'),
+      }).unknown(false),
       libpostal: Joi.object().keys({
-        url: Joi.string().uri({ scheme: /https?/ }),
+        url: Joi.string().uri({ scheme: /https?/ }).required(),
         timeout: Joi.number().integer().optional().default(250).min(0),
         retries: Joi.number().integer().optional().default(3).min(0),
-      }).unknown(false).requiredKeys('url')
+      }).unknown(false)
     }).unknown(false).default({}), // default api.services to an empty object
     defaultParameters: Joi.object().keys({
         'focus.point.lat': Joi.number(),
         'focus.point.lon': Joi.number(),
     }).unknown(true).default({})
 
-  }).requiredKeys('version', 'indexName', 'host').unknown(true),
-  esclient: Joi.object().keys({
+  }).unknown(true),
+  esclient: Joi.object().required().keys({
     requestTimeout: Joi.number().integer().min(0)
   }).unknown(true)
-}).requiredKeys('api', 'esclient').unknown(true);
+}).unknown(true);
