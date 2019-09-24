@@ -12,14 +12,15 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
+// ensure null island coordinates work
 // ref: https://github.com/pelias/pelias/issues/84
 module.exports.tests.earth = function(test, common) {
   test('earth', function(t) {
     var earth = [{
-      '_id': '6295630',
+      '_type': 'doc',
+      '_id': 'whosonfirst:continent:6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
-      'source_id': '6295630',
       'name': {
         'default': 'Earth'
       },
@@ -41,9 +42,8 @@ module.exports.tests.all = (test, common) => {
   test('bounding_box should be calculated using points when avaiable', t => {
     const input = [
       {
-        _id: 'id 1',
+        _id: 'source 1:layer 1:id 1',
         source: 'source 1',
-        source_id: 'id 1',
         layer: 'layer 1',
         name: {
           default: 'name 1',
@@ -54,9 +54,8 @@ module.exports.tests.all = (test, common) => {
         }
       },
       {
-        _id: 'id 2',
+        _id: 'source 2:layer 2:id 2',
         source: 'source 2',
-        source_id: 'id 2',
         layer: 'layer 2',
         name: {
           default: 'name 2',
@@ -70,12 +69,12 @@ module.exports.tests.all = (test, common) => {
 
     const geojsonify = proxyquire('../../../helper/geojsonify', {
       './geojsonify_place_details': (params, source, dst) => {
-        if (source._id === 'id 1') {
+        if (source._id === 'source 1:layer 1:id 1') {
           return {
             property1: 'property 1',
             property2: 'property 2'
           };
-        } else if (source._id === 'id 2') {
+        } else if (source._id === 'source 2:layer 2:id 2') {
           return {
             property3: 'property 3',
             property4: 'property 4'
@@ -136,9 +135,8 @@ module.exports.tests.all = (test, common) => {
   test('bounding_box should be calculated using polygons when avaiable', t => {
     const input = [
       {
-        _id: 'id 1',
+        _id: 'source 1:layer 1:id 1',
         source: 'source 1',
-        source_id: 'id 1',
         layer: 'layer 1',
         name: {
           default: 'name 1',
@@ -155,9 +153,8 @@ module.exports.tests.all = (test, common) => {
         }
       },
       {
-        _id: 'id 2',
+        _id: 'source 2:layer 2:id 2',
         source: 'source 2',
-        source_id: 'id 2',
         layer: 'layer 2',
         name: {
           default: 'name 2',
@@ -177,12 +174,12 @@ module.exports.tests.all = (test, common) => {
 
     const geojsonify = proxyquire('../../../helper/geojsonify', {
       './geojsonify_place_details': (params, source, dst) => {
-        if (source._id === 'id 1') {
+        if (source._id === 'source 1:layer 1:id 1') {
           return {
             property1: 'property 1',
             property2: 'property 2'
           };
-        } else if (source._id === 'id 2') {
+        } else if (source._id === 'source 2:layer 2:id 2') {
           return {
             property3: 'property 3',
             property4: 'property 4'
@@ -245,7 +242,7 @@ module.exports.tests.all = (test, common) => {
   test('bounding_box should be calculated using polygons AND points when avaiable', t => {
     const input = [
       {
-        _id: 'id 1',
+        _id: 'source 1:layer 1:id 1',
         source: 'source 1',
         source_id: 'id 1',
         layer: 'layer 1',
@@ -258,9 +255,8 @@ module.exports.tests.all = (test, common) => {
         }
       },
       {
-        _id: 'id 2',
+        _id: 'source 2:layer 2:id 2',
         source: 'source 2',
-        source_id: 'id 2',
         layer: 'layer 2',
         name: {
           default: 'name 2',
@@ -280,12 +276,12 @@ module.exports.tests.all = (test, common) => {
 
     const geojsonify = proxyquire('../../../helper/geojsonify', {
       './geojsonify_place_details': (params, source, dst) => {
-        if (source._id === 'id 1') {
+        if (source._id === 'source 1:layer 1:id 1') {
           return {
             property1: 'property 1',
             property2: 'property 2'
           };
-        } else if (source._id === 'id 2') {
+        } else if (source._id === 'source 2:layer 2:id 2') {
           return {
             property3: 'property 3',
             property4: 'property 4'
@@ -354,9 +350,8 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
       null,
       undefined,
       {
-        _id: 'id 1',
+        _id: 'source 1:layer 1:id 1',
         source: 'source 1',
-        source_id: 'id 1',
         layer: 'layer 1',
         name: {
           default: 'name 1',
@@ -370,7 +365,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
 
     const geojsonify = proxyquire('../../../helper/geojsonify', {
       './geojsonify_place_details': (params, source, dst) => {
-        if (source._id === 'id 1') {
+        if (source._id === 'source 1:layer 1:id 1') {
           return {
             property1: 'property 1',
             property2: 'property 2'
@@ -417,18 +412,16 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
 
     const input = [
       {
-        _id: 'id 1',
+        _id: 'source 1:layer 1:id 1',
         source: 'source 1',
-        source_id: 'id 1',
         layer: 'layer 1',
         name: {
           default: 'name 1',
         }
       },
       {
-        _id: 'id 2',
+        _id: 'source 2:layer 2:id 2',
         source: 'source 2',
-        source_id: 'id 2',
         layer: 'layer 2',
         name: {
           default: 'name 2',
@@ -442,7 +435,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
 
     const geojsonify = proxyquire('../../../helper/geojsonify', {
       './geojsonify_place_details': (params, source, dst) => {
-        if (source._id === 'id 2') {
+        if (source._id === 'source 2:layer 2:id 2') {
           return {
             property3: 'property 3',
             property4: 'property 4'
@@ -489,9 +482,8 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
 
     const input = [
       {
-        _id: 'id 1',
+        _id: 'source 1:layer 1:id 1',
         source: 'source 1',
-        source_id: 'id 1',
         layer: 'layer 1',
         center_point: {
           lat: 12.121212,
@@ -499,9 +491,8 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
         }
       },
       {
-        _id: 'id 2',
+        _id: 'source 2:layer 2:id 2',
         source: 'source 2',
-        source_id: 'id 2',
         layer: 'layer 2',
         name: {},
         center_point: {
@@ -510,9 +501,8 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
         }
       },
       {
-        _id: 'id 3',
+        _id: 'source 3:layer 3:id 3',
         source: 'source 3',
-        source_id: 'id 3',
         layer: 'layer 3',
         name: {
           default: 'name 3',
@@ -526,17 +516,17 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
 
     const geojsonify = proxyquire('../../../helper/geojsonify', {
       './geojsonify_place_details': (params, source, dst) => {
-        if (source._id === 'id 1') {
+        if (source._id === 'source 1:layer 1:id 1') {
           return {
             property1: 'property 1',
             property2: 'property 2'
           };
-        } else if (source._id === 'id 2') {
+        } else if (source._id === 'source 2:layer 2:id 2') {
           return {
             property3: 'property 3',
             property4: 'property 4'
           };
-        } else if (source._id === 'id 3') {
+        } else if (source._id === 'source 3:layer 3:id 3') {
           return {
             property5: 'property 5',
             property6: 'property 6'
@@ -643,10 +633,9 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
 module.exports.tests.nameAliases = function(test, common) {
   test('name aliases', function(t) {
     var aliases = [{
-      '_id': '1',
+      '_id': 'example:example:1',
       'source': 'example',
       'layer': 'example',
-      'source_id': '1',
       'name': {
         'default': ['Example1', 'Example2'] // note the array
       },
@@ -687,10 +676,9 @@ module.exports.tests.nameAliases = function(test, common) {
 module.exports.tests.addendum = function(test, common) {
   test('addendum: not set in source', function(t) {
     var example = [{
-      '_id': '6295630',
+      '_id': 'whosonfirst:continent:6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
-      'source_id': '6295630',
       'name': {
         'default': 'Earth'
       },
@@ -704,12 +692,12 @@ module.exports.tests.addendum = function(test, common) {
     t.false(collection.features[0].properties.addendum);
     t.end();
   });
+
   test('addendum: set in source', function(t) {
     var example = [{
-      '_id': '6295630',
+      '_id': 'whosonfirst:continent:6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
-      'source_id': '6295630',
       'name': {
         'default': 'Earth'
       },
@@ -730,12 +718,12 @@ module.exports.tests.addendum = function(test, common) {
     });
     t.end();
   });
+
   test('addendum: partially corrupted', function(t) {
     var example = [{
-      '_id': '6295630',
+      '_id': 'whosonfirst:continent:6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
-      'source_id': '6295630',
       'name': {
         'default': 'Earth'
       },
@@ -757,7 +745,7 @@ module.exports.tests.addendum = function(test, common) {
   });
   test('addendum: all corrupted', function(t) {
     var example = [{
-      '_id': '6295630',
+      '_id': 'whosonfirst:continent:6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
       'source_id': '6295630',

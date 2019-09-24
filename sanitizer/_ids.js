@@ -1,8 +1,7 @@
-var _ = require('lodash'),
-    check = require('check-types'),
-    type_mapping = require('../helper/type_mapping');
-
-var ID_DELIM = ':';
+const _ = require('lodash');
+const check = require('check-types');
+const type_mapping = require('../helper/type_mapping');
+const decode_gid = require('../helper/decode_gid');
 
 // validate inputs, convert types and apply defaults id generally looks like
 // 'geonames:venue:4163334' (source:layer:id) so, all three are required
@@ -18,23 +17,22 @@ var targetError = function(target, target_list) {
 };
 
 function sanitizeId(rawId, messages) {
-  var parts = rawId.split(ID_DELIM);
+  const gid = decode_gid(rawId);
 
-  if ( parts.length < 3 ) {
+  if (!gid ) {
     messages.errors.push( formatError(rawId) );
     return;
   }
 
-  var source = parts[0];
-  var layer = parts[1];
-  var id = parts.slice(2).join(ID_DELIM);
+  const { source, layer, id } = gid;
 
   // check if any parts of the gid are empty
   if (_.includes([source, layer, id], '')) {
     messages.errors.push( formatError(rawId) );
     return;
   }
-  var valid_values = Object.keys(type_mapping.source_mapping);
+
+  const valid_values = Object.keys(type_mapping.source_mapping);
   if (!_.includes(valid_values, source)) {
     messages.errors.push( targetError(source, valid_values) );
     return;

@@ -6,6 +6,7 @@ const _ = require('lodash');
 const Document = require('pelias-model').Document;
 const codec = require('pelias-model').codec;
 const field = require('./fieldValue');
+const decode_gid = require('./decode_gid');
 
 function geojsonifyPlaces( params, docs ){
 
@@ -40,13 +41,14 @@ function geojsonifyPlaces( params, docs ){
 }
 
 function geojsonifyPlace(params, place) {
+  const gid_components = decode_gid(place._id);
   // setup the base doc
   const doc = {
-    id: place.source_id,
-    gid: new Document(place.source, place.layer, place.source_id).getGid(),
+    id: gid_components.id,
+    gid: new Document(place.source, place.layer, gid_components.id).getGid(),
     layer: place.layer,
     source: place.source,
-    source_id: place.source_id,
+    source_id: gid_components.id,
     bounding_box: place.bounding_box,
     lat: parseFloat(place.center_point.lat),
     lng: parseFloat(place.center_point.lon)
