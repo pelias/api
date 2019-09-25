@@ -58,8 +58,10 @@ function parse (clean) {
 
   // log summary info
   logger.info('pelias_parser', {
-    took: (new Date()) - start,
-    solutions: t.solution.length
+    response_time: (new Date()) - start,
+    params: clean,
+    solutions: t.solution.length,
+    text_length: _.get(clean, 'text.length', 0)
   });
 
   // only use the first solution generated
