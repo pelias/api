@@ -52,6 +52,23 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  // This is to prevent a query like '30 west' from considering the 'west' part as an admin component
+  test('valid lingustic autocomplete with 3 tokens - first two are numeric', function (t) {
+    var query = generate({
+      text: '1 1 three',
+      tokens: ['1', '2', 'three'],
+      tokens_complete: ['1', '2'],
+      tokens_incomplete: ['three']
+    });
+
+    var compiled = JSON.parse(JSON.stringify(query));
+    var expected = require('../fixture/autocomplete_linguistic_multiple_tokens_complete_numeric');
+
+    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_multiple_tokens_complete_numeric');
+    t.end();
+  });
+
   test('valid lingustic autocomplete with comma delimited admin section', function(t) {
     var query = generate({
       text: 'one two, three',
