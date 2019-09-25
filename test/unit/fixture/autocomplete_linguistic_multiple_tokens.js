@@ -33,7 +33,7 @@ module.exports = {
                 'name.default^1'
               ],
               'query': 'three',
-              'analyzer': 'peliasQueryPartialToken',
+              'analyzer': 'peliasQuery',
               'type': 'cross_fields'
             }
           }
