@@ -14,13 +14,15 @@ aliases:
   - &docker-login
     name: Docker login
     command: |
-      echo 'export GCLOUD_SERVICE_KEY="$GCLOUD_SERVICE_KEY"' >> $BASH_ENV
-      /tools/docker_login.sh
+      docker login -u _json_key --password-stdin https://eu.gcr.io <<< "${DOCKER_PASSWORD}"
   - &docker-build-and-push
     name: Docker build and push
     command: |
-      echo 'export CIRCLE_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
-      /tools/docker_build_push.sh
+      IMAGE="eu.gcr.io/entur-system-1287/${CIRCLE_PROJECT_REPONAME}"
+      echo "Image: ${IMAGE}"
+      docker build -t $IMAGE .
+      docker tag $IMAGE "${IMAGE}":"${CIRCLE_SHA1}"
+      docker push $IMAGE
     environment:
       CIRCLE_PROJECT_REPONAME: "pelias"
   - &save-dependency-cache
@@ -41,30 +43,30 @@ aliases:
 jobs:
   install:
     docker:
-      - image: eu.gcr.io/carbon-1287/circleci-toolbox-image
+      - image: eu.gcr.io/entur-system-1287/circleci-toolbox-image
         auth:
           username: _json_key
-          password: $GCLOUD_SERVICE_KEY
+          password: $DOCKER_PASSWORD
     steps:
       - checkout
       - run: *install-dependencies
       - save-cache: *save-dependency-cache
   test:
     docker:
-      - image: eu.gcr.io/carbon-1287/circleci-toolbox-image
+      - image: eu.gcr.io/entur-system-1287/circleci-toolbox-image
         auth:
           username: _json_key
-          password: $GCLOUD_SERVICE_KEY
+          password: $DOCKER_PASSWORD
     steps:
       - checkout
       - restore-cache: *restore-dependency-cache
       - run: *test
   docker-build:
     docker:
-      - image: eu.gcr.io/carbon-1287/circleci-toolbox-image
+      - image: eu.gcr.io/entur-system-1287/circleci-toolbox-image
         auth:
           username: _json_key
-          password: $GCLOUD_SERVICE_KEY
+          password: $DOCKER_PASSWORD
     steps:
       - checkout
       - restore-cache: *restore-dependency-cache
