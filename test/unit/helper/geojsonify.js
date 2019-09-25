@@ -16,7 +16,6 @@ module.exports.tests.interface = function(test, common) {
 module.exports.tests.earth = function(test, common) {
   test('earth', function(t) {
     var earth = [{
-      '_type': 'geoname',
       '_id': '6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
@@ -644,7 +643,6 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
 module.exports.tests.nameAliases = function(test, common) {
   test('name aliases', function(t) {
     var aliases = [{
-      '_type': 'example',
       '_id': '1',
       'source': 'example',
       'layer': 'example',
@@ -689,7 +687,6 @@ module.exports.tests.nameAliases = function(test, common) {
 module.exports.tests.addendum = function(test, common) {
   test('addendum: not set in source', function(t) {
     var example = [{
-      '_type': 'geoname',
       '_id': '6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
@@ -709,7 +706,6 @@ module.exports.tests.addendum = function(test, common) {
   });
   test('addendum: set in source', function(t) {
     var example = [{
-      '_type': 'geoname',
       '_id': '6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
@@ -736,7 +732,6 @@ module.exports.tests.addendum = function(test, common) {
   });
   test('addendum: partially corrupted', function(t) {
     var example = [{
-      '_type': 'geoname',
       '_id': '6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
@@ -762,7 +757,6 @@ module.exports.tests.addendum = function(test, common) {
   });
   test('addendum: all corrupted', function(t) {
     var example = [{
-      '_type': 'geoname',
       '_id': '6295630',
       'source': 'whosonfirst',
       'layer': 'continent',

@@ -63,7 +63,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': 'node:357289197',
-    '_type': 'venue',
     '_score': 0.47265986,
     '_matched_queries': [
       'fallback.venue'
@@ -125,7 +124,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': '5219083',
-    '_type': 'venue',
     '_score': 0.47265986,
     '_matched_queries': [
       'fallback.venue'
@@ -206,7 +204,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': '5183465',
-    '_type': 'venue',
     '_score': 0.47265986,
     '_matched_queries': [
       'fallback.venue'
@@ -286,7 +283,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': 'node:368338500',
-    '_type': 'venue',
     '_score': 0.47265986,
     '_matched_queries': [
       'fallback.venue'
@@ -349,7 +345,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': 'way:84969670',
-    '_type': 'venue',
     '_score': 0.47265986,
     '_matched_queries': [
       'fallback.venue'
@@ -420,7 +415,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': '5192545',
-    '_type': 'venue',
     '_score': 0.47265986,
     '_matched_queries': [
       'fallback.venue'
@@ -500,7 +494,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': '5198085',
-    '_type': 'venue',
     '_score': 0.47265986,
     '_matched_queries': [
       'fallback.venue'
@@ -571,7 +564,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': '5208101',
-    '_type': 'venue',
     '_score': 0.47265986,
     '_matched_queries': [
       'fallback.venue'
@@ -652,7 +644,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': 'way:161088588',
-    '_type': 'venue',
     '_score': 0.47265986,
     '_matched_queries': [
       'fallback.venue'
@@ -732,7 +723,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': '5200263',
-    '_type': 'venue',
     '_score': 0.47265986,
     '_matched_queries': [
       'fallback.venue'
@@ -804,7 +794,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': 'way:34212977',
-    '_type': 'venue',
     '_score': 0.47265986,
     '_matched_queries': [
       'fallback.venue'
@@ -884,7 +873,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': 'node:357330916',
-    '_type': 'venue',
     '_score': 0.47265986,
     '_matched_queries': [
       'fallback.venue'
@@ -955,7 +943,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': 'node:357330919',
-    '_type': 'venue',
     '_score': 0.4432487,
     '_matched_queries': [
       'fallback.venue'
@@ -1026,7 +1013,6 @@ module.exports = [
     ],
     'layer': 'venue',
     '_id': '5197082',
-    '_type': 'venue',
     '_score': 0.4432487,
     '_matched_queries': [
       'fallback.venue'

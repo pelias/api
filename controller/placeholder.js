@@ -243,7 +243,7 @@ function synthesizeDocs(boundaryCountry, result) {
 
 function buildESDoc(doc) {
   const esDoc = doc.toESDocument();
-  return _.extend(esDoc.data, { _id: esDoc._id, _type: esDoc._type });
+  return _.extend(esDoc.data, { _id: esDoc._id });
 }
 
 function setup(placeholderService, do_geometric_filters_apply, should_execute) {

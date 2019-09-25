@@ -98,7 +98,6 @@ function synthesizeDoc(results) {
 
     const esDoc = doc.toESDocument();
     esDoc.data._id = esDoc._id;
-    esDoc.data._type = esDoc._type;
     return esDoc.data;
 
   } catch( e ) {

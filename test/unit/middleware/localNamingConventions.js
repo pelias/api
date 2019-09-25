@@ -21,7 +21,6 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
 
   var ukAddress = {
     '_id': 'test1',
-    '_type': 'test',
     'name': { 'default': '1 Main St' },
     'center_point': { 'lon': -7.131521, 'lat': 54.428866 },
     'address_parts': {
@@ -38,7 +37,6 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
 
   var deAddress = {
     '_id': 'test2',
-    '_type': 'test',
     'name': { 'default': ['23 Grolmanstraße'] },
     'center_point': { 'lon': 13.321487, 'lat': 52.506781 },
     'address_parts': {
@@ -58,7 +56,6 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
 
   var nlAddress = {
     '_id': 'test3',
-    '_type': 'test',
     'name': { 'default': '117 Keizersgracht' },
     'center_point': { 'lon': 4.887545, 'lat': 52.376795 },
     'address_parts': {
@@ -78,7 +75,6 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
 
   var esAddress = {
     '_id': 'test4',
-    '_type': 'test',
     'name': { 'default': '2 Balmes' },
     'center_point': { 'lon': 1, 'lat': 1 },
     'address_parts': {
@@ -93,7 +89,6 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
 
   var unknownCountryAddress = {
     '_id': 'test5',
-    '_type': 'test',
     'name': { 'default': '123 Main Street' },
     'center_point': { 'lon': 30.1, 'lat': -50 },
     'address_parts': {
