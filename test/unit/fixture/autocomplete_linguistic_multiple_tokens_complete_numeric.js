@@ -16,14 +16,11 @@ module.exports = {
       {
         'constant_score': {
           'query': {
-            'match': {
+            'match_phrase': {
               'name.default': {
                 'analyzer': 'peliasQuery',
                 'boost': 100,
                 'query': 'three',
-                'cutoff_frequency': 0.01,
-                'type': 'phrase',
-                'operator': 'and',
                 'slop': 3
               }
             }
