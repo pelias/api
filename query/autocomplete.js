@@ -15,7 +15,6 @@ var views = {
   admin_multi_match_first: require('./view/admin_multi_match_first'),
   admin_multi_match_last: require('./view/admin_multi_match_last'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
-  pop_subquery:               require('./view/pop_subquery'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
   focus_point_filter:         require('./view/focus_point_distance_filter')
@@ -57,8 +56,8 @@ query.score( peliasQuery.view.address('postcode') );
 
 // scoring boost
 query.score( peliasQuery.view.focus( views.ngrams_strict ) );
-query.score( peliasQuery.view.popularity( views.pop_subquery ) );
-query.score( peliasQuery.view.population( views.pop_subquery ) );
+query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
+query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );
 query.score( views.custom_boosts( config.get('api.customBoosts') ) );
 
 // non-scoring hard filters

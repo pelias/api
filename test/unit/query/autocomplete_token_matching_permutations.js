@@ -22,7 +22,6 @@ const views = {
   ngrams_last_token_only:     require('../../../query/view/ngrams_last_token_only'),
   ngrams_last_token_only_multi: require('../../../query/view/ngrams_last_token_only_multi')(adminFields),
   phrase_first_tokens_only:   require('../../../query/view/phrase_first_tokens_only'),
-  pop_subquery:               require('../../../query/view/pop_subquery')
 };
 
 module.exports.tests = {};
@@ -67,8 +66,8 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.ngrams_last_token_only( vs ) ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
+        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
       ]
     });
   });
@@ -87,8 +86,8 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
+        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
       ]
     });
   });
@@ -107,8 +106,8 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.ngrams_last_token_only( vs ) ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
+        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
       ]
     });
   });
@@ -127,8 +126,8 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
+        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
       ]
     });
   });
@@ -147,8 +146,8 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.ngrams_last_token_only( vs ) ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
+        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
       ]
     });
   });
@@ -167,8 +166,8 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
+        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
       ]
     });
   });
@@ -194,8 +193,8 @@ module.exports.tests.multiple_tokens = function(test, common) {
         views.ngrams_last_token_only_multi( vs )
       ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
+        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
       ]
     });
   });
@@ -216,8 +215,8 @@ module.exports.tests.multiple_tokens = function(test, common) {
         views.phrase_first_tokens_only( vs )
       ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
+        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
       ]
     });
   });
@@ -241,8 +240,8 @@ module.exports.tests.multiple_tokens = function(test, common) {
         views.ngrams_last_token_only_multi( vs )
       ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
+        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
       ]
     });
   });
@@ -263,8 +262,8 @@ module.exports.tests.multiple_tokens = function(test, common) {
         views.phrase_first_tokens_only( vs )
       ],
       should: [
-        peliasQuery.view.popularity( views.pop_subquery )( vs ),
-        peliasQuery.view.population( views.pop_subquery )( vs )
+        peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
+        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
       ]
     });
   });
