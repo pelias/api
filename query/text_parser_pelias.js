@@ -40,24 +40,7 @@ function addParsedVariablesToQueryVariables(clean, vs) {
     vs.var('input:postcode', clean.parsed_text.postcode);
   }
 
-  // ==== add parsed matches [admin components] ====
-
-  // // locality
-  // if (!_.isEmpty(clean.parsed_text.locality)) {
-  //   vs.var('input:locality', clean.parsed_text.locality);
-  // }
-
-  // // region
-  // if (!_.isEmpty(clean.parsed_text.region)) {
-  //   vs.var('input:region', clean.parsed_text.region);
-  // }
-
-  // // country
-  // if (!_.isEmpty(clean.parsed_text.country)) {
-  //   vs.var('input:country', clean.parsed_text.country);
-  // }
-
-  // postfix
+  // ==== add admin components [postfix] ====
   if (!_.isEmpty(clean.parsed_text.admin)) {
     // assign postfix to any admin fields which currently don't have a value assigned.
     

@@ -35,11 +35,6 @@ query.score( peliasQuery.view.address('cross_street') );
 query.score( peliasQuery.view.address('postcode') );
 
 // admin components
-// country_a and region_a are left as matches here because the text-analyzer
-// can sometimes detect them, in which case a query more specific than a
-// multi_match is appropriate.
-// query.score( peliasQuery.view.admin('country_a') );
-// query.score( peliasQuery.view.admin('region_a') );
 query.score( peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin') );
 query.score( views.custom_boosts( config.customBoosts ) );
 
