@@ -24,7 +24,16 @@ var views = {
 // add abbrevations for the fields pelias/parser is able to detect.
 var adminFields = placeTypes.concat(['locality_a', 'region_a', 'country_a']);
 
-// add name field to improve venue matching
+// add some name field(s) to the admin fields in order to improve venue matching
+// note: this is a bit of a hacky way to add a 'name' field to the list
+// of multimatch fields normally reserved for admin subquerying.
+// in some cases we are not sure if certain tokens refer to admin components
+// or are part of the place name (such as some venue names).
+// the variable name 'add_name_to_multimatch' is arbitrary, it can be any value so
+// long as there is a corresponding 'admin:*:field' variable set which defines
+// the name of the field to use.
+// this functionality is not enabled unless the 'input:add_name_to_multimatch'
+// variable is set to a non-empty value at query-time.
 adminFields = adminFields.concat(['add_name_to_multimatch']);
 
 //------------------------------
@@ -168,10 +177,13 @@ function generateQuery( clean ){
     textParser( clean, vs );
   }
 
+  // set the 'add_name_to_multimatch' variable only in the case where one
+  // or more of the admin variables are set.
+  // the value 'enabled' is not relevant, it just needs to be any non-empty
+  // value so that the associated field is added to the multimatch query.
+  // see code comments above for additional information.
   let isAdminSet = adminFields.some(field => vs.isset('input:' + field));
   if ( isAdminSet ){ vs.var('input:add_name_to_multimatch', 'enabled'); }
-
-  vs.var('admin:add_name_to_multimatch:field', 'name.default');
 
   return {
     type: 'autocomplete',

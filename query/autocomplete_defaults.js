@@ -123,6 +123,11 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'admin:borough:boost': 1,
   'admin:borough:cutoff_frequency': 0.01,
 
+  // an additional 'name' field to add to admin multi-match queries.
+  // this is used to improve venue matching in cases where the we
+  // are unsure if the tokens represent admin or name components.
+  'admin:add_name_to_multimatch:field': 'name.default',
+
   'popularity:field': 'popularity',
   'popularity:modifier': 'log1p',
   'popularity:max_boost': 20,
