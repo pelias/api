@@ -31,7 +31,7 @@ module.exports.tests.query = function(test, common) {
 
     var expected_query = require('../fixture/search_with_custom_boosts.json');
 
-    const search_query_module = proxyquire('../../../query/search_addressit', {
+    const search_query_module = proxyquire('../../../query/search_pelias_parser', {
       'pelias-config': config_with_boosts
     });
 

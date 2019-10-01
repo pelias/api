@@ -60,7 +60,7 @@ function _setup(tm) {
           input = clean.parsed_text.subject;
         }
 
-        // if 'addressit' or 'libpostal' identified input as a street address
+        // if 'pelias_parser' or 'libpostal' identified input as a street address
         else if (isStreetAddress) {
           input = clean.parsed_text.number + ' ' + clean.parsed_text.street;
         }

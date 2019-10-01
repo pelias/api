@@ -8,10 +8,9 @@ const config = require('pelias-config').generate().api;
 var placeTypes = require('../helper/placeTypes');
 var views = { custom_boosts: require('./view/boost_sources_and_layers') };
 
-// region_a is also an admin field. addressit tries to detect
-// region_a, in which case we use a match query specifically for it.
-// but address it doesn't know about all of them so it helps to search
-// against this with the other admin parts as a fallback
+// region_a is also an admin field which can be identified by
+// the pelias_parser. this functionality was inherited from the
+// previous parser we used prior to the creation of pelias_parser.
 var adminFields = placeTypes.concat(['region_a']);
 
 //------------------------------
@@ -138,7 +137,7 @@ function generateQuery( clean ){
   }
 
   return {
-    type: 'search_addressit',
+    type: 'search_pelias_parser',
     body: query.render(vs)
   };
 }

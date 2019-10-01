@@ -1,5 +1,5 @@
 {
-  "type": "search_addressit",
+  "type": "search_pelias_parser",
   "body": {
     "query": {
       "bool": {

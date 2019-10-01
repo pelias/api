@@ -38,7 +38,7 @@ var controllers = {
 
 var queries = {
   cascading_fallback: require('../query/search'),
-  search_addressit: require('../query/search_addressit'),
+  search_pelias_parser: require('../query/search_pelias_parser'),
   structured_geocoding: require('../query/structured_geocoding'),
   reverse: require('../query/reverse'),
   autocomplete: require('../query/autocomplete'),
@@ -230,8 +230,8 @@ function addRoutes(app, peliasConfig) {
     not(hasResponseData)
   );
 
-  // call search addressit query if addressit was the parser
-  const searchAddressitShouldExecute = all(
+  // call search_pelias_parser query if pelias_parser was the parser
+  const searchPeliasParserShouldExecute = all(
     not(hasRequestErrors),
     isPeliasParse
   );
@@ -288,11 +288,11 @@ function addRoutes(app, peliasConfig) {
       controllers.libpostal(libpostalService, libpostalShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderIdsLookupShouldExecute),
-      // try 3 different query types: address search using ids, cascading fallback, addressit
+      // try 3 different query types: address search using ids, cascading fallback, pelias parser
       controllers.search(peliasConfig.api, esclient, queries.address_using_ids, searchWithIdsShouldExecute),
       controllers.search(peliasConfig.api, esclient, queries.cascading_fallback, fallbackQueryShouldExecute),
       sanitizers.defer_to_pelias_parser(shouldDeferToPeliasParser), //run additional sanitizers needed for pelias parser
-      controllers.search(peliasConfig.api, esclient, queries.search_addressit, searchAddressitShouldExecute),
+      controllers.search(peliasConfig.api, esclient, queries.search_pelias_parser, searchPeliasParserShouldExecute),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
