@@ -26,7 +26,7 @@ function setup(peliasConfig) {
 }
 
 function computeScores(req, res, next) {
-  // do nothing if no result data set or if query is not of the original variety
+  // do nothing if no result data set or if query is not of the pelias_parser variety
   if (check.undefined(req.clean) || check.undefined(res) ||
       check.undefined(res.data) || check.undefined(res.meta) ||
       res.meta.query_type !== 'search_pelias_parser') {
