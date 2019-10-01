@@ -28,16 +28,7 @@ module.exports = {
       },{
         'function_score': {
           'query': {
-            'match': {
-              'phrase.default': {
-                'query': 'soho grand',
-                'cutoff_frequency': 0.01,
-                'analyzer': 'peliasPhrase',
-                'type': 'phrase',
-                'slop': 2,
-                'boost': 1
-              }
-            }
+            'match_all': { }
           },
           'max_boost': 20,
           'score_mode': 'first',
@@ -54,16 +45,7 @@ module.exports = {
       },{
         'function_score': {
           'query': {
-            'match': {
-              'phrase.default': {
-                'query': 'soho grand',
-                'cutoff_frequency': 0.01,
-                'analyzer': 'peliasPhrase',
-                'type': 'phrase',
-                'slop': 2,
-                'boost': 1
-              }
-            }
+            'match_all': { }
           },
           'max_boost': 20,
           'score_mode': 'first',
