@@ -6,7 +6,7 @@ const defaultPeliasConfig = {
   }
 };
 
-var generate = proxyquire('../../../query/search_addressit', {
+var generate = proxyquire('../../../query/search_pelias_parser', {
   'pelias-config': defaultPeliasConfig
 });
 
@@ -32,10 +32,10 @@ module.exports.tests.query = function(test, common) {
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_focus_bbox_original');
+    var expected = require('../fixture/search_pelias_parser_linguistic_focus_bbox');
 
-    t.deepEqual(compiled.type, 'search_addressit', 'query type set');
-    t.deepEqual(compiled.body, expected, 'search_linguistic_focus_bbox_original');
+    t.deepEqual(compiled.type, 'search_pelias_parser', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_linguistic_focus_bbox');
     t.end();
   });
 
@@ -50,9 +50,9 @@ module.exports.tests.query = function(test, common) {
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_bbox_original');
+    var expected = require('../fixture/search_pelias_parser_linguistic_bbox');
 
-    t.deepEqual(compiled.type, 'search_addressit', 'query type set');
+    t.deepEqual(compiled.type, 'search_pelias_parser', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_bbox');
     t.end();
   });
@@ -64,9 +64,9 @@ module.exports.tests.query = function(test, common) {
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_only_original');
+    var expected = require('../fixture/search_pelias_parser_linguistic_only');
 
-    t.deepEqual(compiled.type, 'search_addressit', 'query type set');
+    t.deepEqual(compiled.type, 'search_pelias_parser', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_only');
     t.end();
   });
@@ -79,9 +79,9 @@ module.exports.tests.query = function(test, common) {
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_focus_original');
+    var expected = require('../fixture/search_pelias_parser_linguistic_focus');
 
-    t.deepEqual(compiled.type, 'search_addressit', 'query type set');
+    t.deepEqual(compiled.type, 'search_pelias_parser', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_focus');
     t.end();
   });
@@ -94,9 +94,9 @@ module.exports.tests.query = function(test, common) {
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_linguistic_focus_null_island_original');
+    var expected = require('../fixture/search_pelias_parser_linguistic_focus_null_island');
 
-    t.deepEqual(compiled.type, 'search_addressit', 'query type set');
+    t.deepEqual(compiled.type, 'search_pelias_parser', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_linguistic_focus_null_island');
     t.end();
   });
@@ -106,19 +106,20 @@ module.exports.tests.query = function(test, common) {
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
       parsed_text: {
-        number: '123',
+        subject: '123 main st',
+        housenumber: '123',
         street: 'main st',
-        state: 'NY',
-        country: 'USA',
-        postalcode: '10010',
-        regions: [ 'new york' ]
+        region: 'new york',
+        locality: 'ny',
+        postcode: '10010',
+        admin: 'new york ny US'
       }
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_full_address_original');
+    var expected = require('../fixture/search_pelias_parser_full_address');
 
-    t.deepEqual(compiled.type, 'search_addressit', 'query type set');
+    t.deepEqual(compiled.type, 'search_pelias_parser', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_full_address');
     t.end();
   });
@@ -127,17 +128,18 @@ module.exports.tests.query = function(test, common) {
     var query = generate({ text: 'soho grand, new york',
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
-      parsed_text: { name: 'soho grand',
-        state: 'NY',
-        regions: [ 'soho grand' ],
-        admin_parts: 'new york'
+      parsed_text: {
+        subject: 'soho grand',
+        name: 'soho grand',
+        region: 'new york',
+        admin: 'new york'
       }
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_partial_address_original');
+    var expected = require('../fixture/search_pelias_parser_partial_address');
 
-    t.deepEqual(compiled.type, 'search_addressit', 'query type set');
+    t.deepEqual(compiled.type, 'search_pelias_parser', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_partial_address');
     t.end();
   });
@@ -146,17 +148,20 @@ module.exports.tests.query = function(test, common) {
     var query = generate({ text: '1 water st manhattan ny',
       layers: [ 'address', 'venue', 'country', 'region', 'county', 'neighbourhood', 'locality', 'localadmin' ],
       querySize: 10,
-      parsed_text: { number: '1',
+      parsed_text: {
+        subject: '1 water st',
+        housenumber: '1',
         street: 'water st',
-        state: 'NY',
-        regions: [ 'manhattan' ]
+        locality: 'manhattan',
+        region: 'ny',
+        admin: 'manhattan ny'
       }
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_regions_address_original');
+    var expected = require('../fixture/search_pelias_parser_regions_address');
 
-    t.deepEqual(compiled.type, 'search_addressit', 'query type set');
+    t.deepEqual(compiled.type, 'search_pelias_parser', 'query type set');
     t.deepEqual(compiled.body, expected, 'search_regions_address');
     t.end();
   });
@@ -169,9 +174,9 @@ module.exports.tests.query = function(test, common) {
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_boundary_country_original');
+    var expected = require('../fixture/search_pelias_parser_boundary_country');
 
-    t.deepEqual(compiled.type, 'search_addressit', 'query type set');
+    t.deepEqual(compiled.type, 'search_pelias_parser', 'query type set');
     t.deepEqual(compiled.body, expected, 'search: valid boundary.country query');
     t.end();
   });
@@ -183,9 +188,9 @@ module.exports.tests.query = function(test, common) {
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_with_source_filtering_original');
+    var expected = require('../fixture/search_pelias_parser_with_source_filtering');
 
-    t.deepEqual(compiled.type, 'search_addressit', 'query type set');
+    t.deepEqual(compiled.type, 'search_pelias_parser', 'query type set');
     t.deepEqual(compiled.body, expected, 'search: valid search query with source filtering');
     t.end();
   });
@@ -197,10 +202,10 @@ module.exports.tests.query = function(test, common) {
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_with_category_filtering_original');
+    var expected = require('../fixture/search_pelias_parser_with_category_filtering');
 
-    t.deepEqual(compiled.type, 'search_addressit', 'query type set');
-    t.deepEqual(compiled.body, expected, 'correct search_with_category_filtering_original query');
+    t.deepEqual(compiled.type, 'search_pelias_parser', 'query type set');
+    t.deepEqual(compiled.body, expected, 'correct search_with_category_filtering query');
     t.end();
   });
 
@@ -212,9 +217,9 @@ module.exports.tests.query = function(test, common) {
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/search_boundary_gid_original');
+    var expected = require('../fixture/search_pelias_parser_boundary_gid');
 
-    t.deepEqual(compiled.type, 'search_addressit', 'query type set');
+    t.deepEqual(compiled.type, 'search_pelias_parser', 'query type set');
     t.deepEqual(compiled.body, expected, 'search: valid boundary.gid filter');
     t.end();
   });

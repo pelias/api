@@ -120,14 +120,14 @@ module.exports.tests.parsed_text = function (test, common) {
     t.end();
   });
 
-  test('addressit/libpostal - do not apply filter for numeric addresses', (t) => {
+  test('pelias_parser/libpostal - do not apply filter for numeric addresses', (t) => {
     let clean = { text: 'A', parsed_text: { number: '1', street: 'Main St' } };
     t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
     t.false(clean.layers);
     t.end();
   });
 
-  test('addressit/libpostal - apply filter for non-numeric addresses', (t) => {
+  test('pelias_parser/libpostal - apply filter for non-numeric addresses', (t) => {
     let clean = { text: 'A', parsed_text: { number: 'Foo', street: 'Main St' } };
     t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);

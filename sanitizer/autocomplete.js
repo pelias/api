@@ -6,7 +6,7 @@ module.exports.middleware = (_api_pelias_config) => {
   var sanitizers = {
       singleScalarParameters: require('../sanitizer/_single_scalar_parameters')(),
       debug: require('../sanitizer/_debug')(),
-      text: require('../sanitizer/_text_addressit')(),
+      text: require('../sanitizer/_text_pelias_parser')(),
       tokenizer: require('../sanitizer/_tokenizer')(),
       size: require('../sanitizer/_size')(/* use defaults*/),
       layers: require('../sanitizer/_targets')('layers', type_mapping.layer_mapping),

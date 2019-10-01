@@ -6,7 +6,7 @@ module.exports = {
       'must': [{
         'match': {
           'name.default': {
-            'query': '123 main st',
+            'query': 'soho grand',
             'cutoff_frequency': 0.01,
             'minimum_should_match': '1<-1 3<-25%',
             'analyzer': 'peliasQuery',
@@ -17,7 +17,7 @@ module.exports = {
       'should': [{
         'match': {
           'phrase.default': {
-            'query': '123 main st',
+            'query': 'soho grand',
             'cutoff_frequency': 0.01,
             'analyzer': 'peliasPhrase',
             'type': 'phrase',
@@ -25,13 +25,12 @@ module.exports = {
             'boost': 1
           }
         }
-      },
-      {
+      },{
         'function_score': {
           'query': {
             'match': {
               'phrase.default': {
-                'query': '123 main st',
+                'query': 'soho grand',
                 'cutoff_frequency': 0.01,
                 'analyzer': 'peliasPhrase',
                 'type': 'phrase',
@@ -57,7 +56,7 @@ module.exports = {
           'query': {
             'match': {
               'phrase.default': {
-                'query': '123 main st',
+                'query': 'soho grand',
                 'cutoff_frequency': 0.01,
                 'analyzer': 'peliasPhrase',
                 'type': 'phrase',
@@ -77,51 +76,6 @@ module.exports = {
             },
             'weight': 2
           }]
-        }
-      },{
-        'match': {
-          'address_parts.number': {
-            'query': '123',
-            'cutoff_frequency': 0.01,
-            'boost': vs['address:housenumber:boost'],
-            'analyzer': vs['address:housenumber:analyzer']
-          }
-        }
-      }, {
-        'match': {
-          'address_parts.street': {
-            'query': 'main st',
-            'cutoff_frequency': 0.01,
-            'boost': vs['address:street:boost'],
-            'analyzer': vs['address:street:analyzer']
-          }
-        }
-      }, {
-        'match': {
-          'address_parts.zip': {
-            'query': '10010',
-            'cutoff_frequency': 0.01,
-            'boost': vs['address:postcode:boost'],
-            'analyzer': vs['address:postcode:analyzer']
-          }
-        }
-      }, {
-        'match': {
-          'parent.country_a': {
-            'query': 'USA',
-            'cutoff_frequency': 0.01,
-            'boost': vs['admin:country_a:boost'],
-            'analyzer': vs['admin:country_a:analyzer']
-          }
-        }
-      }, {
-        'match': {
-          'parent.region_a': {
-            'query': 'NY',
-            'cutoff_frequency': 0.01,
-            'boost': vs['admin:region_a:boost'],
-            'analyzer': vs['admin:region_a:analyzer']
-          }
         }
       }, {
         'multi_match': {

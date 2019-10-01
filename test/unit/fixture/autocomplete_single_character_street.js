@@ -3,7 +3,7 @@ module.exports = {
     'bool': {
       'must': [{
         'match': {
-          'name.default': {
+          'phrase.default': {
             'analyzer': 'peliasQuery',
             'cutoff_frequency': 0.01,
             'type': 'phrase',
@@ -11,6 +11,27 @@ module.exports = {
             'slop': 3,
             'query': 'k road'
           }
+        }
+      }, {
+        'multi_match': {
+          'fields': [
+            'parent.country.ngram^1',
+            'parent.dependency.ngram^1',
+            'parent.macroregion.ngram^1',
+            'parent.region.ngram^1',
+            'parent.county.ngram^1',
+            'parent.localadmin.ngram^1',
+            'parent.locality.ngram^1',
+            'parent.borough.ngram^1',
+            'parent.neighbourhood.ngram^1',
+            'parent.locality_a.ngram^1',
+            'parent.region_a.ngram^4',
+            'parent.country_a.ngram^4',
+            'name.default^1'
+          ],
+          'query': 'laird',
+          'analyzer': 'peliasAdmin',
+          'type': 'cross_fields'
         }
       }],
       'should':[
@@ -21,90 +42,6 @@ module.exports = {
               'cutoff_frequency': 0.01,
               'boost': 5,
               'analyzer': 'peliasStreet'
-            }
-          }
-        }, {
-          'match': {
-            'parent.country.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 800,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        }, {
-          'match': {
-            'parent.region.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 600,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        }, {
-          'match': {
-            'parent.region_a.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 600,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        }, {
-          'match': {
-            'parent.county.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 400,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        }, {
-          'match': {
-            'parent.borough.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 600,
-              'query': 'laird'
-            }
-          }
-        }, {
-          'match': {
-            'parent.localadmin.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 200,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        }, {
-          'match': {
-            'parent.locality.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 200,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        }, {
-          'match': {
-            'parent.neighbourhood.ngram': {
-              'query': 'laird',
-              'cutoff_frequency': 0.01,
-              'boost': 200,
-              'analyzer': 'peliasAdmin'
-            }
-          }
-        },
-        {
-          'match': {
-            'phrase.default': {
-              'analyzer' : 'peliasPhrase',
-              'type' : 'phrase',
-              'boost' : 1,
-              'slop' : 3,
-              'cutoff_frequency': 0.01,
-              'query' : 'k road'
             }
           }
         },

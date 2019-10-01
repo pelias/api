@@ -4,7 +4,7 @@ module.exports = {
       'must': [
         {
           'match': {
-            'name.default': {
+            'phrase.default': {
               'analyzer': 'peliasQuery',
               'type': 'phrase',
               'boost': 1,
@@ -13,101 +13,31 @@ module.exports = {
               'query': 'one two'
             }
           }
+        },
+        {
+          'multi_match': {
+            'fields': [
+              'parent.country.ngram^1',
+              'parent.dependency.ngram^1',
+              'parent.macroregion.ngram^1',
+              'parent.region.ngram^1',
+              'parent.county.ngram^1',
+              'parent.localadmin.ngram^1',
+              'parent.locality.ngram^1',
+              'parent.borough.ngram^1',
+              'parent.neighbourhood.ngram^1',
+              'parent.locality_a.ngram^1',
+              'parent.region_a.ngram^4',
+              'parent.country_a.ngram^4',
+              'name.default^1'
+            ],
+            'query': 'three',
+            'analyzer': 'peliasAdmin',
+            'type': 'cross_fields'
+          }
         }
       ],
       'should': [
-        {
-          'match': {
-            'parent.country.ngram': {
-              'analyzer': 'peliasAdmin',
-              'boost': 800,
-              'cutoff_frequency': 0.01,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.region.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 600,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.region_a.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 600,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.county.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 400,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.borough.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 600,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.localadmin.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 200,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.locality.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 200,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'parent.neighbourhood.ngram': {
-              'analyzer': 'peliasAdmin',
-              'cutoff_frequency': 0.01,
-              'boost': 200,
-              'query': 'three'
-            }
-          }
-        },
-        {
-          'match': {
-            'phrase.default': {
-              'analyzer' : 'peliasPhrase',
-              'cutoff_frequency': 0.01,
-              'type' : 'phrase',
-              'boost' : 1,
-              'slop' : 3,
-              'query' : 'one two'
-            }
-          }
-        },
         {
           'function_score': {
             'query': {

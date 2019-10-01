@@ -129,7 +129,7 @@ function getQuery(vs) {
     };
   }
 
-  // returning undefined is a signal to a later step that the addressit-parsed
+  // returning undefined is a signal to a later step that a fallback parser
   // query should be queried for
   return undefined;
 

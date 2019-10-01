@@ -52,13 +52,30 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
+  // This is to prevent a query like '30 west' from considering the 'west' part as an admin component
+  test('valid lingustic autocomplete with 3 tokens - first two are numeric', function (t) {
+    var query = generate({
+      text: '1 1 three',
+      tokens: ['1', '2', 'three'],
+      tokens_complete: ['1', '2'],
+      tokens_incomplete: ['three']
+    });
+
+    var compiled = JSON.parse(JSON.stringify(query));
+    var expected = require('../fixture/autocomplete_linguistic_multiple_tokens_complete_numeric');
+
+    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_multiple_tokens_complete_numeric');
+    t.end();
+  });
+
   test('valid lingustic autocomplete with comma delimited admin section', function(t) {
     var query = generate({
       text: 'one two, three',
       parsed_text: {
+        subject: 'one two',
         name: 'one two',
-        regions: [ 'one two', 'three' ],
-        admin_parts: 'three'
+        admin: 'three'
       },
       tokens: ['one','two'],
       tokens_complete: ['one','two'],
@@ -258,9 +275,10 @@ module.exports.tests.query = function(test, common) {
     var query = generate({
       text: 'k road, laird',
       parsed_text: {
-        name: 'k road',
+        subject: 'k road',
         street: 'k road',
-        regions: [ 'laird' ]
+        locality: 'laird',
+        admin: 'laird'
       },
       tokens: ['k', 'road'],
       tokens_complete: ['k', 'road'],
@@ -308,7 +326,7 @@ module.exports.tests.query = function(test, common) {
     var expected = require('../fixture/autocomplete_linguistic_bbox_san_francisco');
 
     t.deepEqual(compiled.type, 'autocomplete', 'query type set');
-    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_focus_null_island');
+    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_bbox_san_francisco');
     t.end();
   });
 

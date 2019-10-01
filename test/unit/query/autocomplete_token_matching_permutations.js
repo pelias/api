@@ -6,6 +6,10 @@ const defaultPeliasConfig = {
   }
 };
 
+// admin fields
+const placeTypes = require('../../../helper/placeTypes');
+var adminFields = placeTypes.concat(['locality_a', 'region_a', 'country_a', 'add_name_to_multimatch']);
+
 var generate = proxyquire('../../../query/autocomplete', {
   'pelias-config': defaultPeliasConfig
 });
@@ -16,9 +20,9 @@ const defaults = new peliasQuery.Vars( require('../../../query/autocomplete_defa
 // additional views
 const views = {
   ngrams_last_token_only:     require('../../../query/view/ngrams_last_token_only'),
+  ngrams_last_token_only_multi: require('../../../query/view/ngrams_last_token_only_multi')(adminFields),
   phrase_first_tokens_only:   require('../../../query/view/phrase_first_tokens_only'),
-  pop_subquery:               require('../../../query/view/pop_subquery'),
-  boost_exact_matches:        require('../../../query/view/boost_exact_matches')
+  pop_subquery:               require('../../../query/view/pop_subquery')
 };
 
 module.exports.tests = {};
@@ -44,7 +48,7 @@ function assert( t, actual, expected, debug ){
   }
 
   t.deepEqual(_actual.type, 'autocomplete', 'query type set');
-  t.deepEqual(_actual.body.query.bool, _expected);
+  t.deepEqual(_actual.body.query.bool, _expected, 'autocomplete_token_matching_permutations');
   t.end();
 }
 
@@ -83,7 +87,6 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
-        views.boost_exact_matches( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -124,7 +127,6 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
-        views.boost_exact_matches( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -165,7 +167,6 @@ module.exports.tests.single_token = function(test, common) {
     assert( t, generate( clean ), {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
-        views.boost_exact_matches( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -184,14 +185,15 @@ module.exports.tests.multiple_tokens = function(test, common) {
     };
 
     var vs = vars( clean );
+    vs.var('input:add_name_to_multimatch', 'enabled');
+    vs.var('admin:add_name_to_multimatch:field', 'name.default');
 
     assert( t, generate( clean ), {
       must: [
         views.phrase_first_tokens_only( vs ),
-        views.ngrams_last_token_only( vs )
+        views.ngrams_last_token_only_multi( vs )
       ],
       should: [
-        views.boost_exact_matches( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -214,7 +216,6 @@ module.exports.tests.multiple_tokens = function(test, common) {
         views.phrase_first_tokens_only( vs )
       ],
       should: [
-        views.boost_exact_matches( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -231,14 +232,15 @@ module.exports.tests.multiple_tokens = function(test, common) {
     };
 
     var vs = vars( clean );
+    vs.var('input:add_name_to_multimatch', 'enabled');
+    vs.var('admin:add_name_to_multimatch:field', 'name.default');
 
     assert( t, generate( clean ), {
       must: [
         views.phrase_first_tokens_only( vs ),
-        views.ngrams_last_token_only( vs )
+        views.ngrams_last_token_only_multi( vs )
       ],
       should: [
-        views.boost_exact_matches( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]
@@ -261,7 +263,6 @@ module.exports.tests.multiple_tokens = function(test, common) {
         views.phrase_first_tokens_only( vs )
       ],
       should: [
-        views.boost_exact_matches( vs ),
         peliasQuery.view.popularity( views.pop_subquery )( vs ),
         peliasQuery.view.population( views.pop_subquery )( vs )
       ]

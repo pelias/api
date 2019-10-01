@@ -6,7 +6,7 @@
         "must": [
           {
             "match": {
-              "name.default": {
+              "phrase.default": {
                 "analyzer": "peliasQuery",
                 "cutoff_frequency": 0.01,
                 "type": "phrase",
@@ -18,18 +18,6 @@
           }
         ],
         "should": [
-          {
-            "match": {
-              "phrase.default": {
-                "analyzer": "peliasPhrase",
-                "cutoff_frequency": 0.01,
-                "type": "phrase",
-                "boost": 1,
-                "slop": 3,
-                "query": "foo"
-              }
-            }
-          },
           {
             "function_score": {
               "query": {

@@ -1,6 +1,6 @@
 const peliasQuery = require('pelias-query');
 const defaults = require('./search_defaults');
-const textParser = require('./text_parser_addressit');
+const textParser = require('./text_parser_pelias');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
 const config = require('pelias-config').generate().api;
@@ -8,10 +8,9 @@ const config = require('pelias-config').generate().api;
 var placeTypes = require('../helper/placeTypes');
 var views = { custom_boosts: require('./view/boost_sources_and_layers') };
 
-// region_a is also an admin field. addressit tries to detect
-// region_a, in which case we use a match query specifically for it.
-// but address it doesn't know about all of them so it helps to search
-// against this with the other admin parts as a fallback
+// region_a is also an admin field which can be identified by
+// the pelias_parser. this functionality was inherited from the
+// previous parser we used prior to the creation of pelias_parser.
 var adminFields = placeTypes.concat(['region_a']);
 
 //------------------------------
@@ -31,14 +30,10 @@ query.score( peliasQuery.view.population( peliasQuery.view.phrase ) );
 // address components
 query.score( peliasQuery.view.address('housenumber') );
 query.score( peliasQuery.view.address('street') );
+query.score( peliasQuery.view.address('cross_street') );
 query.score( peliasQuery.view.address('postcode') );
 
 // admin components
-// country_a and region_a are left as matches here because the text-analyzer
-// can sometimes detect them, in which case a query more specific than a
-// multi_match is appropriate.
-query.score( peliasQuery.view.admin('country_a') );
-query.score( peliasQuery.view.admin('region_a') );
 query.score( peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin') );
 query.score( views.custom_boosts( config.customBoosts ) );
 
@@ -142,7 +137,7 @@ function generateQuery( clean ){
   }
 
   return {
-    type: 'search_addressit',
+    type: 'search_pelias_parser',
     body: query.render(vs)
   };
 }

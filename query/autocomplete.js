@@ -1,21 +1,40 @@
 const peliasQuery = require('pelias-query');
 const defaults = require('./autocomplete_defaults');
-const textParser = require('./text_parser_addressit');
+const textParser = require('./text_parser_pelias');
 const check = require('check-types');
 const logger = require('pelias-logger').get('api');
 const config = require('pelias-config').generate();
+const placeTypes = require('../helper/placeTypes');
 
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
   custom_boosts:              require('./view/boost_sources_and_layers'),
   ngrams_strict:              require('./view/ngrams_strict'),
   ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
+  ngrams_last_token_only_multi: require('./view/ngrams_last_token_only_multi'),
+  admin_multi_match_first: require('./view/admin_multi_match_first'),
+  admin_multi_match_last: require('./view/admin_multi_match_last'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
   pop_subquery:               require('./view/pop_subquery'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
   focus_point_filter:         require('./view/focus_point_distance_filter')
 };
+
+// add abbrevations for the fields pelias/parser is able to detect.
+var adminFields = placeTypes.concat(['locality_a', 'region_a', 'country_a']);
+
+// add some name field(s) to the admin fields in order to improve venue matching
+// note: this is a bit of a hacky way to add a 'name' field to the list
+// of multimatch fields normally reserved for admin subquerying.
+// in some cases we are not sure if certain tokens refer to admin components
+// or are part of the place name (such as some venue names).
+// the variable name 'add_name_to_multimatch' is arbitrary, it can be any value so
+// long as there is a corresponding 'admin:*:field' variable set which defines
+// the name of the field to use.
+// this functionality is not enabled unless the 'input:add_name_to_multimatch'
+// variable is set to a non-empty value at query-time.
+adminFields = adminFields.concat(['add_name_to_multimatch']);
 
 //------------------------------
 // autocomplete query
@@ -24,26 +43,19 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
 query.score( views.phrase_first_tokens_only, 'must' );
-query.score( views.ngrams_last_token_only, 'must' );
+query.score( views.ngrams_last_token_only_multi( adminFields ), 'must' );
+
+// admin components
+query.score( views.admin_multi_match_first( adminFields ), 'must');
+query.score( views.admin_multi_match_last( adminFields ), 'must');
 
 // address components
 query.score( peliasQuery.view.address('housenumber') );
 query.score( peliasQuery.view.address('street') );
+query.score( peliasQuery.view.address('cross_street') );
 query.score( peliasQuery.view.address('postcode') );
 
-// admin components
-query.score( peliasQuery.view.admin('country') );
-query.score( peliasQuery.view.admin('country_a') );
-query.score( peliasQuery.view.admin('region') );
-query.score( peliasQuery.view.admin('region_a') );
-query.score( peliasQuery.view.admin('county') );
-query.score( peliasQuery.view.admin('borough') );
-query.score( peliasQuery.view.admin('localadmin') );
-query.score( peliasQuery.view.admin('locality') );
-query.score( peliasQuery.view.admin('neighbourhood') );
-
 // scoring boost
-query.score( views.boost_exact_matches );
 query.score( peliasQuery.view.focus( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( views.pop_subquery ) );
 query.score( peliasQuery.view.population( views.pop_subquery ) );
@@ -164,6 +176,14 @@ function generateQuery( clean ){
   if( clean.parsed_text ){
     textParser( clean, vs );
   }
+
+  // set the 'add_name_to_multimatch' variable only in the case where one
+  // or more of the admin variables are set.
+  // the value 'enabled' is not relevant, it just needs to be any non-empty
+  // value so that the associated field is added to the multimatch query.
+  // see code comments above for additional information.
+  let isAdminSet = adminFields.some(field => vs.isset('input:' + field));
+  if ( isAdminSet ){ vs.var('input:add_name_to_multimatch', 'enabled'); }
 
   return {
     type: 'autocomplete',

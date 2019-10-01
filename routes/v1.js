@@ -11,7 +11,7 @@ var sanitizers = {
   autocomplete: require('../sanitizer/autocomplete'),
   place: require('../sanitizer/place'),
   search: require('../sanitizer/search'),
-  defer_to_addressit: require('../sanitizer/defer_to_addressit'),
+  defer_to_pelias_parser: require('../sanitizer/defer_to_pelias_parser'),
   structured_geocoding: require('../sanitizer/structured_geocoding'),
   reverse: require('../sanitizer/reverse'),
   nearby: require('../sanitizer/nearby')
@@ -38,7 +38,7 @@ var controllers = {
 
 var queries = {
   cascading_fallback: require('../query/search'),
-  search_addressit: require('../query/search_addressit'),
+  search_pelias_parser: require('../query/search_pelias_parser'),
   structured_geocoding: require('../query/structured_geocoding'),
   reverse: require('../query/reverse'),
   autocomplete: require('../query/autocomplete'),
@@ -74,7 +74,7 @@ const hasRequestErrors = require('../controller/predicates/has_request_errors');
 const isCoarseReverse = require('../controller/predicates/is_coarse_reverse');
 const isAdminOnlyAnalysis = require('../controller/predicates/is_admin_only_analysis');
 const hasResultsAtLayers = require('../controller/predicates/has_results_at_layers');
-const isAddressItParse = require('../controller/predicates/is_addressit_parse');
+const isPeliasParse = require('../controller/predicates/is_pelias_parse');
 const hasRequestCategories = require('../controller/predicates/has_request_parameter')('categories');
 const isOnlyNonAdminLayers = require('../controller/predicates/is_only_non_admin_layers');
 const isRequestLayersAnyAddressRelated = require('../controller/predicates/is_request_layers_any_address_related');
@@ -224,16 +224,16 @@ function addRoutes(app, peliasConfig) {
     not(placeholderShouldHaveExecuted)
   );
 
-  // defer to addressit for analysis IF there's no response AND placeholder should not have executed
-  const shouldDeferToAddressIt = all(
+  // defer to pelias parser for analysis IF there's no response AND placeholder should not have executed
+  const shouldDeferToPeliasParser = all(
     not(hasRequestErrors),
     not(hasResponseData)
   );
 
-  // call search addressit query if addressit was the parser
-  const searchAddressitShouldExecute = all(
+  // call search_pelias_parser query if pelias_parser was the parser
+  const searchPeliasParserShouldExecute = all(
     not(hasRequestErrors),
-    isAddressItParse
+    isPeliasParse
   );
 
   // get language adjustments if:
@@ -288,11 +288,11 @@ function addRoutes(app, peliasConfig) {
       controllers.libpostal(libpostalService, libpostalShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderIdsLookupShouldExecute),
-      // try 3 different query types: address search using ids, cascading fallback, addressit
+      // try 3 different query types: address search using ids, cascading fallback, pelias parser
       controllers.search(peliasConfig.api, esclient, queries.address_using_ids, searchWithIdsShouldExecute),
       controllers.search(peliasConfig.api, esclient, queries.cascading_fallback, fallbackQueryShouldExecute),
-      sanitizers.defer_to_addressit(shouldDeferToAddressIt), //run additional sanitizers needed for addressit parser
-      controllers.search(peliasConfig.api, esclient, queries.search_addressit, searchAddressitShouldExecute),
+      sanitizers.defer_to_pelias_parser(shouldDeferToPeliasParser), //run additional sanitizers needed for pelias parser
+      controllers.search(peliasConfig.api, esclient, queries.search_pelias_parser, searchPeliasParserShouldExecute),
       postProc.trimByGranularity(),
       postProc.distances('focus.point.'),
       postProc.confidenceScores(peliasConfig.api),
