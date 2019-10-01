@@ -22,8 +22,10 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 query.score( peliasQuery.view.ngrams, 'must' );
 
 // scoring boost
-query.score( peliasQuery.view.phrase );
-query.score( peliasQuery.view.focus( peliasQuery.view.phrase ) );
+const phrase_view = peliasQuery.view.leaf.match_phrase('main');
+
+query.score( phrase_view );
+query.score( peliasQuery.view.focus( phrase_view ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );
 
@@ -58,6 +60,7 @@ function generateQuery( clean ){
 
   // input text
   vs.var( 'input:name', clean.text );
+  vs.var( 'match_phrase:main:input', clean.text );
 
   // sources
   if( check.array(clean.sources) && clean.sources.length ) {

@@ -18,6 +18,7 @@ function addParsedVariablesToQueryVariables(clean, vs) {
   // name
   if (!_.isEmpty(clean.parsed_text.subject)) {
     vs.var('input:name', clean.parsed_text.subject);
+    vs.var('match_phrase:main:input', clean.parsed_text.subject);
   }
 
   // housenumber
