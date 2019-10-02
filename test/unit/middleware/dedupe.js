@@ -670,6 +670,51 @@ module.exports.tests.priority = function(test, common) {
       t.end();
     });
   });
+
+  test('real-world test case Philadelphia: geonames hierarchy should not prevent deduping', function (t) {
+    var req = {
+      clean: {
+        text: 'Philadelphia',
+        size: 10
+      }
+    };
+    var res = {
+      data:  [
+        {
+          _id: 'geonames:locality:4560349',
+          name: {
+            default: 'Philadelphia'
+          },
+          source: 'geonames',
+          layer: 'locality',
+          parent: {
+            locality_id: 4560349,
+            localadmin_id: 404483701
+          },
+        },
+        {
+          _id: 'whosonfirst:locality:101718083',
+          name: {
+            default: 'Philadelphia'
+          },
+          source: 'whosonfirst',
+          layer: 'locality',
+          parent: {
+            locality_id: 101718083,
+            localadmin_id: 404483701
+          }
+        }
+      ]
+    };
+
+    var expectedCount = 1;
+    dedupe(req, res, function () {
+      t.equal(res.data[0].name.default, 'Philadelphia');
+      t.equal(res.data[0].source, 'whosonfirst');
+      t.equal(res.data.length, expectedCount, 'results are deduped');
+      t.end();
+    });
+  });
 };
 
 module.exports.all = function (tape, common) {
