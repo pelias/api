@@ -37,12 +37,12 @@ module.exports.tests.flipNumberAndStreet = function(test, common) {
 
   var deAddress = {
     '_id': 'test2',
-    'name': { 'default': ['23 Grolmanstraße'] },
+    'name': { 'default': ['23 Grolmanstraße', '23 Grolman Straße'] },
     'center_point': { 'lon': 13.321487, 'lat': 52.506781 },
     'address_parts': {
        'zip': '10623',
        'number': '23',
-       'street': 'Grolmanstraße'
+       'street': ['Grolmanstraße', 'Grolman Straße']
     },
     'parent': {
       'region': ['Berlin'],

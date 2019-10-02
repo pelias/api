@@ -60,16 +60,15 @@ function applyLocalNamingConventions(req, res, next) {
   // loop through data items and flip relevant number/street
   res.data.filter(function(place){
     // do nothing for records with no admin info
-    if (!place.parent || !place.parent.country_a) { return false; }
+    if (!_.has(place, 'parent.country_a')) { return false; }
 
     // relevant for some countries
-    var flip = place.parent.country_a.some(function(country) {
+    const flip = place.parent.country_a.some(country => {
       return _.includes(flipNumberAndStreetCountries, country);
     });
     if (!flip){ return false; }
-    if( !place.hasOwnProperty('address_parts') ){ return false; }
-    if( !place.address_parts.hasOwnProperty('number') ){ return false; }
-    if( !place.address_parts.hasOwnProperty('street') ){ return false; }
+    if (!_.has(place, 'address_parts.number')) { return false; }
+    if (!_.has(place, 'address_parts.street')) { return false; }
 
     return true;
   })
@@ -81,12 +80,13 @@ function applyLocalNamingConventions(req, res, next) {
 // flip the housenumber and street name
 // eg. '101 Grolmanstraße' -> 'Grolmanstraße 101'
 function flipNumberAndStreet(place) {
-  var standard = ( place.address_parts.number + ' ' + place.address_parts.street ),
-      flipped  = ( place.address_parts.street + ' ' + place.address_parts.number );
+  const number = field.getStringValue(_.get(place, 'address_parts.number'));
+  const street = field.getStringValue(_.get(place, 'address_parts.street'));
+  const name = field.getStringValue(_.get(place, 'name.default'));
 
   // flip street name and housenumber
-  if( field.getStringValue(place.name.default) === standard ){
-    place.name.default = flipped;
+  if (name === `${number} ${street}`) {
+    place.name.default = `${street} ${number}`;
   }
 }
 
