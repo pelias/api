@@ -64,6 +64,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   // 'multi_match:cutoff_frequency': 0.01,
 
   'lang_multi_match:lang': 'en',
+  'lang_multi_match:operator': 'and',
   'lang_multi_match:boost': 1,
   'lang_multi_match:field': 'name.default',
 

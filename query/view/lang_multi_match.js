@@ -31,9 +31,13 @@ module.exports = function( vs ){
     'input:name'
   );
 
+  if ( vs.isset('lang_multi_match:operator') ) {
+    view.multi_match.operator = vs.var('lang_multi_match:operator').get();
+  }
+
   view.multi_match.type = 'phrase';
-  view.multi_match.operator = 'and';
   view.multi_match.slop = vs.var('phrase:slop');
+  view.multi_match.cutoff_frequency = 0.01;
 
   return view;
 };

@@ -3,12 +3,11 @@ module.exports = {
     'bool': {
       'must': [{
         'multi_match': {
-          'fields': ['name.default^1', 'name.en^1'],
+          'fields': ['phrase.default^1', 'phrase.en^1'],
           'analyzer': 'peliasQuery',
           'query': 'one two',
           'cutoff_frequency': 0.01,
           'type': 'phrase',
-          'operator': 'and',
           'slop': 3
         }
       },

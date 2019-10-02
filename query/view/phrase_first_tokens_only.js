@@ -23,6 +23,8 @@ module.exports = function( vs ){
   vsCopy.var('input:name').set( tokens.join(' ') );
   vsCopy.var('lang_multi_match:analyzer').set(vs.var('phrase:analyzer').get());
   vsCopy.var('lang_multi_match:boost').set(vs.var('phrase:boost').get());
+  vsCopy.var('lang_multi_match:field').set(vs.var('phrase:field').get());
+  vsCopy.unset('lang_multi_match:operator');
 
   // return the view rendered using the copy
   return lang_multi_match( vsCopy );

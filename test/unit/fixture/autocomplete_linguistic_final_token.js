@@ -8,7 +8,6 @@ module.exports = {
           'query': 'one',
           'cutoff_frequency': 0.01,
           'type': 'phrase',
-          'operator': 'and',
           'slop': 3
         }
       }],
