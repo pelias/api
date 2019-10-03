@@ -28,16 +28,7 @@ module.exports = {
       },{
         'function_score': {
           'query': {
-            'match': {
-              'phrase.default': {
-                'query': 'test',
-                'analyzer': 'peliasPhrase',
-                'cutoff_frequency': 0.01,
-                'type': 'phrase',
-                'slop': 2,
-                'boost': 1
-              }
-            }
+            'match_all': { }
           },
           'max_boost': 20,
           'score_mode': 'first',
@@ -54,16 +45,7 @@ module.exports = {
       },{
         'function_score': {
           'query': {
-            'match': {
-              'phrase.default': {
-                'query': 'test',
-                'analyzer': 'peliasPhrase',
-                'cutoff_frequency': 0.01,
-                'type': 'phrase',
-                'slop': 2,
-                'boost': 1
-              }
-            }
+            'match_all': { }
           },
           'max_boost': 20,
           'score_mode': 'first',
