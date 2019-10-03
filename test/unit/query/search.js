@@ -201,7 +201,7 @@ module.exports.tests.query = function(test, common) {
     var expected = require('../fixture/search_boundary_country_multi');
 
     t.deepEqual(compiled.type, 'search_fallback', 'query type set');
-    t.deepEqual(compiled.body, expected, 'search: valid boundary.country query');
+    t.deepEqual(compiled.body, expected, 'search: valid multi boundary.country query');
     t.end();
   });
 
