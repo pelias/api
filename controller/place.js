@@ -33,25 +33,13 @@ function setup( apiConfig, esclient ){
     // setup a new operation
     const operation = retry.operation(operationOptions);
 
-    //generate old and new style Elasticsearch mget entries
-    //New: the Elasticsearch ID is the Pelias GID, type not used
-    //Old: the Elasticsearch ID is the Source ID, type is the layer
-    const ids = req.clean.ids.map( function(id) {
+    //generate Elasticsearch mget entries based on GID
+    const cmd = req.clean.ids.map( function(id) {
       return {
         _index: apiConfig.indexName,
         _id: `${id.source}:${id.layer}:${id.id}`
       };
     });
-
-    const old_ids = req.clean.ids.map( function(id) {
-      return {
-        _index: apiConfig.indexName,
-        _type: id.layer,
-        _id: id.id
-      };
-    });
-
-    const cmd = old_ids.concat(ids);
 
     logger.debug( '[ES req]', cmd );
     debugLog.push(req, {ES_req: cmd});
