@@ -57,7 +57,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'openstreetmap',
-    'source_id': 'node:357289197',
     'category': [
       'education'
     ],
@@ -118,7 +117,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'geonames',
-    'source_id': '5219083',
     'category': [
       'education'
     ],
@@ -197,7 +195,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'geonames',
-    'source_id': '5183465',
     'category': [
       'entertainment',
       'recreation'
@@ -277,7 +274,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'openstreetmap',
-    'source_id': 'node:368338500',
     'category': [
       'education'
     ],
@@ -339,7 +335,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'openstreetmap',
-    'source_id': 'way:84969670',
     'category': [
       'education'
     ],
@@ -409,7 +404,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'geonames',
-    'source_id': '5192545',
     'category': [
       'education'
     ],
@@ -488,7 +482,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'geonames',
-    'source_id': '5198085',
     'category': [
       'education'
     ],
@@ -558,7 +551,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'geonames',
-    'source_id': '5208101',
     'category': [
       'education'
     ],
@@ -638,7 +630,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'openstreetmap',
-    'source_id': 'way:161088588',
     'category': [
       'education'
     ],
@@ -717,7 +708,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'geonames',
-    'source_id': '5200263',
     'category': [
       'education'
     ],
@@ -788,7 +778,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'openstreetmap',
-    'source_id': 'way:34212977',
     'category': [
       'education'
     ],
@@ -867,7 +856,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'openstreetmap',
-    'source_id': 'node:357330916',
     'category': [
       'education'
     ],
@@ -937,7 +925,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'openstreetmap',
-    'source_id': 'node:357330919',
     'category': [
       'education'
     ],
@@ -1007,7 +994,6 @@ module.exports = [
     'address_parts': {},
     'alpha3': 'USA',
     'source': 'geonames',
-    'source_id': '5197082',
     'category': [
       'education'
     ],
