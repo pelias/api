@@ -29,16 +29,6 @@ module.exports.tests.success = (test, common) => {
         t.deepEqual(query, [
           {
             _index: 'indexName value',
-            _type: 'layer1',
-            _id: 'id1'
-          },
-          {
-            _index: 'indexName value',
-            _type: 'layer2',
-            _id: 'id2'
-          },
-          {
-            _index: 'indexName value',
             _id: 'source1:layer1:id1'
           },
           {
