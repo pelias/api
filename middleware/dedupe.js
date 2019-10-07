@@ -5,6 +5,25 @@ const layerPreferences = require('../helper/diffPlaces').layerPreferences;
 const canonical_sources = require('../helper/type_mapping').canonical_sources;
 const field = require('../helper/fieldValue');
 
+// convenience function to pretty print hits
+const formatLog = (hit) => {
+  const name = field.getStringValue(_.get(hit, 'name.default'));
+  return `${name} ${hit.source}:${hit._id}`;
+};
+
+/**
+ * Deduplication workflow:
+ *
+ * 1. iterate over results starting at position 0
+ * 2. on each iteration search for duplicate candidates:
+ *  2.1  at higher positions in array
+ *  2.2  not contained in the skip-list
+ * 3. from the list of candidates, select a preferred master record
+ * 4. push master record on to return array
+ * 5. add non-master candidates to a skip-list
+ * 6. continue down list until end
+ */
+
 function dedupeResults(req, res, next) {
 
   // do nothing if request data is invalid
@@ -14,57 +33,73 @@ function dedupeResults(req, res, next) {
   if( _.isUndefined(res) || !_.isArray(res.data) || _.isEmpty(res.data) ){ return next(); }
 
   // loop through data items and only copy unique items to unique
-  // note: the first results must always be unique!
-  let unique = [ res.data[0] ];
+  const unique = [];
 
-  // convenience function to search unique array for an existing element which matches a hit
-  let findMatch = (hit) => unique.findIndex(elem => !isDifferent(elem, hit, _.get(req, 'clean.lang.iso6393') ));
+  // maintain a skip-list
+  const skip = [];
 
-  // iterate over res.data using an old-school for loop starting at index 1
-  // we can call break at any time to end the iterator
-  for( let i=1; i<res.data.length; i++){
+  // use the user agent language to improve deduplication
+  const lang = _.get(req, 'clean.lang.iso6393');
 
-    // stop iterating when requested size has been reached in unique
-    if( unique.length >= req.clean.size ){ break; }
+  // 1. iterate over res.data
+  res.data.forEach((place, ppos) => {
 
-    // pointer to hit at location $i
-    let hit = res.data[i];
+    // skip records in the skip-list
+    if (skip.includes(place)){ return; }
 
-    // if there are multiple items in results, loop through them to find a dupe
-    // save off the index of the dupe if found
-    let dupeIndex = findMatch(hit);
+    // 2. search for duplicate candidates
+    const candidates = res.data.filter((candidate, cpos) => {
 
-    // if a dupe is not found, just add to list of unique hits and continue
-    if( dupeIndex === -1 ){ unique.push(hit); }
+      // 2.1 at higher positions in array
+      if (cpos <= ppos) { return false; }
 
-    // if dupe was found, we need to check which of the records is preferred
-    // since the order in which Elasticsearch returns identical text matches is arbitrary
-    // of course, if the new one is preferred we should replace previous with new
-    else if( isPreferred( unique[dupeIndex], hit ) ) {
+      // 2.2 not contained in the skip-list
+      if (skip.includes(candidate)) { return false; }
 
-      // replace previous dupe item with current hit
-      unique[dupeIndex] = hit;
+      // true if the two records are considered duplicates
+      return !isDifferent(place, candidate, lang);
+    });
 
-      // logging
+    // 3. select a preferred master record
+
+    // simple case where no candidates were found
+    if (candidates.length === 0){
+      unique.push(place);
+      return;
+    }
+
+    // by default we consider the candidate with the lowest index as master
+    let master = place;
+
+    // iterate over candidates looking for one which is preferred to
+    // the currently selected master
+    candidates.forEach(candidate => {
+      if (isPreferred(master, candidate)){
+        master = candidate;
+      }
+    });
+
+    // logging
+    if (master !== place) {
       logger.debug('[dupe][replacing]', {
         query: req.clean.text,
-        previous: unique[dupeIndex].source,
-        hit: field.getStringValue(hit.name.default) + ' ' + hit.source + ':' + hit._id
+        previous: formatLog(place),
+        hit: formatLog(master)
       });
     }
 
-    // if not preferred over existing, just log and continue
-    else {
-      logger.debug('[dupe][skipping]', {
-        query: req.clean.text,
-        previous: unique[dupeIndex].source,
-        hit: field.getStringValue(hit.name.default) + ' ' + hit.source + ':' + hit._id
-      });
-    }
-  }
+    // 4. push master record on to return array
+    unique.push(master);
+
+    // 5. add non-master candidates to a skip-list
+    candidates.forEach(candidate => {
+      skip.push(candidate);
+    });
+  });
 
   // replace the original data with only the unique hits
-  res.data = unique;
+  const maxElements = _.get(req, 'clean.size', undefined);
+  res.data = unique.slice(0, maxElements);
 
   next();
 }
