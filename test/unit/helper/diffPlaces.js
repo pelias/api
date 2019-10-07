@@ -80,24 +80,6 @@ module.exports.tests.dedupe = function(test, common) {
     t.end();
   });
 
-  test('isParentHierarchyDifferent: do not compare parentage at the same level as the item placetypes', function(t) {
-    var item1 = {
-      'layer': 'country',
-      'parent': {
-        'country_id': '12345'
-      }
-    };
-    var item2 = {
-      'layer': 'country',
-      'parent': {
-        'country_id': '54321'
-      }
-    };
-
-    t.true(isDifferent(item1, item2), 'should be different');
-    t.end();
-  });
-
   test('isParentHierarchyDifferent: do compare parentage at higher levels than the highest item placetypes', function(t) {
     var item1 = {
       'layer': 'country',
