@@ -5,11 +5,17 @@
 
 # Pelias API Server
 
+![License](https://img.shields.io/github/license/pelias/api?color=orange)
+[![Build Status](https://img.shields.io/travis/pelias/api)](https://travis-ci.org/pelias/api)
+[![Docker Pulls](https://img.shields.io/docker/pulls/pelias/api?color=informational)](https://hub.docker.com/r/pelias/api)
+[![Version](https://img.shields.io/npm/v/pelias-api?color=informational)](https://www.npmjs.com/package/pelias-api)
+[![Installs](https://img.shields.io/npm/dm/pelias-api?color=informational&label=npm%20install)](https://www.npmjs.com/package/pelias-api)
+![Commits](https://img.shields.io/github/commit-activity/m/pelias/api?color=success)
+![Last Commit](https://img.shields.io/github/last-commit/pelias/api?color=success)
+![Last Release](https://img.shields.io/github/release-date/pelias/api?color=success)
+[![Gitter](https://img.shields.io/gitter/room/pelias/pelias?color=yellow)](https://gitter.im/pelias/pelias)
+
 This is the API server for the Pelias project. It's the service that runs to process user HTTP requests and return results as GeoJSON by querying Elasticsearch and the other Pelias services.
-
-[![NPM](https://nodei.co/npm/pelias-api.png?downloads=true&stars=true)](https://nodei.co/npm/pelias-api)
-
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/pelias/pelias)
 
 ## Documentation
 
