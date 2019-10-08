@@ -13,12 +13,10 @@ module.exports = {
         }
       }],
       'should': [{
-        'match': {
+        'match_phrase': {
           'phrase.default': {
             'query': 'test',
-            'cutoff_frequency': 0.01,
             'analyzer': 'peliasPhrase',
-            'type': 'phrase',
             'boost': 1,
             'slop': 2
           }

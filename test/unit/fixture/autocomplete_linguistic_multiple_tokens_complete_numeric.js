@@ -2,13 +2,11 @@ module.exports = {
   'query': {
     'bool': {
       'must': [{
-        'match': {
+        'match_phrase': {
           'phrase.default': {
             'analyzer': 'peliasQuery',
-            'type': 'phrase',
             'boost': 1,
             'slop': 3,
-            'cutoff_frequency': 0.01,
             'query': '1 2'
           }
         }
@@ -16,14 +14,11 @@ module.exports = {
       {
         'constant_score': {
           'query': {
-            'match': {
+            'match_phrase': {
               'name.default': {
                 'analyzer': 'peliasQuery',
                 'boost': 100,
                 'query': 'three',
-                'cutoff_frequency': 0.01,
-                'type': 'phrase',
-                'operator': 'and',
                 'slop': 3
               }
             }
