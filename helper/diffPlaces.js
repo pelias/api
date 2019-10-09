@@ -1,8 +1,9 @@
 const _ = require('lodash');
+const removeAccents = require('remove-accents');
+const unicode = require('./unicode');
 const placeTypes = require('./placeTypes');
 const canonicalLayers = require('../helper/type_mapping').getCanonicalLayers();
 const field = require('../helper/fieldValue');
-const removeAccents = require('remove-accents');
 
 // only consider these layers as synonymous for deduplication purposes.
 // when performing inter-layer deduping, layers coming earlier in this list take
@@ -225,11 +226,13 @@ function getPlaceTypeRank(item) {
 }
 
 /**
- * lowercase characters and remove some punctuation
+ * apply unicode normalization, lowercase characters and remove 
+ * diacritics and some punctuation.
  */
 function normalizeString(str){
-  return removeAccents(str.toLowerCase().split(/[ ,-]+/).join(' '));
+  return removeAccents(unicode.normalize(str)).toLowerCase().split(/[ ,-]+/).join(' ');
 }
 
 module.exports.isDifferent = isDifferent;
 module.exports.layerPreferences = layerPreferences;
+module.exports.normalizeString = normalizeString;
