@@ -1,4 +1,5 @@
 const isDifferent = require('../../../helper/diffPlaces').isDifferent;
+const isNameDifferent = require('../../../helper/diffPlaces').isNameDifferent;
 const normalizeString = require('../../../helper/diffPlaces').normalizeString;
 
 module.exports.tests = {};
@@ -338,8 +339,83 @@ module.exports.tests.dedupe = function(test, common) {
   });
 };
 
-module.exports.tests.normalizeString = function (test, common) {
+module.exports.tests.isNameDifferent = function (test, common) {
+  test('missing names', function (t) {
+    t.false(isNameDifferent({}, {}), 'both have no name');
+    t.false(isNameDifferent({ name: { default: 'a' } }, {}), 'B has no name');
+    t.false(isNameDifferent({}, { name: { default: 'b' } }), 'A has no name');
+    t.end();
+  });
+  test('basic matching', function (t) {
+    t.false(isNameDifferent(
+      { name: { default: 'a' } },
+      { name: { default: 'a' } }
+    ), 'basic match');
 
+    t.false(isNameDifferent(
+      { name: { default: 'a' } },
+      { name: { default: ['a'] } }
+    ), 'basic match - different types');
+
+    t.false(isNameDifferent(
+      { name: { default: ['a'] } },
+      { name: { default: 'a' } }
+    ), 'basic match - different types - inverse');
+
+    t.false(isNameDifferent(
+      { name: { default: 'a' } },
+      { name: { default: ['b','a'] } }
+    ), 'basic match - different positions');
+
+    t.false(isNameDifferent(
+      { name: { default: ['b', 'a'] } },
+      { name: { default: 'a' } }
+    ), 'basic match - different positions - inverse');
+
+    t.end();
+  });
+  test('inter-language matching', function (t) {
+    t.false(isNameDifferent(
+      { name: { default: 'a' } },
+      { name: { foo: 'a' } }
+    ), 'match default with any lang');
+
+    t.false(isNameDifferent(
+      { name: { foo: 'a' } },
+      { name: { default: 'a' } }
+    ), 'match default with any lang - inverse');
+
+    t.false(isNameDifferent(
+      { name: { bar: 'a' } },
+      { name: { foo: 'a' } },
+      'bar'
+    ), 'match using request lang');
+
+    t.false(isNameDifferent(
+      { name: { bar: 'a' } },
+      { name: { foo: 'a' } },
+      'foo'
+    ), 'match using request lang - inverse');
+
+    // note: this returns true
+    t.true(isNameDifferent(
+      { name: { foo: 'a' } },
+      { name: { bar: 'a' } }
+    ), 'different lang');
+
+    t.end();
+  });
+  test('real-world tests', function (t) {
+    t.false(isNameDifferent(
+      { name: { default: 'Malmoe', eng: 'Malmo' } },
+      { name: { default: 'Malmö', eng: 'Malmo' } }
+    ), 'Malmö');
+
+    t.end();
+  });
+};
+
+module.exports.tests.normalizeString = function (test, common) {
   test('lowercase', function (t) {
     t.true(normalizeString('Foo Bar'), 'foo bar');
     t.true(normalizeString('FOOBAR'), 'FOOBAR');
@@ -359,7 +435,6 @@ module.exports.tests.normalizeString = function (test, common) {
     t.true(normalizeString('àáâãäåấắæầằçḉèéêëếḗềḕ'), 'aaaaaaaaaeaacceeeeeeee');
     t.end();
   });
-
 };
 
 module.exports.all = function (tape, common) {
