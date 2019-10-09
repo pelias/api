@@ -235,4 +235,5 @@ function normalizeString(str){
 
 module.exports.isDifferent = isDifferent;
 module.exports.layerPreferences = layerPreferences;
+module.exports.isNameDifferent = isNameDifferent;
 module.exports.normalizeString = normalizeString;
