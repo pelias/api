@@ -105,19 +105,19 @@ module.exports.tests.dedupe = function(test, common) {
       name: {
         default: 'theplace'
       },
-      'layer': 'localadmin',
+      'layer': 'locality',
       'parent': {
-        'localadmin_id': '12345',
-        'country_id': '5'
+        'locality_id': '12345',
+        'localadmin_id': '5'
       }
     };
     var item2 = {
       name: {
         default: 'theplace'
       },
-      'layer': 'country',
+      'layer': 'localadmin',
       'parent': {
-        'country_id': '5'
+        'localadmin_id': '5'
       }
     };
 

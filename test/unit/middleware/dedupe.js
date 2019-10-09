@@ -424,37 +424,6 @@ module.exports.tests.priority = function(test, common) {
       t.end();
     });
   });
-  test('locality takes priority over country, replace', function (t) {
-    var req = {
-      clean: {
-        text: 'Singapore',
-        size: 100
-      }
-    };
-    var res = {
-      data:  [
-        {
-          'name': { 'default': 'Singapore' },
-          'source': 'whosonfirst',
-          'source_id': '123456',
-          'layer': 'country'
-        },
-        {
-          'name': { 'default': 'Singapore' },
-          'source': 'whosonfirst',
-          'source_id': '654321',
-          'layer': 'locality'
-        }
-      ]
-    };
-
-    var expectedCount = 1;
-    dedupe(req, res, function () {
-      t.equal(res.data.length, expectedCount, 'results have fewer items than before');
-      t.deepEqual(res.data[0].layer, 'locality', 'locality result won');
-      t.end();
-    });
-  });
 
   test('locality takes priority over county, replace', function (t) {
     var req = {
@@ -520,6 +489,108 @@ module.exports.tests.priority = function(test, common) {
     });
   });
 
+  test('locality does not take priority over region', function (t) {
+    var req = {
+      clean: {
+        text: 'California',
+        size: 100
+      }
+    };
+    var res = {
+      data: [
+        {
+          // State of California
+          'name': { 'default': 'California' },
+          'source': 'whosonfirst',
+          'source_id': '123456',
+          'layer': 'region'
+        },
+        {
+          // There is a locality named "California City, CA"
+          // I know right!?
+          'name': { 'default': 'California' },
+          'source': 'whosonfirst',
+          'source_id': '654321',
+          'layer': 'locality'
+        }
+      ]
+    };
+
+    var expectedCount = 2;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'not considered duplicates');
+      t.end();
+    });
+  });
+
+  test('locality does not take priority over country - mexico city', function (t) {
+    var req = {
+      clean: {
+        text: 'Mexico',
+        size: 100
+      }
+    };
+    var res = {
+      data: [
+        {
+          // Country of Mexico
+          'name': { 'default': 'Mexico' },
+          'source': 'whosonfirst',
+          'source_id': '123456',
+          'layer': 'country'
+        },
+        {
+          // Mexico City
+          'name': { 'default': 'Mexico' },
+          'source': 'whosonfirst',
+          'source_id': '654321',
+          'layer': 'locality'
+        }
+      ]
+    };
+
+    var expectedCount = 2;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'not considered duplicates');
+      t.end();
+    });
+  });
+
+  // in the case of Singapore/Luxemburg this is not super desirable but it's
+  // consistent with the test above
+  test('locality does not take priority over country - singapore', function (t) {
+    var req = {
+      clean: {
+        text: 'Singapore',
+        size: 100
+      }
+    };
+    var res = {
+      data: [
+        {
+          // Country of Singapore
+          'name': { 'default': 'Singapore' },
+          'source': 'whosonfirst',
+          'source_id': '123456',
+          'layer': 'country'
+        },
+        {
+          // City of Singapore
+          'name': { 'default': 'Singapore' },
+          'source': 'whosonfirst',
+          'source_id': '654321',
+          'layer': 'locality'
+        }
+      ]
+    };
+
+    var expectedCount = 2;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'not considered duplicates');
+      t.end();
+    });
+  });
+
   test('locality takes priority over county, neighbourhood and localadmin, replace', function (t) {
     var req = {
       clean: {
@@ -560,6 +631,45 @@ module.exports.tests.priority = function(test, common) {
     dedupe(req, res, function () {
       t.equal(res.data.length, expectedCount, 'results have fewer items than before');
       t.deepEqual(res.data[0].layer, 'locality', 'locality result won');
+      t.end();
+    });
+  });
+
+  test('three New Yorks, State, County and City', function (t) {
+    var req = {
+      clean: {
+        text: 'New York',
+        size: 100
+      }
+    };
+    var res = {
+      data: [
+        {
+          'name': { 'default': 'New York' },
+          'source': 'whosonfirst',
+          'source_id': '123456',
+          'layer': 'region'
+        },
+        {
+          'name': { 'default': 'New York' },
+          'source': 'whosonfirst',
+          'source_id': '7890',
+          'layer': 'county'
+        },
+        {
+          'name': { 'default': 'New York' },
+          'source': 'whosonfirst',
+          'source_id': '0987',
+          'layer': 'locality'
+        }
+      ]
+    };
+
+    var expectedCount = 2;
+    dedupe(req, res, function () {
+      t.equal(res.data.length, expectedCount, 'results have fewer items than before');
+      t.deepEqual(res.data[0].layer, 'region', 'region result first');
+      t.deepEqual(res.data[1].layer, 'locality', 'locality result second');
       t.end();
     });
   });
