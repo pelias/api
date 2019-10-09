@@ -1,4 +1,5 @@
-var isDifferent= require('../../../helper/diffPlaces').isDifferent;
+const isDifferent = require('../../../helper/diffPlaces').isDifferent;
+const normalizeString = require('../../../helper/diffPlaces').normalizeString;
 
 module.exports.tests = {};
 
@@ -335,6 +336,30 @@ module.exports.tests.dedupe = function(test, common) {
     t.false(isDifferent(item1, item2), 'should be the same');
     t.end();
   });
+};
+
+module.exports.tests.normalizeString = function (test, common) {
+
+  test('lowercase', function (t) {
+    t.equal(normalizeString('Foo Bar'), 'foo bar');
+    t.equal(normalizeString('FOOBAR'), 'foobar');
+    t.end();
+  });
+
+  test('punctuation', function (t) {
+    t.equal(normalizeString('foo, bar'), 'foo bar');
+    t.equal(normalizeString('foo-bar'), 'foo bar');
+    t.equal(normalizeString('foo , - , - bar'), 'foo bar');
+    t.end();
+  });
+
+  test('diacritics', function (t) {
+    t.equal(normalizeString('Malmö'), 'malmo');
+    t.equal(normalizeString('Grolmanstraße'), 'grolmanstraße');
+    t.equal(normalizeString('àáâãäåấắæầằçḉèéêëếḗềḕ'), 'aaaaaaaaaeaacceeeeeeee');
+    t.end();
+  });
+
 };
 
 module.exports.all = function (tape, common) {

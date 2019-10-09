@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const removeAccents = require('remove-accents');
+const unicode = require('./unicode');
 const placeTypes = require('./placeTypes');
 const canonicalLayers = require('../helper/type_mapping').getCanonicalLayers();
 const field = require('../helper/fieldValue');
@@ -224,11 +226,13 @@ function getPlaceTypeRank(item) {
 }
 
 /**
- * lowercase characters and remove some punctuation
+ * apply unicode normalization, lowercase characters and remove 
+ * diacritics and some punctuation.
  */
 function normalizeString(str){
-  return str.toLowerCase().split(/[ ,-]+/).join(' ');
+  return removeAccents(unicode.normalize(str)).toLowerCase().split(/[ ,-]+/).join(' ');
 }
 
 module.exports.isDifferent = isDifferent;
 module.exports.layerPreferences = layerPreferences;
+module.exports.normalizeString = normalizeString;
