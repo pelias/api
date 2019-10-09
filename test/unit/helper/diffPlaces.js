@@ -1,6 +1,8 @@
+const _ = require('lodash');
 const isDifferent = require('../../../helper/diffPlaces').isDifferent;
 const isNameDifferent = require('../../../helper/diffPlaces').isNameDifferent;
 const normalizeString = require('../../../helper/diffPlaces').normalizeString;
+const layerDependentNormalization = require('../../../helper/diffPlaces').layerDependentNormalization;
 
 module.exports.tests = {};
 
@@ -411,6 +413,99 @@ module.exports.tests.isNameDifferent = function (test, common) {
       { name: { default: 'Malmö', eng: 'Malmo' } }
     ), 'Malmö');
 
+    t.false(isNameDifferent(
+      { name: { default: 'State of New York' }, layer: 'region' },
+      { name: { default: 'New York' } }
+    ), 'State of *');
+
+    t.false(isNameDifferent(
+      { name: { default: 'New York State' }, layer: 'region' },
+      { name: { default: 'New York' } }
+    ), '* State');
+
+    t.false(isNameDifferent(
+      { name: { default: 'County of New York' }, layer: 'county' },
+      { name: { default: 'New York' } }
+    ), 'County of *');
+
+    t.false(isNameDifferent(
+      { name: { default: 'New York County' }, layer: 'county' },
+      { name: { default: 'New York' } }
+    ), '* County');
+
+    t.false(isNameDifferent(
+      { name: { default: 'City of New York' }, layer: 'locality' },
+      { name: { default: 'New York' } }
+    ), 'City of *');
+
+    t.false(isNameDifferent(
+      { name: { default: 'New York City' }, layer: 'locality' },
+      { name: { default: 'New York' } }
+    ), '* City');
+
+    t.false(isNameDifferent(
+      { name: { default: 'Town of New York' }, layer: 'locality' },
+      { name: { default: 'New York' } }
+    ), 'Town of *');
+
+    t.false(isNameDifferent(
+      { name: { default: 'New York Town' }, layer: 'locality' },
+      { name: { default: 'New York' } }
+    ), '* Town');
+
+    t.false(isNameDifferent(
+      { name: { default: 'Township of New York' }, layer: 'locality' },
+      { name: { default: 'New York' } }
+    ), 'Township of *');
+
+    t.false(isNameDifferent(
+      { name: { default: 'New York Township' }, layer: 'locality' },
+      { name: { default: 'New York' } }
+    ), '* Township');
+
+    t.false(isNameDifferent(
+      { name: { default: 'City of New York' }, layer: 'localadmin' },
+      { name: { default: 'New York' } }
+    ), 'City of *');
+
+    t.false(isNameDifferent(
+      { name: { default: 'New York City' }, layer: 'localadmin' },
+      { name: { default: 'New York' } }
+    ), '* City');
+
+    t.false(isNameDifferent(
+      { name: { default: 'Town of New York' }, layer: 'localadmin' },
+      { name: { default: 'New York' } }
+    ), 'Town of *');
+
+    t.false(isNameDifferent(
+      { name: { default: 'New York Town' }, layer: 'localadmin' },
+      { name: { default: 'New York' } }
+    ), '* Town');
+
+    t.false(isNameDifferent(
+      { name: { default: 'Township of New York' }, layer: 'localadmin' },
+      { name: { default: 'New York' } }
+    ), 'Township of *');
+
+    t.false(isNameDifferent(
+      { name: { default: 'New York Township' }, layer: 'locality' },
+      { name: { default: 'New York' } }
+    ), '* Township');
+
+    t.end();
+  });
+  test('mutation tests', function (t) {
+    // mutation test, $input data should not be mutated
+    const input = { name: { default: 'New York City' }, layer: 'locality' };
+    const expected = { name: { default: 'New York' } };
+
+    // repeat previous test to ensure that the strings were actually changed
+    t.false(isNameDifferent(input, expected), '* City');
+
+    // test that input wasn't mutated in the process
+    t.equal(input.name.default, 'New York City');
+
     t.end();
   });
 };
@@ -433,6 +528,75 @@ module.exports.tests.normalizeString = function (test, common) {
     t.true(normalizeString('Malmö'), 'malmo');
     t.true(normalizeString('Grolmanstraße'), 'grolmanstraße');
     t.true(normalizeString('àáâãäåấắæầằçḉèéêëếḗềḕ'), 'aaaaaaaaaeaacceeeeeeee');
+    t.end();
+  });
+};
+
+module.exports.tests.layerDependentNormalization = function (test, common) {
+  test('region', function (t) {
+    const norm = _.bind(layerDependentNormalization, null, _, 'region');
+    t.deepEqual(norm(
+      { default: ['State of Foo', 'State of Bar'], en: ['State of Baz'] }
+    ),
+      { default: ['Foo', 'Bar'], en: ['Baz'] }
+    );
+    t.deepEqual(norm(
+      { default: ['State of the Foo', 'State of the Bar'], en: ['State of the Baz'] }
+    ),
+      { default: ['State of the Foo', 'State of the Bar'], en: ['State of the Baz'] }
+    );
+    t.deepEqual(norm(
+      { default: ['Foo State', 'Bar State'], en: ['Baz State'] }
+    ),
+      { default: ['Foo', 'Bar'], en: ['Baz'] }
+    );
+    t.end();
+  });
+  test('county', function (t) {
+    const norm = _.bind(layerDependentNormalization, null, _, 'county');
+    t.deepEqual(norm(
+      { default: ['County of Foo', 'County of Bar'], en: ['County of Baz'] }
+    ),
+      { default: ['Foo', 'Bar'], en: ['Baz'] }
+    );
+    t.deepEqual(norm(
+      { default: ['County of the Foo', 'County of the Bar'], en: ['County of the Baz'] }
+    ),
+      { default: ['County of the Foo', 'County of the Bar'], en: ['County of the Baz'] }
+    );
+    t.deepEqual(norm(
+      { default: ['Foo County', 'Bar County'], en: ['Baz County'] }
+    ),
+      { default: ['Foo', 'Bar'], en: ['Baz'] }
+    );
+    t.end();
+  });
+  test('locality', function (t) {
+    const norm = _.bind(layerDependentNormalization, null, _, 'locality');
+    t.deepEqual(norm(
+      { default: ['City of Foo', 'Town of Bar'], en: ['Township of Baz'] }
+    ),
+      { default: ['Foo', 'Bar'], en: ['Baz'] }
+    );
+    t.deepEqual(norm(
+      { default: ['City of the Foo', 'Town of the Bar'], en: ['Township of the Baz'] }
+    ),
+      { default: ['City of the Foo', 'Town of the Bar'], en: ['Township of the Baz'] }
+    );
+    t.deepEqual(norm(
+      { default: ['Foo City', 'Bar Town'], en: ['Baz Township'] }
+    ),
+      { default: ['Foo', 'Bar'], en: ['Baz'] }
+    );
+    t.end();
+  });
+  test('only applied to correct layer', function (t) {
+    const norm = _.bind(layerDependentNormalization, null, _, 'venue');
+    t.deepEqual(norm(
+      { default: ['City of Los Angeles Fire Department Station'] }
+    ),
+      { default: ['City of Los Angeles Fire Department Station'] }
+    );
     t.end();
   });
 };

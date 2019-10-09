@@ -110,6 +110,11 @@ function isNameDifferent(item1, item2, requestLanguage){
   // note: this really shouldn't happen as name is a mandatory field
   if( !isPojo1 || !isPojo2 ){ return false; }
 
+  // apply 'layer dependent normalization' to the names
+  // this ensures that 'Foo' and 'City of Foo' match for localities.
+  names1 = layerDependentNormalization(names1, _.get(item1, 'layer'));
+  names2 = layerDependentNormalization(names2, _.get(item2, 'layer'));
+
   // else both have name info
 
   // iterate over all the languages in item2, comparing them to the
@@ -225,6 +230,62 @@ function getPlaceTypeRank(item) {
 }
 
 /**
+ * apply 'layer dependent normalization' to the names
+ * this ensures that 'Foo' and 'City of Foo' match for localities.
+ */
+function layerDependentNormalization(names, layer) {
+
+  // sanity checking inputs
+  if (!_.isPlainObject(names)) { return names; }
+  if (!_.isString(layer)) { return names; }
+
+  // clone the names to avoid mutating the response data
+  const copy = _.cloneDeep(names);
+
+  // region
+  if (layer === 'region') {
+    _.forEach(names, (value, lang) => {
+      copy[lang] = field.getArrayValue(value).map(name => {
+        return name
+          .replace(/^state\sof(?!\s?the)\s?(.*)$/i, '$1')
+          .replace(/^(.*)\sstate$/i, '$1')
+          .trim();
+      });
+    });
+  }
+
+  // county
+  if( layer === 'county' ){
+    _.forEach(names, (value, lang) => {
+      copy[lang] = field.getArrayValue(value).map(name => {
+        return name
+          .replace(/^county\sof(?!\s?the)\s?(.*)$/i, '$1')
+          .replace(/^(.*)\scounty$/i, '$1')
+          .trim();
+      });
+    });
+  }
+
+  // locality/localadmin
+  if (layer === 'locality' || layer === 'localadmin') {
+    _.forEach(names, (value, lang) => {
+      copy[lang] = field.getArrayValue(value).map(name => {
+        return name
+          .replace(/^city\sof(?!\s?the)\s?(.*)$/i, '$1')
+          .replace(/^(.*)\scity$/i, '$1')
+          .replace(/^town\sof(?!\s?the)\s?(.*)$/i, '$1')
+          .replace(/^(.*)\stown$/i, '$1')
+          .replace(/^township\sof(?!\s?the)\s?(.*)$/i, '$1')
+          .replace(/^(.*)\stownship$/i, '$1')
+          .trim();
+      });
+    });
+  }
+
+  return copy;
+}
+
+/**
  * lowercase characters and remove diacritics and some punctuation
  */
 function normalizeString(str){
@@ -235,3 +296,4 @@ module.exports.isDifferent = isDifferent;
 module.exports.layerPreferences = layerPreferences;
 module.exports.isNameDifferent = isNameDifferent;
 module.exports.normalizeString = normalizeString;
+module.exports.layerDependentNormalization = layerDependentNormalization;
