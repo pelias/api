@@ -670,6 +670,88 @@ module.exports.tests.priority = function(test, common) {
       t.end();
     });
   });
+
+  test('real-world test case Philadelphia: geonames hierarchy should not prevent deduping', function (t) {
+    var req = {
+      clean: {
+        text: 'Philadelphia',
+        size: 10
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'source': 'geonames',
+          'source_id': '4560349',
+          'layer': 'locality',
+          'name': {
+            'default': 'Philadelphia'
+          },
+          'parent': {
+            'continent': [ 'North America' ],
+            'continent_id': [ '102191575' ],
+            'continent_a': [ null ],
+            'country': [ 'United States' ],
+            'country_id': [ '85633793' ],
+            'country_a': [ 'USA' ],
+            'region': [ 'Pennsylvania' ],
+            'region_id': [ '85688481' ],
+            'region_a': [ 'PA' ],
+            'county': [ 'Philadelphia County' ],
+            'county_id': [ '102081353' ],
+            'county_a': [ 'PH' ],
+            'locality': [ 'Philadelphia' ],
+            'locality_id': [ '4560349' ],
+            'locality_a': [ null ],
+            'localadmin': [ 'Philadelphia' ],
+            'localadmin_id': [ '404483701' ],
+            'localadmin_a': [ null ]
+          }
+        },
+        {
+          'source': 'whosonfirst',
+          'source_id': '101718083',
+          'layer': 'locality',
+          'name': {
+            'default': [
+              'Philadelphia',
+              'Colonial Penn (Brm)',
+              'Phila',
+              'Philly'
+            ]
+          },
+          'parent': {
+            'continent': [ 'North America' ],
+            'continent_id': [ '102191575' ],
+            'continent_a': [ null ],
+            'country': [ 'United States' ],
+            'country_id': [ '85633793' ],
+            'country_a': [ 'USA' ],
+            'county': [ 'Philadelphia County' ],
+            'county_id': [ '102081353' ],
+            'county_a': [ null ],
+            'localadmin': [ 'Philadelphia' ],
+            'localadmin_id': [ '404483701' ],
+            'localadmin_a': [ null ],
+            'locality': [ 'Philadelphia' ],
+            'locality_id': [ '101718083' ],
+            'locality_a': [ null ],
+            'region': [ 'Pennsylvania' ],
+            'region_id': [ '85688481' ],
+            'region_a': [ 'PA' ]
+          }
+        }
+      ]
+    };
+
+    var expectedCount = 1;
+    dedupe(req, res, function () {
+      t.equal(res.data[0].name.default[0], 'Philadelphia');
+      t.equal(res.data[0].source, 'whosonfirst');
+      t.equal(res.data.length, expectedCount, 'results are deduped');
+      t.end();
+    });
+  });
 };
 
 module.exports.all = function (tape, common) {

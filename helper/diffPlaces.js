@@ -57,30 +57,36 @@ function isParentHierarchyDifferent(item1, item2){
   // note: this really shouldn't happen as at least one parent should exist
   if( !isPojo1 || !isPojo2 ){ return false; }
 
-  // else both have parent info
+  // get a numerical placetype 'rank' to use for comparing parent levels
+  // note: a rank of Infinity is returned if the item layer is not listed
+  // in the $placeTypes array.
+  let rank1 = getPlaceTypeRank(item1);
+  let rank2 = getPlaceTypeRank(item2);
 
-  // iterate over all the placetypes, comparing between items
+  // $maxRank defines the maximum rank level which we will consider for
+  // equality matching between the two records.
+  // note: by default we check all ranks
+  let maxRank = Infinity;
 
-  // only check layers higher than the lower of the two record layers
-  // eg. if we are comparing layer=locality & layer=country then we only
-  // check for differences in layers localadmin, region, country, etc.
-  const lowestRecordLayer = Math.min(
-    placeTypes.findIndex(el => el === item1.layer),
-    placeTypes.findIndex(el => el === item2.layer)
-  );
+  // if both records are at the same rank then only check lower ranks
+  if (rank1 === rank2 && rank1 !== Infinity) {
+    maxRank = rank1 - 1;
+  }
 
-  // in the case where we couldn't find either layer in the $placeTypes array
-  // we will enforce that all parent fields are checked.
-  const lowestLayerToCheck = lowestRecordLayer === -1 ? Infinity : lowestRecordLayer + 1;
+  // if the records have different ranks then check ranks lower than
+  // the lowest rank of the two (inclusive).
+  else {
+    maxRank = Math.min(rank1, rank2);
+  }
 
-  return placeTypes.some((placeType, pos) => {
+  // iterate over all the placetypes, comparing values from the items
+  return placeTypes.some((placeType, rank) => {
 
-    // skip layers that are less granular than lowest layer to check
-    // note: "higher" layers have smaller indices
-    if( pos >= lowestLayerToCheck){ return false; }
+    // skip layers that are more granular than $maxRank
+    if (rank > maxRank){ return false; }
 
     // ensure the parent ids are the same for all placetypes
-    return isPropertyDifferent( item1.parent, item2.parent, placeType + '_id' );
+    return isPropertyDifferent( item1.parent, item2.parent, `${placeType}_id` );
   });
 }
 
@@ -192,6 +198,29 @@ function isPropertyDifferent(item1, item2, prop ){
 
   // we did not find any matching values, consider them different
   return true;
+}
+
+/**
+ * return a numeric place rank based on the item layer
+ *
+ * the $placeTypes array is listed in ascending granularity.
+ * the array position of each placetype is used as a 'rank' in order
+ * have a mathematical way of comparing which levels are more, or less
+ * granular than others:
+ *
+ * 0: ocean
+ * 2: continent
+ * ...
+ * 11: locality
+ * 13: neighbourhood
+ * 
+ * note: Infinity is returned if layer not found in array, this is in
+ * order to ensure that a high value is returned rather than the 
+ * default '-1' value returned for misses when using findIndex().
+ */
+function getPlaceTypeRank(item) {
+  const rank = placeTypes.findIndex(pt => pt === _.get(item, 'layer'));
+  return (rank > -1) ? rank : Infinity;
 }
 
 /**
