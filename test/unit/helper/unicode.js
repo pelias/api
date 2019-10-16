@@ -28,6 +28,14 @@ module.exports.tests.normalize = function (test) {
     t.equal(norm(composed), composed);
     t.end();
   });
+  test('normalize: strip unsupported symbols', function (t) {
+    t.equal(norm('↸a⇨b'), 'ab', 'arrows');
+    t.equal(norm('╦a╳b'), 'ab', 'box drawing');
+    t.equal(norm('𝄞a𝇎b'), 'ab', 'muscial symbols');
+    t.equal(norm('💩a😎b'), 'ab', 'emoji');
+    t.equal(norm('🙌🏿a🙌🏻b'), 'ab', 'emoji');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {

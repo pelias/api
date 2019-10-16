@@ -9,6 +9,7 @@ const CONTROL_CODES = regenerate()
   .addRange(0x0080, 0x009F) // C1 (0080-009F)
   .toRegExp('g');
 
+// non-standard spaces
 const ALTERNATE_SPACES = regenerate()
   .add(0x00A0) // Non-breaking space
   .toRegExp('g');
@@ -26,6 +27,46 @@ const COMBINING_MARKS = regenerate()
   .add(0x309A) // combining handakuten (U+309A)
   .toRegExp('g');
 
+// miscellaneous symbols with no relevance to geocoding
+const MISC_UNSUPPORTED_SYMBOLS = regenerate()
+  // Superscripts and Subscripts (2070-209F)
+  // Currency Symbols (20A0-20CF)
+  // Letterlike Symbols (2100-214F)
+  // Number Forms (2150-218F)
+  // Arrows (2190-21FF)
+  // Mathematical Operators (2200-22FF)
+  // Miscellaneous Technical (2300-23FF)
+  // Control Pictures (2400-243F)
+  // Optical Character Recognition (2440-245F)
+  // Enclosed Alphanumerics (2460-24FF)
+  // Box Drawing (2500-257F)
+  // Block Elements (2580-259F)
+  // Geometric Shapes (25A0-25FF)
+  // Miscellaneous Symbols (2600-26FF)
+  // Dingbats (2700-27BF)
+  // Miscellaneous Mathematical Symbols-A (27C0-27EF)
+  // Supplemental Arrows-A (27F0-27FF)
+  // Braille Patterns (2800-28FF)
+  // Supplemental Arrows-B (2900-297F)
+  // Miscellaneous Mathematical Symbols-B (2980-29FF)
+  // Supplemental Mathematical Operators (2A00-2AFF)
+  // Miscellaneous Symbols and Arrows (2B00-2BFF)
+  .addRange(0x2070, 0x2BFF) // A Range Covering Consecutive Blocks Listed Above
+
+  // symbols
+  .addRange(0x02B0, 0x02FF) // Spacing Modifier Letters (02B0-02FF)
+  .addRange(0x1400, 0x167F) // Unified Canadian Aboriginal Syllabics (1400-167F)
+  .addRange(0x1D100, 0x1D1FF) // Musical Symbols (1D100-1D1FF)
+  .addRange(0x1D400, 0x1D7FF) // Mathematical Alphanumeric Symbols (1D400-1D7FF)
+
+  // emojis
+  .addRange(0x1F300, 0x1F5FF) // Miscellaneous Symbols and Pictographs (1F300-1F5FF)
+  .addRange(0x1F3FB, 0x1F3FF) // Emoji Modifier Fitzpatrick (skin tones) (1F3FB–1F3FF)
+  .addRange(0x1F600, 0x1F64F) // Emoticons (1F600–1F64F)
+  .addRange(0x1F680, 0x1F6FF) // Transport and Map Symbols (1F680-1F6FF)
+  .addRange(0x1F900, 0x1F9FF) // Supplemental Symbols and Pictographs (1F900-1F9FF)
+  .toRegExp('g');
+
 function normalize(str) {
   
   // sanity checking
@@ -35,6 +76,7 @@ function normalize(str) {
     .normalize('NFC')
     .replace(CONTROL_CODES, '')
     .replace(ALTERNATE_SPACES, ' ')
+    .replace(MISC_UNSUPPORTED_SYMBOLS, '')
     .replace(COMBINING_MARKS, '');
 }
 
