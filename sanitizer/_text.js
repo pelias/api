@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const unicode = require('../helper/unicode');
 const MAX_TEXT_LENGTH = 140;
 
 // ref: https://en.wikipedia.org/wiki/Quotation_mark
@@ -10,8 +11,11 @@ function _sanitize( raw, clean ){
   // error & warning messages
   const messages = { errors: [], warnings: [] };
 
+  // normalize unicode marks
+  let text = unicode.normalize(raw.text);
+
   // remove superfluous whitespace and quotes
-  let text =  _.trim( _.trim( raw.text ), QUOTES );
+  text = _.trim(_.trim(raw.text), QUOTES);
 
   // validate input 'text'
   if( !_.isString(text) || _.isEmpty(text) ){
