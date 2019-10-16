@@ -19,6 +19,8 @@ module.exports.tests.normalize = function (test) {
   });
   test('normalize: convert alt spaces', function (t) {
     t.equal(norm('a b\u00A0c\u00A0d'), 'a b c d');
+    t.equal(norm('a b\u180Ec\u2000d'), 'a b c d');
+    t.equal(norm('a b\u205Fc\uFEFFd'), 'a b c d');
     t.end();
   });
   test('normalize: strip extra combining marks', function (t) {

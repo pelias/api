@@ -10,9 +10,20 @@ const CONTROL_CODES = regenerate()
   .toRegExp('g');
 
 // non-standard spaces
+// ref: http://jkorpela.fi/chars/spaces.html
 const ALTERNATE_SPACES = regenerate()
-  .add(0x00A0) // Non-breaking space
+  .add(0x00A0) // NO-BREAK SPACE
+  .add(0x1680) // OGHAM SPACE MARK
+  .add(0x180E) // MONGOLIAN VOWEL SEPARATOR
+  .addRange(0x2000, 0x200B) // EN QUAD - ZERO WIDTH SPACE
+  .add(0x202F) // NARROW NO-BREAK SPACE
+  .add(0x205F) // MEDIUM MATHEMATICAL SPACE
+  .add(0x3000) // IDEOGRAPHIC SPACE
+  .add(0xFEFF) // ZERO WIDTH NO-BREAK SPACE
   .toRegExp('g');
+
+// pattern to match consecutive spaces
+// const CONSECUTIVE_SPACES = /\s{2,}/g;
 
 // unicode combining marks
 // see: https://github.com/pelias/pelias/issues/829#issuecomment-542614645
