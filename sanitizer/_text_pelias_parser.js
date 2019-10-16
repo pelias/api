@@ -1,4 +1,5 @@
 const logger = require('pelias-logger').get('api');
+const unicode = require('../helper/unicode');
 const Tokenizer = require('pelias-parser/tokenization/Tokenizer');
 const Solution = require('pelias-parser/solver/Solution');
 const AddressParser = require('pelias-parser/parser/AddressParser');
@@ -22,8 +23,11 @@ function _sanitize (raw, clean) {
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
+  // normalize unicode marks
+  let text = unicode.normalize(raw.text);
+
   // remove superfluous whitespace
-  let text = _.trim(raw.text);
+  text = _.trim(text);
 
   // validate input 'text'
   if( !_.isString(text) || _.isEmpty(text) ){
