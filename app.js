@@ -10,6 +10,7 @@ if( peliasConfig.api.accessLog ){
 
 app.use( require('./middleware/headers') );
 app.use( require('./middleware/cors') );
+app.use( require('./middleware/robots') );
 app.use( require('./middleware/options') );
 app.use( require('./middleware/jsonp') );
 
