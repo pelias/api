@@ -3,7 +3,7 @@ module.exports = {
     'bool': {
       'must': [{
         'constant_score': {
-          'query': {
+          'filter': {
             'match_phrase': {
               'name.default': {
                 'analyzer': 'peliasQuery',

@@ -13,7 +13,7 @@ module.exports = {
       },
       {
         'constant_score': {
-          'query': {
+          'filter': {
             'multi_match': {
               'fields': [
                 'parent.country.ngram^1',

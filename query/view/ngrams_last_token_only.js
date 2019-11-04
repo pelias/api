@@ -29,7 +29,7 @@ module.exports = function( vs ){
   // return the view rendered using the copy
   return {
     'constant_score': {
-      'query': ngrams_strict( vsCopy )
+      'filter': ngrams_strict( vsCopy )
     }
   };
 };
