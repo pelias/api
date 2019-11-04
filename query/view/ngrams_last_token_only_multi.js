@@ -37,7 +37,7 @@ module.exports = function (adminFields){
     // return the view rendered using the copy
     return {
       'constant_score': {
-        'query': rendered
+        'filter': rendered
       }
     };
   };
