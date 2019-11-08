@@ -3,10 +3,10 @@ module.exports = {
     'bool': {
       'must': [{
         'multi_match': {
-          'fields': ['phrase.default^1', 'phrase.en^1'],
+          'fields': ['phrase.default', 'phrase.en'],
           'analyzer': 'peliasQuery',
           'query': 'k road',
-          'cutoff_frequency': 0.01,
+          'boost': 1,
           'type': 'phrase',
           'slop': 3
         }

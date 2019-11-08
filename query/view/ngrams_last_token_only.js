@@ -1,6 +1,5 @@
-const peliasQuery = require('pelias-query');
-const lang_multi_match = require('./lang_multi_match');
-
+var peliasQuery = require('pelias-query'),
+    ngrams_strict = require('./ngrams_strict');
 /**
   Ngrams view which trims the 'input:name' and only uses the LAST TOKEN.
 
@@ -25,13 +24,11 @@ module.exports = function( vs ){
 
   // set the 'name' variable in the copy to only the last token
   vsCopy.var('input:name').set( tokens.join(' ') );
-  vsCopy.var('lang_multi_match:analyzer').set(vs.var('ngram:analyzer').get());
-  vsCopy.var('lang_multi_match:boost').set(vs.var('ngram:boost').get());
 
   // return the view rendered using the copy
   return {
     'constant_score': {
-      'filter': lang_multi_match( vsCopy )
+      'filter': ngrams_strict( vsCopy )
     }
   };
 };

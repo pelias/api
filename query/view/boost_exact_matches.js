@@ -1,6 +1,6 @@
 const peliasQuery = require('pelias-query');
 const searchDefaults = require('../search_defaults');
-const lang_multi_match = require('./lang_multi_match');
+const toMultiFields = require('./helper').toMultiFields;
 
 /**
   This view (unfortunately) requires autocomplete to use the phrase.* index.
@@ -18,14 +18,7 @@ const lang_multi_match = require('./lang_multi_match');
 **/
 
 module.exports = function( vs ){
-
-  // make a copy of the variables so we don't interfere with the values
-  // passed to other views.
-  var vsCopy = new peliasQuery.Vars( vs.export() );
-
-  // copy phrase:* values from search defaults
-  vsCopy.var('lang_multi_match:analyzer').set(searchDefaults['phrase:analyzer']);
-  vsCopy.var('lang_multi_match:field').set(searchDefaults['phrase:field']);
+  const view_name = 'boost_exact_matches';
 
   // get a copy of the *complete* tokens produced from the input:name
   const tokens = vs.var('input:name:tokens_complete').get();
@@ -33,5 +26,13 @@ module.exports = function( vs ){
   // no valid tokens to use, fail now, don't render this view.
   if( !tokens || tokens.length < 1 ){ return null; }
 
-  return lang_multi_match( vsCopy );
+  // set 'input' to be only the fully completed characters
+  vs.var(`multi_match:${view_name}:input`).set( tokens.join(' ') );
+  vs.var(`multi_match:${view_name}:fields`).set(toMultiFields(searchDefaults['phrase:field'], vs.var('lang').get()));
+
+  vs.var(`multi_match:${view_name}:analyzer`).set(searchDefaults['phrase:analyzer']);
+  vs.var(`multi_match:${view_name}:boost`).set(vs.var('phrase:boost').get());
+  vs.var(`multi_match:${view_name}:slop`).set(vs.var('phrase:slop').get());
+
+  return peliasQuery.view.leaf.match_phrase(view_name)( vs );
 };

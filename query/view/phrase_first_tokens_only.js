@@ -1,5 +1,5 @@
 const peliasQuery = require('pelias-query');
-const lang_multi_match = require('./lang_multi_match');
+const toMultiFields = require('./helper').toMultiFields;
 
 /**
   Phrase view which trims the 'input:name' and uses ALL BUT the last token.
@@ -9,23 +9,20 @@ const lang_multi_match = require('./lang_multi_match');
 **/
 
 module.exports = function( vs ){
-
+  const view_name = 'first_tokens_only';
   // get a copy of the *complete* tokens produced from the input:name
   const tokens = vs.var('input:name:tokens_complete').get();
 
   // no valid tokens to use, fail now, don't render this view.
   if( !tokens || tokens.length < 1 ){ return null; }
 
-  // make a copy Vars so we don't mutate the original
-  var vsCopy = new peliasQuery.Vars( vs.export() );
+  // set the 'input' variable to all but the last token
+  vs.var(`multi_match:${view_name}:input`).set( tokens.join(' ') );
+  vs.var(`multi_match:${view_name}:fields`).set(toMultiFields(vs.var('phrase:field').get(), vs.var('lang').get()));
 
-  // set the 'name' variable in the copy to all but the last token
-  vsCopy.var('input:name').set( tokens.join(' ') );
-  vsCopy.var('lang_multi_match:analyzer').set(vs.var('phrase:analyzer').get());
-  vsCopy.var('lang_multi_match:boost').set(vs.var('phrase:boost').get());
-  vsCopy.var('lang_multi_match:field').set(vs.var('phrase:field').get());
-  vsCopy.unset('lang_multi_match:operator');
+  vs.var(`multi_match:${view_name}:analyzer`).set(vs.var('phrase:analyzer').get());
+  vs.var(`multi_match:${view_name}:boost`).set(vs.var('phrase:boost').get());
+  vs.var(`multi_match:${view_name}:slop`).set(vs.var('phrase:slop').get());
 
-  // return the view rendered using the copy
-  return lang_multi_match( vsCopy );
+  return peliasQuery.view.leaf.multi_match(view_name)( vs );
 };

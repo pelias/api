@@ -4,11 +4,11 @@ module.exports = {
       'must': [
         {
           'multi_match': {
-            'fields': ['phrase.default^1', 'phrase.en^1'],
+            'fields': ['phrase.default', 'phrase.en'],
             'analyzer': 'peliasQuery',
             'type': 'phrase',
             'slop': 3,
-            'cutoff_frequency': 0.01,
+            'boost': 1,
             'query': 'one two'
           }
         },

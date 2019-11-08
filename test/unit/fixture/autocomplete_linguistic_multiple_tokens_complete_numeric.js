@@ -3,11 +3,11 @@ module.exports = {
     'bool': {
       'must': [{
         'multi_match': {
-          'fields': ['phrase.default^1', 'phrase.en^1'],
+          'fields': ['phrase.default', 'phrase.en'],
           'analyzer': 'peliasQuery',
           'type': 'phrase',
           'slop': 3,
-          'cutoff_frequency': 0.01,
+          'boost': 1,
           'query': '1 2'
         }
       },
@@ -15,12 +15,11 @@ module.exports = {
         'constant_score': {
           'filter': {
             'multi_match': {
-              'fields': ['name.default^100', 'name.en^100'],
+              'fields': ['name.default', 'name.en'],
               'analyzer': 'peliasQuery',
               'query': 'three',
-              'cutoff_frequency': 0.01,
+              'boost': 100,
               'type': 'phrase',
-              'operator': 'and',
               'slop': 3
             }
           }

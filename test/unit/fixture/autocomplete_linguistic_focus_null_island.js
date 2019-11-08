@@ -5,12 +5,11 @@ module.exports = {
         'constant_score': {
           'filter': {
             'multi_match': {
-              'fields': ['name.default^100', 'name.en^100'],
+              'fields': ['name.default', 'name.en'],
               'analyzer': 'peliasQuery',
               'query': 'test',
-              'cutoff_frequency': 0.01,
+              'boost': 100,
               'type': 'phrase',
-              'operator': 'and',
               'slop': 3
             }
           }
@@ -20,12 +19,11 @@ module.exports = {
         'function_score': {
           'query': {
             'multi_match': {
-              'fields': ['name.default^100', 'name.en^100'],
+              'fields': ['name.default', 'name.en'],
               'analyzer': 'peliasQuery',
-              'cutoff_frequency': 0.01,
+              'boost': 100,
               'query': 'test',
               'type': 'phrase',
-              'operator': 'and',
               'slop': 3
             }
           },

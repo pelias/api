@@ -5,12 +5,11 @@ module.exports = {
         'constant_score': {
           'filter': {
             'multi_match': {
-              'fields': ['name.default^100', 'name.en^100'],
+              'fields': ['name.default', 'name.en'],
               'analyzer': 'peliasQuery',
               'query': 'te',
-              'cutoff_frequency': 0.01,
+              'boost': 100,
               'type': 'phrase',
-              'operator': 'and',
               'slop': 3
             }
           }

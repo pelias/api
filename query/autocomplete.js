@@ -190,7 +190,7 @@ function generateQuery( clean ){
 
   // Search in the user lang
   if(clean.lang && check.string(clean.lang.iso6391)) {
-    vs.var('lang_multi_match:lang', clean.lang.iso6391);
+    vs.var('lang', clean.lang.iso6391);
   }
 
   return {
