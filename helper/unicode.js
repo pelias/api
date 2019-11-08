@@ -84,7 +84,7 @@ function normalize(str) {
   if(!_.isString(str)){ return str; }
 
   return str
-    .normalize('NFC')
+    .normalize('NFKC')
     .replace(CONTROL_CODES, '')
     .replace(ALTERNATE_SPACES, ' ')
     .replace(MISC_UNSUPPORTED_SYMBOLS, '')

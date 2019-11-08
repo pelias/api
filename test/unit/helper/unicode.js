@@ -4,9 +4,16 @@ module.exports.tests = {};
 
 module.exports.tests.normalize = function (test) {
   const norm = unicode.normalize;
-  test('normalize: NFC', function (t) {
+  test('normalize: NFKC', function (t) {
     let decomposed = String.fromCharCode(105) + String.fromCharCode(776);
     let composed = String.fromCharCode(239);
+    t.equal(norm(decomposed), composed);
+    t.equal(norm(composed), composed);
+    t.end();
+  });
+  test('normalize: NFKC', function (t) {
+    let decomposed = '²';
+    let composed = '2';
     t.equal(norm(decomposed), composed);
     t.equal(norm(composed), composed);
     t.end();
