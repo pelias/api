@@ -95,6 +95,11 @@ function parse (clean) {
   // '    VVVV NN SSSSSSS AAAAAA PPPPP      '
   let mask = solution.mask(t);
 
+  // log information about the selected solution
+  logger.info('pelias_parser_solution', {
+    score: solution.score.toFixed(2)
+  });
+
   // special handling of intersection queries
   // here we do not trust intersection parses which also contain another
   // classification, such as a house number, postcode or admin field.
