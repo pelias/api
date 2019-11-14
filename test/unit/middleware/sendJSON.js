@@ -124,7 +124,7 @@ module.exports.tests.request_timeout = function(test, common) {
 
     res.status = function( code ){
       return { json: function( body ){
-        t.equal( code, 408, 'Request Timeout' );
+        t.equal( code, 502, 'Bad Gateway' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};

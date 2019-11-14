@@ -4,7 +4,9 @@
 
 **/
 
-var logger = require( 'pelias-logger' ).get( 'api' );
+const _ = require('lodash');
+const es = require('elasticsearch');
+const logger = require( 'pelias-logger' ).get( 'api' );
 
 function service( esclient, cmd, cb ){
 
@@ -21,13 +23,28 @@ function service( esclient, cmd, cb ){
       return cb( err );
     }
 
+    // in the case of query timeout the response body contains the
+    // property 'timed_out=true'.
+    // these responses contain partially processed results and so should
+    // be discarded.
+    // https://github.com/pelias/api/issues/1384
+    if( _.get(data, 'timed_out', false) === true ){
+      const err = new es.errors.RequestTimeout('request timed_out=true');
+      logger.error( `elasticsearch error ${err}` );
+      return cb( err );
+    }
+
     // map returned documents
     var docs = [];
     var meta = {
       scores: []
     };
 
-    if( data && data.hits && data.hits.total && Array.isArray(data.hits.hits)){
+    if (
+        _.has(data, 'hits') && 
+        _.get(data, 'hits.total', 0) > 0 && 
+        _.isArray(data.hits.hits)
+      ){
       docs = data.hits.hits.map( function( hit ){
 
         meta.scores.push(hit._score);

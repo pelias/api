@@ -19,6 +19,48 @@ module.exports.tests.interface = (test, common) => {
 };
 
 module.exports.tests.error_conditions = (test, common) => {
+  test('response body contains timed_out=true', (t) => {
+    const errorMessages = [];
+
+    const service = proxyquire('../../../service/search', {
+      'pelias-logger': {
+        get: () => {
+          return {
+            error: (msg) => {
+              errorMessages.push(msg);
+            }
+          };
+        }
+      }
+    });
+
+    const esclient = {
+      search: (cmd, callback) => {
+        t.equals(cmd, 'this is the query');
+        callback(null, {
+          timed_out : true,
+        });
+      }
+    };
+
+    const next = (err, docs) => {
+      t.deepEquals(err, {
+        status: 408,
+        displayName: 'RequestTimeout',
+        message: 'request timed_out=true'
+      });
+      t.equals(docs, undefined);
+
+      t.ok(errorMessages.find((msg) => {
+        return msg === `elasticsearch error ${err}`;
+      }));
+      t.end();
+    };
+
+    service(esclient, 'this is the query', next);
+
+  });
+
   test('esclient.search returning error should log and pass it on', (t) => {
     const errorMessages = [];
 
