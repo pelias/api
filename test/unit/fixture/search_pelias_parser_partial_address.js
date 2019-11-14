@@ -71,7 +71,7 @@ module.exports = {
             ],
             'query': 'new york',
             'analyzer': 'peliasAdmin',
-            'cutoff_frequency': 0.01
+            'type': 'cross_fields'
         }
       }],
       'filter': [
