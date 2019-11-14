@@ -64,7 +64,7 @@ function setup( apiConfig, esclient, query, should_execute ){
           controller: 'search',
           queryType: renderedQuery.type,
           es_hits: _.get(data, 'hits.total'),
-          result_count: _.get(res, 'data', []).length,
+          result_count: (docs || []).length,
           es_took: _.get(data, 'took', undefined),
           response_time: _.get(data, 'response_time', undefined),
           params: req.clean,
