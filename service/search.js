@@ -40,12 +40,9 @@ function service( esclient, cmd, cb ){
       scores: []
     };
 
-    if (
-        _.has(data, 'hits') && 
-        _.get(data, 'hits.total', 0) > 0 && 
-        _.isArray(data.hits.hits)
-      ){
-      docs = data.hits.hits.map( function( hit ){
+    const hits = _.get(data, 'hits.hits');
+    if( _.isArray( hits ) && hits.length > 0 ){
+      docs = hits.map(hit => {
 
         meta.scores.push(hit._score);
 
