@@ -38,7 +38,7 @@ module.exports = {
             'address_parts.street': {
               'query': 'k road',
               'cutoff_frequency': 0.01,
-              'boost': 5,
+              'boost': 1,
               'analyzer': 'peliasStreet'
             }
           }

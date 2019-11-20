@@ -43,7 +43,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   'address:street:analyzer': 'peliasStreet',
   'address:street:field': 'address_parts.street',
-  'address:street:boost': 5,
+  'address:street:boost': 1,
   'address:street:cutoff_frequency': 0.01,
 
   'address:cross_street:analyzer': 'peliasStreet',
