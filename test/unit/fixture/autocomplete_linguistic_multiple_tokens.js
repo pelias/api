@@ -26,7 +26,7 @@ module.exports = {
                 'parent.borough.ngram^1',
                 'parent.neighbourhood.ngram^1',
                 'parent.locality_a.ngram^1',
-                'parent.region_a.ngram^4',
+                'parent.region_a.ngram^1',
                 'parent.country_a.ngram^4',
                 'name.default^1'
               ],
