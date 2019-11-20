@@ -127,6 +127,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   // this is used to improve venue matching in cases where the we
   // are unsure if the tokens represent admin or name components.
   'admin:add_name_to_multimatch:field': 'name.default',
+  'admin:add_name_to_multimatch:boost': 1.5,
 
   'popularity:field': 'popularity',
   'popularity:modifier': 'log1p',
