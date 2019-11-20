@@ -65,7 +65,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   'admin:country_a:analyzer': 'standard',
   'admin:country_a:field': 'parent.country_a.ngram',
-  'admin:country_a:boost': 4,
+  'admin:country_a:boost': 1,
   'admin:country_a:cutoff_frequency': 0.01,
 
   'admin:country:analyzer': 'peliasAdmin',
