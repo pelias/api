@@ -46,7 +46,7 @@ module.exports = {
       'max_boost': 20,
       'functions': [
         {
-          'weight': 2,
+          'weight': 3,
           'exp': {
             'center_point': {
               'origin': {
