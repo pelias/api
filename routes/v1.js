@@ -102,6 +102,15 @@ const Language = require('../service/configurations/Language');
 const Interpolation = require('../service/configurations/Interpolation');
 const Libpostal = require('../service/configurations/Libpostal');
 
+function getElasticsearchConfig(peliasConfig) {
+  const config = _.extend({}, peliasConfig.esclient);
+
+  if (process.env.ELASTICSEARCH_HOST) {
+    config.hosts = [ process.env.ELASTICSEARCH_HOST ];
+  }
+  return config;
+}
+
 /**
  * Append routes to app
  *
@@ -109,7 +118,7 @@ const Libpostal = require('../service/configurations/Libpostal');
  * @param {object} peliasConfig
  */
 function addRoutes(app, peliasConfig) {
-  const esclient = elasticsearch.Client(_.extend({}, peliasConfig.esclient));
+  const esclient = elasticsearch.Client(getElasticsearchConfig(peliasConfig));
 
   const pipConfiguration = new PointInPolygon(_.defaultTo(peliasConfig.api.services.pip, {}));
   const pipService = serviceWrapper(pipConfiguration);
