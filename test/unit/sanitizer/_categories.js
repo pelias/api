@@ -183,6 +183,55 @@ module.exports.tests.invalid_categories = function(test, common) {
   });
 };
 
+module.exports.tests.always_blank = function(test, common) {
+  const alwaysBlankSanitizer = require( '../../../sanitizer/_categories')(true);
+  test('garbage category', function(t) {
+    var req = {
+      query: {
+        categories: 'barf'
+      },
+      clean: { }
+    };
+    var expected_messages = { errors: [], warnings: [] };
+
+    var messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
+
+    t.deepEqual(messages, expected_messages, 'error with message returned');
+    t.deepEqual(req.clean.categories, [], 'should return empty array');
+    t.end();
+  });
+
+  test('all garbage categories', function(t) {
+    var req = {
+      query: {
+        categories: 'food'
+      },
+      clean: { }
+    };
+    var expected_messages = { errors: [], warnings: [] };
+
+    var messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
+
+    t.deepEqual(messages, expected_messages, 'error with message returned');
+    t.deepEqual(req.clean.categories, [], 'should return empty array');
+    t.end();
+  });
+
+  test('not defined categories', function(t) {
+    var req = {
+      query: { },
+      clean: { }
+    };
+    var expected_messages = { errors: [], warnings: [] };
+
+    var messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
+
+    t.deepEqual(messages, expected_messages, 'error with message returned');
+    t.deepEqual(req.clean.categories, undefined, 'categories should be undefined');
+    t.end();
+  });
+};
+
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
     return tape('SANITIZE _categories ' + name, testFunction);

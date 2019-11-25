@@ -38,11 +38,19 @@ function _sanitize (raw, clean, categories) {
   return messages;
 }
 
+function _alwaysBlank (raw, clean, categories) {
+  if (raw.hasOwnProperty('categories')) {
+    clean.categories = [];
+  }
+
+  return { errors: [], warnings: [] };
+}
+
 function _expected () {
   return [{ name: 'categories' }];
 }
 // export function
-module.exports = () => ({
-  sanitize: _sanitize,
+module.exports = (alwaysBlank) => ({
+  sanitize: alwaysBlank ? _alwaysBlank : _sanitize,
   expected: _expected
 });
