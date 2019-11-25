@@ -34,9 +34,7 @@ function sendJSONResponse(req, res, next) {
   const errorCodes = errors.map(function(error) {
     if (isParameterError(error)) {
       return 400;
-    } else if (isTimeoutError(error)) {
-      return 408;
-    } else if (isElasticsearchError(error)) {
+    } else if (isTimeoutError(error) || isElasticsearchError(error)) {
       return 502;
     } else {
       return 500;

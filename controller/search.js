@@ -60,10 +60,17 @@ function setup( apiConfig, esclient, query, should_execute ){
       const initialTime = debugLog.beginTimer(req, `Attempt ${currentAttempt}`);
       // query elasticsearch
       searchService( esclient, cmd, function( err, docs, meta, data ){
+
+        // keep tally of hit counts - compatible with new/old versions of ES
+        let totalHits = 0;
+        if( _.has(data, 'hits.total') ) {
+          totalHits = _.isPlainObject(data.hits.total) ? data.hits.total.value : data.hits.total;
+        }
+
         const message = {
           controller: 'search',
           queryType: renderedQuery.type,
-          es_hits: _.get(data, 'hits.total'),
+          es_hits: totalHits,
           result_count: (docs || []).length,
           es_took: _.get(data, 'took', undefined),
           response_time: _.get(data, 'response_time', undefined),

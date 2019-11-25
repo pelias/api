@@ -37,12 +37,18 @@ const DISCOVERY_QUERY = {
 module.exports = (tm, done) => {
   const esclient = elasticsearch.Client(_.extend({}, peliasConfig.esclient));
   esclient.search(DISCOVERY_QUERY, (err, res) => {
+
+    // keep tally of hit counts - compatible with new/old versions of ES
+    let totalHits = 0;
+    if( _.has(res, 'hits.total') ) {
+      totalHits =  _.isPlainObject(res.hits.total) ? res.hits.total.value : res.hits.total;
+    }
     
     // query error
     if( err ){ logger.error( err ); }
     
     // invalid response
-    else if( !res || !res.hits || !res.hits.total ){
+    else if ( totalHits < 1 ){
       logger.error( 'no hits for aggregation' );
     }
     
@@ -60,7 +66,7 @@ module.exports = (tm, done) => {
 
       // update type mapping from aggregation data
       if( !!Object.keys( layersBySource ).length ){
-        logger.info( 'total hits', res.hits.total );
+        logger.info( 'total hits', totalHits );
         logger.info( 'total sources', sources.length );
         logger.info( 'successfully discovered type mapping from elasticsearch' );
         tm.setLayersBySource( layersBySource );
