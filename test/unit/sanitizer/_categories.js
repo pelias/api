@@ -186,15 +186,17 @@ module.exports.tests.invalid_categories = function(test, common) {
 module.exports.tests.always_blank = function(test, common) {
   const alwaysBlankSanitizer = require( '../../../sanitizer/_categories')(true);
   test('garbage category', function(t) {
-    var req = {
+    const req = {
       query: {
         categories: 'barf'
       },
       clean: { }
     };
-    var expected_messages = { errors: [], warnings: [] };
+    const expected_messages = { errors: [], warnings: [
+      'Categories filtering not supported on this endpoint, showing results from all categories.'
+    ] };
 
-    var messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
+    const messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
     t.deepEqual(req.clean.categories, [], 'should return empty array');
@@ -202,15 +204,49 @@ module.exports.tests.always_blank = function(test, common) {
   });
 
   test('all garbage categories', function(t) {
-    var req = {
+    const req = {
       query: {
         categories: 'food'
       },
       clean: { }
     };
-    var expected_messages = { errors: [], warnings: [] };
+    const expected_messages = { errors: [], warnings: [
+      'Categories filtering not supported on this endpoint, showing results from all categories.'
+    ] };
 
-    var messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
+    const messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
+
+    t.deepEqual(messages, expected_messages, 'error with message returned');
+    t.deepEqual(req.clean.categories, [], 'should return empty array');
+    t.end();
+  });
+
+  test('defined categories', function(t) {
+    const req = {
+      query: {
+        categories: undefined
+      },
+      clean: { }
+    };
+    const expected_messages = { errors: [], warnings: [] };
+
+    const messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
+
+    t.deepEqual(messages, expected_messages, 'error with message returned');
+    t.deepEqual(req.clean.categories, [], 'should return empty array');
+    t.end();
+  });
+
+  test('empty categories', function(t) {
+    const req = {
+      query: {
+        categories: ''
+      },
+      clean: { }
+    };
+    const expected_messages = { errors: [], warnings: [] };
+
+    const messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
     t.deepEqual(req.clean.categories, [], 'should return empty array');
@@ -218,13 +254,13 @@ module.exports.tests.always_blank = function(test, common) {
   });
 
   test('not defined categories', function(t) {
-    var req = {
+    const req = {
       query: { },
       clean: { }
     };
-    var expected_messages = { errors: [], warnings: [] };
+    const expected_messages = { errors: [], warnings: [] };
 
-    var messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
+    const messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
     t.deepEqual(req.clean.categories, undefined, 'categories should be undefined');
