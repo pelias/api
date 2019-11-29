@@ -147,6 +147,19 @@ module.exports.tests.generateMappings = function(test) {
     t.deepEqual(ref, ['foo','faz']);
     t.end();
   });
+  test('generateMappings - layers - second call has fewer elements than first', function (t) {
+    var tm = new TypeMapping();
+    var ref = tm.layers; // save inital pointer reference
+    tm.layers_by_source = { foo: ['foo'], faz: ['faz'] };
+    tm.generateMappings();
+    t.deepEqual(ref.length, 2);
+    t.deepEqual(ref, ['foo', 'faz']);
+    tm.layers_by_source = { baz: ['baz'] };
+    tm.generateMappings();
+    t.deepEqual(ref.length, 1);
+    t.deepEqual(ref, ['baz']);
+    t.end();
+  });
   test('generateMappings - layer_mapping', function(t) {
     var tm = new TypeMapping();
     var ref = tm.layer_mapping; // save inital pointer reference

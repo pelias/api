@@ -1,6 +1,4 @@
 const _ = require('lodash');
-
-const config = require('pelias-config');
 const type_mapping = require('../../helper/type_mapping');
 
 module.exports = function( vs ) {
