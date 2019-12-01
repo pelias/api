@@ -39,7 +39,7 @@
     "@hapi/joi": "^16.0.1",
     "@mapbox/geojson-extent": "^0.3.1",
     "async": "^3.0.1",
-    "check-types": "^10.0.0",
+    "check-types": "^11.0.0",
     "elasticsearch": "^16.0.0",
     "express": "^4.8.8",
     "geojson": "^0.5.0",
