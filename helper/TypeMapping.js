@@ -91,7 +91,7 @@ TypeMapping.prototype.generateMappings = function(){
       return acc.concat(this.layers_by_source[key]);
     }.bind(this), []))
   );
-  
+
   safeReplace(
     this.layer_mapping,
     TypeMapping.addStandardTargetsToAliases(this.layers, this.layer_aliases)
@@ -112,7 +112,7 @@ TypeMapping.prototype.getCanonicalLayers = function(){
 // load values from targets block
 TypeMapping.prototype.loadTargets = function( targetsBlock ){
 
-  if( !_.isObject(targetsBlock) ){ return; }
+  if( !_.isPlainObject(targetsBlock) ){ return; }
 
   // set values from targets block
   this.setSourceAliases( targetsBlock.source_aliases || {} );
@@ -149,12 +149,21 @@ TypeMapping.prototype.load = function( done ){
 // replace the contents of an object or array
 // while maintaining the original pointer reference
 function safeReplace(reference, replacement){
-  if (_.isObject(reference) && _.isObject(replacement) ){
-    for( let attr in reference ){ delete reference[attr]; }
-    for (let attr in replacement) { reference[attr] = replacement[attr]; }
+  if (_.isPlainObject(reference) && _.isPlainObject(replacement) ){
+    for (let attr in reference) { delete reference[attr]; }
+    for (let attr in replacement) {
+      let el = replacement[attr];
+      // skip nully elements
+      if (_.isNil(el) || _.isNaN(el)) { continue; }
+      reference[attr] = el;
+    }
   } else if (_.isArray(reference) && _.isArray(replacement)) {
     reference.length = 0;
-    replacement.forEach(el => reference.push(el));
+    replacement.forEach(el => {
+      // skip nully elements
+      if (_.isNil(el) || _.isNaN(el)) { return; }
+      reference.push(el);
+    });
   }
 }
 
