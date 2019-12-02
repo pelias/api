@@ -2,7 +2,8 @@ const _ = require('lodash');
 const categoryTaxonomy = require('pelias-categories');
 
 const WARNINGS = {
-  empty: 'Categories parameter left blank, showing results from all categories.'
+  empty: 'Categories parameter left blank, showing results from all categories.',
+  notEmpty: 'Categories filtering not supported on this endpoint, showing results from all categories.'
 };
 
 // validate inputs, convert types and apply defaults
@@ -38,11 +39,25 @@ function _sanitize (raw, clean, categories) {
   return messages;
 }
 
+function _alwaysBlank (raw, clean, categories) {
+  // error & warning messages
+  const messages = { errors: [], warnings: [] };
+
+  if (raw.hasOwnProperty('categories')) {
+    clean.categories = [];
+    if (_.isString(raw.categories) && !_.isEmpty(raw.categories)) {
+      messages.warnings.push(WARNINGS.notEmpty);
+    }
+  }
+
+  return messages;
+}
+
 function _expected () {
   return [{ name: 'categories' }];
 }
 // export function
-module.exports = () => ({
-  sanitize: _sanitize,
+module.exports = (alwaysBlank) => ({
+  sanitize: alwaysBlank ? _alwaysBlank : _sanitize,
   expected: _expected
 });
