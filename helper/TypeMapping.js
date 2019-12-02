@@ -154,14 +154,14 @@ function safeReplace(reference, replacement){
     for (let attr in replacement) {
       let el = replacement[attr];
       // skip nully elements
-      if (_.isNull(el) || _.isUndefined(el) || _.isNaN(el)) { continue; }
+      if (_.isNil(el) || _.isNaN(el)) { continue; }
       reference[attr] = el;
     }
   } else if (_.isArray(reference) && _.isArray(replacement)) {
     reference.length = 0;
     replacement.forEach(el => {
       // skip nully elements
-      if (_.isNull(el) || _.isUndefined(el) || _.isNaN(el)) { return; }
+      if (_.isNil(el) || _.isNaN(el)) { return; }
       reference.push(el);
     });
   }
