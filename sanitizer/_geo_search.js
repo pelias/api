@@ -1,9 +1,9 @@
-var check = require('check-types');
-var geo_common = require ('./_geo_common');
+const _ = require('lodash');
+const geo_common = require ('./_geo_common');
 
-var LAT_LON_IS_REQUIRED = false;
-var RECT_IS_REQUIRED = false;
-var CIRCLE_IS_REQUIRED = false;
+const LAT_LON_IS_REQUIRED = false;
+const RECT_IS_REQUIRED = false;
+const CIRCLE_IS_REQUIRED = false;
 
 // validate inputs, convert types and apply defaults
 function _sanitize( raw, clean ){

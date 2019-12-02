@@ -11,15 +11,15 @@
  * - detection (or specification) of query type. i.e. an address shouldn't match an admin address.
  */
 
+const _ = require('lodash');
 const stats = require('stats-lite');
 const logger = require('pelias-logger').get('api');
-const check = require('check-types');
 const field = require('../helper/fieldValue');
 
 var RELATIVE_SCORES = true;
 
 function setup(peliasConfig) {
-  if (check.assigned(peliasConfig)) {
+  if (!_.isNil(peliasConfig)) {
     RELATIVE_SCORES = peliasConfig.hasOwnProperty('relativeScores') ? peliasConfig.relativeScores : true;
   }
   return computeScores;
@@ -27,8 +27,8 @@ function setup(peliasConfig) {
 
 function computeScores(req, res, next) {
   // do nothing if no result data set or if query is not of the pelias_parser variety
-  if (check.undefined(req.clean) || check.undefined(res) ||
-      check.undefined(res.data) || check.undefined(res.meta) ||
+  if (_.isUndefined(req.clean) || _.isUndefined(res) ||
+      _.isUndefined(res.data) || _.isUndefined(res.meta) ||
       res.meta.query_type !== 'search_pelias_parser') {
     return next();
   }
@@ -91,17 +91,17 @@ function computeConfidenceScore(req, mean, stdev, hit) {
  * @returns {bool}
  */
 function checkForDealBreakers(req, hit) {
-  if (check.undefined(req.clean.parsed_text)) {
+  if (_.isUndefined(req.clean.parsed_text)) {
     return false;
   }
 
-  if (check.assigned(req.clean.parsed_text.state) && check.assigned(hit.parent) &&
+  if (!_.isNil(req.clean.parsed_text.state) && !_.isNil(hit.parent) &&
       hit.parent.region_a && req.clean.parsed_text.state !== hit.parent.region_a[0]) {
     logger.debug('[confidence][deal-breaker]: state !== region_a');
     return true;
   }
 
-  if (check.assigned(req.clean.parsed_text.postalcode) && check.assigned(hit.address_parts) &&
+  if (!_.isNil(req.clean.parsed_text.postalcode) && !_.isNil(hit.address_parts) &&
       req.clean.parsed_text.postalcode !== hit.address_parts.zip) {
     return true;
   }
@@ -131,7 +131,7 @@ function checkDistanceFromMean(score, mean, stdev) {
  */
 function checkName(text, parsed_text, hit) {
   // parsed_text name should take precedence if available since it's the cleaner name property
-  if (check.assigned(parsed_text) && check.assigned(parsed_text.name) &&
+  if (!_.isNil(parsed_text) && !_.isNil(parsed_text.name) &&
     field.getStringValue(hit.name.default).toLowerCase() === parsed_text.name.toLowerCase()) {
     return 1;
   }
@@ -154,9 +154,9 @@ function checkName(text, parsed_text, hit) {
  * @returns {number}
  */
 function checkQueryType(text, hit) {
-  if (check.assigned(text) && check.assigned(text.number) &&
-      (check.undefined(hit.address_parts) ||
-      (check.assigned(hit.address_parts) && check.undefined(hit.address_parts.number)))) {
+  if (!_.isNil(text) && !_.isNil(text.number) &&
+      (_.isUndefined(hit.address_parts) ||
+      (!_.isNil(hit.address_parts) && _.isUndefined(hit.address_parts.number)))) {
     return 0;
   }
   return 1;
@@ -173,22 +173,22 @@ function checkQueryType(text, hit) {
 function propMatch(textProp, hitProp, expectEnriched) {
 
   // both missing, but expect to have enriched value in result => BAD
-  if (check.undefined(textProp) && check.undefined(hitProp) && check.assigned(expectEnriched)) { return 0; }
+  if (_.isUndefined(textProp) && _.isUndefined(hitProp) && !_.isNil(expectEnriched)) { return 0; }
 
   // both missing, and no enrichment expected => GOOD
-  if (check.undefined(textProp) && check.undefined(hitProp)) { return 1; }
+  if (_.isUndefined(textProp) && _.isUndefined(hitProp)) { return 1; }
 
   // text has it, result doesn't => BAD
-  if (check.assigned(textProp) && check.undefined(hitProp)) { return 0; }
+  if (!_.isNil(textProp) && _.isUndefined(hitProp)) { return 0; }
 
   // text missing, result has it, and enrichment is expected => GOOD
-  if (check.undefined(textProp) && check.assigned(hitProp) && check.assigned(expectEnriched)) { return 1; }
+  if (_.isUndefined(textProp) && !_.isNil(hitProp) && !_.isNil(expectEnriched)) { return 1; }
 
   // text missing, result has it, enrichment not desired => 50/50
-  if (check.undefined(textProp) && check.assigned(hitProp)) { return 0.5; }
+  if (_.isUndefined(textProp) && !_.isNil(hitProp)) { return 0.5; }
 
   // both present, values match => GREAT
-  if (check.assigned(textProp) && check.assigned(hitProp) &&
+  if (!_.isNil(textProp) && !_.isNil(hitProp) &&
       textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) { return 1; }
 
   // ¯\_(ツ)_/¯
@@ -218,7 +218,7 @@ function checkAddress(text, hit) {
   var checkCount = 5;
   var res = 0;
 
-  if (check.assigned(text) && check.assigned(text.number) && check.assigned(text.street)) {
+  if (!_.isNil(text) && !_.isNil(text.number) && !_.isNil(text.street)) {
     res += propMatch(text.number, (hit.address_parts ? hit.address_parts.number : null), false);
     res += propMatch(text.street, (hit.address_parts ? hit.address_parts.street : null), false);
     res += propMatch(text.postalcode, (hit.address_parts ? hit.address_parts.zip: null), true);

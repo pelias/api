@@ -1,16 +1,15 @@
-var check = require('check-types');
-
-var MIN_SIZE = 1,
-    MAX_SIZE = 40,
-    DEFAULT_SIZE = 10;
+const _ = require('lodash');
+const MIN_SIZE = 1;
+const MAX_SIZE = 40;
+const DEFAULT_SIZE = 10;
 
 // validate inputs, convert types and apply defaults
 function _setup( size_min, size_max, size_def ){
 
   // allow caller to inject custom min/max/default values
-  if( !check.number( size_min ) ){ size_min = MIN_SIZE; }
-  if( !check.number( size_max ) ){ size_max = MAX_SIZE; }
-  if( !check.number( size_def ) ){ size_def = DEFAULT_SIZE; }
+  if( !_.isFinite( size_min ) ){ size_min = MIN_SIZE; }
+  if( !_.isFinite( size_max ) ){ size_max = MAX_SIZE; }
+  if( !_.isFinite( size_def ) ){ size_def = DEFAULT_SIZE; }
 
   return {
     sanitize: function _sanitize( raw, clean ){

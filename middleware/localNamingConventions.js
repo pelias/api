@@ -1,4 +1,3 @@
-const check = require('check-types');
 const _ = require('lodash');
 const field = require('../helper/fieldValue');
 

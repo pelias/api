@@ -1,10 +1,9 @@
 /**
  * helper sanitizer methods for geo parameters
  */
-var groups = require('./_groups'),
-    check = require('check-types'),
-    wrap = require('./wrap'),
-    _ = require('lodash');
+const _ = require('lodash');
+const groups = require('./_groups');
+const wrap = require('./wrap');
 
 /**
  * Parse and validate rect parameter
@@ -16,13 +15,13 @@ var groups = require('./_groups'),
  */
 function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
   // calculate full property names from the key_prefix
-  var properties = [ 'min_lat', 'max_lat', 'min_lon', 'max_lon' ].map(function(prop) {
-    return key_prefix + '.' + prop;
+  var properties = [ 'min_lat', 'max_lat', 'min_lon', 'max_lon' ].map(prop => {
+    return `${key_prefix}.${prop}`;
   });
 
   // sanitize the rect property group, this throws an exception if
   // the group is not complete
-  var bbox_present;
+  let bbox_present;
   if (bbox_is_required) {
     bbox_present = groups.required(raw, properties);
   } else {
@@ -37,14 +36,14 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
   sanitize_bbox_bounds(raw, key_prefix);
 
   // use sanitize_coord to set values in `clean`
-  properties.forEach(function(prop) {
+  properties.forEach(prop => {
     sanitize_coord(prop, clean, raw, true);
   });
 }
 
   // validate max is greater than min for lat and lon
 function sanitize_bbox_min_max(raw, key_prefix) {
-  ['lat', 'lon'].forEach(function(dimension) {
+  ['lat', 'lon'].forEach(dimension => {
     const max = parseFloat(raw[`${key_prefix}.max_${dimension}`]);
     const min = parseFloat(raw[`${key_prefix}.min_${dimension}`]);
 
@@ -57,15 +56,15 @@ function sanitize_bbox_min_max(raw, key_prefix) {
 // validate lat/lon values are within bounds
 function sanitize_bbox_bounds(raw, key_prefix) {
   const bounds = [ { dimension: 'lat', range: 90},
-                   { dimension: 'lon', range: 180}];
+                   { dimension: 'lon', range: 180} ];
 
-  bounds.forEach(function(bound) {
+  bounds.forEach(bound => {
     const values = {
       max: parseFloat(raw[`${key_prefix}.max_${bound.dimension}`]),
       min: parseFloat(raw[`${key_prefix}.min_${bound.dimension}`])
     };
 
-    ['min', 'max'].forEach(function(prefix) {
+    ['min', 'max'].forEach(prefix => {
       if (Math.abs(values[prefix]) > bound.range) {
         const key =`${key_prefix}.${prefix}_${bound.dimension}`;
         throw new Error(`${key} value ${values[prefix]} is outside range -${bound.range},${bound.range}`);
@@ -85,7 +84,7 @@ function sanitize_bbox_bounds(raw, key_prefix) {
 function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
   // sanitize both a point and a radius if radius is present
   // otherwise just sanittize the point
-  if( check.assigned( raw[ key_prefix + '.radius' ] ) ){
+  if( !_.isNil( raw[ key_prefix + '.radius' ] ) ){
     sanitize_coord( key_prefix + '.radius', clean, raw, true );
     sanitize_point( key_prefix, clean, raw, true);
   } else {
@@ -104,8 +103,8 @@ function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
 function sanitize_point( key_prefix, clean, raw, point_is_required ) {
 
   // calculate full property names from the key_prefix
-  var properties = [ 'lat', 'lon'].map(function(prop) {
-    return key_prefix + '.' + prop;
+  var properties = [ 'lat', 'lon'].map(prop => {
+    return `${key_prefix}.${prop}`;
   });
 
   // sanitize the rect property group, this throws an exception if
@@ -123,7 +122,7 @@ function sanitize_point( key_prefix, clean, raw, point_is_required ) {
 
   // check each property individually. now that it is known a bbox is present,
   // all properties must exist, so pass the true flag for coord_is_required
-  properties.forEach(function(prop) {
+  properties.forEach(prop => {
     sanitize_coord(prop, clean, raw, true);
   });
 

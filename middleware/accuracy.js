@@ -3,16 +3,15 @@
  * Accuracy level should be set for each item in the results.
  * The level can be any of the following:
  *  - point
- *  - interpolated
+ *  - interpolated (not currently used)
  *  - centroid
  */
 
-var check = require('check-types');
+const _ = require('lodash');
 
-var accuracyLevelPoint = 'point';
-var accuracyLevelInterpolated = 'interpolated';
-var accuracyLevelCentroid = 'centroid';
-
+const accuracyLevelPoint = 'point';
+// const accuracyLevelInterpolated = 'interpolated';
+const accuracyLevelCentroid = 'centroid';
 
 function setup() {
   return computeAccuracy;
@@ -20,7 +19,7 @@ function setup() {
 
 function computeAccuracy(req, res, next) {
   // do nothing if no result data set
-  if (check.undefined(res) || check.undefined(res.data)) {
+  if (_.isUndefined(res) || _.isUndefined(res.data)) {
     return next();
   }
 

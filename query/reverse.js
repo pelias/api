@@ -1,8 +1,6 @@
+const _ = require('lodash');
 const peliasQuery = require('pelias-query');
 const defaults = require('./reverse_defaults');
-const check = require('check-types');
-const _ = require('lodash');
-const logger = require('pelias-logger').get('api');
 
 //------------------------------
 // reverse geocode query
@@ -35,19 +33,19 @@ function generateQuery( clean ){
   }
 
   // sources
-  if( check.array(clean.sources) && clean.sources.length ) {
+  if( _.isArray(clean.sources) && !_.isEmpty(clean.sources) ) {
     vs.var('sources', clean.sources);
   }
 
   // layers
-  if( check.array(clean.layers) && clean.layers.length ) {
+  if( _.isArray(clean.layers) && !_.isEmpty(clean.layers) ) {
     // only include non-coarse layers
     vs.var( 'layers', _.intersection(clean.layers, ['address', 'street', 'venue']));
   }
 
   // focus point to score by distance
-  if( check.number(clean['point.lat']) &&
-      check.number(clean['point.lon']) ){
+  if( _.isFinite(clean['point.lat']) &&
+      _.isFinite(clean['point.lon']) ){
     vs.set({
       'focus:point:lat': clean['point.lat'],
       'focus:point:lon': clean['point.lon']
@@ -58,20 +56,20 @@ function generateQuery( clean ){
   // note: the sanitizers will take care of the case
   // where point.lan/point.lon are provided in the
   // absense of boundary.circle.lat/boundary.circle.lon
-  if( check.number(clean['boundary.circle.lat']) &&
-      check.number(clean['boundary.circle.lon']) ){
+  if( _.isFinite(clean['boundary.circle.lat']) &&
+      _.isFinite(clean['boundary.circle.lon']) ){
 
         vs.set({
           'boundary:circle:lat': clean['boundary.circle.lat'],
           'boundary:circle:lon': clean['boundary.circle.lon']
         });
 
-        if (check.undefined(clean['boundary.circle.radius'])){
+        if (_.isUndefined(clean['boundary.circle.radius'])){
           // for coarse reverse when boundary circle radius is undefined
           vs.set({
             'boundary:circle:radius': defaults['boundary:circle:radius']
           });
-        } else if (check.number(clean['boundary.circle.radius'])){
+        } else if (_.isFinite(clean['boundary.circle.radius'])){
           // plain reverse where boundary circle is a valid number
           vs.set({
             'boundary:circle:radius': clean['boundary.circle.radius'] + 'km'
@@ -80,14 +78,14 @@ function generateQuery( clean ){
   }
 
   // boundary country
-  if( check.nonEmptyArray(clean['boundary.country']) ){
+  if( _.isArray(clean['boundary.country']) && !_.isEmpty(clean['boundary.country']) ){
     vs.set({
       'boundary:country': clean['boundary.country'].join(' ')
     });
   }
 
   // boundary gid
-  if ( check.string(clean['boundary.gid']) ){
+  if ( _.isString(clean['boundary.gid']) ){
     vs.set({
       'boundary:gid': clean['boundary.gid']
     });
