@@ -1,4 +1,5 @@
-const check = require('check-types');
+const _ = require('lodash');
+const nonEmptyString = (v) => _.isString(v) && !_.isEmpty(v);
 const iso3166 = require('../helper/iso3166');
 
 function _sanitize(raw, clean) {
@@ -10,23 +11,23 @@ function _sanitize(raw, clean) {
 
   // param 'boundary.country' is optional and should not
   // error when simply not set by the user
-  if (check.assigned(countries)) {
+  if (!_.isNil(countries)) {
 
     // must be valid string
-    if (!check.nonEmptyString(countries)) {
+    if (!nonEmptyString(countries)) {
       messages.errors.push('boundary.country is not a string');
     } else {
       // support for multi countries
-      countries = countries.split(',').filter(check.nonEmptyString);
+      countries = countries.split(',').filter(nonEmptyString);
       const invalidIsoCodes = countries.filter(country => !containsIsoCode(country));
 
       // country list must contains at least one element
-      if (check.emptyArray(countries)) {
+      if (_.isArray(countries) && _.isEmpty(countries)) {
         messages.errors.push('boundary.country is empty');
       }
 
       // must be a valid ISO 3166 code
-      else if (check.nonEmptyArray(invalidIsoCodes)) {
+      else if (_.isArray(invalidIsoCodes) && !_.isEmpty(invalidIsoCodes)) {
         invalidIsoCodes.forEach(country => messages.errors.push(country + ' is not a valid ISO2/ISO3 country code'));
       }
 

@@ -1,22 +1,22 @@
 const _ = require('lodash');
-const check = require('check-types');
+const nonEmptyString = (v) => _.isString(v) && !_.isEmpty(v);
 
 /**
  * This sanitizer applies a layer filter in the case where only a single word was specified.
- * 
+ *
  * It is based on the assumption that single-word inputs should not, and need not match
  * results from the 'address' layer.
- * 
+ *
  * The rationale is that in order to specify enough information to retrieve an address the
  * user must, at minimum enter both a housenumber and a street name.
- * 
+ *
  * Note: we cannot exclude other layers such as 'venue' (eg. Starbucks) or 'street'
  * (eg. Gleimstraße) because they may have valid single-word names.
- * 
+ *
  * The address layer contains the most records by a large margin, so excluding
  * address results where they are not nessesary will provide significant
  * performance benefits.
- * 
+ *
  * Update: added warning message to inform user when this functionality is enabled
  * Update: added additional check that enforces that the input must also contain at least one numeral
  */
@@ -34,7 +34,7 @@ function _setup(tm) {
       let messages = { errors: [], warnings: [] };
 
       // no nothing if user has explicitely specified layers in the request
-      if (check.array(clean.layers) && check.nonEmptyArray(clean.layers)) {
+      if (_.isArray(clean.layers) && !_.isEmpty(clean.layers)) {
         return messages;
       }
 
@@ -43,7 +43,7 @@ function _setup(tm) {
       let input = clean.text;
 
       // no nothing if no input text specified in the request
-      if (!check.nonEmptyString(input)) {
+      if (!nonEmptyString(input)) {
         return messages;
       }
 
@@ -51,7 +51,7 @@ function _setup(tm) {
       // is the text which will be queried against the 'name.default' field.
       // @todo: this logic is duplicated from 'query/text_parser.js' and may
       // be subject to change.
-      if (check.nonEmptyObject(clean.parsed_text)) {
+      if (_.isObject(clean.parsed_text) && !_.isEmpty(clean.parsed_text)) {
 
         var isStreetAddress = clean.parsed_text.hasOwnProperty('number') && clean.parsed_text.hasOwnProperty('street');
 
@@ -66,13 +66,13 @@ function _setup(tm) {
         }
 
         // else if the 'naive parser' was used, input is equal to 'name'
-        else if (check.nonEmptyString(clean.parsed_text.admin_parts) && check.nonEmptyString(clean.parsed_text.name)) {
+        else if (nonEmptyString(clean.parsed_text.admin_parts) && nonEmptyString(clean.parsed_text.name)) {
           input = clean.parsed_text.name;
         }
       }
 
       // count the number of words specified
-      let totalWords = input.split(/\s+/).filter(check.nonEmptyString).length;
+      let totalWords = input.split(/\s+/).filter(nonEmptyString).length;
 
       // check that at least one numeral was specified
       let hasNumeral = /\d/.test(input);
@@ -87,13 +87,13 @@ function _setup(tm) {
       if (totalWords < 2 || !hasNumeral) {
 
         // handle the common case where neither source nor layers were specified
-        if (!check.array(clean.sources) || !check.nonEmptyArray(clean.sources)) {
+        if (!_.isArray(clean.sources) || _.isEmpty(clean.sources)) {
           clean.layers = tm.layers.filter(item => item !== 'address'); // exclude 'address'
           messages.warnings.push(ADDRESS_FILTER_WARNING);
         }
 
         // handle the case where 'sources' were explicitly specified
-        else if (check.array(clean.sources)) {
+        else if (_.isArray(clean.sources)) {
 
           // we need to create a list of layers for the specified sources
           let sourceLayers = clean.sources.reduce((l, key) => l.concat(tm.layers_by_source[key] || []), []);

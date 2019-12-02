@@ -1,11 +1,9 @@
-var geolib = require('geolib');
-var check = require('check-types');
-
+const _ = require('lodash');
+const geolib = require('geolib');
 
 function setup(prefix) {
-
   return function (req, res, next) {
-    var opts = {
+    const opts = {
       prefix: prefix || 'point.'
     };
     return computeDistances(req, res, next, opts);
@@ -19,8 +17,8 @@ function computeDistances(req, res, next, opts) {
     return next();
   }
 
-  if (!(check.number(req.clean[opts.prefix + 'lat']) &&
-        check.number(req.clean[opts.prefix + 'lon']))) {
+  if (!(_.isFinite(req.clean[opts.prefix + 'lat']) &&
+        _.isFinite(req.clean[opts.prefix + 'lon']))) {
     return next();
   }
 

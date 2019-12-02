@@ -1,18 +1,18 @@
 const _ = require('lodash');
-const check = require('check-types');
+const nonEmptyString = (v) => _.isString(v) && !_.isEmpty(v);
 const type_mapping = require('../helper/type_mapping');
 const decode_gid = require('../helper/decode_gid');
 
 // validate inputs, convert types and apply defaults id generally looks like
 // 'geonames:venue:4163334' (source:layer:id) so, all three are required
 
-var lengthError = 'invalid param \'ids\': length must be >0';
+const lengthError = 'invalid param \'ids\': length must be >0';
 
-var formatError = function(input) {
+const formatError = function(input) {
   return 'id `' + input + ' is invalid: must be of the format source:layer:id for ex: \'geonames:venue:4163334\'';
 };
 
-var targetError = function(target, target_list) {
+const targetError = function(target, target_list) {
   return target + ' is invalid. It must be one of these values - [' + target_list.join(', ') + ']';
 };
 
@@ -54,7 +54,7 @@ function _sanitize( raw, clean ){
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  if (!check.nonEmptyString( raw.ids )) {
+  if (!nonEmptyString( raw.ids )) {
     messages.errors.push( lengthError);
     return messages;
   }
@@ -66,16 +66,16 @@ function _sanitize( raw, clean ){
   rawIds = _.uniq(rawIds);
 
   // ensure all elements are valid non-empty strings
-  if (!rawIds.every(check.nonEmptyString)) {
+  if (!rawIds.every(nonEmptyString)) {
       messages.errors.push( lengthError );
   }
 
   // cycle through raw ids and set those which are valid
-  var validIds = rawIds.map(function(rawId) {
+  var validIds = rawIds.map(rawId => {
     return sanitizeId(rawId, messages);
   });
 
-  if (validIds.every(check.object)) {
+  if (validIds.every(_.isObject)) {
     clean.ids = validIds;
   }
 

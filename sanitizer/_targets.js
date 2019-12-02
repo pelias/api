@@ -1,5 +1,4 @@
-var _ = require('lodash'),
-    check = require('check-types');
+const _ = require('lodash');
 
 function getValidKeys(mapping) {
   return _.uniq(Object.keys(mapping)).join(',');
@@ -20,11 +19,11 @@ function _setup( paramName, targetMap ) {
       var targetsString = raw[opts.paramName];
 
       // trim whitespace
-      if( check.nonEmptyString( targetsString ) ){
+      if( _.isString( targetsString ) && !_.isEmpty( targetsString ) ){
         targetsString = targetsString.trim();
 
         // param must be a valid non-empty string
-        if( !check.nonEmptyString( targetsString ) ){
+        if( !_.isString( targetsString ) || _.isEmpty( targetsString ) ){
           messages.errors.push(
             opts.paramName + ' parameter cannot be an empty string. Valid options: ' + getValidKeys(opts.targetMap)
           );
@@ -58,12 +57,11 @@ function _setup( paramName, targetMap ) {
       }
 
       // string is empty
-      else if( check.string( targetsString ) ){
+      else if( _.isString( targetsString ) ){
         messages.errors.push(
           opts.paramName + ' parameter cannot be an empty string. Valid options: ' + getValidKeys(opts.targetMap)
         );
       }
-
 
       return messages;
     } // end of _sanitize function

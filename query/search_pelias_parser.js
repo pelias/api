@@ -1,8 +1,7 @@
+const _ = require('lodash');
 const peliasQuery = require('pelias-query');
 const defaults = require('./search_defaults');
 const textParser = require('./text_parser_pelias');
-const check = require('check-types');
-const logger = require('pelias-logger').get('api');
 const config = require('pelias-config').generate().api;
 
 var placeTypes = require('../helper/placeTypes');
@@ -63,17 +62,17 @@ function generateQuery( clean ){
   vs.var( 'match_phrase:main:input', clean.text );
 
   // sources
-  if( check.array(clean.sources) && clean.sources.length ) {
+  if( _.isArray(clean.sources) && !_.isEmpty(clean.sources) ) {
     vs.var( 'sources', clean.sources);
   }
 
   // layers
-  if( check.array(clean.layers) && clean.layers.length ) {
+  if( _.isArray(clean.layers) && !_.isEmpty(clean.layers) ) {
     vs.var( 'layers', clean.layers);
   }
 
   // categories
-  if (clean.categories && clean.categories.length) {
+  if (clean.categories && !_.isEmpty(clean.categories)) {
     vs.var('input:categories', clean.categories);
   }
 
@@ -83,8 +82,8 @@ function generateQuery( clean ){
   }
 
   // focus point
-  if( check.number(clean['focus.point.lat']) &&
-      check.number(clean['focus.point.lon']) ){
+  if( _.isFinite(clean['focus.point.lat']) &&
+      _.isFinite(clean['focus.point.lon']) ){
     vs.set({
       'focus:point:lat': clean['focus.point.lat'],
       'focus:point:lon': clean['focus.point.lon']
@@ -92,10 +91,10 @@ function generateQuery( clean ){
   }
 
   // boundary rect
-  if( check.number(clean['boundary.rect.min_lat']) &&
-      check.number(clean['boundary.rect.max_lat']) &&
-      check.number(clean['boundary.rect.min_lon']) &&
-      check.number(clean['boundary.rect.max_lon']) ){
+  if( _.isFinite(clean['boundary.rect.min_lat']) &&
+      _.isFinite(clean['boundary.rect.max_lat']) &&
+      _.isFinite(clean['boundary.rect.min_lon']) &&
+      _.isFinite(clean['boundary.rect.max_lon']) ){
     vs.set({
       'boundary:rect:top': clean['boundary.rect.max_lat'],
       'boundary:rect:right': clean['boundary.rect.max_lon'],
@@ -106,14 +105,14 @@ function generateQuery( clean ){
 
   // boundary circle
   // @todo: change these to the correct request variable names
-  if( check.number(clean['boundary.circle.lat']) &&
-      check.number(clean['boundary.circle.lon']) ){
+  if( _.isFinite(clean['boundary.circle.lat']) &&
+      _.isFinite(clean['boundary.circle.lon']) ){
     vs.set({
       'boundary:circle:lat': clean['boundary.circle.lat'],
       'boundary:circle:lon': clean['boundary.circle.lon']
     });
 
-    if( check.number(clean['boundary.circle.radius']) ){
+    if( _.isFinite(clean['boundary.circle.radius']) ){
       vs.set({
         'boundary:circle:radius': Math.round( clean['boundary.circle.radius'] ) + 'km'
       });
@@ -121,14 +120,14 @@ function generateQuery( clean ){
   }
 
   // boundary country
-  if( check.nonEmptyArray(clean['boundary.country']) ){
+  if( _.isArray(clean['boundary.country']) && !_.isEmpty(clean['boundary.country']) ){
     vs.set({
       'boundary:country': clean['boundary.country'].join(' ')
     });
   }
 
   // boundary gid
-  if ( check.string(clean['boundary.gid']) ){
+  if ( _.isString(clean['boundary.gid']) ){
     vs.set({
       'boundary:gid': clean['boundary.gid']
     });

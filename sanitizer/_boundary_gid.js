@@ -1,5 +1,4 @@
-var _ = require('lodash'),
-    check = require('check-types');
+const _ = require('lodash');
 
 function _sanitize(raw, clean) {
   // error & warning messages
@@ -11,8 +10,8 @@ function _sanitize(raw, clean) {
   // param 'boundary.gid' is optional and should not
   // error when simply not set by the user
   // must be valid string
-  if (check.assigned(boundary_gid)) {
-    if (!check.nonEmptyString(boundary_gid)) {
+  if (!_.isNil(boundary_gid)) {
+    if (!_.isString(boundary_gid) || _.isEmpty(boundary_gid)) {
       messages.errors.push('boundary.gid is not a string');
     }
     else {

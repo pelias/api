@@ -9,9 +9,8 @@
  * - fallback status (aka layer match between expected and actual)
  */
 
-var check = require('check-types');
-var logger = require('pelias-logger').get('api');
 const _ = require('lodash');
+const logger = require('pelias-logger').get('api');
 
 function setup() {
   return computeScores;
@@ -20,8 +19,8 @@ function setup() {
 function computeScores(req, res, next) {
   // do nothing if no result data set or if the query is not of the fallback variety
   // later add disambiguation to this list
-  if (check.undefined(req.clean) || check.undefined(res) ||
-      check.undefined(res.data) || check.undefined(res.meta)) {
+  if (_.isUndefined(req.clean) || _.isUndefined(res) ||
+      _.isUndefined(res.data) || _.isUndefined(res.meta)) {
     return next();
   }
 
@@ -78,7 +77,7 @@ function checkFallbackLevel(req, hit) {
       case 'street':
         return 0.8;
       case 'postalcode':
-        return 0.8;    
+        return 0.8;
       case 'localadmin':
       case 'locality':
       case 'borough':

@@ -1,7 +1,7 @@
-var check = require('check-types');
-var categoryTaxonomy = require('pelias-categories');
+const _ = require('lodash');
+const categoryTaxonomy = require('pelias-categories');
 
-var WARNINGS = {
+const WARNINGS = {
   empty: 'Categories parameter left blank, showing results from all categories.'
 };
 
@@ -24,7 +24,7 @@ function _sanitize (raw, clean, categories) {
       return cat.toLowerCase().trim(); // lowercase inputs
     })
     .filter(cat => {
-      if (check.nonEmptyString(cat) && categories.isValidCategory(cat)) {
+      if (_.isString(cat) && !_.isEmpty(cat) && categories.isValidCategory(cat)) {
         return true;
       }
       return false;
