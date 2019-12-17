@@ -26,7 +26,7 @@ module.exports.tests.getArrayValue = function(test) {
     t.deepEqual(field.getArrayValue('foo'), ['foo'], 'string');
     t.deepEqual(field.getArrayValue(['foo','bar']), ['foo','bar'], 'array');
     t.deepEqual(field.getArrayValue(['']), [''], 'array with empty string');
-    t.deepEqual(field.getArrayValue(-0), [0], 'number');
+    t.deepEqual(field.getArrayValue(-0), [-0], 'number');
     t.deepEqual(field.getArrayValue(+0), [0], 'number');
     t.deepEqual(field.getArrayValue({foo: 'bar'}), [{foo: 'bar'}], '[*]');
     t.end();
