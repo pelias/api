@@ -19,6 +19,7 @@ const nonEmptyString = (v) => _.isString(v) && !_.isEmpty(v);
  *
  * Update: added warning message to inform user when this functionality is enabled
  * Update: added additional check that enforces that the input must also contain at least one numeral
+ * Update: Removed Address restrictions
  */
 
  // note: this runs before libpostal (which is a service)
