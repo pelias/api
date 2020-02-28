@@ -39,6 +39,7 @@ module.exports.tests.sanitize = function (test, common) {
     t.end();
   });
 
+  /**
   test('sanitize - apply layer filter for non-numeric multi-word inputs', (t) => {
     let clean = { text: 'foo bar baz bing' };
     t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
@@ -133,6 +134,7 @@ module.exports.tests.parsed_text = function (test, common) {
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
+  **/
 };
 
 module.exports.all = function (tape, common) {
