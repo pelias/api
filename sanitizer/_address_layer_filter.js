@@ -88,8 +88,8 @@ function _setup(tm) {
 
         // handle the common case where neither source nor layers were specified
         if (!_.isArray(clean.sources) || _.isEmpty(clean.sources)) {
-          clean.layers = tm.layers.filter(item => item !== 'address'); // exclude 'address'
-          messages.warnings.push(ADDRESS_FILTER_WARNING);
+          //clean.layers = tm.layers.filter(item => item !== 'address'); // exclude 'address'
+          //messages.warnings.push(ADDRESS_FILTER_WARNING);
         }
 
         // handle the case where 'sources' were explicitly specified
@@ -106,8 +106,8 @@ function _setup(tm) {
           }
 
           // target all layers for the sources specified except 'address'
-          clean.layers = sourceLayers.filter(item => item !== 'address'); // exclude 'address'
-          messages.warnings.push(ADDRESS_FILTER_WARNING);
+          //clean.layers = sourceLayers.filter(item => item !== 'address'); // exclude 'address'
+          //messages.warnings.push(ADDRESS_FILTER_WARNING);
         }
       }
 
