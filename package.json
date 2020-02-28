@@ -78,7 +78,8 @@
   "pre-commit": [
     "lint",
     "prune",
-    "validate"
+    "validate",
+    "test"
   ],
   "release": {
     "branch": "master",
