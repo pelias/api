@@ -1,7 +1,8 @@
 const _ = require('lodash');
 const path = require('path');
 const requireAll = require('require-all');
-const Router = require('express').Router;
+const express = require('express');
+const { Router } = express;
 const sorting = require('pelias-sorting');
 const elasticsearch = require('elasticsearch');
 const {all, any, not} = require('predicates');
@@ -346,6 +347,9 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'reverse',              routers.reverse );
   app.get ( base + 'nearby',               routers.nearby );
 
+  if (peliasConfig.api.serveCompareFrontend) {
+    app.use ( '/frontend',                   express.static('node_modules/pelias-compare/dist-api/'));
+  }
 }
 
 /**
