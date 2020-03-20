@@ -23,7 +23,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'ngram:minimum_should_match': '1<-1 3<-25%',
 
   'match_phrase:main:analyzer': 'peliasPhrase',
-  'match_phrase:main:field': 'phrase.default',
+  'match_phrase:main:field': 'name.default.phrase',
   'match_phrase:main:boost': 1,
   'match_phrase:main:slop': 2,
 
