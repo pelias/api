@@ -49,6 +49,12 @@ function error_intercepting_service(service, req) {
   };
 }
 
+function generateTraceId() {
+  const high = Number.MAX_SAFE_INTEGER;
+  const low = 0;
+  return Math.floor(Math.random() * (high - low) + low);
+}
+
 function setup(service, should_execute) {
   return function controller(req, res, next) {
     // bail early if the service shouldn't execute
@@ -65,9 +71,19 @@ function setup(service, should_execute) {
     const start = (new Date()).getTime();
     const initialTime = debugLog.beginTimer(req);
 
+    const parent_trace_id = generateTraceId();
+    const parent_span_id = generateTraceId();
     const startTime = Date.now();
+    const start_timestamp = new Date().toISOString();
     const logInfo = {
       controller: 'interpolation', //technically middleware, but stay consistent with other log lines
+      service_name: 'api',
+      name: 'interpolation-middleware',
+      Timestamp: start_timestamp,
+      trace: {
+        trace_id: parent_trace_id,
+        span_id: parent_span_id
+      },
       street_count: street_results.length,
       params: req.clean
     };
@@ -79,11 +95,20 @@ function setup(service, should_execute) {
         const source_result = street_results[idx];
         const resultLogInfo = {
           controller: 'interpolation',
+          name: 'interpolation-call',
+          service_name: 'api',
           street_name: street_results[idx].name.default,
           street_id: street_results[idx].source_id,
           outcome: 'hit', //assume hit, update later if not
+          Timestamp: start_timestamp,
           idx: idx,
-          response_time: _.get(interpolation_result, 'metadata.response_time')
+          trace: {
+            span_id: generateTraceId(),
+            parent_id: parent_span_id,
+            trace_id: parent_trace_id
+          },
+          response_time: _.get(interpolation_result, 'metadata.response_time'),
+          duration_ms: _.get(interpolation_result, 'metadata.response_time')
         };
 
         // invalid / not useful response, debug log for posterity
@@ -148,6 +173,7 @@ function setup(service, should_execute) {
 
       // log and continue
       logInfo.total_response_time = Date.now() - startTime;
+      logInfo.duration_ms = logInfo.total_response_time.toString();
       logger.info('interpolation', logInfo);
       debugLog.stopTimer(req, initialTime);
       next();
