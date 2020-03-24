@@ -1,0 +1,2 @@
+env: production
+gcpBasePath: gs://marduk-production/es-data/

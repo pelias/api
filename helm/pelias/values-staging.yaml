@@ -1,0 +1,2 @@
+env: staging
+gcpBasePath: gs://marduk-stage/es-data/
