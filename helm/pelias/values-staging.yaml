@@ -1,0 +1,3 @@
+env: staging
+replicas: 1
+gcpBasePath: gs://marduk-stage/es-data/

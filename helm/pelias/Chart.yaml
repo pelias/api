@@ -1,0 +1,13 @@
+apiVersion: v1
+appVersion: "0.1.0"
+description: Geocoder
+name: pelias
+version: 0.1.0
+keywords:
+- pelias
+sources:
+- https://github.com/entur/pelias-api
+maintainers:
+- name: 'team-ror'
+  email: team.rutedata@entur.org
+engine: gotpl
