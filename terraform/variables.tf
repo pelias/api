@@ -3,9 +3,6 @@ variable "gcp_project" {
     description = "The GCP project id"
 }
 
-variable "location" {
-  description = "GCP bucket location"
-}
 variable "kube_namespace" {
   description = "The Kubernetes namespace"
 }
