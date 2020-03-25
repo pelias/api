@@ -21,7 +21,7 @@ aliases:
       IMAGE="eu.gcr.io/entur-system-1287/${CIRCLE_PROJECT_REPONAME}"
       echo "Image: ${IMAGE}"
       docker build -t $IMAGE .
-      docker tag $IMAGE "${IMAGE}":"${CIRCLE_SHA1}"
+      docker tag $IMAGE "${IMAGE}":"${VERSION}"
       docker push $IMAGE
     environment:
       CIRCLE_PROJECT_REPONAME: "pelias"
@@ -33,13 +33,17 @@ aliases:
     name: Restore dependency cache
     keys:
       - node_modules-{{ arch }}-{{ .Branch }}-{{ checksum "package.json" }}
-  - &post-hook
-    name: Notify about build and docker image pushed
+  - &tag-git-version
+    name: Tag git commit with build version and push to github
     command: |
-      echo 'export CIRCLE_PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME"' >> $BASH_ENV
-      echo 'export CIRCLE_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
-      echo 'export BUILD_STATUS_API_KEY="$BUILD_STATUS_API_KEY"' >> $BASH_ENV
-      /tools/build_notify.sh
+      git config --global user.email "circleci@entur.no"
+      git config --global user.name "circleci"
+      git tag $VERSION
+      git push origin $VERSION
+  - &create-image-version
+    name: Create new image version and store to env var and as file in workspace
+    command: |
+          echo "export VERSION=$CIRCLE_BRANCH-v$CIRCLE_BUILD_NUM-$(echo -n $CIRCLE_SHA1 | tail -c 8)"  >> $BASH_ENV
 jobs:
   install:
     docker:
@@ -70,12 +74,13 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-dependency-cache
+      - *create-image-version
+      - *tag-git-version
       - run: *GCP-auth
       - setup_remote_docker:
           docker_layer_caching: true
       - run: *docker-login
       - run: *docker-build-and-push
-      - run: *post-hook
 workflows:
   version: 2
   install-test-build-deploy:
