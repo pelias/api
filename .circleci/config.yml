@@ -74,8 +74,8 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-dependency-cache
-      - *create-image-version
-      - *tag-git-version
+      - run: *create-image-version
+      - run: *tag-git-version
       - run: *GCP-auth
       - setup_remote_docker:
           docker_layer_caching: true
