@@ -1,6 +1,6 @@
 env: dev
 
-replicas: 5
+replicas: 1
 
 
 rollingUpdate:
@@ -17,9 +17,8 @@ resources:
 image:
   identifier: ${artifact.metadata.image}
   imagePullPolicy: Always
-
 secondaryImage:
-  identifier: eu.gcr.io/entur-system-1287/es-static-v2:0.0.2
+  identifier: eu.gcr.io/entur-system-1287/es-static:2.0.1
   imagePullPolicy: Always
   containerPort: 9200
   resources:
@@ -27,10 +26,9 @@ secondaryImage:
     memLimit: 1500Mi
     cpuRequest: 600m
     memRequest: 1000Mi
-
 secretMount:
   name: pelias-key
-  mountPath: /etc/pelias/
+  mountPath: /etc/pelias/credentials.json
   secretName: ror-pelias-sa-key
   readOnly: true
 

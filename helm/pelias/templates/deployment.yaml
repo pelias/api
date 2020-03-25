@@ -56,6 +56,8 @@ spec:
               value: Europe/Oslo
             - name: GCS_BASE_PATH
               value: {{.Values.gcpBasePath}}
+            - name: GCP_SA_KEY
+            - value: {{ .Values.secretMount.mountPath }}
           ports:
           - containerPort: {{ .Values.secondaryImage.containerPort }}
             protocol: TCP
@@ -75,11 +77,11 @@ spec:
                 memory: {{ .Values.secondaryImage.resources.memLimit }}
               requests:
                 cpu: {{ .Values.secondaryImage.resources.cpuRequest }}
-                memory: {{ .Values..secondaryImageresources.memRequest }}
+                memory: {{ .Values.secondaryImage.resources.memRequest }}
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
             volumeMounts:
-              - mountPath: {{ .Values.secretMount.path }}
+              - mountPath: {{ .Values.secretMount.mountPath }}
                 name: {{ .Values.secretMount.name }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
