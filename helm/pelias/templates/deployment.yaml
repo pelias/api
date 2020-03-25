@@ -81,8 +81,10 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
-        - mountPath: {{ .Values.secretMount.mountPath }}
-          name: {{ .Values.secretMount.name }}
+        - name: {{ .Values.secretMount.name }}
+          mountPath: {{ .Values.secretMount.mountPath }}
+          subPath: {{ .Values.secretMount.subPath }}
+          readOnly: {{ .Values.secretMount.readOnly }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

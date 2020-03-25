@@ -29,6 +29,7 @@ secondaryImage:
 secretMount:
   name: pelias-key
   mountPath: /etc/pelias/credentials.json
+  subPath: credentials.json
   secretName: ror-pelias-sa-key
   readOnly: true
 
