@@ -26,8 +26,8 @@ spec:
         image: {{ .Values.image.identifier }}
         imagePullPolicy: {{ .Values.image.imagePullPolicy }}
         env:
-          - name: TZ
-            value: Europe/Oslo
+         - name: TZ
+           value: Europe/Oslo
         resources:
           limits:
             cpu: {{ .Values.resources.cpuLimit }}
@@ -52,12 +52,12 @@ spec:
         image: {{ .Values.secondaryImage.identifier }}
         imagePullPolicy: {{ .Values.secondaryImage.imagePullPolicy }}
         env:
-          - name: TZ
-            value: Europe/Oslo
-          - name: GCS_BASE_PATH
-            value: {{.Values.gcpBasePath}}
-          - name: GCP_SA_KEY
-          - value: {{ .Values.secretMount.mountPath }}
+         - name: TZ
+           value: Europe/Oslo
+         - name: GCS_BASE_PATH
+           value: {{.Values.gcpBasePath}}
+         - name: GCP_SA_KEY
+           value: {{ .Values.secretMount.mountPath }}
         ports:
         - containerPort: {{ .Values.secondaryImage.containerPort }}
           protocol: TCP
@@ -89,7 +89,7 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
-        - name: {{ .Values.secretMount.name }}
-          secret:
-            secretName: {{ .Values.secretMount.secretName }}
+      - name: {{ .Values.secretMount.name }}
+        secret:
+          secretName: {{ .Values.secretMount.secretName }}
 
