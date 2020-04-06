@@ -18,14 +18,14 @@ resource "google_service_account" "pelias_service_account" {
 }
 
 # add service account as member to the bucket
-resource "google_storage_bucket_iam_member" "storage_bucket_iam_member" {
+resource "google_storage_bucket_iam_member" "pelias_storage_bucket_iam_member" {
   bucket = var.storage_bucket_name
   role   = var.service_account_bucket_role
   member = "serviceAccount:${google_service_account.pelias_service_account.email}"
 }
 
 # create key for service account
-resource "google_service_account_key" "tiamat_service_account_key" {
+resource "google_service_account_key" "pelias_service_account_key" {
   service_account_id = google_service_account.pelias_service_account.name
 }
 
@@ -36,6 +36,6 @@ resource "kubernetes_secret" "pelias_service_account_credentials" {
     namespace = var.kube_namespace
   }
   data = {
-    "credentials.json" = "${base64decode(google_service_account_key.tiamat_service_account_key.private_key)}"
+    "credentials.json" = "${base64decode(google_service_account_key.pelias_service_account_key.private_key)}"
   }
 }
