@@ -20,7 +20,7 @@ variable "labels" {
 
 variable "load_config_file" {
   description = "Do not load kube config file"
-  default     = true
+  default     = false
 }
 
 variable "storage_bucket_name" {
