@@ -114,7 +114,7 @@ module.exports.tests.interfaces = function(test, common) {
       whosonfirst: [ 'continent', 'empire', 'country', 'dependency', 'macroregion',
         'region', 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood',
         'borough', 'neighbourhood', 'microhood', 'disputed', 'venue', 'postalcode',
-        'continent', 'ocean', 'marinearea' ]
+        'ocean', 'marinearea' ]
     });
     t.end();
   });
