@@ -1,0 +1,70 @@
+{{- if .Values.cronjobRedeployPelias.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  labels:
+    {{- include "common.labels" . | indent 4 }}
+  name: cronjob-redeploy-{{ template "app.name" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  concurrencyPolicy: {{ .Values.cronjobRedeployPelias.concurrencyPolicy }}
+  failedJobsHistoryLimit: {{ .Values.cronjobRedeployPelias.failedJobsHistoryLimit }}
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          containers:
+            - command:
+                - ./redeploy_on_change_deployment.sh
+              env:
+                - name: TZ
+                  value: Europe/Oslo
+                - name: CLOUDSDK_CORE_PROJECT
+                  value: {{ .Values.cronjobRedeployPelias.environmentValues.cloudsdkCoreProject }}
+                - name: CURRENT_FILE_PATH
+                  value: {{ .Values.gcpBasePath }}/current
+                - name: LAST_FILE_PATH
+                  value: {{ .Values.gcpBasePath }}/last
+                - name: CREDENTIALS_FILE_PATH
+                  value: {{ .Values.secretMount.mountPath }}
+                - name: SLACK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: slack-url
+                      name: {{ .Values.cronjobRedeployPelias.environmentValues.slackName }}
+              image: {{ .Values.cronjobRedeployPelias.image.repo }}
+              imagePullPolicy: IfNotPresent
+              name: redeploy-pelias-job
+              resources:
+                limits:
+                  cpu: {{ .Values.cronjobRedeployPelias.resources.cpuLimit }}
+                  memory: {{ .Values.cronjobRedeployPelias.resources.memLimit }}
+                requests:
+                  cpu: {{ .Values.cronjobRedeployPelias.resources.cpuRequest }}
+                  memory: {{ .Values.cronjobRedeployPelias.resources.memRequest }}
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+              volumeMounts:
+              - name: {{ .Values.secretMount.name }}
+                mountPath: {{ .Values.secretMount.mountPath }}
+                subPath: {{ .Values.secretMount.subPath }}
+                readOnly: {{ .Values.secretMount.readOnly }}
+          dnsPolicy: ClusterFirst
+          restartPolicy: Never
+          schedulerName: default-scheduler
+          securityContext: {}
+          serviceAccount: cronjob-redeploy-{{ template "app.name" . }}
+          serviceAccountName: cronjob-redeploy-{{ template "app.name" . }}
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - name: {{ .Values.secretMount.name }}
+            secret:
+              secretName: {{ .Values.secretMount.secretName }}
+  schedule: '*/10 * * * *'
+  successfulJobsHistoryLimit: {{ .Values.cronjobRedeployPelias.successfulJobsHistoryLimit }}
+  suspend: false
+  {{- end }}

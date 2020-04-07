@@ -1,0 +1,20 @@
+{{- if .Values.rbac.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: cronjob-redeploy-{{ template "app.name" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "common.labels" . | indent 4 }}
+rules:
+  - apiGroups:
+      - extensions
+    resources:
+      - deployments
+    verbs:
+      - get
+      - watch
+      - list
+      - update
+      - patch
+{{- end }}
