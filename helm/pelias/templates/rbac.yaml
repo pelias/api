@@ -1,4 +1,27 @@
 {{- if .Values.rbac.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cronjob-redeploy-{{ template "app.name" . }}
+  labels:
+    {{- include "common.labels" . | indent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: cronjob-redeploy-{{ template "app.name" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "common.labels" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cronjob-redeploy-{{ template "app.name" . }}
+subjects:
+  - kind: ServiceAccount
+    name: cronjob-redeploy-{{ template "app.name" . }}
+    namespace: {{ .Values.namespace }}
+---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:

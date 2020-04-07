@@ -26,9 +26,9 @@ spec:
                 - name: CLOUDSDK_CORE_PROJECT
                   value: {{ .Values.cronjobRedeployPelias.environmentValues.cloudsdkCoreProject }}
                 - name: CURRENT_FILE_PATH
-                  value: {{ .Values.gcpBasePath }}/current
+                  value: {{ .Values.gcpBasePath }}current
                 - name: LAST_FILE_PATH
-                  value: {{ .Values.gcpBasePath }}/last
+                  value: {{ .Values.gcpBasePath }}last
                 - name: CREDENTIALS_FILE_PATH
                   value: {{ .Values.secretMount.mountPath }}
                 - name: SLACK_URL
