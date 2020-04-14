@@ -1,3 +1,21 @@
 env: staging
 replicas: 1
 gcpBasePath: gs://marduk-stage/es-data/
+
+cronjobRedeployPelias:
+  enabled: true
+  concurrencyPolicy: Replace
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  environmentValues:
+    cloudsdkCoreProject: entur-test-1287
+    slackName: ror-staging-slack-url
+  resources:
+    cpuLimit: 900m
+    memLimit: 2550Mi
+    cpuRequest: 100m
+    memRequest: 1000m
+  image:
+    repo: eu.gcr.io/entur-system-1287/deployment-rollout-restart:0.1.0
+rbac:
+  enabled: true
