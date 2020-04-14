@@ -29,6 +29,8 @@ spec:
                   value: {{ .Values.gcpBasePath }}current
                 - name: LAST_FILE_PATH
                   value: {{ .Values.gcpBasePath }}last
+                - name: DEPLOYMENT
+                  value: pelias
                 - name: CREDENTIALS_FILE_PATH
                   value: {{ .Values.secretMount.mountPath }}
                 - name: SLACK_URL
