@@ -2,11 +2,11 @@ module.exports = {
   'query': {
     'bool': {
       'must': [{
-        'match_phrase': {
+        'match': {
           'phrase.default': {
             'analyzer': 'peliasQuery',
             'boost': 1,
-            'slop': 3,
+            'minimum_should_match': '1<-1 3<-25%',
             'query': 'k road'
           }
         }
@@ -32,8 +32,7 @@ module.exports = {
           'type': 'cross_fields'
         }
       }],
-      'should':[
-        {
+      'should':[{
           'match': {
             'address_parts.street': {
               'query': 'k road',
@@ -44,6 +43,15 @@ module.exports = {
           }
         },
         {
+        'match_phrase': {
+          'phrase.default': {
+            'analyzer': 'peliasQuery',
+            'boost': 1,
+            'slop': 3,
+            'query': 'k road'
+          }
+        }
+      }, {
         'function_score': {
           'query': {
             'match_all': {}
