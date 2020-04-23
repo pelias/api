@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const categoryTaxonomy = require('pelias-categories');
+const allValidValidator = { isValidCategory: () => true };
 
 const WARNINGS = {
   empty: 'Categories parameter left blank, showing results from all categories.',
@@ -7,8 +7,8 @@ const WARNINGS = {
 };
 
 // validate inputs, convert types and apply defaults
-function _sanitize (raw, clean, categories) {
-  categories = categories || categoryTaxonomy;
+function _sanitize (raw, clean, validator) {
+  validator = validator || allValidValidator;
 
   // error & warning messages
   var messages = { errors: [], warnings: [] };
@@ -25,7 +25,7 @@ function _sanitize (raw, clean, categories) {
       return cat.toLowerCase().trim(); // lowercase inputs
     })
     .filter(cat => {
-      if (_.isString(cat) && !_.isEmpty(cat) && categories.isValidCategory(cat)) {
+      if (_.isString(cat) && !_.isEmpty(cat) && validator.isValidCategory(cat)) {
         return true;
       }
       return false;
