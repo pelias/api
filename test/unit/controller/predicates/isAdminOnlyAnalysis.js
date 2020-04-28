@@ -1,11 +1,11 @@
 const _ = require('lodash');
-const is_admin_only_analysis = require('../../../../controller/predicates/is_admin_only_analysis');
+const isAdminOnlyAnalysis = require('../../../../controller/predicates/isAdminOnlyAnalysis');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.equal(typeof is_admin_only_analysis, 'function', 'is_admin_only_analysis is a function');
+    t.equal(typeof isAdminOnlyAnalysis, 'function', 'isAdminOnlyAnalysis is a function');
     t.end();
   });
 };
@@ -22,7 +22,7 @@ module.exports.tests.true_conditions = (test, common) => {
 
       req.clean.parsed_text[property] = `${property} value`;
 
-      t.ok(is_admin_only_analysis(req, res));
+      t.ok(isAdminOnlyAnalysis(req, res));
 
     });
     t.end();
@@ -39,7 +39,7 @@ module.exports.tests.false_conditions = (test, common) => {
     };
     const res = {};
 
-    t.notOk(is_admin_only_analysis(req, res));
+    t.notOk(isAdminOnlyAnalysis(req, res));
     t.end();
 
   });
@@ -55,7 +55,7 @@ module.exports.tests.false_conditions = (test, common) => {
       };
       const res = {};
 
-      t.notOk(is_admin_only_analysis(req, res));
+      t.notOk(isAdminOnlyAnalysis(req, res));
 
     });
     t.end();
@@ -66,7 +66,7 @@ module.exports.tests.false_conditions = (test, common) => {
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`GET /is_admin_only_analysis ${name}`, testFunction);
+    return tape(`isAdminOnlyAnalysis ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){

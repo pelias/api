@@ -1,11 +1,11 @@
 const _ = require('lodash');
-const is_request_sources_only_whosonfirst = require('../../../../controller/predicates/is_request_sources_only_whosonfirst');
+const isRequestSourcesOnlyWhosOnFirst = require('../../../../controller/predicates/isRequestSourcesOnlyWhosOnFirst');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.ok(_.isFunction(is_request_sources_only_whosonfirst), 'is_request_sources_only_whosonfirst is a function');
+    t.ok(_.isFunction(isRequestSourcesOnlyWhosOnFirst), 'isRequestSourcesOnlyWhosOnFirst is a function');
     t.end();
   });
 };
@@ -20,7 +20,7 @@ module.exports.tests.true_conditions = (test, common) => {
       }
     };
 
-    t.ok(is_request_sources_only_whosonfirst(req));
+    t.ok(isRequestSourcesOnlyWhosOnFirst(req));
     t.end();
 
   });
@@ -29,7 +29,7 @@ module.exports.tests.true_conditions = (test, common) => {
 
 module.exports.tests.false_conditions = (test, common) => {
   test('undefined req should return false', (t) => {
-    t.notOk(is_request_sources_only_whosonfirst(undefined));
+    t.notOk(isRequestSourcesOnlyWhosOnFirst(undefined));
     t.end();
 
   });
@@ -37,7 +37,7 @@ module.exports.tests.false_conditions = (test, common) => {
   test('undefined req.clean should return false', (t) => {
     const req = {};
 
-    t.notOk(is_request_sources_only_whosonfirst(req));
+    t.notOk(isRequestSourcesOnlyWhosOnFirst(req));
     t.end();
 
   });
@@ -47,7 +47,7 @@ module.exports.tests.false_conditions = (test, common) => {
       clean: {}
     };
 
-    t.notOk(is_request_sources_only_whosonfirst(req));
+    t.notOk(isRequestSourcesOnlyWhosOnFirst(req));
     t.end();
 
   });
@@ -59,7 +59,7 @@ module.exports.tests.false_conditions = (test, common) => {
       }
     };
 
-    t.notOk(is_request_sources_only_whosonfirst(req));
+    t.notOk(isRequestSourcesOnlyWhosOnFirst(req));
     t.end();
 
   });
@@ -73,7 +73,7 @@ module.exports.tests.false_conditions = (test, common) => {
       }
     };
 
-    t.notOk(is_request_sources_only_whosonfirst(req));
+    t.notOk(isRequestSourcesOnlyWhosOnFirst(req));
     t.end();
 
   });
@@ -87,7 +87,7 @@ module.exports.tests.false_conditions = (test, common) => {
       }
     };
 
-    t.notOk(is_request_sources_only_whosonfirst(req));
+    t.notOk(isRequestSourcesOnlyWhosOnFirst(req));
     t.end();
 
   });
@@ -96,7 +96,7 @@ module.exports.tests.false_conditions = (test, common) => {
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`GET /is_request_sources_only_whosonfirst ${name}`, testFunction);
+    return tape(`isRequestSourcesOnlyWhosOnFirst ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){

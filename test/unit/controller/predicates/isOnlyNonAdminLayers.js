@@ -1,11 +1,11 @@
 const _ = require('lodash');
-const is_only_non_admin_layers = require('../../../../controller/predicates/is_only_non_admin_layers');
+const isOnlyNonAdminLayers = require('../../../../controller/predicates/isOnlyNonAdminLayers');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', t => {
-    t.equal(typeof is_only_non_admin_layers, 'function', 'is_only_non_admin_layers is a function');
+    t.equal(typeof isOnlyNonAdminLayers, 'function', 'isOnlyNonAdminLayers is a function');
     t.end();
   });
 };
@@ -27,7 +27,7 @@ module.exports.tests.true_conditions = (test, common) => {
         }
       };
 
-      t.ok(is_only_non_admin_layers(req));
+      t.ok(isOnlyNonAdminLayers(req));
 
     });
 
@@ -41,7 +41,7 @@ module.exports.tests.false_conditions = (test, common) => {
   test('request with undefined clean should return false', t => {
     const req = {};
 
-    t.notOk(is_only_non_admin_layers(req));
+    t.notOk(isOnlyNonAdminLayers(req));
     t.end();
 
   });
@@ -51,7 +51,7 @@ module.exports.tests.false_conditions = (test, common) => {
       clean: {}
     };
 
-    t.notOk(is_only_non_admin_layers(req));
+    t.notOk(isOnlyNonAdminLayers(req));
     t.end();
 
   });
@@ -63,7 +63,7 @@ module.exports.tests.false_conditions = (test, common) => {
       }
     };
 
-    t.notOk(is_only_non_admin_layers(req));
+    t.notOk(isOnlyNonAdminLayers(req));
     t.end();
 
   });
@@ -75,7 +75,7 @@ module.exports.tests.false_conditions = (test, common) => {
       }
     };
 
-    t.notOk(is_only_non_admin_layers(req));
+    t.notOk(isOnlyNonAdminLayers(req));
     t.end();
 
   });
@@ -88,7 +88,7 @@ module.exports.tests.false_conditions = (test, common) => {
         }
       };
 
-      t.notOk(is_only_non_admin_layers(req));
+      t.notOk(isOnlyNonAdminLayers(req));
 
     });
 
@@ -100,7 +100,7 @@ module.exports.tests.false_conditions = (test, common) => {
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`GET /is_only_non_admin_layers ${name}`, testFunction);
+    return tape(`IsOnlyNonAdminLayers ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){

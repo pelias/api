@@ -1,12 +1,12 @@
 const _ = require('lodash');
-const has_parsed_text_properties = require('../../../../controller/predicates/has_parsed_text_properties');
+const hasParsedTextProperties = require('../../../../controller/predicates/hasParsedTextProperties');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.ok(_.isFunction(has_parsed_text_properties.all), 'has_parsed_text_properties.all is a function');
-    t.ok(_.isFunction(has_parsed_text_properties.any), 'has_parsed_text_properties.any is a function');
+    t.ok(_.isFunction(hasParsedTextProperties.all), 'hasParsedTextProperties.all is a function');
+    t.ok(_.isFunction(hasParsedTextProperties.any), 'hasParsedTextProperties.any is a function');
     t.end();
   });
 
@@ -22,7 +22,7 @@ module.exports.tests.true_conditions = (test, common) => {
       }
     };
 
-    t.ok(has_parsed_text_properties.all('property')(req));
+    t.ok(hasParsedTextProperties.all('property')(req));
     t.end();
 
   });
@@ -37,7 +37,7 @@ module.exports.tests.true_conditions = (test, common) => {
       }
     };
 
-    t.ok(has_parsed_text_properties.all('property2', 'property1')(req));
+    t.ok(hasParsedTextProperties.all('property2', 'property1')(req));
     t.end();
 
   });
@@ -51,7 +51,7 @@ module.exports.tests.true_conditions = (test, common) => {
       }
     };
 
-    t.ok(has_parsed_text_properties.any('property')(req));
+    t.ok(hasParsedTextProperties.any('property')(req));
     t.end();
 
   });
@@ -66,7 +66,7 @@ module.exports.tests.true_conditions = (test, common) => {
       }
     };
 
-    t.ok(has_parsed_text_properties.any('property1', 'property3')(req));
+    t.ok(hasParsedTextProperties.any('property1', 'property3')(req));
     t.end();
 
   });
@@ -75,7 +75,7 @@ module.exports.tests.true_conditions = (test, common) => {
 
 module.exports.tests.false_conditions = (test, common) => {
   test('all: undefined request should return false', (t) => {
-    t.notOk(has_parsed_text_properties.all('property')());
+    t.notOk(hasParsedTextProperties.all('property')());
     t.end();
 
   });
@@ -83,7 +83,7 @@ module.exports.tests.false_conditions = (test, common) => {
   test('all: undefined request.clean should return false', (t) => {
     const req = {};
 
-    t.notOk(has_parsed_text_properties.all('property')(req));
+    t.notOk(hasParsedTextProperties.all('property')(req));
     t.end();
 
   });
@@ -93,7 +93,7 @@ module.exports.tests.false_conditions = (test, common) => {
       clean: {}
     };
 
-    t.notOk(has_parsed_text_properties.all('property')(req));
+    t.notOk(hasParsedTextProperties.all('property')(req));
     t.end();
 
   });
@@ -107,13 +107,13 @@ module.exports.tests.false_conditions = (test, common) => {
       }
     };
 
-    t.notOk(has_parsed_text_properties.all('property1', 'property2')(req));
+    t.notOk(hasParsedTextProperties.all('property1', 'property2')(req));
     t.end();
 
   });
 
   test('any: undefined request should return false', (t) => {
-    t.notOk(has_parsed_text_properties.any('property')());
+    t.notOk(hasParsedTextProperties.any('property')());
     t.end();
 
   });
@@ -121,7 +121,7 @@ module.exports.tests.false_conditions = (test, common) => {
   test('any: undefined request.clean should return false', (t) => {
     const req = {};
 
-    t.notOk(has_parsed_text_properties.any('property')(req));
+    t.notOk(hasParsedTextProperties.any('property')(req));
     t.end();
 
   });
@@ -131,7 +131,7 @@ module.exports.tests.false_conditions = (test, common) => {
       clean: {}
     };
 
-    t.notOk(has_parsed_text_properties.any('property')(req));
+    t.notOk(hasParsedTextProperties.any('property')(req));
     t.end();
 
   });
@@ -143,7 +143,7 @@ module.exports.tests.false_conditions = (test, common) => {
       }
     };
 
-    t.notOk(has_parsed_text_properties.any('property1', 'property2')(req));
+    t.notOk(hasParsedTextProperties.any('property1', 'property2')(req));
     t.end();
 
   });
@@ -152,7 +152,7 @@ module.exports.tests.false_conditions = (test, common) => {
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`GET /has_parsed_text_properties ${name}`, testFunction);
+    return tape(`hasParsedTextProperties ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){

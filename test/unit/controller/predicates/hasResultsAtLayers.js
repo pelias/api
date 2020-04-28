@@ -1,12 +1,12 @@
 const _ = require('lodash');
-const has_results_at_layers = require('../../../../controller/predicates/has_results_at_layers');
+const hasResultsAtLayers = require('../../../../controller/predicates/hasResultsAtLayers');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.equal(typeof has_results_at_layers, 'function', 'has_results_at_layers is a function');
-    t.equal(has_results_at_layers.length, 1);
+    t.equal(typeof hasResultsAtLayers, 'function', 'hasResultsAtLayers is a function');
+    t.equal(hasResultsAtLayers.length, 1);
     t.end();
   });
 };
@@ -28,7 +28,7 @@ module.exports.tests.true_conditions = (test, common) => {
       ]
     };
 
-    t.ok(has_results_at_layers(['layer 2', 'layer 4'])(req, res));
+    t.ok(hasResultsAtLayers(['layer 2', 'layer 4'])(req, res));
     t.end();
 
   });
@@ -49,7 +49,7 @@ module.exports.tests.true_conditions = (test, common) => {
       ]
     };
 
-    t.ok(has_results_at_layers('layer 2')(req, res));
+    t.ok(hasResultsAtLayers('layer 2')(req, res));
     t.end();
 
   });
@@ -61,7 +61,7 @@ module.exports.tests.false_conditions = (test, common) => {
     const req = {};
     const res = {};
 
-    t.notOk(has_results_at_layers('layer')(req, res));
+    t.notOk(hasResultsAtLayers('layer')(req, res));
     t.end();
 
   });
@@ -72,7 +72,7 @@ module.exports.tests.false_conditions = (test, common) => {
       data: []
     };
 
-    t.notOk(has_results_at_layers('layer')(req, res));
+    t.notOk(hasResultsAtLayers('layer')(req, res));
     t.end();
 
   });
@@ -87,7 +87,7 @@ module.exports.tests.false_conditions = (test, common) => {
       ]
     };
 
-    t.notOk(has_results_at_layers('layer')(req, res));
+    t.notOk(hasResultsAtLayers('layer')(req, res));
     t.end();
 
   });
@@ -102,7 +102,7 @@ module.exports.tests.false_conditions = (test, common) => {
       ]
     };
 
-    t.notOk(has_results_at_layers(['layer 2', 'layer 3'])(req, res));
+    t.notOk(hasResultsAtLayers(['layer 2', 'layer 3'])(req, res));
     t.end();
 
   });
@@ -111,7 +111,7 @@ module.exports.tests.false_conditions = (test, common) => {
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`GET /has_results_at_layers ${name}`, testFunction);
+    return tape(`hasResultsAtLayers ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){

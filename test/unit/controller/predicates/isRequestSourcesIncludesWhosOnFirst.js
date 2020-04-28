@@ -1,11 +1,11 @@
 const _ = require('lodash');
-const is_request_sources_includes_whosonfirst = require('../../../../controller/predicates/is_request_sources_includes_whosonfirst');
+const isRequestSourcesIncludesWhosOnFirst = require('../../../../controller/predicates/isRequestSourcesIncludesWhosOnFirst');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.ok(_.isFunction(is_request_sources_includes_whosonfirst), 'is_request_sources_includes_whosonfirst is a function');
+    t.ok(_.isFunction(isRequestSourcesIncludesWhosOnFirst), 'isRequestSourcesIncludesWhosOnFirst is a function');
     t.end();
   });
 };
@@ -21,7 +21,7 @@ module.exports.tests.true_conditions = (test, common) => {
       }
     };
 
-    t.ok(is_request_sources_includes_whosonfirst(req));
+    t.ok(isRequestSourcesIncludesWhosOnFirst(req));
     t.end();
 
   });
@@ -33,7 +33,7 @@ module.exports.tests.true_conditions = (test, common) => {
       }
     };
 
-    t.notOk(is_request_sources_includes_whosonfirst(req));
+    t.notOk(isRequestSourcesIncludesWhosOnFirst(req));
     t.end();
 
   });
@@ -42,7 +42,7 @@ module.exports.tests.true_conditions = (test, common) => {
 
 module.exports.tests.false_conditions = (test, common) => {
   test('undefined req should return false', (t) => {
-    t.notOk(is_request_sources_includes_whosonfirst(undefined));
+    t.notOk(isRequestSourcesIncludesWhosOnFirst(undefined));
     t.end();
 
   });
@@ -50,7 +50,7 @@ module.exports.tests.false_conditions = (test, common) => {
   test('undefined req.clean should return false', (t) => {
     const req = {};
 
-    t.notOk(is_request_sources_includes_whosonfirst(req));
+    t.notOk(isRequestSourcesIncludesWhosOnFirst(req));
     t.end();
 
   });
@@ -60,7 +60,7 @@ module.exports.tests.false_conditions = (test, common) => {
       clean: {}
     };
 
-    t.notOk(is_request_sources_includes_whosonfirst(req));
+    t.notOk(isRequestSourcesIncludesWhosOnFirst(req));
     t.end();
 
   });
@@ -74,14 +74,14 @@ module.exports.tests.false_conditions = (test, common) => {
       }
     };
 
-    t.notOk(is_request_sources_includes_whosonfirst(req));
+    t.notOk(isRequestSourcesIncludesWhosOnFirst(req));
     t.end();
   });
 };
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`GET /is_request_sources_includes_whosonfirst ${name}`, testFunction);
+    return tape(`isRequestSourcesIncludesWhosOnFirst ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){
