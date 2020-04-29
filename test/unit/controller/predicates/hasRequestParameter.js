@@ -1,11 +1,11 @@
 const _ = require('lodash');
-const has_request_parameter = require('../../../../controller/predicates/has_request_parameter');
+const hasRequestParameter = require('../../../../controller/predicates/hasRequestParameter');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', t => {
-    t.equal(typeof has_request_parameter, 'function', 'has_request_parameter is a function');
+    t.equal(typeof hasRequestParameter, 'function', 'hasRequestParameter is a function');
     t.end();
   });
 };
@@ -19,7 +19,7 @@ module.exports.tests.true_conditions = (test, common) => {
         }
       };
 
-      t.ok(has_request_parameter('parameter name')(req));
+      t.ok(hasRequestParameter('parameter name')(req));
 
     });
 
@@ -33,7 +33,7 @@ module.exports.tests.false_conditions = (test, common) => {
   test('request with undefined clean should return false', t => {
     const req = {};
 
-    t.notOk(has_request_parameter('parameter name')(req));
+    t.notOk(hasRequestParameter('parameter name')(req));
     t.end();
 
   });
@@ -43,7 +43,7 @@ module.exports.tests.false_conditions = (test, common) => {
       clean: {}
     };
 
-    t.notOk(has_request_parameter('parameter name')(req));
+    t.notOk(hasRequestParameter('parameter name')(req));
     t.end();
 
   });
@@ -52,7 +52,7 @@ module.exports.tests.false_conditions = (test, common) => {
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`GET /has_request_parameter ${name}`, testFunction);
+    return tape(`hasRequestParameter ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){

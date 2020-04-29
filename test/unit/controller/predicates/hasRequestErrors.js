@@ -1,11 +1,11 @@
 const _ = require('lodash');
-const has_request_errors = require('../../../../controller/predicates/has_request_errors');
+const hasRequestErrors = require('../../../../controller/predicates/hasRequestErrors');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.equal(typeof has_request_errors, 'function', 'has_request_errors is a function');
+    t.equal(typeof hasRequestErrors, 'function', 'hasRequestErrors is a function');
     t.end();
   });
 };
@@ -17,7 +17,7 @@ module.exports.tests.true_conditions = (test, common) => {
     };
     const res = {};
 
-    t.ok(has_request_errors(req, res));
+    t.ok(hasRequestErrors(req, res));
     t.end();
 
   });
@@ -29,7 +29,7 @@ module.exports.tests.false_conditions = (test, common) => {
     const req = {};
     const res = {};
 
-    t.notOk(has_request_errors(req, res));
+    t.notOk(hasRequestErrors(req, res));
     t.end();
 
   });
@@ -40,7 +40,7 @@ module.exports.tests.false_conditions = (test, common) => {
     };
     const res = {};
 
-    t.notOk(has_request_errors(req, res));
+    t.notOk(hasRequestErrors(req, res));
     t.end();
 
   });
@@ -49,7 +49,7 @@ module.exports.tests.false_conditions = (test, common) => {
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`GET /has_request_errors ${name}`, testFunction);
+    return tape(`hasRequestErrors ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){

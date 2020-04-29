@@ -1,11 +1,11 @@
 const _ = require('lodash');
-const is_request_sources_undefined = require('../../../../controller/predicates/is_request_sources_undefined');
+const isRequestSourcesUndefined = require('../../../../controller/predicates/isRequestSourcesUndefined');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.ok(_.isFunction(is_request_sources_undefined), 'is_request_sources_undefined is a function');
+    t.ok(_.isFunction(isRequestSourcesUndefined), 'isRequestSourcesUndefined is a function');
     t.end();
   });
 };
@@ -13,7 +13,7 @@ module.exports.tests.interface = (test, common) => {
 module.exports.tests.true_conditions = (test, common) => {
   test('undefined req should return true', (t) => {
 
-    t.ok(is_request_sources_undefined(undefined));
+    t.ok(isRequestSourcesUndefined(undefined));
     t.end();
 
   });
@@ -21,7 +21,7 @@ module.exports.tests.true_conditions = (test, common) => {
   test('undefined req.clean should return true', (t) => {
     const req = {};
 
-    t.ok(is_request_sources_undefined(req));
+    t.ok(isRequestSourcesUndefined(req));
     t.end();
 
   });
@@ -31,7 +31,7 @@ module.exports.tests.true_conditions = (test, common) => {
       clean: {}
     };
 
-    t.ok(is_request_sources_undefined(req));
+    t.ok(isRequestSourcesUndefined(req));
     t.end();
 
   });
@@ -43,7 +43,7 @@ module.exports.tests.true_conditions = (test, common) => {
       }
     };
 
-    t.ok(is_request_sources_undefined(req));
+    t.ok(isRequestSourcesUndefined(req));
     t.end();
 
   });
@@ -60,7 +60,7 @@ module.exports.tests.false_conditions = (test, common) => {
       }
     };
 
-    t.notOk(is_request_sources_undefined(req));
+    t.notOk(isRequestSourcesUndefined(req));
     t.end();
 
   });
@@ -69,7 +69,7 @@ module.exports.tests.false_conditions = (test, common) => {
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`GET /is_request_sources_undefined ${name}`, testFunction);
+    return tape(`isRequestSourcesUndefined ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){

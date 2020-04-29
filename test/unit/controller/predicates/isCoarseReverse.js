@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const is_coarse_reverse = require('../../../../controller/predicates/is_coarse_reverse');
+const isCoarseReverse = require('../../../../controller/predicates/isCoarseReverse');
 
 const coarse_layers = [
   'continent',
@@ -24,7 +24,7 @@ module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.equal(typeof is_coarse_reverse, 'function', 'is_coarse_reverse is a function');
+    t.equal(typeof isCoarseReverse, 'function', 'isCoarseReverse is a function');
     t.end();
   });
 };
@@ -35,7 +35,7 @@ module.exports.tests.false_conditions = (test, common) => {
       clean: {}
     };
 
-    t.notOk(is_coarse_reverse(req));
+    t.notOk(isCoarseReverse(req));
     t.end();
 
   });
@@ -47,7 +47,7 @@ module.exports.tests.false_conditions = (test, common) => {
       }
     };
 
-    t.notOk(is_coarse_reverse(req));
+    t.notOk(isCoarseReverse(req));
     t.end();
 
   });
@@ -60,7 +60,7 @@ module.exports.tests.false_conditions = (test, common) => {
         }
       };
 
-      t.notOk(is_coarse_reverse(req));
+      t.notOk(isCoarseReverse(req));
 
     });
 
@@ -76,7 +76,7 @@ module.exports.tests.false_conditions = (test, common) => {
         }
       };
 
-      t.notOk(is_coarse_reverse(req));
+      t.notOk(isCoarseReverse(req));
 
     });
 
@@ -91,7 +91,7 @@ module.exports.tests.false_conditions = (test, common) => {
       }
     };
 
-    t.notOk(is_coarse_reverse(req));
+    t.notOk(isCoarseReverse(req));
     t.end();
 
   });
@@ -107,7 +107,7 @@ module.exports.tests.true_conditions = (test, common) => {
         }
       };
 
-      t.ok(is_coarse_reverse(req));
+      t.ok(isCoarseReverse(req));
 
     });
 
@@ -119,7 +119,7 @@ module.exports.tests.true_conditions = (test, common) => {
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
-    return tape(`GET /is_coarse_reverse ${name}`, testFunction);
+    return tape(`isCoarseReverse ${name}`, testFunction);
   }
 
   for( const testCase in module.exports.tests ){
