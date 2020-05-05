@@ -52,25 +52,31 @@ function _sanitize (raw, clean) {
   return messages;
 }
 
-function isAmbiguousStreetOrPlaceParse(query, solutions){
+function isAmbiguousStreetOrPlaceParse(solutions){
   if (!solutions) {
     return false;
   }
-  const wholeStreetSolution = solutions.find(solution => {
+
+  const topTwoSolutions = _.take(solutions, 2);
+  const streetOnlySolution = topTwoSolutions.find(solution => {
     return solution.pair &&
-      solution.pair[0].label === 'street' &&
-      solution.pair[0].span.body === query;
+      solution.pair.length === 1 &&
+      solution.pair[0].classification.label === 'street';
   });
-  const wholePlaceSolution = solutions.find(solution => {
+  const placeOnlySolution = topTwoSolutions.find(solution => {
     return solution.pair &&
-      solution.pair[0].label === 'place' &&
-      solution.pair[0].span.body === query;
+      solution.pair.length === 1 &&
+      solution.pair[0].classification.label === 'place';
   });
-  return wholeStreetSolution && wholePlaceSolution;
+
+  return (
+    streetOnlySolution &&
+    placeOnlySolution &&
+    streetOnlySolution.pair[0].span.body === placeOnlySolution.pair[0].span.body
+  );
 }
 
-function parse (clean) {
-  
+function parse (clean) {  
   // parse text
   let start = new Date();
   const t = new Tokenizer(clean.text);
@@ -125,12 +131,17 @@ function parse (clean) {
     }
   }
 
-  // If the parser generated two solutions, one where the whole query was classified as a
-  // street, and another where it was classified entirely as a place, discard both solutions
-  // since we don't really know which to use.
+  // (Theory) If the parser's two top solutions were labeling the entire query as a venue/place,
+  // and labeling the entire query as a street, then the parse is telling us it's pretty 
+  // ambiguous, so we shouldn't bother boosting street or place matches in our search.
+  //
   // This helps with queries like "wrigley field" that have a word (field) that could be
-  // a street suffix but is also a likely venue word
-  if (isAmbiguousStreetOrPlaceParse(t.span.body, t.solutions) &&
+  // a street suffix but is also a likely venue word. 
+  //
+  // (Reality) There's no way to tell if the parser labeled the "whole query" because
+  // punctuation in the incoming query is unlabeled, so in reality this checks if
+  // the top two solutions were venue-only and place-only and labeled identical parts of the query
+  if (isAmbiguousStreetOrPlaceParse(t.solution) &&
     (parsed_text.street || parsed_text.place)) {
     delete parsed_text.street;
     delete parsed_text.place;
