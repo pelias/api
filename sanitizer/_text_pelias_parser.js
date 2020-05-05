@@ -52,6 +52,23 @@ function _sanitize (raw, clean) {
   return messages;
 }
 
+function isAmbiguousStreetOrPlaceParse(query, solutions){
+  if (!solutions) {
+    return false;
+  }
+  const wholeStreetSolution = solutions.find(solution => {
+    return solution.pair &&
+      solution.pair[0].label === 'street' &&
+      solution.pair[0].span.body === query;
+  });
+  const wholePlaceSolution = solutions.find(solution => {
+    return solution.pair &&
+      solution.pair[0].label === 'place' &&
+      solution.pair[0].span.body === query;
+  });
+  return wholeStreetSolution && wholePlaceSolution;
+}
+
 function parse (clean) {
   
   // parse text
@@ -106,6 +123,19 @@ function parse (clean) {
       delete parsed_text.cross_street;
       mask = mask.replace(/S/g, ' ');
     }
+  }
+
+  // If the parser generated two solutions, one where the whole query was classified as a
+  // street, and another where it was classified entirely as a place, discard both solutions
+  // since we don't really know which to use.
+  // This helps with queries like "wrigley field" that have a word (field) that could be
+  // a street suffix but is also a likely venue word
+  if (isAmbiguousStreetOrPlaceParse(t.span.body, t.solutions) &&
+    (parsed_text.street || parsed_text.place)) {
+    delete parsed_text.street;
+    delete parsed_text.place;
+    mask = mask.replace(/S/g, ' ');
+    mask = mask.replace(/V/g, ' ');
   }
 
   // the entire input text as seen by the parser with any postcode classification(s) removed
