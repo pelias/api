@@ -11,6 +11,7 @@ const Joi = require('@hapi/joi');
 // optional:
 // * api.accessLog (string)
 // * api.relativeScores (boolean)
+// * api.serveCompareFrontend (boolean)
 // * api.localization (flipNumberAndStreetCountries is array of 3 character strings)
 module.exports = Joi.object().keys({
   api: Joi.object().required().keys({
@@ -19,6 +20,7 @@ module.exports = Joi.object().keys({
     host: Joi.string(),
     accessLog: Joi.string().allow(''),
     relativeScores: Joi.boolean(),
+    serveCompareFrontend: Joi.boolean(),
     requestRetries: Joi.number().integer().min(0),
     customBoosts: Joi.object().keys({
       layer: Joi.object(),

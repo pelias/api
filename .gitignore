@@ -4,3 +4,4 @@ coverage
 *.log
 reports
 pids
+pelias.json

@@ -43,6 +43,10 @@ The API ships with several convenience commands (runnable via `npm`):
   * `npm run config`: dump the configuration to the command line, which is useful for debugging configuration issues
 
 ## Configuration via pelias-config
+To run the API with your custom config, specify the location of the config file in the environment variable PELIAS_CONFIG like so:
+
+```PELIAS_CONFIG=/path/to/pelias.json npm run start```
+
 The API recognizes the following properties under the top-level `api` key in your `pelias.json` config file:
 
 |parameter|required|default|description|
@@ -57,6 +61,8 @@ The API recognizes the following properties under the top-level `api` key in you
 |`attributionURL`|no| (autodetected)|The full URL to use for the attribution link returned in all Pelias responses. Pelias will attempt to autodetect this host, but it will often be incorrect if, for example, there is a proxy between Pelias and its users. This parameter allows setting a specific URL to avoid any such issues|
 |`accessLog`|*no*||name of the format to use for access logs; may be any one of the [predefined values](https://github.com/expressjs/morgan#predefined-formats) in the `morgan` package. Defaults to `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.|
 |`relativeScores`|*no*|true|if set to true, confidence scores will be normalized, realistically at this point setting this to false is not tested or desirable
+|`serveCompareFrontend`|*no*|true|if set to true, the [pelias compare frontend](https://github.com/pelias/compare) will be served from /frontend, pointing at the local instance, to aid in on-server debugging. [example](https://pelias.github.io/compare/)
+
 
 A good starting configuration file includes this section (fill in the service and Elasticsearch hosts as needed):
 
