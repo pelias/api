@@ -4,4 +4,4 @@
 # see https://github.com/pelias/pelias/issues/744
 set -euo pipefail
 
-node test/unit/run.js | npx tap-dot
+PELIAS_CONFIG=./test/pelias-config-empty.json node test/unit/run.js | npx tap-dot
