@@ -53,13 +53,6 @@ function _sanitize (raw, clean) {
 }
 
 function parse (clean) {
-  // short circuit for short, unreliable parses
-  if (clean.text.length < 10) {
-    return {
-      subject: clean.text
-    };
-  }
-
   // parse text
   let start = new Date();
   const t = new Tokenizer(clean.text);
@@ -78,6 +71,13 @@ function parse (clean) {
   // @todo: we could expand this in the future to accomodate more solutions
   let solution = new Solution();
   if (t.solution.length) { solution = t.solution[0]; }
+
+  // short circuit for short, unreliable parses
+  if (clean.text.length < 10) {
+    return {
+      subject: t.span.body
+    };
+  }
 
   // 1. map the output of the parser in to parsed_text
   let parsed_text = { subject: undefined };
