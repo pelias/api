@@ -99,7 +99,7 @@ var tests = [
   require('./sanitizer/_address_layer_filter'),
   require('./sanitizer/_synthesize_analysis'),
   require('./sanitizer/_text'),
-  require('./sanitizer/_text_pelias_parser'),
+  //require('./sanitizer/_text_pelias_parser'),
   require('./sanitizer/_tokenizer'),
   require('./sanitizer/_categories'),
   require('./sanitizer/_boundary_gid'),
