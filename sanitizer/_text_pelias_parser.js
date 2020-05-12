@@ -53,7 +53,13 @@ function _sanitize (raw, clean) {
 }
 
 function parse (clean) {
-  
+  // short circuit for short, unreliable parses
+  if (clean.text.length < 10) {
+    return {
+      subject: clean.text
+    };
+  }
+
   // parse text
   let start = new Date();
   const t = new Tokenizer(clean.text);
