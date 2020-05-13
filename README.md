@@ -1,19 +1,28 @@
->This repository is part of the [Pelias](https://github.com/pelias/pelias)
->project. Pelias is an open-source, open-data geocoder originally sponsored by
->[Mapzen](https://www.mapzen.com/). Our official user documentation is
->[here](https://github.com/pelias/documentation).
+<p align="center">
+  <img height="100" src="https://raw.githubusercontent.com/pelias/design/master/logo/pelias_github/Github_markdown_hero.png">
+</p>
+<h3 align="center">A modular, open-source search engine for our world.</h3>
+<p align="center">Pelias is a geocoder powered completely by open data, available freely to everyone.</p>
+<p align="center">
+<a href="https://en.wikipedia.org/wiki/MIT_License"><img src="https://img.shields.io/github/license/pelias/api?style=flat&color=orange" /></a>
+<a href="https://hub.docker.com/u/pelias"><img src="https://img.shields.io/docker/pulls/pelias/api?style=flat&color=informational" /></a>
+<a href="https://gitter.im/pelias/pelias"><img src="https://img.shields.io/gitter/room/pelias/pelias?style=flat&color=yellow" /></a>
+</p>
+<p align="center">
+	<a href="https://github.com/pelias/docker">Local Installation</a> ·
+        <a href="https://geocode.earth">Cloud Webservice</a> ·
+	<a href="https://github.com/pelias/documentation">Documentation</a> ·
+	<a href="https://gitter.im/pelias/pelias">Community Chat</a>
+</p>
+<details open>
+<summary>What is Pelias?</summary>
+<br />
+Pelias is a search engine for places worldwide, powered by open data. It turns addresses and place names into geographic coordinates, and turns geographic coordinates into places and addresses. With Pelias, you’re able to turn your users’ place searches into actionable geodata and transform your geodata into real places.
+<br /><br />
+We think open data, open source, and open strategy win over proprietary solutions at any part of the stack and we want to ensure the services we offer are in line with that vision. We believe that an open geocoder improves over the long-term only if the community can incorporate truly representative local knowledge.
+</details>
 
 # Pelias API Server
-
-![License](https://img.shields.io/github/license/pelias/api?color=orange)
-[![Build Status](https://img.shields.io/travis/pelias/api)](https://travis-ci.org/pelias/api)
-[![Docker Pulls](https://img.shields.io/docker/pulls/pelias/api?color=informational)](https://hub.docker.com/r/pelias/api)
-[![Version](https://img.shields.io/npm/v/pelias-api?color=informational)](https://www.npmjs.com/package/pelias-api)
-[![Installs](https://img.shields.io/npm/dm/pelias-api?color=informational&label=npm%20install)](https://www.npmjs.com/package/pelias-api)
-![Commits](https://img.shields.io/github/commit-activity/m/pelias/api?color=success)
-![Last Commit](https://img.shields.io/github/last-commit/pelias/api?color=success)
-![Last Release](https://img.shields.io/github/release-date/pelias/api?color=success)
-[![Gitter](https://img.shields.io/gitter/room/pelias/pelias?color=yellow)](https://gitter.im/pelias/pelias)
 
 This is the API server for the Pelias project. It's the service that runs to process user HTTP requests and return results as GeoJSON by querying Elasticsearch and the other Pelias services.
 
