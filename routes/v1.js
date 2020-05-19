@@ -358,6 +358,10 @@ function addRoutes(app, peliasConfig) {
 
   if (peliasConfig.api.exposeInternalDebugTools) {
     app.use ( '/frontend',                   express.static('node_modules/pelias-compare/dist-api/'));
+    
+    app.locals.parser = { address: require('../sanitizer/_text_pelias_parser')().parser };
+    app.use ( '/parser/demo',               express.static('node_modules/pelias-parser/server/demo/') );
+    app.use ( '/parser/parse',              require('pelias-parser/server/routes/parse.js') );
   }
 }
 
