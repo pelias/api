@@ -96,6 +96,25 @@ module.exports.tests.debug = function(test, common) {
     t.end();
   });
 
+  test('Push messages to other object if enableDebug is true', (t) => {
+    const debugLog = new Debug('debugger');
+    const req = {
+      clean: {
+        enableDebug: true
+      }
+    };
+
+    const hit = {};
+    const expected_req = [
+      {
+        debugger: 'This should be pushed'
+      },
+    ];
+    debugLog.push(req, hit, 'This should be pushed');
+    t.deepEquals(hit.debug, expected_req);
+    t.end();
+  });
+
 };
 
 module.exports.all = function (tape, common) {
