@@ -129,54 +129,54 @@ const fallbackRules = [
   {
     name: 'address',
     notSet: ['query'],
-    set: ['number', 'street'],
+    set: ['housenumber', 'street'],
     expectedLayers: ['address']
   },
   {
     name: 'street',
-    notSet: ['query', 'number'],
+    notSet: ['query', 'housenumber'],
     set: ['street'],
     expectedLayers: ['street']
   },
   {
     name: 'postalcode',
-    notSet: ['query', 'number', 'street'],
+    notSet: ['query', 'housenumber', 'street'],
     set: ['postalcode'],
     expectedLayers: ['postalcode']
   },
   {
     name: 'neighbourhood',
-    notSet: ['query', 'number', 'street', 'postalcode'],
+    notSet: ['query', 'housenumber', 'street', 'postalcode'],
     set: ['neighbourhood'],
     expectedLayers: ['neighbourhood']
   },
   {
     name: 'borough',
-    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood'],
+    notSet: ['query', 'housenumber', 'street', 'postalcode', 'neighbourhood'],
     set: ['borough'],
     expectedLayers: ['borough']
   },
   {
     name: 'city',
-    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood', 'borough'],
+    notSet: ['query', 'housenumber', 'street', 'postalcode', 'neighbourhood', 'borough'],
     set: ['city'],
     expectedLayers: ['borough', 'locality', 'localadmin']
   },
   {
     name: 'county',
-    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood', 'borough', 'city'],
+    notSet: ['query', 'housenumber', 'street', 'postalcode', 'neighbourhood', 'borough', 'city'],
     set: ['county'],
     expectedLayers: ['county']
   },
   {
     name: 'state',
-    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood', 'borough', 'city', 'county'],
+    notSet: ['query', 'housenumber', 'street', 'postalcode', 'neighbourhood', 'borough', 'city', 'county'],
     set: ['state'],
     expectedLayers: ['region']
   },
   {
     name: 'country',
-    notSet: ['query', 'number', 'street', 'postalcode', 'neighbourhood', 'borough', 'city', 'county', 'state'],
+    notSet: ['query', 'housenumber', 'street', 'postalcode', 'neighbourhood', 'borough', 'city', 'county', 'state'],
     set: ['country'],
     expectedLayers: ['country']
   }

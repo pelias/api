@@ -103,7 +103,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       clean: {
         text: '123 Main St, City, NM',
         parsed_text: {
-          number: 123,
+          housenumber: 123,
           street: 'Main St',
           state: 'NM'
         }
@@ -139,7 +139,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       clean: {
         text: '123 Main St, City, NM',
         parsed_text: {
-          number: 123,
+          housenumber: 123,
           street: 'Main St',
           state: 'NM'
         }
@@ -175,7 +175,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       clean: {
         text: '123 Main St, City, NM',
         parsed_text: {
-          number: 123,
+          housenumber: 123,
           street: 'Main St',
           state: 'NM'
         }
@@ -207,7 +207,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       clean: {
         text: 'example',
         parsed_text: {
-          number: 123,
+          housenumber: 123,
           street: 'example',
           state: 'EG'
         }

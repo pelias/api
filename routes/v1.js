@@ -174,7 +174,7 @@ function addRoutes(app, peliasConfig) {
   const interpolationShouldExecute = all(
     not(predicates.hasRequestErrors),
     isInterpolationEnabled,
-    predicates.hasParsedTextProperties.all('number', 'street'),
+    predicates.hasParsedTextProperties.all('housenumber', 'street'),
     predicates.hasResultsAtLayers('street')
   );
 

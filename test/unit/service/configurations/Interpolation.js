@@ -54,7 +54,7 @@ module.exports.tests.all = (test, common) => {
     const req = {
       clean: {
         parsed_text: {
-          number: 'parsed number value',
+          housenumber: 'parsed number value',
           street: 'parsed street value'
         }
       }
@@ -90,7 +90,7 @@ module.exports.tests.all = (test, common) => {
     const req = {
       clean: {
         parsed_text: {
-          number: 'parsed number value',
+          housenumber: 'parsed number value',
           street: 'parsed street value'
         }
       }

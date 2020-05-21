@@ -108,8 +108,8 @@ function generateQuery( clean, res ){
     vs.var( 'size', clean.querySize );
   }
 
-  if( ! _.isEmpty(clean.parsed_text.number) ){
-    vs.var( 'input:housenumber', clean.parsed_text.number );
+  if( ! _.isEmpty(clean.parsed_text.housenumber) ){
+    vs.var( 'input:housenumber', clean.parsed_text.housenumber );
   }
 
   if( ! _.isEmpty(clean.parsed_text.unit) ){

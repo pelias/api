@@ -46,10 +46,10 @@ function setup(libpostalService, should_execute) {
         // and assign to street
         // eg - '1090 N Charlotte St' becomes number=1090 and street=N Charlotte St
         if (house_number_field) {
-          req.clean.parsed_text.number = house_number_field.value;
+          req.clean.parsed_text.housenumber = house_number_field.value;
 
           // remove the first instance of the number and trim whitespace
-          req.clean.parsed_text.street = _.trim(_.replace(req.clean.parsed_text.address, req.clean.parsed_text.number, ''));
+          req.clean.parsed_text.street = _.trim(_.replace(req.clean.parsed_text.address, req.clean.parsed_text.housenumber, ''));
 
           // If libpostal have parsed unit then add it for search
           const unit_field = findField(response, 'unit');

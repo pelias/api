@@ -29,7 +29,7 @@ module.exports.tests.base_query = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         postalcode: 'postcode value',
         street: 'street value'
       }
@@ -82,7 +82,7 @@ module.exports.tests.other_parameters = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         street: 'street value'
       },
       querySize: 'querySize value'
@@ -114,7 +114,7 @@ module.exports.tests.other_parameters = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         street: 'street value'
       },
       sources: ['source 1', 'source 2']
@@ -146,7 +146,7 @@ module.exports.tests.other_parameters = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         street: 'street value'
       }
     };
@@ -178,7 +178,7 @@ module.exports.tests.granularity_bands = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         street: 'street value'
       }
     };
@@ -300,7 +300,7 @@ module.exports.tests.granularity_bands = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         street: 'street value'
       }
     };
@@ -345,7 +345,7 @@ module.exports.tests.granularity_bands = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         street: 'street value'
       }
     };
@@ -400,7 +400,7 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         street: 'street value'
       },
       'boundary.country': ['boundary.country', 'value']
@@ -432,7 +432,7 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         street: 'street value'
       },
       'focus.point.lat': 12.121212,
@@ -466,7 +466,7 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         street: 'street value'
       },
       'boundary.rect.min_lat': 12.121212,
@@ -504,7 +504,7 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         street: 'street value'
       },
       'boundary.circle.lat': 12.121212,
@@ -539,7 +539,7 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         street: 'street value'
       },
       'boundary.circle.lat': 12.121212,
@@ -575,7 +575,7 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const clean = {
       parsed_text: {
-        number: 'housenumber value',
+        housenumber: 'housenumber value',
         street: 'street value'
       },
       'boundary.gid': '123'
