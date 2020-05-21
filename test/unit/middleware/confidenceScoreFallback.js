@@ -104,7 +104,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       clean: {
         text: '123 Main St, City, NM',
         parsed_text: {
-          number: 123,
+          housenumber: 123,
           street: 'Main St',
           city: 'City',
           state: 'NM'
@@ -142,7 +142,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       clean: {
         text: '123 Main St, City, NM',
         parsed_text: {
-          number: 123,
+          housenumber: 123,
           street: 'Main St',
           city: 'City',
           state: 'NM'
@@ -180,7 +180,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       clean: {
         text: '123 Main St, City, NM',
         parsed_text: {
-          number: 123,
+          housenumber: 123,
           street: 'Main St',
           city: 'City',
           state: 'NM'
@@ -321,7 +321,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       clean: {
         text: '123 Main St, City, NM',
         parsed_text: {
-          number: 123,
+          housenumber: 123,
           street: 'Main St',
           state: 'NM'
         }
@@ -356,7 +356,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       clean: {
         text: '123 Main St, City, NM',
         parsed_text: {
-          number: 123,
+          housenumber: 123,
           street: 'Main St',
           state: 'NM'
         }
@@ -391,7 +391,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       clean: {
         text: '123 Main St, City, NM, USA',
         parsed_text: {
-          number: 123,
+          housenumber: 123,
           street: 'Main St',
           state: 'NM',
           country: 'USA'
@@ -524,7 +524,7 @@ module.exports.tests.confidenceScore = function(test, common) {
             clean: {
                 text: '123 Main St, City, NM, USA, 1234',
                 parsed_text: {
-                    number: 123,
+                    housenumber: 123,
                     street: 'Main St',
                     state: 'NM',
                     country: 'USA',

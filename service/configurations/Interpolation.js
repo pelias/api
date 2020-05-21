@@ -12,7 +12,7 @@ class Interpolation extends ServiceConfiguration {
 
   getParameters(req, hit) {
     let params = {
-      number: req.clean.parsed_text.number,
+      number: req.clean.parsed_text.housenumber,
       street: hit.address_parts.street || req.clean.parsed_text.street,
       lat: hit.center_point.lat,
       lon: hit.center_point.lon

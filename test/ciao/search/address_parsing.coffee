@@ -33,7 +33,7 @@ json.geocoding.query['text'].should.eql '30 w 26th st, ny'
 json.geocoding.query['size'].should.eql 10
 
 #? address parsing
-json.geocoding.query.parsed_text['number'].should.eql '30'
+json.geocoding.query.parsed_text['housenumber'].should.eql '30'
 json.geocoding.query.parsed_text['street'].should.eql 'w 26th st'
 json.geocoding.query.parsed_text['state'].should.eql 'ny'
 

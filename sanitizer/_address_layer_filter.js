@@ -53,7 +53,7 @@ function _setup(tm) {
       // be subject to change.
       if (_.isObject(clean.parsed_text) && !_.isEmpty(clean.parsed_text)) {
 
-        var isStreetAddress = clean.parsed_text.hasOwnProperty('number') && clean.parsed_text.hasOwnProperty('street');
+        var isStreetAddress = clean.parsed_text.hasOwnProperty('housenumber') && clean.parsed_text.hasOwnProperty('street');
 
         // use $subject where available (pelias parser)
         if (_.has(clean, 'parsed_text.subject')) {
@@ -62,7 +62,7 @@ function _setup(tm) {
 
         // if 'pelias_parser' or 'libpostal' identified input as a street address
         else if (isStreetAddress) {
-          input = clean.parsed_text.number + ' ' + clean.parsed_text.street;
+          input = clean.parsed_text.housenumber + ' ' + clean.parsed_text.street;
         }
 
         // else if the 'naive parser' was used, input is equal to 'name'
