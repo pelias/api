@@ -53,6 +53,10 @@ function setup( apiConfig, esclient, query, should_execute ){
       body: renderedQuery.body
     };
 
+    if (req.clean.enableElasticExplain) {
+      cmd.explain = true;
+    }
+
     logger.debug( '[ES req]', cmd );
     debugLog.push(req, {ES_req: cmd});
 
@@ -126,6 +130,9 @@ function setup( apiConfig, esclient, query, should_execute ){
           }});
         }
         logger.debug('[ES response]', docs);
+        if (req.clean.enableElasticDebug) {
+          debugLog.push(req, {ES_response: {docs, meta, data}});
+        }
         next();
       });
       debugLog.stopTimer(req, initialTime);

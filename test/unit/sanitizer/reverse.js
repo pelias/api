@@ -130,7 +130,7 @@ module.exports.tests.sanitize = function(test, common) {
     const req = {};
     const res = {};
 
-    reverse.middleware(req, res, () => {
+    reverse.middleware({})(req, res, () => {
       t.deepEquals(called_sanitizers, expected_sanitizers);
       t.end();
     });
