@@ -84,7 +84,7 @@ module.exports = {
               'parent.localadmin^1',
               'parent.locality^1',
               'parent.borough^1',
-              'parent.neighbourhood^1',
+              'parent.neighbourhood^0.75',
               'parent.region_a^1'
             ],
             'query': 'manhattan ny',

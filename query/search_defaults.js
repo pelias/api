@@ -97,7 +97,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   'admin:neighbourhood:analyzer': 'peliasAdmin',
   'admin:neighbourhood:field': 'parent.neighbourhood',
-  'admin:neighbourhood:boost': 1,
+  'admin:neighbourhood:boost': 0.75,
   'admin:neighbourhood:cutoff_frequency': 0.01,
 
   'popularity:field': 'popularity',
