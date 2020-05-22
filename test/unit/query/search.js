@@ -124,7 +124,7 @@ module.exports.tests.query = function(test, common) {
       parsed_text: {
         query: 'query value',
         category: 'category value',
-        number: 'number value',
+        housenumber: 'number value',
         street: 'street value',
         neighbourhood: 'neighbourhood value',
         borough: 'borough value',
@@ -342,7 +342,7 @@ module.exports.tests.city_state = function(test, common) {
       parsed_text: {
         city: 'city value',
         state: 'state value',
-        number: 'number value'
+        housenumber: 'number value'
       }
     };
 
@@ -501,7 +501,7 @@ module.exports.tests.city_country = function(test, common) {
       parsed_text: {
         city: 'city value',
         country: 'country value',
-        number: 'number value'
+        housenumber: 'number value'
       }
     };
 

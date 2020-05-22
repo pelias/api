@@ -45,7 +45,7 @@ module.exports.tests.false_conditions = (test, common) => {
   });
 
   test('parsed_text with non-admin properties should return false', (t) => {
-    ['unit', 'number', 'street', 'query', 'category', 'postalcode'].forEach((property) => {
+    ['unit', 'housenumber', 'street', 'query', 'category', 'postalcode'].forEach((property) => {
       const req = {
         clean: {
           parsed_text: {

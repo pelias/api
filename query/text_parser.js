@@ -20,8 +20,8 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
   }
 
   // house number
-  if( ! _.isEmpty(parsed_text.number) ){
-    vs.var( 'input:housenumber', parsed_text.number );
+  if( ! _.isEmpty(parsed_text.housenumber) ){
+    vs.var( 'input:housenumber', parsed_text.housenumber );
   }
 
   // street name

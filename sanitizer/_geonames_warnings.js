@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const non_admin_fields = ['number', 'street', 'query', 'category'];
+const non_admin_fields = ['housenumber', 'street', 'query', 'category'];
 
 function hasAnyNonAdminFields(parsed_text) {
   return !_.isEmpty(

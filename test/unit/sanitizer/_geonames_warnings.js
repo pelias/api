@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 const sanitizer = require('../../../sanitizer/_geonames_warnings')();
 
-const nonAdminProperties = ['number', 'street', 'query', 'category'];
+const nonAdminProperties = ['housenumber', 'street', 'query', 'category'];
 const adminProperties = ['neighbourhood', 'borough', 'city', 'county', 'state', 'postalcode', 'country'];
 
 module.exports.tests = {};

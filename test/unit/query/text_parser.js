@@ -37,7 +37,7 @@ module.exports.tests.query = function(test, common) {
     var parsed_text = {
       query: 'query value',
       category: 'category value',
-      number: 'number value',
+      housenumber: 'number value',
       street: 'street value',
       address: 'address value',
       neighbourhood: 'neighbourhood value',
@@ -91,7 +91,7 @@ module.exports.tests.housenumber_special_cases = function(test, common) {
   test('numeric query with street but without number should not change anything', function(t) {
     var parsed_text = {
       query: '17',
-      number: 'housenumber value',
+      housenumber: 'housenumber value',
       street: 'street value'
       // no number or street
     };
@@ -109,7 +109,7 @@ module.exports.tests.housenumber_special_cases = function(test, common) {
   test('numeric query with number but without street should not change anything', function(t) {
     var parsed_text = {
       query: '17',
-      number: 'number value'
+      housenumber: 'number value'
       // no number or street
     };
     var vs = new VariableStore();
@@ -162,7 +162,7 @@ module.exports.tests.empty_values = function(test, common) {
     var parsed_text = {
       query: '',
       category: '',
-      number: '',
+      housenumber: '',
       street: '',
       address: '',
       neighbourhood: '',

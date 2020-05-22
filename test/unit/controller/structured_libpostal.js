@@ -199,7 +199,7 @@ module.exports.tests.success_conditions = (test, common) => {
       t.deepEquals(req, {
         clean: {
           parsed_text: {
-            number: 'house_number value',
+            housenumber: 'house_number value',
             street: 'other value  street value'
           }
         },
@@ -239,7 +239,7 @@ module.exports.tests.success_conditions = (test, common) => {
       t.deepEquals(req, {
         clean: {
           parsed_text: {
-            number: 'postcode value',
+            housenumber: 'postcode value',
             street: 'other value  street value'
           }
         },
@@ -327,7 +327,7 @@ module.exports.tests.success_conditions = (test, common) => {
         clean: {
           parsed_text: {
             street: 'the street',
-            number: '22',
+            housenumber: '22',
             unit: '1 th'
           }
         },
@@ -414,7 +414,7 @@ module.exports.tests.success_conditions = (test, common) => {
   //           island: 'island value',
   //           category: 'category value',
   //           query: 'house value',
-  //           number: 'house_number value',
+  //           housenumber: 'house_number value',
   //           street: 'road value',
   //           neighbourhood: 'suburb value',
   //           borough: 'city_district value',
