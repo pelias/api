@@ -89,7 +89,7 @@ module.exports = {
             ],
             'query': 'manhattan ny',
             'analyzer': 'peliasAdmin',
-            'cutoff_frequency': 0.01
+            'type': 'cross_fields'
         }
       }],
       'filter': [
