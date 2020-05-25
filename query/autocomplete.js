@@ -189,7 +189,7 @@ function generateQuery( clean ){
   if ( isAdminSet ){ vs.var('input:add_name_to_multimatch', 'enabled'); }
 
   // Search in the user lang
-  if(clean.lang && check.string(clean.lang.iso6391)) {
+  if(clean.lang && _.isString(clean.lang.iso6391)) {
     vs.var('lang', clean.lang.iso6391);
   }
 
