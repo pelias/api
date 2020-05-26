@@ -206,7 +206,9 @@ function addRoutes(app, peliasConfig) {
 
   var routers = {
     index: createRouter([
-      controllers.markdownToHtml(peliasConfig.api, './public/apiDoc.md')
+      controllers.markdownToHtml(peliasConfig.api, 
+        peliasConfig.api.serveDebugFrontends ? './public/apiDocWithDebug.md' : './public/apiDoc.md'
+        )
     ]),
     attribution: createRouter([
       controllers.markdownToHtml(peliasConfig.api, './public/attribution.md')
@@ -360,7 +362,8 @@ function addRoutes(app, peliasConfig) {
     app.use ( '/frontend',                   express.static('node_modules/pelias-compare/dist-api/'));
     
     app.locals.parser = { address: require('../sanitizer/_text_pelias_parser')().parser };
-    app.use ( '/parser/demo',               express.static('node_modules/pelias-parser/server/demo/') );
+    app.use ( '/frontend/parser/demo',      express.static('node_modules/pelias-parser/server/demo/') );
+    // this needs to stay here because it's where the pelias-parser demo code expects it
     app.use ( '/parser/parse',              require('pelias-parser/server/routes/parse.js') );
   }
 }
