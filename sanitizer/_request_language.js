@@ -5,7 +5,8 @@ function _sanitize( raw, clean ){
 }
 
 function _expected(){
-  return [{ 'name': 'lang' }];
+  return [{ 'name': 'lang' },
+          { 'name': 'queryByLang'}];
 }
 
 // export function
