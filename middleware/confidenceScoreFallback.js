@@ -11,6 +11,8 @@
 
 const _ = require('lodash');
 const logger = require('pelias-logger').get('api');
+const Debug = require('../helper/debug');
+const debugLog = new Debug('middleware:confidenceScoreFallback');
 
 function setup() {
   return computeScores;
@@ -196,6 +198,10 @@ function checkFallbackOccurred(req, hit) {
       rule.expectedLayers.indexOf(hit.layer) === -1
     );
   });
+
+  if (res) {
+    debugLog.push(req, hit, {'fallback rule matched': res});
+  }
 
   return !!res;
 }

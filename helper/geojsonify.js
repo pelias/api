@@ -51,7 +51,7 @@ function geojsonifyPlace(params, place) {
     source_id: gid_components.id,
     bounding_box: place.bounding_box,
     lat: parseFloat(place.center_point.lat),
-    lng: parseFloat(place.center_point.lon)
+    lng: parseFloat(place.center_point.lon),
   };
 
   // assign name, logging a warning if it doesn't exist
@@ -78,6 +78,10 @@ function geojsonifyPlace(params, place) {
     if( Object.keys(addendum).length ){
       doc.addendum = addendum;
     }
+  }
+
+  if (place.debug) {
+    doc.debug = place.debug;
   }
 
   return doc;
