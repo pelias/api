@@ -149,7 +149,10 @@ function addRoutes(app, peliasConfig) {
   // defer to pelias parser for analysis IF there's no response AND placeholder should not have executed
   const shouldDeferToPeliasParser = all(
     not(predicates.hasRequestErrors),
-    not(predicates.hasResponseData)
+    any(
+      predicates.hasAdminOnlyResults,
+      predicates.isAdminOnlyAnalysis
+    )
   );
 
   // call search_pelias_parser query if pelias_parser was the parser
