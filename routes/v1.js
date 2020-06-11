@@ -80,7 +80,7 @@ function addRoutes(app, peliasConfig) {
   // execute placeholder if libpostal only parsed as admin-only and needs to
   //  be geodisambiguated
   const placeholderGeodisambiguationShouldExecute = all(
-    not(hasResponseDataOrRequestErrors),
+    not(predicates.hasRequestErrors),
     isPlaceholderServiceEnabled,
     // check request.clean for several conditions first
     not(
@@ -106,7 +106,7 @@ function addRoutes(app, peliasConfig) {
   // execute placeholder if libpostal identified address parts but ids need to
   //  be looked up for admin parts
   const placeholderIdsLookupShouldExecute = all(
-    not(hasResponseDataOrRequestErrors),
+    not(predicates.hasRequestErrors),
     isPlaceholderServiceEnabled,
     predicates.isRequestLayersAnyAddressRelated,
     // check clean.parsed_text for several conditions that must all be true
@@ -147,10 +147,27 @@ function addRoutes(app, peliasConfig) {
   );
 
   // defer to pelias parser for analysis IF there's no response AND placeholder should not have executed
-  const shouldDeferToPeliasParser = all(
-    not(predicates.hasRequestErrors),
-    not(predicates.hasResponseData)
-  );
+  const shouldDeferToPeliasParser = function(req, res) {
+    // if no results returned from placeholder or previous elasticsearch queries, short circuit and return true
+    // (we always want to try pelias parser based queries if there's no results)
+    if (not(predicates.hasResponseData)(req, res)) {
+      return true;
+    }
+
+    //// All conditions below must be true for us to use pelias parser
+
+    // if the 'sources' parameter is only wof, no need to do anything. Placeholder can return all the possible answers
+    const sources_not_only_wof = not(predicates.isRequestSourcesOnlyWhosOnFirst)(req,res);
+
+    // if there are only admin results, but parse contains more granular items than admin,
+    // then we want to defer to pelias parser based queries
+    const admin_only = all(
+      predicates.hasAdminOnlyResults,
+      not(predicates.isAdminOnlyAnalysis)
+    )(req, res);
+
+    return sources_not_only_wof && admin_only;
+  };
 
   // call search_pelias_parser query if pelias_parser was the parser
   const searchPeliasParserShouldExecute = all(
