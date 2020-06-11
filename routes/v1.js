@@ -148,6 +148,9 @@ function addRoutes(app, peliasConfig) {
 
   // defer to pelias parser for analysis IF there's no response AND placeholder should not have executed
   const shouldDeferToPeliasParser = function(req, res) {
+    if (not(predicates.hasResponseData)(req, res)) {
+      return true;
+    }
     const ph = placeholderShouldHaveExecuted(req,res);
 
     const admin = all(
@@ -157,7 +160,7 @@ function addRoutes(app, peliasConfig) {
           predicates.hasAdminOnlyResults,
           not(predicates.isAdminOnlyAnalysis)
         ),
-        predicates.isAdminOnlyAnalysis
+        not(predicates.hasResponseData)
       )
     )(req, res);
 
