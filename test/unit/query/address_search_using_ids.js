@@ -141,7 +141,7 @@ module.exports.tests.other_parameters = (test, common) => {
 
   });
 
-  test('address_parts.street slop defaults to 1', (t) => {
+  test('address_parts.street slop defaults to 3', (t) => {
     const logger = mock_logger();
 
     const clean = {
@@ -167,7 +167,7 @@ module.exports.tests.other_parameters = (test, common) => {
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.deepEquals(generatedQuery.body.vs.var('address:street:slop').toString(), 1);
+    t.deepEquals(generatedQuery.body.vs.var('address:street:slop').toString(), 3);
     t.end();
   });
 };
