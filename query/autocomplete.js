@@ -170,6 +170,11 @@ function generateQuery( clean ){
     vs.var('input:categories', clean.categories);
   }
 
+  // size
+  if( clean.querySize ) {
+    vs.var( 'size', clean.querySize );
+  }
+
   // run the address parser
   if( clean.parsed_text ){
     textParser( clean, vs );
