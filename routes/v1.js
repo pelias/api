@@ -257,6 +257,7 @@ function addRoutes(app, peliasConfig) {
     autocomplete: createRouter([
       sanitizers.autocomplete.middleware(peliasConfig.api),
       middleware.requestLanguage,
+      middleware.sizeCalculator(),
       controllers.search(peliasConfig.api, esclient, queries.autocomplete, not(hasResponseDataOrRequestErrors)),
       middleware.distance('focus.point.'),
       middleware.confidenceScore(peliasConfig.api),
