@@ -100,13 +100,13 @@ function parse (clean) {
   // classification, such as a house number, postcode or admin field.
   // this is to avoid errors for queries such as:
   // eg 'air & space museum, washington, dc'
-  if (parsed_text.street && parsed_text.cross_street) {
-    if (Object.keys(parsed_text).length > 3) {
-      delete parsed_text.street;
-      delete parsed_text.cross_street;
-      mask = mask.replace(/S/g, ' ');
-    }
-  }
+  //if (parsed_text.street && parsed_text.cross_street) {
+    //if (Object.keys(parsed_text).length > 3) {
+      //delete parsed_text.street;
+      //delete parsed_text.cross_street;
+      //mask = mask.replace(/S/g, ' ');
+    //}
+  //}
 
   // the entire input text as seen by the parser with any postcode classification(s) removed
   let body = t.span.body.split('')
