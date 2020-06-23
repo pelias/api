@@ -213,7 +213,7 @@ function addRoutes(app, peliasConfig) {
       // try 3 different query types: address search using ids, cascading fallback, pelias parser
       controllers.search(peliasConfig.api, esclient, queries.address_search_using_ids, searchWithIdsShouldExecute),
       controllers.search(peliasConfig.api, esclient, queries.search, fallbackQueryShouldExecute),
-      sanitizers.defer_to_pelias_parser(shouldDeferToPeliasParser), //run additional sanitizers needed for pelias parser
+      sanitizers.defer_to_pelias_parser(peliasConfig.api, shouldDeferToPeliasParser), //run additional sanitizers needed for pelias parser
       controllers.search(peliasConfig.api, esclient, queries.search_pelias_parser, searchPeliasParserShouldExecute),
       middleware.trimByGranularity(),
       middleware.distance('focus.point.'),
@@ -273,7 +273,7 @@ function addRoutes(app, peliasConfig) {
       middleware.sendJSON
     ]),
     reverse: createRouter([
-      sanitizers.reverse.middleware,
+      sanitizers.reverse.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.sizeCalculator(2),
       controllers.search(peliasConfig.api, esclient, queries.reverse, nonCoarseReverseShouldExecute),
@@ -294,7 +294,7 @@ function addRoutes(app, peliasConfig) {
       middleware.sendJSON
     ]),
     nearby: createRouter([
-      sanitizers.nearby.middleware,
+      sanitizers.nearby.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.sizeCalculator(),
       controllers.search(peliasConfig.api, esclient, queries.reverse, not(hasResponseDataOrRequestErrors)),
@@ -314,7 +314,7 @@ function addRoutes(app, peliasConfig) {
       middleware.sendJSON
     ]),
     place: createRouter([
-      sanitizers.place.middleware,
+      sanitizers.place.middleware(peliasConfig.api),
       middleware.requestLanguage,
       controllers.place(peliasConfig.api, esclient),
       middleware.accuracy(),
@@ -348,7 +348,7 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'reverse',              routers.reverse );
   app.get ( base + 'nearby',               routers.nearby );
 
-  if (peliasConfig.api.serveCompareFrontend) {
+  if (peliasConfig.api.exposeInternalDebugTools) {
     app.use ( '/frontend',                   express.static('node_modules/pelias-compare/dist-api/'));
   }
 }
