@@ -14,6 +14,7 @@ module.exports = {
                     'match_phrase': {
                       'address_parts.street': {
                         'query': 'street value',
+                        'analyzer': 'peliasStreet',
                         'slop': 1
                       }
                     }
