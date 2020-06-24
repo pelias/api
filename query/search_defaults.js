@@ -49,7 +49,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   'address:postcode:analyzer': 'peliasZip',
   'address:postcode:field': 'address_parts.zip',
-  'address:postcode:boost': 20,
+  'address:postcode:boost': 1,
   'address:postcode:cutoff_frequency': 0.01,
 
   // generic multi_match cutoff_frequency
