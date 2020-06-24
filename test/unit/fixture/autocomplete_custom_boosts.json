@@ -5,6 +5,18 @@
       "bool": {
         "must": [
           {
+            "match": {
+              "phrase.default": {
+                "analyzer": "peliasQuery",
+                "boost": 1,
+                "query": "foo",
+                "minimum_should_match": "1<-1 3<-25%"
+              }
+            }
+          }
+        ],
+        "should": [
+          {
             "match_phrase": {
               "phrase.default": {
                 "analyzer": "peliasQuery",
@@ -13,10 +25,7 @@
                 "query": "foo"
               }
             }
-          }
-        ],
-        "should": [
-          {
+          }, {
             "function_score": {
               "query": {
                 "match_all": {}

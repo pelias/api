@@ -14,6 +14,7 @@ var views = {
   admin_multi_match_first: require('./view/admin_multi_match_first'),
   admin_multi_match_last: require('./view/admin_multi_match_last'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
+  match_first_tokens_only:   require('./view/match_first_tokens_only'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
   focus_point_filter:         require('./view/focus_point_distance_filter')
@@ -40,7 +41,7 @@ adminFields = adminFields.concat(['add_name_to_multimatch']);
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
-query.score( views.phrase_first_tokens_only, 'must' );
+query.score( views.match_first_tokens_only, 'must' );
 query.score( views.ngrams_last_token_only_multi( adminFields ), 'must' );
 
 // admin components
@@ -54,6 +55,7 @@ query.score( peliasQuery.view.address('cross_street') );
 query.score( peliasQuery.view.address('postcode') );
 
 // scoring boost
+query.score( views.phrase_first_tokens_only, 'should' );
 query.score( peliasQuery.view.focus( views.ngrams_strict ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );

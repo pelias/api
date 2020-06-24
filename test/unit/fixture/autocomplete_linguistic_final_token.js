@@ -2,6 +2,16 @@ module.exports = {
   'query': {
     'bool': {
       'must': [{
+        'match': {
+          'phrase.default': {
+            'analyzer': 'peliasQuery',
+            'boost': 1,
+            'minimum_should_match': '1<-1 3<-25%',
+            'query': 'one'
+          }
+        }
+      }],
+      'should':[{
         'match_phrase': {
           'phrase.default': {
             'analyzer': 'peliasQuery',
@@ -10,8 +20,7 @@ module.exports = {
             'query': 'one'
           }
         }
-      }],
-      'should':[{
+      }, {
         'function_score': {
           'query': {
             'match_all': {}

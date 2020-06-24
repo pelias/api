@@ -3,11 +3,11 @@ module.exports = {
     'bool': {
       'must': [
         {
-          'match_phrase': {
+          'match': {
             'phrase.default': {
               'analyzer': 'peliasQuery',
               'boost': 1,
-              'slop': 3,
+              'minimum_should_match': '1<-1 3<-25%',
               'query': 'one two'
             }
           }
@@ -36,6 +36,16 @@ module.exports = {
         }
       ],
       'should': [
+        {
+          'match_phrase': {
+            'phrase.default': {
+              'analyzer': 'peliasQuery',
+              'boost': 1,
+              'slop': 3,
+              'query': 'one two'
+            }
+          }
+        },
         {
           'function_score': {
             'query': {
