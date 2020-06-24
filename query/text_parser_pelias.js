@@ -27,7 +27,9 @@ function addParsedVariablesToQueryVariables(clean, vs) {
   }
 
   // street name
-  if (!_.isEmpty(clean.parsed_text.street)) {
+  if (!_.isEmpty(clean.parsed_text.street) && _.isEmpty(clean.parsed_text.cross_street)) {
+    // do not query the `street` field if this is an intersection parse
+    // otherwise the order of the intersection in the data will determine what results come first
     vs.var('input:street', clean.parsed_text.street);
   }
 
@@ -37,7 +39,7 @@ function addParsedVariablesToQueryVariables(clean, vs) {
   }
 
   // postcode
-  if (!_.isEmpty(clean.parsed_text.postcode)) {
+  if (!_.isEmpty(clean.parsed_text.postcode) && _.isEmpty(clean.parsed_text.cross_street)) {
     vs.var('input:postcode', clean.parsed_text.postcode);
   }
 
