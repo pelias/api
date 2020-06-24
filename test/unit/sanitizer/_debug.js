@@ -7,7 +7,7 @@ module.exports.tests.sanitize_debug = function(test, common) {
     test(`debug flag is on: ${value}`, function(t) {
       const raw = { debug: value };
       const clean = {};
-      const expected_clean = { enableDebug: true  };
+      const expected_clean = { enableDebug: true, exposeInternalDebugTools: false };
 
       const messages = sanitizer.sanitize(raw, clean);
 
@@ -23,7 +23,7 @@ module.exports.tests.sanitize_debug = function(test, common) {
       const internalSanitizer = require('../../../sanitizer/_debug')(true);
       const raw = { debug: value };
       const clean = {};
-      const expected_clean = { enableDebug: true, enableElasticDebug: true };
+      const expected_clean = { enableDebug: true, enableElasticDebug: true, exposeInternalDebugTools: true };
 
       const messages = internalSanitizer.sanitize(raw, clean);
 
@@ -36,7 +36,7 @@ module.exports.tests.sanitize_debug = function(test, common) {
     test(`debug flag is on: ${value} and exposeInternalDebugTools unset`, function(t) {
       const raw = { debug: value };
       const clean = {};
-      const expected_clean = { enableDebug: false };
+      const expected_clean = { enableDebug: false, exposeInternalDebugTools: false };
 
       const messages = sanitizer.sanitize(raw, clean);
 
@@ -52,7 +52,7 @@ module.exports.tests.sanitize_debug = function(test, common) {
       const internalSanitizer = require('../../../sanitizer/_debug')(true);
       const raw = { debug: value };
       const clean = {};
-      const expected_clean = { enableDebug: true, enableElasticDebug: true, enableElasticExplain: true };
+      const expected_clean = { enableDebug: true, enableElasticDebug: true, enableElasticExplain: true, exposeInternalDebugTools: true };
 
       const messages = internalSanitizer.sanitize(raw, clean);
 
@@ -65,7 +65,7 @@ module.exports.tests.sanitize_debug = function(test, common) {
     test(`debug flag is on: ${value} and exposeInternalDebugTools unset`, function(t) {
       const raw = { debug: value };
       const clean = {};
-      const expected_clean = { enableDebug: false };
+      const expected_clean = { enableDebug: false, exposeInternalDebugTools: false };
 
       const messages = sanitizer.sanitize(raw, clean);
 
@@ -80,7 +80,7 @@ module.exports.tests.sanitize_debug = function(test, common) {
     test(`non-truthy values should set clean.debug to false: ${value}`, function(t) {
       const raw = { debug: value };
       const clean = {};
-      const expected_clean = { enableDebug: false  };
+      const expected_clean = { enableDebug: false, exposeInternalDebugTools: false  };
 
       const messages = sanitizer.sanitize(raw, clean);
 
@@ -94,7 +94,7 @@ module.exports.tests.sanitize_debug = function(test, common) {
   test(`unknown value shold return error`, function(t) {
     const raw = { debug: 'value' };
     const clean = {};
-    const expected_clean = { enableDebug: false  };
+    const expected_clean = { enableDebug: false, exposeInternalDebugTools: false  };
 
     const messages = sanitizer.sanitize(raw, clean);
 

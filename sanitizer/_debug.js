@@ -13,6 +13,7 @@ function _setup(exposeInternalDebugTools) {
       }
 
       clean.enableDebug = false;
+      clean.exposeInternalDebugTools = exposeInternalDebugTools || false;
 
       if (_.isEqual(raw.debug, {})) {
         return messages;

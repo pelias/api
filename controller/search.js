@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const querystring = require('querystring');
 
 const searchService = require('../service/search');
 const logger = require('pelias-logger').get('api');
@@ -10,7 +11,9 @@ function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
 
-function setup( apiConfig, esclient, query, should_execute ){
+function setup( peliasConfig, esclient, query, should_execute ){
+  const apiConfig = (peliasConfig || {}).api || {};
+
   function controller( req, res, next ){
     if (!should_execute(req, res)) {
       return next();
@@ -57,8 +60,17 @@ function setup( apiConfig, esclient, query, should_execute ){
       cmd.explain = true;
     }
 
-    logger.debug( '[ES req]', cmd );
-    debugLog.push(req, {ES_req: cmd});
+    const debugUrl = req.clean.exposeInternalDebugTools ?
+      `${peliasConfig.esclient.hosts[0]}/${apiConfig.indexName}/_search?` +
+        querystring.stringify({
+          source_content_type: 'application/json',
+          source: JSON.stringify(cmd.body)
+        }) : undefined;
+
+    debugLog.push(req, {
+      debugUrl,
+      ES_req: cmd
+    });
 
     operation.attempt((currentAttempt) => {
       const initialTime = debugLog.beginTimer(req, `Attempt ${currentAttempt}`);
