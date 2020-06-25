@@ -62,7 +62,9 @@ module.exports.tests.text_parser = function (test, common) {
 
   // Query with two tokens, number second
   cases.push(['main 123', {
-    subject: 'main 123'
+    subject: '123 main',
+    street: 'main',
+    housenumber: '123'
   }]);
 
   // Query with many tokens
@@ -147,7 +149,7 @@ module.exports.tests.text_parser = function (test, common) {
   // university
   cases.push(['Union College, Kentucky', {
     subject: 'Union College',
-    place: 'Union College',
+    venue: 'Union College',
     region: 'Kentucky',
     admin: 'Kentucky'
   }]);

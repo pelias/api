@@ -54,7 +54,7 @@
     "pelias-logger": "^1.2.0",
     "pelias-microservice-wrapper": "^1.7.0",
     "pelias-model": "^7.0.0",
-    "pelias-parser": "1.44.0",
+    "pelias-parser": "1.52.0",
     "pelias-query": "^10.0.0",
     "pelias-sorting": "^1.2.0",
     "predicates": "^2.0.0",
