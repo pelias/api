@@ -32,7 +32,8 @@ class Interpolation extends ServiceConfiguration {
     if (req.clean.exposeInternalDebugTools) {
       const table = url.resolve(this.baseUrl, 'extract/table') + '?' + querystring.stringify({...params, names: params.street});
       const raw = this.getUrl() + '?' + querystring.stringify(params);
-      const demo = url.resolve(this.baseUrl, 'demo') + `/#16/${hit.center_point.lat}/${hit.center_point.lon}`;
+      const demo = url.resolve(this.baseUrl, 'demo') + `/#16/${hit.center_point.lat}/${hit.center_point.lon}` +
+        '?' + querystring.stringify({name: params.street});
       return { links: {table, raw, demo}, params };
     } else {
       return { params };
