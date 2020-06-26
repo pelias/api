@@ -1,6 +1,5 @@
 var peliasQuery = require('pelias-query'),
     ngrams_strict = require('./ngrams_strict');
-
 /**
   Ngrams view which trims the 'input:name' and only uses the LAST TOKEN.
 

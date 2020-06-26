@@ -5,6 +5,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   'size': 20,
   'track_scores': true,
+  'lang': 'en',
 
   'centroid:field': 'center_point',
 
@@ -58,6 +59,9 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   // generic multi_match config
   'multi_match:type': 'cross_fields',
+  'multi_match:ngrams_strict:type': 'phrase',
+  'multi_match:first_tokens_only:type': 'phrase',
+  'multi_match:boost_exact_matches:type': 'phrase',
 
   // setting 'cutoff_frequency' will result in very common
   // terms such as country not scoring at all

@@ -1,5 +1,6 @@
 const peliasQuery = require('pelias-query');
 const searchDefaults = require('../search_defaults');
+const toMultiFields = require('./helper').toMultiFields;
 
 /**
   This view (unfortunately) requires autocomplete to use the phrase.* index.
@@ -26,12 +27,12 @@ module.exports = function( vs ){
   if( !tokens || tokens.length < 1 ){ return null; }
 
   // set 'input' to be only the fully completed characters
-  vs.var(`match_phrase:${view_name}:input`).set( tokens.join(' ') );
-  vs.var(`match_phrase:${view_name}:field`).set(searchDefaults['phrase:field']);
+  vs.var(`multi_match:${view_name}:input`).set( tokens.join(' ') );
+  vs.var(`multi_match:${view_name}:fields`).set(toMultiFields(searchDefaults['phrase:field'], vs.var('lang').get()));
 
-  vs.var(`match_phrase:${view_name}:analyzer`).set(searchDefaults['phrase:analyzer']);
-  vs.var(`match_phrase:${view_name}:boost`).set(vs.var('phrase:boost').get());
-  vs.var(`match_phrase:${view_name}:slop`).set(vs.var('phrase:slop').get());
+  vs.var(`multi_match:${view_name}:analyzer`).set(searchDefaults['phrase:analyzer']);
+  vs.var(`multi_match:${view_name}:boost`).set(vs.var('phrase:boost').get());
+  vs.var(`multi_match:${view_name}:slop`).set(vs.var('phrase:slop').get());
 
   return peliasQuery.view.leaf.match_phrase(view_name)( vs );
 };

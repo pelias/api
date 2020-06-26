@@ -3,13 +3,13 @@ module.exports = {
     'bool': {
       'must': [
         {
-          'match_phrase': {
-            'phrase.default': {
-              'analyzer': 'peliasQuery',
-              'boost': 1,
-              'slop': 3,
-              'query': 'one two'
-            }
+          'multi_match': {
+            'fields': ['phrase.default', 'phrase.en'],
+            'analyzer': 'peliasQuery',
+            'type': 'phrase',
+            'slop': 3,
+            'boost': 1,
+            'query': 'one two'
           }
         },
         {

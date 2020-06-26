@@ -4,13 +4,13 @@ module.exports = {
       'must': [{
         'constant_score': {
           'filter': {
-            'match_phrase': {
-              'name.default': {
-                'analyzer': 'peliasQuery',
-                'boost': 100,
-                'query': 't',
-                'slop': 3
-              }
+            'multi_match': {
+              'fields': ['name.default', 'name.en'],
+              'analyzer': 'peliasQuery',
+              'query': 't',
+              'boost': 100,
+              'type': 'phrase',
+              'slop': 3
             }
           }
         }

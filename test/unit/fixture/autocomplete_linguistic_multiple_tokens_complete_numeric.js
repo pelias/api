@@ -2,25 +2,25 @@ module.exports = {
   'query': {
     'bool': {
       'must': [{
-        'match_phrase': {
-          'phrase.default': {
-            'analyzer': 'peliasQuery',
-            'boost': 1,
-            'slop': 3,
-            'query': '1 2'
-          }
+        'multi_match': {
+          'fields': ['phrase.default', 'phrase.en'],
+          'analyzer': 'peliasQuery',
+          'type': 'phrase',
+          'slop': 3,
+          'boost': 1,
+          'query': '1 2'
         }
       },
       {
         'constant_score': {
           'filter': {
-            'match_phrase': {
-              'name.default': {
-                'analyzer': 'peliasQuery',
-                'boost': 100,
-                'query': 'three',
-                'slop': 3
-              }
+            'multi_match': {
+              'fields': ['name.default', 'name.en'],
+              'analyzer': 'peliasQuery',
+              'query': 'three',
+              'boost': 100,
+              'type': 'phrase',
+              'slop': 3
             }
           }
         }
