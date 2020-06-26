@@ -32,6 +32,7 @@ example response from interpolation web service:
 function error_intercepting_service(service, req) {
   return (street_result, next) => {
     service(req, street_result, (err, interpolation_result, metadata) => {
+
       if (err) {
         logger.error(`[middleware:interpolation] ${_.defaultTo(err.message, err)}`);
         // now that the error has been caught and reported, act as if there was no error
@@ -49,7 +50,7 @@ function error_intercepting_service(service, req) {
   };
 }
 
-function setup(service, should_execute) {
+function setup(service, should_execute, interpolationConfiguration) {
   return function controller(req, res, next) {
     // bail early if the service shouldn't execute
     if (!should_execute(req, res)) {
@@ -62,7 +63,6 @@ function setup(service, should_execute) {
     const street_results = _.get(res, 'data', []).filter(result => result.layer === 'street');
 
     // perform interpolations asynchronously for all relevant hits
-    const start = (new Date()).getTime();
     const initialTime = debugLog.beginTimer(req);
 
     const startTime = Date.now();
@@ -86,11 +86,13 @@ function setup(service, should_execute) {
           response_time: _.get(interpolation_result, 'metadata.response_time')
         };
 
+        const internalDebug = interpolationConfiguration ? interpolationConfiguration.getQueryDebug(req, source_result) : {};
+
         // invalid / not useful response, debug log for posterity
         // note: leave this hit unmodified
         if (!_.has(interpolation_result, 'properties')) {
           resultLogInfo.outcome = 'miss';
-          debugLog.push(req, 'miss');
+          debugLog.push(req, {interpolation_result: 'miss', ...internalDebug});
           logger.info('interpolation response', resultLogInfo);
           return;
         }
@@ -98,7 +100,7 @@ function setup(service, should_execute) {
         // the interpolation service returned a valid result
         // we now merge those values with the existing 'street' record
         logger.info('interpolation response', resultLogInfo);
-        debugLog.push(req, interpolation_result);
+        debugLog.push(req, {interpolation_result, ...internalDebug});
 
         // -- metadata --
         source_result.layer = 'address';

@@ -48,7 +48,7 @@
     "lodash": "^4.17.4",
     "markdown": "^0.5.0",
     "morgan": "^1.8.2",
-    "pelias-compare": "^0.1.5",
+    "pelias-compare": "^0.1.16",
     "pelias-config": "^4.0.0",
     "pelias-labels": "^1.8.0",
     "pelias-logger": "^1.2.0",
