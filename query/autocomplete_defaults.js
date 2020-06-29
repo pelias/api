@@ -42,12 +42,12 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'address:housenumber:boost': 2,
   'address:housenumber:cutoff_frequency': 0.01,
 
-  'address:street:analyzer': 'peliasStreet',
+  'address:street:analyzer': 'peliasQuery',
   'address:street:field': 'address_parts.street',
   'address:street:boost': 1,
   'address:street:cutoff_frequency': 0.01,
 
-  'address:cross_street:analyzer': 'peliasStreet',
+  'address:cross_street:analyzer': 'peliasQuery',
   'address:cross_street:field': 'address_parts.cross_street',
   'address:cross_street:boost': 5,
   'address:cross_street:cutoff_frequency': 0.01,

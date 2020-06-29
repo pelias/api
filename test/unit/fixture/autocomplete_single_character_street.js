@@ -39,7 +39,7 @@ module.exports = {
               'query': 'k road',
               'cutoff_frequency': 0.01,
               'boost': 1,
-              'analyzer': 'peliasStreet'
+              'analyzer': 'peliasQuery'
             }
           }
         },
