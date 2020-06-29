@@ -98,6 +98,7 @@ module.exports = function middleware( req, res, next ){
     name: req.language.name,
     iso6391: req.language.iso6391,
     iso6393: req.language.iso6393,
+    via: via,
     defaulted: req.language.defaulted
   };
 

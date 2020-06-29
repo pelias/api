@@ -24,6 +24,7 @@ module.exports.tests.defaults = function(test, common) {
         defaulted: req.language.defaulted,
         iso6391: req.language.iso6391,
         iso6393: req.language.iso6393,
+        via: 'default',
         name: req.language.name
       }, '$req.clean.lang set' );
 
@@ -46,6 +47,7 @@ module.exports.tests.defaults = function(test, common) {
         defaulted: req.language.defaulted,
         iso6391: req.language.iso6391,
         iso6393: req.language.iso6393,
+        via: 'default',
         name: req.language.name
       }, '$req.clean.lang set' );
 
@@ -73,6 +75,7 @@ module.exports.tests.invalid = function(test, common) {
         defaulted: req.language.defaulted,
         iso6391: req.language.iso6391,
         iso6393: req.language.iso6393,
+        via: 'default',
         name: req.language.name
       }, '$req.clean.lang set' );
 
@@ -96,6 +99,7 @@ module.exports.tests.invalid = function(test, common) {
         defaulted: req.language.defaulted,
         iso6391: req.language.iso6391,
         iso6393: req.language.iso6393,
+        via: 'default',
         name: req.language.name
       }, '$req.clean.lang set' );
 
@@ -133,6 +137,7 @@ module.exports.tests.valid = function(test, common) {
         defaulted: req.language.defaulted,
         iso6391: req.language.iso6391,
         iso6393: req.language.iso6393,
+        via: 'header',
         name: req.language.name
       }, '$req.clean.lang set' );
 
@@ -165,6 +170,7 @@ module.exports.tests.valid = function(test, common) {
         defaulted: req.language.defaulted,
         iso6391: req.language.iso6391,
         iso6393: req.language.iso6393,
+        via: 'querystring',
         name: req.language.name
       }, '$req.clean.lang set' );
 
@@ -198,6 +204,7 @@ module.exports.tests.valid = function(test, common) {
         defaulted: req.language.defaulted,
         iso6391: req.language.iso6391,
         iso6393: req.language.iso6393,
+        via: 'header',
         name: req.language.name
       }, '$req.clean.lang set' );
 
@@ -230,6 +237,7 @@ module.exports.tests.valid = function(test, common) {
         defaulted: req.language.defaulted,
         iso6391: req.language.iso6391,
         iso6393: req.language.iso6393,
+        via: 'querystring',
         name: req.language.name
       }, '$req.clean.lang set' );
 
@@ -266,6 +274,7 @@ module.exports.tests.precedence = function(test, common) {
         defaulted: req.language.defaulted,
         iso6391: req.language.iso6391,
         iso6393: req.language.iso6393,
+        via: 'querystring',
         name: req.language.name
       }, '$req.clean.lang set' );
 
@@ -299,6 +308,7 @@ module.exports.tests.precedence = function(test, common) {
         defaulted: req.language.defaulted,
         iso6391: req.language.iso6391,
         iso6393: req.language.iso6393,
+        via: 'header',
         name: req.language.name
       }, '$req.clean.lang set' );
 
