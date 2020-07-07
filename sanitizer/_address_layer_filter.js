@@ -106,7 +106,6 @@ function _setup(tm) {
 
           // target all layers for the sources specified except 'address'
           clean.layers = sourceLayers.filter(item => item !== 'address'); // exclude 'address'
-          console.log('layers2', sourceLayers);
           messages.warnings.push(ADDRESS_FILTER_WARNING);
         }
       }
