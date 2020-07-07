@@ -148,23 +148,25 @@ function addRoutes(app, peliasConfig) {
 
   // defer to pelias parser for analysis IF there's no response AND placeholder should not have executed
   const shouldDeferToPeliasParser = function(req, res) {
+    // if no results returned from placeholder or previous elasticsearch queries, short circuit and return true
+    // (we always want to try pelias parser based queries if there's no results)
     if (not(predicates.hasResponseData)(req, res)) {
       return true;
     }
-    const ph = placeholderShouldHaveExecuted(req,res);
 
-    const admin = all(
-      not(predicates.isRequestSourcesOnlyWhosOnFirst),
-      any(
-        all(
-          predicates.hasAdminOnlyResults,
-          not(predicates.isAdminOnlyAnalysis)
-        ),
-        not(predicates.hasResponseData)
-      )
+    //// All conditions below must be true for us to use pelias parser
+
+    // if the 'sources' parameter is only wof, no need to do anything. Placeholder can return all the possible answers
+    const sources_not_only_wof = not(predicates.isRequestSourcesOnlyWhosOnFirst)(req,res);
+
+    // if there are only admin results, but parse contains more granular items than admin,
+    // then we want to defer to pelias parser based queries
+    const admin_only = all(
+      predicates.hasAdminOnlyResults,
+      not(predicates.isAdminOnlyAnalysis)
     )(req, res);
 
-    return ph && admin;
+    return sources_not_only_wof && admin_only;
   };
 
   // call search_pelias_parser query if pelias_parser was the parser
