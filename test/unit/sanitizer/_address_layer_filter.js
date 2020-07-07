@@ -41,21 +41,21 @@ module.exports.tests.sanitize = function (test, common) {
 
   test('sanitize - apply layer filter for non-numeric multi-word inputs', (t) => {
     let clean = { text: 'foo bar baz bing' };
-    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
+    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
 
   test('sanitize - apply layer filter for single word inputs', (t) => {
     let clean = { text: 'foo' };
-    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
+    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
 
   test('sanitize - apply layer filter when clean.sources empty', (t) => {
     let clean = { text: 'foo', sources: [] };
-    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
+    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
@@ -93,14 +93,14 @@ module.exports.tests.tricky_inputs = function (test, common) {
 
   test('tricky inputs - extra whitespace', (t) => {
     let clean = { text: ' \t\n  12 \n\t ' };
-    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
+    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
 
   test('tricky inputs - trailing whitespace', (t) => {
     let clean = { text: '12 ' };
-    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
+    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
@@ -115,7 +115,7 @@ module.exports.tests.parsed_text = function (test, common) {
 
   test('naive parser - apply filter due to comma being present', (t) => {
     let clean = { text: 'A', parsed_text: { name: '1', admin_parts: 'Avenue' } };
-    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
+    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
@@ -129,7 +129,7 @@ module.exports.tests.parsed_text = function (test, common) {
 
   test('pelias_parser/libpostal - apply filter for non-numeric addresses', (t) => {
     let clean = { text: 'A', parsed_text: { housenumber: 'Foo', street: 'Main St' } };
-    t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
+    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
