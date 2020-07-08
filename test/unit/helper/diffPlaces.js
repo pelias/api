@@ -75,7 +75,7 @@ module.exports.tests.dedupe = function(test, common) {
     t.end();
   });
 
-  test('isCategoryDifferent: empty categories are duplicates', function(t) {
+  test('isCategoryDifferent: one empty category are considerend different', function(t) {
     var item1 = {
       'layer': 'same',
       'category': [ 'transport' ]
@@ -85,11 +85,11 @@ module.exports.tests.dedupe = function(test, common) {
       'category': []
     };
 
-    t.false(isDifferent(item1, item2), 'should not be considered be different');
+    t.true(isDifferent(item1, item2), 'should be different');
     t.end();
   });
 
-  test('isCategoryDifferent: one missing category are considered same', function(t) {
+  test('isCategoryDifferent: one missing category are considered different', function(t) {
     var item1 = {
       'layer': 'same',
       'category': [ 'transport' ]
@@ -98,7 +98,7 @@ module.exports.tests.dedupe = function(test, common) {
       'layer': 'same',
     };
 
-    t.false(isDifferent(item1, item2), 'should not be considered be different');
+    t.true(isDifferent(item1, item2), 'should be different');
     t.end();
   });
 
