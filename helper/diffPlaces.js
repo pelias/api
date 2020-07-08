@@ -39,6 +39,24 @@ function isLayerDifferent(item1, item2){
 }
 
 /**
+ * Compare the category properties if they exist.
+ * Returns false if the objects are the same, else true.
+ */
+function isCategoryDifferent(item1, item2){
+  let category1 = _.get(item1, 'category');
+  let category2 = _.get(item2, 'category');
+
+  // check if these are array objects
+  // if only one has category info, we consider them the same
+  if( !_.isArray(category1) || !_.isArray(category2) ){ return false; }
+
+  // if both categories are empty, we consider them as same
+  if( _.isEmpty(category1) || _.isEmpty(category2) ){ return false; }
+
+  return isPropertyDifferent(item1, item2, 'category');
+}
+
+/**
  * Compare the parent properties if they exist.
  * Returns false if the objects are the same, else true.
  */
@@ -168,6 +186,7 @@ function isDifferent(item1, item2, requestLanguage){
   if( isParentHierarchyDifferent( item1, item2 ) ){ return true; }
   if( isNameDifferent( item1, item2, requestLanguage ) ){ return true; }
   if( isAddressDifferent( item1, item2 ) ){ return true; }
+  if( isCategoryDifferent( item1, item2 ) ){ return true; }
   return false;
 }
 
