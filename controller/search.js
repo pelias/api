@@ -180,7 +180,9 @@ function setup( peliasConfig, esclient, query, should_execute ){
                   source_content_type: 'application/json',
                   source: JSON.stringify({query: cmd.body.query})
                 });
-                doc.debug = [{esExplainUrl}];
+                const esRawDocumentUrl = `${esHostUrl}/${apiConfig.indexName}/_doc/${doc._id}?`;
+
+                doc.debug = [{esExplainUrl, esRawDocumentUrl}];
               });
             }
 
