@@ -9,6 +9,8 @@ function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
 
+
+
 function setup( peliasConfig, esclient, query, should_execute ){
   const apiConfig = _.get(peliasConfig, 'api', {});
 
@@ -75,17 +77,46 @@ function setup( peliasConfig, esclient, query, should_execute ){
         }
       });
 
-      explainDebugUrl = 
+      debugInfo.explainDebugUrl = 
         `${esHostUrl}/${apiConfig.indexName}/_search?` +
           querystring.stringify({
             source_content_type: 'application/json',
             source: JSON.stringify({...cmd.body, explain: true})
           });
+
+        debugInfo.analyzerLinks = [];
+        const traverse = (obj, cb, keypath) => {
+          for (let k in obj) {
+            if (obj[k] && typeof obj[k] === 'object') {
+              const newkeypath = keypath ? keypath + '.' + k : k;
+              cb(obj[k], newkeypath);
+              traverse(obj[k], cb, newkeypath);
+            }
+          }
+        };
+            
+        traverse(cmd.body, (querySection, keypath) => {
+          if (querySection.query && querySection.analyzer) {
+            const analysisUrl = `${esHostUrl}/${apiConfig.indexName}/_analyze?` +
+            querystring.stringify({
+              source_content_type: 'application/json',
+              source: JSON.stringify({
+                text: querySection.query,
+                analyzer: querySection.analyzer
+              })
+            });
+            debugInfo.analyzerLinks.push({
+              analysisUrl,
+              query: querySection.query,
+              analyzer: querySection.analyzer,
+              keypath
+            });
+          }
+        }); 
     }
 
     debugLog.push(req, {
-      debugUrl,
-      explainDebugUrl,
+      ...debugInfo,
       ES_req: cmd
     });
 
