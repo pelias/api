@@ -175,12 +175,12 @@ function setup( peliasConfig, esclient, query, should_execute ){
             if (req.clean.exposeInternalDebugTools && esHostUrl) {
               // add an ES explain link to each document
               docs.forEach((doc) => {
-                const esExplainUrl = `${esHostUrl}/${apiConfig.indexName}/_explain/${doc._id}?` +
+                const esExplainUrl = `${esHostUrl}/${apiConfig.indexName}/_explain/${encodeURIComponent(doc._id)}?` +
                 querystring.stringify({
                   source_content_type: 'application/json',
                   source: JSON.stringify({query: cmd.body.query})
                 });
-                const esRawDocumentUrl = `${esHostUrl}/${apiConfig.indexName}/_doc/${doc._id}?`;
+                const esRawDocumentUrl = `${esHostUrl}/${apiConfig.indexName}/_doc/${encodeURIComponent(doc._id)}?`;
 
                 doc.debug = [{esExplainUrl, esRawDocumentUrl}];
               });
