@@ -74,10 +74,18 @@ function setup( peliasConfig, esclient, query, should_execute ){
           source: JSON.stringify(cmd.body)
         }
       });
+
+      explainDebugUrl = 
+        `${esHostUrl}/${apiConfig.indexName}/_search?` +
+          querystring.stringify({
+            source_content_type: 'application/json',
+            source: JSON.stringify({...cmd.body, explain: true})
+          });
     }
 
     debugLog.push(req, {
       debugUrl,
+      explainDebugUrl,
       ES_req: cmd
     });
 
