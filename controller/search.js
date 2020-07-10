@@ -133,6 +133,18 @@ function setup( peliasConfig, esclient, query, should_execute ){
           // be results.  if there are no results from this ES call, don't overwrite
           // what's already there from a previous call.
           if (!_.isEmpty(docs)) {
+            if (req.clean.exposeInternalDebugTools && esHostUrl) {
+              // add an ES explain link to each document
+              docs.forEach((doc) => {
+                const esExplainUrl = `${esHostUrl}/${apiConfig.indexName}/_explain/${doc._id}?` +
+                querystring.stringify({
+                  source_content_type: 'application/json',
+                  source: JSON.stringify({query: cmd.body.query})
+                });
+                doc.debug = [{esExplainUrl}];
+              });
+            }
+
             res.data = docs;
             res.meta = meta || {};
             // store the query_type for subsequent middleware
