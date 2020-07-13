@@ -173,15 +173,24 @@ function setup( peliasConfig, esclient, query, should_execute ){
           // what's already there from a previous call.
           if (!_.isEmpty(docs)) {
             if (req.clean.exposeInternalDebugTools && esHostUrl) {
-              // add an ES explain link to each document
+              // Add an ES explain link to each document
               docs.forEach((doc) => {
+                // make a version of our query that restricts to just this doc id
+                // this makes it easier to see why this particular result got the score
+                // it did.
                 const docIdQuery = {
-                  bool: { must: 
-                    [cmd.body.query, {
-                      ids: {
-                  type: '_doc',
-                  values: [doc._id]
-                }}]}};
+                  bool: { 
+                    must: [
+                      cmd.body.query, 
+                      {
+                        ids: {
+                          type: '_doc',
+                          values: [doc._id]
+                        }
+                      }
+                    ]
+                  }
+                };
                 const esExplainUrl = `${esHostUrl}/${apiConfig.indexName}/_search?` +
                   querystring.stringify({
                     source_content_type: 'application/json',
