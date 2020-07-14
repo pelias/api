@@ -69,7 +69,7 @@ module.exports.tests.view_within_range = function(test, common) {
       }
     };
 
-    t.deepEquals(actual, expected, 'view_within_range');
+    t.deepLooseEqual(actual, expected, 'view_within_range');
     t.end();
   });
 };
@@ -103,7 +103,7 @@ module.exports.tests.view_clamp_range_low = function(test, common) {
         layer: { $: _.difference(allLayers, ['address']) }
       }
     };
-    t.deepEquals(actual, expected, 'view_clamp_range_low');
+    t.deepLooseEqual(actual, expected, 'view_clamp_range_low');
     t.end();
   });
 };
