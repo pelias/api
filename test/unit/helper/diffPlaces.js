@@ -335,6 +335,115 @@ module.exports.tests.dedupe = function(test, common) {
     t.false(isDifferent(item1, item2), 'should be the same');
     t.end();
   });
+
+  test('same address should be considered equal', function (t) {
+    var item1 = {
+      'name': {
+        'default': '1 Main St'
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210'
+      }
+    };
+    var item2 = {
+      'name': {
+        'default': '1 Main St'
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210'
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should not be different');
+    t.end();
+  });
+
+  test('same address and unit should be considered equal', function (t) {
+    var item1 = {
+      'name': {
+        'default': '1 Main St'
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210',
+        'unit': 'A'
+      }
+    };
+    var item2 = {
+      'name': {
+        'default': '1 Main St'
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210',
+        'unit': 'A'
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should not be different');
+    t.end();
+  });
+
+  test('same address but differing unit number should be considered different', function (t) {
+    var item1 = {
+      'name': {
+        'default': '1 Main St'
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210',
+        'unit': 'A'
+      }
+    };
+    var item2 = {
+      'name': {
+        'default': '1 Main St'
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210',
+        'unit': 'B'
+      }
+    };
+
+    t.true(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
+  test('same address but only one has unit number should be considered different', function (t) {
+    var item1 = {
+      'name': {
+        'default': '1 Main St'
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210',
+        'unit': 'A'
+      }
+    };
+    var item2 = {
+      'name': {
+        'default': '1 Main St'
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210'
+      }
+    };
+
+    t.true(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {

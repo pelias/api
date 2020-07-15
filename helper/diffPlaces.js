@@ -149,6 +149,7 @@ function isAddressDifferent(item1, item2){
   // else both have address info
   if( isPropertyDifferent(address1, address2, 'number') ){ return true; }
   if( isPropertyDifferent(address1, address2, 'street') ){ return true; }
+  if( isPropertyDifferent(address1, address2, 'unit') ){ return true; }
 
   // only compare zip if both records have it, otherwise just ignore and assume it's the same
   // since by this time we've already compared parent hierarchies
@@ -213,9 +214,9 @@ function isPropertyDifferent(item1, item2, prop ){
  * ...
  * 11: locality
  * 13: neighbourhood
- * 
+ *
  * note: Infinity is returned if layer not found in array, this is in
- * order to ensure that a high value is returned rather than the 
+ * order to ensure that a high value is returned rather than the
  * default '-1' value returned for misses when using findIndex().
  */
 function getPlaceTypeRank(item) {
