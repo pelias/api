@@ -1,9 +1,37 @@
+const _ = require('lodash');
+const proxyquire = require('proxyquire').noCallThru();
+const peliasConfig = require('pelias-config');
 const sanitizer = require('../../../sanitizer/_address_layer_filter');
 const TypeMapping = require('../../../helper/TypeMapping');
 const NO_MESSAGES = { errors: [], warnings: [] };
 const STD_MESSAGES = { errors: [], warnings: ['performance optimization: excluding \'address\' layer'] };
 
 module.exports.tests = {};
+
+module.exports.tests.disabled = function (test, common) {
+  let tm = new TypeMapping();
+  tm.setLayersBySource({ A: ['A'], B: ['B'], C: ['C'] });
+  tm.generateMappings();
+
+  // disable filter via config
+  let config = _.cloneDeep(peliasConfig.defaults);
+  _.set(config, 'api.enable_address_layer_filter', false);
+
+  // mock the pelias-config dependency to return a copy of the
+  // default config with 'api.enable_address_layer_filter=false'
+  let sanitizer = proxyquire('../../../sanitizer/_address_layer_filter', {
+    'pelias-config': { generate: () => config }
+  });
+
+  let s = sanitizer(tm);
+
+  test('sanitize - do nothing when disabled via pelias-config', (t) => {
+    let clean = { text: 'foo', sources: [] };
+    t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
+    t.false(clean.layers);
+    t.end();
+  });
+};
 
 module.exports.tests.sanitize = function (test, common) {
   let tm = new TypeMapping();
