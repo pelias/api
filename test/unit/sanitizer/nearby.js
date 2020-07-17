@@ -109,7 +109,15 @@ module.exports.tests.sanitize = function(test, common) {
             return { errors: [], warnings: [] };
           }
         };
-      }
+      },
+      '../sanitizer/_sort': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_sort');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
     });
 
     const expected_sanitizers = [
@@ -124,7 +132,8 @@ module.exports.tests.sanitize = function(test, common) {
       '_geo_reverse',
       '_boundary_country',
       '_categories',
-      '_request_language'
+      '_request_language',
+      '_sort',
     ];
 
     const req = {};

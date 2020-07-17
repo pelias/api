@@ -12,6 +12,7 @@ const views = {
   layers: 'layers view',
   categories: 'categories view',
   sort_distance: 'sort_distance view',
+  sort_popularity: 'sort_popularity view',
   boundary_gid: 'boundary_gid view'
 };
 
@@ -70,7 +71,8 @@ module.exports.tests.query = (test, common) => {
     ]);
 
     t.deepEquals(query.body.sort_functions, [
-      'sort_distance view'
+      'sort_distance view',
+      'sort_popularity view'
     ]);
 
     t.end();
@@ -98,6 +100,26 @@ module.exports.tests.query = (test, common) => {
 
   });
 
+  test('clean.sort should set sort:field parameter', t => {
+    const clean = {
+      sort: 'popularity'
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {}
+    })(clean);
+
+    t.deepEquals(query.body.vs.var('sort:field').toString(), 'popularity');
+    t.end();
+
+  });
 };
 
 module.exports.tests.sources = (test, common) => {
