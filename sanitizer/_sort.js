@@ -13,7 +13,9 @@ function _setup(){
 
       clean.sort = raw.sort;
       
-      if( clean.sort && !allowed_values.includes(clean.sort) ){
+      if (!clean.sort) {
+        clean.sort = DEFAULT_SORT;
+      } else if( !allowed_values.includes(clean.sort) ){
         messages.warnings.push('invalid \'sort\', using \'distance\'');
         clean.sort = DEFAULT_SORT;
       }
