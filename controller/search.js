@@ -77,6 +77,7 @@ function setup( peliasConfig, esclient, query, should_execute ){
         }
       });
 
+      // Add a direct link to the ES search API with explain=true
       debugInfo.explainDebugUrl = 
         `${esHostUrl}/${apiConfig.indexName}/_search?` +
           querystring.stringify({
@@ -84,7 +85,12 @@ function setup( peliasConfig, esclient, query, should_execute ){
             source: JSON.stringify({...cmd.body, explain: true})
           });
 
-        debugInfo.analyzerLinks = [];
+        /* NOTE(blackmad): I can't decide how helpful this is. 
+          For each part of the query that's sent to elastic search, add a link that lets you see 
+          what the elastic search analysis looks like 
+          */
+
+        // generic function to walk a javascript object
         const traverse = (obj, cb, keypath) => {
           for (let k in obj) {
             if (obj[k] && typeof obj[k] === 'object') {
@@ -95,6 +101,11 @@ function setup( peliasConfig, esclient, query, should_execute ){
           }
         };
             
+        debugInfo.analyzerLinks = [];
+
+        // Traverse the command we went to elastic search
+        // For each entry that has a "query" and "analyzer" child, formulate a link
+        // to elasticsearch to see the output of that query text against that
         traverse(cmd.body, (querySection, keypath) => {
           if (querySection.query && querySection.analyzer) {
             const analysisUrl = `${esHostUrl}/${apiConfig.indexName}/_analyze?` +
