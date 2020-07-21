@@ -60,18 +60,21 @@ function setup( peliasConfig, esclient, query, should_execute ){
       cmd.explain = true;
     }
 
-    let debugUrl = '';
-    if (peliasConfig.eslclient && Array.isArray(peliasConfig.eslclient.hosts) && peliasConfig.eslclient.hosts.length > 0) {
+    let debugUrl;
+    if (req.clean.exposeInternalDebugTools && 
+      peliasConfig.esclient && 
+      Array.isArray(peliasConfig.esclient.hosts) && 
+      peliasConfig.esclient.hosts.length > 0) {
       const firstEsHostEntry = peliasConfig.esclient.hosts[0];
       const esHost = firstEsHostEntry.host ? 
         `${firstEsHostEntry.protocol}://${firstEsHostEntry.host}:${firstEsHostEntry.port}` : firstEsHostEntry;
 
-       debugUrl = req.clean.exposeInternalDebugTools ?
+       debugUrl = 
         `${esHost}/${apiConfig.indexName}/_search?` +
           querystring.stringify({
             source_content_type: 'application/json',
             source: JSON.stringify(cmd.body)
-          }) : undefined;
+          });
     }
 
     debugLog.push(req, {
