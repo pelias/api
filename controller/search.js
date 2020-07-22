@@ -62,14 +62,13 @@ function setup( peliasConfig, esclient, query, should_execute ){
     }
 
     // support for the 'clean.exposeInternalDebugTools' config flag
-    let debugUrl;
+    let debugInfo = {};
     if (_.get(req, 'clean.exposeInternalDebugTools') === true) {
-
       // select a random elasticsearch host to use for 'exposeInternalDebugTools' actions
-      const host = _.first(esclient.transport.connectionPool.getConnections(null, 1)).host;
+      const esHost = _.first(esclient.transport.connectionPool.getConnections(null, 1)).host;
 
       // generate a URL which opens this query directly in elasticsearch
-      debugUrl = host.makeUrl({
+      debugInfo.debugUrl = esHost.makeUrl({
         path: `${apiConfig.indexName}/_search`,
         query: {
           source_content_type: 'application/json',
@@ -78,52 +77,56 @@ function setup( peliasConfig, esclient, query, should_execute ){
       });
 
       // Add a direct link to the ES search API with explain=true
-      debugInfo.explainDebugUrl = 
-        `${esHostUrl}/${apiConfig.indexName}/_search?` +
-          querystring.stringify({
-            source_content_type: 'application/json',
-            source: JSON.stringify({...cmd.body, explain: true})
-          });
+      debugInfo.explainDebugUrl = esHost.makeUrl({
+        path: `${apiConfig.indexName}/_search`,
+        query: {
+          source_content_type: 'application/json',
+          source: JSON.stringify({...cmd.body, explain: true})
 
-        /* NOTE(blackmad): I can't decide how helpful this is. 
-          For each part of the query that's sent to elastic search, add a link that lets you see 
-          what the elastic search analysis looks like 
-          */
+        }
+      });
 
-        // generic function to walk a javascript object
-        const traverse = (obj, cb, keypath) => {
-          for (let k in obj) {
-            if (obj[k] && typeof obj[k] === 'object') {
-              const newkeypath = keypath ? keypath + '.' + k : k;
-              cb(obj[k], newkeypath);
-              traverse(obj[k], cb, newkeypath);
-            }
+      /* NOTE(blackmad): I can't decide how helpful this is. 
+        For each part of the query that's sent to elastic search, add a link that lets you see 
+        what the elastic search analysis looks like 
+        */
+
+      // generic function to walk a javascript object
+      const traverse = (obj, cb, keypath) => {
+        for (let k in obj) {
+          if (obj[k] && typeof obj[k] === 'object') {
+            const newkeypath = keypath ? keypath + '.' + k : k;
+            cb(obj[k], newkeypath);
+            traverse(obj[k], cb, newkeypath);
           }
-        };
-            
-        debugInfo.analyzerLinks = [];
+        }
+      };
+          
+      debugInfo.analyzerLinks = [];
 
-        // Traverse the command we went to elastic search
-        // For each entry that has a "query" and "analyzer" child, formulate a link
-        // to elasticsearch to see the output of that query text against that
-        traverse(cmd.body, (querySection, keypath) => {
-          if (querySection.query && querySection.analyzer) {
-            const analysisUrl = `${esHostUrl}/${apiConfig.indexName}/_analyze?` +
-            querystring.stringify({
+      // Traverse the command we went to elastic search
+      // For each entry that has a "query" and "analyzer" child, formulate a link
+      // to elasticsearch to see the output of that query text against that
+      traverse(cmd.body, (querySection, keypath) => {
+        if (querySection.query && querySection.analyzer) {
+          const analysisUrl = esHost.makeUrl({
+            path: `${apiConfig.indexName}/_analyze`,
+            query: {
               source_content_type: 'application/json',
               source: JSON.stringify({
                 text: querySection.query,
                 analyzer: querySection.analyzer
               })
-            });
-            debugInfo.analyzerLinks.push({
-              analysisUrl,
-              query: querySection.query,
-              analyzer: querySection.analyzer,
-              keypath
-            });
-          }
-        }); 
+            }
+          });
+          debugInfo.analyzerLinks.push({
+            analysisUrl,
+            query: querySection.query,
+            analyzer: querySection.analyzer,
+            keypath
+          });
+        }
+      }); 
     }
 
     debugLog.push(req, {
@@ -183,7 +186,10 @@ function setup( peliasConfig, esclient, query, should_execute ){
           // be results.  if there are no results from this ES call, don't overwrite
           // what's already there from a previous call.
           if (!_.isEmpty(docs)) {
-            if (req.clean.exposeInternalDebugTools && esHostUrl) {
+            if (req.clean.exposeInternalDebugTools) {
+              // select a random elasticsearch host to use for 'exposeInternalDebugTools' actions
+              const esHost = _.first(esclient.transport.connectionPool.getConnections(null, 1)).host;
+
               // Add an ES explain link to each document
               docs.forEach((doc) => {
                 // make a version of our query that restricts to just this doc id
@@ -202,13 +208,17 @@ function setup( peliasConfig, esclient, query, should_execute ){
                     ]
                   }
                 };
-                const esExplainUrl = `${esHostUrl}/${apiConfig.indexName}/_search?` +
-                  querystring.stringify({
+                const esExplainUrl = esHost.makeUrl({
+                  path: `${apiConfig.indexName}/_search`,
+                  query: {
                     source_content_type: 'application/json',
                     source: JSON.stringify({...cmd.body, query: docIdQuery, explain: true})
-                  });
+                  }
+                });
 
-                const esRawDocumentUrl = `${esHostUrl}/${apiConfig.indexName}/_doc/${encodeURIComponent(doc._id)}?`;
+                const esRawDocumentUrl = esHost.makeUrl({
+                  path: `${apiConfig.indexName}/_doc/${encodeURIComponent(doc._id)}?`
+                });
 
                 doc.debug = [{esExplainUrl, esRawDocumentUrl}];
               });
