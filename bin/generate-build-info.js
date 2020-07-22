@@ -24,7 +24,7 @@ function execShellCommand(cmd) {
     if (!line.includes('─')) {
       return [];
     }
-    const [lines, package, info] = line.split(' ');
+    const [_lines, package, _info] = line.split(' ');
     return [package];
   });
  }
@@ -37,7 +37,7 @@ function generateGitStats() {
     Git.Repository.open('.')
       // Open the master branch.
       .then(function (repo) {
-        return repo.getMasterCommit();
+        return repo.getHeadCommit();
       })
       // Display information about commits on master.
       .then(function (firstCommitOnMaster) {
@@ -82,7 +82,7 @@ async function makeStats() {
     gitStats: await generateGitStats(),
     packages: await generatePackageVersionInfo(),
     buildDate: new Date(),
-  }));
+  }, null, 2));
 }
 
 makeStats();

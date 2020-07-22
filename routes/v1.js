@@ -337,7 +337,10 @@ function addRoutes(app, peliasConfig) {
     ]),
     status: createRouter([
       controllers.status
-    ])
+    ]),
+    buildInfo: createRouter([
+      controllers.buildInfo
+    ]),
   };
 
 
@@ -358,6 +361,8 @@ function addRoutes(app, peliasConfig) {
 
   if (peliasConfig.api.exposeInternalDebugTools) {
     app.use ( '/frontend',                   express.static('node_modules/pelias-compare/dist-api/'));
+    app.use ( '/buildInfo',                  routers.buildInfo);
+
   }
 }
 

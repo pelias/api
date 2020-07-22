@@ -1,3 +1,3 @@
 #!/bin/bash
-./generate-build-info.js > build-info.json
+./bin/generate-build-info.js > build-info.json
 exec node index.js
