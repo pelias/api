@@ -1,5 +1,6 @@
 const fs = require('fs');
 const npa = require('npm-package-arg');
+const _ = require('lodash');
 
 const buildInfo = JSON.parse(fs.readFileSync('./build-info.json').toString());
 
@@ -25,7 +26,8 @@ Handlebars.registerHelper('linkifyNpmPackage', function (packageString) {
 });
 
 const template = Handlebars.compile(`
-Built on {{buildDate}}
+Built on {{buildDate}}<br/>
+<a href="{{indexStatsLink}}">Elastic document stats</a>
 
 <hr/>
 
@@ -44,6 +46,29 @@ Built on {{buildDate}}
 {{/each}}
 `);
 
-module.exports = function controller(req, res, next) {
-  res.send(template(buildInfo));
+module.exports = function controller(apiConfig, esclient) {
+  return (req, res, next) => {
+    const esHost = _.first(esclient.transport.connectionPool.getConnections(null, 1)).host;
+
+    // generate a URL which opens some index stats in ES
+    const indexStatsLink = esHost.makeUrl({
+      path: `${apiConfig.indexName}/_search`,
+      query: {
+        size: 0,
+        source_content_type: 'application/json',
+        source: JSON.stringify({aggs: {
+          sources: {
+            terms: {
+              field: 'source'
+            }
+          }
+        }}),
+      }
+    });
+
+    res.send(template({
+      ...buildInfo,
+      indexStatsLink
+    }));
+  };
 };

@@ -339,7 +339,7 @@ function addRoutes(app, peliasConfig) {
       controllers.status
     ]),
     buildInfo: createRouter([
-      controllers.buildInfo
+      controllers.buildInfo(peliasConfig.api, esclient)
     ]),
   };
 
