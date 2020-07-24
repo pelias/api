@@ -187,87 +187,109 @@ module.exports.tests.granularity_bands = (test, common) => {
         street: 'street value'
       }
     };
+
+
     const res = {
       data: [
         {
           layer: 'neighbourhood',
-          source_id: 1
+          source_id: 1,
+          bounding_box: '{"min_lat":1,"max_lat":10,"min_lon":100,"max_lon":1000}'
         },
         {
           layer: 'borough',
-          source_id: 2
+          source_id: 2,
+          bounding_box: '{"min_lat":2,"max_lat":20,"min_lon":200,"max_lon":2000}'
         },
         {
           layer: 'locality',
-          source_id: 3
+          source_id: 3,
+          bounding_box: '{"min_lat":3,"max_lat":30,"min_lon":300,"max_lon":3000}'
         },
         {
           layer: 'localadmin',
-          source_id: 4
+          source_id: 4,
+          bounding_box: '{"min_lat":4,"max_lat":40,"min_lon":400,"max_lon":4000}'
         },
         {
           layer: 'county',
-          source_id: 5
+          source_id: 5,
+          bounding_box: '{"min_lat":5,"max_lat":50,"min_lon":500,"max_lon":5000}'
         },
         {
           layer: 'macrocounty',
-          source_id: 6
+          source_id: 6,
+          bounding_box: '{"min_lat":6,"max_lat":60,"min_lon":600,"max_lon":6000}'
         },
         {
           layer: 'region',
-          source_id: 7
+          source_id: 7,
+          bounding_box: '{"min_lat":7,"max_lat":70,"min_lon":700,"max_lon":7000}'
         },
         {
           layer: 'macroregion',
-          source_id: 8
+          source_id: 8,
+          bounding_box: '{"min_lat":8,"max_lat":80,"min_lon":800,"max_lon":8000}'
         },
         {
           layer: 'dependency',
-          source_id: 9
+          source_id: 9,
+          bounding_box: '{"min_lat":9,"max_lat":90,"min_lon":900,"max_lon":9000}'
         },
         {
           layer: 'country',
-          source_id: 10
+          source_id: 10,
+          bounding_box: '{"min_lat":10,"max_lat":100,"min_lon":1000,"max_lon":10000}'
         },
         {
           layer: 'neighbourhood',
-          source_id: 11
+          source_id: 11,
+          bounding_box: '{"min_lat":11,"max_lat":110,"min_lon":1100,"max_lon":11000}'
         },
         {
           layer: 'borough',
-          source_id: 12
+          source_id: 12,
+          bounding_box: '{"min_lat":12,"max_lat":120,"min_lon":1200,"max_lon":12000}'
         },
         {
           layer: 'locality',
-          source_id: 13
+          source_id: 13,
+          bounding_box: '{"min_lat":13,"max_lat":130,"min_lon":1300,"max_lon":13000}'
         },
         {
           layer: 'localadmin',
-          source_id: 14
+          source_id: 14,
+          bounding_box: '{"min_lat":14,"max_lat":140,"min_lon":1400,"max_lon":14000}'
         },
         {
           layer: 'county',
-          source_id: 15
+          source_id: 15,
+          bounding_box: '{"min_lat":15,"max_lat":150,"min_lon":1500,"max_lon":15000}'
         },
         {
           layer: 'macrocounty',
-          source_id: 16
+          source_id: 16,
+          bounding_box: '{"min_lat":16,"max_lat":160,"min_lon":1600,"max_lon":16000}'
         },
         {
           layer: 'region',
-          source_id: 17
+          source_id: 17,
+          bounding_box: '{"min_lat":17,"max_lat":170,"min_lon":1700,"max_lon":17000}'
         },
         {
           layer: 'macroregion',
-          source_id: 18
+          source_id: 18,
+          bounding_box: '{"min_lat":18,"max_lat":180,"min_lon":1800,"max_lon":18000}'
         },
         {
           layer: 'dependency',
-          source_id: 19
+          source_id: 19,
+          bounding_box: '{"min_lat":19,"max_lat":190,"min_lon":1900,"max_lon":19000}'
         },
         {
           layer: 'country',
-          source_id: 20
+          source_id: 20,
+          bounding_box: '{"min_lat":20,"max_lat":200,"min_lon":2000,"max_lon":20000}'
         }
       ]
     };
@@ -286,7 +308,7 @@ module.exports.tests.granularity_bands = (test, common) => {
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.deepEquals(generatedQuery.body.vs.var('input:layers').$, {
+    t.deepEquals(generatedQuery.body.vs.var('input:layers:ids').$, {
       neighbourhood: [1, 11],
       borough: [2, 12],
       locality: [3, 13],
@@ -295,6 +317,42 @@ module.exports.tests.granularity_bands = (test, common) => {
       macroregion: [8, 18],
       dependency: [9, 19],
       country: [10, 20]
+    });
+
+
+    t.deepEquals(generatedQuery.body.vs.var('input:layers:bounding_boxes').$, {
+      neighbourhood: [
+        { min_lat: 1, max_lat: 10, min_lon: 100, max_lon: 1000 },
+        { min_lat: 11, max_lat: 110, min_lon: 1100, max_lon: 11000 },
+      ],
+      borough: [
+        { min_lat: 2, max_lat: 20, min_lon: 200, max_lon: 2000 },
+        { min_lat: 12, max_lat: 120, min_lon: 1200, max_lon: 12000 },
+      ],
+      locality: [
+        { min_lat: 3, max_lat: 30, min_lon: 300, max_lon: 3000 },
+        { min_lat: 13, max_lat: 130, min_lon: 1300, max_lon: 13000 },
+      ],
+      localadmin: [
+        { min_lat: 4, max_lat: 40, min_lon: 400, max_lon: 4000 },
+        { min_lat: 14, max_lat: 140, min_lon: 1400, max_lon: 14000 },
+      ],
+      region: [
+        { min_lat: 7, max_lat: 70, min_lon: 700, max_lon: 7000 },
+        { min_lat: 17, max_lat: 170, min_lon: 1700, max_lon: 17000 },
+      ],
+      macroregion: [
+        { min_lat: 8, max_lat: 80, min_lon: 800, max_lon: 8000 },
+        { min_lat: 18, max_lat: 180, min_lon: 1800, max_lon: 18000 },
+      ],
+      dependency: [
+        { min_lat: 9, max_lat: 90, min_lon: 900, max_lon: 9000 },
+        { min_lat: 19, max_lat: 190, min_lon: 1900, max_lon: 19000 },
+      ],
+      country: [
+        { min_lat: 10, max_lat: 100, min_lon: 1000, max_lon: 10000 },
+        { min_lat: 20, max_lat: 200, min_lon: 2000, max_lon: 20000 },
+      ],
     });
 
     t.end();
@@ -331,7 +389,7 @@ module.exports.tests.granularity_bands = (test, common) => {
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.deepEquals(generatedQuery.body.vs.var('input:layers').$, {
+    t.deepEquals(generatedQuery.body.vs.var('input:layers:ids').$, {
       neighbourhood: [1],
       borough: [],
       locality: [],
@@ -389,7 +447,7 @@ module.exports.tests.granularity_bands = (test, common) => {
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.deepEquals(generatedQuery.body.vs.var('input:layers').$, {
+    t.deepEquals(generatedQuery.body.vs.var('input:layers:ids').$, {
       county: [1, 4],
       macrocounty: [2, 5]
     });
