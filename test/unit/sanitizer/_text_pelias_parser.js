@@ -311,6 +311,14 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['Air & Space Museum D', { subject: 'Air & Space Museum' }, true]);
   cases.push(['Air & Space Museum DC', { subject: 'Air & Space Museum' }, true]);
 
+  // ambiguous venue
+  cases.push(['mccarren park', {
+    subject: 'mccarren park',
+  }]);
+  cases.push(['wrigley field', {
+    subject: 'wrigley field',
+  }]);
+
   // admin areas
   cases.push(['N', { subject: 'N' }, true]);
   cases.push(['Ne', { subject: 'Ne' }, true]);

@@ -52,6 +52,31 @@ function _sanitize (raw, clean) {
   return messages;
 }
 
+function isAmbiguousStreetOrVenueParse(solutions){
+  if (!solutions) {
+    return false;
+  }
+
+  const topTwoSolutions = _.take(solutions, 2);
+  const streetOnlySolution = topTwoSolutions.find(solution => {
+    return solution.pair &&
+      solution.pair.length === 1 &&
+      solution.pair[0].classification.label === 'street';
+  });
+  const venueOnlySolution = topTwoSolutions.find(solution => {
+    return solution.pair &&
+      solution.pair.length === 1 &&
+      solution.pair[0].classification.label === 'venue';
+  });
+
+  return (
+    streetOnlySolution &&
+    venueOnlySolution &&
+    streetOnlySolution.pair[0].span.body === venueOnlySolution.pair[0].span.body
+  );
+}
+
+
 function parse (clean) {
   
   // parse text
@@ -94,6 +119,23 @@ function parse (clean) {
   // 'Foo Cafe 10 Main St London 10010 Earth'
   // '    VVVV NN SSSSSSS AAAAAA PPPPP      '
   let mask = solution.mask(t);
+
+  // (Theory) If the parser's two top solutions were labeling the entire query as a venue/place,
+  // and labeling the entire query as a street, then the parse is telling us it's pretty 
+  // ambiguous, so we shouldn't bother boosting street or place matches in our search.
+  //
+  // This helps with queries like "wrigley field" that have a word (field) that could be
+  // a street suffix but is also a likely venue word. 
+  //
+  // (Reality) There's no way to tell if the parser labeled the "whole query" because
+  // punctuation in the incoming query is unlabeled, so in reality this checks if
+  // the top two solutions were venue-only and place-only and labeled identical parts of the query
+  if (isAmbiguousStreetOrVenueParse(t.solution)) {
+    delete parsed_text.street;
+    delete parsed_text.venue;
+    mask = mask.replace(/S/g, ' ');
+    mask = mask.replace(/V/g, ' ');
+  }
 
   // the entire input text as seen by the parser with any postcode classification(s) removed
   let body = t.span.body.split('')
