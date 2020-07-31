@@ -53,26 +53,31 @@ function _sanitize (raw, clean) {
 }
 
 function isAmbiguousStreetOrVenueParse(solutions){
-  if (!solutions) {
+  if (!solutions || solutions.length < 2) {
     return false;
   }
 
   const topTwoSolutions = _.take(solutions, 2);
   const streetOnlySolution = topTwoSolutions.find(solution => {
     return solution.pair &&
-      solution.pair.length === 1 &&
       solution.pair[0].classification.label === 'street';
   });
   const venueOnlySolution = topTwoSolutions.find(solution => {
     return solution.pair &&
-      solution.pair.length === 1 &&
       solution.pair[0].classification.label === 'venue';
   });
+
+  const restOfSolutionIsTheSame = 
+    topTwoSolutions[0].pair.length === topTwoSolutions[1].pair.length &&
+    _.every(_.zip(topTwoSolutions[0].pair.slice(1), topTwoSolutions[1].pair.slice(1)), ([p1, p2]) => 
+       p1.span.body === p2.span.body && p1.classification.label === p2.classification.label
+    );
 
   return (
     streetOnlySolution &&
     venueOnlySolution &&
-    streetOnlySolution.pair[0].span.body === venueOnlySolution.pair[0].span.body
+    streetOnlySolution.pair[0].span.body === venueOnlySolution.pair[0].span.body &&
+    restOfSolutionIsTheSame
   );
 }
 
