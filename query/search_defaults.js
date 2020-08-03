@@ -44,7 +44,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'address:street:analyzer': 'peliasQuery',
   'address:street:field': 'address_parts.street',
   'address:street:boost': 5,
-  'address:street:slop': 3,
+  'address:street:slop': 4,
   'address:street:cutoff_frequency': 0.01,
 
   'address:postcode:analyzer': 'peliasZip',
