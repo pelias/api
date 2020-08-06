@@ -57,6 +57,10 @@ function _sanitize( raw, clean ){
   clean.tokens_complete = [];
   clean.tokens_incomplete = [];
 
+  clean.raw_tokens = [];
+  clean.raw_tokens_complete = [];
+  clean.raw_tokens_incomplete = [];
+
   // sanity check that the text is valid.
   if( _.isString(text) && !_.isEmpty(text) ){
 
@@ -66,6 +70,12 @@ function _sanitize( raw, clean ){
     clean.tokens = text
       .split(/[\s,\\\/]+/) // split on delimeters
       .filter(el => el); // remove empty elements
+
+    clean.raw_tokens = clean.text
+      .split(/[\s,\\\/]+/) // split on delimeters
+      .filter(el => el); // remove empty elements
+
+    console.log('setting clean.tokens to ', clean.tokens)
   } else {
     // text is empty, this sanitizer should be a no-op
     return messages;
@@ -90,17 +100,11 @@ function _sanitize( raw, clean ){
 
     // user hasn't finished typing yet
     } else {
+      clean.tokens_complete = _.dropRight(clean.tokens, 1)
+      clean.tokens_incomplete = _.takeRight(clean.tokens, 1)
 
-      // make a copy of the tokens and remove the last element
-      var tokensCopy = clean.tokens.slice(),
-          lastToken = tokensCopy.pop();
-
-      // set all but the last token as 'complete'
-      clean.tokens_complete = tokensCopy;
-
-      if( lastToken ){
-        clean.tokens_incomplete = [ lastToken ];
-      }
+      clean.raw_tokens_complete = _.dropRight(clean.raw_tokens, 1)
+      clean.raw_tokens_incomplete = _.takeRight(clean.raw_tokens, 1)
     }
 
   } else {

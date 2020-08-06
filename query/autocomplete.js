@@ -14,6 +14,7 @@ var views = {
   admin_multi_match_first: require('./view/admin_multi_match_first'),
   admin_multi_match_last: require('./view/admin_multi_match_last'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
+  phrase_first_all_tokens_only:   require('./view/phrase_first_all_tokens_only'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
   focus_point_filter:         require('./view/focus_point_distance_filter')
@@ -43,15 +44,23 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 query.score( views.phrase_first_tokens_only, 'must' );
 query.score( views.ngrams_last_token_only_multi( adminFields ), 'must' );
 
+
+
 // admin components
 query.score( views.admin_multi_match_first( adminFields ), 'must');
 query.score( views.admin_multi_match_last( adminFields ), 'must');
+
 
 // scoring boost
 query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );
 query.score( views.custom_boosts( config.get('api.customBoosts') ) );
+
+query.score( views.phrase_first_all_tokens_only );
+// consoe
+
+// view.function_score.functions.push
 
 // non-scoring hard filters
 query.filter( views.max_character_count_layer_filter(['address'], config.get('api.autocomplete.exclude_address_length' ) ) );
@@ -97,6 +106,12 @@ function generateQuery( clean ){
     vs.var( 'input:name:tokens', clean.tokens );
     vs.var( 'input:name:tokens_complete', clean.tokens_complete );
     vs.var( 'input:name:tokens_incomplete', clean.tokens_incomplete );
+  }
+
+  if( _.isArray( clean.raw_tokens ) ){
+    vs.var( 'input:name:raw_tokens', clean.raw_tokens );
+    vs.var( 'input:name:raw_tokens_complete', clean.raw_tokens_complete );
+    vs.var( 'input:name:raw_tokens_incomplete', clean.raw_tokens_incomplete );
   }
 
   // input text

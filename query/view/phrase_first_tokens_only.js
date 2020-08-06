@@ -8,7 +8,7 @@ const toMultiFields = require('./helper').toMultiFields;
   note: it is assumed that the rest of the input is matched using another view.
 **/
 
-module.exports = function( vs ){
+module.exports = function( vs  ){
   const view_name = 'first_tokens_only';
   // get a copy of the *complete* tokens produced from the input:name
   const tokens = vs.var('input:name:tokens_complete').get();
