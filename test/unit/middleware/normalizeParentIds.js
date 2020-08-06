@@ -183,6 +183,63 @@ module.exports.tests.interface = function(test, common) {
     });
 
   });
+
+  test('Geonames ids do not override parent hierarchy with WOF equivalents', function(t) {
+
+    var input = {
+      data: [{
+        'parent': {
+          'country_id': [ '85633793' ],
+          'country': [ 'United States' ],
+          'country_a': [ 'USA' ],
+          'region_id': [ 'rel/161943' ],
+          'region': [ 'Mississippi' ],
+          'region_a': [ 'MS' ],
+          'region_source': [ 'osm' ]
+        },
+        'source': 'openaddresses',
+        'source_id': 'us/ms/hinds:992d7de085bf3da1',
+        'layer': 'address',
+        'country': [ 'United States' ],
+        'country_a': [ 'USA' ],
+        'country_gid': ['85633793'],
+        'region': [ 'Mississippi' ],
+        'region_a': [ 'MS' ],
+        'region_gid': [ 'rel/161943' ],
+        'region_source': [ 'osm' ]
+      }]
+    };
+
+    var expected = {
+      data: [{
+        'parent': {
+          'country_id': [ '85633793' ],
+          'country': [ 'United States' ],
+          'country_a': [ 'USA' ],
+          'region_id': [ 'rel/161943' ],
+          'region': [ 'Mississippi' ],
+          'region_a': [ 'MS' ],
+          'region_source': [ 'osm' ]
+        },
+        'source': 'openaddresses',
+        'source_id': 'us/ms/hinds:992d7de085bf3da1',
+        'layer': 'address',
+        'country': [ 'United States' ],
+        'country_gid': [ 'whosonfirst:country:85633793' ],
+        'country_a': [ 'USA' ],
+        'region': [ 'Mississippi' ],
+        'region_gid': [ 'osm:region:rel/161943' ],
+        'region_a': [ 'MS' ],
+        'region_source': [ 'osm' ]
+      }]
+    };
+
+    normalizer({}, input, function () {
+      t.deepEqual(input, expected);
+      t.end();
+    });
+
+  });
 };
 
 module.exports.all = function (tape, common) {
