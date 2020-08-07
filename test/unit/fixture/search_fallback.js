@@ -111,7 +111,7 @@ module.exports = {
                       'address_parts.street': {
                         'query': 'street value',
                         'analyzer': 'peliasQuery',
-                        'slop': 3
+                        'slop': 4
                       }
                     }
                   },
@@ -279,7 +279,7 @@ module.exports = {
                       'address_parts.street': {
                         'query': 'street value',
                         'analyzer': 'peliasQuery',
-                        'slop': 3
+                        'slop': 4
                       }
                     }
                   },
