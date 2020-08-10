@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const peliasQuery = require('pelias-query');
 const defaults = require('./search_defaults');
+const restrictIds = require('./view/restrict_ids');
 
 //------------------------------
 // general-purpose search query
@@ -9,6 +10,10 @@ const addressUsingIdsQuery = new peliasQuery.layout.AddressesUsingIdsQuery();
 
 // scoring boost
 addressUsingIdsQuery.score( peliasQuery.view.focus_only_function( ) );
+// --------------------------------
+
+// debugging
+addressUsingIdsQuery.filter( restrictIds );
 // --------------------------------
 
 // non-scoring hard filters
@@ -194,6 +199,11 @@ function generateQuery( clean, res ){
     vs.set({
       'boundary:gid': clean['boundary.gid']
     });
+  }
+
+  // restrictIds for debugging/explaining
+  if (clean.restrictIds) {
+    vs.var('restrictIds', clean.restrictIds);
   }
 
   return {

@@ -4,6 +4,7 @@ const logger = require('pelias-logger').get('api');
 const logging = require( '../helper/logging' );
 const retry = require('retry');
 const Debug = require('../helper/debug');
+const querystring = require('querystring');
 
 function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
@@ -60,14 +61,14 @@ function setup( peliasConfig, esclient, query, should_execute ){
     }
 
     // support for the 'clean.exposeInternalDebugTools' config flag
-    let debugUrl;
+    let debugInfo = {};
     if (_.get(req, 'clean.exposeInternalDebugTools') === true) {
 
       // select a random elasticsearch host to use for 'exposeInternalDebugTools' actions
-      const host = _.first(esclient.transport.connectionPool.getConnections(null, 1)).host;
+      const esDebugHost = _.first(esclient.transport.connectionPool.getConnections(null, 1)).host;
 
       // generate a URL which opens this query directly in elasticsearch
-      debugUrl = host.makeUrl({
+      debugInfo.esDebugUrl = esDebugHost.makeUrl({
         path: `${apiConfig.indexName}/_search`,
         query: {
           source_content_type: 'application/json',
@@ -77,7 +78,7 @@ function setup( peliasConfig, esclient, query, should_execute ){
     }
 
     debugLog.push(req, {
-      debugUrl,
+      debugInfo,
       ES_req: cmd
     });
 
@@ -133,6 +134,26 @@ function setup( peliasConfig, esclient, query, should_execute ){
           // be results.  if there are no results from this ES call, don't overwrite
           // what's already there from a previous call.
           if (!_.isEmpty(docs)) {
+
+            if (req.clean.exposeInternalDebugTools && req.clean.enableDebug) {
+    
+            // Add an ES explain link to each document
+              docs.forEach((doc) => {
+                const docDebugInfo = {};
+                if (req.headers.host) {
+                  const requestPath = `/v1/search?${ querystring.stringify({
+                    ...req.query,
+                    restrictIds: doc._id,
+                    debug: 'explain'
+                  }) }`;
+
+                  docDebugInfo.esExplainUrl = `${ req.secure ? 'https' : 'http' }://${req.headers.host}${requestPath}`;
+                }
+    
+                doc.debug = [docDebugInfo];
+              });
+            }
+            
             res.data = docs;
             res.meta = meta || {};
             // store the query_type for subsequent middleware

@@ -117,8 +117,36 @@ module.exports.tests.sanitize_debug = function(test, common) {
     t.end();
   });
 
+  test(`setting restrictIds should error if exposeInternalDebugTools is off`, function(t) {
+    const raw = { restrictIds: 'a:1,b:2', debug: '1' };
+    const clean = {};
+    const expected_clean = { enableDebug: true, exposeInternalDebugTools: false };
+
+    const messages = sanitizer.sanitize(raw, clean);
+
+    t.deepEquals(clean, expected_clean);
+    t.deepEqual(messages.errors, ['restrictIds not enabled, must enable exposeInternalDebugTools in pelias config'], 'no error returned');
+    t.deepEqual(messages.warnings, [], 'no warnings returned');
+    t.end();
+  });
+
+  test(`setting restrictIds should work if exposeInternalDebugTools is on`, function(t) {
+    const internalSanitizer = require('../../../sanitizer/_debug')(true);
+
+    const raw = { restrictIds: 'a:1,b:2', debug: '1' };
+    const clean = {};
+    const expected_clean = { restrictIds: ['a:1', 'b:2'], exposeInternalDebugTools: true, enableDebug: true };
+
+    const messages = internalSanitizer.sanitize(raw, clean);
+
+    t.deepEquals(clean, expected_clean);
+    t.deepEqual(messages.errors, [], 'no error returned');
+    t.deepEqual(messages.warnings, [], 'no warnings returned');
+    t.end();
+  });
+
   test('return an array of expected parameters in object form for validation', (t) => {
-    const expected = [{ name: 'debug' }];
+    const expected = [{ name: 'debug' }, { name: 'restrictIds' }];
     const validParameters = sanitizer.expected();
     t.deepEquals(validParameters, expected);
     t.end();

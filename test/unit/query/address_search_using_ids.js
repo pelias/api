@@ -48,8 +48,9 @@ module.exports.tests.base_query = (test, common) => {
           AddressesUsingIdsQuery: MockQuery
         },
         view: views,
-        Vars: require('pelias-query').Vars
-      }
+        Vars: require('pelias-query').Vars,
+      },
+      './view/restrict_ids': 'restrictIds view'
     });
 
     const generatedQuery = generateQuery(clean, res);
@@ -68,6 +69,7 @@ module.exports.tests.base_query = (test, common) => {
     ]);
 
     t.deepEquals(generatedQuery.body.filter_functions, [
+      'restrictIds view',
       'boundary_country view',
       'boundary_circle view',
       'boundary_rect view',
