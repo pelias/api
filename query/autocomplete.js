@@ -16,7 +16,8 @@ var views = {
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
-  focus_point_filter:         require('./view/focus_point_distance_filter')
+  focus_point_filter:         require('./view/focus_point_distance_filter'),
+  restrict_ids:                require('./view/restrict_ids')
 };
 
 // add abbrevations for the fields pelias/parser is able to detect.
@@ -46,6 +47,9 @@ query.score( views.ngrams_last_token_only_multi( adminFields ), 'must' );
 // admin components
 query.score( views.admin_multi_match_first( adminFields ), 'must');
 query.score( views.admin_multi_match_last( adminFields ), 'must');
+
+// debugging
+query.score( views.restrict_ids, 'must');
 
 // scoring boost
 query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
@@ -167,6 +171,11 @@ function generateQuery( clean ){
   // size
   if( clean.querySize ) {
     vs.var( 'size', clean.querySize );
+  }
+
+  // restrictIds for debugging/explaining
+  if (clean.restrictIds) {
+    vs.var('restrictIds', clean.restrictIds);
   }
 
   // run the address parser

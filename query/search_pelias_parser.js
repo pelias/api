@@ -5,7 +5,10 @@ const textParser = require('./text_parser_pelias');
 const config = require('pelias-config').generate().api;
 
 var placeTypes = require('../helper/placeTypes');
-var views = { custom_boosts: require('./view/boost_sources_and_layers') };
+var views = { 
+  custom_boosts: require('./view/boost_sources_and_layers'),
+  restrict_ids: require('./view/restrict_ids')
+};
 
 // region_a is also an admin field which can be identified by
 // the pelias_parser. this functionality was inherited from the
@@ -19,6 +22,9 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
 query.score( peliasQuery.view.ngrams, 'must' );
+
+// debugging
+query.score( views.restrict_ids, 'must');
 
 // scoring boost
 const phrase_view = peliasQuery.view.leaf.match_phrase('main');
@@ -131,6 +137,11 @@ function generateQuery( clean ){
     vs.set({
       'boundary:gid': clean['boundary.gid']
     });
+  }
+
+  // restrictIds for debugging/explaining
+  if (clean.restrictIds) {
+    vs.var('restrictIds', clean.restrictIds);
   }
 
   // run the address parser
