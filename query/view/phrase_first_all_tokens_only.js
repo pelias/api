@@ -22,26 +22,16 @@ module.exports = function (vs) {
   }
 
   // set the 'input' variable to all but the last token
-  vs.var(`multi_match:${view_name}:input`).set(tokens.join(' '));
-  vs.var(`multi_match:${view_name}:fields`).set(
+  vs.var(`match:${view_name}:input`).set(tokens.join(' '));
+  vs.var(`match:${view_name}:fields`).set(
     toMultiFields(vs.var('phrase:field').get(), vs.var('lang').get())
   );
 
-  vs.var(`multi_match:${view_name}:analyzer`).set(vs.var('phrase:analyzer').get());
-  vs.var(`multi_match:${view_name}:boost`).set(vs.var('phrase:boost').get());
-  vs.var(`multi_match:${view_name}:slop`).set(vs.var('phrase:slop').get());
+  vs.var(`match:${view_name}:analyzer`).set(vs.var('phrase:analyzer').get());
+  vs.var(`match:${view_name}:boost`).set(vs.var('phrase:boost').get());
 
-  // return {
-  //   function_score: {
-  //     query: peliasQuery.view.leaf.multi_match(view_name)(vs),
-  //     boost: '1',
-  //   },
-  // };
+  // vs.var(`match:${view_name}:minimum_should_match`).set(vs.var('ngram:minimum_should_match').get());
+  vs.var(`match:${view_name}:minimum_should_match`).set('1<-1 3<-25%');
 
-  // return {
-  //   function_score: {
-  return peliasQuery.view.leaf.multi_match(view_name)(vs);
-  //     boost: '1',
-  //   },
-  // };
+  return peliasQuery.view.leaf.match(view_name)(vs);
 };
