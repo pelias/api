@@ -1,6 +1,9 @@
 const _ = require('lodash');
-const searchService = require('../service/search');
+const querystring = require('querystring');
+
 const logger = require('pelias-logger').get('api');
+
+const searchService = require('../service/search');
 const logging = require( '../helper/logging' );
 const retry = require('retry');
 const Debug = require('../helper/debug');
@@ -133,6 +136,25 @@ function setup( peliasConfig, esclient, query, should_execute ){
           // be results.  if there are no results from this ES call, don't overwrite
           // what's already there from a previous call.
           if (!_.isEmpty(docs)) {
+            if (req.clean.exposeInternalDebugTools && req.clean.enableDebug) {
+    
+            // Add an ES explain link to each document
+              docs.forEach((doc) => {
+                const docDebugInfo = {};
+                if (req.headers.host) {
+                  const requestPath = `${req.path}?${ querystring.stringify({
+                    ...req.query,
+                    restrictIds: doc._id,
+                    debug: 'explain'
+                  }) }`;
+
+                  docDebugInfo.esExplainUrl = `${ req.secure ? 'https' : 'http' }://${req.headers.host}${requestPath}`;
+                }
+    
+                doc.debug = [docDebugInfo];
+              });
+            }
+            
             res.data = docs;
             res.meta = meta || {};
             // store the query_type for subsequent middleware

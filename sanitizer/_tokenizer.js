@@ -74,8 +74,6 @@ function _sanitize( raw, clean ){
     clean.raw_tokens = clean.text
       .split(/[\s,\\\/]+/) // split on delimeters
       .filter(el => el); // remove empty elements
-
-    console.log('setting clean.tokens to ', clean.tokens)
   } else {
     // text is empty, this sanitizer should be a no-op
     return messages;
@@ -100,11 +98,11 @@ function _sanitize( raw, clean ){
 
     // user hasn't finished typing yet
     } else {
-      clean.tokens_complete = _.dropRight(clean.tokens, 1)
-      clean.tokens_incomplete = _.takeRight(clean.tokens, 1)
+      clean.tokens_complete = _.dropRight(clean.tokens, 1);
+      clean.tokens_incomplete = _.takeRight(clean.tokens, 1);
 
-      clean.raw_tokens_complete = _.dropRight(clean.raw_tokens, 1)
-      clean.raw_tokens_incomplete = _.takeRight(clean.raw_tokens, 1)
+      clean.raw_tokens_complete = _.dropRight(clean.raw_tokens, 1);
+      clean.raw_tokens_incomplete = _.takeRight(clean.raw_tokens, 1);
     }
 
   } else {
