@@ -141,7 +141,7 @@ function setup( peliasConfig, esclient, query, should_execute ){
               docs.forEach((doc) => {
                 const docDebugInfo = {};
                 if (req.headers.host) {
-                  const requestPath = `/v1/search?${ querystring.stringify({
+                  const requestPath = `${req.path}?${ querystring.stringify({
                     ...req.query,
                     restrictIds: doc._id,
                     debug: 'explain'
