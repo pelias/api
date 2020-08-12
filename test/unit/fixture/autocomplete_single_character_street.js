@@ -34,16 +34,6 @@ module.exports = {
       }],
       'should':[
         {
-          'match': {
-            'address_parts.street': {
-              'query': 'k road',
-              'cutoff_frequency': 0.01,
-              'boost': 1,
-              'analyzer': 'peliasQuery'
-            }
-          }
-        },
-        {
         'function_score': {
           'query': {
             'match_all': {}
