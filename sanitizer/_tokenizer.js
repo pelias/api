@@ -98,9 +98,12 @@ function _sanitize( raw, clean ){
 
     // user hasn't finished typing yet
     } else {
+      // take all but the last token as "complete"
       clean.tokens_complete = _.dropRight(clean.tokens, 1);
+      // take the last taken as incomplete / still typing
       clean.tokens_incomplete = _.takeRight(clean.tokens, 1);
 
+      // and do the same for the "raw" tokens (ie, all tokens)
       clean.raw_tokens_complete = _.dropRight(clean.raw_tokens, 1);
       clean.raw_tokens_incomplete = _.takeRight(clean.raw_tokens, 1);
     }

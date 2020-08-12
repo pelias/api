@@ -23,9 +23,7 @@ module.exports = function (vs) {
 
   // set the 'input' variable to all but the last token
   vs.var(`match:${view_name}:input`).set(tokens.join(' '));
-  vs.var(`match:${view_name}:fields`).set(
-    toMultiFields(vs.var('phrase:field').get(), vs.var('lang').get())
-  );
+  vs.var(`match:${view_name}:field`).set(vs.var('phrase:field').get());
 
   vs.var(`match:${view_name}:analyzer`).set(vs.var('phrase:analyzer').get());
   vs.var(`match:${view_name}:boost`).set(vs.var('phrase:boost').get());
