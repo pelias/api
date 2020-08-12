@@ -50,14 +50,6 @@ function _setup(exposeInternalDebugTools) {
         }
       }
 
-      if (raw.restrictIds) {
-        if (exposeInternalDebugTools) {
-          clean.restrictIds = raw.restrictIds.split(',');
-        } else {
-          messages.errors.push('restrictIds not enabled, must enable exposeInternalDebugTools in pelias config');
-        }
-      }
-
       return messages;
     },
 
