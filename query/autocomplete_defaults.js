@@ -27,13 +27,13 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'phrase:boost': 1,
   'phrase:slop': 3,
   'phrase:cutoff_frequency': 0.01,
-  'phrase:minimum_should_match': '1<-1 3<-50%',
+  'phrase:minimum_should_match': '1<-1 3<-70%',
 
   'focus:function': 'exp',
   'focus:offset': '0km',
   'focus:scale': '50km',
   'focus:decay': 0.5,
-  'focus:weight': 15,
+  'focus:weight': 50,
 
   'function_score:score_mode': 'avg',
   'function_score:boost_mode': 'replace',

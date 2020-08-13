@@ -33,9 +33,7 @@ module.exports = function( vs ) {
     bool: {
       minimum_should_match: 1,
       should: [{
-        terms: {
-          layer: all_layers_except_address_and_street
-        }
+        match_all: {},
       },{
         geo_distance: {
           distance: length_to_distance_mapping[text_length],
