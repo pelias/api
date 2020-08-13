@@ -38,7 +38,7 @@ function service(apiConfig, esclient) {
    * on the indexed document. This makes it hard to reason about what is inside ES. This is a debug
    * function to help make that easier.
    */
-  function expandDocument(doc) {
+  async function expandDocument(doc) {
     const promises = [];
     doc.debug = doc.debug || {};
     doc.debug.expanded = {};
@@ -78,12 +78,30 @@ function service(apiConfig, esclient) {
       }
     }
 
+
+    // Figure out all the fields that have dynamically defined ngram sub-fields.
+    const ngramFields = new Set();
+    const mapping = await esclient.indices.getMapping();
+
+    const mappings = mapping[apiConfig.indexName].mappings;
+    traverse(mappings, (_value, keypath) => {
+      // keypath will look like: properties.parent.properties.borough.fields.ngram.search_analyzer
+      // and we want to extract from that "parent.borough" is a field that has ngrams on it
+      if (keypath.includes('.fields.') && keypath.includes('.ngram.')) {
+        const keyParts = keypath.split('.');
+        const fieldKey = _.dropRight(keyParts.filter((k) => !['properties', 'fields'].includes(k)), 2).join('.');
+        ngramFields.add(fieldKey);
+      }
+    });
+
     // Go through every field in the doc
     traverse(doc, (value, keypath) => {
       // look up the analyzed version of this in ES
       promises.push(analyzeAndSetField(keypath, value));
-      // and also the dynamic .ngram version
-      promises.push(analyzeAndSetField(keypath + '.ngram', value));
+      // and also the dynamic .ngram version if that's in our mapping
+      if (ngramFields.has(keypath)) {
+        promises.push(analyzeAndSetField(keypath + '.ngram', value));
+      }
     });
 
     // for each language on doc.name, simulate the unstored phrase.lang field
