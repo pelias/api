@@ -81,9 +81,13 @@ function service(apiConfig, esclient) {
 
     // Figure out all the fields that have dynamically defined ngram sub-fields.
     const ngramFields = new Set();
-    const mapping = await esclient.indices.getMapping();
+    const mapping = await esclient.indices.getMapping({index: apiConfig.indexName});
+    const hasMapping = mapping && mapping[apiConfig.indexName] && mapping[apiConfig.indexName].mappings;
+    if (!hasMapping) {
+      console.error(`Could not find mappings for index ${apiConfig.indexName} in ${JSON.stringify(mapping)}`);
+    }
+    const mappings = hasMapping ? mapping[apiConfig.indexName].mappings : {};
 
-    const mappings = mapping[apiConfig.indexName].mappings;
     traverse(mappings, (_value, keypath) => {
       // keypath will look like: properties.parent.properties.borough.fields.ngram.search_analyzer
       // and we want to extract from that "parent.borough" is a field that has ngrams on it
