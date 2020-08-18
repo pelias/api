@@ -72,7 +72,7 @@ function service(apiConfig, esclient) {
         tokens.map((token) => `${token.token} (${token.type})`)
       );
 
-      // rebuild an object in doc.debug.expanded with the analysis results
+      // rebuild an object in doc.debug.expanded.[fieldName] with the analysis results
       if (simplifiedTokensByPosition) {
         _.set(doc.debug.expanded, field, simplifiedTokensByPosition);
       }
@@ -82,21 +82,24 @@ function service(apiConfig, esclient) {
     // Figure out all the fields that have dynamically defined ngram sub-fields.
     const ngramFields = new Set();
     const mapping = await esclient.indices.getMapping({index: apiConfig.indexName});
-    const hasMapping = mapping && mapping[apiConfig.indexName] && mapping[apiConfig.indexName].mappings;
-    if (!hasMapping) {
-      console.error(`Could not find mappings for index ${apiConfig.indexName} in ${JSON.stringify(mapping)}`);
-    }
-    const mappings = hasMapping ? mapping[apiConfig.indexName].mappings : {};
 
-    traverse(mappings, (_value, keypath) => {
-      // keypath will look like: properties.parent.properties.borough.fields.ngram.search_analyzer
-      // and we want to extract from that "parent.borough" is a field that has ngrams on it
-      if (keypath.includes('.fields.') && keypath.includes('.ngram.')) {
-        const keyParts = keypath.split('.');
-        const fieldKey = _.dropRight(keyParts.filter((k) => !['properties', 'fields'].includes(k)), 2).join('.');
-        ngramFields.add(fieldKey);
-      }
-    });
+    // getMapping returns a map of index name to mappings, but if we ask for the index
+    // "pelias" and its an alias to index "pelias-index-2020-08-08," we'll get back the 
+    // full name and have a hard time figuring that out so ... just grab the first (and only)
+    // mapping dict
+    const indexMappings = _.values(mapping)[0] || {};
+
+    if (indexMappings.mappings) {
+      traverse(indexMappings.mappings, (_value, keypath) => {
+        // keypath will look like: properties.parent.properties.borough.fields.ngram.search_analyzer
+        // and we want to extract from that "parent.borough" is a field that has ngrams on it
+        if (keypath.includes('.fields.') && keypath.includes('.ngram.')) {
+          const keyParts = keypath.split('.');
+          const fieldKey = _.dropRight(keyParts.filter((k) => !['properties', 'fields'].includes(k)), 2).join('.');
+          ngramFields.add(fieldKey);
+        }
+      });
+    }
 
     // Go through every field in the doc
     traverse(doc, (value, keypath) => {
