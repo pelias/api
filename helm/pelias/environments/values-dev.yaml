@@ -1,6 +1,6 @@
 env: dev
 replicas: 1
-gcpBasePath: gs://marduk/es-data/
+gcpBasePath: gs://kakka-dev/es-data/
 
 cronjobRedeployPelias:
   enabled: true
