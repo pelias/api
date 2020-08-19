@@ -26,6 +26,8 @@ const nonEmptyString = (v) => _.isString(v) && !_.isEmpty(v);
 const ADDRESS_FILTER_WARNING = 'performance optimization: excluding \'address\' layer';
 
 function _setup(tm) {
+  const peliasConfig = require('pelias-config').generate();
+  const isEnabled = _.get(peliasConfig, 'api.enable_address_layer_filter', true);
 
   return {
     sanitize: function _sanitize(__, clean) {
@@ -33,7 +35,13 @@ function _setup(tm) {
       // error & warning messages
       let messages = { errors: [], warnings: [] };
 
-      // no nothing if user has explicitely specified layers in the request
+      // do nothing if this filter has been explicitely disabled using the config option:
+      // api.enable_address_layer_filter: false
+      if (isEnabled === false){
+        return messages;
+      }
+
+      // do nothing if user has explicitely specified layers in the request
       if (_.isArray(clean.layers) && !_.isEmpty(clean.layers)) {
         return messages;
       }
@@ -42,7 +50,7 @@ function _setup(tm) {
       // note: this should already have superfluous characters removed
       let input = clean.text;
 
-      // no nothing if no input text specified in the request
+      // do nothing if no input text specified in the request
       if (!nonEmptyString(input)) {
         return messages;
       }
