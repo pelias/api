@@ -45,6 +45,11 @@ module.exports.tests.factory_missing_required_args = function(test, common) {
     t.equal(view(), null, 'should have returned null');
     t.end();
   });
+  test('maxCharCount is zero', function (t) {
+    let view = maxCharFilter(['address'], 0);
+    t.equal(view(), null, 'should have returned null');
+    t.end();
+  });
 };
 
 module.exports.tests.view_missing_required_params = function(test, common) {
