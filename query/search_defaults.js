@@ -52,6 +52,8 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'address:postcode:boost': 20,
   'address:postcode:cutoff_frequency': 0.01,
 
+  // multi match query views require 'type' to be specified
+  'multi_match:type': 'best_fields',
   // generic multi_match cutoff_frequency
   'multi_match:cutoff_frequency': 0.01,
 
