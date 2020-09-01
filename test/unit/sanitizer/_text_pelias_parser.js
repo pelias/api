@@ -365,6 +365,46 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['Berlin Deutschlan', { subject: 'Berlin' }, true]);
   cases.push(['Berlin Deutschland', { subject: 'Berlin' }, true]);
 
+  // venue name with ampersand
+  // note: this query is ambigious as it could refer to either the
+  // UK high street brand "Marks & Spencer" or an intersection of
+  // Marks St and Spencer Ave.
+  // note: what we're looking for here is that we are using the whole
+  // input as the $subject regardless and without jitter.
+  cases.push(['M', { subject: 'M' }, true]);
+  cases.push(['Ma', { subject: 'Ma' }, true]);
+  cases.push(['Mar', { subject: 'Mar' }, true]);
+  cases.push(['Mark', { subject: 'Mark' }, true]);
+
+  // note: for the following 5 keystrokes the $subject is simplified to 'Marks'
+  cases.push(['Marks', { subject: 'Marks' }, true]);
+  cases.push(['Marks ', { subject: 'Marks' }, true]);
+  cases.push(['Marks &', { subject: 'Marks' }, true]);
+  cases.push(['Marks & ', { subject: 'Marks' }, true]);
+  cases.push(['Marks & S', { subject: 'Marks' }, true]);
+
+  cases.push(['Marks & Sp', { subject: 'Marks & Sp' }, true]);
+  cases.push(['Marks & Spe', { subject: 'Marks & Spe' }, true]);
+  cases.push(['Marks & Spen', { subject: 'Marks & Spen' }, true]);
+  cases.push(['Marks & Spenc', { subject: 'Marks & Spenc' }, true]);
+  cases.push(['Marks & Spence', { subject: 'Marks & Spence' }, true]);
+  cases.push(['Marks & Spencer', { subject: 'Marks & Spencer' }, true]);
+
+  // venue is also known colloquially as "M AND S"
+  cases.push(['M', { subject: 'M' }, true]);
+  cases.push(['M ', { subject: 'M' }, true]);
+  cases.push(['M &', { subject: 'M &' }, true]);
+  cases.push(['M & ', { subject: 'M &' }, true]);
+  cases.push(['M & S', { subject: 'M & S' }, true]);
+
+  cases.push(['M', { subject: 'M' }, true]);
+  cases.push(['M ', { subject: 'M' }, true]);
+  cases.push(['M a', { subject: 'M a' }, true]);
+  cases.push(['M an', { subject: 'M an' }, true]);
+  cases.push(['M and', { subject: 'M and' }, true]);
+  cases.push(['M and ', { subject: 'M and' }, true]);
+  cases.push(['M and S', { subject: 'M & S' }, true]);
+
   // postcodes
   cases.push(['2000', { subject: '2000' }, true]);
   cases.push(['Sydney 2000', { subject: '2000' }, true]);
