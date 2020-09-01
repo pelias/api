@@ -20,7 +20,7 @@ module.exports.tests.text_parser = function (test, common) {
   });
 
   let cases = [];
-  
+
   // USA queries
   cases.push(['soho, new york, NY', {
     subject: 'soho',
@@ -154,6 +154,29 @@ module.exports.tests.text_parser = function (test, common) {
     admin: 'Kentucky'
   }]);
 
+  // badly parsed venue names should at least have correct $subject
+  cases.push(['Kells Irish Restaurant & Pub', {
+    subject: 'Kells Irish Restaurant & Pub'
+  }, true]);
+  cases.push(['The Village Zombie', {
+    subject: 'The Village Zombie'
+  }, true]);
+  cases.push(['Chili\'s Bar & Grill', {
+    subject: 'Chili\'s Bar & Grill'
+  }, true]);
+  cases.push(['OYO Hotels & Homes', {
+    subject: 'OYO Hotels & Homes'
+  }, true]);
+  cases.push(['Adamas Pharmaceuticals', {
+    subject: 'Adamas Pharmaceuticals'
+  }, true]);
+  cases.push(['St Francis Extended', {
+    subject: 'St Francis Extended'
+  }, true]);
+  cases.push(['St Francis', {
+    subject: 'St Francis'
+  }, true]);
+
   // street (USA style)
   cases.push(['M', { subject: 'M' }, true]);
   cases.push(['Ma', { subject: 'Ma' }, true]);
@@ -282,11 +305,11 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['Kasch', { subject: 'Kasch' }, true]);
   cases.push(['Kaschk', { subject: 'Kaschk' }, true]);
   cases.push(['Kaschk ', { subject: 'Kaschk' }, true]);
-  // cases.push(['Kaschk B', { subject: 'Kaschk' }, true]); // jitter issue
-  cases.push(['Kaschk Be', { subject: 'Kaschk' }, true]);
-  // cases.push(['Kaschk Ber', { subject: 'Kaschk' }, true]); // jitter issue
-  // cases.push(['Kaschk Berl', { subject: 'Kaschk' }, true]); // jitter issue
-  // cases.push(['Kaschk Berli', { subject: 'Kaschk' }, true]); // jitter issue
+  cases.push(['Kaschk B', { subject: 'Kaschk B' }, true]);
+  cases.push(['Kaschk Be', { subject: 'Kaschk Be' }, true]);
+  cases.push(['Kaschk Ber', { subject: 'Kaschk Ber' }, true]);
+  cases.push(['Kaschk Berl', { subject: 'Kaschk Berl' }, true]);
+  cases.push(['Kaschk Berli', { subject: 'Kaschk Berli' }, true]);
   cases.push(['Kaschk Berlin', { subject: 'Kaschk' }, true]);
 
   cases.push(['A', { subject: 'A' }, true]);
@@ -308,7 +331,7 @@ module.exports.tests.text_parser = function (test, common) {
   // cases.push(['Air & Space Museu', { subject: 'Air & Space Museu' }, true]); // jitter issue
   cases.push(['Air & Space Museum', { subject: 'Air & Space Museum' }, true]);
   cases.push(['Air & Space Museum ', { subject: 'Air & Space Museum' }, true]);
-  cases.push(['Air & Space Museum D', { subject: 'Air & Space Museum' }, true]);
+  cases.push(['Air & Space Museum D', { subject: 'Air & Space Museum D' }, true]);
   cases.push(['Air & Space Museum DC', { subject: 'Air & Space Museum' }, true]);
 
   // admin areas
@@ -322,7 +345,7 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['New York', { subject: 'New York' }, true]);
   cases.push(['New York N', { subject: 'New York' }, true]);
   cases.push(['New York NY', { subject: 'New York' }, true]);
-  
+
   cases.push(['B', { subject: 'B' }, true]);
   cases.push(['Be', { subject: 'Be' }, true]);
   cases.push(['Ber', { subject: 'Ber' }, true]);
@@ -421,9 +444,9 @@ module.exports.tests.text_parser = function (test, common) {
     const raw = {
       text: `
 Sometimes we make the process more complicated than we need to.
-We will never make a journey of a thousand miles by fretting about 
+We will never make a journey of a thousand miles by fretting about
 how long it will take or how hard it will be.
-We make the journey by taking each day step by step and then repeating 
+We make the journey by taking each day step by step and then repeating
 it again and again until we reach our destination.` };
     const clean = {};
     const messages = sanitizer.sanitize(raw, clean);

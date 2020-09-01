@@ -7,6 +7,11 @@ const parser = new AddressParser();
 const _ = require('lodash');
 const MAX_TEXT_LENGTH = 140;
 
+// this constant defines a lower boundary for the solution score returned
+// by the Pelias parser. Any solutions which scored lower than this value
+// will simply have their entire body returned as the $subject
+const MIN_ACCEPTABLE_SCORE = 0.3;
+
 /**
   this module provides fulltext parsing using the pelias/parser module.
   see: https://github.com/pelias/parser
@@ -52,8 +57,36 @@ function _sanitize (raw, clean) {
   return messages;
 }
 
+/**
+  The Pelias parser is responsible for interpreting an input string and then returning
+  one or more solutions for how the input tokens can been logically classified.
+
+  However, the responsibility of *how* to interpret those solutions and how best
+  to map them to variables we can use to query elasticsearch is the responsibility
+  of the function below.
+
+  The general idea is to split tokens along a 'cursor boundary', so on the left side of
+  the cursor we have the 'subject' of the query (ie. the place in question) and on the
+  right side of the query we have the administrative tokens.
+
+  note: The function below is *only* concerned with selecting $parsed_text.subject and
+  $parsed_text.admin values
+
+  see: `query/text_parser_pelias.js` for the logic which adds the other fields such
+  as $parsed_text.housenumber and $parsed_text.street etc. *before* this gets run.
+
+  Postcodes are a special case, they belong to neither the admin hierarchy nor to the
+  subject itself. They are more similar in that sense to a house number, because they
+  are a property of the address. They are tricky because they usually appear somewhere
+  in the middle of the input text. They shouldn't be included in either the subject or
+  the admin parts, unless the postcode is itself the subject of the query.
+
+  Here are some examples of how we might split a query into subject and admin:
+  "100 Foo Street Brookyln NYC" -> ["100 Foo Street", "Brookyln NYC"]
+  "Foo Bar 10017 Berlin Germany" -> ["Foo Bar", "Berlin Germany"]
+ */
 function parse (clean) {
-  
+
   // parse text
   let start = new Date();
   const t = new Tokenizer(clean.text);
@@ -73,7 +106,7 @@ function parse (clean) {
   let solution = new Solution();
   if (t.solution.length) { solution = t.solution[0]; }
 
-  // 1. map the output of the parser in to parsed_text
+  // 1. map the output of the parser into $parsed_text
   let parsed_text = { subject: undefined };
 
   solution.pair.forEach(p => {
@@ -100,6 +133,9 @@ function parse (clean) {
     .map((c, i) => (mask[i] !== 'P') ? c : ' ')
     .join('');
 
+  // same as $body above but with consecutive whitespace squashed and trimmed.
+  const normalizedBody = t.section.map(sp => sp.body).join(' ').replace(/\s+/g, ' ').trim();
+
   // scan through the input text and 'bucket' characters in to one of two buckets:
   // prefix: all unparsed characters that came before any parsed fields
   // postfix: all characters from the first admin field to the end of the string
@@ -107,26 +143,21 @@ function parse (clean) {
   // set cursor to the first classified character from selected classes
   let cursor = mask.search(/[NSAP]/);
 
-  // >> solution includes venue classification
-  // set cursor after the venue name
-  if (mask.includes('V')) { cursor = mask.lastIndexOf('V') +1; }
+  // if solution includes address classification
+  // set cursor after the last classified address character
+  if ( mask.includes('N') && mask.includes('S') ) {
+    cursor = Math.max(mask.lastIndexOf('N'), mask.lastIndexOf('S')) + 1;
+  }
+
+  // else if solution includes admin classification
+  // set cursor to the first classified admin character
+  else if( mask.includes('A') ){ cursor = mask.indexOf('A'); }
+
+  // else set cursor to end-of-text
+  else { cursor = body.length; }
 
   if (cursor === -1) { cursor = body.length; }
   let prefix = _.trim(body.substr(0, cursor), ' ,');
-
-  // solution includes address classification
-  // set cursor after the last classified address character
-  if (mask.search(/[NS]/) > -1) {
-    cursor = Math.max(mask.lastIndexOf('N'), mask.lastIndexOf('S')) + 1;
-  }
-  // solution includes admin classification
-  // set cursor to the first classified admin character
-  else if( mask.includes('A') ){ cursor = mask.indexOf('A'); }
-  // >> solution includes venue classification
-  // set cursor after the venue name
-  else if (mask.includes('V')) { cursor = mask.lastIndexOf('V') + 1; }
-  // else set cursor to end-of-text
-  else { cursor = body.length; }
   let postfix = _.trim(body.substr(cursor), ' ,');
 
   // clean up spacing around commas
@@ -163,8 +194,13 @@ function parse (clean) {
   // 4. set 'subject', this is the text which will target the 'name.*'
   // fields in elasticsearch queries
 
+  // in the case where the solution score is very low we simply use the entire
+  // input as the $subject.
+  if ( solution.score < MIN_ACCEPTABLE_SCORE ) {
+    parsed_text = { subject: normalizedBody };
+  }
   // an address query
-  if (!_.isEmpty(parsed_text.housenumber) && !_.isEmpty(parsed_text.street)) {
+  else if (!_.isEmpty(parsed_text.housenumber) && !_.isEmpty(parsed_text.street)) {
     parsed_text.subject = `${parsed_text.housenumber} ${parsed_text.street}`;
   }
   // an intersection query
@@ -172,12 +208,16 @@ function parse (clean) {
     parsed_text.subject = `${parsed_text.street} & ${parsed_text.cross_street}`;
   }
   // a street query
-  else if (!_.isEmpty(parsed_text.street)) {
+  else if (!_.isEmpty(parsed_text.street) && _.isEmpty(parsed_text.venue)) {
     parsed_text.subject = parsed_text.street;
   }
   // query with a $prefix such as a venue query
   else if (!_.isEmpty(prefix)){
-    parsed_text.subject = prefix;
+    if (prefix.length > 2) {
+      parsed_text.subject = prefix;
+    } else {
+      parsed_text = { subject: normalizedBody };
+    }
   }
   // a postcode query
   else if (!_.isEmpty(parsed_text.postcode)) {
@@ -225,10 +265,10 @@ function parse (clean) {
       }
     }
   }
-  
+
   // unknown query type
   else {
-    parsed_text.subject = t.span.body;
+    parsed_text = { subject: normalizedBody };
   }
 
   return parsed_text;
