@@ -12,6 +12,15 @@ const MAX_TEXT_LENGTH = 140;
 // will simply have their entire body returned as the $subject
 const MIN_ACCEPTABLE_SCORE = 0.3;
 
+// this constant defines the minimum amount of characters that can be
+// interpreted as a $prefix when assigning them to $subject.
+// this is useful for cases such as 'St Francis' where the parser returns
+// { locality: 'Francis' }, it's not able to classify the 'St' token.
+// in this case the leading 'St' would normally be considered the $subject
+// and the parsed_text would be { subject: 'St', admin: 'Francis' }.
+// the $MIN_PREFIX_CHAR_LENGTH var is a simple way of working around this problem.
+const MIN_PREFIX_CHAR_LENGTH = 3;
+
 /**
   this module provides fulltext parsing using the pelias/parser module.
   see: https://github.com/pelias/parser
@@ -213,7 +222,7 @@ function parse (clean) {
   }
   // query with a $prefix such as a venue query
   else if (!_.isEmpty(prefix)){
-    if (prefix.length > 2) {
+    if (prefix.length >= MIN_PREFIX_CHAR_LENGTH) {
       parsed_text.subject = prefix;
     } else {
       parsed_text = { subject: normalizedBody };
