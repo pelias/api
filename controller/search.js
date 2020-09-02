@@ -20,8 +20,8 @@ function filterByCategories(req, renderedQuery) {
     }
     var categories = req.query.categories;
     if (categories && 'NO_FILTER' !== categories) {
-        if (!renderedQuery.body.query.bool.must) {
-            renderedQuery.body.query.bool.must = [];
+        if (!renderedQuery.body.query.bool.filter) {
+            renderedQuery.body.query.bool.filter = [];
         }
 
         var categoriesTerms = {
@@ -29,7 +29,7 @@ function filterByCategories(req, renderedQuery) {
                 'category': categories.split(',')
             }
         };
-        renderedQuery.body.query.bool.must.push(categoriesTerms);
+        renderedQuery.body.query.bool.filter.push(categoriesTerms);
 
 
     }
@@ -44,8 +44,8 @@ function filterByParentIds(req, renderedQuery) {
     var countyIds = req.query['boundary.county_ids'];
     var localityIds = req.query['boundary.locality_ids'];
     if (countyIds || localityIds) {
-        if (!renderedQuery.body.query.bool.must) {
-            renderedQuery.body.query.bool.must = [];
+        if (!renderedQuery.body.query.bool.filter) {
+            renderedQuery.body.query.bool.filter = [];
         }
 
         if (countyIds) {
@@ -54,7 +54,7 @@ function filterByParentIds(req, renderedQuery) {
                     'parent.county_id': countyIds.split(',')
                 }
             };
-            renderedQuery.body.query.bool.must.push(countyTerms);
+            renderedQuery.body.query.bool.filter.push(countyTerms);
         }
 
         if (localityIds) {
@@ -63,7 +63,7 @@ function filterByParentIds(req, renderedQuery) {
                     'parent.locality_id': localityIds.split(',')
                 }
             };
-            renderedQuery.body.query.bool.must.push(localityTerms);
+            renderedQuery.body.query.bool.filter.push(localityTerms);
         }
     }
 }
@@ -77,8 +77,8 @@ function filterByTariffZones(req, renderedQuery) {
     var tariffZoneIds = req.query.tariff_zone_ids;
     var tariffZoneAuthorities = req.query.tariff_zone_authorities;
     if (tariffZoneIds || tariffZoneAuthorities) {
-        if (!renderedQuery.body.query.bool.must) {
-            renderedQuery.body.query.bool.must = [];
+        if (!renderedQuery.body.query.bool.filter) {
+            renderedQuery.body.query.bool.filter = [];
         }
 
         if (tariffZoneIds) {
@@ -87,7 +87,7 @@ function filterByTariffZones(req, renderedQuery) {
                     'tariff_zones': tariffZoneIds.split(',')
                 }
             };
-            renderedQuery.body.query.bool.must.push(tariffZoneIdsTerms);
+            renderedQuery.body.query.bool.filter.push(tariffZoneIdsTerms);
         }
 
         if (tariffZoneAuthorities) {
@@ -96,7 +96,7 @@ function filterByTariffZones(req, renderedQuery) {
                     'tariff_zone_authorities': tariffZoneAuthorities.split(',')
                 }
             };
-            renderedQuery.body.query.bool.must.push(tariffZoneAuthoritiesTerms);
+            renderedQuery.body.query.bool.filter.push(tariffZoneAuthoritiesTerms);
         }
     }
 }
