@@ -14,6 +14,11 @@ var sanitizeAll = require('../sanitizer/sanitizeAll'),
       private: require('../sanitizer/_flag_bool')('private', false),
       geo_reverse: require('../sanitizer/_geo_reverse')(),
       boundary_country: require('../sanitizer/_boundary_country')(),
+      boundary_county_ids: require('../sanitizer/_boundary_county_ids')(),
+      boundary_locality_ids: require('../sanitizer/_boundary_locality_ids')(),
+      tariff_zone_ids: require('../sanitizer/_tariff_zone_ids')(),
+      tariff_zone_authorities: require('../sanitizer/_tariff_zone_authorities')(),
+      categories: require('../sanitizer/_categories')(),
       request_language: require('../sanitizer/_request_language')()
     };
 
