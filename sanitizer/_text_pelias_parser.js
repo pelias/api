@@ -137,9 +137,10 @@ function parse (clean) {
   // '    VVVV NN SSSSSSS AAAAAA PPPPP      '
   let mask = solution.mask(t);
 
-  // the entire input text as seen by the parser with any postcode classification(s) removed
+  // the entire input text as seen by the parser with any postcode and unit
+  // classification(s) removed
   let body = t.span.body.split('')
-    .map((c, i) => (mask[i] !== 'P') ? c : ' ')
+    .map((c, i) => !/[PU]/.test(mask[i]) ? c : ' ')
     .join('');
 
   // same as $body above but with consecutive whitespace squashed and trimmed.

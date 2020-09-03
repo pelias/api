@@ -419,6 +419,16 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['e8 1dn', { subject: 'e8 1dn' }, true]);
   // cases.push(['london e8 1dn', { subject: 'e8 1dn' }, true]); // issue
 
+  // unit number between address and locality
+  cases.push(['7750 Kennedy Rd #2A Markham', {
+    subject: '7750 Kennedy Rd',
+    housenumber: '7750',
+    street: 'Kennedy Rd',
+    unit: '#2A',
+    locality: 'Markham',
+    admin: 'Markham',
+  }]);
+
   cases.forEach(testcase => {
     let input = testcase[0];
     let expected = testcase[1];
