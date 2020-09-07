@@ -32,10 +32,8 @@ function filterByCategories(req, renderedQuery) {
     //
     // Instead we splice out categories from the rendered query and use that to add a
     // new filter, wich uses our own field.
-    var match = renderedQuery.body.query.bool.filter.splice(
-        renderedQuery.body.query.bool.filter.findIndex(f => f.terms && f.terms.category)
-    ).shift();
-
+    var index = renderedQuery.body.query.bool.filter.findIndex(f => f.terms && f.terms.category);
+    var match = index !== -1 && renderedQuery.body.query.bool.filter.splice(index).shift();
     var categories = match ? match.terms.category : [];
 
     if (categories.length > 0 && !categories.includes('no_filter')) {
