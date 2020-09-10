@@ -94,6 +94,23 @@ module.exports.tests.text_parser = function(test, common) {
 
   });
 
+  test('only uninteresting unicode characters should error', function(t) {
+    const only_uninteresting_unicode = String.fromCharCode(0x001A); // ASCII 'substitute' char
+    const raw = { address: only_uninteresting_unicode };
+
+    const clean = {};
+
+    const expected_clean = { parsed_text: {} };
+
+    const messages = sanitizer().sanitize(raw, clean);
+
+    t.deepEquals(clean, expected_clean);
+    t.deepEquals(messages.errors, ['at least one of the following fields is required: ' +
+      'venue, address, neighbourhood, borough, locality, county, region, postalcode, country'], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+    t.end();
+  });
+
   test('postalcode-only parsed_text should return error', function(t) {
     const raw = {
       postalcode: 'postalcode value'
