@@ -16,9 +16,6 @@ PKG_NAME=$(echo ${BUILD_TYPE} | cut -d - -f 2)
 export PACKAGE_VERSION=$(jq -r .version package.json)
 export PACKAGE_INSTANCES=$(cat ./deploy/package/${PKG_NAME}/instances.${ENV_NAME}.txt)
 
-imageNamePrefix="pelias/"
-registry="registry-upload.taxify.io"
-
 export PACKAGE_IMAGE_NAME="pelias-api/code"
 export PACKAGE_IMAGE_TAG="v1-${COMMIT_TAG}"
 export PACKAGE_READ_REGISTRY_PREFIX="registry.taxify.io/"
