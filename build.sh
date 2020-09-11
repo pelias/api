@@ -19,16 +19,18 @@ export PACKAGE_INSTANCES=$(cat ./deploy/package/${PKG_NAME}/instances.${ENV_NAME
 imageNamePrefix="pelias/"
 registry="registry-upload.taxify.io"
 
-export PACKAGE_IMAGE_NAME="pelias-api"
+export PACKAGE_IMAGE_NAME="pelias-api/code"
 export PACKAGE_IMAGE_TAG="v1-${COMMIT_TAG}"
 export PACKAGE_READ_REGISTRY_PREFIX="registry.taxify.io/"
 export PACKAGE_WRITE_REGISTRY_PREFIX="registry-upload.taxify.io/"
 imageWithTag="${PACKAGE_WRITE_REGISTRY_PREFIX}${PACKAGE_IMAGE_NAME}:${PACKAGE_IMAGE_TAG}"
 
+echo "Before checking"
 if docker image pull "${imageWithTag}" >/dev/null 2>&1 || docker image inspect "${imageWithTag}" >/dev/null 2>&1
 then
   echo "Image already exists ${imageWithTag}"
 else
-  echo docker build -t "${imageWithTag}" ./
-  echo docker push ${imageWithTag}
+  echo "Image does not exist"
+  docker build -t "${imageWithTag}" ./
+  docker push ${imageWithTag}
 fi
