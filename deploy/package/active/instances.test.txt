@@ -1,1 +1,1 @@
-active-instance::4000
+active-instance:pelias-bolt-active.json:4000
