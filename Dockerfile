@@ -16,4 +16,4 @@ COPY . ${WORK}
 RUN npm test
 
 # start service
-CMD PELIAS_CONFIG=${PELIAS_CONFIG} npm run start
+CMD [ "./bin/start" ]
