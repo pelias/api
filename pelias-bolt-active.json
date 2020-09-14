@@ -1,0 +1,74 @@
+{
+  "logger": {
+    "level": "info",
+    "colorize": false,
+    "timestamp": true
+  },
+  "esclient": {
+    "apiVersion": "5.6",
+    "hosts": [
+      { "host": "elasticsearch" }
+    ],
+    "requestTimeout": 250,
+    "maxRetries": 1
+  },
+  "elasticsearch": {
+    "settings": {
+      "index": {
+        "refresh_interval": "10s",
+        "number_of_replicas": "0",
+        "number_of_shards": "1"
+      }
+    }
+  },
+  "api": {
+    "indexName": "pelias_active",
+    "textAnalyzer": "libpostal",
+    "services": {
+      "pip": { "url": "http://pip:4200", "timeout": 250, "retries": 1 },
+      "libpostal": { "url": "http://libpostal:4400", "timeout": 250, "retries": 1 },
+      "placeholder": { "url": "http://placeholder:4100", "timeout": 250, "retries": 1 },
+      "interpolation": { "url": "http://interpolation:4300", "timeout": 250, "retries": 1 }
+    },
+    "defaultParameters": {
+      "focus.point.lat": 50.85,
+      "focus.point.lon": 4.35
+    },
+    "targets": {	
+      "layers_by_source": {	
+        "poi": ["address", "venue"]	
+      }	
+    }
+  },
+  "imports": {
+    "adminLookup": {
+      "enabled": true
+    },
+    "openstreetmap": {
+      "download": [
+        { "sourceURL": "http://download.geofabrik.de/europe/estonia-latest.osm.pbf" },
+        { "sourceURL": "http://download.geofabrik.de/europe/romania-latest.osm.pbf" }
+      ],
+      "leveldbpath": "/tmp",
+      "datapath": "/data/openstreetmap",
+      "import": [
+          { "filename": "estonia-latest.osm.pbf" },
+          { "filename": "romania-latest.osm.pbf" }
+      ]
+    },
+    "openaddresses": {
+      "datapath": "/data/openaddresses",
+      "files": ["ro/bucharest.csv", "ro/bucharest-metro.csv", "ee/countrywide.csv"]
+    },
+    "polyline": {
+      "datapath": "/data/polylines",
+      "files": [ "extract.0sv" ]
+    },
+    "whosonfirst": {
+      "datapath": "/data/whosonfirst",
+      "importVenues": true,
+      "importPostalcodes": true,
+      "importPlace": [ "85633135", "85633745" ]
+    }
+  }
+}
