@@ -7,7 +7,7 @@
   "esclient": {
     "apiVersion": "5.6",
     "hosts": [
-      { "host": "elasticsearch" }
+      { "host": "localhost" }
     ],
     "requestTimeout": 250,
     "maxRetries": 1
