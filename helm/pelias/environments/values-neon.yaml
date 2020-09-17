@@ -1,3 +1,0 @@
-env: production
-replicas: 3
-gcpBasePath: gs://marduk-production/es-data/

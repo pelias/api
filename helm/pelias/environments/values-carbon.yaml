@@ -1,3 +1,0 @@
-env: dev
-replicas: 1
-gcpBasePath: gs://marduk/es-data/

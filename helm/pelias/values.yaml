@@ -37,8 +37,6 @@ service:
   http:
     externalPort: 80
     internalPort: 3000
-cronjobRedeployPelias:
-  enabled: false
 
 rbac:
   enabled: false
