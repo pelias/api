@@ -1,6 +1,6 @@
 env: staging
 replicas: 1
-gcpBasePath: gs://marduk-stage/es-data/
+gcpBasePath: gs://kakka-test/es-data/
 
 cronjobRedeployPelias:
   enabled: true

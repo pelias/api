@@ -1,6 +1,6 @@
 env: production
 replicas: 3
-gcpBasePath: gs://marduk-production/es-data/
+gcpBasePath: gs://kakka-production/es-data/
 
 cronjobRedeployPelias:
   enabled: true
