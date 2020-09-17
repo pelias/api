@@ -25,10 +25,10 @@
     "indexName": "pelias_active",
     "textAnalyzer": "libpostal",
     "services": {
-      "pip": { "url": "http://pip:4200", "timeout": 250, "retries": 1 },
-      "libpostal": { "url": "http://libpostal:4400", "timeout": 250, "retries": 1 },
-      "placeholder": { "url": "http://placeholder:4100", "timeout": 250, "retries": 1 },
-      "interpolation": { "url": "http://interpolation:4300", "timeout": 250, "retries": 1 }
+      "pip": { "url": "http://localhost:4200", "timeout": 250, "retries": 1 },
+      "libpostal": { "url": "http://localhost:4400", "timeout": 250, "retries": 1 },
+      "placeholder": { "url": "http://localhost:4100", "timeout": 250, "retries": 1 },
+      "interpolation": { "url": "http://localhost:4300", "timeout": 250, "retries": 1 }
     },
     "defaultParameters": {
       "focus.point.lat": 50.85,
