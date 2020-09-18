@@ -52,6 +52,7 @@ query.score( peliasQuery.view.population( views.pop_subquery ) );
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.boundary_rect );
+query.filter( peliasQuery.view.categories );
 
 // --------------------------------
 
@@ -135,6 +136,12 @@ function generateQuery( clean ){
   // run the address parser
   if( clean.parsed_text ){
     textParser( clean.parsed_text, vs );
+  }
+
+  // categories
+  if (clean.categories) {
+    vs.var('input:categories', clean.categories);
+    logStr += '[param:categories] ';
   }
 
   logger.info(logStr);
