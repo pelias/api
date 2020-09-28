@@ -41,7 +41,7 @@ adminFields = adminFields.concat(['add_name_to_multimatch']);
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
-query.score( views.phrase_first_tokens_only, 'must');
+query.score( views.phrase_first_tokens_only, 'must' );
 query.score( views.ngrams_last_token_only_multi( adminFields ), 'must' );
 
 
@@ -55,7 +55,6 @@ query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );
 query.score( views.custom_boosts( config.get('api.customBoosts') ) );
-query.score( views.phrase_first_all_tokens_only );
 query.score( views.phrase_first_all_tokens_only );
 
 // non-scoring hard filters
