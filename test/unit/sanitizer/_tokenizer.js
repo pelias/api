@@ -195,6 +195,38 @@ module.exports.tests.sanity_checks = function(test, common) {
     t.deepEquals(clean.tokens_complete, [ '190', 'foo' ], 'complete');
     t.deepEquals(clean.tokens_incomplete, [ 'st' ], 'incomplete');
 
+    // the test case is a weird synthetic query, since it's very unlikely we'd have such a different
+    // text + parsed_text, but in any case, check that we parse the text into raw_tokens
+    t.deepEquals(clean.raw_tokens, [ 'bar' ], 'use street name + housenumber');
+    t.deepEquals(clean.raw_tokens_complete, [ ], 'complete');
+    t.deepEquals(clean.raw_tokens_incomplete, [ 'bar' ], 'incomplete');
+
+    // no errors/warnings produced
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [], 'no warnings');
+
+    t.end();
+  });
+
+  test('handle incomplete parses', function(t) {
+
+    var clean = { parsed_text: {
+      subject: '190 foo st',
+      housenumber: '190',
+      street: 'foo st'
+    }, text: 'xxx 190 foo st bar' };
+    var messages = sanitizer.sanitize({}, clean);
+
+    // favor clean.parsed_text.subject over clean.text
+    t.deepEquals(clean.tokens, [ '190', 'foo', 'st' ], 'use street name + housenumber');
+    t.deepEquals(clean.tokens_complete, [ '190', 'foo' ], 'complete');
+    t.deepEquals(clean.tokens_incomplete, [ 'st' ], 'incomplete');
+
+    // check that we also set raw tokens, even though it's unlikely to be used in this query
+    t.deepEquals(clean.raw_tokens, [ 'xxx', '190', 'foo', 'st', 'bar' ], 'use street name + housenumber');
+    t.deepEquals(clean.raw_tokens_complete, [ 'xxx', '190', 'foo', 'st' ], 'complete');
+    t.deepEquals(clean.raw_tokens_incomplete, [ 'bar' ], 'incomplete');
+
     // no errors/warnings produced
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');

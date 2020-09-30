@@ -41,7 +41,10 @@ module.exports.tests.query = function(test, common) {
       text: 'one two three',
       tokens: ['one','two','three'],
       tokens_complete: ['one','two'],
-      tokens_incomplete: ['three']
+      tokens_incomplete: ['three'],
+      raw_tokens: ['one','two','three'],
+      raw_tokens_complete: ['one', 'two'],
+      raw_tokens_incomplete: ['three']
     });
 
     var compiled = JSON.parse( JSON.stringify( query ) );
@@ -49,6 +52,26 @@ module.exports.tests.query = function(test, common) {
 
     t.deepEqual(compiled.type, 'autocomplete', 'query type set');
     t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_multiple_tokens');
+    t.end();
+  });
+
+
+  test('valid lingustic autocomplete with five tokens, first two discarded by parse', function(t) {
+    var query = generate({
+      text: 'one two three four five',
+      tokens: ['three','four','five'],
+      tokens_complete: ['three','four'],
+      tokens_incomplete: ['five'],
+      raw_tokens: ['one', 'two', 'three', 'four', 'five'],
+      raw_tokens_complete: ['one', 'two', 'three', 'four'],
+      raw_tokens_incomplete: ['five']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_linguistic_multiple_tokens_some_unparsed');
+
+    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+    t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_multiple_tokens_some_unparsed');
     t.end();
   });
 

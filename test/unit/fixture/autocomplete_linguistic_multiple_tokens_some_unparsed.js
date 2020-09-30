@@ -5,7 +5,7 @@ module.exports = {
         {
           multi_match: {
             type: 'phrase',
-            query: 'one two',
+            query: 'three four',
             fields: ['phrase.default', 'phrase.en'],
             analyzer: 'peliasQuery',
             boost: 1,
@@ -17,7 +17,7 @@ module.exports = {
             filter: {
               multi_match: {
                 type: 'cross_fields',
-                query: 'three',
+                query: 'five',
                 fields: [
                   'parent.country.ngram^1',
                   'parent.dependency.ngram^1',
@@ -74,6 +74,15 @@ module.exports = {
             ],
             score_mode: 'first',
             boost_mode: 'replace',
+          },
+        },
+        {
+          match: {
+            'phrase.default': {
+              query: 'one two three four',
+              analyzer: 'peliasQuery',
+              minimum_should_match: '1<-1 3<-70%',
+            },
           },
         },
       ],

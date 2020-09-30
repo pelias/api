@@ -1,20 +1,25 @@
 module.exports = {
-  'query': {
-    'bool': {
-      'must': [
+  'query':{
+    'bool':{
+      'must':[
         {
-          'multi_match': {
-            'fields': ['phrase.default', 'phrase.en'],
-            'analyzer': 'peliasQuery',
-            'type': 'phrase',
-            'slop': 3,
-            'boost': 1,
-            'query': 'one two'
+          'multi_match':{
+            'type':'phrase',
+            'query':'one two',
+            'fields':[
+              'phrase.default',
+              'phrase.en'],
+            'analyzer':'peliasQuery',
+            'boost':1,
+            'slop':3
           }
-        },
+        }],
+      'should':[
         {
-          'multi_match': {
-            'fields': [
+          'multi_match':{
+            'type':'cross_fields',
+            'query':'three',
+            'fields':[
               'parent.country.ngram^1',
               'parent.dependency.ngram^1',
               'parent.macroregion.ngram^1',
@@ -27,61 +32,55 @@ module.exports = {
               'parent.locality_a.ngram^1',
               'parent.region_a.ngram^1',
               'parent.country_a.ngram^1',
-              'name.default^1.5'
-            ],
-            'query': 'three',
-            'analyzer': 'peliasAdmin',
-            'type': 'cross_fields'
-          }
-        }
-      ],
-      'should': [
-        {
-          'function_score': {
-            'query': {
-              'match_all': {}
-            },
-            'max_boost': 20,
-            'functions': [
-              {
-                'field_value_factor': {
-                  'modifier': 'log1p',
-                  'field': 'popularity',
-                  'missing': 1
-                },
-                'weight': 1
-              }
-            ],
-            'score_mode': 'first',
-            'boost_mode': 'replace'
+              'name.default^1.5'],
+            'analyzer':'peliasAdmin'
           }
         },
         {
-          'function_score': {
-            'query': {
-              'match_all': {}
-            },
-            'max_boost': 20,
-            'functions': [
-              {
-                'field_value_factor': {
-                  'modifier': 'log1p',
-                  'field': 'population',
-                  'missing': 1
-                },
-                'weight': 3
+          'function_score':{
+            'query':{
+              'match_all':{
               }
-            ],
-            'score_mode': 'first',
-            'boost_mode': 'replace'
+            },
+            'max_boost':20,
+            'functions':[
+              {
+                'field_value_factor':{
+                  'modifier':'log1p',
+                  'field':'popularity',
+                  'missing':1
+                },
+                'weight':1
+              }],
+            'score_mode':'first',
+            'boost_mode':'replace'
           }
-        }
-      ]
+        },
+        {
+          'function_score':{
+            'query':{
+              'match_all':{
+              }
+            },
+            'max_boost':20,
+            'functions':[
+              {
+                'field_value_factor':{
+                  'modifier':'log1p',
+                  'field':'population',
+                  'missing':1
+                },
+                'weight':3
+              }],
+            'score_mode':'first',
+            'boost_mode':'replace'
+          }
+        }]
     }
   },
-  'size': 20,
-  'track_scores': true,
-  'sort': [
-    '_score'
-  ]
+  'size':20,
+  'track_scores':true,
+  'sort':[
+    '_score']
 };
+
