@@ -6,6 +6,7 @@ const { Router } = express;
 const sorting = require('pelias-sorting');
 const elasticsearch = require('elasticsearch');
 const {all, any, not} = require('predicates');
+const fs = require('fs');
 
 // imports
 const sanitizers = requireAll(path.join(__dirname, '../sanitizer'));
@@ -362,9 +363,17 @@ function addRoutes(app, peliasConfig) {
     app.use ( '/frontend',                  express.static('node_modules/pelias-compare/dist-api/'));
 
     app.locals.parser = { address: require('../sanitizer/_text_pelias_parser')().parser };
-    app.use ( '/frontend/parser/demo',      express.static('node_modules/pelias-parser/server/demo/') );
-    // this needs to stay here because it's where the pelias-parser demo code expects it
-    app.use ( '/parser/parse',              require('pelias-parser/server/routes/parse.js') );
+    app.use ( '/frontend/parser/demo',     function(req,res){
+      fs.readFile('node_modules/pelias-parser/server/demo/index.html', 'utf8', function(err, data){
+         if (err) { 
+           throw err;
+         }
+          
+         res.send(data.replace('/parser/parse', '/frontend/parser/parse'));
+       });
+     });
+    
+    app.use ( '/frontend/parser/parse',              require('pelias-parser/server/routes/parse.js') );
   }
 }
 
