@@ -2,6 +2,7 @@ const _ = require('lodash');
 const peliasQuery = require('pelias-query');
 const defaults = require('./search_defaults');
 const textParser = require('./text_parser');
+const restrictIds = require('./view/restrict_ids');
 
 //------------------------------
 // general-purpose search query
@@ -12,6 +13,10 @@ const structuredQuery = new peliasQuery.layout.StructuredFallbackQuery();
 structuredQuery.score( peliasQuery.view.focus_only_function( ) );
 structuredQuery.score( peliasQuery.view.popularity_only_function );
 structuredQuery.score( peliasQuery.view.population_only_function );
+// --------------------------------
+
+// debugging
+structuredQuery.score( restrictIds, 'must');
 // --------------------------------
 
 // non-scoring hard filters
@@ -96,6 +101,11 @@ function generateQuery( clean ){
     vs.set({
       'boundary:gid': clean['boundary.gid']
     });
+  }
+
+  // restrictIds for debugging/explaining
+  if (clean.restrictIds) {
+    vs.var('restrictIds', clean.restrictIds);
   }
 
   // run the address parser

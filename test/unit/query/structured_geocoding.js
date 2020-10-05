@@ -48,7 +48,8 @@ module.exports.tests.query = (test, common) => {
       },
       './text_parser': () => {
         t.fail('text_parser should not have been called');
-      }
+      },
+      './view/restrict_ids': 'restrictIds view'
     })(clean);
 
     t.equals(query.type, 'structured', 'query type set');
@@ -72,7 +73,8 @@ module.exports.tests.query = (test, common) => {
     t.deepEquals(query.body.score_functions, [
       'focus_only_function view',
       'popularity_only_function view',
-      'population_only_function view'
+      'population_only_function view',
+      'restrictIds view'
     ]);
 
     t.deepEquals(query.body.filter_functions, [

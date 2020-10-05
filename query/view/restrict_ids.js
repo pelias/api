@@ -10,7 +10,6 @@ module.exports = function (vs) {
 
   return {
     ids: {
-      type: '_doc',
       values: restrictIds,
     },
   };
