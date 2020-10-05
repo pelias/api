@@ -1,6 +1,4 @@
 const _ = require('lodash');
-const querystring = require('querystring');
-
 const searchService = require('../service/search');
 const logger = require('pelias-logger').get('api');
 const logging = require( '../helper/logging' );
@@ -12,7 +10,7 @@ function isRequestTimeout(err) {
 }
 
 function setup( peliasConfig, esclient, query, should_execute ){
-  const apiConfig = (peliasConfig || {}).api || {};
+  const apiConfig = _.get(peliasConfig, 'api', {});
 
   function controller( req, res, next ){
     if (!should_execute(req, res)) {
@@ -56,22 +54,26 @@ function setup( peliasConfig, esclient, query, should_execute ){
       body: renderedQuery.body
     };
 
-    if (req.clean.enableElasticExplain) {
+    // support for the 'clean.enableElasticExplain' config flag
+    if (_.get(req, 'clean.enableElasticExplain') === true) {
       cmd.explain = true;
     }
 
-    let debugUrl = '';
-    if (peliasConfig.eslclient && Array.isArray(peliasConfig.eslclient.hosts) && peliasConfig.eslclient.hosts.length > 0) {
-      const firstEsHostEntry = peliasConfig.esclient.hosts[0];
-      const esHost = firstEsHostEntry.host ? 
-        `${firstEsHostEntry.protocol}://${firstEsHostEntry.host}:${firstEsHostEntry.port}` : firstEsHostEntry;
+    // support for the 'clean.exposeInternalDebugTools' config flag
+    let debugUrl;
+    if (_.get(req, 'clean.exposeInternalDebugTools') === true) {
 
-       debugUrl = req.clean.exposeInternalDebugTools ?
-        `${esHost}/${apiConfig.indexName}/_search?` +
-          querystring.stringify({
-            source_content_type: 'application/json',
-            source: JSON.stringify(cmd.body)
-          }) : undefined;
+      // select a random elasticsearch host to use for 'exposeInternalDebugTools' actions
+      const host = _.first(esclient.transport.connectionPool.getConnections(null, 1)).host;
+
+      // generate a URL which opens this query directly in elasticsearch
+      debugUrl = host.makeUrl({
+        path: `${apiConfig.indexName}/_search`,
+        query: {
+          source_content_type: 'application/json',
+          source: JSON.stringify(cmd.body)
+        }
+      });
     }
 
     debugLog.push(req, {

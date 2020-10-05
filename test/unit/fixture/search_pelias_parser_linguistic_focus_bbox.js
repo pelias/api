@@ -24,14 +24,7 @@ module.exports = {
       }, {
         'function_score': {
           'query': {
-            'match_phrase': {
-              'phrase.default': {
-                'analyzer': 'peliasPhrase',
-                'boost': 1,
-                'slop': 2,
-                'query': 'test'
-              }
-            }
+            'match_all': {}
           },
           'functions': [{
             'exp': {

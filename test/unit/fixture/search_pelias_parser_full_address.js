@@ -87,6 +87,7 @@ module.exports = {
         }
       }, {
         'multi_match': {
+            'type': 'best_fields',
             'fields': [
               'parent.country^1',
               'parent.region^1',
@@ -98,8 +99,7 @@ module.exports = {
               'parent.region_a^1'
             ],
             'query': 'new york ny US',
-            'analyzer': 'peliasAdmin',
-            'cutoff_frequency': 0.01
+            'analyzer': 'peliasAdmin'
         }
       }],
       'filter': [
