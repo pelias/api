@@ -4,6 +4,7 @@ const defaults = require('./autocomplete_defaults');
 const textParser = require('./text_parser_pelias');
 const config = require('pelias-config').generate();
 const placeTypes = require('../helper/placeTypes');
+const toSingleField = require('./view/helper').toSingleField;
 
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
@@ -32,7 +33,7 @@ var adminFields = placeTypes.concat(['locality_a', 'region_a', 'country_a']);
 // the name of the field to use.
 // this functionality is not enabled unless the 'input:add_name_to_multimatch'
 // variable is set to a non-empty value at query-time.
-adminFields = adminFields.concat(['add_name_to_multimatch']);
+adminFields = adminFields.concat(['add_name_to_multimatch', 'add_name_lang_to_multimatch']);
 
 //------------------------------
 // autocomplete query
@@ -185,6 +186,9 @@ function generateQuery( clean ){
   // Search in the user lang
   if(clean.lang && _.isString(clean.lang.iso6391)) {
     vs.var('lang', clean.lang.iso6391);
+
+    const field = toSingleField(vs.var('admin:add_name_lang_to_multimatch:field').get(), clean.lang.iso6391);
+    vs.var('admin:add_name_lang_to_multimatch:field', field);
   }
 
   return {
