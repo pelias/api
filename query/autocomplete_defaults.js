@@ -132,6 +132,8 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   // are unsure if the tokens represent admin or name components.
   'admin:add_name_to_multimatch:field': 'name.default',
   'admin:add_name_to_multimatch:boost': 1.5,
+  'admin:add_name_lang_to_multimatch:field': 'name.en',
+  'admin:add_name_lang_to_multimatch:boost': 1.5,
 
   'popularity:field': 'popularity',
   'popularity:modifier': 'log1p',

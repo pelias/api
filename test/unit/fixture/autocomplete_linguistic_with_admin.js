@@ -27,7 +27,8 @@ module.exports = {
               'parent.locality_a.ngram^1',
               'parent.region_a.ngram^1',
               'parent.country_a.ngram^1',
-              'name.default^1.5'
+              'name.default^1.5',
+              'name.en^1.5'
             ],
             'query': 'three',
             'analyzer': 'peliasAdmin',
