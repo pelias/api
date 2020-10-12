@@ -2,7 +2,7 @@ const peliasQuery = require('pelias-query');
 const _ = require('lodash');
 
 module.exports = function (vs) {
-  const view_name = 'first_all_tokens_only';
+  const view_name = 'phrase_first_raw_tokens';
   // get a copy of the *complete* tokens produced from the input:name
   const raw_tokens_complete = vs.var('input:name:raw_tokens_complete').get();
 
