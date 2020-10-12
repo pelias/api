@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const logger = require('pelias-logger').get('api');
+const codec = require('pelias-model').codec;
 
 function setup() {
   return applyOverrides;
@@ -20,7 +22,18 @@ function applyOverrides(req, res, next) {
  */
 function overrideOneRecord(place) {
   if (place.addendum && place.addendum.override) {
-    place = _.merge(place, place.addendum.override);
+    try {
+      const overrideData = codec.decode(place.addendum.override);
+      place = _.merge(place, overrideData);
+    } catch (err) {
+      logger.error('Invalid addendum override json string:', place.addendum);
+    }
+
+    delete place.addendum.override;
+
+    if (_.isEmpty(place.addendum)) {
+      delete place.addendum;
+    }
   }
   return place;
 }
