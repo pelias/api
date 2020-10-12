@@ -15,7 +15,7 @@ var views = {
   admin_multi_match_first: require('./view/admin_multi_match_first'),
   admin_multi_match_last: require('./view/admin_multi_match_last'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
-  phrase_first_all_tokens_only:   require('./view/phrase_first_all_tokens_only'),
+  phrase_first_raw_tokens:   require('./view/phrase_first_raw_tokens'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
   focus_point_filter:         require('./view/focus_point_distance_filter')
@@ -56,7 +56,7 @@ query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );
 query.score( views.custom_boosts( config.get('api.customBoosts') ) );
-query.score( views.phrase_first_all_tokens_only );
+query.score( views.phrase_first_raw_tokens );
 
 // non-scoring hard filters
 query.filter( views.max_character_count_layer_filter(['address'], config.get('api.autocomplete.exclude_address_length' ) ) );
