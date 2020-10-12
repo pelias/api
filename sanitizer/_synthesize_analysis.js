@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const unicode = require('../helper/unicode');
 
 const fields = {
   'venue': 'query',
@@ -24,7 +25,12 @@ function _sanitize( raw, clean ){
   // collect all the valid values into a single object
   clean.parsed_text = Object.keys(fields).reduce( (o, f) => {
     if (_.isString(raw[f]) && !_.isEmpty(_.trim(raw[f]))) {
-      o[fields[f]] = normalizeWhitespaceToSingleSpace(raw[f]);
+      let text = unicode.normalize(raw[f]);
+      text = normalizeWhitespaceToSingleSpace(text);
+
+      if (!_.isEmpty(text)) {
+        o[fields[f]] = text;
+      }
     }
 
     return o;
