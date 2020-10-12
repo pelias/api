@@ -21,7 +21,7 @@ function applyOverrides(req, res, next) {
  * Rename the fields in one record
  */
 function overrideOneRecord(place) {
-  if (place.addendum && place.addendum.override) {
+  if (_.has(place, 'addendum.override')) {
     try {
       const overrideData = codec.decode(place.addendum.override);
       place = _.merge(place, overrideData);
