@@ -365,6 +365,28 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled.body, expected, 'autocomplete: valid boundary.gid query');
     t.end();
   });
+
+  test('autocomplete + admin multi match first', t => {
+    const query = generate({
+      text: 'Am Großhausberg, Furtwangen im Schwarzwald deut',
+      parsed_text:{
+        subject:'Am Großhausberg',
+        locality: 'Furtwangen im Schwarzwald',
+        admin: 'Furtwangen im Schwarzwald deut'
+      },
+      tokens:['Am','Großhausberg'],
+      tokens_complete:['Am','Großhausberg'],
+      tokens_incomplete:[],
+      lang:{ iso6391: 'de'}
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_admin_multi_match_first');
+
+    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+    t.deepEqual(compiled.body, expected, 'autocomplete: autocomplete_admin_multi_match_first');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
