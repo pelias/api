@@ -1,12 +1,30 @@
 version: 2
+
 jobs:
-  build:
-    working_directory: /app
-    docker:
-      - image: docker:18.06.1-ce-git
+  build-pelias:
+    executor: machine
     steps:
       - checkout
-      - setup_remote_docker
       - run:
-          name: Build and push image to Docker Hub
-          command: apk --no-cache add curl bash && curl "https://raw.githubusercontent.com/pelias/ci-tools/master/build-docker-images.sh" | bash -
+          name: Install dependencies
+          when: on_success
+          command: |
+            set -e
+            ./ci/install_dependencies.sh
+      - run:
+          name: Build the docker image
+          when: on_success
+          command: |
+            set -e
+            make docker-build
+      - run:
+          name: Push the Docker Image
+          when: on_success
+          command: |
+            set -e
+            make docker-push
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build-pelias
