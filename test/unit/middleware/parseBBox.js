@@ -4,7 +4,7 @@ const proxyquire = require('proxyquire').noCallThru();
 
 module.exports.tests = {};
 
-module.exports.tests.computeDistance = function(test, common) {
+module.exports.tests.parseBBox = function(test, common) {
   test('valid bounding_box json', function(t) {
     var res = {
       data: [

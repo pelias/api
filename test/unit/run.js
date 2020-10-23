@@ -46,6 +46,7 @@ var tests = [
   require('./helper/unicode'),
   require('./middleware/access_log'),
   require('./middleware/accuracy'),
+  require('./middleware/applyOverrides'),
   require('./middleware/assignLabels'),
   require('./middleware/confidenceScore'),
   require('./middleware/confidenceScoreFallback'),
