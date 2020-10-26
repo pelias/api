@@ -363,7 +363,8 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'nearby',               routers.nearby );
 
   if (peliasConfig.api.exposeInternalDebugTools) {
-    app.use ( '/frontend',                   express.static('node_modules/pelias-compare/dist-api/'));
+    app.use ( '/frontend',                 express.static('frontend'));
+    app.use ( '/frontend',                 express.static('node_modules/pelias-compare/dist-api/'));
   }
 }
 
