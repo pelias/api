@@ -1,0 +1,856 @@
+diff --git a/node_modules/pelias-query/defaults.json b/node_modules/pelias-query/defaults.json
+index 1505a18..3c003ab 100644
+--- a/node_modules/pelias-query/defaults.json
++++ b/node_modules/pelias-query/defaults.json
+@@ -62,18 +62,23 @@
+   "admin:county:analyzer": "peliasAdmin",
+   "admin:county:field": "parent.county",
+   "admin:county:boost": 1,
++  "admin:county:bbox_scale": 1.5,
+ 
+   "admin:localadmin:analyzer": "peliasAdmin",
+   "admin:localadmin:field": "parent.localadmin",
+   "admin:localadmin:boost": 1,
++  "admin:localadmin:bbox_scale": 1.5,
++
+ 
+   "admin:locality:analyzer": "peliasAdmin",
+   "admin:locality:field": "parent.locality",
+   "admin:locality:boost": 1,
++  "admin:locality:bbox_scale": 1.5,
+ 
+   "admin:neighbourhood:analyzer": "peliasAdmin",
+   "admin:neighbourhood:field": "parent.neighbourhood",
+   "admin:neighbourhood:boost": 1,
++  "admin:neighbourhood:bbox_scale": 1.5,
+ 
+   "popularity:field": "popularity",
+   "popularity:modifier": "sqrt",
+diff --git a/node_modules/pelias-query/layout/AddressesUsingIdsQuery.js b/node_modules/pelias-query/layout/AddressesUsingIdsQuery.js
+index 682fe70..24a9373 100644
+--- a/node_modules/pelias-query/layout/AddressesUsingIdsQuery.js
++++ b/node_modules/pelias-query/layout/AddressesUsingIdsQuery.js
+@@ -1,6 +1,39 @@
+ const _ = require('lodash');
+ const Query = require('./Query');
+ const match_phrase = require('../lib/leaf/match_phrase');
++const turf = require('@turf/turf');
++
++
++function createParentIdShould(layer, ids) {
++  // create an object initialize with terms.'parent.locality_id' (or whatever)
++  // must use array syntax for 2nd parameter as _.set interprets '.' as new object
++  return _.set({}, ['terms', `parent.${layer}_id`], ids);
++}
++
++function getLayersIdMap(vs) {
++  if (vs.isset('input:layers') || vs.isset('input:layers:ids')) {
++    return vs.var('input:layers').$ || vs.var('input:layers:ids').$;
++  } 
++  return {};
++}
++
++function createLayerIdsShould(vs) {
++  // if there are layer->id mappings , build an array of objects suitable
++  // for filter or query context that check if the id is in the parents
++  // of the search.
++  //
++  // This is designed to boost exact parent id containment matches over
++  // looser bounding box in our filter query.
++
++  const layers_map = getLayersIdMap(vs);
++
++  return Object.keys(layers_map).reduce((acc, layer) => {
++    if (!_.isEmpty(layers_map[layer])) {
++      acc.push(createParentIdShould(layer, layers_map[layer]));
++    }
++    return acc;
++  }, []);
++}
+ 
+ function createAddressShould(vs) {
+   const should = {
+@@ -25,6 +58,14 @@ function createAddressShould(vs) {
+     should.bool.boost = vs.var('boost:address');
+   }
+ 
++  // Give a little should boost to features that have a parent id that
++  // perfectly matches part of the searched for admin hierarchy,
++  // so they beat out hits that were retrieved based on bounding box containment
++  const layer_filters = createLayerIdsShould(vs);
++  if (!_.isEmpty(layer_filters)) {
++    should.bool.should = [...should.bool.should || [], layer_filters];
++  }
++
+   return should;
+ }
+ 
+@@ -52,6 +93,14 @@ function createUnitAndAddressShould(vs) {
+     should.bool.boost = vs.var('boost:address');
+   }
+ 
++  // Give a little should boost to features that have a parent id that
++  // perfectly matches part of the searched for admin hierarchy,
++  // so they beat out hits that were retrieved based on bounding box containment
++  const layer_filters = createLayerIdsShould(vs);
++  if (!_.isEmpty(layer_filters)) {
++    should.bool.should = [...should.bool.should || [], layer_filters];
++  }
++
+   return should;
+ }
+ 
+@@ -79,6 +128,14 @@ function createPostcodeAndAddressShould(vs) {
+     should.bool.boost = vs.var('boost:address');
+   }
+ 
++  // Give a little should boost to features that have a parent id that
++  // perfectly matches part of the searched for admin hierarchy,
++  // so they beat out hits that were retrieved based on bounding box containment
++  const layer_filters = createLayerIdsShould(vs);
++  if (!_.isEmpty(layer_filters)) {
++    should.bool.should = [...should.bool.should || [], layer_filters];
++  }
++
+   return should;
+ }
+ 
+@@ -104,14 +161,34 @@ function createStreetShould(vs) {
+     should.bool.boost = vs.var('boost:street');
+   }
+ 
+-  return should;
++  // Give a little should boost to features that have a parent id that
++  // perfectly matches part of the searched for admin hierarchy,
++  // so they beat out hits that were retrieved based on bounding box containment
++  const layer_filters = createLayerIdsShould(vs);
++  if (!_.isEmpty(layer_filters)) {
++    should.bool.should = [...should.bool.should || [], layer_filters];
++  }
+ 
++  return should;
+ }
+ 
+-function createLayerIdsShould(layer, ids) {
+-  // create an object initialize with terms.'parent.locality_id' (or whatever)
+-  // must use array syntax for 2nd parameter as _.set interprets '.' as new object
+-  return _.set({}, ['terms', `parent.${layer}_id`], ids);
++function createLayerBoundingBoxesShould(vs, bboxes, scale = 1.0) {
++  return bboxes.map((bbox) => {
++    if (bbox.min_lat === bbox.max_lat || bbox.min_lon === bbox.max_lon) {
++      return;
++    }
++
++    var poly = turf.bboxPolygon([bbox.min_lon, bbox.min_lat, bbox.max_lon, bbox.max_lat]);
++    var scaledPoly = turf.transformScale(poly, scale);
++    const [minX, minY, maxX, maxY]  = turf.bbox(scaledPoly);
++
++    return _.set({}, `geo_bounding_box.${vs.var('centroid:field').$}`, {
++      'top': maxY,
++      'right': maxX,
++      'bottom': minY,
++      'left': minX,
++    });
++  }).filter(clause => clause !== undefined);
+ }
+ 
+ class AddressesUsingIdsQuery extends Query {
+@@ -138,6 +215,60 @@ class AddressesUsingIdsQuery extends Query {
+       track_scores: vs.var('track_scores')
+     };
+ 
++    // if there are layer->id mappings, add the layers with non-empty ids
++    // old style: input:layers = [1, 2, 3]
++    // new style: input:layers:ids = [1,2,3], input:layers:bounding_boxes: [{...}, {...}]
++    const layers_id_map = getLayersIdMap(vs);
++    const layers_bbox_map = vs.var('input:layers:bounding_boxes').$;
++
++    // add the layers-to-ids 'should' conditions
++    // if layers_map is:
++    // {
++    //   locality: {ids: [1, 2], bounding_boxes: [{...}, {...}]},
++    //   localadmin: {ids: [], },
++    //   region: {ids: [3, 4]}
++    // }
++    // this creates an array, with one query clause per layer, with what is 
++    // essentially OR query for each layer between the ids or the
++    // bounding boxes (optionally increased by the bbox_scale factor)
++    const layer_filters = Object.keys(layers_id_map).reduce((acc, layer) => {
++      // If there are no ids on this layer, don't add a filter
++      if (_.isEmpty(layers_id_map[layer])) {
++        return acc;
++      }
++
++      const layer_ids_should = createParentIdShould(layer, layers_id_map[layer]);
++
++      const scale = vs.var(`admin:${layer}:bbox_scale`).$ || 1;
++      // Only use admin bounding box clauses if the parents is smaller than a region
++      // This is mainly to prevent anti-meridian crossing issues
++      const should_use_admin_bounding_box = ['neighbourhood', 'borough', 'locality', 'county', 'macrocounty'].includes(layer);
++      const layer_bounding_box_clauses = 
++        should_use_admin_bounding_box ? createLayerBoundingBoxesShould(vs, layers_bbox_map[layer] || [], scale) 
++        : [];
++
++      // if there are bounding box clauses in addition to the ids clause,
++      // combine them. Otherwise don't.
++      if (!_.isEmpty(layer_bounding_box_clauses)) {
++        acc.push({bool: {
++          minimum_should_match: 1,
++          should: [...layer_bounding_box_clauses, layer_ids_should]
++        }});
++      } else {
++        acc.push(layer_ids_should);
++      }
++      return acc;
++    }, []);
++
++    // add filter.bool.minimum_should_match and filter.bool.should,
++    //  creating intermediate objects as it goes
++    if (!_.isEmpty(layer_filters)) {
++      _.set(base.query.function_score.query.bool, 'filter.bool', {
++        minimum_should_match: 1,
++        should: layer_filters
++      });
++    }
++
+     // add unit/housenumber/street if available
+     if (vs.isset('input:housenumber') && vs.isset('input:postcode')) {
+       base.query.function_score.query.bool.should.push(createPostcodeAndAddressShould(vs));
+@@ -150,38 +281,6 @@ class AddressesUsingIdsQuery extends Query {
+       base.query.function_score.query.bool.should.push(createAddressShould(vs));
+     }
+ 
+-    // if there are layer->id mappings, add the layers with non-empty ids
+-    if (vs.isset('input:layers')) {
+-      // using $ due to reference object and not scalar object
+-      const layers_to_ids = vs.var('input:layers').$;
+-
+-      // add the layers-to-ids 'should' conditions
+-      // if layers_to_ids is:
+-      // {
+-      //   locality: [1, 2],
+-      //   localadmin: [],
+-      //   region: [3, 4]
+-      // }
+-      // then this adds the results of:
+-      // - createShould('locality', [1, 2])
+-      // - createShould('region', [3, 4])
+-      // to an array
+-      const id_filters = Object.keys(layers_to_ids).reduce((acc, layer) => {
+-        if (!_.isEmpty(layers_to_ids[layer])) {
+-          acc.push(createLayerIdsShould(layer, layers_to_ids[layer]));
+-        }
+-        return acc;
+-      }, []);
+-
+-      // add filter.bool.minimum_should_match and filter.bool.should,
+-      //  creating intermediate objects as it goes
+-      _.set(base.query.function_score.query.bool, 'filter.bool', {
+-        minimum_should_match: 1,
+-        should: id_filters
+-      });
+-
+-    }
+-
+     // add any scores (_.compact removes falsey values from arrays)
+     if (!_.isEmpty(this._score)) {
+       base.query.function_score.functions = _.compact(this._score.map(view => view(vs)));
+diff --git a/node_modules/pelias-query/package.json.orig b/node_modules/pelias-query/package.json.orig
+new file mode 100644
+index 0000000..bf86053
+--- /dev/null
++++ b/node_modules/pelias-query/package.json.orig
+@@ -0,0 +1,69 @@
++{
++  "_from": "pelias-query@^11.0.0",
++  "_id": "pelias-query@11.0.0",
++  "_inBundle": false,
++  "_integrity": "sha512-spllMhmlworvY4OXBmHowIerJjRPoP3jtT7q4PtNEttN45jXz1WuPkgA9jtEaeOB6SjXxAupZWMpZL2zUja+eA==",
++  "_location": "/pelias-query",
++  "_phantomChildren": {},
++  "_requested": {
++    "type": "range",
++    "registry": true,
++    "raw": "pelias-query@^11.0.0",
++    "name": "pelias-query",
++    "escapedName": "pelias-query",
++    "rawSpec": "^11.0.0",
++    "saveSpec": null,
++    "fetchSpec": "^11.0.0"
++  },
++  "_requiredBy": [
++    "/"
++  ],
++  "_resolved": "https://registry.npmjs.org/pelias-query/-/pelias-query-11.0.0.tgz",
++  "_shasum": "5a60687ef92fb724865abbe2fdb14f611a501303",
++  "_spec": "pelias-query@^11.0.0",
++  "_where": "/Users/blackmad/RadarCode/pelias-api",
++  "author": "",
++  "bugs": {
++    "url": "https://github.com/pelias/query/issues"
++  },
++  "bundleDependencies": false,
++  "dependencies": {
++    "lodash": "^4.17.14"
++  },
++  "deprecated": false,
++  "description": "An Elasticsearch query builder for Pelias",
++  "devDependencies": {
++    "deep-diff": "^1.0.0",
++    "jshint": "^2.5.6",
++    "precommit-hook": "^3.0.0",
++    "tap-spec": "^5.0.0",
++    "tape": "^4.2.0"
++  },
++  "engines": {
++    "node": ">=10.0.0"
++  },
++  "homepage": "https://github.com/pelias/query#readme",
++  "license": "MIT",
++  "main": "index.js",
++  "name": "pelias-query",
++  "pre-commit": [
++    "lint",
++    "validate",
++    "test"
++  ],
++  "release": {
++    "success": []
++  },
++  "repository": {
++    "type": "git",
++    "url": "git+https://github.com/pelias/query.git"
++  },
++  "scripts": {
++    "lint": "jshint .",
++    "test": "npm run units",
++    "travis": "npm test",
++    "units": "./bin/units",
++    "validate": "npm ls"
++  },
++  "version": "11.0.0"
++}
+diff --git a/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers.json b/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers.json
+index 57fafb6..de149c1 100644
+--- a/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers.json
++++ b/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers.json
+@@ -21,7 +21,27 @@
+                   "term": {
+                     "layer": "street"
+                   }
+-                }
++                },
++                "should": [
++                  [
++                    {
++                      "terms": {
++                        "parent.layer1_id": [
++                          1,
++                          2,
++                          3
++                        ]
++                      }
++                    },
++                    {
++                      "terms": {
++                        "parent.layer4_id": [
++                          4
++                        ]
++                      }
++                    }
++                  ]
++                ]
+               }
+             },
+             {
+@@ -54,7 +74,27 @@
+                   "term": {
+                     "layer": "address"
+                   }
+-                }
++                },
++                "should": [
++                  [
++                    {
++                      "terms": {
++                        "parent.layer1_id": [
++                          1,
++                          2,
++                          3
++                        ]
++                      }
++                    },
++                    {
++                      "terms": {
++                        "parent.layer4_id": [
++                          4
++                        ]
++                      }
++                    }
++                  ]
++                ]
+               }
+             }
+           ],
+@@ -64,12 +104,18 @@
+               "should": [
+                 {
+                   "terms": {
+-                    "parent.layer1_id": [1, 2, 3]
++                    "parent.layer1_id": [
++                      1,
++                      2,
++                      3
++                    ]
+                   }
+                 },
+                 {
+                   "terms": {
+-                    "parent.layer4_id": [4]
++                    "parent.layer4_id": [
++                      4
++                    ]
+                   }
+                 }
+               ]
+@@ -79,6 +125,6 @@
+       }
+     }
+   },
+-  "size": "size value" ,
++  "size": "size value",
+   "track_scores": "track_scores value"
+ }
+\ No newline at end of file
+diff --git a/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers_and_bboxes.json b/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers_and_bboxes.json
+new file mode 100644
+index 0000000..6d9f46e
+--- /dev/null
++++ b/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers_and_bboxes.json
+@@ -0,0 +1,89 @@
++{
++  "query": {
++    "function_score": {
++      "query": {
++        "bool": {
++          "minimum_should_match": 1,
++          "should": [
++            {
++              "bool": {
++                "_name": "fallback.street",
++                "must": [
++                  {
++                    "match_phrase": {
++                      "address_parts.street": { "query": "street value" }
++                    }
++                  }
++                ],
++                "filter": { "term": { "layer": "street" } },
++                "should": [
++                  [
++                    { "terms": { "parent.locality_id": [1, 2, 3] } },
++                    { "terms": { "parent.region_id": [4] } }
++                  ]
++                ]
++              }
++            },
++            {
++              "bool": {
++                "_name": "fallback.address",
++                "must": [
++                  {
++                    "match_phrase": {
++                      "address_parts.unit": { "query": "unit value" }
++                    }
++                  },
++                  {
++                    "match_phrase": {
++                      "address_parts.number": { "query": "housenumber value" }
++                    }
++                  },
++                  {
++                    "match_phrase": {
++                      "address_parts.street": { "query": "street value" }
++                    }
++                  }
++                ],
++                "filter": { "term": { "layer": "address" } },
++                "should": [
++                  [
++                    { "terms": { "parent.locality_id": [1, 2, 3] } },
++                    { "terms": { "parent.region_id": [4] } }
++                  ]
++                ]
++              }
++            }
++          ],
++          "filter": {
++            "bool": {
++              "minimum_should_match": 1,
++              "should": [
++                {
++                  "bool": {
++                    "minimum_should_match": 1,
++                    "should": [
++                      {
++                        "geo_bounding_box": {
++                          "center_point": {
++                            "top": 4,
++                            "right": 3,
++                            "bottom": 2,
++                            "left": 1
++                          }
++                        }
++                      },
++                      { "terms": { "parent.locality_id": [1, 2, 3] } }
++                    ]
++                  }
++                },
++                { "terms": { "parent.region_id": [4] } }
++              ]
++            }
++          }
++        }
++      }
++    }
++  },
++  "size": "size value",
++  "track_scores": "track_scores value"
++}
+diff --git a/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers_and_bboxes_scaled.json b/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers_and_bboxes_scaled.json
+new file mode 100644
+index 0000000..2fb6f64
+--- /dev/null
++++ b/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers_and_bboxes_scaled.json
+@@ -0,0 +1,89 @@
++{
++  "query": {
++    "function_score": {
++      "query": {
++        "bool": {
++          "minimum_should_match": 1,
++          "should": [
++            {
++              "bool": {
++                "_name": "fallback.street",
++                "must": [
++                  {
++                    "match_phrase": {
++                      "address_parts.street": { "query": "street value" }
++                    }
++                  }
++                ],
++                "filter": { "term": { "layer": "street" } },
++                "should": [
++                  [
++                    { "terms": { "parent.locality_id": [1, 2, 3] } },
++                    { "terms": { "parent.region_id": [4] } }
++                  ]
++                ]
++              }
++            },
++            {
++              "bool": {
++                "_name": "fallback.address",
++                "must": [
++                  {
++                    "match_phrase": {
++                      "address_parts.unit": { "query": "unit value" }
++                    }
++                  },
++                  {
++                    "match_phrase": {
++                      "address_parts.number": { "query": "housenumber value" }
++                    }
++                  },
++                  {
++                    "match_phrase": {
++                      "address_parts.street": { "query": "street value" }
++                    }
++                  }
++                ],
++                "filter": { "term": { "layer": "address" } },
++                "should": [
++                  [
++                    { "terms": { "parent.locality_id": [1, 2, 3] } },
++                    { "terms": { "parent.region_id": [4] } }
++                  ]
++                ]
++              }
++            }
++          ],
++          "filter": {
++            "bool": {
++              "minimum_should_match": 1,
++              "should": [
++                {
++                  "bool": {
++                    "minimum_should_match": 1,
++                    "should": [
++                      {
++                        "geo_bounding_box": {
++                          "center_point": {
++                            "top": 5.000000000000001,
++                            "right": 4.001221291680963,
++                            "bottom": 0.999999999999999,
++                            "left": -0.001221291680963077
++                          }
++                        }
++                      },
++                      { "terms": { "parent.locality_id": [1, 2, 3] } }
++                    ]
++                  }
++                },
++                { "terms": { "parent.region_id": [4] } }
++              ]
++            }
++          }
++        }
++      }
++    }
++  },
++  "size": "size value",
++  "track_scores": "track_scores value"
++}
+diff --git a/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers_and_filters.json b/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers_and_filters.json
+index 22695a3..bf0b5f0 100644
+--- a/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers_and_filters.json
++++ b/node_modules/pelias-query/test/fixtures/addressesUsingIdsQuery/with_layers_and_filters.json
+@@ -9,76 +9,36 @@
+               "bool": {
+                 "_name": "fallback.street",
+                 "must": [
+-                  {
+-                    "match_phrase": {
+-                      "address_parts.street": {
+-                        "query": "street value"
+-                      }
+-                    }
+-                  }
++                  { "match_phrase": { "address_parts.street": { "query": "street value" } } }
+                 ],
+-                "filter": {
+-                  "term": {
+-                    "layer": "street"
+-                  }
+-                }
++                "filter": { "term": { "layer": "street" } },
++                "should": [[{ "terms": { "parent.layer1_id": [1, 2, 3] } }]]
+               }
+             },
+             {
+               "bool": {
+                 "_name": "fallback.address",
+                 "must": [
+-                  {
+-                    "match_phrase": {
+-                      "address_parts.unit": {
+-                        "query": "unit value"
+-                      }
+-                    }
+-                  },
+-                  {
+-                    "match_phrase": {
+-                      "address_parts.number": {
+-                        "query": "housenumber value"
+-                      }
+-                    }
+-                  },
+-                  {
+-                    "match_phrase": {
+-                      "address_parts.street": {
+-                        "query": "street value"
+-                      }
+-                    }
+-                  }
++                  { "match_phrase": { "address_parts.unit": { "query": "unit value" } } },
++                  { "match_phrase": { "address_parts.number": { "query": "housenumber value" } } },
++                  { "match_phrase": { "address_parts.street": { "query": "street value" } } }
+                 ],
+-                "filter": {
+-                  "term": {
+-                    "layer": "address"
+-                  }
+-                }
++                "filter": { "term": { "layer": "address" } },
++                "should": [[{ "terms": { "parent.layer1_id": [1, 2, 3] } }]]
+               }
+             }
+           ],
+           "filter": {
+             "bool": {
+               "minimum_should_match": 1,
+-              "should": [
+-                {
+-                  "terms": {
+-                    "parent.layer1_id": [1, 2, 3]
+-                  }
+-                }
+-              ],
+-              "must": [
+-                {
+-                  "filter field 1": "filter value 1"
+-                }
+-              ]
++              "should": [{ "terms": { "parent.layer1_id": [1, 2, 3] } }],
++              "must": [{ "filter field 1": "filter value 1" }]
+             }
+           }
+         }
+       }
+     }
+   },
+-  "size": "size value" ,
++  "size": "size value",
+   "track_scores": "track_scores value"
+ }
+diff --git a/node_modules/pelias-query/test/layout/AddressesUsingIdsQuery.js b/node_modules/pelias-query/test/layout/AddressesUsingIdsQuery.js
+index d6765c1..85c16e1 100644
+--- a/node_modules/pelias-query/test/layout/AddressesUsingIdsQuery.js
++++ b/node_modules/pelias-query/test/layout/AddressesUsingIdsQuery.js
+@@ -1,6 +1,5 @@
+ const AddressesUsingIdsQuery = require('../../layout/AddressesUsingIdsQuery');
+ const VariableStore = require('../../lib/VariableStore');
+-const diff = require('deep-diff').diff;
+ 
+ module.exports.tests = {};
+ 
+@@ -128,8 +127,8 @@ module.exports.tests.base_render = (test, common) => {
+     const actual = query.render(vs);
+     const expected = require('../fixtures/addressesUsingIdsQuery/with_layers.json');
+ 
+-    // console.error(JSON.stringify(actual, null, 2));
+-    // console.error(JSON.stringify(expected, null, 2));
++    // console.error(JSON.stringify(actual));
++    // console.error(JSON.stringify(expected));
+     
+     // marshall/unmarshall to handle toString's internally
+     t.deepEquals(JSON.parse(JSON.stringify(actual)), expected);
+@@ -309,13 +308,127 @@ module.exports.tests.render_with_filters = (test, common) => {
+     const actual = query.render(vs);
+     const expected = require('../fixtures/addressesUsingIdsQuery/with_layers_and_filters.json');
+ 
++    // console.error(JSON.stringify(actual, null, 2));
++    // console.error(JSON.stringify(expected, null, 2));
++
++    // marshall/unmarshall to handle toString's internally
++    t.deepEquals(JSON.parse(JSON.stringify(actual)), expected);
++    t.end();
++
++  });
++
++  test('VariableStore with admins and bboxes should generate queries with both, ignoring point queries, ignoring country', (t) => {
++    const query = new AddressesUsingIdsQuery();
++
++    const vs = new VariableStore();
++    vs.var('size', 'size value');
++    vs.var('centroid:field', 'center_point');
++    vs.var('track_scores', 'track_scores value');
++    vs.var('input:unit', 'unit value');
++    vs.var('input:housenumber', 'housenumber value');
++    vs.var('input:street', 'street value');
++    vs.var('input:layers:ids', {
++      locality: [1, 2, 3],
++      country: [],
++      neighbourhood: undefined,
++      region: [4]
++    });
++
++    vs.var('input:layers:bounding_boxes', {
++      locality: [{
++        min_lon: 1,
++        min_lat: 2,
++        max_lon: 3,
++        max_lat: 4,
++      }, {
++        min_lon: 1,
++        min_lat: 2,
++        max_lon: 1,
++        max_lat: 2,
++      }],
++      country: [{
++        min_lon: 5,
++        min_lat: 6,
++        max_lon: 7,
++        max_lat: 8,
++      }],
++      neighbourhood: [],
++      localadmin: undefined,
++      region: [4]
++    });
++
++    const actual = query.render(vs);
++    const expected = require('../fixtures/addressesUsingIdsQuery/with_layers_and_bboxes.json');
++
+     // console.error(JSON.stringify(actual));
+     // console.error(JSON.stringify(expected));
+     
+     // marshall/unmarshall to handle toString's internally
+     t.deepEquals(JSON.parse(JSON.stringify(actual)), expected);
+     t.end();
++  });
++
++  test('VariableStore should scale bboxes if scaling factor is set', (t) => {
++    const query = new AddressesUsingIdsQuery();
++
++    const vs = new VariableStore();
++    vs.var('size', 'size value');
++    vs.var('admin:locality:bbox_scale', 2);
++    vs.var('centroid:field', 'center_point');
++    vs.var('track_scores', 'track_scores value');
++    vs.var('input:unit', 'unit value');
++    vs.var('input:housenumber', 'housenumber value');
++    vs.var('input:street', 'street value');
++    vs.var('input:layers:ids', {
++      locality: [1, 2, 3],
++      county: [],
++      country: undefined,
++      region: [4]
++    });
++
++    vs.var('input:layers:bounding_boxes', {
++      locality: [{
++        min_lon: 1,
++        min_lat: 2,
++        max_lon: 3,
++        max_lat: 4,
++      }, {
++        min_lon: 1,
++        min_lat: 2,
++        max_lon: 1,
++        max_lat: 2,
++      }],
++      country: [],
++      neighbourhood: undefined,
++      region: [4]
++    });
++
++    const actual = query.render(vs);
++
++    const expected = require('../fixtures/addressesUsingIdsQuery/with_layers_and_bboxes_scaled.json');
++    // console.error(JSON.stringify(actual));
++    // console.error(JSON.stringify(expected));
++
++    function approxeq(v1, v2, epsilon) {
++      return Math.abs(v1 - v2) < epsilon;
++    }
+ 
++    const scaled_bbox = actual.query.function_score.query.bool.filter.bool.should[0].bool.should[0].geo_bounding_box.center_point;
++  
++    // Scaling is a messy float operation, so use approx matchers to make sure we scaled appropriately
++    //"geo_bounding_box":{"center_point":{"top":5.000000000000001,"right":4.001221291680963,"bottom":0.999999999999999,"left":-0.001221291680963077}}
++    t.ok(approxeq(scaled_bbox.top, 5, 0.01));
++    t.ok(approxeq(scaled_bbox.right, 4, 0.01));
++    t.ok(approxeq(scaled_bbox.bottom, 1, 0.01));
++    t.ok(approxeq(scaled_bbox.left, 0, 0.01));
++
++    // And also delete the field from both exepected and actual so we're not doing deepEquality on floats
++    delete actual.query.function_score.query.bool.filter.bool.should[0].bool.should[0].geo_bounding_box.center_point;
++    delete expected.query.function_score.query.bool.filter.bool.should[0].bool.should[0].geo_bounding_box.center_point;
++
++    // marshall/unmarshall to handle toString's internally
++    t.deepEquals(JSON.parse(JSON.stringify(actual)), expected);
++    t.end();
+   });
+ 
+ };
