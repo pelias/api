@@ -349,7 +349,7 @@ function addRoutes(app, peliasConfig) {
     ]),
     indexStats: createRouter([
       controllers.indexStats(peliasConfig.api, esclient)
-    ]),
+    ])
   };
 
 
@@ -371,9 +371,12 @@ function addRoutes(app, peliasConfig) {
   if (peliasConfig.api.exposeInternalDebugTools) {
     app.use ( '/frontend',                 express.static('node_modules/pelias-compare/dist-api/'));
     app.use ( '/debug/indexStats',         routers.indexStats);
+    app.use ( '/debug/config',             function(req, res){
+      res.json(peliasConfig);
+    });
 
     app.locals.parser = { address: require('../sanitizer/_text_pelias_parser')().parser };
-    app.use ( '/frontend/parser/demo',     function(req,res){
+    app.use ( '/frontend/parser/demo',     function(req, res){
       fs.readFile('node_modules/pelias-parser/server/demo/index.html', 'utf8', function(err, data){
          if (err) { 
            throw err;
