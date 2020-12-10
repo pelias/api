@@ -1,4 +1,3 @@
-forward-instance-old:pelias-bolt-forward.json:4001
 forward-instance-1:pelias-bolt-forward.json:4020
 forward-instance-2:pelias-bolt-forward.json:4021
 forward-instance-3:pelias-bolt-forward.json:4022
