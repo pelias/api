@@ -92,7 +92,7 @@ workflows:
           requires:
             - install
       - docker-build:
-          context: org-carbon
+          context: global
           requires:
             - test
           filters:
