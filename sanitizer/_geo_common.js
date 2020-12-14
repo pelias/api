@@ -119,9 +119,33 @@ function sanitize_coord( key, clean, raw, latlon_is_required ) {
   }
 }
 
+function sanitize_function( key, clean, raw ) {
+  var value = raw[key];
+  if (value !== undefined) {
+    clean[key] = value;
+  }
+}
+
+function sanitize_scale( key, clean, raw ) {
+  var value = raw[key];
+  if (value !== undefined) {
+    clean[key] = value;
+  }
+}
+
+function sanitize_weight( key, clean, raw ) {
+  var parsedValue = parseFloat( raw[key] );
+  if ( _.isFinite( parsedValue ) ) {
+    clean[key] = parsedValue;
+  }
+}
+
 module.exports = {
   sanitize_rect: sanitize_rect,
   sanitize_coord: sanitize_coord,
   sanitize_circle: sanitize_circle,
-  sanitize_point: sanitize_point
+  sanitize_point: sanitize_point,
+  sanitize_function: sanitize_function,
+  sanitize_scale: sanitize_scale,
+  sanitize_weight: sanitize_weight
 };
