@@ -119,6 +119,27 @@ function generateQuery( clean ){
     logStr += '[param:focus_point] ';
   }
 
+  if ( check.string(clean['focus.function'])) {
+    vs.set({
+      'focus:function': clean['focus.function']
+    });
+    logStr += '[param:focus_function] ';
+  }
+
+  if ( check.string(clean['focus.scale'])) {
+    vs.set({
+      'focus:scale': clean['focus.scale']
+    });
+    logStr += '[param:focus_scale] ';
+  }
+
+  if ( check.number(clean['focus.weight'])) {
+    vs.set({
+      'focus:weight': clean['focus.weight']
+    });
+    logStr += '[param:focus_weight] ';
+  }
+
   // boundary rect
   if( check.number(clean['boundary.rect.min_lat']) &&
       check.number(clean['boundary.rect.max_lat']) &&
