@@ -3,13 +3,13 @@ module.exports = {
     'bool': {
       'must': [
         {
-          'match_phrase': {
-            'phrase.default': {
-              'analyzer': 'peliasQuery',
-              'boost': 1,
-              'slop': 3,
-              'query': 'one two'
-            }
+          'multi_match': {
+            'fields': ['phrase.default', 'phrase.en'],
+            'analyzer': 'peliasQuery',
+            'type': 'phrase',
+            'slop': 3,
+            'boost': 1,
+            'query': 'one two'
           }
         },
         {
@@ -27,7 +27,8 @@ module.exports = {
               'parent.locality_a.ngram^1',
               'parent.region_a.ngram^1',
               'parent.country_a.ngram^1',
-              'name.default^1.5'
+              'name.default^1.5',
+              'name.en^1.5'
             ],
             'query': 'three',
             'analyzer': 'peliasAdmin',

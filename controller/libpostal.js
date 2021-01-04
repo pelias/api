@@ -155,18 +155,35 @@ function patchBuggyResponses(response){
   let idx = {};
   response.forEach((res, pos) => idx[res.label] = _.assign({ _pos: pos }, res));
 
-  // known bug where the street name is only a directional, in this case we will merge it
-  // with the subsequent element.
+  // known bug where the road name directional is parsed into an adjacent label, in
+  // this case we will merge it with the road label.
   // note: the bug only affects diagonals, not N,S,E,W
   // https://github.com/OpenTransitTools/trimet-mod-pelias/issues/20#issuecomment-417732128
-  if( response.length > 1 ){
-    let road = _.get(idx, 'road');
-    if( _.isPlainObject(road) && _.isString(road.value) && road.value.length === 2 ){
-      if( DIAGONAL_DIRECTIONALS.includes( road.value.toLowerCase() ) ){
-        let subsequentElement = response[road._pos+1];
-        if( subsequentElement && _.isString(subsequentElement.value) ){
-          response[road._pos].value += ' ' + subsequentElement.value; // merge elements
-          response.splice(road._pos+1, 1); // remove merged element
+  if (_.size(response) > 1) {
+
+    // find the road label
+    const road = _.get(idx, 'road');
+    if (_.isPlainObject(road) && _.isString(road.value)) {
+
+      // find the label which directly follows the road label
+      const next = _.nth(response, road._pos + 1);
+      if (_.isPlainObject(next) && _.isString(next.value)) {
+
+        // detect the two different occurrences of the bug
+        if (
+          // where the road label contains the directional
+          // eg. { 'label':'road', 'value':'nw' }, { 'label':'suburb', 'value':'foo st' }
+          (_.size(road.value) === 2 && DIAGONAL_DIRECTIONALS.includes(road.value.toLowerCase())) ||
+
+          // or where the following label contains the directional
+          // eg. { 'label':'road', 'value':'foo st' }, { 'label':'suburb', 'value':'nw' }
+          (_.size(next.value) === 2 && DIAGONAL_DIRECTIONALS.includes(next.value.toLowerCase()))
+        ) {
+          // concatenate the two labels
+          response[road._pos].value += ` ${next.value}`;
+
+          // remove the obsolete label
+          _.pullAt(response, road._pos + 1);
         }
       }
     }

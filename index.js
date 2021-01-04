@@ -6,7 +6,7 @@ const app = require('./app'),
 const server = app.listen( port, host, () => {
   // ask server for the actual address and port its listening on
   const listenAddress = server.address();
-  logger.info( `pelias is now running on ${listenAddress.address}:${listenAddress.port}` );
+  logger.info( `pelias is now running on http://${listenAddress.address}:${listenAddress.port}` );
 });
 
 function exitHandler() {

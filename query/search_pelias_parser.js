@@ -24,7 +24,7 @@ query.score( peliasQuery.view.ngrams, 'must' );
 const phrase_view = peliasQuery.view.leaf.match_phrase('main');
 
 query.score( phrase_view );
-query.score( peliasQuery.view.focus( phrase_view ) );
+query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );
 

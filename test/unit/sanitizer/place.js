@@ -67,7 +67,7 @@ module.exports.tests.sanitize = function(test, common) {
     const req = {};
     const res = {};
 
-    place.middleware(req, res, () => {
+    place.middleware({})(req, res, () => {
       t.deepEquals(called_sanitizers, expected_sanitizers);
       t.end();
     });

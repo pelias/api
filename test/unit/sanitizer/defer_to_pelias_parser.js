@@ -3,6 +3,8 @@ const mock_logger = require('pelias-mock-logger');
 
 module.exports.tests = {};
 
+const dummyPeliasApiConfig = {};
+
 module.exports.tests.sanitize = (test, common) => {
   test('verify that no sanitizers were called when should_execute returns false', (t) => {
     t.plan(1);
@@ -27,7 +29,7 @@ module.exports.tests.sanitize = (test, common) => {
           }
         };
       }
-    })(() => false);
+    })(dummyPeliasApiConfig, () => false);
 
     defer_to_pelias_parser({}, {}, () => {
       t.equals(logger.getInfoMessages().length, 0);
@@ -64,7 +66,7 @@ module.exports.tests.sanitize = (test, common) => {
           }
         };
       },
-    })(() => true);
+    })(dummyPeliasApiConfig, () => true);
 
     const req = {
       path: '/v1/search',
@@ -104,7 +106,7 @@ module.exports.tests.sanitize = (test, common) => {
           }
         };
       },
-    })(() => true);
+    })(dummyPeliasApiConfig, () => true);
 
     const req = {
       path: 'not /v1/search',

@@ -4,13 +4,13 @@ module.exports = {
       'must': [{
         'constant_score': {
           'filter': {
-            'match_phrase': {
-              'name.default': {
-                'analyzer': 'peliasQuery',
-                'boost': 100,
-                'query': 'test',
-                'slop': 3
-              }
+            'multi_match': {
+              'fields': ['name.default', 'name.en'],
+              'analyzer': 'peliasQuery',
+              'query': 'test',
+              'boost': 100,
+              'type': 'phrase',
+              'slop': 3
             }
           }
         }
@@ -18,14 +18,7 @@ module.exports = {
       'should': [{
         'function_score': {
           'query': {
-            'match_phrase': {
-              'name.default': {
-                'analyzer': 'peliasQuery',
-                'boost': 100,
-                'query': 'test',
-                'slop': 3
-              }
-            }
+            'match_all':  {}
           },
           'functions': [{
             'exp': {

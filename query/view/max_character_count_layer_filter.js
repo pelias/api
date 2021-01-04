@@ -21,7 +21,7 @@ module.exports = function( excludedLayers, maxCharCount ) {
 
   // validate args, return no-op view if invalid
   if( !_.isArray(excludedLayers) || _.isEmpty(excludedLayers) ||
-      !_.isNumber(maxCharCount) ){
+      !_.isNumber(maxCharCount) || maxCharCount === 0 ){
     return () => null;
   }
 

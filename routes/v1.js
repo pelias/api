@@ -146,10 +146,18 @@ function addRoutes(app, peliasConfig) {
     not(placeholderShouldHaveExecuted)
   );
 
-  // defer to pelias parser for analysis IF there's no response AND placeholder should not have executed
-  const shouldDeferToPeliasParser = all(
-    not(predicates.hasRequestErrors),
-    not(predicates.hasResponseData)
+  const shouldDeferToPeliasParser = any(
+    // we always want to try pelias parser based queries if there are no results
+    not(predicates.hasResponseData),
+    all(
+      // if there are only admin results, but parse contains more granular items than admin,
+      // then we want to defer to pelias parser based queries
+      predicates.hasAdminOnlyResults,
+      not(predicates.isAdminOnlyAnalysis),
+      // exception: if the 'sources' parameter is only wof, do not use pelias parser
+      // in that case Placeholder can return all the possible answers
+      not(predicates.isRequestSourcesOnlyWhosOnFirst),
+    )
   );
 
   // call search_pelias_parser query if pelias_parser was the parser
@@ -211,16 +219,17 @@ function addRoutes(app, peliasConfig) {
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderIdsLookupShouldExecute),
       // try 3 different query types: address search using ids, cascading fallback, pelias parser
-      controllers.search(peliasConfig.api, esclient, queries.address_search_using_ids, searchWithIdsShouldExecute),
-      controllers.search(peliasConfig.api, esclient, queries.search, fallbackQueryShouldExecute),
-      sanitizers.defer_to_pelias_parser(shouldDeferToPeliasParser), //run additional sanitizers needed for pelias parser
-      controllers.search(peliasConfig.api, esclient, queries.search_pelias_parser, searchPeliasParserShouldExecute),
+      controllers.search(peliasConfig, esclient, queries.address_search_using_ids, searchWithIdsShouldExecute),
+      controllers.search(peliasConfig, esclient, queries.search, fallbackQueryShouldExecute),
+      sanitizers.defer_to_pelias_parser(peliasConfig.api, shouldDeferToPeliasParser), //run additional sanitizers needed for pelias parser
+      controllers.search(peliasConfig, esclient, queries.search_pelias_parser, searchPeliasParserShouldExecute),
       middleware.trimByGranularity(),
       middleware.distance('focus.point.'),
       middleware.confidenceScore(peliasConfig.api),
       middleware.confidenceScoreFallback(),
-      middleware.interpolate(interpolationService, interpolationShouldExecute),
+      middleware.interpolate(interpolationService, interpolationShouldExecute, interpolationConfiguration),
       middleware.sortResponseData(sorting, predicates.hasAdminOnlyResults),
+      middleware.applyOverrides(),
       middleware.dedupe(),
       middleware.accuracy(),
       middleware.localNamingConventions(),
@@ -237,12 +246,13 @@ function addRoutes(app, peliasConfig) {
       middleware.requestLanguage,
       middleware.sizeCalculator(),
       controllers.structured_libpostal(structuredLibpostalService, structuredLibpostalShouldExecute),
-      controllers.search(peliasConfig.api, esclient, queries.structured_geocoding, not(hasResponseDataOrRequestErrors)),
+      controllers.search(peliasConfig, esclient, queries.structured_geocoding, not(hasResponseDataOrRequestErrors)),
       middleware.trimByGranularityStructured(),
       middleware.distance('focus.point.'),
       middleware.confidenceScore(peliasConfig.api),
       middleware.confidenceScoreFallback(),
-      middleware.interpolate(interpolationService, interpolationShouldExecute),
+      middleware.interpolate(interpolationService, interpolationShouldExecute, interpolationConfiguration),
+      middleware.applyOverrides(),
       middleware.dedupe(),
       middleware.accuracy(),
       middleware.localNamingConventions(),
@@ -257,9 +267,11 @@ function addRoutes(app, peliasConfig) {
     autocomplete: createRouter([
       sanitizers.autocomplete.middleware(peliasConfig.api),
       middleware.requestLanguage,
-      controllers.search(peliasConfig.api, esclient, queries.autocomplete, not(hasResponseDataOrRequestErrors)),
+      middleware.sizeCalculator(),
+      controllers.search(peliasConfig, esclient, queries.autocomplete, not(hasResponseDataOrRequestErrors)),
       middleware.distance('focus.point.'),
       middleware.confidenceScore(peliasConfig.api),
+      middleware.applyOverrides(),
       middleware.dedupe(),
       middleware.accuracy(),
       middleware.localNamingConventions(),
@@ -272,15 +284,16 @@ function addRoutes(app, peliasConfig) {
       middleware.sendJSON
     ]),
     reverse: createRouter([
-      sanitizers.reverse.middleware,
+      sanitizers.reverse.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.sizeCalculator(2),
-      controllers.search(peliasConfig.api, esclient, queries.reverse, nonCoarseReverseShouldExecute),
+      controllers.search(peliasConfig, esclient, queries.reverse, nonCoarseReverseShouldExecute),
       controllers.coarse_reverse(pipService, coarseReverseShouldExecute),
       middleware.distance('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
       middleware.confidenceScoreReverse(),
+      middleware.applyOverrides(),
       middleware.dedupe(),
       middleware.accuracy(),
       middleware.localNamingConventions(),
@@ -293,14 +306,15 @@ function addRoutes(app, peliasConfig) {
       middleware.sendJSON
     ]),
     nearby: createRouter([
-      sanitizers.nearby.middleware,
+      sanitizers.nearby.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.sizeCalculator(),
-      controllers.search(peliasConfig.api, esclient, queries.reverse, not(hasResponseDataOrRequestErrors)),
+      controllers.search(peliasConfig, esclient, queries.reverse, not(hasResponseDataOrRequestErrors)),
       middleware.distance('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
       middleware.confidenceScoreReverse(),
+      middleware.applyOverrides(),
       middleware.dedupe(),
       middleware.accuracy(),
       middleware.localNamingConventions(),
@@ -313,9 +327,10 @@ function addRoutes(app, peliasConfig) {
       middleware.sendJSON
     ]),
     place: createRouter([
-      sanitizers.place.middleware,
+      sanitizers.place.middleware(peliasConfig.api),
       middleware.requestLanguage,
       controllers.place(peliasConfig.api, esclient),
+      middleware.expandDocument(peliasConfig.api, esclient),
       middleware.accuracy(),
       middleware.localNamingConventions(),
       middleware.renamePlacenames(),
@@ -347,7 +362,7 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'reverse',              routers.reverse );
   app.get ( base + 'nearby',               routers.nearby );
 
-  if (peliasConfig.api.serveCompareFrontend) {
+  if (peliasConfig.api.exposeInternalDebugTools) {
     app.use ( '/frontend',                   express.static('node_modules/pelias-compare/dist-api/'));
   }
 }

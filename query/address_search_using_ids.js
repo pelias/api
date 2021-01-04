@@ -17,6 +17,7 @@ addressUsingIdsQuery.filter( peliasQuery.view.boundary_circle );
 addressUsingIdsQuery.filter( peliasQuery.view.boundary_rect );
 addressUsingIdsQuery.filter( peliasQuery.view.sources );
 addressUsingIdsQuery.filter( peliasQuery.view.boundary_gid );
+addressUsingIdsQuery.filter( peliasQuery.view.layers );
 // --------------------------------
 
 // This query is a departure from traditional Pelias queries where textual
@@ -101,6 +102,11 @@ function generateQuery( clean, res ){
   // sources
   if( !_.isEmpty(clean.sources) ) {
     vs.var( 'sources', clean.sources);
+  }
+
+  // layers
+  if (_.isArray(clean.layers) && !_.isEmpty(clean.layers) ){
+    vs.var( 'layers', clean.layers);
   }
 
   // size

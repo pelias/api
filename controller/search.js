@@ -1,5 +1,4 @@
 const _ = require('lodash');
-
 const searchService = require('../service/search');
 const logger = require('pelias-logger').get('api');
 const logging = require( '../helper/logging' );
@@ -10,7 +9,9 @@ function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
 
-function setup( apiConfig, esclient, query, should_execute ){
+function setup( peliasConfig, esclient, query, should_execute ){
+  const apiConfig = _.get(peliasConfig, 'api', {});
+
   function controller( req, res, next ){
     if (!should_execute(req, res)) {
       return next();
@@ -53,8 +54,32 @@ function setup( apiConfig, esclient, query, should_execute ){
       body: renderedQuery.body
     };
 
-    logger.debug( '[ES req]', cmd );
-    debugLog.push(req, {ES_req: cmd});
+    // support for the 'clean.enableElasticExplain' config flag
+    if (_.get(req, 'clean.enableElasticExplain') === true) {
+      cmd.explain = true;
+    }
+
+    // support for the 'clean.exposeInternalDebugTools' config flag
+    let debugUrl;
+    if (_.get(req, 'clean.exposeInternalDebugTools') === true) {
+
+      // select a random elasticsearch host to use for 'exposeInternalDebugTools' actions
+      const host = _.first(esclient.transport.connectionPool.getConnections(null, 1)).host;
+
+      // generate a URL which opens this query directly in elasticsearch
+      debugUrl = host.makeUrl({
+        path: `${apiConfig.indexName}/_search`,
+        query: {
+          source_content_type: 'application/json',
+          source: JSON.stringify(cmd.body)
+        }
+      });
+    }
+
+    debugLog.push(req, {
+      debugUrl,
+      ES_req: cmd
+    });
 
     operation.attempt((currentAttempt) => {
       const initialTime = debugLog.beginTimer(req, `Attempt ${currentAttempt}`);
@@ -126,6 +151,9 @@ function setup( apiConfig, esclient, query, should_execute ){
           }});
         }
         logger.debug('[ES response]', docs);
+        if (req.clean.enableElasticDebug) {
+          debugLog.push(req, {ES_response: {docs, meta, data}});
+        }
         next();
       });
       debugLog.stopTimer(req, initialTime);

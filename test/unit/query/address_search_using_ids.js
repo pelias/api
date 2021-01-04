@@ -20,7 +20,8 @@ const views = {
   boundary_circle: 'boundary_circle view',
   boundary_rect: 'boundary_rect view',
   sources: 'sources view',
-  boundary_gid: 'boundary_gid view'
+  boundary_gid: 'boundary_gid view',
+  layers: 'layers view'
 };
 
 module.exports.tests.base_query = (test, common) => {
@@ -31,9 +32,11 @@ module.exports.tests.base_query = (test, common) => {
       parsed_text: {
         housenumber: 'housenumber value',
         postalcode: 'postcode value',
-        street: 'street value'
-      }
+        street: 'street value',
+      },
+      layers: ['venue', 'street', 'address']
     };
+
     const res = {
       data: []
     };
@@ -56,6 +59,7 @@ module.exports.tests.base_query = (test, common) => {
     t.equals(generatedQuery.body.vs.var('input:housenumber').toString(), 'housenumber value');
     t.equals(generatedQuery.body.vs.var('input:postcode').toString(), 'postcode value');
     t.equals(generatedQuery.body.vs.var('input:street').toString(), 'street value');
+    t.deepEquals(generatedQuery.body.vs.var('layers').toString(), [ 'venue', 'street', 'address' ]);
     t.notOk(generatedQuery.body.vs.isset('sources'));
     t.equals(generatedQuery.body.vs.var('size').toString(), 20);
 
@@ -68,7 +72,8 @@ module.exports.tests.base_query = (test, common) => {
       'boundary_circle view',
       'boundary_rect view',
       'sources view',
-      'boundary_gid view'
+      'boundary_gid view',
+      'layers view'
     ]);
 
     t.end();
@@ -141,7 +146,7 @@ module.exports.tests.other_parameters = (test, common) => {
 
   });
 
-  test('address_parts.street slop defaults to 1', (t) => {
+  test('address_parts.street slop defaults to 4', (t) => {
     const logger = mock_logger();
 
     const clean = {
@@ -167,7 +172,7 @@ module.exports.tests.other_parameters = (test, common) => {
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.deepEquals(generatedQuery.body.vs.var('address:street:slop').toString(), 1);
+    t.deepEquals(generatedQuery.body.vs.var('address:street:slop').toString(), 4);
     t.end();
   });
 };

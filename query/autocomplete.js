@@ -4,6 +4,7 @@ const defaults = require('./autocomplete_defaults');
 const textParser = require('./text_parser_pelias');
 const config = require('pelias-config').generate();
 const placeTypes = require('../helper/placeTypes');
+const toSingleField = require('./view/helper').toSingleField;
 
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
@@ -32,7 +33,7 @@ var adminFields = placeTypes.concat(['locality_a', 'region_a', 'country_a']);
 // the name of the field to use.
 // this functionality is not enabled unless the 'input:add_name_to_multimatch'
 // variable is set to a non-empty value at query-time.
-adminFields = adminFields.concat(['add_name_to_multimatch']);
+adminFields = adminFields.concat(['add_name_to_multimatch', 'add_name_lang_to_multimatch']);
 
 //------------------------------
 // autocomplete query
@@ -47,14 +48,8 @@ query.score( views.ngrams_last_token_only_multi( adminFields ), 'must' );
 query.score( views.admin_multi_match_first( adminFields ), 'must');
 query.score( views.admin_multi_match_last( adminFields ), 'must');
 
-// address components
-query.score( peliasQuery.view.address('housenumber') );
-query.score( peliasQuery.view.address('street') );
-query.score( peliasQuery.view.address('cross_street') );
-query.score( peliasQuery.view.address('postcode') );
-
 // scoring boost
-query.score( peliasQuery.view.focus( views.ngrams_strict ) );
+query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );
 query.score( views.custom_boosts( config.get('api.customBoosts') ) );
@@ -170,6 +165,11 @@ function generateQuery( clean ){
     vs.var('input:categories', clean.categories);
   }
 
+  // size
+  if( clean.querySize ) {
+    vs.var( 'size', clean.querySize );
+  }
+
   // run the address parser
   if( clean.parsed_text ){
     textParser( clean, vs );
@@ -182,6 +182,14 @@ function generateQuery( clean ){
   // see code comments above for additional information.
   let isAdminSet = adminFields.some(field => vs.isset('input:' + field));
   if ( isAdminSet ){ vs.var('input:add_name_to_multimatch', 'enabled'); }
+
+  // Search in the user lang
+  if(clean.lang && _.isString(clean.lang.iso6391)) {
+    vs.var('lang', clean.lang.iso6391);
+
+    const field = toSingleField(vs.var('admin:add_name_lang_to_multimatch:field').get(), clean.lang.iso6391);
+    vs.var('admin:add_name_lang_to_multimatch:field', field);
+  }
 
   return {
     type: 'autocomplete',

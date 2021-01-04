@@ -65,13 +65,12 @@ The API recognizes the following properties under the top-level `api` key in you
 |`targets.auto_discover`|no|false|Should `sources` and `layers` be automatically discovered by querying elasticsearch at process startup. (See more info in the [Custom sources and layers](#custom-sources-and-layers) section below).
 |`targets.layers_by_source` <br> `targets.source_aliases` <br> `targets.layer_aliases`|no | |custom values for which `sources` and `layers` the API accepts (See more info in the [Custom sources and layers](#custom-sources-and-layers) section below). We recommend using the `targets.auto_discover:true` configuration instead of setting these manually.
 |`customBoosts` | no | `{}` | Allows configuring boosts for specific sources and layers, in order to influence result order. See [Configurable Boosts](#custom-boosts) below for details |
-|`autocomplete.exclude_address_length` | no | 0 | As a performance optimization, this optional parameter allows excluding address results for queries below the configured length. Addresses are usually the bulk of the records in Elasticsearch, and searching across all of them for very short text inputs can be slow, with little benefit. Consider setting this to 1 or 2 if you have several million addresses in Pelias. |
+|`autocomplete.exclude_address_length` | no | 0 | As a performance optimization, this optional filter excludes results from the 'address' layer for any queries where the character length of the 'subject' portion of the parsed_text is equal to or less than this many characters in length. Addresses are usually the bulk of the records in Elasticsearch, and searching across all of them for very short text inputs can be slow, with little benefit. Consider setting this to 1 or 2 if you have several million addresses in Pelias. |
 |`indexName`|*no*|*pelias*|name of the Elasticsearch index to be used when building queries|
 |`attributionURL`|no| (autodetected)|The full URL to use for the attribution link returned in all Pelias responses. Pelias will attempt to autodetect this host, but it will often be incorrect if, for example, there is a proxy between Pelias and its users. This parameter allows setting a specific URL to avoid any such issues|
 |`accessLog`|*no*||name of the format to use for access logs; may be any one of the [predefined values](https://github.com/expressjs/morgan#predefined-formats) in the `morgan` package. Defaults to `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.|
 |`relativeScores`|*no*|true|if set to true, confidence scores will be normalized, realistically at this point setting this to false is not tested or desirable
-|`serveCompareFrontend`|*no*|true|if set to true, the [pelias compare frontend](https://github.com/pelias/compare) will be served from /frontend, pointing at the local instance, to aid in on-server debugging. [example](https://pelias.github.io/compare/)
-
+|`exposeInternalDebugTools`|*no*|true|Exposes several debugging tools, such as the ability to enable Elasticsearch explain mode, that may come at a performance cost or expose sensitive infrastructure details. Not recommended if the Pelias API is open to the public.
 
 A good starting configuration file includes this section (fill in the service and Elasticsearch hosts as needed):
 
@@ -270,10 +269,3 @@ $ curl localhost:9200/pelias/_count?pretty
 Travis tests every release against all supported Node.js versions.
 
 [![Build Status](https://travis-ci.org/pelias/api.png?branch=master)](https://travis-ci.org/pelias/api)
-
-
-### Versioning
-
-We rely on semantic-release and Greenkeeper to maintain our module and dependency versions.
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/pelias/api.svg)](https://greenkeeper.io/)

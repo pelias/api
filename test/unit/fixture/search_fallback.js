@@ -110,7 +110,8 @@ module.exports = {
                     'match_phrase': {
                       'address_parts.street': {
                         'query': 'street value',
-                        'slop': 1
+                        'analyzer': 'peliasQuery',
+                        'slop': 4
                       }
                     }
                   },
@@ -277,7 +278,8 @@ module.exports = {
                     'match_phrase': {
                       'address_parts.street': {
                         'query': 'street value',
-                        'slop': 1
+                        'analyzer': 'peliasQuery',
+                        'slop': 4
                       }
                     }
                   },

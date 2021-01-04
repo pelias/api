@@ -5,13 +5,13 @@
       "bool": {
         "must": [
           {
-            "match_phrase": {
-              "phrase.default": {
-                "analyzer": "peliasQuery",
-                "boost": 1,
-                "slop": 3,
-                "query": "foo"
-              }
+            "multi_match": {
+              "fields": ["phrase.default", "phrase.en"],
+              "analyzer": "peliasQuery",
+              "query": "foo",
+              "boost": 1,
+              "type": "phrase",
+              "slop": 3
             }
           }
         ],
@@ -85,7 +85,7 @@
         ]
       }
     },
-    "size": 20,
+    "size": 10,
     "track_scores": true,
     "sort": [
       "_score"

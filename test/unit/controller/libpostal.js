@@ -304,7 +304,7 @@ module.exports.tests.success_conditions = (test, common) => {
 };
 
 module.exports.tests.bug_fixes = (test, common) => {
-  test('bug fix: incorrect parsing of diagonal directionals', t => {
+  test('bug fix: incorrect parsing of diagonal directionals - pre-directional', t => {
     const service = (req, callback) => {
       const response =[
         {
@@ -345,6 +345,60 @@ module.exports.tests.bug_fixes = (test, common) => {
           parsed_text: {
             housenumber: '4004',
             street: 'nw beaverton-hillsdale',
+            city: 'portland'
+          }
+        },
+        errors: []
+      }, 'req should not have been modified');
+
+      t.end();
+
+    });
+
+  });
+
+  test('bug fix: incorrect parsing of diagonal directionals - post-directional', t => {
+    const service = (req, callback) => {
+      // 1125 Couch St NW, Portland
+      const response = [
+        {
+          'label': 'house_number',
+          'value': '1125'
+        },
+        {
+          'label': 'road',
+          'value': 'couch st'
+        },
+        {
+          'label': 'suburb',
+          'value': 'nw'
+        },
+        {
+          'label': 'city',
+          'value': 'portland'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
+
+    const req = {
+      clean: {
+        text: 'original query'
+      },
+      errors: []
+    };
+
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: 'original query',
+          parser: 'libpostal',
+          parsed_text: {
+            housenumber: '1125',
+            street: 'couch st nw',
             city: 'portland'
           }
         },

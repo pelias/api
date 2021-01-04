@@ -5,6 +5,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   'size': 20,
   'track_scores': true,
+  'lang': 'en',
 
   'centroid:field': 'center_point',
 
@@ -41,12 +42,12 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'address:housenumber:boost': 2,
   'address:housenumber:cutoff_frequency': 0.01,
 
-  'address:street:analyzer': 'peliasStreet',
+  'address:street:analyzer': 'peliasQuery',
   'address:street:field': 'address_parts.street',
   'address:street:boost': 1,
   'address:street:cutoff_frequency': 0.01,
 
-  'address:cross_street:analyzer': 'peliasStreet',
+  'address:cross_street:analyzer': 'peliasQuery',
   'address:cross_street:field': 'address_parts.cross_street',
   'address:cross_street:boost': 5,
   'address:cross_street:cutoff_frequency': 0.01,
@@ -58,6 +59,9 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   // generic multi_match config
   'multi_match:type': 'cross_fields',
+  'multi_match:ngrams_strict:type': 'phrase',
+  'multi_match:first_tokens_only:type': 'phrase',
+  'multi_match:boost_exact_matches:type': 'phrase',
 
   // setting 'cutoff_frequency' will result in very common
   // terms such as country not scoring at all
@@ -128,6 +132,8 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   // are unsure if the tokens represent admin or name components.
   'admin:add_name_to_multimatch:field': 'name.default',
   'admin:add_name_to_multimatch:boost': 1.5,
+  'admin:add_name_lang_to_multimatch:field': 'name.en',
+  'admin:add_name_lang_to_multimatch:boost': 1.5,
 
   'popularity:field': 'popularity',
   'popularity:modifier': 'log1p',

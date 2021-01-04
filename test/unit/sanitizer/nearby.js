@@ -130,7 +130,7 @@ module.exports.tests.sanitize = function(test, common) {
     const req = {};
     const res = {};
 
-    nearby.middleware(req, res, () => {
+    nearby.middleware({})(req, res, () => {
       t.deepEquals(called_sanitizers, expected_sanitizers);
       t.end();
     });
