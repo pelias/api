@@ -34,10 +34,10 @@
       "focus.point.lat": 50.85,
       "focus.point.lon": 4.35
     },
-    "targets": {	
-      "layers_by_source": {	
-        "poi": ["address", "venue"]	
-      }	
+    "targets": {
+      "layers_by_source": {
+        "poi": ["address", "venue"]
+      }
     }
   },
   "imports": {
