@@ -30,6 +30,7 @@ module.exports = function( vs ){
   } else {
     vs.var(`multi_match:${view_name}:fuzziness`).set(fuzziness);
     vs.var(`multi_match:${view_name}:max_expansions`).set(vs.var('fuzzy:max_expansions').get());
+    vs.var(`multi_match:${view_name}:prefix_length`).set(vs.var('fuzzy:prefix_length').get());
   }
 
   return peliasQuery.view.leaf.multi_match(view_name)( vs );

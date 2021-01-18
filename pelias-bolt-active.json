@@ -38,7 +38,8 @@
       "layers_by_source": {
         "poi": ["address", "venue"]
       }
-    }
+    },
+    "exposeInternalDebugTools": true
   },
   "imports": {
     "adminLookup": {
