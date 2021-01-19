@@ -44,8 +44,3 @@ module.exports = () => ({
     sanitize: _sanitize,
     expected: _expected
 });
-
-module.exports = () => ({
-    sanitize: _sanitize,
-    expected: _expected
-});
