@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^16.0.1",
-    "@mapbox/geojson-extent": "^0.3.1",
+    "@mapbox/geojson-extent": "^0.3.2",
     "async": "^3.0.1",
     "elasticsearch": "^16.0.0",
     "express": "^4.8.8",
