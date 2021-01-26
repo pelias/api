@@ -45,8 +45,8 @@ query.score( views.phrase_first_tokens_only, 'must' );
 query.score( views.ngrams_last_token_only_multi( adminFields ), 'must' );
 
 // admin components
-query.score( views.admin_multi_match_first( adminFields ), 'must');
-query.score( views.admin_multi_match_last( adminFields ), 'must');
+query.score( views.admin_multi_match_first( adminFields ), 'should');
+query.score( views.admin_multi_match_last( adminFields ), 'should');
 
 // scoring boost
 query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
