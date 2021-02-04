@@ -19,6 +19,9 @@ const layerPreferences = [
   'empire'
 ];
 
+// don't include some placetypes in parent hierarchy comparison
+const placeTypesForParentHierarchy = _.difference(placeTypes, ['neighbourhood']);
+
 /**
  * Compare the layer properties if they exist.
  * Returns false if the objects are the same, else true.
@@ -81,7 +84,7 @@ function isParentHierarchyDifferent(item1, item2){
   }
 
   // iterate over all the placetypes, comparing values from the items
-  return placeTypes.some((placeType, rank) => {
+  return placeTypesForParentHierarchy.some((placeType, rank) => {
 
     // skip layers that are more granular than $maxRank
     if (rank > maxRank){ return false; }
