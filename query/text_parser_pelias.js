@@ -28,9 +28,11 @@ function addParsedVariablesToQueryVariables(clean, vs) {
 
   // street name
   if (!_.isEmpty(clean.parsed_text.street) && _.isEmpty(clean.parsed_text.cross_street)) {
-    // do not query the `street` field if this is an intersection parse
-    // otherwise the order of the intersection in the data will determine what results come first
-    vs.var('input:street', clean.parsed_text.street);
+    if (clean.parsed_text.street !== clean.parsed_text.subject) {
+      // do not query the `street` field if this is an intersection parse
+      // otherwise the order of the intersection in the data will determine what results come first
+      vs.var('input:street', clean.parsed_text.street);
+    }
   }
 
   // cross street name
