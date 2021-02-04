@@ -146,19 +146,23 @@ function addRoutes(app, peliasConfig) {
     not(placeholderShouldHaveExecuted)
   );
 
-  const shouldDeferToPeliasParser = any(
-    // we always want to try pelias parser based queries if there are no results
-    not(predicates.hasResponseData),
-    all(
-      // if there are only admin results, but parse contains more granular items than admin,
-      // then we want to defer to pelias parser based queries
-      predicates.hasAdminOnlyResults,
-      not(predicates.isAdminOnlyAnalysis),
-      // exception: if the 'sources' parameter is only wof, do not use pelias parser
-      // in that case Placeholder can return all the possible answers
-      not(predicates.isRequestSourcesOnlyWhosOnFirst),
-    )
-  );
+  const shouldDeferToPeliasParser =
+      all(
+          any(
+              // we always want to try pelias parser based queries if there are no results
+              not(predicates.hasResponseData),
+              all(
+                  // if there are only admin results, but parse contains more granular items than admin,
+                  // then we want to defer to pelias parser based queries
+                  predicates.hasAdminOnlyResults,
+                  not(predicates.isAdminOnlyAnalysis),
+                  // exception: if the 'sources' parameter is only wof, do not use pelias parser
+                  // in that case Placeholder can return all the possible answers
+                  not(predicates.isRequestSourcesOnlyWhosOnFirst),
+              )
+          ),
+          not(predicates.isFuzzySearch)
+      );
 
   // call search_pelias_parser query if pelias_parser was the parser
   const searchPeliasParserShouldExecute = all(
@@ -219,7 +223,7 @@ function addRoutes(app, peliasConfig) {
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
       controllers.placeholder(placeholderService, geometricFiltersApply, placeholderIdsLookupShouldExecute),
       // try 3 different query types: address search using ids, cascading fallback, pelias parser
-      controllers.search(peliasConfig, esclient, queries.address_search_using_ids, searchWithIdsShouldExecute),
+      // controllers.search(peliasConfig, esclient, queries.address_search_using_ids, searchWithIdsShouldExecute),
       controllers.search(peliasConfig, esclient, queries.search, fallbackQueryShouldExecute),
       sanitizers.defer_to_pelias_parser(peliasConfig.api, shouldDeferToPeliasParser), //run additional sanitizers needed for pelias parser
       controllers.search(peliasConfig, esclient, queries.search_pelias_parser, searchPeliasParserShouldExecute),

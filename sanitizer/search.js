@@ -20,8 +20,9 @@ module.exports.middleware = (_api_pelias_config) => {
         // this can go away once geonames has been abrogated
         geonames_warnings: require('../sanitizer/_geonames_warnings')(),
         request_language: require('../sanitizer/_request_language')(),
-        boundary_gid: require('../sanitizer/_boundary_gid')()
-      };
+        boundary_gid: require('../sanitizer/_boundary_gid')(),
+        fuzziness: require('../sanitizer/_fuzziness')()
+  };
 
   return ( req, res, next ) => {
     sanitizeAll.runAllChecks(req, sanitizers);
