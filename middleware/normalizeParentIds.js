@@ -32,7 +32,9 @@ function normalizeParentIds(place) {
   if (place) {
     placeTypes.forEach(function (placeType) {
       if (place[placeType] && place[placeType].length > 0 && place[placeType][0]) {
-        let source = 'whosonfirst';
+        // This is a solution for geonames hack.
+        // We can store in ES the source and defaulted to wof for backward compatibility.
+        let source = _.get(place, `${placeType}_source`, ['whosonfirst']);
 
         const placetype_ids = _.get(place, `${placeType}_gid`, [null]);
 
@@ -41,6 +43,8 @@ function normalizeParentIds(place) {
         // it's always WOF ids and hardcode to that
         if (place.source === 'geonames' && place.source_id === placetype_ids[0]) {
           source = place.source;
+        } else {
+          source = _.head(source);
         }
         
         place[`${placeType}_gid`] = [ makeNewId(source, placeType, placetype_ids[0]) ];
