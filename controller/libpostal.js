@@ -202,6 +202,14 @@ function patchBuggyResponses(response){
     }
   }
 
+  // union square should be venue, not neighbourhood
+  let suburb = _.get(idx, 'suburb');
+  // change suburb to house (turned into 'query' by pelias)
+  if (suburb && suburb.label === 'suburb' && suburb.value === 'union square') {
+    _.pullAt(response, suburb._pos);
+    response.push({ label: 'house', value: suburb.value });
+  }
+
   return response;
 }
 
