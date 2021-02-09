@@ -1,5 +1,6 @@
 var peliasQuery = require('pelias-query'),
-    ngrams_strict = require('./ngrams_strict');
+    ngrams_strict = require('./ngrams_strict'),
+    ngrams_fuzzy = require('./ngrams_fuzzy');
 /**
   Ngrams view which trims the 'input:name' and only uses the LAST TOKEN.
 
@@ -25,10 +26,12 @@ module.exports = function( vs ){
   // set the 'name' variable in the copy to only the last token
   vsCopy.var('input:name').set( tokens.join(' ') );
 
+  const fuzziness = vs.var('fuzzy:fuzziness').get();
+
   // return the view rendered using the copy
   return {
     'constant_score': {
-      'filter': ngrams_strict( vsCopy )
+      'filter': fuzziness === 0 ? ngrams_strict( vsCopy ) : ngrams_fuzzy( vsCopy )
     }
   };
 };

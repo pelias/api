@@ -28,11 +28,11 @@ module.exports = function( vs ){
 
   // set 'input' to be only the fully completed characters
   vs.var(`multi_match:${view_name}:input`).set( tokens.join(' ') );
-  vs.var(`multi_match:${view_name}:fields`).set(toMultiFields(searchDefaults['phrase:field'], vs.var('lang').get()));
+  vs.var(`multi_match:${view_name}:fields`).set(toMultiFields(vs.var('phrase:field').get(), vs.var('lang').get()));
 
-  vs.var(`multi_match:${view_name}:analyzer`).set(searchDefaults['phrase:analyzer']);
+  vs.var(`multi_match:${view_name}:analyzer`).set(vs.var('phrase:analyzer').get());
   vs.var(`multi_match:${view_name}:boost`).set(vs.var('phrase:boost').get());
   vs.var(`multi_match:${view_name}:slop`).set(vs.var('phrase:slop').get());
 
-  return peliasQuery.view.leaf.match_phrase(view_name)( vs );
+  return peliasQuery.view.leaf.multi_match(view_name) (vs);
 };
