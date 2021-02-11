@@ -20,7 +20,7 @@ module.exports.tests.text_parser = function (test, common) {
   });
 
   let cases = [];
-  
+
   // USA queries
   cases.push(['soho, new york, NY', {
     subject: 'soho',
@@ -154,6 +154,29 @@ module.exports.tests.text_parser = function (test, common) {
     admin: 'Kentucky'
   }]);
 
+  // badly parsed venue names should at least have correct $subject
+  cases.push(['Kells Irish Restaurant & Pub', {
+    subject: 'Kells Irish Restaurant & Pub'
+  }, true]);
+  cases.push(['The Village Zombie', {
+    subject: 'The Village Zombie'
+  }, true]);
+  cases.push(['Chili\'s Bar & Grill', {
+    subject: 'Chili\'s Bar & Grill'
+  }, true]);
+  cases.push(['OYO Hotels & Homes', {
+    subject: 'OYO Hotels & Homes'
+  }, true]);
+  cases.push(['Adamas Pharmaceuticals', {
+    subject: 'Adamas Pharmaceuticals'
+  }, true]);
+  cases.push(['St Francis Extended', {
+    subject: 'St Francis Extended'
+  }, true]);
+  cases.push(['St Francis', {
+    subject: 'St Francis'
+  }, true]);
+
   // street (USA style)
   cases.push(['M', { subject: 'M' }, true]);
   cases.push(['Ma', { subject: 'Ma' }, true]);
@@ -282,11 +305,11 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['Kasch', { subject: 'Kasch' }, true]);
   cases.push(['Kaschk', { subject: 'Kaschk' }, true]);
   cases.push(['Kaschk ', { subject: 'Kaschk' }, true]);
-  // cases.push(['Kaschk B', { subject: 'Kaschk' }, true]); // jitter issue
-  cases.push(['Kaschk Be', { subject: 'Kaschk' }, true]);
-  // cases.push(['Kaschk Ber', { subject: 'Kaschk' }, true]); // jitter issue
-  // cases.push(['Kaschk Berl', { subject: 'Kaschk' }, true]); // jitter issue
-  // cases.push(['Kaschk Berli', { subject: 'Kaschk' }, true]); // jitter issue
+  cases.push(['Kaschk B', { subject: 'Kaschk B' }, true]);
+  cases.push(['Kaschk Be', { subject: 'Kaschk Be' }, true]);
+  cases.push(['Kaschk Ber', { subject: 'Kaschk Ber' }, true]);
+  cases.push(['Kaschk Berl', { subject: 'Kaschk Berl' }, true]);
+  cases.push(['Kaschk Berli', { subject: 'Kaschk Berli' }, true]);
   cases.push(['Kaschk Berlin', { subject: 'Kaschk' }, true]);
 
   cases.push(['A', { subject: 'A' }, true]);
@@ -308,7 +331,7 @@ module.exports.tests.text_parser = function (test, common) {
   // cases.push(['Air & Space Museu', { subject: 'Air & Space Museu' }, true]); // jitter issue
   cases.push(['Air & Space Museum', { subject: 'Air & Space Museum' }, true]);
   cases.push(['Air & Space Museum ', { subject: 'Air & Space Museum' }, true]);
-  cases.push(['Air & Space Museum D', { subject: 'Air & Space Museum' }, true]);
+  cases.push(['Air & Space Museum D', { subject: 'Air & Space Museum D' }, true]);
   cases.push(['Air & Space Museum DC', { subject: 'Air & Space Museum' }, true]);
 
   // admin areas
@@ -322,7 +345,7 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['New York', { subject: 'New York' }, true]);
   cases.push(['New York N', { subject: 'New York' }, true]);
   cases.push(['New York NY', { subject: 'New York' }, true]);
-  
+
   cases.push(['B', { subject: 'B' }, true]);
   cases.push(['Be', { subject: 'Be' }, true]);
   cases.push(['Ber', { subject: 'Ber' }, true]);
@@ -342,6 +365,46 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['Berlin Deutschlan', { subject: 'Berlin' }, true]);
   cases.push(['Berlin Deutschland', { subject: 'Berlin' }, true]);
 
+  // venue name with ampersand
+  // note: this query is ambigious as it could refer to either the
+  // UK high street brand "Marks & Spencer" or an intersection of
+  // Marks St and Spencer Ave.
+  // note: what we're looking for here is that we are using the whole
+  // input as the $subject regardless and without jitter.
+  cases.push(['M', { subject: 'M' }, true]);
+  cases.push(['Ma', { subject: 'Ma' }, true]);
+  cases.push(['Mar', { subject: 'Mar' }, true]);
+  cases.push(['Mark', { subject: 'Mark' }, true]);
+
+  // note: for the following 5 keystrokes the $subject is simplified to 'Marks'
+  cases.push(['Marks', { subject: 'Marks' }, true]);
+  cases.push(['Marks ', { subject: 'Marks' }, true]);
+  cases.push(['Marks &', { subject: 'Marks' }, true]);
+  cases.push(['Marks & ', { subject: 'Marks' }, true]);
+  cases.push(['Marks & S', { subject: 'Marks' }, true]);
+
+  cases.push(['Marks & Sp', { subject: 'Marks & Sp' }, true]);
+  cases.push(['Marks & Spe', { subject: 'Marks & Spe' }, true]);
+  cases.push(['Marks & Spen', { subject: 'Marks & Spen' }, true]);
+  cases.push(['Marks & Spenc', { subject: 'Marks & Spenc' }, true]);
+  cases.push(['Marks & Spence', { subject: 'Marks & Spence' }, true]);
+  cases.push(['Marks & Spencer', { subject: 'Marks & Spencer' }, true]);
+
+  // venue is also known colloquially as "M AND S"
+  cases.push(['M', { subject: 'M' }, true]);
+  cases.push(['M ', { subject: 'M' }, true]);
+  cases.push(['M &', { subject: 'M &' }, true]);
+  cases.push(['M & ', { subject: 'M &' }, true]);
+  cases.push(['M & S', { subject: 'M & S' }, true]);
+
+  cases.push(['M', { subject: 'M' }, true]);
+  cases.push(['M ', { subject: 'M' }, true]);
+  cases.push(['M a', { subject: 'M a' }, true]);
+  cases.push(['M an', { subject: 'M an' }, true]);
+  cases.push(['M and', { subject: 'M and' }, true]);
+  cases.push(['M and ', { subject: 'M and' }, true]);
+  cases.push(['M and S', { subject: 'M & S' }, true]);
+
   // postcodes
   cases.push(['2000', { subject: '2000' }, true]);
   cases.push(['Sydney 2000', { subject: '2000' }, true]);
@@ -355,6 +418,16 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['london e81dn', { subject: 'e81dn' }, true]);
   cases.push(['e8 1dn', { subject: 'e8 1dn' }, true]);
   // cases.push(['london e8 1dn', { subject: 'e8 1dn' }, true]); // issue
+
+  // unit number between address and locality
+  cases.push(['7750 Kennedy Rd #2A Markham', {
+    subject: '7750 Kennedy Rd',
+    housenumber: '7750',
+    street: 'Kennedy Rd',
+    unit: '#2A',
+    locality: 'Markham',
+    admin: 'Markham',
+  }]);
 
   cases.forEach(testcase => {
     let input = testcase[0];
@@ -421,9 +494,9 @@ module.exports.tests.text_parser = function (test, common) {
     const raw = {
       text: `
 Sometimes we make the process more complicated than we need to.
-We will never make a journey of a thousand miles by fretting about 
+We will never make a journey of a thousand miles by fretting about
 how long it will take or how hard it will be.
-We make the journey by taking each day step by step and then repeating 
+We make the journey by taking each day step by step and then repeating
 it again and again until we reach our destination.` };
     const clean = {};
     const messages = sanitizer.sanitize(raw, clean);
