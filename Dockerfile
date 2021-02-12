@@ -1,42 +1,26 @@
-FROM node:8.16.0
-MAINTAINER Rutebanken
-
-RUN wget --quiet https://github.com/Yelp/dumb-init/releases/download/v1.0.1/dumb-init_1.0.1_amd64.deb
-RUN dpkg -i dumb-init_*.deb
-RUN npm set progress=false
-
-# Install other dependencies:
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends git unzip python python-dev python-pip python-virtualenv \
-  build-essential software-properties-common curl wget apt-utils gdal-bin vim
-RUN apt-get install curl autoconf automake libtool pkg-config
+FROM pelias/libpostal_baseimage
 
 RUN mkdir -p /var/log/esclient/
+RUN chown pelias /var/log/esclient
 
-# Install node-gyp
-RUN npm install -g node-gyp
+USER pelias
 
-# Install node bindings
-RUN npm install openvenues/node-postal
+# Where the app is built and run inside the docker fs
+ENV WORK=/home/pelias
+WORKDIR ${WORK}
 
+# copy package.json first to prevent npm install being rerun when only code changes
+COPY ./package.json ${WORK}
+RUN npm install
 
-# Install the pelias-api
-COPY . /root/.pelias/pelias-api
-RUN cd /root/.pelias/pelias-api \
-	&& npm install \
-	&& ln -s /root/.pelias/pelias-api/public /root/public
-
-## setting workdir
-WORKDIR /root
+COPY . ${WORK}
 
 #  Copying pelias config file
-ADD .circleci/pelias.json pelias.json
+ADD .circleci/pelias.json ${WORK}/pelias.json
+
+ENV PELIAS_CONFIG=${WORK}/pelias.json
 
 ENV PORT 3000
 EXPOSE 3000
 
-CMD [ "dumb-init","node","/root/.pelias/pelias-api/index.js" ]
-
-# Can be run with:
-# docker run -it --rm -e NODE_ENV=dev --link elasticsearch:pelias-es eu.gcr.io/carbon-1287/pelias:latest
-# Notice that it bombs with NODE_ENV=production
+CMD ["node","/home/pelias/index.js" ]
