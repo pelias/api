@@ -7,7 +7,7 @@
   "esclient": {
     "apiVersion": "5.6",
     "hosts": [
-      { "host": "live-maps-pelias.internal" }
+      { "host": "localhost" }
     ],
     "requestTimeout": 250,
     "maxRetries": 1
