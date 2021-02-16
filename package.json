@@ -53,7 +53,7 @@
     "pelias-labels": "^1.16.0",
     "pelias-logger": "^1.2.0",
     "pelias-microservice-wrapper": "^1.7.0",
-    "pelias-model": "^7.0.0",
+    "pelias-model": "^9.0.0",
     "pelias-parser": "1.53.0",
     "pelias-query": "^11.0.0",
     "pelias-sorting": "^1.2.0",
@@ -75,7 +75,7 @@
     "precommit-hook": "^3.0.0",
     "proxyquire": "^2.0.0",
     "tap-dot": "^2.0.0",
-    "tape": "^5.0.0"
+    "tape": "^5.1.1"
   },
   "pre-commit": [
     "lint",
