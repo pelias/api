@@ -32,14 +32,6 @@ module.exports.tests.sanitizers = function(test, common) {
           }
         };
       },
-      '../sanitizer/_tokenizer': function () {
-        return {
-          sanitize: () => {
-            called_sanitizers.push('_tokenizer');
-            return { errors: [], warnings: [] };
-          }
-        };
-      },
       '../sanitizer/_size': function () {
         if (_.isEmpty(arguments)) {
           return {
@@ -64,11 +56,26 @@ module.exports.tests.sanitizers = function(test, common) {
           throw new Error('incorrect parameters passed to _targets');
         }
       },
-
       '../sanitizer/_sources_and_layers': function () {
         return {
           sanitize: () => {
             called_sanitizers.push('_sources_and_layers');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
+      '../sanitizer/_address_layer_filter': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_address_layer_filter');
+            return { errors: [], warnings: [] };
+          }
+        };
+      },
+      '../sanitizer/_tokenizer': function () {
+        return {
+          sanitize: () => {
+            called_sanitizers.push('_tokenizer');
             return { errors: [], warnings: [] };
           }
         };
@@ -143,10 +150,11 @@ module.exports.tests.sanitizers = function(test, common) {
       '_single_scalar_parameters',
       '_debug',
       '_text_pelias_parser',
-      '_tokenizer',
       '_size',
       '_targets/layers',
       '_targets/sources',
+      '_address_layer_filter',
+      '_tokenizer',
       '_sources_and_layers',
       '_flag_bool',
       '_location_bias',

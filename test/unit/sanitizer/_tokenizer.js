@@ -417,7 +417,7 @@ module.exports.tests.forward_slash_delimiter = function(test, common) {
 module.exports.tests.final_token_single_gram = function(test, common) {
   test('final token single gram - numeric', function(t) {
 
-    var clean = { text: 'grolmanstrasse 1' };
+    var clean = { text: 'grolmanstrasse 1', layers: ['address'] };
     var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
@@ -540,8 +540,8 @@ module.exports.tests.numeric_final_char = function (test, common) {
 
     // tokens produced
     t.deepEquals(clean.tokens, ['7-11'], 'tokens produced');
-    t.deepEquals(clean.tokens_complete, ['7-11'], 'complete');
-    t.deepEquals(clean.tokens_incomplete, [], 'incomplete');
+    t.deepEquals(clean.tokens_complete, [], 'complete');
+    t.deepEquals(clean.tokens_incomplete, ['7-11'], 'incomplete');
 
     // no errors/warnings produced
     t.deepEquals(messages.errors, [], 'no errors');
@@ -551,13 +551,13 @@ module.exports.tests.numeric_final_char = function (test, common) {
   });
   test('numeric final char, multiple token', function (t) {
 
-    var clean = { text: 'stop 3', parsed_text: { subject: 'stop 3' } };
+    var clean = { text: 'stop 3', layers: ['venue'], parsed_text: { subject: 'stop 3' } };
     var messages = sanitizer.sanitize({}, clean);
 
     // tokens produced
     t.deepEquals(clean.tokens, ['stop', '3'], 'tokens produced');
-    t.deepEquals(clean.tokens_complete, ['stop', '3'], 'complete');
-    t.deepEquals(clean.tokens_incomplete, [], 'incomplete');
+    t.deepEquals(clean.tokens_complete, ['stop'], 'complete');
+    t.deepEquals(clean.tokens_incomplete, ['3'], 'incomplete');
 
     // no errors/warnings produced
     t.deepEquals(messages.errors, [], 'no errors');
@@ -595,7 +595,7 @@ module.exports.tests.subject_complete = function (test, common) {
 
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape('sanitizeR _tokenizer: ' + name, testFunction);
+    return tape('sanitizer _tokenizer: ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
