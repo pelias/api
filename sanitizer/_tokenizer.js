@@ -48,8 +48,9 @@ function _sanitize( raw, clean ){
 
   // if requesting the address layer AND final character is a numeral then consider
   // all tokens as complete in order to avoid prefix matching numerals.
-  if ( _.get(clean, 'layers', []).includes('address') ) {
-    if ( /[0-9]$/.test(text) ) {
+  const layers = _.get(clean, 'layers', []);
+  if (!_.isArray(layers) || _.isEmpty(layers) || layers.includes('address')) {
+    if (/[0-9]$/.test(text)) {
       parserConsumedAllTokens = true;
     }
   }

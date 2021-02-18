@@ -540,8 +540,8 @@ module.exports.tests.numeric_final_char = function (test, common) {
 
     // tokens produced
     t.deepEquals(clean.tokens, ['7-11'], 'tokens produced');
-    t.deepEquals(clean.tokens_complete, [], 'complete');
-    t.deepEquals(clean.tokens_incomplete, ['7-11'], 'incomplete');
+    t.deepEquals(clean.tokens_complete, ['7-11'], 'complete');
+    t.deepEquals(clean.tokens_incomplete, [], 'incomplete');
 
     // no errors/warnings produced
     t.deepEquals(messages.errors, [], 'no errors');
