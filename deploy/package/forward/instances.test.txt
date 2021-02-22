@@ -1,1 +1,1 @@
-forward-instance:pelias-bolt-forward.json:4001
+forward-instance:pelias-bolt-test-forward.json:4001
