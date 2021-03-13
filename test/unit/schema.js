@@ -548,7 +548,7 @@ module.exports.tests.service_validation = (test, common) => {
   // these tests apply for all the individual service definitions
   const services = ['pip', 'placeholder', 'interpolation', 'libpostal'];
 
-  test('timeout and retries not specified should default to 250 and 3', (t) => {
+  test('timeout and retries not specified should default to unset', (t) => {
     services.forEach(service => {
       const config = {
         api: {
@@ -566,8 +566,8 @@ module.exports.tests.service_validation = (test, common) => {
 
       const result = schema.validate(config);
 
-      t.equals(result.value.api.services[service].timeout, 250);
-      t.equals(result.value.api.services[service].retries, 3);
+      t.equals(result.value.api.services[service].timeout, undefined);
+      t.equals(result.value.api.services[service].retries, undefined);
 
     });
 
