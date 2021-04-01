@@ -1,7 +1,17 @@
 const _ = require('lodash');
 
+const INVALID_NEGATIVE_TARGETS_ERROR = 'contains positive and negative options in a combination ' +
+ 'that results in an empty list. Please chose a different combination';
+
 function getValidKeys(mapping) {
   return _.uniq(Object.keys(mapping)).join(',');
+}
+
+function expandAliases(targets, targetMap) {
+  const expanded = targets.reduce((acc, target) => acc.concat(targetMap[target]), []);
+
+  // return deduplicated list using `Set`
+  return [...new Set(expanded)];
 }
 
 function _setup( paramName, targetMap ) {
@@ -15,52 +25,68 @@ function _setup( paramName, targetMap ) {
       // error & warning messages
       var messages = { errors: [], warnings: [] };
 
-      // the string of targets (comma delimeted)
+      // the string of targets (comma delimited)
       var targetsString = raw[opts.paramName];
 
-      // trim whitespace
-      if( _.isString( targetsString ) && !_.isEmpty( targetsString ) ){
-        targetsString = targetsString.trim();
-
-        // param must be a valid non-empty string
-        if( !_.isString( targetsString ) || _.isEmpty( targetsString ) ){
-          messages.errors.push(
-            opts.paramName + ' parameter cannot be an empty string. Valid options: ' + getValidKeys(opts.targetMap)
-          );
-        }
-        else {
-
-          // split string in to array and lowercase each target string
-          var targets = targetsString.split(',').map( function( target ){
-            return target.toLowerCase(); // lowercase inputs
-          });
-
-          // emit an error for each target *not* present in the targetMap
-          targets.filter( function( target ){
-            return !opts.targetMap.hasOwnProperty(target);
-          }).forEach( function( target ){
-            messages.errors.push(
-              '\'' + target + '\' is an invalid ' + opts.paramName + ' parameter. Valid options: ' + getValidKeys(opts.targetMap)
-            );
-          });
-
-          // only set types value when no error occured
-          if( !messages.errors.length ){
-            clean[opts.paramName] = targets.reduce(function(acc, target) {
-              return acc.concat(opts.targetMap[target]);
-            }, []);
-
-            // dedupe in case aliases expanded to common things or user typed in duplicates
-            clean[opts.paramName] = _.uniq(clean[opts.paramName]);
-          }
-        }
+      // input is not a string, parameter is not defined, can quit early
+      if (!_.isString(targetsString)) {
+        return messages;
       }
 
-      // string is empty
-      else if( _.isString( targetsString ) ){
+      // remove all whitespace characters
+      targetsString = targetsString.replace(/\s/g,'');
+
+      // return error if parameter ends up being all whitespace
+      if( _.isEmpty( targetsString ) ){
         messages.errors.push(
           opts.paramName + ' parameter cannot be an empty string. Valid options: ' + getValidKeys(opts.targetMap)
         );
+        return messages;
+      }
+
+      // split string in to array and lowercase each target string
+      var targets = targetsString.split(',').map( function( target ){
+        return target.toLowerCase(); // lowercase inputs
+      });
+
+      const positive_targets = targets.filter((t) => t[0] !== '-' );
+
+      const negative_targets = targets.filter((t) => t[0] === '-' )
+        .map((t) => t.slice(1)); // remove the leading '-' from the negative target so it can be validated easily
+
+      // emit an error for each target *not* present in the targetMap
+      positive_targets.concat(negative_targets).filter( target => !opts.targetMap.hasOwnProperty(target) ).forEach(( target ) =>{
+        messages.errors.push(
+          `\'${target}\' is an invalid ${opts.paramName} parameter. Valid options: ${getValidKeys(opts.targetMap)}`
+        );
+      });
+
+      // for calculating the final list of targets use either:
+      // - the list of positive targets, if there are any
+      // - otherwise, the list of all possible targets
+      const starting_positive_targets = positive_targets.length ?
+        positive_targets :
+        Object.keys(opts.targetMap);
+
+      // calculate the "effective" list of positive and negative targets, by expanding aliases
+      const effective_positive_targets = expandAliases(starting_positive_targets, opts.targetMap);
+      const effective_negative_targets = expandAliases(negative_targets, opts.targetMap);
+
+      // the final list of targets is the positive list, with the negative list excluded
+      const final_targets = effective_positive_targets.filter((t) => !effective_negative_targets.includes(t));
+
+      if (final_targets.length === 0) {
+        messages.errors.push(
+          `${opts.paramName} ${INVALID_NEGATIVE_TARGETS_ERROR}`
+        );
+      }
+
+      clean[`positive_${opts.paramName}`] = effective_positive_targets;
+      clean[`negative_${opts.paramName}`] = effective_negative_targets;
+
+      // only set final value when no error occurred
+      if( !messages.errors.length ){
+        clean[opts.paramName] = final_targets;
       }
 
       return messages;
@@ -68,6 +94,5 @@ function _setup( paramName, targetMap ) {
 
   }; // end of object to be returned
 } // end of _setup function
-
 
 module.exports = _setup;
