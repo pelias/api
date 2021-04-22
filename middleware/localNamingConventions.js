@@ -36,7 +36,8 @@ var flipNumberAndStreetCountries = [
   'ROU' /* Romania */,
   'MDA' /* Moldova */,
   'COL' /* Colombia */,
-  'HUN' /* Hungary */
+  'HUN' /* Hungary */,
+  'UKR' /* Ukraine */
 ];
 
 function setup() {
