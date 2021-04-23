@@ -1,4 +1,4 @@
-active-instance-1:pelias-bolt-active.json:4010
-active-instance-2:pelias-bolt-active.json:4011
-active-instance-3:pelias-bolt-active.json:4012
-active-instance-4:pelias-bolt-active.json:4013
+active-instance-1:pelias-bolt-live-active.json:4010
+active-instance-2:pelias-bolt-live-active.json:4011
+active-instance-3:pelias-bolt-live-active.json:4012
+active-instance-4:pelias-bolt-live-active.json:4013
