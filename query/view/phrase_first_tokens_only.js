@@ -9,7 +9,9 @@ const toMultiFields = require('./helper').toMultiFields;
 **/
 
 module.exports = function( vs ){
-  const view_name = 'first_tokens_only';
+  const fuzziness = vs.var('fuzzy:fuzziness').get();
+
+  const view_name = fuzziness ? 'first_tokens_only_fuzzy' : 'first_tokens_only';
   // get a copy of the *complete* tokens produced from the input:name
   const tokens = vs.var('input:name:tokens_complete').get();
 
@@ -22,7 +24,14 @@ module.exports = function( vs ){
 
   vs.var(`multi_match:${view_name}:analyzer`).set(vs.var('phrase:analyzer').get());
   vs.var(`multi_match:${view_name}:boost`).set(vs.var('phrase:boost').get());
-  vs.var(`multi_match:${view_name}:slop`).set(vs.var('phrase:slop').get());
+
+  if (fuzziness === 0) {
+    vs.var(`multi_match:${view_name}:slop`).set(vs.var('phrase:slop').get());
+  } else {
+    vs.var(`multi_match:${view_name}:fuzziness`).set(fuzziness);
+    vs.var(`multi_match:${view_name}:max_expansions`).set(vs.var('fuzzy:max_expansions').get());
+    vs.var(`multi_match:${view_name}:prefix_length`).set(vs.var('fuzzy:prefix_length').get());
+  }
 
   return peliasQuery.view.leaf.multi_match(view_name)( vs );
 };
