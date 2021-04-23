@@ -6,8 +6,7 @@ const textParser = require('./text_parser');
 //------------------------------
 // general-purpose search query
 //------------------------------
-const FallbackQuery = require('./view/search/FallbackQuery');
-var fallbackQuery = new FallbackQuery();
+var fallbackQuery = new peliasQuery.layout.FallbackQuery();
 
 // scoring boost
 fallbackQuery.score( peliasQuery.view.focus_only_function( ) );
@@ -107,14 +106,6 @@ function generateQuery( clean ){
     vs.set({
       'boundary:gid': clean['boundary.gid']
     });
-  }
-
-  if (clean.fuzziness) {
-    vs.var('fuzzy:fuzziness', clean.fuzziness);
-
-    if (clean.max_expansions) {
-      vs.var('fuzzy:max_expansions', clean.max_expansions);
-    }
   }
 
   // run the address parser

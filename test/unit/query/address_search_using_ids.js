@@ -43,8 +43,10 @@ module.exports.tests.base_query = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }
@@ -96,8 +98,10 @@ module.exports.tests.other_parameters = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }
@@ -126,8 +130,10 @@ module.exports.tests.other_parameters = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }
@@ -155,8 +161,10 @@ module.exports.tests.other_parameters = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }
@@ -266,8 +274,10 @@ module.exports.tests.granularity_bands = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }
@@ -310,8 +320,10 @@ module.exports.tests.granularity_bands = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }
@@ -365,8 +377,10 @@ module.exports.tests.granularity_bands = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }
@@ -400,8 +414,10 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }
@@ -431,8 +447,10 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }
@@ -465,8 +483,10 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }
@@ -499,8 +519,10 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }
@@ -533,8 +555,10 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }
@@ -565,8 +589,10 @@ module.exports.tests.boundary_filters = (test, common) => {
 
     const generateQuery = proxyquire('../../../query/address_search_using_ids', {
       'pelias-logger': logger,
-      './view/search/AddressesUsingIdsQuery':MockQuery,
       'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
         view: views,
         Vars: require('pelias-query').Vars
       }

@@ -146,23 +146,19 @@ function addRoutes(app, peliasConfig) {
     not(placeholderShouldHaveExecuted)
   );
 
-  const shouldDeferToPeliasParser =
-      all(
-          any(
-              // we always want to try pelias parser based queries if there are no results
-              not(predicates.hasResponseData),
-              all(
-                  // if there are only admin results, but parse contains more granular items than admin,
-                  // then we want to defer to pelias parser based queries
-                  predicates.hasAdminOnlyResults,
-                  not(predicates.isAdminOnlyAnalysis),
-                  // exception: if the 'sources' parameter is only wof, do not use pelias parser
-                  // in that case Placeholder can return all the possible answers
-                  not(predicates.isRequestSourcesOnlyWhosOnFirst),
-              )
-          ),
-          not(predicates.isFuzzySearch)
-      );
+  const shouldDeferToPeliasParser = any(
+    // we always want to try pelias parser based queries if there are no results
+    not(predicates.hasResponseData),
+    all(
+      // if there are only admin results, but parse contains more granular items than admin,
+      // then we want to defer to pelias parser based queries
+      predicates.hasAdminOnlyResults,
+      not(predicates.isAdminOnlyAnalysis),
+      // exception: if the 'sources' parameter is only wof, do not use pelias parser
+      // in that case Placeholder can return all the possible answers
+      not(predicates.isRequestSourcesOnlyWhosOnFirst),
+    )
+  );
 
   // call search_pelias_parser query if pelias_parser was the parser
   const searchPeliasParserShouldExecute = all(

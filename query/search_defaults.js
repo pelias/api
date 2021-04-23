@@ -123,9 +123,5 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'custom:boosting:boost': 5,               // multiply score by this number to increase the strength of the boost
   'custom:boosting:max_boost': 50,          // maximum boosting which can be applied (max_boost/boost = max_score)
   'custom:boosting:score_mode': 'sum',      // sum all function scores before multiplying the boost
-  'custom:boosting:boost_mode': 'multiply',  // this mode is not relevant because there is no query section
-
-  'fuzzy:fuzziness': 0,
-  'fuzzy:max_expansions': 10,
-  'fuzzy:prefix_length': 1
+  'custom:boosting:boost_mode': 'multiply'  // this mode is not relevant because there is no query section
 });

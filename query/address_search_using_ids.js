@@ -5,8 +5,7 @@ const defaults = require('./search_defaults');
 //------------------------------
 // general-purpose search query
 //------------------------------
-const AddressesUsingIdsQuery = require('./view/search/AddressesUsingIdsQuery');
-const addressUsingIdsQuery = new AddressesUsingIdsQuery();
+const addressUsingIdsQuery = new peliasQuery.layout.AddressesUsingIdsQuery();
 
 // scoring boost
 addressUsingIdsQuery.score( peliasQuery.view.focus_only_function( ) );
@@ -195,14 +194,6 @@ function generateQuery( clean, res ){
     vs.set({
       'boundary:gid': clean['boundary.gid']
     });
-  }
-
-  if (clean.fuzziness) {
-    vs.var('fuzzy:fuzziness', clean.fuzziness);
-
-    if (clean.max_expansions) {
-      vs.var('fuzzy:max_expansions', clean.max_expansions);
-    }
   }
 
   return {
