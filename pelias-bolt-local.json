@@ -7,7 +7,7 @@
   "esclient": {
     "apiVersion": "5.6",
     "hosts": [
-      { "host": "localhost" }
+      { "host": "localhost", "port": 9200 }
     ],
     "requestTimeout": 250,
     "maxRetries": 1
