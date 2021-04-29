@@ -2,15 +2,13 @@ module.exports = {
   'query': {
     'bool': {
       'must': [{
-        'filter': {
-          'multi_match': {
-            'fields': ['name.default', 'name.en'],
-            'analyzer': 'peliasQuery',
-            'query': 'tes',
-            'boost': 100,
-            'type': 'phrase',
-            'slop': 3
-          }
+        'multi_match': {
+          'fields': ['name.default', 'name.en'],
+          'analyzer': 'peliasQuery',
+          'query': 'tes',
+          'boost': 100,
+          'type': 'phrase',
+          'slop': 3
         }
       }],
       'should':[{
