@@ -58,6 +58,7 @@ var tests = [
   require('./query/address_search_using_ids'),
 //  require('./query/autocomplete'), TODO disabled tests because they broke after changes in phrase_first_tokens_only.js
   require('./query/autocomplete_defaults'),
+  require('./query/autocomplete_exclude_railreplacement_bus'),
   require('./query/search_defaults'),
   require('./query/reverse_defaults'),
   require('./query/reverse'),
