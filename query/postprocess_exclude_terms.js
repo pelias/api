@@ -9,6 +9,7 @@
  * 
 */
 function postprocess(q) {
+  if (q.query.bool.filter.some(f => f.must_not)) {
     q.query.bool.filter = q.query.bool.filter.reduce(function(acc, f) {
         if (f.must_not) {
           Object.keys(f.must_not.terms).forEach(function(property) {
@@ -27,7 +28,8 @@ function postprocess(q) {
           must: []
         }
       });
-    return q;
+  }
+  return q;
 }
 
 module.exports = postprocess;
