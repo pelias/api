@@ -4,7 +4,9 @@ const peliasQuery = require('pelias-query');
 const defaults = require('./reverse_defaults');
 const check = require('check-types');
 const _ = require('lodash');
+const postprocess = require('./postprocess_exclude_terms');
 const logger = require('pelias-logger').get('api');
+const exclude_terms = require('./view/exclude_terms');
 
 //------------------------------
 // reverse geocode query
@@ -22,6 +24,10 @@ query.filter( peliasQuery.view.boundary_circle );
 query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.categories );
+
+// exclude railreplacementBus stop places
+query.filter( exclude_terms( 'category', ['railreplacementBus']) );
+
 
 // --------------------------------
 
@@ -102,9 +108,11 @@ function generateQuery( clean ){
 
   logger.info(logStr);
 
+  var q = query.render(vs);
+
   return {
     type: 'reverse',
-    body: query.render(vs)
+    body: postprocess(q)
   };
 }
 

@@ -1,6 +1,6 @@
 /**
  * Entur:
- * This view adds a must_not predicate to the query.
+ * This view adds a must_not filter to the query.
  * Note that pelias-query does not support rendering must_not predicates
  * so post-processing must be applied to the rendered query 
  */
