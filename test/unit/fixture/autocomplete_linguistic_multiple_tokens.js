@@ -12,29 +12,27 @@ module.exports = {
         }
       },
       {
-        'constant_score': {
-          'filter': {
-            'multi_match': {
-              'fields': [
-                'parent.country.ngram^1',
-                'parent.dependency.ngram^1',
-                'parent.macroregion.ngram^1',
-                'parent.region.ngram^1',
-                'parent.county.ngram^1',
-                'parent.localadmin.ngram^1',
-                'parent.locality.ngram^1',
-                'parent.borough.ngram^1',
-                'parent.neighbourhood.ngram^1',
-                'parent.locality_a.ngram^1',
-                'parent.region_a.ngram^1',
-                'parent.country_a.ngram^1',
-                'name.default^1.5',
-                'name.en^1.5'
-              ],
-              'query': 'three',
-              'analyzer': 'peliasQuery',
-              'type': 'cross_fields'
-            }
+        'filter': {
+          'multi_match': {
+            'fields': [
+              'parent.country.ngram^1',
+              'parent.dependency.ngram^1',
+              'parent.macroregion.ngram^1',
+              'parent.region.ngram^1',
+              'parent.county.ngram^1',
+              'parent.localadmin.ngram^1',
+              'parent.locality.ngram^1',
+              'parent.borough.ngram^1',
+              'parent.neighbourhood.ngram^1',
+              'parent.locality_a.ngram^1',
+              'parent.region_a.ngram^1',
+              'parent.country_a.ngram^1',
+              'name.default^1.5',
+              'name.en^1.5'
+            ],
+            'query': 'three',
+            'analyzer': 'peliasQuery',
+            'type': 'cross_fields'
           }
         }
       }],

@@ -12,16 +12,14 @@ module.exports = {
         }
       },
       {
-        'constant_score': {
-          'filter': {
-            'multi_match': {
-              'fields': ['name.default', 'name.en'],
-              'analyzer': 'peliasQuery',
-              'query': 'three',
-              'boost': 100,
-              'type': 'phrase',
-              'slop': 3
-            }
+        'filter': {
+          'multi_match': {
+            'fields': ['name.default', 'name.en'],
+            'analyzer': 'peliasQuery',
+            'query': 'three',
+            'boost': 100,
+            'type': 'phrase',
+            'slop': 3
           }
         }
       }],
