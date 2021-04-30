@@ -10,7 +10,7 @@ module.exports.tests.interface = function(test, common) {
 };
 
 module.exports.tests.query = function(test, common) {
-  test('exclude railreplacementBus', function(t) {
+  test('exclude railReplacementBus', function(t) {
     var query = generate({
       text: 'BussForTog',
       tokens: ['BussForTog'],
@@ -31,7 +31,7 @@ module.exports.tests.query = function(test, common) {
 module.exports.all = function (tape, common) {
   
   function test(name, testFunction) {
-    return tape('autocomplete exclude railreplacementBus ' + name, testFunction);
+    return tape('autocomplete exclude railReplacementBus ' + name, testFunction);
   }
   
   for( var testCase in module.exports.tests ){

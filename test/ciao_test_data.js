@@ -22,7 +22,7 @@ var config = require('pelias-config').generate().api;
 var types = ['venue','address','county','region','county','country','admin0','admin1','admin2'],
     sources = ['test'],
     layers = ['geonames'],
-    categories = ['railreplacementBus'];
+    categories = ['railReplacementBus'];
 
 // iterate over all types/sources/layers and index a test document
 types.forEach( function( type, i1 ){
@@ -199,7 +199,7 @@ client.index(
       'source': 'geonames',
       'source_id': 'NSR:StopPlace:1',
       'layer': 'venue',
-      'category': ['bus', 'railreplacementBus']
+      'category': ['bus', 'railReplacementBus']
     }
   }
 );

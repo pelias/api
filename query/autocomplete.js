@@ -56,8 +56,8 @@ query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.boundary_rect );
 query.filter( peliasQuery.view.categories );
 
-// exclude railreplacementBus stop places
-query.filter( views.exclude_terms( 'category', ['railreplacementBus']) );
+// exclude railReplacementBus stop places
+query.filter( views.exclude_terms( 'category', ['railReplacementBus']) );
 
 // --------------------------------
 

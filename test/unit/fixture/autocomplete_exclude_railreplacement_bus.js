@@ -66,7 +66,7 @@ module.exports = {
         'bool': {
           'must_not': {
             'terms': {
-              'category': ['railreplacementBus']
+              'category': ['railReplacementBus']
             }
           },
           'must': []

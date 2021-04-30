@@ -210,7 +210,7 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
-  test('exclude railreplacementBus', function(t) {
+  test('exclude railReplacementBus', function(t) {
     var query = generate({
       text: 'BussForTog',
       tokens: ['BussForTog'],
