@@ -13,7 +13,11 @@ function postprocess(q) {
     q.query.bool.filter = q.query.bool.filter.reduce(function(acc, f) {
         if (f.must_not) {
           acc.bool.must_not.bool.filter.push(f.must_not);
-          acc.bool.must_not.bool.must.script = f.script;
+          if (f.script) {
+            acc.bool.must_not.bool.must = {
+              script: f.script
+            };
+          }
         } else {
           acc.bool.must.push(f);
         }
@@ -22,10 +26,7 @@ function postprocess(q) {
         bool: {
           must_not: {
             bool: {
-              filter: [],
-              must: {
-                script: {}
-              }
+              filter: []
             }
           },
           must: []
