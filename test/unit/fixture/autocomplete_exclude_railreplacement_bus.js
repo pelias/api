@@ -65,9 +65,24 @@ module.exports = {
       'filter': {
         'bool': {
           'must_not': {
-            'terms': {
-              'category': ['railReplacementBus']
+            'bool': {
+              'filter': [
+                {
+                  'terms': {
+                    'category': ['railReplacementBus']
+                  }
+                }
+              ],
+              'must': {
+                'script': {
+                  'script': {
+                    'inline': 'doc[\"category\"].values.size() == 1',
+                    'lang': 'groovy'
+                  }
+                }
+              }
             }
+            
           },
           'must': []
         }

@@ -12,18 +12,21 @@ function postprocess(q) {
   if (q.query && q.query.bool && q.query.bool.filter && q.query.bool.filter.some(f => f.must_not)) {
     q.query.bool.filter = q.query.bool.filter.reduce(function(acc, f) {
         if (f.must_not) {
-          Object.keys(f.must_not.terms).forEach(function(property) {
-            acc.bool.must_not.terms[property] = f.must_not.terms[property];
-          });
-        }
-        else {
-          acc.must.push(f);
+          acc.bool.must_not.bool.filter.push(f.must_not);
+          acc.bool.must_not.bool.must.script = f.script;
+        } else {
+          acc.bool.must.push(f);
         }
         return acc;
       }, {
         bool: {
           must_not: {
-            'terms': {}
+            bool: {
+              filter: [],
+              must: {
+                script: {}
+              }
+            }
           },
           must: []
         }
