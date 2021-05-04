@@ -20,4 +20,4 @@ cronjobRedeployPelias:
 rbac:
   enabled: true
 
-  enableRailReplacementBusFilter: true
+enableRailReplacementBusFilter: true
