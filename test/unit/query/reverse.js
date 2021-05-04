@@ -38,7 +38,8 @@ module.exports.tests.query = (test, common) => {
       './reverse_defaults': {
         default_parameter_1: 'first default parameter',
         default_parameter_2: 'second default parameter'
-      }
+      },
+      './view/exclude_terms': () => 'exclude_terms view'
     })(clean);
 
     t.equals(query.type, 'reverse', 'query type set');
@@ -63,7 +64,8 @@ module.exports.tests.query = (test, common) => {
       'boundary_circle view',
       'sources view',
       'layers view',
-      'categories view'
+      'categories view',
+      'exclude_terms view'
     ]);
 
     t.deepEquals(query.body.sort_functions, [

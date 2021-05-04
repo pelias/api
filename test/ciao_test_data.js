@@ -21,7 +21,8 @@ var config = require('pelias-config').generate().api;
 // to be copied when the new type is created.
 var types = ['venue','address','county','region','county','country','admin0','admin1','admin2'],
     sources = ['test'],
-    layers = ['geonames'];
+    layers = ['geonames'],
+    categories = ['railReplacementBus'];
 
 // iterate over all types/sources/layers and index a test document
 types.forEach( function( type, i1 ){
@@ -124,6 +125,81 @@ client.index(
       'source': 'openstreetmap',
       'source_id': 'way:265038872',
       'layer': 'address'
+    }
+  }
+);
+
+client.index(
+  {
+    index: config.indexName,
+    type: 'venue',
+    id: 'NSR:StopPlace:1',
+    body: {
+      'center_point': {
+        'lon': -73.990425,
+        'lat': 40.744131
+      },
+      'parent': {
+        'country': [
+          'United States'
+        ],
+        'neighbourhood_id': [
+          '85869245'
+        ],
+        'country_a': [
+          'USA'
+        ],
+        'locality_a': [
+          null
+        ],
+        'region_id': [
+          '85688543'
+        ],
+        'county': [
+          'New York County'
+        ],
+        'borough_a': [
+          null
+        ],
+        'borough_id': [
+          '421205771'
+        ],
+        'locality': [
+          'New York'
+        ],
+        'borough': [
+          'Manhattan'
+        ],
+        'region_a': [
+          'NY'
+        ],
+        'county_id': [
+          '102081863'
+        ],
+        'locality_id': [
+          '85977539'
+        ],
+        'neighbourhood_a': [
+          null
+        ],
+        'neighbourhood': [
+          'Flatiron District'
+        ],
+        'region': [
+          'New York'
+        ],
+        'country_id': [
+          '85633793'
+        ],
+        'county_a': [
+          null
+        ]
+      },
+      'name': {'default': 'BussForTog'},
+      'source': 'geonames',
+      'source_id': 'NSR:StopPlace:1',
+      'layer': 'venue',
+      'category': ['bus', 'railReplacementBus']
     }
   }
 );

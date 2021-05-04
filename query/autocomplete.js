@@ -4,6 +4,7 @@ const peliasQuery = require('pelias-query');
 const defaults = require('./autocomplete_defaults');
 const textParser = require('./text_parser_addressit');
 const check = require('check-types');
+const postprocess = require('./postprocess_exclude_terms');
 const logger = require('pelias-logger').get('api');
 
 // additional views (these may be merged in to pelias/query at a later date)
@@ -13,7 +14,8 @@ var views = {
   ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
   pop_subquery:               require('./view/pop_subquery'),
-  boost_exact_matches:        require('./view/boost_exact_matches')
+  boost_exact_matches:        require('./view/boost_exact_matches'),
+  exclude_terms:              require('./view/exclude_terms'),
 };
 
 //------------------------------
@@ -53,6 +55,12 @@ query.filter( peliasQuery.view.sources );
 query.filter( peliasQuery.view.layers );
 query.filter( peliasQuery.view.boundary_rect );
 query.filter( peliasQuery.view.categories );
+
+// exclude railReplacementBus stop places
+if (process.env.ENABLE_RAIL_REPLACEMENT_BUS_FILTER === 'true') {
+  console.log('Enabling railReplacementBus filter in autocomplete');
+  query.filter( views.exclude_terms( 'category', ['railReplacementBus'], true) );
+}
 
 // --------------------------------
 
@@ -167,9 +175,11 @@ function generateQuery( clean ){
 
   logger.info(logStr);
 
+  var q = query.render(vs);
+
   return {
     type: 'autocomplete',
-    body: query.render(vs)
+    body: postprocess(q)
   };
 }
 
