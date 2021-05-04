@@ -57,7 +57,10 @@ query.filter( peliasQuery.view.boundary_rect );
 query.filter( peliasQuery.view.categories );
 
 // exclude railReplacementBus stop places
-query.filter( views.exclude_terms( 'category', ['railReplacementBus'], true) );
+if (process.env.ENABLE_RAIL_REPLACEMENT_BUS_FILTER === 'true') {
+  console.log('Enabling railReplacementBus filter in autocomplete');
+  query.filter( views.exclude_terms( 'category', ['railReplacementBus'], true) );
+}
 
 // --------------------------------
 

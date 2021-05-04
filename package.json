@@ -15,7 +15,7 @@
     "start": "node index.js",
     "test": "npm run unit",
     "travis": "npm run check-dependencies && npm test",
-    "unit": "./bin/units",
+    "unit": "ENABLE_RAIL_REPLACEMENT_BUS_FILTER=true ./bin/units",
     "validate": "npm ls",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "config": "node -e \"console.log(JSON.stringify(require( 'pelias-config' ).generate(require('./schema')), null, 2))\"",
