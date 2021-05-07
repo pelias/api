@@ -2,7 +2,6 @@ env: dev
 
 replicas: 1
 
-
 rollingUpdate:
   maxSurge: 1
   maxUnavailable: 0
@@ -12,7 +11,6 @@ resources:
   memLimit: 750Mi
   cpuRequest: 200m
   memRequest: 500Mi
-
 
 image:
   identifier: ${artifact.metadata.image}
@@ -40,3 +38,10 @@ service:
 
 rbac:
   enabled: false
+
+enableRailReplacementBusFilter: false
+
+horizontalPodAutoscaler:
+  maxReplicas: 2
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
