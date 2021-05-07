@@ -6,10 +6,10 @@ metadata:
   labels:
     {{- include "common.labels" . | indent 4 }}
 spec:
-  maxReplicas:  {{ .Values.horizontalPodAutoscaler.maxReplicas | default "2" }}
-  minReplicas: {{ .Values.horizontalPodAutoscaler.minReplicas | default "1" }}
+  maxReplicas:  {{ .Values.horizontalPodAutoscaler.maxReplicas }}
+  minReplicas: {{ .Values.horizontalPodAutoscaler.minReplicas }}
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ template "app.name" . }}
-  targetCPUUtilizationPercentage: {{ .Values.horizontalPodAutoscaler.targetCPUUtilizationPercentage | default "80" }}
+  targetCPUUtilizationPercentage: {{ .Values.horizontalPodAutoscaler.targetCPUUtilizationPercentage }}
