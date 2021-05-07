@@ -19,3 +19,8 @@ cronjobRedeployPelias:
     repo: eu.gcr.io/entur-system-1287/deployment-rollout-restart:0.1.0
 rbac:
   enabled: true
+
+horizontalPodAutoscaler:
+  maxReplicas: 6
+  minReplicas: 3
+  targetCPUUtilizationPercentage: 80
