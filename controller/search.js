@@ -11,19 +11,6 @@ const Debug = require('../helper/debug');
 function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
-
-/**
- * Extract must implicit or explicit must filter, depending on whether or not
- * the exclude_terms view was used
- */
- function getMustFilters(renderedQuery) {
-  return renderedQuery.body.query.bool.filter ? 
-    Array.isArray(renderedQuery.body.query.bool.filter) ? 
-      renderedQuery.body.query.bool.filter :
-      renderedQuery.body.query.bool.filter.bool.must :
-    [];
-}
-
 function filterByCategories(req, renderedQuery) {
     if (!req || !req.query) {
         return;
@@ -33,7 +20,9 @@ function filterByCategories(req, renderedQuery) {
         return;
     }
 
-    var filter = getMustFilters(renderedQuery);
+    if (!renderedQuery.body.query.bool.filter) {
+      renderedQuery.body.query.bool.filter = [];
+    }
 
     // Entur:
     // Using req.query.categories bypasses the sanitizer function and
@@ -43,8 +32,8 @@ function filterByCategories(req, renderedQuery) {
     //
     // Instead we splice out categories from the rendered query and use that to add a
     // new filter, wich uses our own field.
-    var index = filter.findIndex(f => f.terms && f.terms.category);
-    var match = index !== -1 && filter.splice(index).shift();
+    var index = renderedQuery.body.query.bool.filter.findIndex(f => f.terms && f.terms.category);
+    var match = index !== -1 && renderedQuery.body.query.bool.filter.splice(index).shift();
     var categories = match ? match.terms.category : [];
 
     if (categories.length > 0 && !categories.includes('no_filter')) {
@@ -54,10 +43,9 @@ function filterByCategories(req, renderedQuery) {
             }
         };
 
-        filter.push(categoriesTerms);
+        renderedQuery.body.query.bool.filter.push(categoriesTerms);
     }
 }
-
 function filterByParentIds(req, renderedQuery) {
     if (!req || !req.query) {
         return;
@@ -68,7 +56,9 @@ function filterByParentIds(req, renderedQuery) {
     var countyIds = req.query['boundary.county_ids'];
     var localityIds = req.query['boundary.locality_ids'];
     if (countyIds || localityIds) {
-        var filter = getMustFilters(renderedQuery);
+        if (!renderedQuery.body.query.bool.filter) {
+            renderedQuery.body.query.bool.filter = [];
+        }
 
         if (countyIds) {
             var countyTerms = {
@@ -76,7 +66,7 @@ function filterByParentIds(req, renderedQuery) {
                     'parent.county_id': countyIds.split(',')
                 }
             };
-            filter.push(countyTerms);
+            renderedQuery.body.query.bool.filter.push(countyTerms);
         }
 
         if (localityIds) {
@@ -85,7 +75,7 @@ function filterByParentIds(req, renderedQuery) {
                     'parent.locality_id': localityIds.split(',')
                 }
             };
-            filter.push(localityTerms);
+            renderedQuery.body.query.bool.filter.push(localityTerms);
         }
     }
 }
@@ -99,7 +89,9 @@ function filterByTariffZones(req, renderedQuery) {
     var tariffZoneIds = req.query.tariff_zone_ids;
     var tariffZoneAuthorities = req.query.tariff_zone_authorities;
     if (tariffZoneIds || tariffZoneAuthorities) {
-        var filter = getMustFilters(renderedQuery);
+        if (!renderedQuery.body.query.bool.filter) {
+            renderedQuery.body.query.bool.filter = [];
+        }
 
         if (tariffZoneIds) {
             var tariffZoneIdsTerms = {
@@ -107,7 +99,7 @@ function filterByTariffZones(req, renderedQuery) {
                     'tariff_zones': tariffZoneIds.split(',')
                 }
             };
-            filter.push(tariffZoneIdsTerms);
+            renderedQuery.body.query.bool.filter.push(tariffZoneIdsTerms);
         }
 
         if (tariffZoneAuthorities) {
@@ -116,7 +108,7 @@ function filterByTariffZones(req, renderedQuery) {
                     'tariff_zone_authorities': tariffZoneAuthorities.split(',')
                 }
             };
-            filter.push(tariffZoneAuthoritiesTerms);
+            renderedQuery.body.query.bool.filter.push(tariffZoneAuthoritiesTerms);
         }
     }
 }

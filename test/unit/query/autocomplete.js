@@ -209,20 +209,6 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled.body, expected, 'autocomplete_linguistic_focus_null_island');
     t.end();
   });
-
-  test('exclude railReplacementBus', function(t) {
-    var query = generate({
-      text: 'BussForTog',
-      tokens: ['BussForTog'],
-      tokens_complete: [],
-      tokens_incomplete: ['BussForTog']
-    });
-  
-    var compiled = JSON.parse( JSON.stringify( query ) );
-    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
-    t.deepEqual(compiled.body, { 'name' : 'BussForTog'}, 'autocomplete_linguistic_focus_null_island');
-    t.end();
-  });
 };
 
 module.exports.all = function (tape, common) {
