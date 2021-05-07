@@ -28,8 +28,6 @@ spec:
         env:
          - name: TZ
            value: Europe/Oslo
-         - name: ENABLE_RAIL_REPLACEMENT_BUS_FILTER
-           value: {{ .Values.enableRailReplacementBusFilter }}
         resources:
           limits:
             cpu: {{ .Values.resources.cpuLimit }}
