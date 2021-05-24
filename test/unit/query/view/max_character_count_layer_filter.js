@@ -67,12 +67,11 @@ module.exports.tests.view_within_range = function(test, common) {
     let vs = new VariableStore();
     vs.var('input:name', 'example text');
 
-    let actual = view(vs);
-    let expected = {
-      terms: {
-        layer: { $: _.difference(allLayers, ['address']) }
-      }
-    };
+    // execute the view
+    view(vs);
+
+    let expected =_.difference(allLayers, ['address']);
+    let actual = vs.var('layers').get();
 
     t.deepLooseEqual(actual, expected, 'view_within_range');
     t.end();
@@ -102,12 +101,12 @@ module.exports.tests.view_clamp_range_low = function(test, common) {
     let vs = new VariableStore();
     vs.var('input:name', 'e');
 
-    let actual = view(vs);
-    let expected = {
-      terms: {
-        layer: { $: _.difference(allLayers, ['address']) }
-      }
-    };
+    // execute the view
+    view(vs);
+
+    let expected =_.difference(allLayers, ['address']);
+    let actual = vs.var('layers').get();
+
     t.deepLooseEqual(actual, expected, 'view_clamp_range_low');
     t.end();
   });
