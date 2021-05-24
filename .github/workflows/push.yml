@@ -21,6 +21,18 @@ jobs:
         run: |
           npm install
           npm run travis
+  build-docker-images:
+    needs: unit-tests
+    if: github.event_name == 'push'
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Docker images
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          curl "https://raw.githubusercontent.com/pelias/ci-tools/master/build-docker-images.sh" | bash -
   npm-publish:
     needs: unit-tests
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
@@ -36,6 +48,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: >
-          curl
+          [[ -n "$GH_SEMANTIC_RELEASE_TOKEN" && -n "$NPM_TOKEN" ]] && curl
           "https://raw.githubusercontent.com/pelias/ci-tools/master/semantic-release.sh"
           | bash -
