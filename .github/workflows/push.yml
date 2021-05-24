@@ -48,6 +48,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: >
-          [[ -n "$GH_SEMANTIC_RELEASE_TOKEN" && -n "$NPM_TOKEN" ]] && curl
-          "https://raw.githubusercontent.com/pelias/ci-tools/master/semantic-release.sh"
-          | bash -
+          if [[ -n "$GH_SEMANTIC_RELEASE_TOKEN" && -n "$NPM_TOKEN" ]]; then
+            curl "https://raw.githubusercontent.com/pelias/ci-tools/master/semantic-release.sh" | bash -
+          fi
