@@ -46,10 +46,13 @@ function _sanitize( raw, clean ){
     }
   }
 
-  // if the final character is a numeral then consider all tokens
-  // as complete in order to avoid prefix matching numerals.
-  if (/[0-9]$/.test(text) ) {
-    parserConsumedAllTokens = true;
+  // if requesting the address layer AND final character is a numeral then consider
+  // all tokens as complete in order to avoid prefix matching numerals.
+  const layers = _.get(clean, 'layers', []);
+  if (!_.isArray(layers) || _.isEmpty(layers) || layers.includes('address')) {
+    if (/[0-9]$/.test(text)) {
+      parserConsumedAllTokens = true;
+    }
   }
 
   // always set 'clean.tokens*' arrays for consistency and to avoid upstream errors.
