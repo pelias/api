@@ -62,7 +62,7 @@ The API recognizes the following properties under the top-level `api` key in you
 |---|---|---|---|
 |`services`|*no*||Service definitions for [point-in-polygon](https://github.com/pelias/pip-service), [libpostal](https://github.com/whosonfirst/go-whosonfirst-libpostal), [placeholder](https://github.com/pelias/placeholder), and [interpolation](https://github.com/pelias/interpolation) services. For a description of when different Pelias services are recommended or required, see our [services documentation](https://github.com/pelias/documentation/blob/master/services.md).|
 |`defaultParameters.focus.point.lon` <br> `defaultParameters.focus.point.lat`|no | |default coordinates for focus point
-|`targets.auto_discover`|no|false|Should `sources` and `layers` be automatically discovered by querying elasticsearch at process startup. (See more info in the [Custom sources and layers](#custom-sources-and-layers) section below).
+|`targets.auto_discover`|no|true|Should `sources` and `layers` be automatically discovered by querying Elasticsearch at process startup. (See more info in the [Custom sources and layers](#custom-sources-and-layers) section below).
 |`targets.layers_by_source` <br> `targets.source_aliases` <br> `targets.layer_aliases`|no | |custom values for which `sources` and `layers` the API accepts (See more info in the [Custom sources and layers](#custom-sources-and-layers) section below). We recommend using the `targets.auto_discover:true` configuration instead of setting these manually.
 |`customBoosts` | no | `{}` | Allows configuring boosts for specific sources and layers, in order to influence result order. See [Configurable Boosts](#custom-boosts) below for details |
 |`autocomplete.exclude_address_length` | no | 0 | As a performance optimization, this optional filter excludes results from the 'address' layer for any queries where the character length of the 'subject' portion of the parsed_text is equal to or less than this many characters in length. Addresses are usually the bulk of the records in Elasticsearch, and searching across all of them for very short text inputs can be slow, with little benefit. Consider setting this to 1 or 2 if you have several million addresses in Pelias. |
@@ -111,18 +111,13 @@ The `timeout` and `retry` values, as show in in the `pip` service section, are o
 
 Pelias allows importing your own data with custom values for `source` and `layer`.
 
-Custom sources and layers are not automatically detected, you MUST set `targets.auto_discover` to `true` in your `pelias.json` to make Pelias aware of them.
+Custom sources and layers are automatically detected on startup of the API. To disable this behavior (not recommended), set `targets.auto_discover` to `false` in your `pelias.json`.
 
-The `auto_discover` functionality sends a request to elasticsearch in order to automatically discover sources and layers from elasticsearch when the API server starts-up.
+The `auto_discover` functionality sends a request to Elasticsearch in order to automatically discover sources and layers from Elasticsearch when the API server starts-up.
 
-Be aware that the query sent to Elasticsearch can take several seconds to execute the first time against a large index, potentially impacting the performance of other queries hitting Elasticsearch at the same time. The query is cached in Elasticsearch for subsequent requests.
+In setups with lots of data (hundreds of millions of records loaded), and low CPU resources, the query sent to Elasticsearch can take several seconds to execute, potentially impacting the performance of other queries hitting Elasticsearch at the same time. The query is cached in Elasticsearch for subsequent requests.
 
-If you are importing custom layers and are running a city or small region sized build then the impact of this query will likely be negligible, you can safely use `targets.auto_discover:true`.
-
-For advanced users running a full-planet build with custom layers or sources, and also concerned about this start-up delay, you have two options:
-
-1. execute the `auto_discover` query once manually to prime the cache **or**
-2. set `targets.auto_discover: false` and manually define the layers as documented below.
+In the rare event this causes issues, the following configuration options can be set to configure sources and layers by hand.
 
 #### `layers_by_source`
 

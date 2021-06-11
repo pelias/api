@@ -8,7 +8,8 @@ const field = require('../helper/fieldValue');
 // convenience function to pretty print hits
 const formatLog = (hit) => {
   const name = field.getStringValue(_.get(hit, 'name.default'));
-  return `${name} ${hit.source}:${hit._id}`;
+  const zip = field.getStringValue(_.get(hit, 'address_parts.zip'));
+  return [name, zip, hit.id].join(' ');
 };
 
 /**
@@ -112,6 +113,9 @@ function isPreferred(existingHit, candidateHit) {
   // https://github.com/pelias/api/issues/872
   if( !_.has(existingHit, 'address_parts.zip') &&
        _.has(candidateHit, 'address_parts.zip') ){ return true; }
+  // if the existing hit HAS a postcode, and this candidate does NOT, keep the existing hit
+  if( _.has(existingHit, 'address_parts.zip') &&
+       !_.has(candidateHit, 'address_parts.zip') ){ return false; }
 
   // prefer non-canonical sources over canonical ones
   if( !_.includes(canonical_sources, candidateHit.source) &&

@@ -34,8 +34,10 @@ var flipNumberAndStreetCountries = [
 
   /* Additional country codes not provided by ID Editor config */
   'ROU' /* Romania */,
+  'MDA' /* Moldova */,
   'COL' /* Colombia */,
-  'HUN' /* Hungary */
+  'HUN' /* Hungary */,
+  'UKR' /* Ukraine */
 ];
 
 function setup() {

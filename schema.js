@@ -34,23 +34,23 @@ module.exports = Joi.object().keys({
     services: Joi.object().keys({
       pip: Joi.object().keys({
         url: Joi.string().uri({ scheme: /https?/ }).required(),
-        timeout: Joi.number().integer().optional().default(250).min(0),
-        retries: Joi.number().integer().optional().default(3).min(0),
+        timeout: Joi.number().integer().optional().min(0),
+        retries: Joi.number().integer().optional().min(0),
       }).unknown(false),
       placeholder: Joi.object().keys({
         url: Joi.string().uri({ scheme: /https?/ }).required(),
-        timeout: Joi.number().integer().optional().default(250).min(0),
-        retries: Joi.number().integer().optional().default(3).min(0),
+        timeout: Joi.number().integer().optional().min(0),
+        retries: Joi.number().integer().optional().min(0),
       }).unknown(false),
       interpolation: Joi.object().keys({
         url: Joi.string().uri({ scheme: /https?/ }).required(),
-        timeout: Joi.number().integer().optional().default(250).min(0),
-        retries: Joi.number().integer().optional().default(3).min(0),
+        timeout: Joi.number().integer().optional().min(0),
+        retries: Joi.number().integer().optional().min(0),
       }).unknown(false),
       libpostal: Joi.object().keys({
         url: Joi.string().uri({ scheme: /https?/ }).required(),
-        timeout: Joi.number().integer().optional().default(250).min(0),
-        retries: Joi.number().integer().optional().default(3).min(0),
+        timeout: Joi.number().integer().optional().min(0),
+        retries: Joi.number().integer().optional().min(0),
       }).unknown(false)
     }).unknown(false).default({}), // default api.services to an empty object
     defaultParameters: Joi.object().keys({

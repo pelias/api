@@ -36,6 +36,7 @@ function renameOneRecord(place) {
       place[prop] = place.parent[prop];
       place[prop + '_a'] = place.parent[prop + '_a'];
       place[prop + '_gid'] = place.parent[prop + '_id'];
+      place[prop + '_source'] = place.parent[prop + '_source'];
     });
   }
 

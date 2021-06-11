@@ -237,33 +237,43 @@ module.exports.tests.success = (test, common) => {
               neighbourhood: ['neighbourhood name 1', 'neighbourhood name 2'],
               neighbourhood_id: ['10', '20'],
               neighbourhood_a: [null, 'neighbourhood abbr 2'],
+              neighbourhood_source: [null],
               borough: ['borough name 1', 'borough name 2'],
               borough_id: ['9', '19'],
               borough_a: [null, 'borough abbr 2'],
+              borough_source: [null],
               locality: ['locality name 1', 'locality name 2'],
               locality_id: ['8', '18'],
               locality_a: [null, 'locality abbr 2'],
+              locality_source: [null],
               localadmin: ['localadmin name 1', 'localadmin name 2'],
               localadmin_id: ['7', '17'],
               localadmin_a: [null, 'localadmin abbr 2'],
+              localadmin_source: [null],
               county: ['county name 1', 'county name 2'],
               county_id: ['6', '16'],
               county_a: [null, 'county abbr 2'],
+              county_source: [null],
               macrocounty: ['macrocounty name 1', 'macrocounty name 2'],
               macrocounty_id: ['5', '15'],
               macrocounty_a: [null, 'macrocounty abbr 2'],
+              macrocounty_source: [null],
               region: ['region name 1', 'region name 2'],
               region_id: ['4', '14'],
               region_a: [null, 'region abbr 2'],
+              region_source: [null],
               macroregion: ['macroregion name 1', 'macroregion name 2'],
               macroregion_id: ['3', '13'],
               macroregion_a: [null, 'macroregion abbr 2'],
+              macroregion_source: [null],
               dependency: ['dependency name 1', 'dependency name 2'],
               dependency_id: ['2', '12'],
               dependency_a: [null, 'dependency abbr 2'],
+              dependency_source: [null],
               country: ['country name 1', 'country name 2'],
               country_id: ['1', '11'],
-              country_a: ['ABC', 'XYZ']
+              country_a: ['ABC', 'XYZ'],
+              country_source: [null]
             }
           },
           {
@@ -1627,7 +1637,8 @@ module.exports.tests.result_filtering = (test, common) => {
             parent: {
               country: ['country name 1'],
               country_id: ['1'],
-              country_a: ['ABC']
+              country_a: ['ABC'],
+              country_source: [null]
             }
           },
           {
@@ -1648,7 +1659,8 @@ module.exports.tests.result_filtering = (test, common) => {
             parent: {
               country: ['country name 4'],
               country_id: ['4'],
-              country_a: ['ABC']
+              country_a: ['ABC'],
+              country_source: [null]
             }
           }
         ]
@@ -1775,7 +1787,8 @@ module.exports.tests.result_filtering = (test, common) => {
             parent: {
               country: ['country name 1', 'country name 2'],
               country_id: ['1', '2'],
-              country_a: ['ABC', 'DEF']
+              country_a: ['ABC', 'DEF'],
+              country_source: [null]
             }
           },
           {
@@ -1796,7 +1809,8 @@ module.exports.tests.result_filtering = (test, common) => {
             parent: {
               country: ['country name 3'],
               country_id: ['3'],
-              country_a: ['ABC']
+              country_a: ['ABC'],
+              country_source: [null]
             }
           },
           {
@@ -1817,7 +1831,8 @@ module.exports.tests.result_filtering = (test, common) => {
             parent: {
               country: ['country name 4'],
               country_id: ['4'],
-              country_a: ['GHI']
+              country_a: ['GHI'],
+              country_source: [null]
             }
           }
         ]
@@ -1895,7 +1910,8 @@ module.exports.tests.lineage_errors = (test, common) => {
             parent: {
               country: ['country name 1'],
               country_id: ['1'],
-              country_a: ['country abbr 1']
+              country_a: ['country abbr 1'],
+              country_source: [null]
             }
           }
         ]
@@ -1968,7 +1984,8 @@ module.exports.tests.lineage_errors = (test, common) => {
             parent: {
               country: ['country name 1'],
               country_id: ['1'],
-              country_a: ['country abbr 1']
+              country_a: ['country abbr 1'],
+              country_source: [null]
             }
           }
         ]
@@ -2040,7 +2057,8 @@ module.exports.tests.lineage_errors = (test, common) => {
             parent: {
               country: ['country name 1'],
               country_id: ['1'],
-              country_a: ['country abbr 1']
+              country_a: ['country abbr 1'],
+              country_source: [null]
             }
           }
         ]

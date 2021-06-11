@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^16.0.1",
-    "@mapbox/geojson-extent": "^0.3.1",
+    "@mapbox/geojson-extent": "^1.0.0",
     "async": "^3.0.1",
     "elasticsearch": "^16.0.0",
     "express": "^4.8.8",
@@ -49,12 +49,12 @@
     "markdown": "^0.5.0",
     "morgan": "^1.8.2",
     "pelias-compare": "^0.1.16",
-    "pelias-config": "^4.0.0",
-    "pelias-labels": "^1.13.0",
+    "pelias-config": "^5.0.1",
+    "pelias-labels": "^1.16.1",
     "pelias-logger": "^1.2.0",
     "pelias-microservice-wrapper": "^1.7.0",
-    "pelias-model": "^7.0.0",
-    "pelias-parser": "1.53.0",
+    "pelias-model": "^9.0.0",
+    "pelias-parser": "pelias/parser#remove-unit-type",
     "pelias-query": "^11.0.0",
     "pelias-sorting": "^1.2.0",
     "predicates": "^2.0.0",
@@ -75,7 +75,7 @@
     "precommit-hook": "^3.0.0",
     "proxyquire": "^2.0.0",
     "tap-dot": "^2.0.0",
-    "tape": "^5.0.0"
+    "tape": "^5.1.1"
   },
   "pre-commit": [
     "lint",
