@@ -3,5 +3,5 @@
 set -ex
 
 # beanstalk CLI
-pip install -U pip
-pip install awsebcli==3.17.1
+pip3 install -U pip
+pip3 install awsebcli==3.17.1
