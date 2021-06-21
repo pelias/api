@@ -29,6 +29,7 @@ const ALTERNATE_SPACES = regenerate()
 // see: https://github.com/pelias/pelias/issues/829#issuecomment-542614645
 // ref: https://en.wikipedia.org/wiki/Combining_character
 const COMBINING_MARKS = regenerate()
+  .add(0x200D) // ZERO WIDTH JOINER (U+200D)
   .addRange(0x0300, 0x036F) // Combining Diacritical Marks (0300–036F)
   .addRange(0x1AB0, 0x1AFF) // Combining Diacritical Marks Extended (1AB0–1AFF)
   .addRange(0x1DC0, 0x1DFF) // Combining Diacritical Marks Supplement (1DC0–1DFF)
