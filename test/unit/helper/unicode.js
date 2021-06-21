@@ -43,6 +43,7 @@ module.exports.tests.normalize = function (test) {
     t.equal(norm('𝄞a𝇎b'), 'ab', 'muscial symbols');
     t.equal(norm('💩a😎b'), 'ab', 'emoji');
     t.equal(norm('🙌🏿a🙌🏻b'), 'ab', 'emoji');
+    t.equal(norm('new york ❤️usa'), 'new york usa', 'dingbat + variation selector');
     t.end();
   });
 };
