@@ -41,7 +41,7 @@ jobs:
           fi
   build-docker-images:
     needs: [unit-tests, npm-publish]
-    if: ${{ needs.npm-publish.result == 'success' || needs.npm-publish.result == 'skipped' }}
+    if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
