@@ -41,7 +41,7 @@ jobs:
           fi
   build-docker-images:
     needs: [unit-tests, npm-publish]
-    if: github.event_name == 'push'
+    if: ${{ contains(needs.npm-publish.result, 'success') || (contains(needs.npm-publish.result, 'skipped')) }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
