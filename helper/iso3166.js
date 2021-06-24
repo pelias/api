@@ -315,10 +315,18 @@ function iso3Code(code) {
   }
 }
 
+function info(code) {
+  if (isISO3Code(code)) {
+    code = convertISO3ToISO2(code);
+  }
+  return _.get(byISO2, _.toUpper(code));
+}
+
 module.exports = {
   isISO2Code,
   isISO3Code,
   convertISO2ToISO3,
   convertISO3ToISO2,
-  iso3Code
+  iso3Code,
+  info
 };
