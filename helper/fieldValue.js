@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const htmlSanitize = require('./htmlSanitize');
 
 function getStringValue(property) {
   // numeric value, cast to string
@@ -41,5 +42,5 @@ function getArrayValue(property) {
   return [property];
 }
 
-module.exports.getStringValue = getStringValue;
-module.exports.getArrayValue = getArrayValue;
+module.exports.getStringValue = (property) => htmlSanitize(getStringValue(property));
+module.exports.getArrayValue = (property) => htmlSanitize(getArrayValue(property));
