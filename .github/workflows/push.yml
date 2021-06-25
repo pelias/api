@@ -21,18 +21,6 @@ jobs:
         run: |
           npm install
           npm run travis
-  build-docker-images:
-    needs: unit-tests
-    if: github.event_name == 'push'
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build Docker images
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: |
-          curl "https://raw.githubusercontent.com/pelias/ci-tools/master/build-docker-images.sh" | bash -
   npm-publish:
     needs: unit-tests
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
@@ -51,3 +39,21 @@ jobs:
           if [[ -n "$GH_TOKEN" && -n "$NPM_TOKEN" ]]; then
             curl "https://raw.githubusercontent.com/pelias/ci-tools/master/semantic-release.sh" | bash -
           fi
+  build-docker-images:
+    # run this job if the unit tests passed and the npm-publish job was a success or was skipped
+    # note: github actions won't run a job if you don't call one of the status check functions, so `always()` is called since it evalutes to `true`
+    if: ${{ always() && needs.unit-tests.result == 'success' && (needs.npm-publish.result == 'success' || needs.npm-publish.result == 'skipped') }}
+    needs: [unit-tests, npm-publish]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Dump needs context
+        env:
+          NEEDS_CONTEXT: ${{ toJSON(needs) }}
+        run: echo "$NEEDS_CONTEXT"
+      - name: Build Docker images
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          curl "https://raw.githubusercontent.com/pelias/ci-tools/master/build-docker-images.sh" | bash -
