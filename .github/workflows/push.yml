@@ -40,8 +40,8 @@ jobs:
             curl "https://raw.githubusercontent.com/pelias/ci-tools/master/semantic-release.sh" | bash -
           fi
   build-docker-images:
+    if: always()
     needs: [unit-tests, npm-publish]
-    if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
