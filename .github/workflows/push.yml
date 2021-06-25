@@ -40,6 +40,8 @@ jobs:
             curl "https://raw.githubusercontent.com/pelias/ci-tools/master/semantic-release.sh" | bash -
           fi
   build-docker-images:
+    # run this job if the unit tests passed and the npm-publish job was a success or was skipped
+    # note: github actions won't run a job if you don't call one of the status check functions, so `always()` is called since it evalutes to `true`
     if: ${{ always() && needs.unit-tests.result == 'success' && (needs.npm-publish.result == 'success' || needs.npm-publish.result == 'skipped') }}
     needs: [unit-tests, npm-publish]
     runs-on: ubuntu-20.04
