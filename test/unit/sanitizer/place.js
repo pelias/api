@@ -59,7 +59,6 @@ module.exports.tests.sanitize = function(test, common) {
     const expected_sanitizers = [
       '_single_scalar_parameters',
       '_debug',
-      '_ids',
       '_flag_bool',
       '_request_language'
     ];
