@@ -65,6 +65,12 @@ function convertToGeocodeJSON(req, res, next, opts) {
   delete res.body.geocoding.query.tokens_complete;
   delete res.body.geocoding.query.tokens_incomplete;
 
+  // remove arrays produced by negative sources and layers handling (only intended to be used internally).
+  delete res.body.geocoding.query.negative_layers;
+  delete res.body.geocoding.query.positive_layers;
+  delete res.body.geocoding.query.negative_sources;
+  delete res.body.geocoding.query.positive_sources;
+
   // OPTIONAL. Warnings and errors.
   addMessages(req, 'warnings', res.body.geocoding);
   addMessages(req, 'errors', res.body.geocoding);

@@ -127,6 +127,55 @@ module.exports.tests.invalid_sources = function(test, common) {
   });
 };
 
+module.exports.tests.negative_sources = function(test, common) {
+  test('negative source only', function(t) {
+    const raw = {
+      sources: '-geonames'
+    };
+    const clean = {};
+
+    const messages = sanitizer.sanitize(raw, clean);
+
+    const expected_sources = ['openstreetmap', 'openaddresses', 'whosonfirst'];
+
+    t.deepEqual(messages.errors, [], 'no error returned');
+    t.deepEqual(clean.sources, expected_sources, 'geonames source should be removed from clean.sources');
+    t.end();
+  });
+
+  test('positive and negative sources', function(t) {
+    const raw = {
+      sources: '-geonames,osm'
+    };
+    const clean = {};
+
+    const messages = sanitizer.sanitize(raw, clean);
+
+    const expected_sources = ['openstreetmap'];
+
+    t.deepEqual(messages.errors, [], 'no error returned');
+    t.deepEqual(clean.sources, expected_sources, 'only OSM should be present in sources');
+    t.deepEqual(clean.negative_sources, ['geonames'], 'negative_sources clean property set');
+    t.deepEqual(clean.positive_sources, ['openstreetmap'], 'negative_sources clean property set');
+    t.end();
+  });
+
+  test('positive and negative sources resulting in empty list', function(t) {
+    const raw = {
+      sources: '-geonames,osm,-osm'
+    };
+    const clean = {};
+
+    const messages = sanitizer.sanitize(raw, clean);
+
+    const expected_sources = ['openstreetmap'];
+
+    t.deepEqual(messages.errors.length, 1, 'error emitted because no sources remain after positive and negative filters');
+    t.deepEqual(clean.sources, undefined, 'sources is left undefined in case of error');
+    t.end();
+  });
+};
+
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
     return tape('SANTIZE _sources ' + name, testFunction);

@@ -24,6 +24,19 @@ module.exports.tests.sanitize_layers = function(test, common) {
     t.end();
   });
 
+  test('invalid negative layer', function(t) {
+    const raw = { layers: '-test_layer' };
+    const clean = {};
+
+    var messages = sanitizer.sanitize(raw, clean);
+
+    const msg = ' is an invalid layers parameter. Valid options: ';
+    t.equal(messages.errors.length, 1, 'errors set');
+    t.true(messages.errors[0].match(msg), 'invalid layer message emitted');
+    t.true(messages.errors[0].match('test_layer'), 'invalid layer message contains layer');
+    t.end();
+  });
+
   test('venue (alias) layer', function(t) {
     var raw = { layers: 'venue' };
     var clean = {};
@@ -122,6 +135,104 @@ module.exports.tests.sanitize_layers = function(test, common) {
     var venue_layers = [ 'venue' ];
     var expected_layers = venue_layers.concat(coarse_layers);
     t.deepEqual(clean.layers, expected_layers, 'all layers found (no duplicates)');
+    t.end();
+  });
+
+  test('positive and negative layers', function(t) {
+    var raw = { layers: 'venue,address,-venue' };
+    var clean = {};
+
+    sanitizer.sanitize(raw, clean);
+
+    var expected_layers = ['address'];
+    t.deepEqual(clean.layers, expected_layers, 'positive layers plus negative layer returns only selected positive layers');
+    t.end();
+  });
+
+  test('only negative layers', function(t) {
+    var raw = { layers: '-venue' };
+    var clean = {};
+
+    sanitizer.sanitize(raw, clean);
+
+    const expected_layers = type_mapping.getCanonicalLayers().filter(layer => layer !== 'venue').sort();
+
+    t.deepEqual(clean.layers.sort(), expected_layers, 'all layers except negative layer selected');
+    t.end();
+  });
+
+  test('only negative layers, duplicated', function(t) {
+    var raw = { layers: '-venue,-venue' };
+    var clean = {};
+
+    sanitizer.sanitize(raw, clean);
+
+    const expected_layers = type_mapping.getCanonicalLayers().filter(layer => layer !== 'venue').sort();
+
+    t.deepEqual(clean.layers.sort(), expected_layers, 'all layers except negative layer selected');
+    t.end();
+  });
+
+  test('only negative layers, with extra space character', function(t) {
+    var raw = { layers: '- venue' };
+    var clean = {};
+
+    sanitizer.sanitize(raw, clean);
+
+    const expected_layers = type_mapping.getCanonicalLayers().filter(layer => layer !== 'venue').sort();
+
+    t.deepEqual(clean.layers.sort(), expected_layers, 'all layers except negative layer selected');
+    t.end();
+  });
+
+  test('only negative layers, with extra unicode whitespace character', function(t) {
+    var raw = { layers: '-\uFEFFvenue' };
+    var clean = {};
+
+    sanitizer.sanitize(raw, clean);
+
+    const expected_layers = type_mapping.getCanonicalLayers().filter(layer => layer !== 'venue').sort();
+
+    t.deepEqual(clean.layers.sort(), expected_layers, 'all layers except negative layer selected');
+    t.end();
+  });
+
+  test('positive alias and negative layers', function(t) {
+    var raw = { layers: 'coarse,-locality' };
+    var clean = {};
+
+    sanitizer.sanitize(raw, clean);
+
+    // final list of layers should be all coarse layers, except locality
+    const expected_layers = type_mapping.layer_mapping.coarse.filter(layer => layer !== 'locality');
+
+    t.deepEqual(clean.layers, expected_layers, 'positive alias plus negative layer returns subset of alias');
+    t.deepEqual(clean.negative_layers, ['locality'], 'negative_layers value is set');
+    t.end();
+  });
+
+  test('negative alias and positive layer in that alias', function(t) {
+    var raw = { layers: '-coarse,locality' };
+    var clean = {};
+
+    const messages = sanitizer.sanitize(raw, clean);
+
+    // final list of layers should be all coarse layers, except locality
+    t.deepEqual(clean.layers, undefined , 'returns undefined, as negative layers are applied after');
+    t.equal(messages.errors.length, 1, 'error emitted: invalid combination');
+    t.end();
+  });
+
+  test('positive alias and negative layers, reverse order', function(t) {
+    var raw = { layers: '-locality,coarse' };
+    var clean = {};
+
+    sanitizer.sanitize(raw, clean);
+
+    // final list of layers should be all coarse layers, except locality
+    const expected_layers = type_mapping.layer_mapping.coarse.filter((layer) => layer !== 'locality');
+
+    t.deepEqual(clean.layers, expected_layers, 'positive alias plus negative layer returns subset of alias');
     t.end();
   });
 };
