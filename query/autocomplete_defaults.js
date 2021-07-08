@@ -154,7 +154,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'custom:boosting:score_mode': 'sum',      // sum all function scores before multiplying the boost
   'custom:boosting:boost_mode': 'multiply',  // this mode is not relevant because there is no query section
 
-  'fuzzy:fuzziness': 0,
-  'fuzzy:max_expansions': 10,
+  'fuzzy:fuzziness': 'AUTO',
+  'fuzzy:max_expansions': 100,
   'fuzzy:prefix_length': 1
 });
