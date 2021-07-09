@@ -17,7 +17,8 @@ var views = {
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
-  focus_point_filter:         require('./view/focus_point_distance_filter')
+  focus_point_filter:         require('./view/focus_point_distance_filter'),
+  boost_postcode_match: require('./view/boost_postcode_match')
 };
 
 // add abbrevations for the fields pelias/parser is able to detect.
@@ -49,6 +50,7 @@ query.score( views.admin_multi_match_first( adminFields ), 'must');
 query.score( views.admin_multi_match_last( adminFields ), 'must');
 
 // scoring boost
+query.score( views.boost_postcode_match( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );
