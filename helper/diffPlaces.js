@@ -12,8 +12,8 @@ const layerPreferences = [
   'locality',
   'country',
   'localadmin',
-  'county',
   'region',
+  'county',
   'neighbourhood',
   'macrocounty',
   'macroregion',
@@ -45,6 +45,38 @@ function isLayerDifferent(item1, item2){
  * Returns false if the objects are the same, else true.
  */
 function isParentHierarchyDifferent(item1, item2){
+
+  // get a numerical placetype 'rank' to use for comparing parent levels
+  // note: a rank of Infinity is returned if the item layer is not listed
+  // in the $placeTypes array.
+  let rank1 = getPlaceTypeRank(item1);
+  let rank2 = getPlaceTypeRank(item2);
+  const lowestRank = Math.min(rank1, rank2);
+  const highestRank = Math.max(rank1, rank2);
+
+  // define some logic about a lower bounds for deduplication
+  const regionRank = getPlaceTypeRank({ layer: 'region' });
+  const localadminRank = getPlaceTypeRank({ layer: 'localadmin' });
+
+  // only apply this logic when ranks differ
+  if (rank1 !== rank2){
+    // do not allow deduplication between things >= region & things < region
+    if(lowestRank <= regionRank) {
+      // normally here we will simply return false here to prevent deduplication.
+      // the $exception bool is used to provide a mechanism to make exceptions
+      // to this rule (for whatever reason).
+      let exception = false;
+
+      // make an exception for allowing deduplication >= region and <= localadmin
+      // eg. this allows deduping region/localadmin and region/county
+      if (lowestRank >= regionRank && highestRank <= localadminRank) {
+        exception = true;
+      }
+
+      if (!exception){ return true; }
+    }
+  }
+
   let parent1 = _.get(item1, 'parent');
   let parent2 = _.get(item2, 'parent');
 
@@ -59,12 +91,6 @@ function isParentHierarchyDifferent(item1, item2){
   // note: this really shouldn't happen as at least one parent should exist
   if( !isPojo1 || !isPojo2 ){ return false; }
 
-  // get a numerical placetype 'rank' to use for comparing parent levels
-  // note: a rank of Infinity is returned if the item layer is not listed
-  // in the $placeTypes array.
-  let rank1 = getPlaceTypeRank(item1);
-  let rank2 = getPlaceTypeRank(item2);
-
   // $maxRank defines the maximum rank level which we will consider for
   // equality matching between the two records.
   // note: by default we check all ranks
@@ -77,9 +103,7 @@ function isParentHierarchyDifferent(item1, item2){
 
   // if the records have different ranks then check ranks lower than
   // the lowest rank of the two (inclusive).
-  else {
-    maxRank = Math.min(rank1, rank2);
-  }
+  else if (rank1 !== rank2){ maxRank = lowestRank; }
 
   // iterate over all the placetypes, comparing values from the items
   return placeTypes.some((placeType, rank) => {
