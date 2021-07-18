@@ -90,6 +90,14 @@ function getIdsAtLayer(results, layer) {
   return results.filter(result => result.layer === layer).map(_.property('source_id'));
 }
 
+// returns the bounding boxes of results at the requested layer
+function getBoundingBoxesAtLayer(results, layer) {
+  return results.filter(result => result.layer === layer)
+    .map(_.property('bounding_box'))
+    .filter(Boolean)
+    .map(JSON.parse);
+}
+
 /**
   map request variables to query variables for all inputs
   provided by this HTTP request.  This function operates on res.data which is the
@@ -139,10 +147,15 @@ function generateQuery( clean, res ){
       return acc;
     }, {});
 
+    const bounding_boxes_to_layers = granularity_band.reduce((acc, layer) => {
+      acc[layer] = getBoundingBoxesAtLayer(res.data, layer);
+      return acc;
+    }, {});
+
     // use an object here instead of calling `set` since that flattens out an
     // object into key/value pairs and makes identifying layers harder in query module
-    vs.var('input:layers', layers_to_ids);
-
+    vs.var('input:layers:ids', layers_to_ids);
+    vs.var('input:layers:bounding_boxes', bounding_boxes_to_layers);
   }
 
   // focus point
