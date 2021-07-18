@@ -18,7 +18,7 @@ module.exports.tests.expected = (test, common) => {
   test('expected should contain only \'lang\'', t => {
     const expected = sanitizer.expected();
 
-    t.deepEquals(expected, [{'name': 'lang'}]);
+    t.deepEquals(expected, [{'name': 'lang'}, {'name': 'queryByLang'}]);
     t.end();
 
   });
