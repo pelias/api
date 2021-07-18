@@ -66,6 +66,7 @@ var tests = [
   require('./middleware/requestLanguage'),
   require('./query/address_search_using_ids'),
   require('./query/autocomplete'),
+  require('./query/autocomplete_fuzzy'),
   require('./query/autocomplete_token_matching_permutations'),
   require('./query/autocomplete_defaults'),
   require('./query/autocomplete_with_custom_boosts'),

@@ -10,12 +10,14 @@ const toSingleField = require('./view/helper').toSingleField;
 var views = {
   custom_boosts:              require('./view/boost_sources_and_layers'),
   ngrams_strict:              require('./view/ngrams_strict'),
+  ngrams_fuzzy:               require('./view/ngrams_fuzzy'),
   ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
   ngrams_last_token_only_multi: require('./view/ngrams_last_token_only_multi'),
   admin_multi_match_first: require('./view/admin_multi_match_first'),
   admin_multi_match_last: require('./view/admin_multi_match_last'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
+  boost_exact_matches_fuzzy:        require('./view/boost_exact_matches_fuzzy'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
   focus_point_filter:         require('./view/focus_point_distance_filter')
 };
@@ -49,6 +51,7 @@ query.score( views.admin_multi_match_first( adminFields ), 'must');
 query.score( views.admin_multi_match_last( adminFields ), 'must');
 
 // scoring boost
+query.score( views.boost_exact_matches_fuzzy );
 query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );
@@ -173,6 +176,14 @@ function generateQuery( clean ){
   // run the address parser
   if( clean.parsed_text ){
     textParser( clean, vs );
+  }
+
+  if (clean.fuzziness) {
+    vs.var('fuzzy:fuzziness', clean.fuzziness);
+
+    if (clean.max_expansions) {
+      vs.var('fuzzy:max_expansions', clean.max_expansions);
+    }
   }
 
   // set the 'add_name_to_multimatch' variable only in the case where one
