@@ -26,9 +26,5 @@ module.exports = function( vs ){
   vsCopy.var('input:name').set( tokens.join(' ') );
 
   // return the view rendered using the copy
-  return {
-    'constant_score': {
-      'filter': ngrams_strict( vsCopy )
-    }
-  };
+  return ngrams_strict( vsCopy );
 };
