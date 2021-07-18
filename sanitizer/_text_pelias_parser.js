@@ -241,5 +241,6 @@ function _expected () {
 // export function
 module.exports = () => ({
   sanitize: _sanitize,
-  expected: _expected
+  expected: _expected,
+  parser: parser
 });

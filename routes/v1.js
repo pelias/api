@@ -6,6 +6,7 @@ const { Router } = express;
 const sorting = require('pelias-sorting');
 const elasticsearch = require('elasticsearch');
 const {all, any, not} = require('predicates');
+const fs = require('fs');
 
 // imports
 const sanitizers = requireAll(path.join(__dirname, '../sanitizer'));
@@ -206,7 +207,9 @@ function addRoutes(app, peliasConfig) {
 
   var routers = {
     index: createRouter([
-      controllers.markdownToHtml(peliasConfig.api, './public/apiDoc.md')
+      controllers.markdownToHtml(peliasConfig.api, 
+        peliasConfig.api.exposeInternalDebugTools ? './public/apiDocWithDebug.md' : './public/apiDoc.md'
+        )
     ]),
     attribution: createRouter([
       controllers.markdownToHtml(peliasConfig.api, './public/attribution.md')
@@ -363,7 +366,20 @@ function addRoutes(app, peliasConfig) {
   app.get ( base + 'nearby',               routers.nearby );
 
   if (peliasConfig.api.exposeInternalDebugTools) {
-    app.use ( '/frontend',                   express.static('node_modules/pelias-compare/dist-api/'));
+    app.use ( '/frontend',                  express.static('node_modules/pelias-compare/dist-api/'));
+
+    app.locals.parser = { address: require('../sanitizer/_text_pelias_parser')().parser };
+    app.use ( '/frontend/parser/demo',     function(req,res){
+      fs.readFile('node_modules/pelias-parser/server/demo/index.html', 'utf8', function(err, data){
+         if (err) { 
+           throw err;
+         }
+          
+         res.send(data.replace('/parser/parse', '/frontend/parser/parse'));
+       });
+     });
+    
+    app.use ( '/frontend/parser/parse',              require('pelias-parser/server/routes/parse.js') );
   }
 }
 
