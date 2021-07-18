@@ -38,7 +38,7 @@ module.exports.tests.earth = function(test, common) {
 
 };
 
-module.exports.tests.all = (test, common) => {
+module.exports.tests.bounding_box = (test, common) => {
   test('bounding_box should be calculated using points when avaiable', t => {
     const input = [
       {
@@ -764,6 +764,84 @@ module.exports.tests.addendum = function(test, common) {
 
     let collection = geojsonify({}, example);
     t.false(collection.features[0].properties.addendum);
+    t.end();
+  });
+};
+
+// iso3166 country code info should be calculated when avaiable
+module.exports.tests.iso3166 = (test, common) => {
+  test('country', t => {
+    const example = [
+      {
+        _id: 'source:layer:id',
+        source: 'source',
+        layer: 'layer',
+        name: {
+          default: 'name',
+        },
+        country: ['China'],
+        country_a: ['CHN'],
+        country_id: ['85632695'],
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        }
+      }
+    ];
+
+    let collection = geojsonify({}, example);
+    t.equal(collection.features[0].properties['iso3166-1_alpha2'], 'CN');
+    t.equal(collection.features[0].properties['iso3166-1_alpha3'], 'CHN');
+    t.equal(collection.features[0].properties['iso3166-1_numeric'], 156);
+    t.end();
+  });
+
+  test('dependency', t => {
+    const example = [
+      {
+        _id: 'source:layer:id',
+        source: 'source',
+        layer: 'layer',
+        name: {
+          default: 'name',
+        },
+        dependency: ['Puerto Rico'],
+        dependency_a: ['PRI'],
+        dependency_id: ['85633729'],
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        }
+      }
+    ];
+
+    let collection = geojsonify({}, example);
+    t.equal(collection.features[0].properties['iso3166-1_alpha2'], 'PR');
+    t.equal(collection.features[0].properties['iso3166-1_alpha3'], 'PRI');
+    t.equal(collection.features[0].properties['iso3166-1_numeric'], 630);
+    t.end();
+  });
+
+  test('no-op', t => {
+    const example = [
+      {
+        _id: 'source:layer:id',
+        source: 'source',
+        layer: 'layer',
+        name: {
+          default: 'name',
+        },
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        }
+      }
+    ];
+
+    let collection = geojsonify({}, example);
+    t.false(collection.features[0].properties['iso3166-1_alpha2']);
+    t.false(collection.features[0].properties['iso3166-1_alpha3']);
+    t.false(collection.features[0].properties['iso3166-1_numeric']);
     t.end();
   });
 };

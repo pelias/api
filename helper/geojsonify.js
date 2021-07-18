@@ -7,6 +7,7 @@ const Document = require('pelias-model').Document;
 const codec = require('pelias-model').codec;
 const field = require('./fieldValue');
 const decode_gid = require('./decode_gid');
+const iso3166 = require('./iso3166');
 
 function geojsonifyPlaces( params, docs ){
 
@@ -33,6 +34,9 @@ function geojsonifyPlaces( params, docs ){
   // to insert the bbox property at the top level of each feature, it must be done separately after
   // initial geojson construction is finished
   addBBoxPerFeature(geojson);
+
+  // add properties with the ISO3166 (country code) info
+  addISO3166PropsPerFeature(geojson);
 
   // bounding box calculations
   computeBBox(geojson, geojsonExtentPoints);
@@ -161,6 +165,25 @@ function computeBBox(geojson, geojsonExtentPoints) {
     logger.error( 'bbox error', e.message, e.stack );
     logger.error( 'geojson', geojsonExtentPoints );
   }
+}
+
+/**
+ * Add ISO3166-1 (country code) properties
+ *
+ * @param {object} geojson
+ */
+function addISO3166PropsPerFeature(geojson) {
+  geojson.features.forEach(feature => {
+    let code = _.get(feature, 'properties.country_a') || _.get(feature, 'properties.dependency_a') || '';
+    if (!code.length){ return; }
+
+    let info = iso3166.info(code);
+    if (_.isEmpty(info)) { return; }
+
+    _.set(feature, 'properties.iso3166-1_alpha2', info.alpha2);
+    _.set(feature, 'properties.iso3166-1_alpha3', info.alpha3);
+    _.set(feature, 'properties.iso3166-1_numeric', parseInt(info.numeric, 10));
+  });
 }
 
 module.exports = geojsonifyPlaces;
