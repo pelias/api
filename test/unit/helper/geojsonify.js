@@ -768,6 +768,49 @@ module.exports.tests.addendum = function(test, common) {
   });
 };
 
+// strip HTML entities from the response
+module.exports.tests.sanitizeHTML = function (test, common) {
+  test('sanitize HTML', function (t) {
+    var aliases = [{
+      '_id': '<em>example</em>:<p>example</p>:1',
+      'source': '<em>example</em>',
+      'layer': '<p>example</p>',
+      'name': {
+        'default': 'Example <script src="evil.js" /> Place'
+      },
+      'center_point': {
+        'lon': 0,
+        'lat': 0
+      }
+    }];
+
+    const expected = {
+      type: 'FeatureCollection',
+      features: [{
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [0, 0]
+        },
+        properties: {
+          id: '1',
+          gid: 'example:example:1',
+          layer: 'example',
+          source: 'example',
+          source_id: '1',
+          name: 'Example Place'
+        }
+      }],
+      bbox: [0, 0, 0, 0]
+    };
+
+    var actual = geojsonify({}, aliases);
+    t.deepEquals(actual, expected);
+    t.end();
+  });
+
+};
+
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
     return tape(`geojsonify: ${name}`, testFunction);
