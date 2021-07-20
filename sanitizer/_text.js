@@ -17,6 +17,13 @@ function _sanitize( raw, clean ){
   // remove superfluous whitespace and quotes
   text = _.trim(_.trim(raw.text), QUOTES);
 
+  // one or more characters have been removed from the end of the text
+  // add an artificial space to preserve the word boundary
+  // see: https://github.com/pelias/api/issues/1544
+  if (!_.isEmpty(text) && !_.toString(raw.text).endsWith(text)) {
+    text += ' ';
+  }
+
   // validate input 'text'
   if( !_.isString(text) || _.isEmpty(text) ){
     messages.errors.push(`invalid param 'text': text length, must be >0`);
