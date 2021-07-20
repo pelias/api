@@ -51,7 +51,7 @@ module.exports.tests.text_parser = function(test, common) {
     var raw = { text: ` test \n ` };
     const messages = sanitizer.sanitize(raw, clean);
 
-    t.equals(clean.text, 'test');
+    t.equals(clean.text, 'test ');
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
 
@@ -63,7 +63,7 @@ module.exports.tests.text_parser = function(test, common) {
     var raw = { text: ` "test" \n ` };
     const messages = sanitizer.sanitize(raw, clean);
 
-    t.equals(clean.text, 'test');
+    t.equals(clean.text, 'test ');
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
 
@@ -75,7 +75,7 @@ module.exports.tests.text_parser = function(test, common) {
     var raw = { text: ` 'test' \n ` };
     const messages = sanitizer.sanitize(raw, clean);
 
-    t.equals(clean.text, 'test');
+    t.equals(clean.text, 'test ');
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
 
@@ -87,7 +87,7 @@ module.exports.tests.text_parser = function(test, common) {
     var raw = { text: ` „test“ \n ` };
     const messages = sanitizer.sanitize(raw, clean);
 
-    t.equals(clean.text, 'test');
+    t.equals(clean.text, 'test ');
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
 
@@ -99,7 +99,7 @@ module.exports.tests.text_parser = function(test, common) {
     var raw = { text: ` »test« \n ` };
     const messages = sanitizer.sanitize(raw, clean);
 
-    t.equals(clean.text, 'test');
+    t.equals(clean.text, 'test ');
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
 
@@ -111,7 +111,7 @@ module.exports.tests.text_parser = function(test, common) {
     var raw = { text: ` ﹁「test」﹂ \n ` };
     const messages = sanitizer.sanitize(raw, clean);
 
-    t.equals(clean.text, 'test');
+    t.equals(clean.text, 'test ');
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [], 'no warnings');
 
@@ -142,9 +142,9 @@ module.exports.tests.text_parser = function(test, common) {
   test('should truncate very long text inputs', (t) => {
     const raw = { text: `
 Sometimes we make the process more complicated than we need to.
-We will never make a journey of a thousand miles by fretting about 
+We will never make a journey of a thousand miles by fretting about
 how long it will take or how hard it will be.
-We make the journey by taking each day step by step and then repeating 
+We make the journey by taking each day step by step and then repeating
 it again and again until we reach our destination.` };
     const clean = {};
     const messages = sanitizer.sanitize(raw, clean);
