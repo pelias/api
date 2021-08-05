@@ -71,6 +71,13 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 5
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - sleep 30
         resources:
           limits:
             cpu: {{ .Values.secondaryImage.resources.cpuLimit }}
@@ -89,7 +96,7 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 60
       volumes:
       - name: {{ .Values.secretMount.name }}
         secret:
