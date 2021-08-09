@@ -10,10 +10,17 @@ const server = app.listen( port, host, () => {
   console.log( `pelias is now running on ${listenAddress.address}:${listenAddress.port}` );
 });
 
-function exitHandler() {
-  logger.info('Pelias API shutting down');
+function exitHandler(signal) {
+  logger.info(`Received ${signal}. Starting graceful shutdown.`);
 
-  server.close();
+  server.close((err) => {
+    if (err) {
+      logger.error(err);
+      process.exit(1);
+    }
+    logger.info('Graceful shutdown complete. Exiting.');
+    process.exit(0);
+  });
 }
 
 process.on('SIGINT', exitHandler);
