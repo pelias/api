@@ -79,7 +79,7 @@ spec:
               command:
               - /bin/sh
               - -c
-              - sleep 60
+              - sleep 30
         resources:
           limits:
             cpu: {{ .Values.secondaryImage.resources.cpuLimit }}
@@ -98,7 +98,7 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
-      terminationGracePeriodSeconds: 90
+      terminationGracePeriodSeconds: 45
       volumes:
       - name: {{ .Values.secretMount.name }}
         secret:
