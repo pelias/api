@@ -59,6 +59,14 @@ function isParentHierarchyDifferent(item1, item2){
   // note: this really shouldn't happen as at least one parent should exist
   if( !isPojo1 || !isPojo2 ){ return false; }
 
+  // special handling of postal codes, which we consider to be strictly
+  // unique within a single country/dependency regardless of the rest of
+  // the hierarchy (ie. we ignore other parent properties)
+  if( item1.layer === 'postalcode' && item2.layer === 'postalcode' ) {
+    parent1 = _.pick(parent1, ['country_id', 'dependency_id']);
+    parent2 = _.pick(parent2, ['country_id', 'dependency_id']);
+  }
+
   // get a numerical placetype 'rank' to use for comparing parent levels
   // note: a rank of Infinity is returned if the item layer is not listed
   // in the $placeTypes array.
@@ -88,7 +96,7 @@ function isParentHierarchyDifferent(item1, item2){
     if (rank > maxRank){ return false; }
 
     // ensure the parent ids are the same for all placetypes
-    return isPropertyDifferent( item1.parent, item2.parent, `${placeType}_id` );
+    return isPropertyDifferent( parent1, parent2, `${placeType}_id` );
   });
 }
 
@@ -215,9 +223,9 @@ function isPropertyDifferent(item1, item2, prop ){
  * ...
  * 11: locality
  * 13: neighbourhood
- * 
+ *
  * note: Infinity is returned if layer not found in array, this is in
- * order to ensure that a high value is returned rather than the 
+ * order to ensure that a high value is returned rather than the
  * default '-1' value returned for misses when using findIndex().
  */
 function getPlaceTypeRank(item) {
@@ -226,7 +234,7 @@ function getPlaceTypeRank(item) {
 }
 
 /**
- * apply unicode normalization, lowercase characters and remove 
+ * apply unicode normalization, lowercase characters and remove
  * diacritics and some punctuation.
  */
 function normalizeString(str){

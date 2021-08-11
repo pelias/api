@@ -127,6 +127,130 @@ module.exports.tests.dedupe = function(test, common) {
     t.end();
   });
 
+  // postalcodes with same name and country_a but differing hierarchies should be considered same
+  test('isParentHierarchyDifferent: postalcodes with same country_a', function(t) {
+    var item1 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '456',
+        'postalcode_id': '12345',
+        'country_id': '555',
+        'country_a': 'USA'
+      }
+    };
+    var item2 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '789',
+        'postalcode_id': '67890',
+        'country_id': '555',
+        'country_a': 'USA'
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should not be considered different');
+    t.end();
+  });
+
+  // postalcodes with same name and dependency_a but differing hierarchies should be considered same
+  test('isParentHierarchyDifferent: postalcodes with same dependency_a', function(t) {
+    var item1 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '456',
+        'postalcode_id': '12345',
+        'dependency_id': '555',
+        'dependency_a': 'PRI'
+      }
+    };
+    var item2 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '789',
+        'postalcode_id': '67890',
+        'dependency_id': '555',
+        'dependency_a': 'PRI'
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should not be considered different');
+    t.end();
+  });
+
+  // postalcodes with same name but differing country_a should still be considered different
+  test('isParentHierarchyDifferent: postalcodes with same name, different country_a', function(t) {
+    var item1 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '456',
+        'postalcode_id': '12345',
+        'country_id': '555',
+        'country_a': 'USA'
+      }
+    };
+    var item2 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '789',
+        'postalcode_id': '67890',
+        'country_id': '444',
+        'country_a': 'NZL'
+      }
+    };
+
+    t.true(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
+  // postalcodes with differing name but same country_a should still be considered different
+  test('isParentHierarchyDifferent: postalcodes with different name, same country_a', function(t) {
+    var item1 = {
+      name: {
+        default: '10010'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '456',
+        'postalcode_id': '12345',
+        'country_id': '555',
+        'country_a': 'USA'
+      }
+    };
+    var item2 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '789',
+        'postalcode_id': '67890',
+        'country_id': '555',
+        'country_a': 'USA'
+      }
+    };
+
+    t.true(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
   test('catch diff name', function(t) {
     var item1 = {
       'name': {
