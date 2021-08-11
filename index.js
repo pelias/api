@@ -7,7 +7,7 @@ const port = ( process.env.PORT || 3100 );
 const host = ( process.env.HOST || undefined );
 
 function onSignal () {
-  console.log('server is starting cleanup');
+  logger.info('server is starting cleanup');
   return Promise.all([
     // your clean logic, like closing database connections
   ]);
@@ -23,7 +23,7 @@ function beforeShutdown () {
 }
 
 function onShutdown () {
-  console.log('cleanup finished, server is shutting down');
+  logger.info('cleanup finished, server is shutting down');
 }
 
 function healthCheck ({ state }) {
@@ -40,8 +40,6 @@ const options = {
   // health check options
   healthChecks: {
     '/healthcheck': healthCheck,    // a function accepting a state and returning a promise indicating service health,
-    verbatim: true,                 // [optional = false] use object returned from /healthcheck verbatim in response,
-    __unsafeExposeStackTraces: true // [optional = false] return stack traces in error response if healthchecks throw errors
   },
 
   // cleanup options
@@ -58,6 +56,6 @@ createTerminus(server, options);
 server.listen( port, host, () => {
   // ask server for the actual address and port its listening on
   const listenAddress = server.address();
-  console.log( `pelias is now running on ${listenAddress.address}:${listenAddress.port}` );
+  logger.info( `pelias is now running on ${listenAddress.address}:${listenAddress.port}` );
 });
 
