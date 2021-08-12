@@ -19,6 +19,7 @@ module.exports = {
               'parent.dependency.ngram^1',
               'parent.macroregion.ngram^1',
               'parent.region.ngram^1',
+              'parent.macrocounty.ngram^1',
               'parent.county.ngram^1',
               'parent.localadmin.ngram^1',
               'parent.locality.ngram^1',
