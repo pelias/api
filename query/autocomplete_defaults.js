@@ -106,6 +106,11 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'admin:county:boost': 1,
   'admin:county:cutoff_frequency': 0.01,
 
+  'admin:macrocounty:analyzer': 'peliasAdmin',
+  'admin:macrocounty:field': 'parent.macrocounty.ngram',
+  'admin:macrocounty:boost': 1,
+  'admin:macrocounty:cutoff_frequency': 0.01,
+
   'admin:localadmin:analyzer': 'peliasAdmin',
   'admin:localadmin:field': 'parent.localadmin.ngram',
   'admin:localadmin:boost': 1,
