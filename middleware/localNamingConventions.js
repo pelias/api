@@ -37,7 +37,15 @@ var flipNumberAndStreetCountries = [
   'MDA' /* Moldova */,
   'COL' /* Colombia */,
   'HUN' /* Hungary */,
-  'UKR' /* Ukraine */
+  'UKR' /* Ukraine */,
+  'RUS' /* Russia */,
+  'UZB' /* Uzbekistan */,
+  'TJK' /* Tajikistan */,
+  'BLR' /* Belarus */,
+  'AZE' /* Azerbaijan */,
+  'GEO' /* Georgia */,
+  'KGZ' /* Kyrgyzstan */,
+  'KAZ' /* Kazakhstan */,
 ];
 
 function setup() {
