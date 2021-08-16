@@ -152,7 +152,7 @@ function setup( peliasConfig, esclient, query, should_execute ){
         }
         logger.debug('[ES response]', docs);
         if (req.clean.enableElasticDebug) {
-          debugLog.push(req, {ES_response: {docs, meta, data}});
+          debugLog.push(req, { ES_response: _.cloneDeep({ docs, meta, data }) });
         }
         next();
       });
