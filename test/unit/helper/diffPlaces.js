@@ -529,6 +529,56 @@ module.exports.tests.isNameDifferent = function (test, common) {
 
     t.end();
   });
+  test('parent hierarchy (same layer) matching', function (t) {
+    t.false(isNameDifferent(
+      { name: { default: 'a' } },
+      { name: { default: 'b' }, layer: 'place', parent: { 'place': 'a' } }
+    ), 'match parent name');
+
+    t.true(isNameDifferent(
+      { name: { default: 'a' } },
+      { name: { default: 'b' }, layer: 'place', parent: { 'foo': 'a' } }
+    ), 'parent name must be from same layer');
+
+    t.false(isNameDifferent(
+      { name: { default: 'c', de: 'a' } },
+      { name: { default: 'b' }, layer: 'place', parent: { 'place': 'a' } },
+      'de'
+    ), 'match parent name (request language)');
+
+    t.true(isNameDifferent(
+      { name: { default: 'c', de: 'a' } },
+      { name: { default: 'b' }, layer: 'place', parent: { 'foo': 'a' } },
+      'de'
+    ), 'parent name must be from same layer (request language)');
+
+    t.end();
+  });
+  test('parent hierarchy (same layer) matching - inverse plus using array syntax', function (t) {
+    t.false(isNameDifferent(
+      { name: { default: ['b'] }, layer: 'place', parent: { 'place': ['a'] } },
+      { name: { default: ['a'] } }
+    ), 'match parent name');
+
+    t.true(isNameDifferent(
+      { name: { default: ['b'] }, layer: 'place', parent: { 'foo': ['a'] } },
+      { name: { default: ['a'] } }
+    ), 'parent name must be from same layer');
+
+    t.false(isNameDifferent(
+      { name: { default: ['b'] }, layer: 'place', parent: { 'place': ['a'] } },
+      { name: { default: ['c'], de: ['a'] } },
+      'de'
+    ), 'match parent name (request language)');
+
+    t.true(isNameDifferent(
+      { name: { default: ['b'] }, layer: 'place', parent: { 'foo': ['a'] } },
+      { name: { default: ['c'], de: ['a'] } },
+      'de'
+    ), 'parent name must be from same layer (request language)');
+
+    t.end();
+  });
   test('real-world tests', function (t) {
     t.false(isNameDifferent(
       { name: { default: 'Malmoe', eng: 'Malmo' } },

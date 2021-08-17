@@ -124,15 +124,35 @@ function isNameDifferent(item1, item2, requestLanguage){
   // iterate over all the languages in item2, comparing them to the
   // 'default' name of item1 and also against the language requested by the user.
   for( let lang in names2 ){
+    if (!names2.hasOwnProperty(lang)) { continue; } // do not iterate over inherited properties
     if( !isPropertyDifferent({[lang]: names1.default}, names2, lang) ){ return false; }
     if( requestLanguage && !isPropertyDifferent({[lang]: names1[requestLanguage]}, names2, lang) ){ return false; }
   }
 
-  // iterate over all the languages in item1, comparing them to the
-  // 'default' name of item2 and also against the language requested by the user.
+  // as above, but inverse
   for( let lang in names1 ){
+    if (!names1.hasOwnProperty(lang)) { continue; } // do not iterate over inherited properties
     if( !isPropertyDifferent({[lang]: names2.default}, names1, lang) ){ return false; }
     if( requestLanguage && !isPropertyDifferent({[lang]: names2[requestLanguage]}, names1, lang) ){ return false; }
+  }
+
+  // iterate over the parent field values from the same layer as item2 itself and compare them to
+  // the 'default' name of item1 and also against the language requested by the user.
+  // note: this is helpful when the item 'source' is different from the parent 'source'
+  // at the same level in the hierarchy and the labels assigned differ.
+  let layer2 = _.get(item2, 'layer');
+  let parent2 = _.get(item2, 'parent');
+  for (let name of _.castArray(_.get(parent2, layer2, []))) {
+    if (!isPropertyDifferent({ default: name }, names1, 'default')) { return false; }
+    if (requestLanguage && !isPropertyDifferent({ [requestLanguage]: name }, names1, requestLanguage)) { return false; }
+  }
+
+  // as above, but inverse
+  let layer1 = _.get(item1, 'layer');
+  let parent1 = _.get(item1, 'parent');
+  for (let name of _.castArray(_.get(parent1, layer1, []))) {
+    if (!isPropertyDifferent({ default: name }, names2, 'default')) { return false; }
+    if (requestLanguage && !isPropertyDifferent({ [requestLanguage]: name }, names2, requestLanguage)) { return false; }
   }
 
   return true;
