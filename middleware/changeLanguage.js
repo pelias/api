@@ -80,10 +80,10 @@ function updateDocs( req, res, translations ){
       var match = attr.match(/^(.*)_id$/);
       if( !match ){ continue; }
 
-      // adminKey is the property name without the '_id'
-      // eg. for 'country_id', adminKey would be 'country'.
-      var adminKey = match[1];
-      var adminValues = doc.parent[adminKey];
+      // adminLayer is the property name without the '_id'
+      // eg. for 'country_id', adminLayer would be 'country'.
+      var adminLayer = match[1];
+      var adminValues = _.get(doc.parent, adminLayer);
 
       // skip invalid/empty arrays
       if( !Array.isArray( adminValues ) || !adminValues.length ){ continue; }
@@ -92,29 +92,39 @@ function updateDocs( req, res, translations ){
       for( var i in adminValues ){
 
         // find the corresponding key from the '_id' Array
-        var id = doc.parent[attr][i];
-        if( !id ){ continue; }
+        let adminID = _.get(doc.parent[attr], i);
+        if (!adminID) { continue; }
 
-        // id not found in translation service response
-        if( !_.has(translations, id)){
-          logger.debug( `[language] [debug] failed to find translations for ${id}` );
+        // find the corresponding key from the '_source' Array
+        // dataset the parent property was sourced from, else 'whosonfirst'.
+        // the language service *at time of writing* only returns translations
+        // from whosonfirst, so we skip translating fields from other sources.
+        // see: https://github.com/pelias/schema/pull/459
+        // see: https://github.com/pelias/model/pull/128
+        let adminSource = _.get(doc.parent, `${match}_source[${i}]`, 'whosonfirst');
+        if (adminSource !== 'whosonfirst') { continue; }
+
+        // adminID not found in translation service response
+        if( !_.has(translations, adminID)){
+          logger.debug( `[language] [debug] failed to find translations for ${adminID}` );
           continue;
         }
 
         // requested language is not available
-        if (_.isEmpty(_.get(translations[id].names, requestLanguage, [] ))) {
-          logger.debug( `[language] [debug] missing translation ${requestLanguage} ${id}` );
+        if (_.isEmpty(_.get(translations[adminID].names, requestLanguage, [] ))) {
+          logger.debug( `[language] [debug] missing translation ${requestLanguage} ${adminID}` );
           continue;
         }
 
         // translate 'parent.*' property
-        adminValues[i] = translations[id].names[ requestLanguage ][0];
+        adminValues[i] = translations[adminID].names[ requestLanguage ][0];
 
-        // if the record is an admin record we also translate
-        // the 'name.default' property.
-        if( adminKey === doc.layer ){
-          doc.name.default = translations[id].names[ requestLanguage ][0];
-        }
+        // if the record is an admin record we also translate the 'name.default' property.
+        // note: ensure the records have the same 'layer' 'source' and 'source_id'.
+        if (adminLayer !== doc.layer){ continue; }
+        if (adminSource !== doc.source){ continue; }
+        if (_.toString(adminID) !== _.toString(doc.source_id)){ continue; }
+        doc.name.default = translations[adminID].names[requestLanguage][0];
       }
     }
   });
