@@ -7,10 +7,9 @@ rollingUpdate:
   maxUnavailable: 0
 
 resources:
-  cpuLimit: 800m
-  memLimit: 750Mi
-  cpuRequest: 200m
-  memRequest: 500Mi
+  memLimit: 100Mi
+  cpuRequest: 300m
+  memRequest: 100m
 
 image:
   identifier: ${artifact.metadata.image}
@@ -20,10 +19,9 @@ secondaryImage:
   imagePullPolicy: Always
   containerPort: 9200
   resources:
-    cpuLimit: '2'
-    memLimit: 1500Mi
-    cpuRequest: 600m
-    memRequest: 1000Mi
+    memLimit: 1600Mi
+    cpuRequest: 500m
+    memRequest: 1600Mi
 secretMount:
   name: pelias-key
   mountPath: /etc/pelias/credentials.json

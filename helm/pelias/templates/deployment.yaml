@@ -30,7 +30,6 @@ spec:
            value: Europe/Oslo
         resources:
           limits:
-            cpu: {{ .Values.resources.cpuLimit }}
             memory: {{ .Values.resources.memLimit }}
           requests:
             cpu: {{ .Values.resources.cpuRequest }}
@@ -82,7 +81,6 @@ spec:
               - sleep 30
         resources:
           limits:
-            cpu: {{ .Values.secondaryImage.resources.cpuLimit }}
             memory: {{ .Values.secondaryImage.resources.memLimit }}
           requests:
             cpu: {{ .Values.secondaryImage.resources.cpuRequest }}
