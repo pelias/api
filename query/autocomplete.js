@@ -17,7 +17,8 @@ var views = {
   admin_multi_match_last: require('./view/admin_multi_match_last'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
   boost_exact_matches:        require('./view/boost_exact_matches'),
-  boost_exact_matches_fuzzy:        require('./view/boost_exact_matches_fuzzy'),
+  boost_exact_match_first_tokens_only:        require('./view/boost_exact_match_first_tokens_only'),
+  boost_exact_match_last_tokens_only:        require('./view/boost_exact_match_last_tokens_only'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
   focus_point_filter:         require('./view/focus_point_distance_filter')
 };
@@ -51,7 +52,8 @@ query.score( views.admin_multi_match_first( adminFields ), 'must');
 query.score( views.admin_multi_match_last( adminFields ), 'must');
 
 // scoring boost
-query.score( views.boost_exact_matches_fuzzy );
+query.score( views.boost_exact_match_first_tokens_only );
+query.score( views.boost_exact_match_last_tokens_only );
 query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );
