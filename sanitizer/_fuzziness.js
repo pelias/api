@@ -2,6 +2,7 @@ const _ = require('lodash');
 
 function _sanitize( raw, clean ){
     const IS_NUMERIC_REGEXP = /^\d+$/;
+    const IS_AUTO_REGEXP = /^AUTO(:\d+,\d+)?$/;
 
     // error & warning messages
     var messages = { errors: [], warnings: [] };
@@ -11,7 +12,7 @@ function _sanitize( raw, clean ){
     }
 
     if (_.has(raw, 'fuzziness')) {
-        if (raw.fuzziness === 'AUTO') {
+        if (IS_AUTO_REGEXP.test(raw.fuzziness)) {
             clean.fuzziness = raw.fuzziness;
         } else if (IS_NUMERIC_REGEXP.test(raw.fuzziness) && parseInt(raw.fuzziness) > 0 && parseInt(raw.fuzziness) <= 2) {
             clean.fuzziness = parseInt(raw.fuzziness);
