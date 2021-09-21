@@ -9,7 +9,7 @@ const field = require('../helper/fieldValue');
 const formatLog = (hit) => {
   const name = field.getStringValue(_.get(hit, 'name.default'));
   const zip = field.getStringValue(_.get(hit, 'address_parts.zip'));
-  return [name, zip, hit.id].join(' ');
+  return [name, zip, hit._id].join(' ');
 };
 
 /**
