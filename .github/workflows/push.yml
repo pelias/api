@@ -24,13 +24,13 @@ jobs:
   npm-publish:
     needs: unit-tests
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: Install node.js 12.x
+      - name: Install Node.js
         uses: actions/setup-node@v2-beta
         with:
-          node-version: 12.x
+          node-version: 16.x
       - name: Run semantic-release
         env:
           GH_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
