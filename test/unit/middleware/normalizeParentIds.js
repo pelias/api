@@ -78,6 +78,95 @@ module.exports.tests.interface = function(test, common) {
 
   });
 
+  test('default source should be whosonfirst', function(t) {
+
+    var input = {
+      data: [{
+        'parent': {
+          'country': ['United States'], // these shouldn't change
+          'country_id': ['85633793'],
+          'country_a': ['USA']
+        },
+        'country': ['United States'],
+        'country_gid': ['85633793'],
+        'country_source': [ null ],
+        'country_a': ['USA'],
+        'macroregion': ['MacroRegion Name'],
+        'macroregion_gid': ['foobar'],
+        'macroregion_a': ['MacroRegion Abbreviation'],
+        'macroregion_source': [ undefined ],
+        'region': ['New York'],
+        'region_gid': ['85688543'],
+        'region_a': ['NY'],
+        'region_source': null,
+        'macrocounty': ['MacroCounty Name'],
+        'macrocounty_gid': ['~~~~~'],
+        'macrocounty_a': ['MacroCounty Abbreviation'],
+        'macrocounty_source': undefined,
+        'county': ['Kings County'],
+        'county_gid': ['102082361'],
+        'county_a': [null],
+        'county_source': ['whosonfirst'],
+        'localadmin': ['Brooklyn'],
+        'localadmin_gid': ['404521211'],
+        'localadmin_a': [null],
+        'localadmin_source': ['whosonfirst', '~~~~~'],
+        'locality': ['Some Locality'],
+        'locality_gid': ['85977539'],
+        'locality_a': [null],
+        'locality_source': [],
+        'neighbourhood': [],
+        'neighbourhood_gid': []
+      }]
+    };
+
+    var expected = {
+      data: [{
+        'parent': {
+          'country': ['United States'],
+          'country_id': ['85633793'],
+          'country_a': ['USA']
+        },
+        'country': ['United States'],
+        'country_gid': ['whosonfirst:country:85633793'],
+        'country_a': ['USA'],
+        'country_source': [ null ],
+        'macroregion': ['MacroRegion Name'],
+        'macroregion_gid': ['whosonfirst:macroregion:foobar'],
+        'macroregion_a': ['MacroRegion Abbreviation'],
+        'macroregion_source': [ undefined ],
+        'region': ['New York'],
+        'region_gid': ['whosonfirst:region:85688543'],
+        'region_a': ['NY'],
+        'region_source': null,
+        'macrocounty': ['MacroCounty Name'],
+        'macrocounty_gid': ['whosonfirst:macrocounty:~~~~~'],
+        'macrocounty_a': ['MacroCounty Abbreviation'],
+        'macrocounty_source': undefined,
+        'county': ['Kings County'],
+        'county_gid': ['whosonfirst:county:102082361'],
+        'county_a': [null],
+        'county_source': ['whosonfirst'],
+        'localadmin': ['Brooklyn'],
+        'localadmin_gid': ['whosonfirst:localadmin:404521211'],
+        'localadmin_a': [null],
+        'localadmin_source': ['whosonfirst', '~~~~~'],
+        'locality': ['Some Locality'],
+        'locality_gid': ['whosonfirst:locality:85977539'],
+        'locality_a': [null],
+        'locality_source': [],
+        'neighbourhood': [],
+        'neighbourhood_gid': []
+      }]
+    };
+
+    normalizer({}, input, function () {
+      t.deepEqual(input, expected);
+      t.end();
+    });
+
+  });
+
   test('Geonames ids do not override parent hierarchy with WOF equivalents', function(t) {
 
     var input = {

@@ -3,8 +3,12 @@ const peliasQuery = require('pelias-query');
 const allLayers = require('../../helper/type_mapping').layers;
 
 /**
-  Layer terms filter view which counts the length of 'input:name' and only
-  applies the filter condition if the text is shorter than or equal to $maxCharCount.
+  This 'filter' does not actually create a new filter query, but it modifies the 'layers' query variable
+  so that the default 'layers' filter will be changed.
+
+  It does this if the length of'input:name'is shorter than or equal to $maxCharCount.
+
+  In that case, the provided list of excluded layers is removed from the `layers` query variable.
 
   You must provide a list of $excludedLayers, all layers listed in the type mapping
   will be targeted, minus any listed in $excludedLayers.
@@ -33,8 +37,7 @@ module.exports = function( excludedLayers, maxCharCount ) {
     return () => null;
   }
 
-  // create a new VariableStore with only the layers property
-  var vsWithOnlyIncludedLayers = new peliasQuery.Vars({ 'layers': includedLayers });
+  // remove the excludedLayers from the `layers` variable
 
   // ensure char count is within a reasonable range
   maxCharCount = _.clamp(maxCharCount, MIN_CHAR_COUNT, MAX_CHAR_COUNT);
@@ -52,7 +55,12 @@ module.exports = function( excludedLayers, maxCharCount ) {
       return null;
     }
 
-    // use existing 'layers' query
-    return peliasQuery.view.layers(vsWithOnlyIncludedLayers);
+    // update layers var to not include excludedLayers
+    const old_layers = vs.var('layers').get() || allLayers;
+    const new_layers = old_layers.filter(layer => !excludedLayers.includes(layer));
+    vs.var('layers', new_layers);
+
+    // this 'view' doesn't render anything, it merely mutates the `layers` variable
+    return null;
   };
 };

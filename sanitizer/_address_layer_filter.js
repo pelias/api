@@ -33,8 +33,8 @@ function _setup(tm) {
       // error & warning messages
       let messages = { errors: [], warnings: [] };
 
-      // no nothing if user has explicitely specified layers in the request
-      if (_.isArray(clean.layers) && !_.isEmpty(clean.layers)) {
+      // do nothing if user has explicitly specified positive layers in the request
+      if ( _.isArray(clean.positive_layers) && !_.isEmpty(clean.positive_layers) ) {
         return messages;
       }
 
@@ -42,7 +42,7 @@ function _setup(tm) {
       // note: this should already have superfluous characters removed
       let input = clean.text;
 
-      // no nothing if no input text specified in the request
+      // do nothing if no input text specified in the request
       if (!nonEmptyString(input)) {
         return messages;
       }
@@ -86,9 +86,15 @@ function _setup(tm) {
       // then it is safe to apply the layer filter
       if (totalWords < 2 || !hasNumeral) {
 
-        // handle the common case where neither source nor layers were specified
+        // handle the common case where neither sources nor (positive) layers were specified
         if (!_.isArray(clean.sources) || _.isEmpty(clean.sources)) {
-          clean.layers = tm.layers.filter(item => item !== 'address'); // exclude 'address'
+          // if there are no layers already set, start with the list of all of them
+          if (_.isEmpty(clean.layers)) {
+            clean.layers = tm.layers;
+          }
+
+          // filter the existing list of layers so it excludes 'address'
+          clean.layers = clean.layers.filter(item => item !== 'address');
           messages.warnings.push(ADDRESS_FILTER_WARNING);
         }
 

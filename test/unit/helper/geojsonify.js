@@ -38,7 +38,7 @@ module.exports.tests.earth = function(test, common) {
 
 };
 
-module.exports.tests.all = (test, common) => {
+module.exports.tests.bounding_box = (test, common) => {
   test('bounding_box should be calculated using points when avaiable', t => {
     const input = [
       {
@@ -98,6 +98,7 @@ module.exports.tests.all = (test, common) => {
           properties: {
             id: 'id 1',
             gid: 'source 1:layer 1:id 1',
+            country_code: undefined,
             layer: 'layer 1',
             source: 'source 1',
             source_id: 'id 1',
@@ -115,6 +116,7 @@ module.exports.tests.all = (test, common) => {
           properties: {
             id: 'id 2',
             gid: 'source 2:layer 2:id 2',
+            country_code: undefined,
             layer: 'layer 2',
             source: 'source 2',
             source_id: 'id 2',
@@ -203,6 +205,7 @@ module.exports.tests.all = (test, common) => {
           properties: {
             id: 'id 1',
             gid: 'source 1:layer 1:id 1',
+            country_code: undefined,
             layer: 'layer 1',
             source: 'source 1',
             source_id: 'id 1',
@@ -221,6 +224,7 @@ module.exports.tests.all = (test, common) => {
           properties: {
             id: 'id 2',
             gid: 'source 2:layer 2:id 2',
+            country_code: undefined,
             layer: 'layer 2',
             source: 'source 2',
             source_id: 'id 2',
@@ -305,6 +309,7 @@ module.exports.tests.all = (test, common) => {
           properties: {
             id: 'id 1',
             gid: 'source 1:layer 1:id 1',
+            country_code: undefined,
             layer: 'layer 1',
             source: 'source 1',
             source_id: 'id 1',
@@ -322,6 +327,7 @@ module.exports.tests.all = (test, common) => {
           properties: {
             id: 'id 2',
             gid: 'source 2:layer 2:id 2',
+            country_code: undefined,
             layer: 'layer 2',
             source: 'source 2',
             source_id: 'id 2',
@@ -389,6 +395,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
           properties: {
             id: 'id 1',
             gid: 'source 1:layer 1:id 1',
+            country_code: undefined,
             layer: 'layer 1',
             source: 'source 1',
             source_id: 'id 1',
@@ -459,6 +466,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
           properties: {
             id: 'id 2',
             gid: 'source 2:layer 2:id 2',
+            country_code: undefined,
             layer: 'layer 2',
             source: 'source 2',
             source_id: 'id 2',
@@ -551,6 +559,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
           properties: {
             id: 'id 1',
             gid: 'source 1:layer 1:id 1',
+            country_code: undefined,
             layer: 'layer 1',
             source: 'source 1',
             source_id: 'id 1',
@@ -567,6 +576,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
           properties: {
             id: 'id 2',
             gid: 'source 2:layer 2:id 2',
+            country_code: undefined,
             layer: 'layer 2',
             source: 'source 2',
             source_id: 'id 2',
@@ -583,6 +593,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
           properties: {
             id: 'id 3',
             gid: 'source 3:layer 3:id 3',
+            country_code: undefined,
             layer: 'layer 3',
             source: 'source 3',
             source_id: 'id 3',
@@ -656,6 +667,7 @@ module.exports.tests.nameAliases = function(test, common) {
         properties: {
           id: '1',
           gid: 'example:example:1',
+          country_code: undefined,
           layer: 'example',
           source: 'example',
           source_id: '1',
@@ -764,6 +776,78 @@ module.exports.tests.addendum = function(test, common) {
 
     let collection = geojsonify({}, example);
     t.false(collection.features[0].properties.addendum);
+    t.end();
+  });
+};
+
+// iso3166 country code info should be calculated when avaiable
+module.exports.tests.iso3166 = (test, common) => {
+  test('country', t => {
+    const example = [
+      {
+        _id: 'source:layer:id',
+        source: 'source',
+        layer: 'layer',
+        name: {
+          default: 'name',
+        },
+        country: ['China'],
+        country_a: ['CHN'],
+        country_id: ['85632695'],
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        }
+      }
+    ];
+
+    let collection = geojsonify({}, example);
+    t.equal(collection.features[0].properties.country_code, 'CN');
+    t.end();
+  });
+
+  test('dependency', t => {
+    const example = [
+      {
+        _id: 'source:layer:id',
+        source: 'source',
+        layer: 'layer',
+        name: {
+          default: 'name',
+        },
+        dependency: ['Puerto Rico'],
+        dependency_a: ['PRI'],
+        dependency_id: ['85633729'],
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        }
+      }
+    ];
+
+    let collection = geojsonify({}, example);
+    t.equal(collection.features[0].properties.country_code, 'PR');
+    t.end();
+  });
+
+  test('no-op', t => {
+    const example = [
+      {
+        _id: 'source:layer:id',
+        source: 'source',
+        layer: 'layer',
+        name: {
+          default: 'name',
+        },
+        center_point: {
+          lat: 12.121212,
+          lon: 21.212121
+        }
+      }
+    ];
+
+    let collection = geojsonify({}, example);
+    t.false(collection.features[0].properties.country_code);
     t.end();
   });
 };

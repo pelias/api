@@ -1,4 +1,6 @@
-var isDifferent= require('../../../helper/diffPlaces').isDifferent;
+const isDifferent = require('../../../helper/diffPlaces').isDifferent;
+const isNameDifferent = require('../../../helper/diffPlaces').isNameDifferent;
+const normalizeString = require('../../../helper/diffPlaces').normalizeString;
 
 module.exports.tests = {};
 
@@ -122,6 +124,130 @@ module.exports.tests.dedupe = function(test, common) {
     };
 
     t.false(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
+  // postalcodes with same name and country_a but differing hierarchies should be considered same
+  test('isParentHierarchyDifferent: postalcodes with same country_a', function(t) {
+    var item1 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '456',
+        'postalcode_id': '12345',
+        'country_id': '555',
+        'country_a': 'USA'
+      }
+    };
+    var item2 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '789',
+        'postalcode_id': '67890',
+        'country_id': '555',
+        'country_a': 'USA'
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should not be considered different');
+    t.end();
+  });
+
+  // postalcodes with same name and dependency_a but differing hierarchies should be considered same
+  test('isParentHierarchyDifferent: postalcodes with same dependency_a', function(t) {
+    var item1 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '456',
+        'postalcode_id': '12345',
+        'dependency_id': '555',
+        'dependency_a': 'PRI'
+      }
+    };
+    var item2 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '789',
+        'postalcode_id': '67890',
+        'dependency_id': '555',
+        'dependency_a': 'PRI'
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should not be considered different');
+    t.end();
+  });
+
+  // postalcodes with same name but differing country_a should still be considered different
+  test('isParentHierarchyDifferent: postalcodes with same name, different country_a', function(t) {
+    var item1 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '456',
+        'postalcode_id': '12345',
+        'country_id': '555',
+        'country_a': 'USA'
+      }
+    };
+    var item2 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '789',
+        'postalcode_id': '67890',
+        'country_id': '444',
+        'country_a': 'NZL'
+      }
+    };
+
+    t.true(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
+  // postalcodes with differing name but same country_a should still be considered different
+  test('isParentHierarchyDifferent: postalcodes with different name, same country_a', function(t) {
+    var item1 = {
+      name: {
+        default: '10010'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '456',
+        'postalcode_id': '12345',
+        'country_id': '555',
+        'country_a': 'USA'
+      }
+    };
+    var item2 = {
+      name: {
+        default: '90210'
+      },
+      layer: 'postalcode',
+      parent: {
+        'locality_id': '789',
+        'postalcode_id': '67890',
+        'country_id': '555',
+        'country_a': 'USA'
+      }
+    };
+
+    t.true(isDifferent(item1, item2), 'should be different');
     t.end();
   });
 
@@ -333,6 +459,104 @@ module.exports.tests.dedupe = function(test, common) {
     };
 
     t.false(isDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+};
+
+module.exports.tests.isNameDifferent = function (test, common) {
+  test('missing names', function (t) {
+    t.false(isNameDifferent({}, {}), 'both have no name');
+    t.false(isNameDifferent({ name: { default: 'a' } }, {}), 'B has no name');
+    t.false(isNameDifferent({}, { name: { default: 'b' } }), 'A has no name');
+    t.end();
+  });
+  test('basic matching', function (t) {
+    t.false(isNameDifferent(
+      { name: { default: 'a' } },
+      { name: { default: 'a' } }
+    ), 'basic match');
+
+    t.false(isNameDifferent(
+      { name: { default: 'a' } },
+      { name: { default: ['a'] } }
+    ), 'basic match - different types');
+
+    t.false(isNameDifferent(
+      { name: { default: ['a'] } },
+      { name: { default: 'a' } }
+    ), 'basic match - different types - inverse');
+
+    t.false(isNameDifferent(
+      { name: { default: 'a' } },
+      { name: { default: ['b','a'] } }
+    ), 'basic match - different positions');
+
+    t.false(isNameDifferent(
+      { name: { default: ['b', 'a'] } },
+      { name: { default: 'a' } }
+    ), 'basic match - different positions - inverse');
+
+    t.end();
+  });
+  test('inter-language matching', function (t) {
+    t.false(isNameDifferent(
+      { name: { default: 'a' } },
+      { name: { foo: 'a' } }
+    ), 'match default with any lang');
+
+    t.false(isNameDifferent(
+      { name: { foo: 'a' } },
+      { name: { default: 'a' } }
+    ), 'match default with any lang - inverse');
+
+    t.false(isNameDifferent(
+      { name: { bar: 'a' } },
+      { name: { foo: 'a' } },
+      'bar'
+    ), 'match using request lang');
+
+    t.false(isNameDifferent(
+      { name: { bar: 'a' } },
+      { name: { foo: 'a' } },
+      'foo'
+    ), 'match using request lang - inverse');
+
+    // note: this returns true
+    t.true(isNameDifferent(
+      { name: { foo: 'a' } },
+      { name: { bar: 'a' } }
+    ), 'different lang');
+
+    t.end();
+  });
+  test('real-world tests', function (t) {
+    t.false(isNameDifferent(
+      { name: { default: 'Malmoe', eng: 'Malmo' } },
+      { name: { default: 'Malmö', eng: 'Malmo' } }
+    ), 'Malmö');
+
+    t.end();
+  });
+};
+
+module.exports.tests.normalizeString = function (test, common) {
+  test('lowercase', function (t) {
+    t.equal(normalizeString('Foo Bar'), 'foo bar');
+    t.equal(normalizeString('FOOBAR'), 'foobar');
+    t.end();
+  });
+
+  test('punctuation', function (t) {
+    t.equal(normalizeString('foo, bar'), 'foo bar');
+    t.equal(normalizeString('foo-bar'), 'foo bar');
+    t.equal(normalizeString('foo , - , - bar'), 'foo bar');
+    t.end();
+  });
+
+  test('diacritics', function (t) {
+    t.equal(normalizeString('Malmö'), 'malmo');
+    t.equal(normalizeString('Grolmanstraße'), 'grolmanstraße');
+    t.equal(normalizeString('àáâãäåấắæầằçḉèéêëếḗềḕ'), 'aaaaaaaaaeaacceeeeeeee');
     t.end();
   });
 };

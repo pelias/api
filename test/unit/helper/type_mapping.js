@@ -1,17 +1,6 @@
 const proxyquire = require('proxyquire').noCallThru();
 
-const realPeliasConfig = require('pelias-config');
-
-const defaultPeliasConfig = {
-  generate: function() {
-    return realPeliasConfig.defaults;
-  }
-};
-
-// test the actual module, rather than the singleton wrapper
-var TypeMapping = proxyquire('../../../helper/TypeMapping', {
-  'pelias-config': defaultPeliasConfig
-});
+const TypeMapping = require('../../../helper/TypeMapping');
 
 const type_mapping = new TypeMapping();
 type_mapping.load();
@@ -63,7 +52,7 @@ module.exports.tests.interfaces = function(test, common) {
     t.deepEquals(type_mapping.layer_mapping, {
       coarse: [ 'continent', 'empire', 'country', 'dependency', 'macroregion', 'region',
         'locality', 'localadmin', 'macrocounty', 'county', 'macrohood', 'borough',
-        'neighbourhood', 'microhood', 'disputed', 'postalcode', 'continent', 'ocean', 'marinearea'
+        'neighbourhood', 'microhood', 'disputed', 'postalcode', 'ocean', 'marinearea'
       ],
       address: [ 'address' ],
       venue: [ 'venue' ],
@@ -101,7 +90,7 @@ module.exports.tests.interfaces = function(test, common) {
                  [ 'continent', 'empire', 'country', 'dependency', 'macroregion',
                    'region', 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood',
                    'borough', 'neighbourhood', 'microhood', 'disputed', 'postalcode',
-                   'continent', 'ocean', 'marinearea']);
+                   'ocean', 'marinearea']);
     t.end();
   });
 
@@ -114,7 +103,7 @@ module.exports.tests.interfaces = function(test, common) {
       whosonfirst: [ 'continent', 'empire', 'country', 'dependency', 'macroregion',
         'region', 'locality', 'localadmin', 'macrocounty', 'county', 'macrohood',
         'borough', 'neighbourhood', 'microhood', 'disputed', 'venue', 'postalcode',
-        'continent', 'ocean', 'marinearea' ]
+        'ocean', 'marinearea' ]
     });
     t.end();
   });

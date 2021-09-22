@@ -20,7 +20,7 @@ module.exports = function (adminFields) {
     // the actual query text is simply taken from the first valid admin field
     // this assumes all the values would be the same, which is probably not true
     // TODO: handle the case where not all admin area input values are the same
-    var tokens = vs.var('input:' + valid_admin_properties[0]).get().split(/\s+/g);
+    var tokens = vs.var('input:' + valid_admin_properties[0]).get().split(/\s+/g).filter(t => t.length > 0);
 
     // no valid tokens to use, fail now, don't render this view.
     if (!tokens || tokens.length < 2) { return null; }

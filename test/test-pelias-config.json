@@ -1,0 +1,7 @@
+{
+  "api": {
+    "targets": {
+      "auto_discover": false
+    }
+  }
+}

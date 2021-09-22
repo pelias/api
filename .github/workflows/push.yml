@@ -7,10 +7,10 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-          - macos-10.15
         node-version:
-          - 10.x
           - 12.x
+          - 14.x
+          - 16.x
     steps:
       - uses: actions/checkout@v2
       - name: 'Install node.js ${{ matrix.node-version }}'
@@ -36,6 +36,24 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: >
-          curl
-          "https://raw.githubusercontent.com/pelias/ci-tools/master/semantic-release.sh"
-          | bash -
+          if [[ -n "$GH_TOKEN" && -n "$NPM_TOKEN" ]]; then
+            curl "https://raw.githubusercontent.com/pelias/ci-tools/master/semantic-release.sh" | bash -
+          fi
+  build-docker-images:
+    # run this job if the unit tests passed and the npm-publish job was a success or was skipped
+    # note: github actions won't run a job if you don't call one of the status check functions, so `always()` is called since it evalutes to `true`
+    if: ${{ always() && needs.unit-tests.result == 'success' && (needs.npm-publish.result == 'success' || needs.npm-publish.result == 'skipped') }}
+    needs: [unit-tests, npm-publish]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Dump needs context
+        env:
+          NEEDS_CONTEXT: ${{ toJSON(needs) }}
+        run: echo "$NEEDS_CONTEXT"
+      - name: Build Docker images
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          curl "https://raw.githubusercontent.com/pelias/ci-tools/master/build-docker-images.sh" | bash -

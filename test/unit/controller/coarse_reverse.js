@@ -269,45 +269,59 @@ module.exports.tests.success_conditions = (test, common) => {
             neighbourhood: ['neighbourhood name'],
             neighbourhood_id: ['10'],
             neighbourhood_a: ['neighbourhood abbr'],
+            neighbourhood_source: [null],
             borough: ['borough name'],
             borough_id: ['20'],
             borough_a: ['borough abbr'],
+            borough_source: [null],
             locality: ['locality name'],
             locality_id: ['30'],
             locality_a: ['locality abbr'],
+            locality_source: [null],
             localadmin: ['localadmin name'],
             localadmin_id: ['40'],
             localadmin_a: ['localadmin abbr'],
+            localadmin_source: [null],
             county: ['county name'],
             county_id: ['50'],
             county_a: ['county abbr'],
+            county_source: [null],
             macrocounty: ['macrocounty name'],
             macrocounty_id: ['60'],
             macrocounty_a: ['macrocounty abbr'],
+            macrocounty_source: [null],
             region: ['region name'],
             region_id: ['70'],
             region_a: ['region abbr'],
+            region_source: [null],
             macroregion: ['macroregion name'],
             macroregion_id: ['80'],
             macroregion_a: ['macroregion abbr'],
+            macroregion_source: [null],
             dependency: ['dependency name'],
             dependency_id: ['90'],
             dependency_a: ['dependency abbr'],
+            dependency_source: [null],
             country: ['country name'],
             country_id: ['100'],
             country_a: ['xyz'],
+            country_source: [null],
             empire: ['empire name'],
             empire_id: ['110'],
             empire_a: ['empire abbr'],
+            empire_source: [null],
             continent: ['continent name'],
             continent_id: ['120'],
             continent_a: ['continent abbr'],
+            continent_source: [null],
             ocean: ['ocean name'],
             ocean_id: ['130'],
             ocean_a: ['ocean abbr'],
+            ocean_source: [null],
             marinearea: ['marinearea name'],
             marinearea_id: ['140'],
             marinearea_a: ['marinearea abbr'],
+            marinearea_source: [null],
           },
           center_point: {
             lat: 12.121212,
@@ -385,7 +399,8 @@ module.exports.tests.success_conditions = (test, common) => {
           parent: {
             neighbourhood: ['neighbourhood name'],
             neighbourhood_id: ['10'],
-            neighbourhood_a: [null]
+            neighbourhood_a: [null],
+            neighbourhood_source: [null]
           },
           center_point: {
             lat: 12.121212,
@@ -460,7 +475,8 @@ module.exports.tests.success_conditions = (test, common) => {
           parent: {
             neighbourhood: ['neighbourhood name'],
             neighbourhood_id: ['10'],
-            neighbourhood_a: ['neighbourhood abbr']
+            neighbourhood_a: ['neighbourhood abbr'],
+            neighbourhood_source: [null]
           },
           bounding_box: '{"min_lat":40.006751,"max_lat":40.072939,"min_lon":-76.345902,"max_lon":-76.254038}'
         }
@@ -534,7 +550,8 @@ module.exports.tests.success_conditions = (test, common) => {
           parent: {
             neighbourhood: ['neighbourhood name'],
             neighbourhood_id: ['10'],
-            neighbourhood_a: ['neighbourhood abbr']
+            neighbourhood_a: ['neighbourhood abbr'],
+            neighbourhood_source: [null]
           },
           center_point: {
             lat: 12.121212,
@@ -615,7 +632,8 @@ module.exports.tests.success_conditions = (test, common) => {
           parent: {
             neighbourhood: ['neighbourhood name'],
             neighbourhood_id: ['10'],
-            neighbourhood_a: ['neighbourhood abbr']
+            neighbourhood_a: ['neighbourhood abbr'],
+            neighbourhood_source: [null]
           }
         }
       ]
@@ -696,7 +714,8 @@ module.exports.tests.success_conditions = (test, common) => {
             parent: {
               neighbourhood: ['neighbourhood name'],
               neighbourhood_id: ['10'],
-              neighbourhood_a: ['neighbourhood abbr']
+              neighbourhood_a: ['neighbourhood abbr'],
+              neighbourhood_source: [null]
             }
           }
         ]
@@ -779,7 +798,8 @@ module.exports.tests.success_conditions = (test, common) => {
             parent: {
               neighbourhood: ['neighbourhood name'],
               neighbourhood_id: ['10'],
-              neighbourhood_a: ['neighbourhood abbr']
+              neighbourhood_a: ['neighbourhood abbr'],
+              neighbourhood_source: [null]
             }
           }
         ]
@@ -989,7 +1009,8 @@ module.exports.tests.failure_conditions = (test, common) => {
         parent: {
           neighbourhood: [ 'Example' ],
           neighbourhood_id: [ '20' ],
-          neighbourhood_a: [ null ]
+          neighbourhood_a: [ null ],
+          neighbourhood_source: [null]
         },
         source: 'whosonfirst',
         layer: 'neighbourhood',
