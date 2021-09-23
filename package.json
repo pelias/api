@@ -14,7 +14,7 @@
     "lint": "jshint .",
     "start": "./bin/start",
     "test": "npm run unit",
-    "travis": "npm test",
+    "ci": "npm test",
     "unit": "./bin/units",
     "validate": "npm ls",
     "config": "node -e \"console.log(JSON.stringify(require( 'pelias-config' ).generate(require('./schema')), null, 2))\"",
