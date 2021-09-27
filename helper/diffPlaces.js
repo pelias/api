@@ -169,6 +169,34 @@ function isAddressDifferent(item1, item2){
   return false;
 }
 
+function isPopulationDifferent(item1, item2) {
+  let population1 = _.get(item1, 'population');
+  let population2 = _.get(item2, 'population');
+
+  // assume different if one has population but the other doesn't
+  // assume same if _both_ are missing population data
+  if (!population1 || !population2) {
+    if (!population1 && !population2) {
+      return false;
+    }
+
+    return true;
+  }
+
+  // percentage threshold difference tolerable to be considered "the same"
+  const threshold = 10;
+  const max = population1 * (100 + threshold) / 100;
+  const min = population1 * (100 - threshold) / 100;
+
+  // items are the same if population is within threshold
+  if (population2 > min && population2 < max) {
+    return false;
+  }
+
+  // population outside difference threshold: items are different
+  return true;
+}
+
 /**
  * Compare the two records and return true if they differ and false if same.
  * Optionally provide $requestLanguage (req.clean.lang.iso6393) to improve name deduplication.
@@ -178,6 +206,7 @@ function isDifferent(item1, item2, requestLanguage){
   if( isParentHierarchyDifferent( item1, item2 ) ){ return true; }
   if( isNameDifferent( item1, item2, requestLanguage ) ){ return true; }
   if( isAddressDifferent( item1, item2 ) ){ return true; }
+  if( isPopulationDifferent( item1, item2 ) ){ return true; }
   return false;
 }
 
