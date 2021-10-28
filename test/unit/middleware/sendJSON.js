@@ -1,5 +1,5 @@
-var es = require('elasticsearch'),
-    middleware = require('../../../middleware/sendJSON');
+const es = require('elasticsearch');
+const middleware = require('../../../middleware/sendJSON');
 
 module.exports.tests = {};
 
