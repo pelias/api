@@ -1,5 +1,6 @@
 var sanitizeAll = require('../../../sanitizer/sanitizeAll');
 const PeliasParameterError = require('../../../sanitizer/PeliasParameterError');
+const PeliasTimeoutError = require('../../../sanitizer/PeliasTimeoutError');
 
 module.exports.tests = {};
 
@@ -97,7 +98,7 @@ module.exports.tests.all = function(test, common) {
     t.end();
   });
 
-  test('Error objects should be converted to correct type', function(t) {
+  test('Normal error objects should be converted to PeliasParameterError type', function(t) {
     var req = {};
     var sanitizers = {
       'first': {
@@ -125,6 +126,33 @@ module.exports.tests.all = function(test, common) {
 
   });
 
+  test('Timeout error should be converted to PeliasTimeoutError type', function(t) {
+    var req = {};
+    const error_message = 'Timeout: could not reach Placeholder service';
+    var sanitizers = {
+      'first': {
+        sanitize: function(){
+          req.clean.a = 'first sanitizer';
+          return {
+            errors: [new Error(error_message)],
+            warnings: []
+          };
+        }
+      }
+    };
+
+    var expected_req = {
+      clean: {
+        a: 'first sanitizer'
+      },
+      errors: [ new PeliasTimeoutError(error_message) ],
+      warnings: []
+    };
+
+    sanitizeAll.runAllChecks(req, sanitizers);
+    t.deepEquals(req, expected_req);
+    t.end();
+  });
 
   test('req.query should be passed to individual sanitizers when available', function(t) {
     var req = {

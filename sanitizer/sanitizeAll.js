@@ -1,4 +1,13 @@
 const PeliasParameterError = require('./PeliasParameterError');
+const PeliasTimeoutError = require('../sanitizer/PeliasTimeoutError');
+
+function getCorrectErrorType(message) {
+  if (message.includes( 'Timeout')) {
+    return new PeliasTimeoutError(message);
+  } else {
+    return new PeliasParameterError(message);
+  }
+}
 
 function sanitize( req, sanitizers ){
   // init an object to store clean (sanitized) input parameters if not initialized
@@ -28,16 +37,16 @@ function sanitize( req, sanitizers ){
     }
   }
 
-  // all errors must be returned as PeliasParameterError object to trigger HTTP 400 errors
+  // all errors must be classified as Timeout or Parameter errors to trigger the correct HTTP response code
   req.errors = req.errors.map(function(error) {
     // replace any existing Error objects with the right class
     // preserve the message and stack trace
     if (error instanceof Error) {
-      const new_error = new PeliasParameterError(error.message);
+      const new_error = getCorrectErrorType(error.message);
       new_error.stack = error.stack;
       return new_error;
     } else {
-      return new PeliasParameterError(error);
+      return getCorrectErrorType(error);
     }
   });
 }
