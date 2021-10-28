@@ -4,9 +4,24 @@ const PeliasTimeoutError = require('../sanitizer/PeliasTimeoutError');
 function getCorrectErrorType(message) {
   if (message.includes( 'Timeout')) {
     return new PeliasTimeoutError(message);
-  } else {
-    return new PeliasParameterError(message);
   }
+
+  // most errors are parameter errors
+  return new PeliasParameterError(message);
+}
+
+// Some Pelias code returns Error objects,
+// some returns strings. We want to standardize
+// on Error objects here
+function ensureInstanceOfError(error) {
+  if (error instanceof Error) {
+    // preserve the message and stack trace of existing Error objecs
+    const newError = getCorrectErrorType(error.message);
+    newError.stack = error.stack;
+    return newError;
+  }
+
+  return getCorrectErrorType(error);
 }
 
 function sanitize( req, sanitizers ){
@@ -37,18 +52,8 @@ function sanitize( req, sanitizers ){
     }
   }
 
-  // all errors must be classified as Timeout or Parameter errors to trigger the correct HTTP response code
-  req.errors = req.errors.map(function(error) {
-    // replace any existing Error objects with the right class
-    // preserve the message and stack trace
-    if (error instanceof Error) {
-      const new_error = getCorrectErrorType(error.message);
-      new_error.stack = error.stack;
-      return new_error;
-    } else {
-      return getCorrectErrorType(error);
-    }
-  });
+  // all errors must be mapped to a correct Error type to trigger the right HTTP response codes
+  req.errors = req.errors.map(ensureInstanceOfError);
 }
 
 // Adds to goodParameters every acceptable parameter passed through API call
