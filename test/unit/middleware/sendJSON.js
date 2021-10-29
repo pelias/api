@@ -1,5 +1,6 @@
-var es = require('elasticsearch'),
-    middleware = require('../../../middleware/sendJSON');
+const es = require('elasticsearch');
+const middleware = require('../../../middleware/sendJSON');
+const PeliasTimeoutError = require('../../../sanitizer/PeliasTimeoutError');
 
 module.exports.tests = {};
 
@@ -197,6 +198,24 @@ module.exports.tests.search_phase_execution_exception = function(test, common) {
     res.status = function( code ){
       return { json: function( body ){
         t.equal( code, 500, 'Internal Server Error' );
+        t.deepEqual( body, res.body, 'body set' );
+        t.end();
+      }};
+    };
+
+    middleware(null, res);
+  });
+};
+
+module.exports.tests.service_timeout_exception = function(test, common) {
+  test('service timeout exception', function(t) {
+    var res = { body: { geocoding: {
+      errors: [ new PeliasTimeoutError('Timeout: could not reach Placeholder service') ]
+    }}};
+
+    res.status = function( code ){
+      return { json: function( body ){
+        t.equal( code, 502, 'Bad Gateway' );
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};

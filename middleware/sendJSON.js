@@ -2,13 +2,15 @@ const _ = require('lodash');
 const es = require('elasticsearch');
 const logger = require( 'pelias-logger' ).get( 'api' );
 const PeliasParameterError = require('../sanitizer/PeliasParameterError');
+const PeliasTimeoutError = require('../sanitizer/PeliasTimeoutError');
 
 function isParameterError(error) {
   return error instanceof PeliasParameterError;
 }
 
 function isTimeoutError(error) {
-  return error instanceof es.errors.RequestTimeout;
+  return error instanceof PeliasTimeoutError ||
+         error instanceof es.errors.RequestTimeout;
 }
 
 function isElasticsearchError(error) {

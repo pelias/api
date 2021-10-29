@@ -1,4 +1,5 @@
-class PeliasParameterError extends Error {
+// Error subclass for timeouts contacting Pelias services
+class PeliasTimeoutError extends Error {
   constructor(message = '') {
     super(message);
   }
@@ -12,4 +13,4 @@ class PeliasParameterError extends Error {
   }
 }
 
-module.exports = PeliasParameterError;
+module.exports = PeliasTimeoutError;
