@@ -9,6 +9,8 @@ const server = app.listen( port, host, () => {
   logger.info( `pelias is now running on http://${listenAddress.address}:${listenAddress.port}` );
 });
 
+server.maxRequestsPerSocket = 20;
+
 function exitHandler() {
   logger.info('Pelias API shutting down');
 
