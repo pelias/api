@@ -73,10 +73,12 @@ const MISC_UNSUPPORTED_SYMBOLS = regenerate()
   .addRange(0x1D400, 0x1D7FF) // Mathematical Alphanumeric Symbols (1D400-1D7FF)
 
   // emojis
+  .addRange(0x1F1E6, 0x1F1FF) // Regional indicator symbol (1F1E6-1F1FF)
   .addRange(0x1F300, 0x1F5FF) // Miscellaneous Symbols and Pictographs (1F300-1F5FF)
   .addRange(0x1F3FB, 0x1F3FF) // Emoji Modifier Fitzpatrick (skin tones) (1F3FB–1F3FF)
   .addRange(0x1F600, 0x1F64F) // Emoticons (1F600–1F64F)
   .addRange(0x1F680, 0x1F6FF) // Transport and Map Symbols (1F680-1F6FF)
+  .addRange(0x1F780, 0x1F7FF) // Geometric Shapes Extended (1F780-1F7FF)
   .addRange(0x1F900, 0x1F9FF) // Supplemental Symbols and Pictographs (1F900-1F9FF)
   .toRegExp('g');
 
