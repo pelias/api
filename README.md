@@ -4,7 +4,7 @@
 <h3 align="center">A modular, open-source search engine for our world.</h3>
 <p align="center">Pelias is a geocoder powered completely by open data, available freely to everyone.</p>
 <p align="center">
-<a href="https://github.com/pelias/api/actions"><img src="https://github.com/pelias/labels/workflows/Continuous%20Integration/badge.svg" /></a>
+<a href="https://github.com/pelias/api/actions"><img src="https://github.com/pelias/api/workflows/Continuous%20Integration/badge.svg" /></a>
 <a href="https://en.wikipedia.org/wiki/MIT_License"><img src="https://img.shields.io/github/license/pelias/api?style=flat&color=orange" /></a>
 <a href="https://hub.docker.com/u/pelias"><img src="https://img.shields.io/docker/pulls/pelias/api?style=flat&color=informational" /></a>
 <a href="https://gitter.im/pelias/pelias"><img src="https://img.shields.io/gitter/room/pelias/pelias?style=flat&color=yellow" /></a>
