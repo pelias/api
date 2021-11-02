@@ -15,7 +15,7 @@ function _sanitize( raw, clean ){
   let text = unicode.normalize(raw.text);
 
   // remove superfluous whitespace and quotes
-  text = _.trim(_.trim(raw.text), QUOTES);
+  text = _.trim(_.trim(text), QUOTES);
 
   // validate input 'text'
   if( !_.isString(text) || _.isEmpty(text) ){

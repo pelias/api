@@ -154,6 +154,17 @@ it again and again until we reach our destination.` };
     t.deepEquals(messages.warnings, [`param 'text' truncated to 140 characters`]);
     t.end();
   });
+
+  test('strips emoji', (t) => {
+    const raw = { text: 'abc' + '👩‍❤️‍👩'.repeat(200) };
+    const clean = {};
+    const messages = sanitizer.sanitize(raw, clean);
+
+    t.equals(clean.text, 'abc');
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, []);
+    t.end();
+  });
 };
 
 module.exports.all = (tape, common) => {
