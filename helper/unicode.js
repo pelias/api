@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const regenerate = require('regenerate');
+const unicodeToArray = require('lodash/_unicodeToArray');
 
 // non-printable control characters
 // ref: https://en.wikipedia.org/wiki/List_of_Unicode_characters
@@ -94,3 +95,31 @@ function normalize(str) {
 }
 
 module.exports.normalize = normalize;
+
+// unicode aware string length function
+// note: ported from 'npm stringz' using 'lodash' internals in place of 'char-regex'
+module.exports.length = (str) => {
+
+  // sanity checking
+  if (!_.isString(str)) { throw new Error('invalid string'); }
+
+  // return count of unicode characters
+  return unicodeToArray(str).length;
+};
+
+// unicode aware substring function
+// note: ported from 'npm stringz' using 'lodash' internals in place of 'char-regex'
+module.exports.substring = (str, begin, end) => {
+
+  // sanity checking
+  if (!_.isString(str)) { throw new Error('invalid string'); }
+
+  // even though negative numbers work here, they're not in the spec
+  if (!_.isFinite(begin) || begin < 0) { begin = 0; }
+  if (_.isFinite(end) && end < 0) { end = 0; }
+
+  const chars = unicodeToArray(str);
+  if (chars.length === 0){ return ''; }
+
+  return chars.slice(begin, end).join('');
+};
