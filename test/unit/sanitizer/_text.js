@@ -1,4 +1,5 @@
 const sanitizer = require('../../../sanitizer/_text')();
+const unicode = require('../../../helper/unicode');
 
 module.exports.tests = {};
 
@@ -150,6 +151,19 @@ it again and again until we reach our destination.` };
     const messages = sanitizer.sanitize(raw, clean);
 
     t.equals(clean.text.length, 140);
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [`param 'text' truncated to 140 characters`]);
+    t.end();
+  });
+
+  // https://github.com/pelias/api/issues/1574
+  test('truncate should be unicode aware', (t) => {
+    const raw = { text: 'a' + '👩‍❤️‍👩'.repeat(200) };
+    const clean = {};
+    const messages = sanitizer.sanitize(raw, clean);
+
+    t.equals(unicode.length(clean.text), 140);
+    t.equals(clean.text, 'a' + '👩‍❤️‍👩'.repeat(139));
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [`param 'text' truncated to 140 characters`]);
     t.end();

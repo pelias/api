@@ -21,9 +21,9 @@ function _sanitize( raw, clean ){
   if( !_.isString(text) || _.isEmpty(text) ){
     messages.errors.push(`invalid param 'text': text length, must be >0`);
   } else {
-    if( text.length > MAX_TEXT_LENGTH ){
+    if( unicode.length(text) > MAX_TEXT_LENGTH ){
       messages.warnings.push(`param 'text' truncated to ${MAX_TEXT_LENGTH} characters`);
-      text = text.substring(0, MAX_TEXT_LENGTH);
+      text = unicode.substring(text, 0, MAX_TEXT_LENGTH);
     }
     clean.text = text;
   }
