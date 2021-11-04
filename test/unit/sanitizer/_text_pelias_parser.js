@@ -20,7 +20,7 @@ module.exports.tests.text_parser = function (test, common) {
   });
 
   let cases = [];
-  
+
   // USA queries
   cases.push(['soho, new york, NY', {
     subject: 'soho',
@@ -322,7 +322,7 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['New York', { subject: 'New York' }, true]);
   cases.push(['New York N', { subject: 'New York' }, true]);
   cases.push(['New York NY', { subject: 'New York' }, true]);
-  
+
   cases.push(['B', { subject: 'B' }, true]);
   cases.push(['Be', { subject: 'Be' }, true]);
   cases.push(['Ber', { subject: 'Ber' }, true]);
@@ -431,6 +431,17 @@ it again and again until we reach our destination.` };
     t.equals(clean.text.length, 140);
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, [`param 'text' truncated to 140 characters`]);
+    t.end();
+  });
+
+  test('strips emoji', (t) => {
+    const raw = { text: 'abc' + '👩‍❤️‍👩'.repeat(200) };
+    const clean = {};
+    const messages = sanitizer.sanitize(raw, clean);
+
+    t.equals(clean.text, 'abc');
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, []);
     t.end();
   });
 };
