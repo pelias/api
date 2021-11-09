@@ -33,7 +33,7 @@ const layers = [
   'region',
   'macroregion',
   'country',
-  'dependency'
+  'dependency',
 ];
 
 // these layers are strictly used to drive one special case:
@@ -57,43 +57,42 @@ const explicit_borough_layers = [
   'region',
   'macroregion',
   'country',
-  'dependency'
+  'dependency',
 ];
 
 // this helper method returns `true` if every result has a matched_query
 //  starting with `fallback.`
 function isFallbackQuery(results) {
-  return results.every(function(result) {
-    return result.hasOwnProperty('_matched_queries') &&
-            !_.isEmpty(result._matched_queries) &&
-            _.startsWith(result._matched_queries[0], 'fallback.');
+  return results.every(function (result) {
+    return (
+      result.hasOwnProperty('_matched_queries') &&
+      !_.isEmpty(result._matched_queries) &&
+      _.startsWith(result._matched_queries[0], 'fallback.')
+    );
   });
 }
 
 function hasRecordsAtLayers(results, layer) {
-  return results.some( (result) => {
+  return results.some((result) => {
     if (_.isArray(layer)) {
-      return layer.some( (sublayer) => {
+      return layer.some((sublayer) => {
         return result._matched_queries[0] === 'fallback.' + sublayer;
       });
     } else {
       return result._matched_queries[0] === 'fallback.' + layer;
     }
-
   });
 }
 
 function retainRecordsAtLayers(results, layer) {
-  return results.filter( (result) => {
+  return results.filter((result) => {
     if (_.isArray(layer)) {
-      return layer.some( (sublayer) => {
+      return layer.some((sublayer) => {
         return result._matched_queries[0] === 'fallback.' + sublayer;
       });
-    }
-    else {
+    } else {
       return result._matched_queries[0] === 'fallback.' + layer;
     }
-
   });
 }
 
@@ -105,25 +104,25 @@ function getLayers(parsed_text) {
 }
 
 function setup() {
- return function trim(req, res, next) {
-   // don't do anything if there are no results or there are non-fallback.* named queries
-   // there should never be a mixture of fallback.* and non-fallback.* named queries
-   if (_.isUndefined(res.data) || !isFallbackQuery(res.data)) {
-     return next();
-   }
+  return function trim(req, res, next) {
+    // don't do anything if there are no results or there are non-fallback.* named queries
+    // there should never be a mixture of fallback.* and non-fallback.* named queries
+    if (_.isUndefined(res.data) || !isFallbackQuery(res.data)) {
+      return next();
+    }
 
-   const layers = getLayers(req.clean.parsed_text);
+    const layers = getLayers(req.clean.parsed_text);
 
-   // start at the most granular possible layer.  if there are results at a layer
-   // then remove everything not at that layer.
-   layers.forEach( (layer) => {
-     if (hasRecordsAtLayers(res.data, layer )) {
-       res.data = retainRecordsAtLayers(res.data, layer);
-     }
-   });
+    // start at the most granular possible layer.  if there are results at a layer
+    // then remove everything not at that layer.
+    layers.forEach((layer) => {
+      if (hasRecordsAtLayers(res.data, layer)) {
+        res.data = retainRecordsAtLayers(res.data, layer);
+      }
+    });
 
-   next();
- };
+    next();
+  };
 }
 
 module.exports = setup;

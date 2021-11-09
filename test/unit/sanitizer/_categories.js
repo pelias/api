@@ -1,12 +1,12 @@
-var sanitizer = require( '../../../sanitizer/_categories')();
+var sanitizer = require('../../../sanitizer/_categories')();
 
 module.exports.tests = {};
 
-module.exports.tests.no_categories = function(test, common) {
-  test('categories not set', function(t) {
+module.exports.tests.no_categories = function (test, common) {
+  test('categories not set', function (t) {
     var req = {
-      query: { },
-      clean: { }
+      query: {},
+      clean: {},
     };
 
     var messages = sanitizer.sanitize(req.query, req.clean);
@@ -17,38 +17,48 @@ module.exports.tests.no_categories = function(test, common) {
     t.end();
   });
 
-  test('categories is empty string', function(t) {
+  test('categories is empty string', function (t) {
     var req = {
       query: {
-        categories: ''
+        categories: '',
       },
-      clean: { }
+      clean: {},
     };
 
-    var expected_warning = 'Categories parameter left blank, showing results from all categories.';
+    var expected_warning =
+      'Categories parameter left blank, showing results from all categories.';
 
     var messages = sanitizer.sanitize(req.query, req.clean);
 
-    t.deepEqual(req.clean.categories, [], 'empty categories array should be defined');
+    t.deepEqual(
+      req.clean.categories,
+      [],
+      'empty categories array should be defined',
+    );
     t.deepEqual(messages.errors, [], 'no errors returned');
     t.deepEqual(messages.warnings.length, 1, 'warning returned');
     t.deepEqual(messages.warnings[0], expected_warning, 'warning returned');
     t.end();
   });
 
-  test('categories is an array of empty strings', function(t) {
+  test('categories is an array of empty strings', function (t) {
     var req = {
       query: {
-        categories: ',,'
+        categories: ',,',
       },
-      clean: { }
+      clean: {},
     };
 
-    var expected_warning = 'Categories parameter left blank, showing results from all categories.';
+    var expected_warning =
+      'Categories parameter left blank, showing results from all categories.';
 
     var messages = sanitizer.sanitize(req.query, req.clean);
 
-    t.deepEqual(req.clean.categories, [], 'empty categories array should be defined');
+    t.deepEqual(
+      req.clean.categories,
+      [],
+      'empty categories array should be defined',
+    );
     t.deepEqual(messages.errors, [], 'no errors returned');
     t.deepEqual(messages.warnings.length, 1, 'warning returned');
     t.deepEqual(messages.warnings[0], expected_warning, 'warning returned');
@@ -58,9 +68,9 @@ module.exports.tests.no_categories = function(test, common) {
   test('categories is mix of valid categories and empty strings', function (t) {
     var req = {
       query: {
-        categories: ',food,'
+        categories: ',food,',
       },
-      clean: {}
+      clean: {},
     };
 
     var messages = sanitizer.sanitize(req.query, req.clean);
@@ -71,27 +81,36 @@ module.exports.tests.no_categories = function(test, common) {
   });
 };
 
-module.exports.tests.valid_categories = function(test, common) {
+module.exports.tests.valid_categories = function (test, common) {
   var isValidCategoryCalled = 0;
   var validCategories = {
     isValidCategory: function (cat) {
       isValidCategoryCalled++;
-      return ['food','health','financial','education','government'].indexOf(cat) !== -1; }
+      return (
+        ['food', 'health', 'financial', 'education', 'government'].indexOf(
+          cat,
+        ) !== -1
+      );
+    },
   };
 
-  test('single category', function(t) {
+  test('single category', function (t) {
     isValidCategoryCalled = 0;
 
     var req = {
       query: {
-        categories: 'food'
+        categories: 'food',
       },
-      clean: { }
+      clean: {},
     };
 
     var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
 
-    t.deepEqual(req.clean.categories, ['food'], 'categories should contain food');
+    t.deepEqual(
+      req.clean.categories,
+      ['food'],
+      'categories should contain food',
+    );
     t.deepEqual(messages.errors, [], 'no error returned');
     t.deepEqual(messages.warnings, [], 'no warnings returned');
 
@@ -100,20 +119,23 @@ module.exports.tests.valid_categories = function(test, common) {
     t.end();
   });
 
-  test('multiple categories', function(t) {
+  test('multiple categories', function (t) {
     isValidCategoryCalled = 0;
     var req = {
       query: {
-        categories: 'food,health'
+        categories: 'food,health',
       },
-      clean: { }
+      clean: {},
     };
     var expectedCategories = ['food', 'health'];
 
     var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
 
-    t.deepEqual(req.clean.categories, expectedCategories,
-                'clean.categories should be an array with proper values');
+    t.deepEqual(
+      req.clean.categories,
+      expectedCategories,
+      'clean.categories should be an array with proper values',
+    );
     t.deepEqual(messages.errors, [], 'no error returned');
     t.deepEqual(messages.warnings, [], 'no warnings returned');
 
@@ -123,53 +145,66 @@ module.exports.tests.valid_categories = function(test, common) {
   });
 };
 
-module.exports.tests.invalid_categories = function(test, common) {
+module.exports.tests.invalid_categories = function (test, common) {
   var isValidCategoryCalled = 0;
   var validCategories = {
     isValidCategory: function (cat) {
       isValidCategoryCalled++;
-      return ['food','health','financial','education','government'].indexOf(cat) !== -1; }
+      return (
+        ['food', 'health', 'financial', 'education', 'government'].indexOf(
+          cat,
+        ) !== -1
+      );
+    },
   };
 
-  test('garbage category', function(t) {
+  test('garbage category', function (t) {
     var req = {
       query: {
-        categories: 'barf'
+        categories: 'barf',
       },
-      clean: { }
+      clean: {},
     };
     var expected_messages = {
       errors: [],
       warnings: [
-        'Categories parameter left blank, showing results from all categories.'
-      ]
+        'Categories parameter left blank, showing results from all categories.',
+      ],
     };
 
     var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
-    t.deepEqual(req.clean.categories, [], 'empty categories array should be defined');
+    t.deepEqual(
+      req.clean.categories,
+      [],
+      'empty categories array should be defined',
+    );
     t.end();
   });
 
-  test('all garbage categories', function(t) {
+  test('all garbage categories', function (t) {
     var req = {
       query: {
-        categories: 'barf,bleh'
+        categories: 'barf,bleh',
       },
-      clean: { }
+      clean: {},
     };
     var expected_messages = {
       errors: [],
       warnings: [
-        'Categories parameter left blank, showing results from all categories.'
-      ]
+        'Categories parameter left blank, showing results from all categories.',
+      ],
     };
 
     var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
-    t.deepEqual(req.clean.categories, [], 'empty categories array should be defined');
+    t.deepEqual(
+      req.clean.categories,
+      [],
+      'empty categories array should be defined',
+    );
     t.end();
   });
 
@@ -183,18 +218,21 @@ module.exports.tests.invalid_categories = function(test, common) {
   });
 };
 
-module.exports.tests.always_blank = function(test, common) {
-  const alwaysBlankSanitizer = require( '../../../sanitizer/_categories')(true);
-  test('garbage category', function(t) {
+module.exports.tests.always_blank = function (test, common) {
+  const alwaysBlankSanitizer = require('../../../sanitizer/_categories')(true);
+  test('garbage category', function (t) {
     const req = {
       query: {
-        categories: 'barf'
+        categories: 'barf',
       },
-      clean: { }
+      clean: {},
     };
-    const expected_messages = { errors: [], warnings: [
-      'Categories filtering not supported on this endpoint, showing results from all categories.'
-    ] };
+    const expected_messages = {
+      errors: [],
+      warnings: [
+        'Categories filtering not supported on this endpoint, showing results from all categories.',
+      ],
+    };
 
     const messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
 
@@ -203,16 +241,19 @@ module.exports.tests.always_blank = function(test, common) {
     t.end();
   });
 
-  test('all garbage categories', function(t) {
+  test('all garbage categories', function (t) {
     const req = {
       query: {
-        categories: 'food'
+        categories: 'food',
       },
-      clean: { }
+      clean: {},
     };
-    const expected_messages = { errors: [], warnings: [
-      'Categories filtering not supported on this endpoint, showing results from all categories.'
-    ] };
+    const expected_messages = {
+      errors: [],
+      warnings: [
+        'Categories filtering not supported on this endpoint, showing results from all categories.',
+      ],
+    };
 
     const messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
 
@@ -221,12 +262,12 @@ module.exports.tests.always_blank = function(test, common) {
     t.end();
   });
 
-  test('defined categories', function(t) {
+  test('defined categories', function (t) {
     const req = {
       query: {
-        categories: undefined
+        categories: undefined,
       },
-      clean: { }
+      clean: {},
     };
     const expected_messages = { errors: [], warnings: [] };
 
@@ -237,12 +278,12 @@ module.exports.tests.always_blank = function(test, common) {
     t.end();
   });
 
-  test('empty categories', function(t) {
+  test('empty categories', function (t) {
     const req = {
       query: {
-        categories: ''
+        categories: '',
       },
-      clean: { }
+      clean: {},
     };
     const expected_messages = { errors: [], warnings: [] };
 
@@ -253,17 +294,21 @@ module.exports.tests.always_blank = function(test, common) {
     t.end();
   });
 
-  test('not defined categories', function(t) {
+  test('not defined categories', function (t) {
     const req = {
-      query: { },
-      clean: { }
+      query: {},
+      clean: {},
     };
     const expected_messages = { errors: [], warnings: [] };
 
     const messages = alwaysBlankSanitizer.sanitize(req.query, req.clean);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
-    t.deepEqual(req.clean.categories, undefined, 'categories should be undefined');
+    t.deepEqual(
+      req.clean.categories,
+      undefined,
+      'categories should be undefined',
+    );
     t.end();
   });
 };
@@ -273,7 +318,7 @@ module.exports.all = function (tape, common) {
     return tape('SANITIZE _categories ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

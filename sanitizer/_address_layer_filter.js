@@ -21,20 +21,22 @@ const nonEmptyString = (v) => _.isString(v) && !_.isEmpty(v);
  * Update: added additional check that enforces that the input must also contain at least one numeral
  */
 
- // note: this runs before libpostal (which is a service)
+// note: this runs before libpostal (which is a service)
 
-const ADDRESS_FILTER_WARNING = 'performance optimization: excluding \'address\' layer';
+const ADDRESS_FILTER_WARNING =
+  "performance optimization: excluding 'address' layer";
 
 function _setup(tm) {
-
   return {
     sanitize: function _sanitize(__, clean) {
-
       // error & warning messages
       let messages = { errors: [], warnings: [] };
 
       // do nothing if user has explicitly specified positive layers in the request
-      if ( _.isArray(clean.positive_layers) && !_.isEmpty(clean.positive_layers) ) {
+      if (
+        _.isArray(clean.positive_layers) &&
+        !_.isEmpty(clean.positive_layers)
+      ) {
         return messages;
       }
 
@@ -52,8 +54,9 @@ function _setup(tm) {
       // @todo: this logic is duplicated from 'query/text_parser.js' and may
       // be subject to change.
       if (_.isObject(clean.parsed_text) && !_.isEmpty(clean.parsed_text)) {
-
-        var isStreetAddress = clean.parsed_text.hasOwnProperty('housenumber') && clean.parsed_text.hasOwnProperty('street');
+        var isStreetAddress =
+          clean.parsed_text.hasOwnProperty('housenumber') &&
+          clean.parsed_text.hasOwnProperty('street');
 
         // use $subject where available (pelias parser)
         if (_.has(clean, 'parsed_text.subject')) {
@@ -62,11 +65,15 @@ function _setup(tm) {
 
         // if 'pelias_parser' or 'libpostal' identified input as a street address
         else if (isStreetAddress) {
-          input = clean.parsed_text.housenumber + ' ' + clean.parsed_text.street;
+          input =
+            clean.parsed_text.housenumber + ' ' + clean.parsed_text.street;
         }
 
         // else if the 'naive parser' was used, input is equal to 'name'
-        else if (nonEmptyString(clean.parsed_text.admin_parts) && nonEmptyString(clean.parsed_text.name)) {
+        else if (
+          nonEmptyString(clean.parsed_text.admin_parts) &&
+          nonEmptyString(clean.parsed_text.name)
+        ) {
           input = clean.parsed_text.name;
         }
       }
@@ -78,14 +85,13 @@ function _setup(tm) {
       let hasNumeral = /\d/.test(input);
 
       // do not consider numeric street names, such as '26 st' in numeric check.
-      if( _.has(clean, 'parsed_text.street') ){
+      if (_.has(clean, 'parsed_text.street')) {
         hasNumeral = /\d/.test(input.replace(clean.parsed_text.street, ''));
       }
 
       // if less than two words were specified /or no numeral is present
       // then it is safe to apply the layer filter
       if (totalWords < 2 || !hasNumeral) {
-
         // handle the common case where neither sources nor (positive) layers were specified
         if (!_.isArray(clean.sources) || _.isEmpty(clean.sources)) {
           // if there are no layers already set, start with the list of all of them
@@ -94,15 +100,17 @@ function _setup(tm) {
           }
 
           // filter the existing list of layers so it excludes 'address'
-          clean.layers = clean.layers.filter(item => item !== 'address');
+          clean.layers = clean.layers.filter((item) => item !== 'address');
           messages.warnings.push(ADDRESS_FILTER_WARNING);
         }
 
         // handle the case where 'sources' were explicitly specified
         else if (_.isArray(clean.sources)) {
-
           // we need to create a list of layers for the specified sources
-          let sourceLayers = clean.sources.reduce((l, key) => l.concat(tm.layers_by_source[key] || []), []);
+          let sourceLayers = clean.sources.reduce(
+            (l, key) => l.concat(tm.layers_by_source[key] || []),
+            [],
+          );
           sourceLayers = _.uniq(sourceLayers); // dedupe
 
           // if the sources specified do not have any addresses or if removing the
@@ -112,13 +120,13 @@ function _setup(tm) {
           }
 
           // target all layers for the sources specified except 'address'
-          clean.layers = sourceLayers.filter(item => item !== 'address'); // exclude 'address'
+          clean.layers = sourceLayers.filter((item) => item !== 'address'); // exclude 'address'
           messages.warnings.push(ADDRESS_FILTER_WARNING);
         }
       }
 
       return messages;
-    }
+    },
   };
 }
 

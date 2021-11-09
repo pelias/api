@@ -7,7 +7,7 @@ module.exports = (request, response) => {
   const has_response_data = _.get(response, 'data', []).length > 0;
   debugLog.push(request, () => ({
     reply: has_response_data,
-    stack_trace: stackTraceLine()
+    stack_trace: stackTraceLine(),
   }));
   return has_response_data;
 };

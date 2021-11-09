@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
 /**
-* @param {object} exposeInternalDebugTools property of pelias config
-*/
+ * @param {object} exposeInternalDebugTools property of pelias config
+ */
 function _setup(exposeInternalDebugTools) {
   return {
     sanitize: (raw, clean) => {
@@ -22,15 +22,17 @@ function _setup(exposeInternalDebugTools) {
       const debugStr = raw.debug.toString().toLowerCase();
 
       const debugLevelMapping = {
-        'false': 0,
-        'true': 1,
-        'elastic': 2,
-        'explain': 3
+        false: 0,
+        true: 1,
+        elastic: 2,
+        explain: 3,
       };
 
       const numericDebugStr = Number(debugStr);
-      
-      const debugLevel = isNaN(numericDebugStr) ? debugLevelMapping[debugStr] : numericDebugStr;
+
+      const debugLevel = isNaN(numericDebugStr)
+        ? debugLevelMapping[debugStr]
+        : numericDebugStr;
 
       if (_.isNil(debugLevel)) {
         messages.errors.push('Unknown debug value: ' + debugStr);

@@ -30,16 +30,18 @@ const layers = [
   'region',
   'macroregion',
   'dependency',
-  'country'
+  'country',
 ];
 
 // this helper method returns `true` if every result has a matched_query
 //  starting with `fallback.`
 function isFallbackQuery(results) {
-  return results.every( result => {
-    return result.hasOwnProperty('_matched_queries') &&
-            !_.isEmpty(result._matched_queries) &&
-            _.startsWith(result._matched_queries[0], 'fallback.');
+  return results.every((result) => {
+    return (
+      result.hasOwnProperty('_matched_queries') &&
+      !_.isEmpty(result._matched_queries) &&
+      _.startsWith(result._matched_queries[0], 'fallback.')
+    );
   });
 }
 
@@ -48,10 +50,12 @@ function isFallbackQuery(results) {
 function buildInvertedIndex(results) {
   let idx = {};
   results.forEach((result, ord) => {
-    if( _.isArray( result._matched_queries ) ){
-      result._matched_queries.forEach( matchedQuery => {
-        if( !_.isArray( idx[matchedQuery] ) ){ idx[matchedQuery] = []; }
-        idx[matchedQuery].push( result );
+    if (_.isArray(result._matched_queries)) {
+      result._matched_queries.forEach((matchedQuery) => {
+        if (!_.isArray(idx[matchedQuery])) {
+          idx[matchedQuery] = [];
+        }
+        idx[matchedQuery].push(result);
       });
     }
   });
@@ -62,9 +66,9 @@ function buildInvertedIndex(results) {
 // order and returning the first one which matches the results.
 // note: returns undefined on failure to match any of the layers
 function findMostGranularMatchedQuery(idx) {
-  for( let i=0; i<layers.length; i++ ){
+  for (let i = 0; i < layers.length; i++) {
     let matchedQueryName = 'fallback.' + layers[i];
-    if( _.has( idx, matchedQueryName ) ){
+    if (_.has(idx, matchedQueryName)) {
       return matchedQueryName;
     }
   }
@@ -74,7 +78,11 @@ function setup() {
   return function trim(req, res, next) {
     // don't do anything if there are no results or there are non-fallback.* named queries
     // there should never be a mixture of fallback.* and non-fallback.* named queries
-    if( !_.isArray(res.data) || !res.data.length || !isFallbackQuery(res.data) ){
+    if (
+      !_.isArray(res.data) ||
+      !res.data.length ||
+      !isFallbackQuery(res.data)
+    ) {
       return next();
     }
 
@@ -85,20 +93,24 @@ function setup() {
     let mostGranularMatchedQuery = findMostGranularMatchedQuery(idx);
 
     // we could not find a 'most granular match', no-op
-    if( !mostGranularMatchedQuery ){ return next(); }
+    if (!mostGranularMatchedQuery) {
+      return next();
+    }
 
     // remove any documents which don't have a matching fallback layer match.
     let filtered = idx[mostGranularMatchedQuery];
 
     // the filter was applied but the length remained the same, no-op
-    if( filtered.length === res.data.length ){ return next(); }
+    if (filtered.length === res.data.length) {
+      return next();
+    }
 
     // logging / debugging
     let logInfo = {
       unfiltered_length: res.data.length,
       filtered_length: filtered.length,
-      unfiltered: res.data.map( hit => hit._matched_queries ),
-      filtered: filtered.map( hit => hit._matched_queries )
+      unfiltered: res.data.map((hit) => hit._matched_queries),
+      filtered: filtered.map((hit) => hit._matched_queries),
     };
     logger.debug('[middleware][trimByGranularity]', logInfo);
     debugLog.push(req, logInfo);
@@ -107,7 +119,7 @@ function setup() {
     res.data = filtered;
 
     next();
- };
+  };
 }
 
 module.exports = setup;

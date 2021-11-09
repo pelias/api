@@ -2,7 +2,8 @@ const url = require('url');
 
 const _ = require('lodash');
 
-const ServiceConfiguration = require('pelias-microservice-wrapper').ServiceConfiguration;
+const ServiceConfiguration =
+  require('pelias-microservice-wrapper').ServiceConfiguration;
 
 class PointInPolygon extends ServiceConfiguration {
   constructor(o) {
@@ -12,7 +13,7 @@ class PointInPolygon extends ServiceConfiguration {
   getParameters(req) {
     if (_.has(req, 'clean.layers')) {
       return {
-        layers: _.join(req.clean.layers, ',')
+        layers: _.join(req.clean.layers, ','),
       };
     }
 
@@ -21,9 +22,11 @@ class PointInPolygon extends ServiceConfiguration {
 
   getUrl(req) {
     // use resolve to eliminate possibility of duplicate /'s in URL
-    return url.resolve(this.baseUrl, `${req.clean['point.lon']}/${req.clean['point.lat']}`);
+    return url.resolve(
+      this.baseUrl,
+      `${req.clean['point.lon']}/${req.clean['point.lat']}`,
+    );
   }
-
 }
 
 module.exports = PointInPolygon;

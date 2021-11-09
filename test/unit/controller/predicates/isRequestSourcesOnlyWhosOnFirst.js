@@ -5,33 +5,31 @@ module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.ok(_.isFunction(isRequestSourcesOnlyWhosOnFirst), 'isRequestSourcesOnlyWhosOnFirst is a function');
+    t.ok(
+      _.isFunction(isRequestSourcesOnlyWhosOnFirst),
+      'isRequestSourcesOnlyWhosOnFirst is a function',
+    );
     t.end();
   });
 };
 
 module.exports.tests.true_conditions = (test, common) => {
-  test('sources only \'whosonfirst\' should return true', (t) => {
+  test("sources only 'whosonfirst' should return true", (t) => {
     const req = {
       clean: {
-        sources: [
-          'whosonfirst'
-        ]
-      }
+        sources: ['whosonfirst'],
+      },
     };
 
     t.ok(isRequestSourcesOnlyWhosOnFirst(req));
     t.end();
-
   });
-
 };
 
 module.exports.tests.false_conditions = (test, common) => {
   test('undefined req should return false', (t) => {
     t.notOk(isRequestSourcesOnlyWhosOnFirst(undefined));
     t.end();
-
   });
 
   test('undefined req.clean should return false', (t) => {
@@ -39,59 +37,49 @@ module.exports.tests.false_conditions = (test, common) => {
 
     t.notOk(isRequestSourcesOnlyWhosOnFirst(req));
     t.end();
-
   });
 
   test('undefined req.clean.sources should return false', (t) => {
     const req = {
-      clean: {}
+      clean: {},
     };
 
     t.notOk(isRequestSourcesOnlyWhosOnFirst(req));
     t.end();
-
   });
 
   test('empty req.clean.sources should return false', (t) => {
     const req = {
       clean: {
-        sources: []
-      }
+        sources: [],
+      },
     };
 
     t.notOk(isRequestSourcesOnlyWhosOnFirst(req));
     t.end();
-
   });
 
-  test('sources not \'whosonfirst\' should return false', (t) => {
+  test("sources not 'whosonfirst' should return false", (t) => {
     const req = {
       clean: {
-        sources: [
-          'not whosonfirst'
-        ]
-      }
+        sources: ['not whosonfirst'],
+      },
     };
 
     t.notOk(isRequestSourcesOnlyWhosOnFirst(req));
     t.end();
-
   });
 
-  test('sources other than \'whosonfirst\' should return false', (t) => {
+  test("sources other than 'whosonfirst' should return false", (t) => {
     const req = {
       clean: {
-        sources: [
-          'whosonfirst', 'not whosonfirst'
-        ]
-      }
+        sources: ['whosonfirst', 'not whosonfirst'],
+      },
     };
 
     t.notOk(isRequestSourcesOnlyWhosOnFirst(req));
     t.end();
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
@@ -99,7 +87,7 @@ module.exports.all = (tape, common) => {
     return tape(`isRequestSourcesOnlyWhosOnFirst ${name}`, testFunction);
   }
 
-  for( const testCase in module.exports.tests ){
+  for (const testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

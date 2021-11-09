@@ -20,16 +20,22 @@ var RELATIVE_SCORES = true;
 
 function setup(peliasConfig) {
   if (!_.isNil(peliasConfig)) {
-    RELATIVE_SCORES = peliasConfig.hasOwnProperty('relativeScores') ? peliasConfig.relativeScores : true;
+    RELATIVE_SCORES = peliasConfig.hasOwnProperty('relativeScores')
+      ? peliasConfig.relativeScores
+      : true;
   }
   return computeScores;
 }
 
 function computeScores(req, res, next) {
   // do nothing if no result data set or if query is not of the pelias_parser variety
-  if (_.isUndefined(req.clean) || _.isUndefined(res) ||
-      _.isUndefined(res.data) || _.isUndefined(res.meta) ||
-      res.meta.query_type !== 'search_pelias_parser') {
+  if (
+    _.isUndefined(req.clean) ||
+    _.isUndefined(res) ||
+    _.isUndefined(res.data) ||
+    _.isUndefined(res.meta) ||
+    res.meta.query_type !== 'search_pelias_parser'
+  ) {
     return next();
   }
 
@@ -77,7 +83,7 @@ function computeConfidenceScore(req, mean, stdev, hit) {
   // TODO: look at categories and location
 
   hit.confidence /= checkCount;
-  hit.confidence = Number((hit.confidence).toFixed(3));
+  hit.confidence = Number(hit.confidence.toFixed(3));
 
   return hit;
 }
@@ -95,14 +101,21 @@ function checkForDealBreakers(req, hit) {
     return false;
   }
 
-  if (!_.isNil(req.clean.parsed_text.state) && !_.isNil(hit.parent) &&
-      hit.parent.region_a && req.clean.parsed_text.state !== hit.parent.region_a[0]) {
+  if (
+    !_.isNil(req.clean.parsed_text.state) &&
+    !_.isNil(hit.parent) &&
+    hit.parent.region_a &&
+    req.clean.parsed_text.state !== hit.parent.region_a[0]
+  ) {
     logger.debug('[confidence][deal-breaker]: state !== region_a');
     return true;
   }
 
-  if (!_.isNil(req.clean.parsed_text.postalcode) && !_.isNil(hit.address_parts) &&
-      req.clean.parsed_text.postalcode !== hit.address_parts.zip) {
+  if (
+    !_.isNil(req.clean.parsed_text.postalcode) &&
+    !_.isNil(hit.address_parts) &&
+    req.clean.parsed_text.postalcode !== hit.address_parts.zip
+  ) {
     return true;
   }
 }
@@ -117,7 +130,7 @@ function checkForDealBreakers(req, hit) {
  * @returns {number}
  */
 function checkDistanceFromMean(score, mean, stdev) {
-  return (score - mean) > stdev ? 1 : 0;
+  return score - mean > stdev ? 1 : 0;
 }
 
 /**
@@ -131,13 +144,19 @@ function checkDistanceFromMean(score, mean, stdev) {
  */
 function checkName(text, parsed_text, hit) {
   // parsed_text name should take precedence if available since it's the cleaner name property
-  if (!_.isNil(parsed_text) && !_.isNil(parsed_text.name) &&
-    field.getStringValue(hit.name.default).toLowerCase() === parsed_text.name.toLowerCase()) {
+  if (
+    !_.isNil(parsed_text) &&
+    !_.isNil(parsed_text.name) &&
+    field.getStringValue(hit.name.default).toLowerCase() ===
+      parsed_text.name.toLowerCase()
+  ) {
     return 1;
   }
 
   // if no parsed_text check the text value as provided against result's default name
-  if (field.getStringValue(hit.name.default).toLowerCase() === text.toLowerCase()) {
+  if (
+    field.getStringValue(hit.name.default).toLowerCase() === text.toLowerCase()
+  ) {
     return 1;
   }
 
@@ -154,9 +173,12 @@ function checkName(text, parsed_text, hit) {
  * @returns {number}
  */
 function checkQueryType(text, hit) {
-  if (!_.isNil(text) && !_.isNil(text.housenumber) &&
-      (_.isUndefined(hit.address_parts) ||
-      (!_.isNil(hit.address_parts) && _.isUndefined(hit.address_parts.number)))) {
+  if (
+    !_.isNil(text) &&
+    !_.isNil(text.housenumber) &&
+    (_.isUndefined(hit.address_parts) ||
+      (!_.isNil(hit.address_parts) && _.isUndefined(hit.address_parts.number)))
+  ) {
     return 0;
   }
   return 1;
@@ -171,25 +193,47 @@ function checkQueryType(text, hit) {
  * @returns {number}
  */
 function propMatch(textProp, hitProp, expectEnriched) {
-
   // both missing, but expect to have enriched value in result => BAD
-  if (_.isUndefined(textProp) && _.isUndefined(hitProp) && !_.isNil(expectEnriched)) { return 0; }
+  if (
+    _.isUndefined(textProp) &&
+    _.isUndefined(hitProp) &&
+    !_.isNil(expectEnriched)
+  ) {
+    return 0;
+  }
 
   // both missing, and no enrichment expected => GOOD
-  if (_.isUndefined(textProp) && _.isUndefined(hitProp)) { return 1; }
+  if (_.isUndefined(textProp) && _.isUndefined(hitProp)) {
+    return 1;
+  }
 
   // text has it, result doesn't => BAD
-  if (!_.isNil(textProp) && _.isUndefined(hitProp)) { return 0; }
+  if (!_.isNil(textProp) && _.isUndefined(hitProp)) {
+    return 0;
+  }
 
   // text missing, result has it, and enrichment is expected => GOOD
-  if (_.isUndefined(textProp) && !_.isNil(hitProp) && !_.isNil(expectEnriched)) { return 1; }
+  if (
+    _.isUndefined(textProp) &&
+    !_.isNil(hitProp) &&
+    !_.isNil(expectEnriched)
+  ) {
+    return 1;
+  }
 
   // text missing, result has it, enrichment not desired => 50/50
-  if (_.isUndefined(textProp) && !_.isNil(hitProp)) { return 0.5; }
+  if (_.isUndefined(textProp) && !_.isNil(hitProp)) {
+    return 0.5;
+  }
 
   // both present, values match => GREAT
-  if (!_.isNil(textProp) && !_.isNil(hitProp) &&
-      textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()) { return 1; }
+  if (
+    !_.isNil(textProp) &&
+    !_.isNil(hitProp) &&
+    textProp.toString().toLowerCase() === hitProp.toString().toLowerCase()
+  ) {
+    return 1;
+  }
 
   // ¯\_(ツ)_/¯
   return 0.7;
@@ -219,15 +263,34 @@ function checkAddress(text, hit) {
   var res = 0;
 
   if (!_.isNil(text) && !_.isNil(text.housenumber) && !_.isNil(text.street)) {
-    res += propMatch(text.housenumber, (hit.address_parts ? hit.address_parts.number : null), false);
-    res += propMatch(text.street, (hit.address_parts ? hit.address_parts.street : null), false);
-    res += propMatch(text.postalcode, (hit.address_parts ? hit.address_parts.zip: null), true);
-    res += propMatch(text.state, ((hit.parent && hit.parent.region_a) ? hit.parent.region_a[0] : null), true);
-    res += propMatch(text.country, ((hit.parent && hit.parent.country_a) ? hit.parent.country_a[0] :null), true);
+    res += propMatch(
+      text.housenumber,
+      hit.address_parts ? hit.address_parts.number : null,
+      false,
+    );
+    res += propMatch(
+      text.street,
+      hit.address_parts ? hit.address_parts.street : null,
+      false,
+    );
+    res += propMatch(
+      text.postalcode,
+      hit.address_parts ? hit.address_parts.zip : null,
+      true,
+    );
+    res += propMatch(
+      text.state,
+      hit.parent && hit.parent.region_a ? hit.parent.region_a[0] : null,
+      true,
+    );
+    res += propMatch(
+      text.country,
+      hit.parent && hit.parent.country_a ? hit.parent.country_a[0] : null,
+      true,
+    );
 
     res /= checkCount;
-  }
-  else {
+  } else {
     res = 1;
   }
 
@@ -254,7 +317,7 @@ function computeZScore(score, mean, stdev) {
   // because the effective range of z-scores is -3.00 to +3.00
   // add 10 to ensure a positive value, and then divide by 10+3+3
   // to further normalize to %-like result
-  return (((score - mean) / (stdev)) + 10) / 16;
+  return ((score - mean) / stdev + 10) / 16;
 }
 
 /**
@@ -266,8 +329,7 @@ function computeZScore(score, mean, stdev) {
 function computeStandardDeviation(scores) {
   var stdev = stats.stdev(scores);
   // if stdev is low, just consider it 0
-  return (stdev < 0.01) ? 0 : stdev;
+  return stdev < 0.01 ? 0 : stdev;
 }
-
 
 module.exports = setup;

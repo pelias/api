@@ -8,7 +8,7 @@ module.exports = (req, res) => {
   const is_pelias_parse = _.get(req, 'clean.parser') === 'pelias';
   debugLog.push(req, () => ({
     reply: is_pelias_parse,
-    stack_trace: stackTraceLine()
+    stack_trace: stackTraceLine(),
   }));
   return is_pelias_parse;
 };

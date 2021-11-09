@@ -1,10 +1,10 @@
-var proxyquire =  require('proxyquire').noCallThru();
+var proxyquire = require('proxyquire').noCallThru();
 const _ = require('lodash');
 
 module.exports.tests = {};
 
-module.exports.tests.sanitize = function(test, common) {
-  test('verify that all sanitizers were called as expected', function(t) {
+module.exports.tests.sanitize = function (test, common) {
+  test('verify that all sanitizers were called as expected', function (t) {
     var called_sanitizers = [];
 
     // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
@@ -15,7 +15,7 @@ module.exports.tests.sanitize = function(test, common) {
           sanitize: () => {
             called_sanitizers.push('_single_scalar_parameters');
             return { errors: [], warnings: [] };
-          }
+          },
         };
       },
       '../sanitizer/_debug': () => {
@@ -23,7 +23,7 @@ module.exports.tests.sanitize = function(test, common) {
           sanitize: () => {
             called_sanitizers.push('_debug');
             return { errors: [], warnings: [] };
-          }
+          },
         };
       },
       '../sanitizer/_synthesize_analysis': function () {
@@ -31,7 +31,7 @@ module.exports.tests.sanitize = function(test, common) {
           sanitize: () => {
             called_sanitizers.push('_synthesize_analysis');
             return { errors: [], warnings: [] };
-          }
+          },
         };
       },
       '../sanitizer/_iso2_to_iso3': function () {
@@ -39,7 +39,7 @@ module.exports.tests.sanitize = function(test, common) {
           sanitize: () => {
             called_sanitizers.push('_iso2_to_iso3');
             return { errors: [], warnings: [] };
-          }
+          },
         };
       },
       '../sanitizer/_city_name_standardizer': function () {
@@ -47,7 +47,7 @@ module.exports.tests.sanitize = function(test, common) {
           sanitize: () => {
             called_sanitizers.push('_city_name_standardizer');
             return { errors: [], warnings: [] };
-          }
+          },
         };
       },
       '../sanitizer/_size': function () {
@@ -56,7 +56,7 @@ module.exports.tests.sanitize = function(test, common) {
             sanitize: () => {
               called_sanitizers.push('_size');
               return { errors: [], warnings: [] };
-              }
+            },
           };
         } else {
           throw new Error('should not have passed any parameters to _size');
@@ -68,9 +68,9 @@ module.exports.tests.sanitize = function(test, common) {
             sanitize: () => {
               called_sanitizers.push(`_targets/${type}`);
               return { errors: [], warnings: [] };
-              }
-            };
-          } else {
+            },
+          };
+        } else {
           throw new Error('incorrect parameters passed to _targets');
         }
       },
@@ -79,19 +79,19 @@ module.exports.tests.sanitize = function(test, common) {
           sanitize: () => {
             called_sanitizers.push('_sources_and_layers');
             return { errors: [], warnings: [] };
-          }
+          },
         };
       },
       '../sanitizer/_flag_bool': function () {
         if (arguments[0] === 'private' && arguments[1] === false) {
           return {
             sanitize: () => {
-                called_sanitizers.push('_flag_bool');
-                return { errors: [], warnings: [] };
-              }
-            };
+              called_sanitizers.push('_flag_bool');
+              return { errors: [], warnings: [] };
+            },
+          };
         } else {
-            throw new Error('incorrect parameters passed to _flag_bool');
+          throw new Error('incorrect parameters passed to _flag_bool');
         }
       },
       '../sanitizer/_geo_search': function () {
@@ -99,7 +99,7 @@ module.exports.tests.sanitize = function(test, common) {
           sanitize: () => {
             called_sanitizers.push('_geo_search');
             return { errors: [], warnings: [] };
-          }
+          },
         };
       },
       '../sanitizer/_boundary_country': function () {
@@ -107,7 +107,7 @@ module.exports.tests.sanitize = function(test, common) {
           sanitize: () => {
             called_sanitizers.push('_boundary_country');
             return { errors: [], warnings: [] };
-          }
+          },
         };
       },
       '../sanitizer/_categories': function () {
@@ -115,19 +115,19 @@ module.exports.tests.sanitize = function(test, common) {
           sanitize: () => {
             called_sanitizers.push('_categories');
             return { errors: [], warnings: [] };
-          }
+          },
         };
       },
       '../sanitizer/_location_bias': function (defaultParameters) {
         return {
           sanitize: () => {
-            if (defaultParameters.key === 'value'){
-                called_sanitizers.push('_location_bias');
-                return { errors: [], warnings: [] };
+            if (defaultParameters.key === 'value') {
+              called_sanitizers.push('_location_bias');
+              return { errors: [], warnings: [] };
             } else {
-                throw new Error('incorrect parameter passed to _location_bias');
+              throw new Error('incorrect parameter passed to _location_bias');
             }
-          }
+          },
         };
       },
       '../sanitizer/_request_language': () => {
@@ -135,7 +135,7 @@ module.exports.tests.sanitize = function(test, common) {
           sanitize: () => {
             called_sanitizers.push('_request_language');
             return { errors: [], warnings: [] };
-          }
+          },
         };
       },
       '../sanitizer/_boundary_gid': () => {
@@ -143,9 +143,9 @@ module.exports.tests.sanitize = function(test, common) {
           sanitize: () => {
             called_sanitizers.push('_boundary_gid');
             return { errors: [], warnings: [] };
-          }
+          },
         };
-      }
+      },
     });
 
     var expected_sanitizers = [
@@ -164,7 +164,7 @@ module.exports.tests.sanitize = function(test, common) {
       '_boundary_country',
       '_categories',
       '_request_language',
-      '_boundary_gid'
+      '_boundary_gid',
     ];
 
     var req = {};
@@ -172,25 +172,23 @@ module.exports.tests.sanitize = function(test, common) {
 
     const middleware = search.middleware({
       defaultParameters: {
-        key: 'value'
-      }
+        key: 'value',
+      },
     });
 
-    middleware(req, res, function(){
+    middleware(req, res, function () {
       t.deepEquals(called_sanitizers, expected_sanitizers);
       t.end();
     });
-
   });
 };
 
 module.exports.all = function (tape, common) {
-
   function test(name, testFunction) {
     return tape('SANITIZE /structured ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

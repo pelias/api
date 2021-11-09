@@ -13,19 +13,19 @@ function _sanitize(raw, clean) {
   if (!_.isNil(boundary_gid)) {
     if (!_.isString(boundary_gid) || _.isEmpty(boundary_gid)) {
       messages.errors.push('boundary.gid is not a string');
-    }
-    else {
+    } else {
       // boundary gid should take the form of source:layer:id,
       // or source:layer:type:id for OpenStreetMap ids
-      var fields = boundary_gid.split(':').filter(function(x) {
-          // keep only non-empty values
-          return x !== '';
+      var fields = boundary_gid.split(':').filter(function (x) {
+        // keep only non-empty values
+        return x !== '';
       });
-      if ( _.inRange(fields.length, 3, 5) ) {
-         clean['boundary.gid'] = fields.slice(2).join(':');
-      }
-      else {
-        messages.errors.push(boundary_gid + ' does not follow source:layer:id format');
+      if (_.inRange(fields.length, 3, 5)) {
+        clean['boundary.gid'] = fields.slice(2).join(':');
+      } else {
+        messages.errors.push(
+          boundary_gid + ' does not follow source:layer:id format',
+        );
       }
     }
   }
@@ -33,11 +33,11 @@ function _sanitize(raw, clean) {
   return messages;
 }
 
-function _expected(){
+function _expected() {
   return [{ name: 'boundary.gid' }];
 }
 
 module.exports = () => ({
   sanitize: _sanitize,
-  expected: _expected
+  expected: _expected,
 });

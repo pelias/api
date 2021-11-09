@@ -4,50 +4,48 @@ const hasRequestParameter = require('../../../../controller/predicates/hasReques
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
-  test('valid interface', t => {
-    t.equal(typeof hasRequestParameter, 'function', 'hasRequestParameter is a function');
+  test('valid interface', (t) => {
+    t.equal(
+      typeof hasRequestParameter,
+      'function',
+      'hasRequestParameter is a function',
+    );
     t.end();
   });
 };
 
 module.exports.tests.true_conditions = (test, common) => {
-  test('request with specified parameter should return true', t => {
-    [[], {}, 'string value', 17].forEach(val => {
+  test('request with specified parameter should return true', (t) => {
+    [[], {}, 'string value', 17].forEach((val) => {
       const req = {
         clean: {
-          'parameter name': val
-        }
+          'parameter name': val,
+        },
       };
 
       t.ok(hasRequestParameter('parameter name')(req));
-
     });
 
     t.end();
-
   });
-
 };
 
 module.exports.tests.false_conditions = (test, common) => {
-  test('request with undefined clean should return false', t => {
+  test('request with undefined clean should return false', (t) => {
     const req = {};
 
     t.notOk(hasRequestParameter('parameter name')(req));
     t.end();
-
   });
 
-  test('request.clean without specified parameter should return false', t => {
+  test('request.clean without specified parameter should return false', (t) => {
     const req = {
-      clean: {}
+      clean: {},
     };
 
     t.notOk(hasRequestParameter('parameter name')(req));
     t.end();
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
@@ -55,7 +53,7 @@ module.exports.all = (tape, common) => {
     return tape(`hasRequestParameter ${name}`, testFunction);
   }
 
-  for( const testCase in module.exports.tests ){
+  for (const testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

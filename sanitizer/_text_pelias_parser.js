@@ -19,7 +19,7 @@ const MAX_TEXT_LENGTH = 140;
 **/
 
 // validate texts, convert types and apply defaults
-function _sanitize (raw, clean) {
+function _sanitize(raw, clean) {
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
@@ -30,16 +30,17 @@ function _sanitize (raw, clean) {
   text = _.trim(text);
 
   // validate input 'text'
-  if( !_.isString(text) || _.isEmpty(text) ){
+  if (!_.isString(text) || _.isEmpty(text)) {
     messages.errors.push(`invalid param 'text': text length, must be >0`);
   }
 
   // valid input 'text'
   else {
-
     // truncate text to $MAX_TEXT_LENGTH chars
     if (text.length > MAX_TEXT_LENGTH) {
-      messages.warnings.push(`param 'text' truncated to ${MAX_TEXT_LENGTH} characters`);
+      messages.warnings.push(
+        `param 'text' truncated to ${MAX_TEXT_LENGTH} characters`,
+      );
       text = text.substring(0, MAX_TEXT_LENGTH);
     }
 
@@ -52,8 +53,7 @@ function _sanitize (raw, clean) {
   return messages;
 }
 
-function parse (clean) {
-  
+function parse(clean) {
   // parse text
   let start = new Date();
   const t = new Tokenizer(clean.text);
@@ -62,26 +62,28 @@ function parse (clean) {
 
   // log summary info
   logger.info('pelias_parser', {
-    response_time: (new Date()) - start,
+    response_time: new Date() - start,
     params: clean,
     solutions: t.solution.length,
-    text_length: _.get(clean, 'text.length', 0)
+    text_length: _.get(clean, 'text.length', 0),
   });
 
   // only use the first solution generated
   // @todo: we could expand this in the future to accomodate more solutions
   let solution = new Solution();
-  if (t.solution.length) { solution = t.solution[0]; }
+  if (t.solution.length) {
+    solution = t.solution[0];
+  }
 
   // 1. map the output of the parser in to parsed_text
   let parsed_text = { subject: undefined };
 
-  solution.pair.forEach(p => {
+  solution.pair.forEach((p) => {
     let field = p.classification.label;
 
     // handle intersections
     if (field === 'street') {
-      field = (!parsed_text.street) ? 'street' : 'cross_street';
+      field = !parsed_text.street ? 'street' : 'cross_street';
     }
 
     // set field
@@ -96,8 +98,9 @@ function parse (clean) {
   let mask = solution.mask(t);
 
   // the entire input text as seen by the parser with any postcode classification(s) removed
-  let body = t.span.body.split('')
-    .map((c, i) => (mask[i] !== 'P') ? c : ' ')
+  let body = t.span.body
+    .split('')
+    .map((c, i) => (mask[i] !== 'P' ? c : ' '))
     .join('');
 
   // scan through the input text and 'bucket' characters in to one of two buckets:
@@ -109,9 +112,13 @@ function parse (clean) {
 
   // >> solution includes venue classification
   // set cursor after the venue name
-  if (mask.includes('V')) { cursor = mask.lastIndexOf('V') +1; }
+  if (mask.includes('V')) {
+    cursor = mask.lastIndexOf('V') + 1;
+  }
 
-  if (cursor === -1) { cursor = body.length; }
+  if (cursor === -1) {
+    cursor = body.length;
+  }
   let prefix = _.trim(body.substr(0, cursor), ' ,');
 
   // solution includes address classification
@@ -121,12 +128,18 @@ function parse (clean) {
   }
   // solution includes admin classification
   // set cursor to the first classified admin character
-  else if( mask.includes('A') ){ cursor = mask.indexOf('A'); }
+  else if (mask.includes('A')) {
+    cursor = mask.indexOf('A');
+  }
   // >> solution includes venue classification
   // set cursor after the venue name
-  else if (mask.includes('V')) { cursor = mask.lastIndexOf('V') + 1; }
+  else if (mask.includes('V')) {
+    cursor = mask.lastIndexOf('V') + 1;
+  }
   // else set cursor to end-of-text
-  else { cursor = body.length; }
+  else {
+    cursor = body.length;
+  }
   let postfix = _.trim(body.substr(cursor), ' ,');
 
   // clean up spacing around commas
@@ -158,7 +171,9 @@ function parse (clean) {
 
   // 3. store the unparsed characters in fields which can be used for querying
   // if (prefix.length) { parsed_text.name = prefix; }
-  if (postfix.length) { parsed_text.admin = postfix; }
+  if (postfix.length) {
+    parsed_text.admin = postfix;
+  }
 
   // 4. set 'subject', this is the text which will target the 'name.*'
   // fields in elasticsearch queries
@@ -168,7 +183,10 @@ function parse (clean) {
     parsed_text.subject = `${parsed_text.housenumber} ${parsed_text.street}`;
   }
   // an intersection query
-  else if (!_.isEmpty(parsed_text.street) && !_.isEmpty(parsed_text.cross_street)) {
+  else if (
+    !_.isEmpty(parsed_text.street) &&
+    !_.isEmpty(parsed_text.cross_street)
+  ) {
     parsed_text.subject = `${parsed_text.street} & ${parsed_text.cross_street}`;
   }
   // a street query
@@ -176,7 +194,7 @@ function parse (clean) {
     parsed_text.subject = parsed_text.street;
   }
   // query with a $prefix such as a venue query
-  else if (!_.isEmpty(prefix)){
+  else if (!_.isEmpty(prefix)) {
     parsed_text.subject = prefix;
   }
   // a postcode query
@@ -188,12 +206,14 @@ function parse (clean) {
     parsed_text.subject = parsed_text.locality;
 
     // remove the locality name from $admin
-    if ( parsed_text.admin ) {
+    if (parsed_text.admin) {
       let width = parsed_text.subject.length;
       let cut = parsed_text.admin.substr(0, width);
-      if( cut === parsed_text.subject ){
+      if (cut === parsed_text.subject) {
         parsed_text.admin = _.trim(parsed_text.admin.substr(width), ', ');
-        if( !parsed_text.admin.length ){ delete parsed_text.admin; }
+        if (!parsed_text.admin.length) {
+          delete parsed_text.admin;
+        }
       }
     }
   }
@@ -207,7 +227,9 @@ function parse (clean) {
       let cut = parsed_text.admin.substr(0, width);
       if (cut === parsed_text.subject) {
         parsed_text.admin = _.trim(parsed_text.admin.substr(width), ', ');
-        if( !parsed_text.admin.length ){ delete parsed_text.admin; }
+        if (!parsed_text.admin.length) {
+          delete parsed_text.admin;
+        }
       }
     }
   }
@@ -221,11 +243,13 @@ function parse (clean) {
       let cut = parsed_text.admin.substr(0, width);
       if (cut === parsed_text.subject) {
         parsed_text.admin = _.trim(parsed_text.admin.substr(width), ', ');
-        if (!parsed_text.admin.length) { delete parsed_text.admin; }
+        if (!parsed_text.admin.length) {
+          delete parsed_text.admin;
+        }
       }
     }
   }
-  
+
   // unknown query type
   else {
     parsed_text.subject = t.span.body;
@@ -234,12 +258,12 @@ function parse (clean) {
   return parsed_text;
 }
 
-function _expected () {
+function _expected() {
   return [{ name: 'text' }];
 }
 
 // export function
 module.exports = () => ({
   sanitize: _sanitize,
-  expected: _expected
+  expected: _expected,
 });

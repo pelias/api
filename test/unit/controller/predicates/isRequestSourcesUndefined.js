@@ -5,17 +5,18 @@ module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.ok(_.isFunction(isRequestSourcesUndefined), 'isRequestSourcesUndefined is a function');
+    t.ok(
+      _.isFunction(isRequestSourcesUndefined),
+      'isRequestSourcesUndefined is a function',
+    );
     t.end();
   });
 };
 
 module.exports.tests.true_conditions = (test, common) => {
   test('undefined req should return true', (t) => {
-
     t.ok(isRequestSourcesUndefined(undefined));
     t.end();
-
   });
 
   test('undefined req.clean should return true', (t) => {
@@ -23,48 +24,40 @@ module.exports.tests.true_conditions = (test, common) => {
 
     t.ok(isRequestSourcesUndefined(req));
     t.end();
-
   });
 
   test('undefined req.clean.sources should return true', (t) => {
     const req = {
-      clean: {}
+      clean: {},
     };
 
     t.ok(isRequestSourcesUndefined(req));
     t.end();
-
   });
 
   test('empty req.clean.sources should return true', (t) => {
     const req = {
       clean: {
-        sources: []
-      }
+        sources: [],
+      },
     };
 
     t.ok(isRequestSourcesUndefined(req));
     t.end();
-
   });
-
 };
 
 module.exports.tests.false_conditions = (test, common) => {
   test('sources not empty should return false', (t) => {
     const req = {
       clean: {
-        sources: [
-          'not empty'
-        ]
-      }
+        sources: ['not empty'],
+      },
     };
 
     t.notOk(isRequestSourcesUndefined(req));
     t.end();
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
@@ -72,7 +65,7 @@ module.exports.all = (tape, common) => {
     return tape(`isRequestSourcesUndefined ${name}`, testFunction);
   }
 
-  for( const testCase in module.exports.tests ){
+  for (const testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

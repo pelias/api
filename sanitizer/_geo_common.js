@@ -13,9 +13,9 @@ const wrap = require('./wrap');
  * @param {object} raw
  * @param {bool} bbox_is_required
  */
-function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
+function sanitize_rect(key_prefix, clean, raw, bbox_is_required) {
   // calculate full property names from the key_prefix
-  var properties = [ 'min_lat', 'max_lat', 'min_lon', 'max_lon' ].map(prop => {
+  var properties = ['min_lat', 'max_lat', 'min_lon', 'max_lon'].map((prop) => {
     return `${key_prefix}.${prop}`;
   });
 
@@ -30,44 +30,52 @@ function sanitize_rect( key_prefix, clean, raw, bbox_is_required ) {
 
   // don't bother checking individual elements if bbox is not required
   // and not present
-  if (!bbox_present) { return; }
+  if (!bbox_present) {
+    return;
+  }
 
   sanitize_bbox_min_max(raw, key_prefix);
   sanitize_bbox_bounds(raw, key_prefix);
 
   // use sanitize_coord to set values in `clean`
-  properties.forEach(prop => {
+  properties.forEach((prop) => {
     sanitize_coord(prop, clean, raw, true);
   });
 }
 
-  // validate max is greater than min for lat and lon
+// validate max is greater than min for lat and lon
 function sanitize_bbox_min_max(raw, key_prefix) {
-  ['lat', 'lon'].forEach(dimension => {
+  ['lat', 'lon'].forEach((dimension) => {
     const max = parseFloat(raw[`${key_prefix}.max_${dimension}`]);
     const min = parseFloat(raw[`${key_prefix}.min_${dimension}`]);
 
     if (max <= min) {
-      throw new Error(`${key_prefix}.min_${dimension} (${min}) must be less than ${key_prefix}.max_${dimension} (${max})`);
+      throw new Error(
+        `${key_prefix}.min_${dimension} (${min}) must be less than ${key_prefix}.max_${dimension} (${max})`,
+      );
     }
   });
 }
 
 // validate lat/lon values are within bounds
 function sanitize_bbox_bounds(raw, key_prefix) {
-  const bounds = [ { dimension: 'lat', range: 90},
-                   { dimension: 'lon', range: 180} ];
+  const bounds = [
+    { dimension: 'lat', range: 90 },
+    { dimension: 'lon', range: 180 },
+  ];
 
-  bounds.forEach(bound => {
+  bounds.forEach((bound) => {
     const values = {
       max: parseFloat(raw[`${key_prefix}.max_${bound.dimension}`]),
-      min: parseFloat(raw[`${key_prefix}.min_${bound.dimension}`])
+      min: parseFloat(raw[`${key_prefix}.min_${bound.dimension}`]),
     };
 
-    ['min', 'max'].forEach(prefix => {
+    ['min', 'max'].forEach((prefix) => {
       if (Math.abs(values[prefix]) > bound.range) {
-        const key =`${key_prefix}.${prefix}_${bound.dimension}`;
-        throw new Error(`${key} value ${values[prefix]} is outside range -${bound.range},${bound.range}`);
+        const key = `${key_prefix}.${prefix}_${bound.dimension}`;
+        throw new Error(
+          `${key} value ${values[prefix]} is outside range -${bound.range},${bound.range}`,
+        );
       }
     });
   });
@@ -81,14 +89,14 @@ function sanitize_bbox_bounds(raw, key_prefix) {
  * @param {object} raw
  * @param {bool} circle_is_required
  */
-function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
+function sanitize_circle(key_prefix, clean, raw, circle_is_required) {
   // sanitize both a point and a radius if radius is present
   // otherwise just sanittize the point
-  if( !_.isNil( raw[ key_prefix + '.radius' ] ) ){
-    sanitize_coord( key_prefix + '.radius', clean, raw, true );
-    sanitize_point( key_prefix, clean, raw, true);
+  if (!_.isNil(raw[key_prefix + '.radius'])) {
+    sanitize_coord(key_prefix + '.radius', clean, raw, true);
+    sanitize_point(key_prefix, clean, raw, true);
   } else {
-    sanitize_point( key_prefix, clean, raw, circle_is_required);
+    sanitize_point(key_prefix, clean, raw, circle_is_required);
   }
 }
 
@@ -100,10 +108,9 @@ function sanitize_circle( key_prefix, clean, raw, circle_is_required ) {
  * @param {object} raw
  * @param {bool} point_is_required
  */
-function sanitize_point( key_prefix, clean, raw, point_is_required ) {
-
+function sanitize_point(key_prefix, clean, raw, point_is_required) {
   // calculate full property names from the key_prefix
-  var properties = [ 'lat', 'lon'].map(prop => {
+  var properties = ['lat', 'lon'].map((prop) => {
     return `${key_prefix}.${prop}`;
   });
 
@@ -118,11 +125,13 @@ function sanitize_point( key_prefix, clean, raw, point_is_required ) {
 
   // don't bother checking individual elements if point is not required
   // and not present
-  if (!point_present) { return; }
+  if (!point_present) {
+    return;
+  }
 
   // check each property individually. now that it is known a bbox is present,
   // all properties must exist, so pass the true flag for coord_is_required
-  properties.forEach(prop => {
+  properties.forEach((prop) => {
     sanitize_coord(prop, clean, raw, true);
   });
 
@@ -140,13 +149,12 @@ function sanitize_point( key_prefix, clean, raw, point_is_required ) {
  * @param {object} raw - the raw request object
  * @param {bool} latlon_is_required
  */
-function sanitize_coord( key, clean, raw, latlon_is_required ) {
-  var parsedValue = parseFloat( raw[key] );
+function sanitize_coord(key, clean, raw, latlon_is_required) {
+  var parsedValue = parseFloat(raw[key]);
 
-  if ( _.isFinite( parsedValue ) ) {
+  if (_.isFinite(parsedValue)) {
     clean[key] = parsedValue;
-  }
-  else if (latlon_is_required) {
+  } else if (latlon_is_required) {
     throw new Error(`missing param '${key}'`);
   }
 }
@@ -155,5 +163,5 @@ module.exports = {
   sanitize_rect: sanitize_rect,
   sanitize_coord: sanitize_coord,
   sanitize_circle: sanitize_circle,
-  sanitize_point: sanitize_point
+  sanitize_point: sanitize_point,
 };

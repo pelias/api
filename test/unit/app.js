@@ -13,25 +13,21 @@ module.exports.tests.invalid_configuration = (test, common) => {
             t.equals(schema, 'this is the schema');
 
             throw Error('config is not valid');
-          }
-        }
+          },
+        },
       });
-
     }, /config is not valid/);
 
     t.end();
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
-
   function test(name, testFunction) {
     return tape('app: ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

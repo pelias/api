@@ -9,9 +9,8 @@ module.exports.tests.interface = (test, common) => {
       'pelias-logger': {
         get: (section) => {
           t.equal(section, 'api');
-        }
-      }
-
+        },
+      },
     });
 
     t.equal(typeof service, 'function', 'service is a function');
@@ -29,19 +28,19 @@ module.exports.tests.error_conditions = (test, common) => {
           return {
             error: (msg) => {
               errorMessages.push(msg);
-            }
+            },
           };
-        }
-      }
+        },
+      },
     });
 
     const esclient = {
       search: (cmd, callback) => {
         t.equals(cmd, 'this is the query');
         callback(null, {
-          timed_out : true,
+          timed_out: true,
         });
-      }
+      },
     };
 
     const next = (err, docs) => {
@@ -49,14 +48,15 @@ module.exports.tests.error_conditions = (test, common) => {
       t.deepEquals(err, expected);
       t.equals(docs, undefined);
 
-      t.ok(errorMessages.find((msg) => {
-        return msg === `elasticsearch error ${err}`;
-      }));
+      t.ok(
+        errorMessages.find((msg) => {
+          return msg === `elasticsearch error ${err}`;
+        }),
+      );
       t.end();
     };
 
     service(esclient, 'this is the query', next);
-
   });
 
   test('esclient.search returning error should log and pass it on', (t) => {
@@ -68,10 +68,10 @@ module.exports.tests.error_conditions = (test, common) => {
           return {
             error: (msg) => {
               errorMessages.push(msg);
-            }
+            },
           };
-        }
-      }
+        },
+      },
     });
 
     const esclient = {
@@ -84,28 +84,28 @@ module.exports.tests.error_conditions = (test, common) => {
             {
               found: true,
               _id: 'doc id',
-              _source: {}
-            }
-          ]
+              _source: {},
+            },
+          ],
         };
 
         callback('this is an error', data);
-
-      }
+      },
     };
 
     const next = (err, docs) => {
       t.equals(err, 'this is an error', 'err should have been passed on');
       t.equals(docs, undefined);
 
-      t.ok(errorMessages.find((msg) => {
-        return msg === `elasticsearch error ${err}`;
-      }));
+      t.ok(
+        errorMessages.find((msg) => {
+          return msg === `elasticsearch error ${err}`;
+        }),
+      );
       t.end();
     };
 
     service(esclient, 'this is the query', next);
-
   });
 };
 
@@ -119,10 +119,10 @@ module.exports.tests.success_conditions = (test, common) => {
           return {
             error: (msg) => {
               errorMessages.push(msg);
-            }
+            },
           };
-        }
-      }
+        },
+      },
     });
 
     const esclient = {
@@ -138,24 +138,23 @@ module.exports.tests.success_conditions = (test, common) => {
                 _id: 'doc id 1',
                 matched_queries: 'matched_queries 1',
                 _source: {
-                  random_key: 'value 1'
-                }
+                  random_key: 'value 1',
+                },
               },
               {
                 _score: 'score 2',
                 _id: 'doc id 2',
                 matched_queries: 'matched_queries 2',
                 _source: {
-                  random_key: 'value 2'
-                }
-              }
-            ]
-          }
+                  random_key: 'value 2',
+                },
+              },
+            ],
+          },
         };
 
         callback(undefined, data);
-
-      }
+      },
     };
 
     const expectedDocs = [
@@ -163,18 +162,18 @@ module.exports.tests.success_conditions = (test, common) => {
         _score: 'score 1',
         _id: 'doc id 1',
         random_key: 'value 1',
-        _matched_queries: 'matched_queries 1'
+        _matched_queries: 'matched_queries 1',
       },
       {
         _score: 'score 2',
         _id: 'doc id 2',
         random_key: 'value 2',
-        _matched_queries: 'matched_queries 2'
-      }
+        _matched_queries: 'matched_queries 2',
+      },
     ];
 
     const expectedMeta = {
-      scores: ['score 1', 'score 2']
+      scores: ['score 1', 'score 2'],
     };
 
     const next = (err, docs, meta) => {
@@ -187,7 +186,6 @@ module.exports.tests.success_conditions = (test, common) => {
     };
 
     service(esclient, 'this is the query', next);
-
   });
 
   test('esclient.search returning falsy data should return empty docs and meta', (t) => {
@@ -199,10 +197,10 @@ module.exports.tests.success_conditions = (test, common) => {
           return {
             error: (msg) => {
               errorMessages.push(msg);
-            }
+            },
           };
-        }
-      }
+        },
+      },
     });
 
     const esclient = {
@@ -210,8 +208,7 @@ module.exports.tests.success_conditions = (test, common) => {
         t.deepEquals(cmd, 'this is the query');
 
         callback(undefined, {});
-
-      }
+      },
     };
 
     const expectedDocs = [];
@@ -227,7 +224,6 @@ module.exports.tests.success_conditions = (test, common) => {
     };
 
     service(esclient, 'this is the query', next);
-
   });
 
   test('esclient.search returning falsy data.hits should return empty docs and meta', (t) => {
@@ -239,10 +235,10 @@ module.exports.tests.success_conditions = (test, common) => {
           return {
             error: (msg) => {
               errorMessages.push(msg);
-            }
+            },
           };
-        }
-      }
+        },
+      },
     });
 
     const esclient = {
@@ -251,13 +247,12 @@ module.exports.tests.success_conditions = (test, common) => {
 
         const data = {
           hits: {
-            total: 17
-          }
+            total: 17,
+          },
         };
 
         callback(undefined, data);
-
-      }
+      },
     };
 
     const expectedDocs = [];
@@ -273,7 +268,6 @@ module.exports.tests.success_conditions = (test, common) => {
     };
 
     service(esclient, 'this is the query', next);
-
   });
 
   test('esclient.search returning non-array data.hits.hits should return empty docs and meta', (t) => {
@@ -285,10 +279,10 @@ module.exports.tests.success_conditions = (test, common) => {
           return {
             error: (msg) => {
               errorMessages.push(msg);
-            }
+            },
           };
-        }
-      }
+        },
+      },
     });
 
     const esclient = {
@@ -298,13 +292,12 @@ module.exports.tests.success_conditions = (test, common) => {
         const data = {
           hits: {
             total: 17,
-            hits: 'this isn\'t an array'
-          }
+            hits: "this isn't an array",
+          },
         };
 
         callback(undefined, data);
-
-      }
+      },
     };
 
     const expectedDocs = [];
@@ -320,18 +313,15 @@ module.exports.tests.success_conditions = (test, common) => {
     };
 
     service(esclient, 'this is the query', next);
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
-
   function test(name, testFunction) {
     return tape('SERVICE /search ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

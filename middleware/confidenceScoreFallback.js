@@ -21,12 +21,20 @@ function setup() {
 function computeScores(req, res, next) {
   // do nothing if no result data set or if the query is not of the fallback variety
   // later add disambiguation to this list
-  if (_.isUndefined(req.clean) || _.isUndefined(res) ||
-      _.isUndefined(res.data) || _.isUndefined(res.meta)) {
+  if (
+    _.isUndefined(req.clean) ||
+    _.isUndefined(res) ||
+    _.isUndefined(res.data) ||
+    _.isUndefined(res.meta)
+  ) {
     return next();
   }
 
-  if (['search_fallback', 'address_search_with_ids', 'structured'].includes(res.meta.queryType)) {
+  if (
+    ['search_fallback', 'address_search_with_ids', 'structured'].includes(
+      res.meta.queryType,
+    )
+  ) {
     return next();
   }
 
@@ -45,7 +53,6 @@ function computeScores(req, res, next) {
  * @returns {object}
  */
 function computeConfidenceScore(req, hit) {
-
   // if parsed text doesn't exist, which it never should, just assign a low confidence and move on
   if (!req.clean.hasOwnProperty('parsed_text')) {
     hit.confidence = 0.1;
@@ -60,7 +67,7 @@ function computeConfidenceScore(req, hit) {
   hit.confidence *= checkFallbackLevel(req, hit);
 
   // truncate the precision
-  hit.confidence = Number((hit.confidence).toFixed(3));
+  hit.confidence = Number(hit.confidence.toFixed(3));
 
   return hit;
 }
@@ -72,7 +79,10 @@ function checkFallbackLevel(req, hit) {
     // if we know a fallback occurred, deduct points based on layer granularity
     switch (hit.layer) {
       case 'venue':
-        logger.warn('Fallback scenarios should not result in address or venue records!', req.clean.parsed_text);
+        logger.warn(
+          'Fallback scenarios should not result in address or venue records!',
+          req.clean.parsed_text,
+        );
         return 0.8;
       case 'address':
         return 0.8;
@@ -97,7 +107,6 @@ function checkFallbackLevel(req, hit) {
       default:
         return 0.1;
     }
-
   }
 
   hit.match_type = 'exact';
@@ -126,69 +135,101 @@ const fallbackRules = [
     name: 'venue',
     notSet: [],
     set: ['query'],
-    expectedLayers: ['venue']
+    expectedLayers: ['venue'],
   },
   {
     name: 'address',
     notSet: ['query'],
     set: ['housenumber', 'street'],
-    expectedLayers: ['address']
+    expectedLayers: ['address'],
   },
   {
     name: 'street',
     notSet: ['query', 'housenumber'],
     set: ['street'],
-    expectedLayers: ['street']
+    expectedLayers: ['street'],
   },
   {
     name: 'postalcode',
     notSet: ['query', 'housenumber', 'street'],
     set: ['postalcode'],
-    expectedLayers: ['postalcode']
+    expectedLayers: ['postalcode'],
   },
   {
     name: 'neighbourhood',
     notSet: ['query', 'housenumber', 'street', 'postalcode'],
     set: ['neighbourhood'],
-    expectedLayers: ['neighbourhood']
+    expectedLayers: ['neighbourhood'],
   },
   {
     name: 'borough',
     notSet: ['query', 'housenumber', 'street', 'postalcode', 'neighbourhood'],
     set: ['borough'],
-    expectedLayers: ['borough']
+    expectedLayers: ['borough'],
   },
   {
     name: 'city',
-    notSet: ['query', 'housenumber', 'street', 'postalcode', 'neighbourhood', 'borough'],
+    notSet: [
+      'query',
+      'housenumber',
+      'street',
+      'postalcode',
+      'neighbourhood',
+      'borough',
+    ],
     set: ['city'],
-    expectedLayers: ['borough', 'locality', 'localadmin']
+    expectedLayers: ['borough', 'locality', 'localadmin'],
   },
   {
     name: 'county',
-    notSet: ['query', 'housenumber', 'street', 'postalcode', 'neighbourhood', 'borough', 'city'],
+    notSet: [
+      'query',
+      'housenumber',
+      'street',
+      'postalcode',
+      'neighbourhood',
+      'borough',
+      'city',
+    ],
     set: ['county'],
-    expectedLayers: ['county']
+    expectedLayers: ['county'],
   },
   {
     name: 'state',
-    notSet: ['query', 'housenumber', 'street', 'postalcode', 'neighbourhood', 'borough', 'city', 'county'],
+    notSet: [
+      'query',
+      'housenumber',
+      'street',
+      'postalcode',
+      'neighbourhood',
+      'borough',
+      'city',
+      'county',
+    ],
     set: ['state'],
-    expectedLayers: ['region']
+    expectedLayers: ['region'],
   },
   {
     name: 'country',
-    notSet: ['query', 'housenumber', 'street', 'postalcode', 'neighbourhood', 'borough', 'city', 'county', 'state'],
+    notSet: [
+      'query',
+      'housenumber',
+      'street',
+      'postalcode',
+      'neighbourhood',
+      'borough',
+      'city',
+      'county',
+      'state',
+    ],
     set: ['country'],
-    expectedLayers: ['country']
-  }
+    expectedLayers: ['country'],
+  },
 ];
 
 function checkFallbackOccurred(req, hit) {
-
   // short-circuit after finding the first fallback scenario
   const res = _.find(fallbackRules, (rule) => {
-
     return (
       // verify that more granular properties are not set
       notSet(req.clean.parsed_text, rule.notSet) &&
@@ -200,7 +241,7 @@ function checkFallbackOccurred(req, hit) {
   });
 
   if (res) {
-    debugLog.push(req, hit, {'fallback rule matched': res});
+    debugLog.push(req, hit, { 'fallback rule matched': res });
   }
 
   return !!res;
@@ -211,11 +252,9 @@ function notSet(parsed_text, notSet) {
     return true;
   }
 
-  return (
-    _.every(notSet, (prop) => {
-      return !_.get(parsed_text, prop, false);
-    })
-  );
+  return _.every(notSet, (prop) => {
+    return !_.get(parsed_text, prop, false);
+  });
 }
 
 function areSet(parsed_text, areSet) {
@@ -224,11 +263,9 @@ function areSet(parsed_text, areSet) {
     return true;
   }
 
-  return (
-    _.every(areSet, (prop) => {
-      return _.get(parsed_text, prop, false);
-    })
-  );
+  return _.every(areSet, (prop) => {
+    return _.get(parsed_text, prop, false);
+  });
 }
 
 module.exports = setup;

@@ -2,20 +2,19 @@ var calcSizeMiddleware = require('../../../middleware/sizeCalculator.js');
 
 module.exports.tests = {};
 
-module.exports.tests.interface = function(test, common) {
-  test('interface', function(t) {
+module.exports.tests.interface = function (test, common) {
+  test('interface', function (t) {
     t.equal(typeof calcSizeMiddleware, 'function', 'valid function');
     t.end();
   });
 };
 
-module.exports.tests.valid = function(test, common) {
+module.exports.tests.valid = function (test, common) {
   var req = { clean: {} };
   function setupQuery(val) {
     if (isNaN(val)) {
       delete req.clean.size;
-    }
-    else {
+    } else {
       req.clean.size = val;
     }
     delete req.clean.querySize;
@@ -95,12 +94,11 @@ module.exports.tests.valid = function(test, common) {
 };
 
 module.exports.all = function (tape, common) {
-
   function test(name, testFunction) {
     return tape('sizeCalculator: ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

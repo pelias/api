@@ -5,7 +5,11 @@ module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.equal(typeof hasResultsAtLayers, 'function', 'hasResultsAtLayers is a function');
+    t.equal(
+      typeof hasResultsAtLayers,
+      'function',
+      'hasResultsAtLayers is a function',
+    );
     t.equal(hasResultsAtLayers.length, 1);
     t.end();
   });
@@ -17,20 +21,19 @@ module.exports.tests.true_conditions = (test, common) => {
     const res = {
       data: [
         {
-          layer: 'layer 1'
+          layer: 'layer 1',
         },
         {
-          layer: 'layer 2'
+          layer: 'layer 2',
         },
         {
-          layer: 'layer 3'
-        }
-      ]
+          layer: 'layer 3',
+        },
+      ],
     };
 
     t.ok(hasResultsAtLayers(['layer 2', 'layer 4'])(req, res));
     t.end();
-
   });
 
   test('should return true when any result.layer matches layer string', (t) => {
@@ -38,22 +41,20 @@ module.exports.tests.true_conditions = (test, common) => {
     const res = {
       data: [
         {
-          layer: 'layer 1'
+          layer: 'layer 1',
         },
         {
-          layer: 'layer 2'
+          layer: 'layer 2',
         },
         {
-          layer: 'layer 3'
-        }
-      ]
+          layer: 'layer 3',
+        },
+      ],
     };
 
     t.ok(hasResultsAtLayers('layer 2')(req, res));
     t.end();
-
   });
-
 };
 
 module.exports.tests.false_conditions = (test, common) => {
@@ -63,18 +64,16 @@ module.exports.tests.false_conditions = (test, common) => {
 
     t.notOk(hasResultsAtLayers('layer')(req, res));
     t.end();
-
   });
 
   test('should return false when response has empty data array', (t) => {
     const req = {};
     const res = {
-      data: []
+      data: [],
     };
 
     t.notOk(hasResultsAtLayers('layer')(req, res));
     t.end();
-
   });
 
   test('should return false when layer is a substring of non-array string layers parameter', (t) => {
@@ -82,14 +81,13 @@ module.exports.tests.false_conditions = (test, common) => {
     const res = {
       data: [
         {
-          layer: 'aye'
-        }
-      ]
+          layer: 'aye',
+        },
+      ],
     };
 
     t.notOk(hasResultsAtLayers('layer')(req, res));
     t.end();
-
   });
 
   test('should return false when no results have layer in supplied layers', (t) => {
@@ -97,16 +95,14 @@ module.exports.tests.false_conditions = (test, common) => {
     const res = {
       data: [
         {
-          layer: 'layer 1'
-        }
-      ]
+          layer: 'layer 1',
+        },
+      ],
     };
 
     t.notOk(hasResultsAtLayers(['layer 2', 'layer 3'])(req, res));
     t.end();
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
@@ -114,7 +110,7 @@ module.exports.all = (tape, common) => {
     return tape(`hasResultsAtLayers ${name}`, testFunction);
   }
 
-  for( const testCase in module.exports.tests ){
+  for (const testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

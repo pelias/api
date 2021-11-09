@@ -2,10 +2,9 @@ var peliasQuery = require('pelias-query');
 var _ = require('lodash');
 
 module.exports = _.merge({}, peliasQuery.defaults, {
-
-  'size': 1,
-  'track_scores': true,
-  'layers': ['venue', 'address', 'street'],
+  size: 1,
+  track_scores: true,
+  layers: ['venue', 'address', 'street'],
 
   'centroid:field': 'center_point',
 
@@ -87,6 +86,5 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'population:field': 'population',
   'population:modifier': 'log1p',
   'population:max_boost': 20,
-  'population:weight': 2
-
+  'population:weight': 2,
 });

@@ -14,38 +14,37 @@ module.exports.tests.completely_valid = (test, common) => {
         accessLog: 'accessLog value',
         relativeScores: true,
         localization: {
-          flipNumberAndStreetCountries: ['ABC', 'DEF']
+          flipNumberAndStreetCountries: ['ABC', 'DEF'],
         },
         requestRetries: 19,
         services: {
           pip: {
-            url: 'http://localhost'
+            url: 'http://localhost',
           },
           placeholder: {
-            url: 'http://localhost'
+            url: 'http://localhost',
           },
           interpolation: {
-            url: 'http://localhost'
+            url: 'http://localhost',
           },
           libpostal: {
-            url: 'http://localhost'
-          }
+            url: 'http://localhost',
+          },
         },
         defaultParameters: {
           'focus.point.lat': 19,
-          'focus.point.lon': 91
-        }
+          'focus.point.lon': 91,
+        },
       },
       esclient: {
-        requestTimeout: 17
-      }
+        requestTimeout: 17,
+      },
     };
 
     const result = schema.validate(config);
 
     t.notOk(result.error);
     t.end();
-
   });
 
   test('basic valid configuration should not throw error and have defaults set', (t) => {
@@ -53,27 +52,29 @@ module.exports.tests.completely_valid = (test, common) => {
       api: {
         version: 'version value',
         indexName: 'index name value',
-        host: 'host value'
+        host: 'host value',
       },
       esclient: {
-        requestTimeout: 17
-      }
+        requestTimeout: 17,
+      },
     };
 
     const result = schema.validate(config);
 
     t.notOk(result.error);
-    t.deepEquals(result.value.api.services, {}, 'missing api.services should default to empty object');
+    t.deepEquals(
+      result.value.api.services,
+      {},
+      'missing api.services should default to empty object',
+    );
     t.end();
-
   });
-
 };
 
 module.exports.tests.api_validation = (test, common) => {
   test('config without api should throw error', (t) => {
     var config = {
-      esclient: {}
+      esclient: {},
     };
 
     const result = schema.validate(config);
@@ -81,7 +82,6 @@ module.exports.tests.api_validation = (test, common) => {
     t.equals(result.error.details.length, 1);
     t.equals(result.error.details[0].message, '"api" is required');
     t.end();
-
   });
 
   test('config without unknown field in api should not throw error', (t) => {
@@ -90,16 +90,15 @@ module.exports.tests.api_validation = (test, common) => {
         version: 'version value',
         indexName: 'index name value',
         host: 'host value',
-        unknown: 'unknown value'
+        unknown: 'unknown value',
       },
-      esclient: {}
+      esclient: {},
     };
 
     const result = schema.validate(config);
 
     t.notOk(result.error);
     t.end();
-
   });
 
   test('non-string api.version should throw error', (t) => {
@@ -108,20 +107,21 @@ module.exports.tests.api_validation = (test, common) => {
         api: {
           version: value,
           indexName: 'index name value',
-          host: 'host value'
+          host: 'host value',
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"api.version" must be a string');
-
+      t.equals(
+        result.error.details[0].message,
+        '"api.version" must be a string',
+      );
     });
 
     t.end();
-
   });
 
   test('non-string api.indexName should throw error', (t) => {
@@ -130,20 +130,21 @@ module.exports.tests.api_validation = (test, common) => {
         api: {
           version: 'version value',
           indexName: value,
-          host: 'host value'
+          host: 'host value',
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"api.indexName" must be a string');
-
+      t.equals(
+        result.error.details[0].message,
+        '"api.indexName" must be a string',
+      );
     });
 
     t.end();
-
   });
 
   test('non-string api.host should throw error', (t) => {
@@ -152,20 +153,18 @@ module.exports.tests.api_validation = (test, common) => {
         api: {
           version: 'version value',
           indexName: 'index name value',
-          host: value
+          host: value,
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
       t.equals(result.error.details[0].message, '"api.host" must be a string');
-
     });
 
     t.end();
-
   });
 
   test('non-string api.accessLog should throw error', (t) => {
@@ -175,20 +174,21 @@ module.exports.tests.api_validation = (test, common) => {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          accessLog: value
+          accessLog: value,
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"api.accessLog" must be a string');
-
+      t.equals(
+        result.error.details[0].message,
+        '"api.accessLog" must be a string',
+      );
     });
 
     t.end();
-
   });
 
   test('non-boolean api.relativeScores should throw error', (t) => {
@@ -198,20 +198,21 @@ module.exports.tests.api_validation = (test, common) => {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          relativeScores: value
+          relativeScores: value,
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"api.relativeScores" must be a boolean');
-
+      t.equals(
+        result.error.details[0].message,
+        '"api.relativeScores" must be a boolean',
+      );
     });
 
     t.end();
-
   });
 
   test('non-object api.localization should throw error', (t) => {
@@ -221,20 +222,21 @@ module.exports.tests.api_validation = (test, common) => {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          localization: value
+          localization: value,
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"api.localization" must be of type object');
-
+      t.equals(
+        result.error.details[0].message,
+        '"api.localization" must be of type object',
+      );
     });
 
     t.end();
-
   });
 
   test('unknown properties in api.localization should throw error', (t) => {
@@ -244,19 +246,21 @@ module.exports.tests.api_validation = (test, common) => {
         indexName: 'index name value',
         host: 'host value',
         localization: {
-          unknown_property: 'value'
-        }
+          unknown_property: 'value',
+        },
       },
-      esclient: {}
+      esclient: {},
     };
 
     const result = schema.validate(config);
 
     t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"api.localization.unknown_property" is not allowed');
+    t.equals(
+      result.error.details[0].message,
+      '"api.localization.unknown_property" is not allowed',
+    );
 
     t.end();
-
   });
 
   test('non-array api.localization.flipNumberAndStreetCountries should throw error', (t) => {
@@ -267,21 +271,22 @@ module.exports.tests.api_validation = (test, common) => {
           indexName: 'index name value',
           host: 'host value',
           localization: {
-            flipNumberAndStreetCountries: value
-          }
+            flipNumberAndStreetCountries: value,
+          },
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"api.localization.flipNumberAndStreetCountries" must be an array');
-
+      t.equals(
+        result.error.details[0].message,
+        '"api.localization.flipNumberAndStreetCountries" must be an array',
+      );
     });
 
     t.end();
-
   });
 
   test('non-string api.localization.flipNumberAndStreetCountries elements should throw error', (t) => {
@@ -292,21 +297,22 @@ module.exports.tests.api_validation = (test, common) => {
           indexName: 'index name value',
           host: 'host value',
           localization: {
-            flipNumberAndStreetCountries: [value]
-          }
+            flipNumberAndStreetCountries: [value],
+          },
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"api.localization.flipNumberAndStreetCountries[0]" must be a string');
-
+      t.equals(
+        result.error.details[0].message,
+        '"api.localization.flipNumberAndStreetCountries[0]" must be a string',
+      );
     });
 
     t.end();
-
   });
 
   test('non-3-char api.localization.flipNumberAndStreetCountries elements should throw error', (t) => {
@@ -317,23 +323,22 @@ module.exports.tests.api_validation = (test, common) => {
           indexName: 'index name value',
           host: 'host value',
           localization: {
-            flipNumberAndStreetCountries: [value]
-          }
+            flipNumberAndStreetCountries: [value],
+          },
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message,
-        `"api.localization.flipNumberAndStreetCountries[0]" with value "${value}" fails to match the required pattern: /^[A-Z]{3}$/`
+      t.equals(
+        result.error.details[0].message,
+        `"api.localization.flipNumberAndStreetCountries[0]" with value "${value}" fails to match the required pattern: /^[A-Z]{3}$/`,
       );
-
     });
 
     t.end();
-
   });
 
   test('config with non-number api.requestRetries should throw error', (t) => {
@@ -343,20 +348,21 @@ module.exports.tests.api_validation = (test, common) => {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          requestRetries: value
+          requestRetries: value,
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"api.requestRetries" must be a number');
-
+      t.equals(
+        result.error.details[0].message,
+        '"api.requestRetries" must be a number',
+      );
     });
 
     t.end();
-
   });
 
   test('config with non-integer api.requestRetries should throw error', (t) => {
@@ -365,17 +371,19 @@ module.exports.tests.api_validation = (test, common) => {
         version: 'version value',
         indexName: 'index name value',
         host: 'host value',
-        requestRetries: 17.3
+        requestRetries: 17.3,
       },
-      esclient: {}
+      esclient: {},
     };
 
     const result = schema.validate(config);
 
     t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"api.requestRetries" must be an integer');
+    t.equals(
+      result.error.details[0].message,
+      '"api.requestRetries" must be an integer',
+    );
     t.end();
-
   });
 
   test('config with negative api.requestRetries should throw error', (t) => {
@@ -384,17 +392,19 @@ module.exports.tests.api_validation = (test, common) => {
         version: 'version value',
         indexName: 'index name value',
         host: 'host value',
-        requestRetries: -1
+        requestRetries: -1,
       },
-      esclient: {}
+      esclient: {},
     };
 
     const result = schema.validate(config);
 
     t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"api.requestRetries" must be larger than or equal to 0');
+    t.equals(
+      result.error.details[0].message,
+      '"api.requestRetries" must be larger than or equal to 0',
+    );
     t.end();
-
   });
 
   // api.placeholderService has been moved to api.services.placeholder.url
@@ -405,20 +415,21 @@ module.exports.tests.api_validation = (test, common) => {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          placeholderService: value
+          placeholderService: value,
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"api.placeholderService" is not allowed');
-
+      t.equals(
+        result.error.details[0].message,
+        '"api.placeholderService" is not allowed',
+      );
     });
 
     t.end();
-
   });
 
   // api.pipService has been moved to api.services.pip.url
@@ -429,19 +440,17 @@ module.exports.tests.api_validation = (test, common) => {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          pipService: value
+          pipService: value,
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.notOk(result.error);
-
     });
 
     t.end();
-
   });
 
   test('non-number defaultParameters.focus.point.lat should throw error', (t) => {
@@ -452,21 +461,22 @@ module.exports.tests.api_validation = (test, common) => {
           indexName: 'index name value',
           host: 'host value',
           defaultParameters: {
-            'focus.point.lat': value
-          }
+            'focus.point.lat': value,
+          },
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"api.defaultParameters.focus.point.lat" must be a number');
-
+      t.equals(
+        result.error.details[0].message,
+        '"api.defaultParameters.focus.point.lat" must be a number',
+      );
     });
 
     t.end();
-
   });
 
   test('non-number defaultParameters.focus.point.lon should throw error', (t) => {
@@ -477,21 +487,22 @@ module.exports.tests.api_validation = (test, common) => {
           indexName: 'index name value',
           host: 'host value',
           defaultParameters: {
-            'focus.point.lon': value
-          }
+            'focus.point.lon': value,
+          },
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"api.defaultParameters.focus.point.lon" must be a number');
-
+      t.equals(
+        result.error.details[0].message,
+        '"api.defaultParameters.focus.point.lon" must be a number',
+      );
     });
 
     t.end();
-
   });
 
   test('non-object api.defaultParameters should throw error', (t) => {
@@ -501,23 +512,22 @@ module.exports.tests.api_validation = (test, common) => {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          defaultParameters: value
+          defaultParameters: value,
         },
-        esclient: {}
+        esclient: {},
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"api.defaultParameters" must be of type object');
-
+      t.equals(
+        result.error.details[0].message,
+        '"api.defaultParameters" must be of type object',
+      );
     });
 
     t.end();
-
   });
-
-
 };
 
 module.exports.tests.api_services_validation = (test, common) => {
@@ -528,20 +538,21 @@ module.exports.tests.api_services_validation = (test, common) => {
         indexName: 'index name value',
         host: 'host value',
         services: {
-          unknown_property: 'value'
-        }
+          unknown_property: 'value',
+        },
       },
-      esclient: {}
+      esclient: {},
     };
 
     const result = schema.validate(config);
 
     t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"api.services.unknown_property" is not allowed');
+    t.equals(
+      result.error.details[0].message,
+      '"api.services.unknown_property" is not allowed',
+    );
     t.end();
-
   });
-
 };
 
 module.exports.tests.service_validation = (test, common) => {
@@ -549,42 +560,40 @@ module.exports.tests.service_validation = (test, common) => {
   const services = ['pip', 'placeholder', 'interpolation', 'libpostal'];
 
   test('timeout and retries not specified should default to unset', (t) => {
-    services.forEach(service => {
+    services.forEach((service) => {
       const config = {
         api: {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          services: {}
+          services: {},
         },
-        esclient: {}
+        esclient: {},
       };
 
       config.api.services[service] = {
-        url: 'http://localhost'
+        url: 'http://localhost',
       };
 
       const result = schema.validate(config);
 
       t.equals(result.value.api.services[service].timeout, undefined);
       t.equals(result.value.api.services[service].retries, undefined);
-
     });
 
     t.end();
-
   });
 
   test('when api.services.<service> is defined, url is required', (t) => {
-    services.forEach(service => {
+    services.forEach((service) => {
       const config = {
         api: {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          services: {}
+          services: {},
         },
-        esclient: {}
+        esclient: {},
       };
 
       config.api.services[service] = {};
@@ -592,277 +601,281 @@ module.exports.tests.service_validation = (test, common) => {
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, `"api.services.${service}.url" is required`);
+      t.equals(
+        result.error.details[0].message,
+        `"api.services.${service}.url" is required`,
+      );
     });
 
     t.end();
-
   });
 
   test('non-string api.services.<service>.url should throw error', (t) => {
-    services.forEach(service => {
-      [null, 17, {}, [], true].forEach(value => {
+    services.forEach((service) => {
+      [null, 17, {}, [], true].forEach((value) => {
         const config = {
           api: {
             version: 'version value',
             indexName: 'index name value',
             host: 'host value',
-            services: {}
+            services: {},
           },
-          esclient: {}
+          esclient: {},
         };
 
         config.api.services[service] = {
-          url: value
+          url: value,
         };
 
         const result = schema.validate(config);
 
         t.equals(result.error.details.length, 1);
-        t.equals(result.error.details[0].message, `"api.services.${service}.url" must be a string`);
-
+        t.equals(
+          result.error.details[0].message,
+          `"api.services.${service}.url" must be a string`,
+        );
       });
-
     });
 
     t.end();
-
   });
 
   test('non-http/https api.services.<service>.url should throw error', (t) => {
-    services.forEach(service => {
+    services.forEach((service) => {
       ['ftp', 'git', 'unknown'].forEach((scheme) => {
         const config = {
           api: {
             version: 'version value',
             indexName: 'index name value',
             host: 'host value',
-            services: {}
+            services: {},
           },
-          esclient: {}
+          esclient: {},
         };
 
         config.api.services[service] = {
-          url: `${scheme}://localhost`
+          url: `${scheme}://localhost`,
         };
 
         const result = schema.validate(config);
 
         t.equals(result.error.details.length, 1);
-        t.equals(result.error.details[0].message,
-          `"api.services.${service}.url" must be a valid uri with a scheme matching the https\? pattern`
+        t.equals(
+          result.error.details[0].message,
+          `"api.services.${service}.url" must be a valid uri with a scheme matching the https\? pattern`,
         );
-
       });
-
     });
 
     t.end();
-
   });
 
   test('non-url/timeout/retries children of api.services.<service> should be disallowed', (t) => {
-    services.forEach(service => {
+    services.forEach((service) => {
       const config = {
         api: {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          services: {}
+          services: {},
         },
-        esclient: {}
+        esclient: {},
       };
 
       config.api.services[service] = {
         url: 'http://localhost',
-        unknown_property: 'value'
+        unknown_property: 'value',
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, `"api.services.${service}.unknown_property" is not allowed`);
-
+      t.equals(
+        result.error.details[0].message,
+        `"api.services.${service}.unknown_property" is not allowed`,
+      );
     });
 
     t.end();
-
   });
 
   test('non-number timeout should throw error', (t) => {
-    services.forEach(service => {
+    services.forEach((service) => {
       [null, 'string', {}, [], false].forEach((value) => {
         const config = {
           api: {
             version: 'version value',
             indexName: 'index name value',
             host: 'host value',
-            services: {}
+            services: {},
           },
-          esclient: {}
+          esclient: {},
         };
 
         config.api.services[service] = {
           url: 'http://localhost',
-          timeout: value
+          timeout: value,
         };
 
         const result = schema.validate(config);
 
         t.equals(result.error.details.length, 1);
-        t.equals(result.error.details[0].message, `"api.services.${service}.timeout" must be a number`);
-
+        t.equals(
+          result.error.details[0].message,
+          `"api.services.${service}.timeout" must be a number`,
+        );
       });
-
     });
 
     t.end();
-
   });
 
   test('non-integer timeout should throw error', (t) => {
-    services.forEach(service => {
+    services.forEach((service) => {
       const config = {
         api: {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          services: {}
+          services: {},
         },
-        esclient: {}
+        esclient: {},
       };
 
       config.api.services[service] = {
         url: 'http://localhost',
-        timeout: 17.3
+        timeout: 17.3,
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, `"api.services.${service}.timeout" must be an integer`);
-
+      t.equals(
+        result.error.details[0].message,
+        `"api.services.${service}.timeout" must be an integer`,
+      );
     });
 
     t.end();
-
   });
 
   test('negative timeout should throw error', (t) => {
-    services.forEach(service => {
+    services.forEach((service) => {
       const config = {
         api: {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          services: {}
+          services: {},
         },
-        esclient: {}
+        esclient: {},
       };
 
       config.api.services[service] = {
         url: 'http://localhost',
-        timeout: -1
+        timeout: -1,
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, `"api.services.${service}.timeout" must be larger than or equal to 0`);
-
+      t.equals(
+        result.error.details[0].message,
+        `"api.services.${service}.timeout" must be larger than or equal to 0`,
+      );
     });
 
     t.end();
-
   });
 
   test('non-number retries should throw error', (t) => {
-    services.forEach(service => {
+    services.forEach((service) => {
       [null, 'string', {}, [], false].forEach((value) => {
         const config = {
           api: {
             version: 'version value',
             indexName: 'index name value',
             host: 'host value',
-            services: {}
+            services: {},
           },
-          esclient: {}
+          esclient: {},
         };
 
         config.api.services[service] = {
           url: 'http://localhost',
-          retries: value
+          retries: value,
         };
 
         const result = schema.validate(config);
 
         t.equals(result.error.details.length, 1);
-        t.equals(result.error.details[0].message, `"api.services.${service}.retries" must be a number`);
-
+        t.equals(
+          result.error.details[0].message,
+          `"api.services.${service}.retries" must be a number`,
+        );
       });
-
     });
 
     t.end();
-
   });
 
   test('non-integer retries should throw error', (t) => {
-    services.forEach(service => {
+    services.forEach((service) => {
       const config = {
         api: {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          services: {}
+          services: {},
         },
-        esclient: {}
+        esclient: {},
       };
 
       config.api.services[service] = {
         url: 'http://localhost',
-        retries: 17.3
+        retries: 17.3,
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, `"api.services.${service}.retries" must be an integer`);
-
+      t.equals(
+        result.error.details[0].message,
+        `"api.services.${service}.retries" must be an integer`,
+      );
     });
 
     t.end();
-
   });
 
   test('negative retries should throw error', (t) => {
-    services.forEach(service => {
+    services.forEach((service) => {
       const config = {
         api: {
           version: 'version value',
           indexName: 'index name value',
           host: 'host value',
-          services: {}
+          services: {},
         },
-        esclient: {}
+        esclient: {},
       };
 
       config.api.services[service] = {
         url: 'http://localhost',
-        retries: -1
+        retries: -1,
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, `"api.services.${service}.retries" must be larger than or equal to 0`);
-
+      t.equals(
+        result.error.details[0].message,
+        `"api.services.${service}.retries" must be larger than or equal to 0`,
+      );
     });
 
     t.end();
-
   });
-
 };
 
 module.exports.tests.esclient_validation = (test, common) => {
@@ -871,8 +884,8 @@ module.exports.tests.esclient_validation = (test, common) => {
       api: {
         version: 'version value',
         indexName: 'index name value',
-        host: 'host value'
-      }
+        host: 'host value',
+      },
     };
 
     const result = schema.validate(config);
@@ -880,7 +893,6 @@ module.exports.tests.esclient_validation = (test, common) => {
     t.equals(result.error.details.length, 1);
     t.equals(result.error.details[0].message, '"esclient" is required');
     t.end();
-
   });
 
   test('config with non-object esclient should throw error', (t) => {
@@ -889,20 +901,21 @@ module.exports.tests.esclient_validation = (test, common) => {
         api: {
           version: 'version value',
           indexName: 'index name value',
-          host: 'host value'
+          host: 'host value',
         },
-        esclient: value
+        esclient: value,
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"esclient" must be of type object');
-
+      t.equals(
+        result.error.details[0].message,
+        '"esclient" must be of type object',
+      );
     });
 
     t.end();
-
   });
 
   test('config with non-number requestTimeout should throw error', (t) => {
@@ -911,22 +924,23 @@ module.exports.tests.esclient_validation = (test, common) => {
         api: {
           version: 'version value',
           indexName: 'index name value',
-          host: 'host value'
+          host: 'host value',
         },
         esclient: {
-          requestTimeout: value
-        }
+          requestTimeout: value,
+        },
       };
 
       const result = schema.validate(config);
 
       t.equals(result.error.details.length, 1);
-      t.equals(result.error.details[0].message, '"esclient.requestTimeout" must be a number');
-
+      t.equals(
+        result.error.details[0].message,
+        '"esclient.requestTimeout" must be a number',
+      );
     });
 
     t.end();
-
   });
 
   test('config with non-integer requestTimeout should throw error', (t) => {
@@ -934,19 +948,21 @@ module.exports.tests.esclient_validation = (test, common) => {
       api: {
         version: 'version value',
         indexName: 'index name value',
-        host: 'host value'
+        host: 'host value',
       },
       esclient: {
-        requestTimeout: 17.3
-      }
+        requestTimeout: 17.3,
+      },
     };
 
     const result = schema.validate(config);
 
     t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"esclient.requestTimeout" must be an integer');
+    t.equals(
+      result.error.details[0].message,
+      '"esclient.requestTimeout" must be an integer',
+    );
     t.end();
-
   });
 
   test('config with negative requestTimeout should throw error', (t) => {
@@ -954,30 +970,30 @@ module.exports.tests.esclient_validation = (test, common) => {
       api: {
         version: 'version value',
         indexName: 'index name value',
-        host: 'host value'
+        host: 'host value',
       },
       esclient: {
-        requestTimeout: -1
-      }
+        requestTimeout: -1,
+      },
     };
 
     const result = schema.validate(config);
 
     t.equals(result.error.details.length, 1);
-    t.equals(result.error.details[0].message, '"esclient.requestTimeout" must be larger than or equal to 0');
+    t.equals(
+      result.error.details[0].message,
+      '"esclient.requestTimeout" must be larger than or equal to 0',
+    );
     t.end();
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
-
   function test(name, testFunction) {
     return tape('configValidation: ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

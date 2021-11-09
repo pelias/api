@@ -2,197 +2,211 @@ var confidenceScore = require('../../../middleware/confidenceScore')();
 
 module.exports.tests = {};
 
-module.exports.tests.confidenceScore = function(test, common) {
-
-  test('empty res and req should not throw exception', function(t) {
+module.exports.tests.confidenceScore = function (test, common) {
+  test('empty res and req should not throw exception', function (t) {
     function testIt() {
-      confidenceScore({}, {}, function() {});
+      confidenceScore({}, {}, function () {});
     }
 
     t.doesNotThrow(testIt, 'an exception should not have been thrown');
     t.end();
   });
 
-  test('res.results without parsed_text should not throw exception', function(t) {
+  test('res.results without parsed_text should not throw exception', function (t) {
     var req = {};
     var res = {
-      data: [{
-        name: 'foo'
-      }],
-      meta: [10]
+      data: [
+        {
+          name: 'foo',
+        },
+      ],
+      meta: [10],
     };
 
     function testIt() {
-      confidenceScore(req, res, function() {});
+      confidenceScore(req, res, function () {});
     }
 
     t.doesNotThrow(testIt, 'an exception should not have been thrown');
     t.end();
   });
 
-  test('hit without address should not error', function(t) {
+  test('hit without address should not error', function (t) {
     var req = {
       clean: {
         text: 'test name3',
         parsed_text: {
-          postalcode: 12345
-        }
-      }
+          postalcode: 12345,
+        },
+      },
     };
     var res = {
-      data: [{
-        name: {
-          default: 'foo'
-        }
-      }],
+      data: [
+        {
+          name: {
+            default: 'foo',
+          },
+        },
+      ],
       meta: {
         scores: [10],
-        query_type: 'search_pelias_parser'
-      }
+        query_type: 'search_pelias_parser',
+      },
     };
 
     function testIt() {
-      confidenceScore(req, res, function() {});
+      confidenceScore(req, res, function () {});
     }
 
-    t.doesNotThrow(testIt, 'an exception should not have been thrown with no address');
+    t.doesNotThrow(
+      testIt,
+      'an exception should not have been thrown with no address',
+    );
     t.end();
   });
 
-
-  test('res.results without parsed_text should not throw exception', function(t) {
+  test('res.results without parsed_text should not throw exception', function (t) {
     var req = {
-      clean: { text: 'test name1' }
+      clean: { text: 'test name1' },
     };
     var res = {
-      data: [{
-        _score: 10,
-        found: true,
-        value: 1,
-        center_point: { lat: 100.1, lon: -50.5 },
-        name: { default: 'test name1' },
-        parent: {
-          country: ['country1'],
-          region: ['state1'],
-          county: ['city1']
-        }
-      }, {
-        _score: 20,
-        value: 2,
-        center_point: { lat: 100.2, lon: -51.5 },
-        name: { default: 'test name2' },
-        parent: {
-          country: ['country2'],
-          region: ['state2'],
-          county: ['city2']
-        }
-      }],
+      data: [
+        {
+          _score: 10,
+          found: true,
+          value: 1,
+          center_point: { lat: 100.1, lon: -50.5 },
+          name: { default: 'test name1' },
+          parent: {
+            country: ['country1'],
+            region: ['state1'],
+            county: ['city1'],
+          },
+        },
+        {
+          _score: 20,
+          value: 2,
+          center_point: { lat: 100.2, lon: -51.5 },
+          name: { default: 'test name2' },
+          parent: {
+            country: ['country2'],
+            region: ['state2'],
+            county: ['city2'],
+          },
+        },
+      ],
       meta: {
         scores: [10],
-        query_type: 'search_pelias_parser'
-      }
+        query_type: 'search_pelias_parser',
+      },
     };
 
-    confidenceScore(req, res, function() {});
+    confidenceScore(req, res, function () {});
     t.equal(res.data[0].confidence, 0.6, 'score was set');
     t.end();
   });
 
-  test('undefined region fields should be handled gracefully', function(t) {
+  test('undefined region fields should be handled gracefully', function (t) {
     var req = {
       clean: {
         text: '123 Main St, City, NM',
         parsed_text: {
           housenumber: 123,
           street: 'Main St',
-          state: 'NM'
-        }
-      }
+          state: 'NM',
+        },
+      },
     };
     var res = {
-      data: [{
-        _score: 10,
-        found: true,
-        value: 1,
-        center_point: { lat: 100.1, lon: -50.5 },
-        name: { default: 'test name1' },
-        parent: {
-          country: ['country1'],
-          region: undefined,
-          region_a: undefined,
-          county: ['city1']
-        }
-      }],
+      data: [
+        {
+          _score: 10,
+          found: true,
+          value: 1,
+          center_point: { lat: 100.1, lon: -50.5 },
+          name: { default: 'test name1' },
+          parent: {
+            country: ['country1'],
+            region: undefined,
+            region_a: undefined,
+            county: ['city1'],
+          },
+        },
+      ],
       meta: {
         scores: [10],
-        query_type: 'search_pelias_parser'
-      }
+        query_type: 'search_pelias_parser',
+      },
     };
 
-    confidenceScore(req, res, function() {});
+    confidenceScore(req, res, function () {});
     t.equal(res.data[0].confidence, 0.28, 'score was set');
     t.end();
   });
 
-  test('should only work for search_pelias_parser query_type', function(t) {
+  test('should only work for search_pelias_parser query_type', function (t) {
     var req = {
       clean: {
         text: '123 Main St, City, NM',
         parsed_text: {
           housenumber: 123,
           street: 'Main St',
-          state: 'NM'
-        }
-      }
+          state: 'NM',
+        },
+      },
     };
     var res = {
-      data: [{
-        _score: 10,
-        found: true,
-        value: 1,
-        center_point: { lat: 100.1, lon: -50.5 },
-        name: { default: 'test name1' },
-        parent: {
-          country: ['country1'],
-          region: undefined,
-          region_a: undefined,
-          county: ['city1']
-        }
-      }],
+      data: [
+        {
+          _score: 10,
+          found: true,
+          value: 1,
+          center_point: { lat: 100.1, lon: -50.5 },
+          name: { default: 'test name1' },
+          parent: {
+            country: ['country1'],
+            region: undefined,
+            region_a: undefined,
+            county: ['city1'],
+          },
+        },
+      ],
       meta: {
         scores: [10],
-        query_type: 'search_fallback'
-      }
+        query_type: 'search_fallback',
+      },
     };
 
-    confidenceScore(req, res, function() {});
+    confidenceScore(req, res, function () {});
     t.false(res.data[0].hasOwnProperty('confidence'), 'score was not set');
     t.end();
   });
 
-  test('missing parent object should not throw an exception', function(t) {
+  test('missing parent object should not throw an exception', function (t) {
     var req = {
       clean: {
         text: '123 Main St, City, NM',
         parsed_text: {
           housenumber: 123,
           street: 'Main St',
-          state: 'NM'
-        }
-      }
+          state: 'NM',
+        },
+      },
     };
     var res = {
-      data: [{
-        _score: 10,
-        found: true,
-        value: 1,
-        center_point: { lat: 100.1, lon: -50.5 },
-        name: { default: 'test name1' },
-      }],
+      data: [
+        {
+          _score: 10,
+          found: true,
+          value: 1,
+          center_point: { lat: 100.1, lon: -50.5 },
+          name: { default: 'test name1' },
+        },
+      ],
       meta: {
         scores: [10],
-        query_type: 'search_pelias_parser'
-      }
+        query_type: 'search_pelias_parser',
+      },
     };
 
     t.doesNotThrow(() => {
@@ -202,29 +216,31 @@ module.exports.tests.confidenceScore = function(test, common) {
     t.end();
   });
 
-  test('works with name aliases', function(t) {
+  test('works with name aliases', function (t) {
     var req = {
       clean: {
         text: 'example',
         parsed_text: {
           housenumber: 123,
           street: 'example',
-          state: 'EG'
-        }
-      }
+          state: 'EG',
+        },
+      },
     };
     var res = {
-      data: [{
-        _score: 10,
-        found: true,
-        value: 1,
-        center_point: { lat: 100.1, lon: -50.5 },
-        name: { default: ['test name1', 'test name2'] }, // note the array
-      }],
+      data: [
+        {
+          _score: 10,
+          found: true,
+          value: 1,
+          center_point: { lat: 100.1, lon: -50.5 },
+          name: { default: ['test name1', 'test name2'] }, // note the array
+        },
+      ],
       meta: {
         scores: [10],
-        query_type: 'search_pelias_parser'
-      }
+        query_type: 'search_pelias_parser',
+      },
     };
 
     t.doesNotThrow(() => {
@@ -240,7 +256,7 @@ module.exports.all = function (tape, common) {
     return tape('[middleware] confidenceScore: ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

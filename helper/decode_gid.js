@@ -6,7 +6,7 @@ const _ = require('lodash');
 function decodeGID(gid) {
   const parts = gid.split(':');
 
-  if ( parts.length < 3 ) {
+  if (parts.length < 3) {
     return;
   }
 

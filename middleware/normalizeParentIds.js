@@ -28,10 +28,13 @@ function setup() {
  * @return {object}
  */
 function normalizeParentIds(place) {
-
   if (place) {
     placeTypes.forEach(function (placeType) {
-      if (place[placeType] && place[placeType].length > 0 && place[placeType][0]) {
+      if (
+        place[placeType] &&
+        place[placeType].length > 0 &&
+        place[placeType][0]
+      ) {
         // This is a solution for geonames hack.
         // We can store in ES the source and defaulted to wof for backward compatibility.
         // The default values via lodash _.get is used only when the value is `undefined`, in our case it may be null.
@@ -40,13 +43,15 @@ function normalizeParentIds(place) {
         const placetype_ids = _.get(place, `${placeType}_gid[0]`, null);
 
         // looking forward to the day we can remove all geonames specific hacks, but until then...
-        // geonames sometimes has its own ids in the parent hierarchy, so it's dangerous to assume that 
+        // geonames sometimes has its own ids in the parent hierarchy, so it's dangerous to assume that
         // it's always WOF ids and hardcode to that
         if (place.source === 'geonames' && place.source_id === placetype_ids) {
           source = place.source;
         }
-        
-        place[`${placeType}_gid`] = [ makeNewId(source, placeType, placetype_ids) ];
+
+        place[`${placeType}_gid`] = [
+          makeNewId(source, placeType, placetype_ids),
+        ];
       }
     });
   }

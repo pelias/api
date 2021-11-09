@@ -8,15 +8,17 @@ const toMultiFields = require('./helper').toMultiFields;
   a query failure.
 **/
 
-module.exports = function( vs ){
-
+module.exports = function (vs) {
   // validate required params
-  if( !vs.isset('phrase:slop') ){
+  if (!vs.isset('phrase:slop')) {
     return null;
   }
 
   vs.var('multi_match:ngrams_strict:input', vs.var('input:name').get());
-  vs.var('multi_match:ngrams_strict:fields', toMultiFields(vs.var('ngram:field').get(), vs.var('lang').get()));
+  vs.var(
+    'multi_match:ngrams_strict:fields',
+    toMultiFields(vs.var('ngram:field').get(), vs.var('lang').get()),
+  );
 
   vs.var('multi_match:ngrams_strict:analyzer', vs.var('ngram:analyzer').get());
   vs.var('multi_match:ngrams_strict:slop', vs.var('phrase:slop').get());

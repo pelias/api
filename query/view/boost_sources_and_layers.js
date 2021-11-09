@@ -65,56 +65,61 @@
 // supported top-level config items
 const TARGETS = ['source', 'layer'];
 
-module.exports = function( config ) {
-
+module.exports = function (config) {
   // no valid config to use, fail now, don't render this view.
-  if( !config ) { return function(){ return null; }; }
+  if (!config) {
+    return function () {
+      return null;
+    };
+  }
 
-  return function( vs ) {
-
+  return function (vs) {
     // validate required params
-    if( !vs.isset('custom:boosting:min_score') ||
-        !vs.isset('custom:boosting:boost') ||
-        !vs.isset('custom:boosting:max_boost') ||
-        !vs.isset('custom:boosting:score_mode') ||
-        !vs.isset('custom:boosting:boost_mode') ){
+    if (
+      !vs.isset('custom:boosting:min_score') ||
+      !vs.isset('custom:boosting:boost') ||
+      !vs.isset('custom:boosting:max_boost') ||
+      !vs.isset('custom:boosting:score_mode') ||
+      !vs.isset('custom:boosting:boost_mode')
+    ) {
       return null;
     }
 
     // base 'function_score' view
     var view = {
-      'function_score': {
-        'query': { 'match_all': {} },   // apply to all documents
-        'functions': [],                // a list of functions which contribute to a 'score' for each document
-        'min_score':                    vs.var('custom:boosting:min_score'),
-        'boost':                        vs.var('custom:boosting:boost'),
-        'max_boost':                    vs.var('custom:boosting:max_boost'),
-        'score_mode':                   vs.var('custom:boosting:score_mode'),
-        'boost_mode':                   vs.var('custom:boosting:boost_mode')
+      function_score: {
+        query: { match_all: {} }, // apply to all documents
+        functions: [], // a list of functions which contribute to a 'score' for each document
+        min_score: vs.var('custom:boosting:min_score'),
+        boost: vs.var('custom:boosting:boost'),
+        max_boost: vs.var('custom:boosting:max_boost'),
+        score_mode: vs.var('custom:boosting:score_mode'),
+        boost_mode: vs.var('custom:boosting:boost_mode'),
       },
     };
 
     // iterate over supported targets and their values
-    TARGETS.forEach( function( target ) {
-      if( 'object' === typeof config[target] ) {
-        Object.keys(config[target]).forEach(function(value) {
-
+    TARGETS.forEach(function (target) {
+      if ('object' === typeof config[target]) {
+        Object.keys(config[target]).forEach(function (value) {
           // add a scoring function for this target, assigning a weight
           let weight = config[target][value];
           view.function_score.functions.push({
-            'weight': isNaN(weight) ? 1 : weight,
-            'filter': {
-              'match': {
-                [target]: value
-              }
-            }
+            weight: isNaN(weight) ? 1 : weight,
+            filter: {
+              match: {
+                [target]: value,
+              },
+            },
           });
         });
       }
     });
 
     // no functions were generated, fail now, don't render this view.
-    if( view.function_score.functions.length === 0 ) { return null; }
+    if (view.function_score.functions.length === 0) {
+      return null;
+    }
 
     return view;
   };

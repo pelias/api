@@ -4,8 +4,8 @@ const _ = require('lodash');
 const mountFort = /\b([fm]t)\b/g;
 
 const transliterations = {
-  'mt':     'mount',
-  'ft':     'fort'
+  mt: 'mount',
+  ft: 'fort',
 };
 
 function transliterate(match) {
@@ -26,7 +26,10 @@ function _sanitize(raw, clean) {
     // after 3.  fort st louis
 
     // 1.  remove '.' that could abbreviate ft and mt (makes transliteration regex easier)
-    const periods_removed = _.toLower(clean.parsed_text.city).replace(/\b(mt|ft)\./g, '$1 ');
+    const periods_removed = _.toLower(clean.parsed_text.city).replace(
+      /\b(mt|ft)\./g,
+      '$1 ',
+    );
 
     // 2.  transliterate 'ft'->'fort', etc
     const transliterated = periods_removed.replace(mountFort, transliterate);
@@ -35,13 +38,11 @@ function _sanitize(raw, clean) {
     const whitespace_normalized = _.trimEnd(transliterated.replace(/\s+/, ' '));
 
     clean.parsed_text.city = whitespace_normalized;
-
   }
 
   return messages;
-
 }
 
 module.exports = () => ({
-  sanitize: _sanitize
+  sanitize: _sanitize,
 });

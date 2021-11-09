@@ -1,6 +1,6 @@
 const setup = require('../../../controller/coarse_reverse');
-const proxyquire =  require('proxyquire').noCallThru();
-const _  = require('lodash');
+const proxyquire = require('proxyquire').noCallThru();
+const _ = require('lodash');
 
 module.exports.tests = {};
 
@@ -24,9 +24,9 @@ module.exports.tests.early_exit_conditions = (test, common) => {
 
     const req = {
       clean: {
-        layers: ['locality']
+        layers: ['locality'],
       },
-      errors: ['error']
+      errors: ['error'],
     };
 
     // verify that next was called
@@ -37,9 +37,7 @@ module.exports.tests.early_exit_conditions = (test, common) => {
     // passing res=undefined verifies that it wasn't interacted with
     t.doesNotThrow(controller.bind(null, req, undefined, next));
     t.end();
-
   });
-
 };
 
 module.exports.tests.error_conditions = (test, common) => {
@@ -47,20 +45,20 @@ module.exports.tests.error_conditions = (test, common) => {
     t.plan(3);
 
     const service = (req, callback) => {
-      t.deepEquals(req, { clean: { layers: ['locality'] } } );
+      t.deepEquals(req, { clean: { layers: ['locality'] } });
       callback('this is an error');
     };
 
     const logger = require('pelias-mock-logger')();
 
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(service, _.constant(true));
 
     const req = {
       clean: {
-        layers: ['locality']
-      }
+        layers: ['locality'],
+      },
     };
 
     // verify that next was called
@@ -73,9 +71,7 @@ module.exports.tests.error_conditions = (test, common) => {
 
     t.ok(logger.hasErrorMessages('this is an error'));
     t.end();
-
   });
-
 };
 
 module.exports.tests.boundary_circle_radius_warnings = (test, common) => {
@@ -87,17 +83,17 @@ module.exports.tests.boundary_circle_radius_warnings = (test, common) => {
     const logger = require('pelias-mock-logger')();
 
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(service, _.constant(true));
 
     const req = {
       warnings: [],
       clean: {
-        'boundary.circle.radius': 17
-      }
+        'boundary.circle.radius': 17,
+      },
     };
 
-    const res = { };
+    const res = {};
 
     const next = () => {};
 
@@ -105,14 +101,15 @@ module.exports.tests.boundary_circle_radius_warnings = (test, common) => {
 
     const expected = {
       meta: {},
-      data: []
+      data: [],
     };
 
-    t.deepEquals(req.warnings, ['boundary.circle.radius is not applicable for coarse reverse']);
+    t.deepEquals(req.warnings, [
+      'boundary.circle.radius is not applicable for coarse reverse',
+    ]);
     t.deepEquals(res, expected);
     t.notOk(logger.hasErrorMessages());
     t.end();
-
   });
 
   test('defined clean[boundary.circle.radius] should add a warning', (t) => {
@@ -123,33 +120,31 @@ module.exports.tests.boundary_circle_radius_warnings = (test, common) => {
     const logger = require('pelias-mock-logger')();
 
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(service, _.constant(true));
 
     const req = {
       warnings: [],
-      clean: {}
+      clean: {},
     };
 
-    const res = { };
+    const res = {};
 
     // verify that next was called
-    const next = () => { };
+    const next = () => {};
 
     controller(req, res, next);
 
     const expected = {
       meta: {},
-      data: []
+      data: [],
     };
 
     t.deepEquals(req.warnings, []);
     t.deepEquals(res, expected);
     t.notOk(logger.hasErrorMessages());
     t.end();
-
   });
-
 };
 
 module.exports.tests.success_conditions = (test, common) => {
@@ -157,7 +152,7 @@ module.exports.tests.success_conditions = (test, common) => {
     t.plan(4);
 
     const service = (req, callback) => {
-      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } });
 
       const results = {
         neighbourhood: [
@@ -167,64 +162,64 @@ module.exports.tests.success_conditions = (test, common) => {
             abbr: 'neighbourhood abbr',
             centroid: {
               lat: 12.121212,
-              lon: 21.212121
+              lon: 21.212121,
             },
-            bounding_box: '-76.345902,40.006751,-76.254038,40.072939'
+            bounding_box: '-76.345902,40.006751,-76.254038,40.072939',
           },
-          { id: 11, name: 'neighbourhood name 2'}
+          { id: 11, name: 'neighbourhood name 2' },
         ],
         borough: [
-          { id: 20, name: 'borough name', abbr: 'borough abbr'},
-          { id: 21, name: 'borough name 2'}
+          { id: 20, name: 'borough name', abbr: 'borough abbr' },
+          { id: 21, name: 'borough name 2' },
         ],
         locality: [
-          { id: 30, name: 'locality name', abbr: 'locality abbr'},
-          { id: 31, name: 'locality name 2'}
+          { id: 30, name: 'locality name', abbr: 'locality abbr' },
+          { id: 31, name: 'locality name 2' },
         ],
         localadmin: [
-          { id: 40, name: 'localadmin name', abbr: 'localadmin abbr'},
-          { id: 41, name: 'localadmin name 2'}
+          { id: 40, name: 'localadmin name', abbr: 'localadmin abbr' },
+          { id: 41, name: 'localadmin name 2' },
         ],
         county: [
-          { id: 50, name: 'county name', abbr: 'county abbr'},
-          { id: 51, name: 'county name 2'}
+          { id: 50, name: 'county name', abbr: 'county abbr' },
+          { id: 51, name: 'county name 2' },
         ],
         macrocounty: [
-          { id: 60, name: 'macrocounty name', abbr: 'macrocounty abbr'},
-          { id: 61, name: 'macrocounty name 2'}
+          { id: 60, name: 'macrocounty name', abbr: 'macrocounty abbr' },
+          { id: 61, name: 'macrocounty name 2' },
         ],
         region: [
-          { id: 70, name: 'region name', abbr: 'region abbr'},
-          { id: 71, name: 'region name 2'}
+          { id: 70, name: 'region name', abbr: 'region abbr' },
+          { id: 71, name: 'region name 2' },
         ],
         macroregion: [
-          { id: 80, name: 'macroregion name', abbr: 'macroregion abbr'},
-          { id: 81, name: 'macroregion name 2'}
+          { id: 80, name: 'macroregion name', abbr: 'macroregion abbr' },
+          { id: 81, name: 'macroregion name 2' },
         ],
         dependency: [
-          { id: 90, name: 'dependency name', abbr: 'dependency abbr'},
-          { id: 91, name: 'dependency name 2'}
+          { id: 90, name: 'dependency name', abbr: 'dependency abbr' },
+          { id: 91, name: 'dependency name 2' },
         ],
         country: [
-          { id: 100, name: 'country name', abbr: 'xyz'},
-          { id: 101, name: 'country name 2'}
+          { id: 100, name: 'country name', abbr: 'xyz' },
+          { id: 101, name: 'country name 2' },
         ],
         empire: [
-          { id: 110, name: 'empire name', abbr: 'empire abbr'},
-          { id: 111, name: 'empire name 2'}
+          { id: 110, name: 'empire name', abbr: 'empire abbr' },
+          { id: 111, name: 'empire name 2' },
         ],
         continent: [
-          { id: 120, name: 'continent name', abbr: 'continent abbr'},
-          { id: 121, name: 'continent name 2'}
+          { id: 120, name: 'continent name', abbr: 'continent abbr' },
+          { id: 121, name: 'continent name 2' },
         ],
         ocean: [
-          { id: 130, name: 'ocean name', abbr: 'ocean abbr'},
-          { id: 131, name: 'ocean name 2'}
+          { id: 130, name: 'ocean name', abbr: 'ocean abbr' },
+          { id: 131, name: 'ocean name 2' },
         ],
         marinearea: [
-          { id: 140, name: 'marinearea name', abbr: 'marinearea abbr'},
-          { id: 141, name: 'marinearea name 2'}
-        ]
+          { id: 140, name: 'marinearea name', abbr: 'marinearea abbr' },
+          { id: 141, name: 'marinearea name 2' },
+        ],
       };
 
       callback(undefined, results);
@@ -233,16 +228,16 @@ module.exports.tests.success_conditions = (test, common) => {
     const logger = require('pelias-mock-logger')();
 
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(service, _.constant(true));
 
     const req = {
       clean: {
-        layers: ['neighbourhood']
-      }
+        layers: ['neighbourhood'],
+      },
     };
 
-    const res = { };
+    const res = {};
 
     // verify that next was called
     const next = () => {
@@ -260,10 +255,10 @@ module.exports.tests.success_conditions = (test, common) => {
           source: 'whosonfirst',
           source_id: '10',
           name: {
-            'default': 'neighbourhood name'
+            default: 'neighbourhood name',
           },
           phrase: {
-            'default': 'neighbourhood name'
+            default: 'neighbourhood name',
           },
           parent: {
             neighbourhood: ['neighbourhood name'],
@@ -325,24 +320,24 @@ module.exports.tests.success_conditions = (test, common) => {
           },
           center_point: {
             lat: 12.121212,
-            lon: 21.212121
+            lon: 21.212121,
           },
-          bounding_box: '{"min_lat":40.006751,"max_lat":40.072939,"min_lon":-76.345902,"max_lon":-76.254038}'
-        }
-      ]
+          bounding_box:
+            '{"min_lat":40.006751,"max_lat":40.072939,"min_lon":-76.345902,"max_lon":-76.254038}',
+        },
+      ],
     };
 
     t.deepEquals(res, expected);
     t.notOk(logger.hasErrorMessages());
     t.end();
-
   });
 
   test('layers missing from results should be ignored', (t) => {
     t.plan(4);
 
     const service = (req, callback) => {
-      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } });
 
       const results = {
         neighbourhood: [
@@ -351,11 +346,11 @@ module.exports.tests.success_conditions = (test, common) => {
             name: 'neighbourhood name',
             centroid: {
               lat: 12.121212,
-              lon: 21.212121
+              lon: 21.212121,
             },
-            bounding_box: '-76.345902,40.006751,-76.254038,40.072939'
-          }
-        ]
+            bounding_box: '-76.345902,40.006751,-76.254038,40.072939',
+          },
+        ],
       };
 
       callback(undefined, results);
@@ -364,16 +359,16 @@ module.exports.tests.success_conditions = (test, common) => {
     const logger = require('pelias-mock-logger')();
 
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(service, _.constant(true));
 
     const req = {
       clean: {
-        layers: ['neighbourhood']
-      }
+        layers: ['neighbourhood'],
+      },
     };
 
-    const res = { };
+    const res = {};
 
     // verify that next was called
     const next = () => {
@@ -391,37 +386,37 @@ module.exports.tests.success_conditions = (test, common) => {
           source: 'whosonfirst',
           source_id: '10',
           name: {
-            'default': 'neighbourhood name'
+            default: 'neighbourhood name',
           },
           phrase: {
-            'default': 'neighbourhood name'
+            default: 'neighbourhood name',
           },
           parent: {
             neighbourhood: ['neighbourhood name'],
             neighbourhood_id: ['10'],
             neighbourhood_a: [null],
-            neighbourhood_source: [null]
+            neighbourhood_source: [null],
           },
           center_point: {
             lat: 12.121212,
-            lon: 21.212121
+            lon: 21.212121,
           },
-          bounding_box: '{"min_lat":40.006751,"max_lat":40.072939,"min_lon":-76.345902,"max_lon":-76.254038}'
-        }
-      ]
+          bounding_box:
+            '{"min_lat":40.006751,"max_lat":40.072939,"min_lon":-76.345902,"max_lon":-76.254038}',
+        },
+      ],
     };
 
     t.deepEquals(res, expected);
     t.notOk(logger.hasErrorMessages());
     t.end();
-
   });
 
   test('most granular layer missing centroid should not set', (t) => {
     t.plan(4);
 
     const service = (req, callback) => {
-      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } });
 
       const results = {
         neighbourhood: [
@@ -429,9 +424,9 @@ module.exports.tests.success_conditions = (test, common) => {
             id: 10,
             name: 'neighbourhood name',
             abbr: 'neighbourhood abbr',
-            bounding_box: '-76.345902,40.006751,-76.254038,40.072939'
-          }
-        ]
+            bounding_box: '-76.345902,40.006751,-76.254038,40.072939',
+          },
+        ],
       };
 
       callback(undefined, results);
@@ -440,16 +435,16 @@ module.exports.tests.success_conditions = (test, common) => {
     const logger = require('pelias-mock-logger')();
 
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(service, _.constant(true));
 
     const req = {
       clean: {
-        layers: ['neighbourhood']
-      }
+        layers: ['neighbourhood'],
+      },
     };
 
-    const res = { };
+    const res = {};
 
     // verify that next was called
     const next = () => {
@@ -467,33 +462,33 @@ module.exports.tests.success_conditions = (test, common) => {
           source: 'whosonfirst',
           source_id: '10',
           name: {
-            'default': 'neighbourhood name'
+            default: 'neighbourhood name',
           },
           phrase: {
-            'default': 'neighbourhood name'
+            default: 'neighbourhood name',
           },
           parent: {
             neighbourhood: ['neighbourhood name'],
             neighbourhood_id: ['10'],
             neighbourhood_a: ['neighbourhood abbr'],
-            neighbourhood_source: [null]
+            neighbourhood_source: [null],
           },
-          bounding_box: '{"min_lat":40.006751,"max_lat":40.072939,"min_lon":-76.345902,"max_lon":-76.254038}'
-        }
-      ]
+          bounding_box:
+            '{"min_lat":40.006751,"max_lat":40.072939,"min_lon":-76.345902,"max_lon":-76.254038}',
+        },
+      ],
     };
 
     t.deepEquals(res, expected);
     t.notOk(logger.hasErrorMessages());
     t.end();
-
   });
 
   test('most granular layer missing bounding_box should not set', (t) => {
     t.plan(4);
 
     const service = (req, callback) => {
-      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } });
 
       const results = {
         neighbourhood: [
@@ -503,10 +498,10 @@ module.exports.tests.success_conditions = (test, common) => {
             abbr: 'neighbourhood abbr',
             centroid: {
               lat: 12.121212,
-              lon: 21.212121
-            }
-          }
-        ]
+              lon: 21.212121,
+            },
+          },
+        ],
       };
 
       callback(undefined, results);
@@ -515,16 +510,16 @@ module.exports.tests.success_conditions = (test, common) => {
     const logger = require('pelias-mock-logger')();
 
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(service, _.constant(true));
 
     const req = {
       clean: {
-        layers: ['neighbourhood']
-      }
+        layers: ['neighbourhood'],
+      },
     };
 
-    const res = { };
+    const res = {};
 
     // verify that next was called
     const next = () => {
@@ -542,30 +537,29 @@ module.exports.tests.success_conditions = (test, common) => {
           source: 'whosonfirst',
           source_id: '10',
           name: {
-            'default': 'neighbourhood name'
+            default: 'neighbourhood name',
           },
           phrase: {
-            'default': 'neighbourhood name'
+            default: 'neighbourhood name',
           },
           parent: {
             neighbourhood: ['neighbourhood name'],
             neighbourhood_id: ['10'],
             neighbourhood_a: ['neighbourhood abbr'],
-            neighbourhood_source: [null]
+            neighbourhood_source: [null],
           },
           center_point: {
             lat: 12.121212,
-            lon: 21.212121
-          }
-        }
-      ]
+            lon: 21.212121,
+          },
+        },
+      ],
     };
 
     t.deepEquals(res, expected);
 
     t.notOk(logger.hasErrorMessages());
     t.end();
-
   });
 
   test('no requested layers should use everything', (t) => {
@@ -582,9 +576,9 @@ module.exports.tests.success_conditions = (test, common) => {
           {
             id: 10,
             name: 'neighbourhood name',
-            abbr: 'neighbourhood abbr'
-          }
-        ]
+            abbr: 'neighbourhood abbr',
+          },
+        ],
       };
 
       callback(undefined, results);
@@ -593,7 +587,7 @@ module.exports.tests.success_conditions = (test, common) => {
     const logger = require('pelias-mock-logger')();
 
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(service, _.constant(true));
 
     const req = {
@@ -601,12 +595,12 @@ module.exports.tests.success_conditions = (test, common) => {
         layers: [],
         point: {
           lat: 12.121212,
-          lon: 21.212121
-        }
-      }
+          lon: 21.212121,
+        },
+      },
     };
 
-    const res = { };
+    const res = {};
 
     // verify that next was called
     const next = () => {
@@ -624,19 +618,19 @@ module.exports.tests.success_conditions = (test, common) => {
           source: 'whosonfirst',
           source_id: '10',
           name: {
-            'default': 'neighbourhood name'
+            default: 'neighbourhood name',
           },
           phrase: {
-            'default': 'neighbourhood name'
+            default: 'neighbourhood name',
           },
           parent: {
             neighbourhood: ['neighbourhood name'],
             neighbourhood_id: ['10'],
             neighbourhood_a: ['neighbourhood abbr'],
-            neighbourhood_source: [null]
-          }
-        }
-      ]
+            neighbourhood_source: [null],
+          },
+        },
+      ],
     };
 
     t.deepEquals(req.clean.layers, [], 'req.clean.layers should be unmodified');
@@ -644,7 +638,6 @@ module.exports.tests.success_conditions = (test, common) => {
     t.notOk(logger.hasErrorMessages());
 
     t.end();
-
   });
 
   test('layers specifying only venue, address, or street should not exclude coarse results', (t) => {
@@ -664,9 +657,9 @@ module.exports.tests.success_conditions = (test, common) => {
             {
               id: 10,
               name: 'neighbourhood name',
-              abbr: 'neighbourhood abbr'
-            }
-          ]
+              abbr: 'neighbourhood abbr',
+            },
+          ],
         };
 
         callback(undefined, results);
@@ -675,7 +668,7 @@ module.exports.tests.success_conditions = (test, common) => {
       const logger = require('pelias-mock-logger')();
 
       const controller = proxyquire('../../../controller/coarse_reverse', {
-        'pelias-logger': logger
+        'pelias-logger': logger,
       })(service, _.constant(true));
 
       const req = {
@@ -683,12 +676,12 @@ module.exports.tests.success_conditions = (test, common) => {
           layers: [non_coarse_layer],
           point: {
             lat: 12.121212,
-            lon: 21.212121
-          }
-        }
+            lon: 21.212121,
+          },
+        },
       };
 
-      const res = { };
+      const res = {};
 
       // verify that next was called
       const next = () => {
@@ -706,29 +699,31 @@ module.exports.tests.success_conditions = (test, common) => {
             source: 'whosonfirst',
             source_id: '10',
             name: {
-              'default': 'neighbourhood name'
+              default: 'neighbourhood name',
             },
             phrase: {
-              'default': 'neighbourhood name'
+              default: 'neighbourhood name',
             },
             parent: {
               neighbourhood: ['neighbourhood name'],
               neighbourhood_id: ['10'],
               neighbourhood_a: ['neighbourhood abbr'],
-              neighbourhood_source: [null]
-            }
-          }
-        ]
+              neighbourhood_source: [null],
+            },
+          },
+        ],
       };
 
-      t.deepEquals(req.clean.layers, [non_coarse_layer], 'req.clean.layers should be unmodified');
+      t.deepEquals(
+        req.clean.layers,
+        [non_coarse_layer],
+        'req.clean.layers should be unmodified',
+      );
       t.deepEquals(res, expected);
       t.notOk(logger.hasErrorMessages());
-
     });
 
     t.end();
-
   });
 
   test('layers specifying venue, address, or street AND coarse layer should not exclude coarse results', (t) => {
@@ -748,9 +743,9 @@ module.exports.tests.success_conditions = (test, common) => {
             {
               id: 10,
               name: 'neighbourhood name',
-              abbr: 'neighbourhood abbr'
-            }
-          ]
+              abbr: 'neighbourhood abbr',
+            },
+          ],
         };
 
         callback(undefined, results);
@@ -759,7 +754,7 @@ module.exports.tests.success_conditions = (test, common) => {
       const logger = require('pelias-mock-logger')();
 
       const controller = proxyquire('../../../controller/coarse_reverse', {
-        'pelias-logger': logger
+        'pelias-logger': logger,
       })(service, _.constant(true));
 
       const req = {
@@ -767,12 +762,12 @@ module.exports.tests.success_conditions = (test, common) => {
           layers: [non_coarse_layer, 'neighbourhood'],
           point: {
             lat: 12.121212,
-            lon: 21.212121
-          }
-        }
+            lon: 21.212121,
+          },
+        },
       };
 
-      const res = { };
+      const res = {};
 
       // verify that next was called
       const next = () => {
@@ -790,31 +785,32 @@ module.exports.tests.success_conditions = (test, common) => {
             source: 'whosonfirst',
             source_id: '10',
             name: {
-              'default': 'neighbourhood name'
+              default: 'neighbourhood name',
             },
             phrase: {
-              'default': 'neighbourhood name'
+              default: 'neighbourhood name',
             },
             parent: {
               neighbourhood: ['neighbourhood name'],
               neighbourhood_id: ['10'],
               neighbourhood_a: ['neighbourhood abbr'],
-              neighbourhood_source: [null]
-            }
-          }
-        ]
+              neighbourhood_source: [null],
+            },
+          },
+        ],
       };
 
-      t.deepEquals(req.clean.layers, [non_coarse_layer, 'neighbourhood'], 'req.clean.layers should be unmodified');
+      t.deepEquals(
+        req.clean.layers,
+        [non_coarse_layer, 'neighbourhood'],
+        'req.clean.layers should be unmodified',
+      );
       t.deepEquals(res, expected);
       t.notOk(logger.hasErrorMessages());
-
     });
 
     t.end();
-
   });
-
 };
 
 module.exports.tests.failure_conditions = (test, common) => {
@@ -822,62 +818,62 @@ module.exports.tests.failure_conditions = (test, common) => {
     t.plan(4);
 
     const service = (req, callback) => {
-      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } });
 
       // response without neighbourhood results
       const results = {
         borough: [
-          { id: 20, name: 'borough name', abbr: 'borough abbr'},
-          { id: 21, name: 'borough name 2'}
+          { id: 20, name: 'borough name', abbr: 'borough abbr' },
+          { id: 21, name: 'borough name 2' },
         ],
         locality: [
-          { id: 30, name: 'locality name', abbr: 'locality abbr'},
-          { id: 31, name: 'locality name 2'}
+          { id: 30, name: 'locality name', abbr: 'locality abbr' },
+          { id: 31, name: 'locality name 2' },
         ],
         localadmin: [
-          { id: 40, name: 'localadmin name', abbr: 'localadmin abbr'},
-          { id: 41, name: 'localadmin name 2'}
+          { id: 40, name: 'localadmin name', abbr: 'localadmin abbr' },
+          { id: 41, name: 'localadmin name 2' },
         ],
         county: [
-          { id: 50, name: 'county name', abbr: 'county abbr'},
-          { id: 51, name: 'county name 2'}
+          { id: 50, name: 'county name', abbr: 'county abbr' },
+          { id: 51, name: 'county name 2' },
         ],
         macrocounty: [
-          { id: 60, name: 'macrocounty name', abbr: 'macrocounty abbr'},
-          { id: 61, name: 'macrocounty name 2'}
+          { id: 60, name: 'macrocounty name', abbr: 'macrocounty abbr' },
+          { id: 61, name: 'macrocounty name 2' },
         ],
         region: [
-          { id: 70, name: 'region name', abbr: 'region abbr'},
-          { id: 71, name: 'region name 2'}
+          { id: 70, name: 'region name', abbr: 'region abbr' },
+          { id: 71, name: 'region name 2' },
         ],
         macroregion: [
-          { id: 80, name: 'macroregion name', abbr: 'macroregion abbr'},
-          { id: 81, name: 'macroregion name 2'}
+          { id: 80, name: 'macroregion name', abbr: 'macroregion abbr' },
+          { id: 81, name: 'macroregion name 2' },
         ],
         dependency: [
-          { id: 90, name: 'dependency name', abbr: 'dependency abbr'},
-          { id: 91, name: 'dependency name 2'}
+          { id: 90, name: 'dependency name', abbr: 'dependency abbr' },
+          { id: 91, name: 'dependency name 2' },
         ],
         country: [
-          { id: 100, name: 'country name', abbr: 'xyz'},
-          { id: 101, name: 'country name 2'}
+          { id: 100, name: 'country name', abbr: 'xyz' },
+          { id: 101, name: 'country name 2' },
         ],
         empire: [
-          { id: 110, name: 'empire name', abbr: 'empire abbr'},
-          { id: 111, name: 'empire name 2'}
+          { id: 110, name: 'empire name', abbr: 'empire abbr' },
+          { id: 111, name: 'empire name 2' },
         ],
         continent: [
-          { id: 120, name: 'continent name', abbr: 'continent abbr'},
-          { id: 121, name: 'continent name 2'}
+          { id: 120, name: 'continent name', abbr: 'continent abbr' },
+          { id: 121, name: 'continent name 2' },
         ],
         ocean: [
-          { id: 130, name: 'ocean name', abbr: 'ocean abbr'},
-          { id: 131, name: 'ocean name 2'}
+          { id: 130, name: 'ocean name', abbr: 'ocean abbr' },
+          { id: 131, name: 'ocean name 2' },
         ],
         marinearea: [
-          { id: 140, name: 'marinearea name', abbr: 'marinearea abbr'},
-          { id: 141, name: 'marinearea name 2'}
-        ]
+          { id: 140, name: 'marinearea name', abbr: 'marinearea abbr' },
+          { id: 141, name: 'marinearea name 2' },
+        ],
       };
 
       callback(undefined, results);
@@ -886,16 +882,16 @@ module.exports.tests.failure_conditions = (test, common) => {
     const logger = require('pelias-mock-logger')();
 
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(service, _.constant(true));
 
     const req = {
       clean: {
-        layers: ['neighbourhood']
-      }
+        layers: ['neighbourhood'],
+      },
     };
 
-    const res = { };
+    const res = {};
 
     // verify that next was called
     const next = () => {
@@ -906,25 +902,22 @@ module.exports.tests.failure_conditions = (test, common) => {
 
     const expected = {
       meta: {},
-      data: []
+      data: [],
     };
 
     t.deepEquals(res, expected);
     t.notOk(logger.hasErrorMessages());
     t.end();
-
   });
 
   test('service returns 0 length name', (t) => {
     t.plan(4);
 
     const service = (req, callback) => {
-      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } });
 
       const results = {
-        neighbourhood: [
-          { id: 20, name: '' }
-        ]
+        neighbourhood: [{ id: 20, name: '' }],
       };
 
       callback(undefined, results);
@@ -933,16 +926,16 @@ module.exports.tests.failure_conditions = (test, common) => {
     const logger = require('pelias-mock-logger')();
 
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(service, _.constant(true));
 
     const req = {
       clean: {
-        layers: ['neighbourhood']
-      }
+        layers: ['neighbourhood'],
+      },
     };
 
-    const res = { };
+    const res = {};
 
     // verify that next was called
     const next = () => {
@@ -953,28 +946,28 @@ module.exports.tests.failure_conditions = (test, common) => {
 
     const expected = {
       meta: {},
-      data: []
+      data: [],
     };
 
     t.deepEquals(res, expected);
 
     // logger messages
-    t.true(logger.hasMessages('error'), 'invalid document type, expecting: truthy, got: ');
+    t.true(
+      logger.hasMessages('error'),
+      'invalid document type, expecting: truthy, got: ',
+    );
 
     t.end();
-
   });
 
   test('service returns 0 length abbr', (t) => {
     t.plan(4);
 
     const service = (req, callback) => {
-      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } } );
+      t.deepEquals(req, { clean: { layers: ['neighbourhood'] } });
 
       const results = {
-        neighbourhood: [
-          { id: 20, name: 'Example', abbr: '' }
-        ]
+        neighbourhood: [{ id: 20, name: 'Example', abbr: '' }],
       };
 
       callback(undefined, results);
@@ -983,16 +976,16 @@ module.exports.tests.failure_conditions = (test, common) => {
     const logger = require('pelias-mock-logger')();
 
     const controller = proxyquire('../../../controller/coarse_reverse', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(service, _.constant(true));
 
     const req = {
       clean: {
-        layers: ['neighbourhood']
-      }
+        layers: ['neighbourhood'],
+      },
     };
 
-    const res = { };
+    const res = {};
 
     // verify that next was called
     const next = () => {
@@ -1003,36 +996,36 @@ module.exports.tests.failure_conditions = (test, common) => {
 
     const expected = {
       meta: {},
-      data: [{
-        name: { default: 'Example' },
-        phrase: { default: 'Example' },
-        parent: {
-          neighbourhood: [ 'Example' ],
-          neighbourhood_id: [ '20' ],
-          neighbourhood_a: [ null ],
-          neighbourhood_source: [null]
+      data: [
+        {
+          name: { default: 'Example' },
+          phrase: { default: 'Example' },
+          parent: {
+            neighbourhood: ['Example'],
+            neighbourhood_id: ['20'],
+            neighbourhood_a: [null],
+            neighbourhood_source: [null],
+          },
+          source: 'whosonfirst',
+          layer: 'neighbourhood',
+          source_id: '20',
+          _id: 'whosonfirst:neighbourhood:20',
         },
-        source: 'whosonfirst',
-        layer: 'neighbourhood',
-        source_id: '20',
-        _id: 'whosonfirst:neighbourhood:20'
-      }]
+      ],
     };
 
     t.deepEquals(res, expected);
     t.notOk(logger.hasErrorMessages());
     t.end();
-
   });
 };
 
 module.exports.all = (tape, common) => {
-
   function test(name, testFunction) {
     return tape(`GET /coarse_reverse ${name}`, testFunction);
   }
 
-  for( const testCase in module.exports.tests ){
+  for (const testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

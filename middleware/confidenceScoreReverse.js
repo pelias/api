@@ -10,7 +10,7 @@ var SCORES = {
   OKAY: 0.7,
   POOR: 0.6,
   NONE: 0.5,
-  INVALID: 0.0
+  INVALID: 0.0,
 };
 
 var BUCKETS = {
@@ -18,7 +18,7 @@ var BUCKETS = {
   _10_METERS: 10,
   _100_METERS: 100,
   _250_METERS: 250,
-  _1_KILOMETER: 1000
+  _1_KILOMETER: 1000,
 };
 
 function setup() {
@@ -62,7 +62,6 @@ function computeConfidenceScore(hit) {
   }
 
   return hit;
-
 }
 
 module.exports = setup;

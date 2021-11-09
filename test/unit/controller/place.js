@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const setup = require('../../../controller/place');
-const proxyquire =  require('proxyquire').noCallThru();
+const proxyquire = require('proxyquire').noCallThru();
 
 module.exports.tests = {};
 
@@ -15,7 +15,7 @@ module.exports.tests.interface = (test, common) => {
 module.exports.tests.success = (test, common) => {
   test('successful request to search service should set data and meta', (t) => {
     const config = {
-      indexName: 'indexName value'
+      indexName: 'indexName value',
     };
     const esclient = 'this is the esclient';
 
@@ -29,18 +29,18 @@ module.exports.tests.success = (test, common) => {
         t.deepEqual(query, [
           {
             _index: 'indexName value',
-            _id: 'source1:layer1:id1'
+            _id: 'source1:layer1:id1',
           },
           {
             _index: 'indexName value',
-            _id: 'source2:layer2:id2'
-          }
+            _id: 'source2:layer2:id2',
+          },
         ]);
 
         const docs = [{}, {}];
 
         callback(undefined, docs);
-      }
+      },
     })(config, esclient);
 
     const req = {
@@ -49,17 +49,17 @@ module.exports.tests.success = (test, common) => {
           {
             source: 'source1',
             id: 'id1',
-            layer: 'layer1'
+            layer: 'layer1',
           },
           {
             source: 'source2',
             id: 'id2',
-            layer: 'layer2'
-          }
-        ]
+            layer: 'layer2',
+          },
+        ],
       },
       errors: [],
-      warnings: []
+      warnings: [],
     };
     const res = {};
 
@@ -71,9 +71,7 @@ module.exports.tests.success = (test, common) => {
     };
 
     controller(req, res, next);
-
   });
-
 };
 
 module.exports.tests.error_conditions = (test, common) => {
@@ -81,25 +79,24 @@ module.exports.tests.error_conditions = (test, common) => {
     const esclient = () => {
       throw new Error('esclient should not have been called');
     };
-    const controller = setup( {}, esclient );
+    const controller = setup({}, esclient);
 
     // the existence of `errors` means that a sanitizer detected an error,
     //  so don't call the esclient
     const req = {
-      errors: ['error']
+      errors: ['error'],
     };
-    const res = { };
+    const res = {};
 
     t.doesNotThrow(() => {
       controller(req, res, () => {});
     });
     t.end();
-
   });
 
   test('mgetService returning error should add to req.errors and ignore docs', (t) => {
     const config = {
-      indexName: 'indexName value'
+      indexName: 'indexName value',
     };
     const esclient = 'this is the esclient';
 
@@ -109,7 +106,7 @@ module.exports.tests.error_conditions = (test, common) => {
     const nonTimeoutError = {
       status: 500,
       displayName: 'InternalServerError',
-      message: 'an internal server error occurred'
+      message: 'an internal server error occurred',
     };
 
     // a controller that validates the esclient and cmd that was passed to the search service
@@ -118,7 +115,7 @@ module.exports.tests.error_conditions = (test, common) => {
         const docs = [{}, {}];
 
         callback(nonTimeoutError, docs);
-      }
+      },
     })(config, esclient);
 
     const req = {
@@ -126,12 +123,12 @@ module.exports.tests.error_conditions = (test, common) => {
         ids: [
           {
             id: 'id1',
-            layers: 'layer1'
-          }
-        ]
+            layers: 'layer1',
+          },
+        ],
       },
       errors: [],
-      warnings: []
+      warnings: [],
     };
     const res = {};
 
@@ -143,15 +140,13 @@ module.exports.tests.error_conditions = (test, common) => {
     };
 
     controller(req, res, next);
-
   });
-
 };
 
-module.exports.tests.timeout = function(test, common) {
+module.exports.tests.timeout = function (test, common) {
   test('default # of request timeout retries should be 3', (t) => {
     const config = {
-      indexName: 'indexName value'
+      indexName: 'indexName value',
     };
     const esclient = 'this is the esclient';
 
@@ -160,7 +155,7 @@ module.exports.tests.timeout = function(test, common) {
     const timeoutError = {
       status: 408,
       displayName: 'RequestTimeout',
-      message: 'Request Timeout after 17ms'
+      message: 'Request Timeout after 17ms',
     };
 
     // request timeout messages willl be written here
@@ -179,12 +174,12 @@ module.exports.tests.timeout = function(test, common) {
           t.equal(service, 'api');
           return {
             info: (msg, json) => {
-              infoMesssages.push({ msg:msg, json:json});
+              infoMesssages.push({ msg: msg, json: json });
             },
-            debug: () => {}
+            debug: () => {},
           };
-        }
-      }
+        },
+      },
     })(config, esclient);
 
     const req = {
@@ -192,21 +187,23 @@ module.exports.tests.timeout = function(test, common) {
         ids: [
           {
             id: 'id1',
-            layers: 'layer1'
-          }
-        ]
+            layers: 'layer1',
+          },
+        ],
       },
       errors: [],
-      warnings: []
+      warnings: [],
     };
     const res = {};
 
     const next = () => {
-      t.equal(searchServiceCallCount, 3+1);
+      t.equal(searchServiceCallCount, 3 + 1);
 
-      t.ok(infoMesssages.find(function(msg) {
-        return _.get(msg, 'json.retries', 2);
-      }));
+      t.ok(
+        infoMesssages.find(function (msg) {
+          return _.get(msg, 'json.retries', 2);
+        }),
+      );
 
       t.deepEqual(req.errors, [timeoutError.message]);
       t.deepEqual(res, {});
@@ -214,13 +211,12 @@ module.exports.tests.timeout = function(test, common) {
     };
 
     controller(req, res, next);
-
   });
 
   test('explicit apiConfig.requestRetries should retry that many times', (t) => {
     const config = {
       indexName: 'indexName value',
-      requestRetries: 17
+      requestRetries: 17,
     };
     const esclient = 'this is the esclient';
 
@@ -229,7 +225,7 @@ module.exports.tests.timeout = function(test, common) {
     const timeoutError = {
       status: 408,
       displayName: 'RequestTimeout',
-      message: 'Request Timeout after 17ms'
+      message: 'Request Timeout after 17ms',
     };
 
     // a controller that validates the esclient and cmd that was passed to the search service
@@ -239,7 +235,7 @@ module.exports.tests.timeout = function(test, common) {
         searchServiceCallCount++;
 
         callback(timeoutError);
-      }
+      },
     })(config, esclient);
 
     const req = {
@@ -247,27 +243,26 @@ module.exports.tests.timeout = function(test, common) {
         ids: [
           {
             id: 'id1',
-            layers: 'layer1'
-          }
-        ]
+            layers: 'layer1',
+          },
+        ],
       },
       errors: [],
-      warnings: []
+      warnings: [],
     };
     const res = {};
 
     const next = () => {
-      t.equal(searchServiceCallCount, 17+1);
+      t.equal(searchServiceCallCount, 17 + 1);
       t.end();
     };
 
     controller(req, res, next);
-
   });
 
   test('only status code 408 should be considered a retryable request', (t) => {
     const config = {
-      indexName: 'indexName value'
+      indexName: 'indexName value',
     };
     const esclient = 'this is the esclient';
 
@@ -276,7 +271,7 @@ module.exports.tests.timeout = function(test, common) {
     const nonTimeoutError = {
       status: 500,
       displayName: 'InternalServerError',
-      message: 'an internal server error occurred'
+      message: 'an internal server error occurred',
     };
 
     // a controller that validates the esclient and cmd that was passed to the search service
@@ -286,7 +281,7 @@ module.exports.tests.timeout = function(test, common) {
         searchServiceCallCount++;
 
         callback(nonTimeoutError);
-      }
+      },
     })(config, esclient);
 
     const req = {
@@ -294,12 +289,12 @@ module.exports.tests.timeout = function(test, common) {
         ids: [
           {
             id: 'id1',
-            layers: 'layer1'
-          }
-        ]
+            layers: 'layer1',
+          },
+        ],
       },
       errors: [],
-      warnings: []
+      warnings: [],
     };
     const res = {};
 
@@ -310,12 +305,11 @@ module.exports.tests.timeout = function(test, common) {
     };
 
     controller(req, res, next);
-
   });
 
   test('string error should not retry and be logged as-is', (t) => {
     const config = {
-      indexName: 'indexName value'
+      indexName: 'indexName value',
     };
     const esclient = 'this is the esclient';
 
@@ -330,7 +324,7 @@ module.exports.tests.timeout = function(test, common) {
         searchServiceCallCount++;
 
         callback(stringTypeError);
-      }
+      },
     })(config, esclient);
 
     const req = {
@@ -338,12 +332,12 @@ module.exports.tests.timeout = function(test, common) {
         ids: [
           {
             id: 'id1',
-            layers: 'layer1'
-          }
-        ]
+            layers: 'layer1',
+          },
+        ],
       },
       errors: [],
-      warnings: []
+      warnings: [],
     };
     const res = {};
 
@@ -354,18 +348,15 @@ module.exports.tests.timeout = function(test, common) {
     };
 
     controller(req, res, next);
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
-
   function test(name, testFunction) {
     return tape('GET /place ' + name, testFunction);
   }
 
-  for( const testCase in module.exports.tests ){
+  for (const testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

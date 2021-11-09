@@ -1,4 +1,4 @@
-const proxyquire =  require('proxyquire').noCallThru();
+const proxyquire = require('proxyquire').noCallThru();
 const libpostal = require('../../../controller/structured_libpostal');
 const _ = require('lodash');
 const mock_logger = require('pelias-mock-logger');
@@ -14,7 +14,7 @@ module.exports.tests.interface = (test, common) => {
 };
 
 module.exports.tests.early_exit_conditions = (test, common) => {
-  test('should_execute returning false should not call service', t => {
+  test('should_execute returning false should not call service', (t) => {
     const service = () => {
       t.fail('service should not have been called');
     };
@@ -23,8 +23,8 @@ module.exports.tests.early_exit_conditions = (test, common) => {
       // req and res should be passed to should_execute
       t.deepEquals(req, {
         clean: {
-          text: 'original query'
-        }
+          text: 'original query',
+        },
       });
 
       return false;
@@ -34,26 +34,28 @@ module.exports.tests.early_exit_conditions = (test, common) => {
 
     const req = {
       clean: {
-        text: 'original query'
-      }
+        text: 'original query',
+      },
     };
 
     controller(req, undefined, () => {
-      t.deepEquals(req, {
-        clean: {
-          text: 'original query'
-        }
-      }, 'req should not have been modified');
+      t.deepEquals(
+        req,
+        {
+          clean: {
+            text: 'original query',
+          },
+        },
+        'req should not have been modified',
+      );
 
       t.end();
     });
-
   });
-
 };
 
 module.exports.tests.error_conditions = (test, common) => {
-  test('service returning error should append and not modify req.clean', t => {
+  test('service returning error should append and not modify req.clean', (t) => {
     const service = (req, callback) => {
       callback('libpostal service error', []);
     };
@@ -62,25 +64,26 @@ module.exports.tests.error_conditions = (test, common) => {
 
     const req = {
       clean: {
-        text: 'original query'
+        text: 'original query',
       },
-      errors: []
+      errors: [],
     };
 
     controller(req, undefined, () => {
-      t.deepEquals(req, {
-        clean: {
-          text: 'original query'
+      t.deepEquals(
+        req,
+        {
+          clean: {
+            text: 'original query',
+          },
+          errors: ['libpostal service error'],
         },
-        errors: ['libpostal service error']
-      }, 'req should not have been modified');
+        'req should not have been modified',
+      );
 
       t.end();
-
     });
-
   });
-
 };
 
 // module.exports.tests.failure_conditions = (test, common) => {
@@ -168,17 +171,17 @@ module.exports.tests.error_conditions = (test, common) => {
 // };
 //
 module.exports.tests.success_conditions = (test, common) => {
-  test('service returning house_number should set req.clean.parsed_text.', t => {
+  test('service returning house_number should set req.clean.parsed_text.', (t) => {
     const service = (req, callback) => {
       const response = [
         {
           label: 'house_number',
-          value: 'house_number value'
+          value: 'house_number value',
         },
         {
           label: 'postcode',
-          value: 'postcode value'
-        }
+          value: 'postcode value',
+        },
       ];
 
       callback(null, response);
@@ -189,36 +192,38 @@ module.exports.tests.success_conditions = (test, common) => {
     const req = {
       clean: {
         parsed_text: {
-          address: 'other value house_number value street value'
-        }
+          address: 'other value house_number value street value',
+        },
       },
-      errors: []
+      errors: [],
     };
 
     controller(req, undefined, () => {
-      t.deepEquals(req, {
-        clean: {
-          parsed_text: {
-            housenumber: 'house_number value',
-            street: 'other value  street value'
-          }
+      t.deepEquals(
+        req,
+        {
+          clean: {
+            parsed_text: {
+              housenumber: 'house_number value',
+              street: 'other value  street value',
+            },
+          },
+          errors: [],
         },
-        errors: []
-      }, 'req should not have been modified');
+        'req should not have been modified',
+      );
 
       t.end();
-
     });
-
   });
 
-  test('service returning postcode should set req.clean.parsed_text.', t => {
+  test('service returning postcode should set req.clean.parsed_text.', (t) => {
     const service = (req, callback) => {
       const response = [
         {
           label: 'postcode',
-          value: 'postcode value'
-        }
+          value: 'postcode value',
+        },
       ];
 
       callback(null, response);
@@ -229,36 +234,38 @@ module.exports.tests.success_conditions = (test, common) => {
     const req = {
       clean: {
         parsed_text: {
-          address: 'other value postcode value street value'
-        }
+          address: 'other value postcode value street value',
+        },
       },
-      errors: []
+      errors: [],
     };
 
     controller(req, undefined, () => {
-      t.deepEquals(req, {
-        clean: {
-          parsed_text: {
-            housenumber: 'postcode value',
-            street: 'other value  street value'
-          }
+      t.deepEquals(
+        req,
+        {
+          clean: {
+            parsed_text: {
+              housenumber: 'postcode value',
+              street: 'other value  street value',
+            },
+          },
+          errors: [],
         },
-        errors: []
-      }, 'req should not have been modified');
+        'req should not have been modified',
+      );
 
       t.end();
-
     });
-
   });
 
-  test('service returning neither house_number nor postcode should not set req.clean.parsed_text.number', t => {
+  test('service returning neither house_number nor postcode should not set req.clean.parsed_text.number', (t) => {
     const service = (req, callback) => {
       const response = [
         {
           label: 'city',
-          value: 'city value'
-        }
+          value: 'city value',
+        },
       ];
 
       callback(null, response);
@@ -269,43 +276,45 @@ module.exports.tests.success_conditions = (test, common) => {
     const req = {
       clean: {
         parsed_text: {
-          address: 'street value'
-        }
+          address: 'street value',
+        },
       },
-      errors: []
+      errors: [],
     };
 
     controller(req, undefined, () => {
-      t.deepEquals(req, {
-        clean: {
-          parsed_text: {
-            street: 'street value'
-          }
+      t.deepEquals(
+        req,
+        {
+          clean: {
+            parsed_text: {
+              street: 'street value',
+            },
+          },
+          errors: [],
         },
-        errors: []
-      }, 'req should not have been modified');
+        'req should not have been modified',
+      );
 
       t.end();
-
     });
-
   });
 
-  test('service returning house_number and unit should set req.clean.parsed_text.unit', t => {
+  test('service returning house_number and unit should set req.clean.parsed_text.unit', (t) => {
     const service = (req, callback) => {
       const response = [
         {
           label: 'road',
-          value: 'the street'
+          value: 'the street',
         },
         {
           label: 'house_number',
-          value: '22'
+          value: '22',
         },
         {
           label: 'unit',
-          value: '1 th'
-        }
+          value: '1 th',
+        },
       ];
 
       callback(null, response);
@@ -316,28 +325,30 @@ module.exports.tests.success_conditions = (test, common) => {
     const req = {
       clean: {
         parsed_text: {
-          address: 'the street 22 1 th'
-        }
+          address: 'the street 22 1 th',
+        },
       },
-      errors: []
+      errors: [],
     };
 
     controller(req, undefined, () => {
-      t.deepEquals(req, {
-        clean: {
-          parsed_text: {
-            street: 'the street',
-            housenumber: '22',
-            unit: '1 th'
-          }
+      t.deepEquals(
+        req,
+        {
+          clean: {
+            parsed_text: {
+              street: 'the street',
+              housenumber: '22',
+              unit: '1 th',
+            },
+          },
+          errors: [],
         },
-        errors: []
-      }, 'req should have been modified');
+        'req should have been modified',
+      );
 
       t.end();
-
     });
-
   });
 
   // test('service returning valid response should convert and append', t => {
@@ -476,12 +487,11 @@ module.exports.tests.success_conditions = (test, common) => {
 };
 
 module.exports.all = (tape, common) => {
-
   function test(name, testFunction) {
     return tape(`GET /libpostal ${name}`, testFunction);
   }
 
-  for( const testCase in module.exports.tests ){
+  for (const testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

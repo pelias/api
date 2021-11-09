@@ -7,7 +7,7 @@ module.exports = (req, res) => {
   const has_request_errors = _.get(req, 'errors', []).length > 0;
   debugLog.push(req, () => ({
     reply: has_request_errors,
-    stack_trace: stackTraceLine()
+    stack_trace: stackTraceLine(),
   }));
   return has_request_errors;
 };

@@ -6,8 +6,8 @@
   transaction will fail.
 **/
 
-function middleware(req, res, next){
-  if( req.method === 'OPTIONS' ){
+function middleware(req, res, next) {
+  if (req.method === 'OPTIONS') {
     res.sendStatus(200);
   } else {
     next();

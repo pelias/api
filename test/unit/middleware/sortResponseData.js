@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const proxyquire =  require('proxyquire').noCallThru();
+const proxyquire = require('proxyquire').noCallThru();
 const mock_logger = require('pelias-mock-logger');
 
 const sortResponseData = require('../../../middleware/sortResponseData');
@@ -28,9 +28,7 @@ module.exports.tests.should_execute_failure = (test, common) => {
     sort(req, res, () => {
       t.end();
     });
-
   });
-
 };
 
 module.exports.tests.general_tests = (test, common) => {
@@ -48,18 +46,17 @@ module.exports.tests.general_tests = (test, common) => {
 
     const req = {
       clean: {
-        a: 1
-      }
+        a: 1,
+      },
     };
 
     const res = {
-      data: [ {} ]
+      data: [{}],
     };
 
     sort(req, res, () => {
       t.end();
     });
-
   });
 
   test('undefined res.data should return without interacting with comparator', (t) => {
@@ -76,7 +73,6 @@ module.exports.tests.general_tests = (test, common) => {
       t.deepEquals(res, {});
       t.end();
     });
-
   });
 
   test('empty res.data should return without interacting with comparator', (t) => {
@@ -88,16 +84,14 @@ module.exports.tests.general_tests = (test, common) => {
 
     const req = {};
     const res = {
-      data: []
+      data: [],
     };
 
     sort(req, res, () => {
       t.deepEquals(res.data, [], 'res.data should still be empty');
       t.end();
     });
-
   });
-
 };
 
 module.exports.tests.successful_sort = (test, common) => {
@@ -110,23 +104,22 @@ module.exports.tests.successful_sort = (test, common) => {
       };
     };
 
-    const sortResponseData = proxyquire('../../../middleware/sortResponseData', {
-      'pelias-logger': logger
-    });
+    const sortResponseData = proxyquire(
+      '../../../middleware/sortResponseData',
+      {
+        'pelias-logger': logger,
+      },
+    );
 
     const sort = sortResponseData(comparator, _.constant(true));
 
     const req = {
       clean: {
-        field: 'value'
-      }
+        field: 'value',
+      },
     };
     const res = {
-      data: [
-        { _id: 3 },
-        { _id: 2 },
-        { _id: 1 },
-      ]
+      data: [{ _id: 3 }, { _id: 2 }, { _id: 1 }],
     };
 
     sort(req, res, () => {
@@ -134,23 +127,23 @@ module.exports.tests.successful_sort = (test, common) => {
       t.deepEquals(res.data.shift(), { _id: 2 });
       t.deepEquals(res.data.shift(), { _id: 3 });
 
-      t.ok(logger.isDebugMessage(
-        'req.clean: {"field":"value"}, pre-sort: [3,2,1], post-sort: [1,2,3]'));
+      t.ok(
+        logger.isDebugMessage(
+          'req.clean: {"field":"value"}, pre-sort: [3,2,1], post-sort: [1,2,3]',
+        ),
+      );
 
       t.end();
     });
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
-
   function test(name, testFunction) {
     return tape(`[middleware] sortResponseData: ${name}`, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

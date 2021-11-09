@@ -3,22 +3,21 @@ const Debug = require('../helper/debug');
 const debugLog = new Debug('controller:libpostal');
 const logger = require('pelias-logger').get('api');
 
-// Find field in libpostal response 
+// Find field in libpostal response
 function findField(response, field, replacementField) {
-  const libpostalField = response.find(f => f.label === field);
+  const libpostalField = response.find((f) => f.label === field);
 
   if (libpostalField) {
     return libpostalField;
-  } else if(replacementField) {
-    return response.find(f => f.label === replacementField);
+  } else if (replacementField) {
+    return response.find((f) => f.label === replacementField);
   } else {
     return;
   }
 }
 
-
 function setup(libpostalService, should_execute) {
-  function controller( req, res, next ){
+  function controller(req, res, next) {
     // bail early if req/res don't pass conditions for execution
     if (!should_execute(req, res)) {
       return next();
@@ -29,8 +28,7 @@ function setup(libpostalService, should_execute) {
     libpostalService(req, (err, response) => {
       if (err) {
         // push err.message or err onto req.errors
-        req.errors.push( _.get(err, 'message', err) );
-
+        req.errors.push(_.get(err, 'message', err));
       } else {
         // figure out which field contains the probable house number, prefer house_number
         // libpostal parses some inputs, like `3370 cobbe ave`, as a postcode+street
@@ -38,7 +36,11 @@ function setup(libpostalService, should_execute) {
         // to assume that an identified postcode is actually a house number.
         // if there's a house_number in the libpostal response, return it
         // otherwise return the postcode field (which may be undefined)
-        const house_number_field = findField(response, 'house_number', 'postcode');
+        const house_number_field = findField(
+          response,
+          'house_number',
+          'postcode',
+        );
 
         // if we're fairly certain that libpostal identified a house number
         // (from either the house_number or postcode field), place it into the
@@ -49,35 +51,42 @@ function setup(libpostalService, should_execute) {
           req.clean.parsed_text.housenumber = house_number_field.value;
 
           // remove the first instance of the number and trim whitespace
-          req.clean.parsed_text.street = _.trim(_.replace(req.clean.parsed_text.address, req.clean.parsed_text.housenumber, ''));
+          req.clean.parsed_text.street = _.trim(
+            _.replace(
+              req.clean.parsed_text.address,
+              req.clean.parsed_text.housenumber,
+              '',
+            ),
+          );
 
           // If libpostal have parsed unit then add it for search
           const unit_field = findField(response, 'unit');
-          if(unit_field) {
+          if (unit_field) {
             req.clean.parsed_text.unit = unit_field.value;
             // Removing unit from street and trim
-            req.clean.parsed_text.street = _.trim(_.replace(req.clean.parsed_text.street, req.clean.parsed_text.unit, ''));
+            req.clean.parsed_text.street = _.trim(
+              _.replace(
+                req.clean.parsed_text.street,
+                req.clean.parsed_text.unit,
+                '',
+              ),
+            );
           }
-
         } else {
           // otherwise no house number was identifiable, so treat the entire input
           // as a street
           req.clean.parsed_text.street = req.clean.parsed_text.address;
-
         }
 
         // the address field no longer means anything since it's been parsed, so remove it
         delete req.clean.parsed_text.address;
 
-        debugLog.push(req, {parsed_text: response});
-
+        debugLog.push(req, { parsed_text: response });
       }
 
       debugLog.stopTimer(req, initialTime);
       return next();
-
     });
-
   }
 
   return controller;

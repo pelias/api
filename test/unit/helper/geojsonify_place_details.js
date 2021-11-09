@@ -3,7 +3,7 @@ const geojsonify = require('../../../helper/geojsonify_place_details');
 module.exports.tests = {};
 
 module.exports.tests.geojsonify_place_details = (test, common) => {
-  test('plain old string values should be copied verbatim, replacing old values', t => {
+  test('plain old string values should be copied verbatim, replacing old values', (t) => {
     const source = {
       housenumber: 'housenumber value',
       street: 'street value',
@@ -49,7 +49,7 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       marinearea: 'marinearea value',
       marinearea_gid: 'marinearea_gid value',
       marinearea_a: 'marinearea_a value',
-      label: 'label value'
+      label: 'label value',
     };
 
     const expected = {
@@ -97,18 +97,17 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       marinearea: 'marinearea value',
       marinearea_gid: 'marinearea_gid value',
       marinearea_a: 'marinearea_a value',
-      label: 'label value'
+      label: 'label value',
     };
 
     const actual = geojsonify({}, source);
 
     t.deepEqual(actual, expected);
     t.end();
-
   });
 
-  test('\'empty\' string-type values should be output as \'\'', t => {
-    [ [], {}, '', true, null, undefined ].forEach(empty_value => {
+  test("'empty' string-type values should be output as ''", (t) => {
+    [[], {}, '', true, null, undefined].forEach((empty_value) => {
       const source = {
         housenumber: empty_value,
         street: empty_value,
@@ -154,21 +153,19 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
         marinearea: empty_value,
         marinearea_gid: empty_value,
         marinearea_a: empty_value,
-        label: empty_value
+        label: empty_value,
       };
       const expected = {};
 
       const actual = geojsonify({}, source);
 
       t.deepEqual(actual, expected);
-
     });
 
     t.end();
-
   });
 
-  test('source arrays should be copy first value', t => {
+  test('source arrays should be copy first value', (t) => {
     const source = {
       housenumber: ['housenumber value 1', 'housenumber value 2'],
       street: ['street value 1', 'street value 2'],
@@ -204,7 +201,10 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       borough_gid: ['borough_gid value 1', 'borough_gid value 2'],
       borough_a: ['borough_a value 1', 'borough_a value 2'],
       neighbourhood: ['neighbourhood value 1', 'neighbourhood value 2'],
-      neighbourhood_gid: ['neighbourhood_gid value 1', 'neighbourhood_gid value 2'],
+      neighbourhood_gid: [
+        'neighbourhood_gid value 1',
+        'neighbourhood_gid value 2',
+      ],
       continent: ['continent value 1', 'continent value 2'],
       continent_gid: ['continent_gid value 1', 'continent_gid value 2'],
       continent_a: ['continent_a value 1', 'continent_a value 2'],
@@ -213,8 +213,8 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       ocean_a: ['ocean_a value 1', 'ocean_a value 2'],
       marinearea: ['marinearea value 1', 'marinearea value 2'],
       marinearea_gid: ['marinearea_gid value 1', 'marinearea_gid value 2'],
-      marinearea_a: ['marinearea_a value 1','marinearea_a value 2'],
-      label: ['label value 1', 'label value 2']
+      marinearea_a: ['marinearea_a value 1', 'marinearea_a value 2'],
+      label: ['label value 1', 'label value 2'],
     };
 
     const expected = {
@@ -262,64 +262,63 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       marinearea: 'marinearea value 1',
       marinearea_gid: 'marinearea_gid value 1',
       marinearea_a: 'marinearea_a value 1',
-      label: 'label value 1'
+      label: 'label value 1',
     };
 
     const actual = geojsonify({}, source);
 
     t.deepEqual(actual, expected);
     t.end();
-
   });
 
-  test('non-empty objects should be converted to strings', t => {
+  test('non-empty objects should be converted to strings', (t) => {
     // THIS TEST SHOWS THAT THE CODE DOES NOT DO WHAT IT EXPECTED
     const source = {
-      housenumber: { housenumber: 'housenumber value'},
-      street: { street: 'street value'},
-      postalcode: { postalcode: 'postalcode value'},
-      postalcode_gid: { postalcode_gid: 'postalcode_gid value'},
-      match_type: { match_type: 'match_type value'},
-      accuracy: { accuracy: 'accuracy value'},
-      country: { country: 'country value'},
-      country_gid: { country_gid: 'country_gid value'},
-      country_a: { country_a: 'country_a value'},
-      dependency: { dependency: 'dependency value'},
-      dependency_gid: { dependency_gid: 'dependency_gid value'},
-      dependency_a: { dependency_a: 'dependency_a value'},
-      macroregion: { macroregion: 'macroregion value'},
-      macroregion_gid: { macroregion_gid: 'macroregion_gid value'},
-      macroregion_a: { macroregion_a: 'macroregion_a value'},
-      region: { region: 'region value'},
-      region_gid: { region_gid: 'region_gid value'},
-      region_a: { region_a: 'region_a value'},
-      macrocounty: { macrocounty: 'macrocounty value'},
-      macrocounty_gid: { macrocounty_gid: 'macrocounty_gid value'},
-      macrocounty_a: { macrocounty_a: 'macrocounty_a value'},
-      county: { county: 'county value'},
-      county_gid: { county_gid: 'county_gid value'},
-      county_a: { county_a: 'county_a value'},
-      localadmin: { localadmin: 'localadmin value'},
-      localadmin_gid: { localadmin_gid: 'localadmin_gid value'},
-      localadmin_a: { localadmin_a: 'localadmin_a value'},
-      locality: { locality: 'locality value'},
-      locality_gid: { locality_gid: 'locality_gid value'},
-      locality_a: { locality_a: 'locality_a value'},
-      borough: { borough: 'borough value'},
-      borough_gid: { borough_gid: 'borough_gid value'},
-      borough_a: { borough_a: 'borough_a value'},
-      neighbourhood: { neighbourhood: 'neighbourhood value'},
-      neighbourhood_gid: { neighbourhood_gid: 'neighbourhood_gid value'},
-      continent: { continent: 'continent value'} ,
-      continent_gid: { continent: 'continent_gid value'},
-      continent_a: { continent: 'continent_a value'},
-      ocean: { ocean: 'ocean value'},
-      ocean_gid: { ocean_gid: 'ocean_gid value'},
-      ocean_a: { ocean_a: 'ocean_a value'},
-      marinearea: { marinearea: 'marinearea value'},
-      marinearea_gid: { marinearea_gid: 'marinearea_gid value'},
-      marinearea_a: { marinearea_a: 'marinearea_a value'},
-      label: { label: 'label value'}
+      housenumber: { housenumber: 'housenumber value' },
+      street: { street: 'street value' },
+      postalcode: { postalcode: 'postalcode value' },
+      postalcode_gid: { postalcode_gid: 'postalcode_gid value' },
+      match_type: { match_type: 'match_type value' },
+      accuracy: { accuracy: 'accuracy value' },
+      country: { country: 'country value' },
+      country_gid: { country_gid: 'country_gid value' },
+      country_a: { country_a: 'country_a value' },
+      dependency: { dependency: 'dependency value' },
+      dependency_gid: { dependency_gid: 'dependency_gid value' },
+      dependency_a: { dependency_a: 'dependency_a value' },
+      macroregion: { macroregion: 'macroregion value' },
+      macroregion_gid: { macroregion_gid: 'macroregion_gid value' },
+      macroregion_a: { macroregion_a: 'macroregion_a value' },
+      region: { region: 'region value' },
+      region_gid: { region_gid: 'region_gid value' },
+      region_a: { region_a: 'region_a value' },
+      macrocounty: { macrocounty: 'macrocounty value' },
+      macrocounty_gid: { macrocounty_gid: 'macrocounty_gid value' },
+      macrocounty_a: { macrocounty_a: 'macrocounty_a value' },
+      county: { county: 'county value' },
+      county_gid: { county_gid: 'county_gid value' },
+      county_a: { county_a: 'county_a value' },
+      localadmin: { localadmin: 'localadmin value' },
+      localadmin_gid: { localadmin_gid: 'localadmin_gid value' },
+      localadmin_a: { localadmin_a: 'localadmin_a value' },
+      locality: { locality: 'locality value' },
+      locality_gid: { locality_gid: 'locality_gid value' },
+      locality_a: { locality_a: 'locality_a value' },
+      borough: { borough: 'borough value' },
+      borough_gid: { borough_gid: 'borough_gid value' },
+      borough_a: { borough_a: 'borough_a value' },
+      neighbourhood: { neighbourhood: 'neighbourhood value' },
+      neighbourhood_gid: { neighbourhood_gid: 'neighbourhood_gid value' },
+      continent: { continent: 'continent value' },
+      continent_gid: { continent: 'continent_gid value' },
+      continent_a: { continent: 'continent_a value' },
+      ocean: { ocean: 'ocean value' },
+      ocean_gid: { ocean_gid: 'ocean_gid value' },
+      ocean_a: { ocean_a: 'ocean_a value' },
+      marinearea: { marinearea: 'marinearea value' },
+      marinearea_gid: { marinearea_gid: 'marinearea_gid value' },
+      marinearea_a: { marinearea_a: 'marinearea_a value' },
+      label: { label: 'label value' },
     };
 
     const expected = {
@@ -367,85 +366,78 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
       marinearea: '[object Object]',
       marinearea_gid: '[object Object]',
       marinearea_a: '[object Object]',
-      label: '[object Object]'
+      label: '[object Object]',
     };
 
     const actual = geojsonify({}, source);
 
     t.deepEqual(actual, expected);
     t.end();
-
   });
 
-  test('\'default\'-type properties should be copied without type conversion and overwrite old values', t => {
-    [ 'this is a string', 17.3, { a: 1 }, [1, 2, 3] ].forEach(value => {
+  test("'default'-type properties should be copied without type conversion and overwrite old values", (t) => {
+    ['this is a string', 17.3, { a: 1 }, [1, 2, 3]].forEach((value) => {
       const source = {
         confidence: value,
         distance: value,
-        bounding_box: value
+        bounding_box: value,
       };
 
       const expected = {
         confidence: value,
         distance: value,
-        bounding_box: value
+        bounding_box: value,
       };
 
       const actual = geojsonify({}, source);
 
       t.deepEqual(actual, expected);
-
     });
 
     t.end();
-
   });
 
-  test('\'default\'-type properties that are numbers should be output as numbers', t => {
-    [ 17, 17.3 ].forEach(value => {
+  test("'default'-type properties that are numbers should be output as numbers", (t) => {
+    [17, 17.3].forEach((value) => {
       const source = {
         confidence: value,
         distance: value,
-        bounding_box: value
+        bounding_box: value,
       };
       const expected = {
         confidence: value,
         distance: value,
-        bounding_box: value
+        bounding_box: value,
       };
 
       const actual = geojsonify({}, source);
 
       t.deepEqual(actual, expected);
-
     });
 
     t.end();
-
   });
 
-  test('\'empty\' values for default-type properties should not be output', t => {
-    [ undefined, null, true, {}, [] ].forEach(value => {
+  test("'empty' values for default-type properties should not be output", (t) => {
+    [undefined, null, true, {}, []].forEach((value) => {
       const source = {
         confidence: value,
         distance: value,
-        bounding_box: value
+        bounding_box: value,
       };
       const expected = {};
 
       const actual = geojsonify({}, source);
 
       t.deepEqual(actual, expected);
-
     });
 
     t.end();
-
   });
 
-  test('array-type properties should not be output when empty', t => {
+  test('array-type properties should not be output when empty', (t) => {
     const source = {
-      category: []
+      category: [],
     };
     const expected = {};
 
@@ -453,57 +445,52 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
 
     t.deepEqual(actual, expected);
     t.end();
-
   });
 
-  test('array-type properties with array values should be output as arrays', t => {
+  test('array-type properties with array values should be output as arrays', (t) => {
     const source = {
-      category: [ 1, 2 ]
+      category: [1, 2],
     };
     const expected = {
-      category: [ 1, 2 ]
+      category: [1, 2],
     };
 
     const clean = {
-      categories: true
+      categories: true,
     };
 
     const actual = geojsonify(clean, source);
 
     t.deepEqual(actual, expected);
     t.end();
-
   });
 
-  test('category property should be output when params contains \'category\' property', t => {
-    [ {a: 1}, 'this is a string'].forEach(value => {
+  test("category property should be output when params contains 'category' property", (t) => {
+    [{ a: 1 }, 'this is a string'].forEach((value) => {
       const source = {
-        category: value
+        category: value,
       };
       const expected = {
-        category: [ value ]
+        category: [value],
       };
 
       const clean = {
-        categories: true
+        categories: true,
       };
 
       const actual = geojsonify(clean, source);
 
       t.deepEqual(actual, expected);
-
     });
 
     t.end();
-
   });
 
-  test('category property should not be output when params does not contain \'category\' property', t => {
+  test("category property should not be output when params does not contain 'category' property", (t) => {
     const source = {
-      category: [ 1, 2 ]
+      category: [1, 2],
     };
-    const expected = {
-    };
+    const expected = {};
 
     const clean = {};
 
@@ -511,15 +498,13 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
 
     t.deepEqual(actual, expected);
     t.end();
-
   });
 
-  test('category property should not be output when params is not an object', t => {
+  test('category property should not be output when params is not an object', (t) => {
     const source = {
-      category: [ 1, 2 ]
+      category: [1, 2],
     };
-    const expected = {
-    };
+    const expected = {};
 
     const clean = 'this is not an object';
 
@@ -527,60 +512,54 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
 
     t.deepEqual(actual, expected);
     t.end();
-
   });
-
 };
 
 module.exports.tests.empire_specific = (test, common) => {
-  test('empire* properties should not be output when country_gid property is available', t => {
+  test('empire* properties should not be output when country_gid property is available', (t) => {
     const source = {
       country_gid: 'country_gid value',
       empire: 'empire value',
       empire_gid: 'empire_gid value',
       empire_a: 'empire_a value',
-      label: 'label value'
+      label: 'label value',
     };
 
     const expected = {
       country_gid: 'country_gid value',
-      label: 'label value'
+      label: 'label value',
     };
 
     const actual = geojsonify({}, source);
 
     t.deepEqual(actual, expected);
     t.end();
-
   });
 
-  test('empire* properties should be output when country_gid property is not available', t => {
+  test('empire* properties should be output when country_gid property is not available', (t) => {
     const source = {
       empire: 'empire value',
       empire_gid: 'empire_gid value',
       empire_a: 'empire_a value',
-      label: 'label value'
+      label: 'label value',
     };
 
     const expected = {
       empire: 'empire value',
       empire_gid: 'empire_gid value',
       empire_a: 'empire_a value',
-      label: 'label value'
+      label: 'label value',
     };
 
     const actual = geojsonify({}, source);
 
     t.deepEqual(actual, expected);
     t.end();
-
   });
-
 };
 
 module.exports.tests.debug_flag = (test, common) => {
-
-  test('debug: no-op when debug flag disabled', t => {
+  test('debug: no-op when debug flag disabled', (t) => {
     const clean = {};
     const source = { population: 100000, popularity: 1000 };
     const expected = {};
@@ -589,7 +568,7 @@ module.exports.tests.debug_flag = (test, common) => {
     t.end();
   });
 
-  test('debug: population and popularity set', t => {
+  test('debug: population and popularity set', (t) => {
     const clean = { enableDebug: true };
     const source = { population: 100000, popularity: 1000 };
     const expected = { population: 100000, popularity: 1000 };
@@ -598,7 +577,7 @@ module.exports.tests.debug_flag = (test, common) => {
     t.end();
   });
 
-  test('debug: only population set', t => {
+  test('debug: only population set', (t) => {
     const clean = { enableDebug: true };
     const source = { population: 100000 };
     const expected = { population: 100000 };
@@ -607,7 +586,7 @@ module.exports.tests.debug_flag = (test, common) => {
     t.end();
   });
 
-  test('debug: only popularity set', t => {
+  test('debug: only popularity set', (t) => {
     const clean = { enableDebug: true };
     const source = { popularity: 1000 };
     const expected = { popularity: 1000 };
@@ -616,7 +595,7 @@ module.exports.tests.debug_flag = (test, common) => {
     t.end();
   });
 
-  test('debug: neither property set', t => {
+  test('debug: neither property set', (t) => {
     const clean = { enableDebug: true };
     const source = {};
     const expected = {};
@@ -624,16 +603,14 @@ module.exports.tests.debug_flag = (test, common) => {
     t.deepEqual(actual, expected);
     t.end();
   });
-
 };
 
 module.exports.all = (tape, common) => {
-
   function test(name, testFunction) {
     return tape(`geojsonify: ${name}`, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

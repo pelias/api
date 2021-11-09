@@ -14,14 +14,14 @@ module.exports = (layers) => {
         // convert layers to an array if it isn't already one
         _.castArray(layers),
         // pull all the layer properties into an array
-        _.map(response.data, _.property('layer'))
-    ));
+        _.map(response.data, _.property('layer')),
+      ),
+    );
 
     debugLog.push(request, () => ({
-    reply: {[layers]: has_results_at_layers},
-    stack_trace: stackTraceLine()
+      reply: { [layers]: has_results_at_layers },
+      stack_trace: stackTraceLine(),
     }));
     return has_results_at_layers;
   };
-
 };

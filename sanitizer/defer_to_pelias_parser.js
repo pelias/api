@@ -16,12 +16,14 @@ function shouldUsePeliasParse(req, res) {
 
 module.exports = (_api_pelias_config, should_execute) => {
   const sanitizeAll = require('../sanitizer/sanitizeAll'),
-  sanitizers = {
-    debug: require('../sanitizer/_debug')(_api_pelias_config.exposeInternalDebugTools),
-    text: require('../sanitizer/_text_pelias_parser')()
-  };
+    sanitizers = {
+      debug: require('../sanitizer/_debug')(
+        _api_pelias_config.exposeInternalDebugTools,
+      ),
+      text: require('../sanitizer/_text_pelias_parser')(),
+    };
 
-  return function(req, res, next) {
+  return function (req, res, next) {
     // only run the pelias parser and text sanitizer when determined by predicates
     if (!should_execute(req, res)) {
       return next();
@@ -43,5 +45,4 @@ module.exports = (_api_pelias_config, should_execute) => {
 
     next();
   };
-
 };

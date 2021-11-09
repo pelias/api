@@ -6,21 +6,30 @@ const decode_gid = require('../helper/decode_gid');
 // validate inputs, convert types and apply defaults id generally looks like
 // 'geonames:venue:4163334' (source:layer:id) so, all three are required
 
-const lengthError = 'invalid param \'ids\': length must be >0';
+const lengthError = "invalid param 'ids': length must be >0";
 
-const formatError = function(input) {
-  return 'id `' + input + ' is invalid: must be of the format source:layer:id for ex: \'geonames:venue:4163334\'';
+const formatError = function (input) {
+  return (
+    'id `' +
+    input +
+    " is invalid: must be of the format source:layer:id for ex: 'geonames:venue:4163334'"
+  );
 };
 
-const targetError = function(target, target_list) {
-  return target + ' is invalid. It must be one of these values - [' + target_list.join(', ') + ']';
+const targetError = function (target, target_list) {
+  return (
+    target +
+    ' is invalid. It must be one of these values - [' +
+    target_list.join(', ') +
+    ']'
+  );
 };
 
 function sanitizeId(rawId, messages) {
   const gid = decode_gid(rawId);
 
-  if (!gid ) {
-    messages.errors.push( formatError(rawId) );
+  if (!gid) {
+    messages.errors.push(formatError(rawId));
     return;
   }
 
@@ -28,18 +37,18 @@ function sanitizeId(rawId, messages) {
 
   // check if any parts of the gid are empty
   if (_.includes([source, layer, id], '')) {
-    messages.errors.push( formatError(rawId) );
+    messages.errors.push(formatError(rawId));
     return;
   }
 
   const valid_values = Object.keys(type_mapping.source_mapping);
   if (!_.includes(valid_values, source)) {
-    messages.errors.push( targetError(source, valid_values) );
+    messages.errors.push(targetError(source, valid_values));
     return;
   }
 
   if (!_.includes(type_mapping.layers, layer)) {
-    messages.errors.push( targetError(layer, type_mapping.layers) );
+    messages.errors.push(targetError(layer, type_mapping.layers));
     return;
   }
 
@@ -50,12 +59,12 @@ function sanitizeId(rawId, messages) {
   };
 }
 
-function _sanitize( raw, clean ){
+function _sanitize(raw, clean) {
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
-  if (!nonEmptyString( raw.ids )) {
-    messages.errors.push( lengthError);
+  if (!nonEmptyString(raw.ids)) {
+    messages.errors.push(lengthError);
     return messages;
   }
 
@@ -67,11 +76,11 @@ function _sanitize( raw, clean ){
 
   // ensure all elements are valid non-empty strings
   if (!rawIds.every(nonEmptyString)) {
-      messages.errors.push( lengthError );
+    messages.errors.push(lengthError);
   }
 
   // cycle through raw ids and set those which are valid
-  var validIds = rawIds.map(rawId => {
+  var validIds = rawIds.map((rawId) => {
     return sanitizeId(rawId, messages);
   });
 
@@ -82,11 +91,11 @@ function _sanitize( raw, clean ){
   return messages;
 }
 
-function _expected(){
+function _expected() {
   return [{ name: 'ids' }];
 }
 // export function
 module.exports = () => ({
   sanitize: _sanitize,
-  expected: _expected
+  expected: _expected,
 });

@@ -1,11 +1,11 @@
 var tape = require('tape'),
-    diff = require('difflet')({ indent : 2, comment : true });
+  diff = require('difflet')({ indent: 2, comment: true });
 
 var common = {
   // a visual deep diff rendered using console.error()
-  diff: function( actual, expected ){
-    console.error( diff.compare( actual, expected ) );
-  }
+  diff: function (actual, expected) {
+    console.error(diff.compare(actual, expected));
+  },
 };
 
 var tests = [
@@ -119,9 +119,9 @@ var tests = [
   require('./service/configurations/PlaceHolder'),
   require('./service/configurations/PointInPolygon'),
   require('./service/mget'),
-  require('./service/search')
+  require('./service/search'),
 ];
 
-tests.map(function(t) {
+tests.map(function (t) {
   t.all(tape, common);
 });

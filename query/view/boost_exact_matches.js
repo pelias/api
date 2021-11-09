@@ -17,22 +17,28 @@ const toMultiFields = require('./helper').toMultiFields;
   than partial matches.
 **/
 
-module.exports = function( vs ){
+module.exports = function (vs) {
   const view_name = 'boost_exact_matches';
 
   // get a copy of the *complete* tokens produced from the input:name
   const tokens = vs.var('input:name:tokens_complete').get();
 
   // no valid tokens to use, fail now, don't render this view.
-  if( !tokens || tokens.length < 1 ){ return null; }
+  if (!tokens || tokens.length < 1) {
+    return null;
+  }
 
   // set 'input' to be only the fully completed characters
-  vs.var(`multi_match:${view_name}:input`).set( tokens.join(' ') );
-  vs.var(`multi_match:${view_name}:fields`).set(toMultiFields(searchDefaults['phrase:field'], vs.var('lang').get()));
+  vs.var(`multi_match:${view_name}:input`).set(tokens.join(' '));
+  vs.var(`multi_match:${view_name}:fields`).set(
+    toMultiFields(searchDefaults['phrase:field'], vs.var('lang').get()),
+  );
 
-  vs.var(`multi_match:${view_name}:analyzer`).set(searchDefaults['phrase:analyzer']);
+  vs.var(`multi_match:${view_name}:analyzer`).set(
+    searchDefaults['phrase:analyzer'],
+  );
   vs.var(`multi_match:${view_name}:boost`).set(vs.var('phrase:boost').get());
   vs.var(`multi_match:${view_name}:slop`).set(vs.var('phrase:slop').get());
 
-  return peliasQuery.view.leaf.match_phrase(view_name)( vs );
+  return peliasQuery.view.leaf.match_phrase(view_name)(vs);
 };

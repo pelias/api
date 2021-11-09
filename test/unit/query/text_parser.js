@@ -3,15 +3,15 @@ var text_parser = require('../../../query/text_parser');
 
 module.exports.tests = {};
 
-module.exports.tests.interface = function(test, common) {
-  test('valid interface', function(t) {
+module.exports.tests.interface = function (test, common) {
+  test('valid interface', function (t) {
     t.equal(typeof text_parser, 'function', 'valid function');
     t.end();
   });
 };
 
-module.exports.tests.query = function(test, common) {
-  test('parsed_text without properties should leave vs properties unset', function(t) {
+module.exports.tests.query = function (test, common) {
+  test('parsed_text without properties should leave vs properties unset', function (t) {
     var parsed_text = {};
     var vs = new VariableStore();
 
@@ -30,10 +30,9 @@ module.exports.tests.query = function(test, common) {
     t.false(vs.isset('input:region'));
     t.false(vs.isset('input:country'));
     t.end();
-
   });
 
-  test('parsed_text without properties should leave vs properties unset', function(t) {
+  test('parsed_text without properties should leave vs properties unset', function (t) {
     var parsed_text = {
       query: 'query value',
       category: 'category value',
@@ -46,7 +45,7 @@ module.exports.tests.query = function(test, common) {
       city: 'city value',
       county: 'county value',
       state: 'state value',
-      country: 'country value'
+      country: 'country value',
     };
     var vs = new VariableStore();
 
@@ -65,17 +64,15 @@ module.exports.tests.query = function(test, common) {
     t.equals(vs.var('input:region').toString(), 'state value');
     t.equals(vs.var('input:country').toString(), 'country value');
     t.end();
-
   });
-
 };
 
-module.exports.tests.housenumber_special_cases = function(test, common) {
-  test('numeric query with street but no number should reassign query to housenumber', function(t) {
+module.exports.tests.housenumber_special_cases = function (test, common) {
+  test('numeric query with street but no number should reassign query to housenumber', function (t) {
     var parsed_text = {
       query: '17',
       // no house number set
-      street: 'street value'
+      street: 'street value',
     };
     var vs = new VariableStore();
 
@@ -85,14 +82,13 @@ module.exports.tests.housenumber_special_cases = function(test, common) {
     t.equals(vs.var('input:housenumber').toString(), '17');
     t.equals(vs.var('input:street').toString(), 'street value');
     t.end();
-
   });
 
-  test('numeric query with street but without number should not change anything', function(t) {
+  test('numeric query with street but without number should not change anything', function (t) {
     var parsed_text = {
       query: '17',
       housenumber: 'housenumber value',
-      street: 'street value'
+      street: 'street value',
       // no number or street
     };
     var vs = new VariableStore();
@@ -103,13 +99,12 @@ module.exports.tests.housenumber_special_cases = function(test, common) {
     t.equals(vs.var('input:housenumber').toString(), 'housenumber value');
     t.equals(vs.var('input:street').toString(), 'street value');
     t.end();
-
   });
 
-  test('numeric query with number but without street should not change anything', function(t) {
+  test('numeric query with number but without street should not change anything', function (t) {
     var parsed_text = {
       query: '17',
-      housenumber: 'number value'
+      housenumber: 'number value',
       // no number or street
     };
     var vs = new VariableStore();
@@ -120,12 +115,11 @@ module.exports.tests.housenumber_special_cases = function(test, common) {
     t.equals(vs.var('input:housenumber').toString(), 'number value');
     t.false(vs.isset('input:street'));
     t.end();
-
   });
 
-  test('numeric query without street or number should not change anything', function(t) {
+  test('numeric query without street or number should not change anything', function (t) {
     var parsed_text = {
-      query: '17'
+      query: '17',
       // no number or street
     };
     var vs = new VariableStore();
@@ -136,13 +130,12 @@ module.exports.tests.housenumber_special_cases = function(test, common) {
     t.false(vs.isset('input:housenumber'));
     t.false(vs.isset('input:street'));
     t.end();
-
   });
 
-  test('non-numeric query with street but no number should not change anything', function(t) {
+  test('non-numeric query with street but no number should not change anything', function (t) {
     var parsed_text = {
       query: '13 this is 15 not a number 17',
-      street: 'street value'
+      street: 'street value',
     };
     var vs = new VariableStore();
 
@@ -152,12 +145,10 @@ module.exports.tests.housenumber_special_cases = function(test, common) {
     t.false(vs.isset('input:housenumber'));
     t.equals(vs.var('input:street').toString(), 'street value');
     t.end();
-
   });
-
 };
 
-module.exports.tests.empty_values = function(test, common) {
+module.exports.tests.empty_values = function (test, common) {
   test('empty string values not set', function (t) {
     var parsed_text = {
       query: '',
@@ -171,7 +162,7 @@ module.exports.tests.empty_values = function(test, common) {
       city: '',
       county: '',
       state: '',
-      country: ''
+      country: '',
     };
     var vs = new VariableStore();
 
@@ -194,9 +185,7 @@ module.exports.tests.empty_values = function(test, common) {
     t.false(vs.isset('input:region'));
     t.false(vs.isset('input:country'));
     t.end();
-
   });
-
 };
 
 module.exports.all = function (tape, common) {
@@ -204,7 +193,7 @@ module.exports.all = function (tape, common) {
     return tape('text_parser ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

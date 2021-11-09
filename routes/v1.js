@@ -5,7 +5,7 @@ const express = require('express');
 const { Router } = express;
 const sorting = require('pelias-sorting');
 const elasticsearch = require('elasticsearch');
-const {all, any, not} = require('predicates');
+const { all, any, not } = require('predicates');
 
 // imports
 const sanitizers = requireAll(path.join(__dirname, '../sanitizer'));
@@ -18,11 +18,18 @@ const predicates = requireAll(path.join(__dirname, '../controller/predicates'));
 predicates.hasRequestCategories = predicates.hasRequestParameter('categories');
 
 // shorthand for standard early-exit conditions
-const hasResponseDataOrRequestErrors = any(predicates.hasResponseData, predicates.hasRequestErrors);
-predicates.hasAdminOnlyResults = not(predicates.hasResultsAtLayers(['venue', 'address', 'street']));
+const hasResponseDataOrRequestErrors = any(
+  predicates.hasResponseData,
+  predicates.hasRequestErrors,
+);
+predicates.hasAdminOnlyResults = not(
+  predicates.hasResultsAtLayers(['venue', 'address', 'street']),
+);
 
 const serviceWrapper = require('pelias-microservice-wrapper').service;
-const configuration = requireAll(path.join(__dirname, '../service/configurations'));
+const configuration = requireAll(
+  path.join(__dirname, '../service/configurations'),
+);
 
 /**
  * Append routes to app
@@ -33,48 +40,69 @@ const configuration = requireAll(path.join(__dirname, '../service/configurations
 function addRoutes(app, peliasConfig) {
   const esclient = elasticsearch.Client(_.extend({}, peliasConfig.esclient));
 
-  const pipConfiguration = new configuration.PointInPolygon(_.defaultTo(peliasConfig.api.services.pip, {}));
+  const pipConfiguration = new configuration.PointInPolygon(
+    _.defaultTo(peliasConfig.api.services.pip, {}),
+  );
   const pipService = serviceWrapper(pipConfiguration);
   const isPipServiceEnabled = _.constant(pipConfiguration.isEnabled());
 
-  const placeholderConfiguration = new configuration.PlaceHolder(_.defaultTo(peliasConfig.api.services.placeholder, {}));
+  const placeholderConfiguration = new configuration.PlaceHolder(
+    _.defaultTo(peliasConfig.api.services.placeholder, {}),
+  );
   const placeholderService = serviceWrapper(placeholderConfiguration);
-  const isPlaceholderServiceEnabled = _.constant(placeholderConfiguration.isEnabled());
+  const isPlaceholderServiceEnabled = _.constant(
+    placeholderConfiguration.isEnabled(),
+  );
 
-  const changeLanguageConfiguration = new configuration.Language(_.defaultTo(peliasConfig.api.services.placeholder, {}));
+  const changeLanguageConfiguration = new configuration.Language(
+    _.defaultTo(peliasConfig.api.services.placeholder, {}),
+  );
   const changeLanguageService = serviceWrapper(changeLanguageConfiguration);
-  const isChangeLanguageEnabled = _.constant(changeLanguageConfiguration.isEnabled());
+  const isChangeLanguageEnabled = _.constant(
+    changeLanguageConfiguration.isEnabled(),
+  );
 
-  const interpolationConfiguration = new configuration.Interpolation(_.defaultTo(peliasConfig.api.services.interpolation, {}));
+  const interpolationConfiguration = new configuration.Interpolation(
+    _.defaultTo(peliasConfig.api.services.interpolation, {}),
+  );
   const interpolationService = serviceWrapper(interpolationConfiguration);
-  const isInterpolationEnabled = _.constant(interpolationConfiguration.isEnabled());
+  const isInterpolationEnabled = _.constant(
+    interpolationConfiguration.isEnabled(),
+  );
 
   // standard libpostal should use req.clean.text for the `address` parameter
   const libpostalConfiguration = new configuration.Libpostal(
     _.defaultTo(peliasConfig.api.services.libpostal, {}),
-    _.property('clean.text'));
+    _.property('clean.text'),
+  );
   const libpostalService = serviceWrapper(libpostalConfiguration);
 
   // structured libpostal should use req.clean.parsed_text.address for the `address` parameter
   const structuredLibpostalConfiguration = new configuration.Libpostal(
     _.defaultTo(peliasConfig.api.services.libpostal, {}),
-    _.property('clean.parsed_text.address'));
-  const structuredLibpostalService = serviceWrapper(structuredLibpostalConfiguration);
+    _.property('clean.parsed_text.address'),
+  );
+  const structuredLibpostalService = serviceWrapper(
+    structuredLibpostalConfiguration,
+  );
 
   // fallback to coarse reverse when regular reverse didn't return anything
   const coarseReverseShouldExecute = all(
-    isPipServiceEnabled, not(predicates.hasRequestErrors), not(predicates.hasResponseData), not(predicates.isOnlyNonAdminLayers)
+    isPipServiceEnabled,
+    not(predicates.hasRequestErrors),
+    not(predicates.hasResponseData),
+    not(predicates.isOnlyNonAdminLayers),
   );
 
   const libpostalShouldExecute = all(
     not(predicates.hasRequestErrors),
-    not(predicates.isRequestSourcesOnlyWhosOnFirst)
+    not(predicates.isRequestSourcesOnlyWhosOnFirst),
   );
 
   // for libpostal to execute for structured requests, req.clean.parsed_text.address must exist
   const structuredLibpostalShouldExecute = all(
     not(predicates.hasRequestErrors),
-    predicates.hasParsedTextProperties.all('address')
+    predicates.hasParsedTextProperties.all('address'),
   );
 
   // execute placeholder if libpostal only parsed as admin-only and needs to
@@ -88,8 +116,8 @@ function addRoutes(app, peliasConfig) {
         // layers only contains venue, address, or street
         predicates.isOnlyNonAdminLayers,
         // don't geodisambiguate if categories were requested
-        predicates.hasRequestCategories
-      )
+        predicates.hasRequestCategories,
+      ),
     ),
     any(
       predicates.isRequestSourcesOnlyWhosOnFirst,
@@ -97,10 +125,10 @@ function addRoutes(app, peliasConfig) {
         predicates.isAdminOnlyAnalysis,
         any(
           predicates.isRequestSourcesUndefined,
-          predicates.isRequestSourcesIncludesWhosOnFirst
-        )
-      )
-    )
+          predicates.isRequestSourcesIncludesWhosOnFirst,
+        ),
+      ),
+    ),
   );
 
   // execute placeholder if libpostal identified address parts but ids need to
@@ -116,8 +144,15 @@ function addRoutes(app, peliasConfig) {
       // don't run placeholder if there's a query or category
       not(predicates.hasParsedTextProperties.any('query', 'category')),
       // run placeholder if there are any adminareas identified
-      predicates.hasParsedTextProperties.any('neighbourhood', 'borough', 'city', 'county', 'state', 'country')
-    )
+      predicates.hasParsedTextProperties.any(
+        'neighbourhood',
+        'borough',
+        'city',
+        'county',
+        'state',
+        'country',
+      ),
+    ),
   );
 
   const searchWithIdsShouldExecute = all(
@@ -127,7 +162,7 @@ function addRoutes(app, peliasConfig) {
     // at least one layer allowed by the query params must be related to addresses
     predicates.isRequestLayersAnyAddressRelated,
     // there must be a street
-    predicates.hasParsedTextProperties.any('street')
+    predicates.hasParsedTextProperties.any('street'),
   );
 
   // placeholder should have executed, useful for determining whether to actually
@@ -135,7 +170,7 @@ function addRoutes(app, peliasConfig) {
   //  should be honored as is)
   const placeholderShouldHaveExecuted = any(
     placeholderGeodisambiguationShouldExecute,
-    placeholderIdsLookupShouldExecute
+    placeholderIdsLookupShouldExecute,
   );
 
   // don't execute the cascading fallback query IF placeholder should have executed
@@ -143,7 +178,7 @@ function addRoutes(app, peliasConfig) {
   const fallbackQueryShouldExecute = all(
     not(predicates.hasRequestErrors),
     not(predicates.hasResponseData),
-    not(placeholderShouldHaveExecuted)
+    not(placeholderShouldHaveExecuted),
   );
 
   const shouldDeferToPeliasParser = any(
@@ -157,13 +192,13 @@ function addRoutes(app, peliasConfig) {
       // exception: if the 'sources' parameter is only wof, do not use pelias parser
       // in that case Placeholder can return all the possible answers
       not(predicates.isRequestSourcesOnlyWhosOnFirst),
-    )
+    ),
   );
 
   // call search_pelias_parser query if pelias_parser was the parser
   const searchPeliasParserShouldExecute = all(
     not(predicates.hasRequestErrors),
-    predicates.isPeliasParse
+    predicates.isPeliasParse,
   );
 
   // get language adjustments if:
@@ -173,7 +208,7 @@ function addRoutes(app, peliasConfig) {
     predicates.hasResponseData,
     not(predicates.hasRequestErrors),
     isChangeLanguageEnabled,
-    predicates.hasRequestParameter('lang')
+    predicates.hasRequestParameter('lang'),
   );
 
   // interpolate if:
@@ -183,7 +218,7 @@ function addRoutes(app, peliasConfig) {
     not(predicates.hasRequestErrors),
     isInterpolationEnabled,
     predicates.hasParsedTextProperties.all('housenumber', 'street'),
-    predicates.hasResultsAtLayers('street')
+    predicates.hasResultsAtLayers('street'),
   );
 
   // execute under the following conditions:
@@ -191,10 +226,7 @@ function addRoutes(app, peliasConfig) {
   // - request is not coarse OR pip service is disabled
   const nonCoarseReverseShouldExecute = all(
     not(hasResponseDataOrRequestErrors),
-    any(
-      not(predicates.isCoarseReverse),
-      not(isPipServiceEnabled)
-    )
+    any(not(predicates.isCoarseReverse), not(isPipServiceEnabled)),
   );
 
   // helpers to replace vague booleans
@@ -206,28 +238,58 @@ function addRoutes(app, peliasConfig) {
 
   var routers = {
     index: createRouter([
-      controllers.markdownToHtml(peliasConfig.api, './public/apiDoc.md')
+      controllers.markdownToHtml(peliasConfig.api, './public/apiDoc.md'),
     ]),
     attribution: createRouter([
-      controllers.markdownToHtml(peliasConfig.api, './public/attribution.md')
+      controllers.markdownToHtml(peliasConfig.api, './public/attribution.md'),
     ]),
     search: createRouter([
       sanitizers.search.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.sizeCalculator(),
       controllers.libpostal(libpostalService, libpostalShouldExecute),
-      controllers.placeholder(placeholderService, geometricFiltersApply, placeholderGeodisambiguationShouldExecute),
-      controllers.placeholder(placeholderService, geometricFiltersApply, placeholderIdsLookupShouldExecute),
+      controllers.placeholder(
+        placeholderService,
+        geometricFiltersApply,
+        placeholderGeodisambiguationShouldExecute,
+      ),
+      controllers.placeholder(
+        placeholderService,
+        geometricFiltersApply,
+        placeholderIdsLookupShouldExecute,
+      ),
       // try 3 different query types: address search using ids, cascading fallback, pelias parser
-      controllers.search(peliasConfig, esclient, queries.address_search_using_ids, searchWithIdsShouldExecute),
-      controllers.search(peliasConfig, esclient, queries.search, fallbackQueryShouldExecute),
-      sanitizers.defer_to_pelias_parser(peliasConfig.api, shouldDeferToPeliasParser), //run additional sanitizers needed for pelias parser
-      controllers.search(peliasConfig, esclient, queries.search_pelias_parser, searchPeliasParserShouldExecute),
+      controllers.search(
+        peliasConfig,
+        esclient,
+        queries.address_search_using_ids,
+        searchWithIdsShouldExecute,
+      ),
+      controllers.search(
+        peliasConfig,
+        esclient,
+        queries.search,
+        fallbackQueryShouldExecute,
+      ),
+      sanitizers.defer_to_pelias_parser(
+        peliasConfig.api,
+        shouldDeferToPeliasParser,
+      ), //run additional sanitizers needed for pelias parser
+      controllers.search(
+        peliasConfig,
+        esclient,
+        queries.search_pelias_parser,
+        searchPeliasParserShouldExecute,
+      ),
       middleware.trimByGranularity(),
       middleware.distance('focus.point.'),
       middleware.confidenceScore(peliasConfig.api),
       middleware.confidenceScoreFallback(),
-      middleware.interpolate(interpolationService, interpolationShouldExecute, interpolationConfiguration),
+      middleware.interpolate(
+        interpolationService,
+        interpolationShouldExecute,
+        interpolationConfiguration,
+      ),
       middleware.sortResponseData(sorting, predicates.hasAdminOnlyResults),
       middleware.applyOverrides(),
       middleware.dedupe(),
@@ -236,22 +298,37 @@ function addRoutes(app, peliasConfig) {
       middleware.renamePlacenames(),
       middleware.parseBBox(),
       middleware.normalizeParentIds(),
-      middleware.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
+      middleware.changeLanguage(
+        changeLanguageService,
+        changeLanguageShouldExecute,
+      ),
       middleware.assignLabels(),
       middleware.geocodeJSON(peliasConfig.api, base),
-      middleware.sendJSON
+      middleware.sendJSON,
     ]),
     structured: createRouter([
       sanitizers.structured_geocoding.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.sizeCalculator(),
-      controllers.structured_libpostal(structuredLibpostalService, structuredLibpostalShouldExecute),
-      controllers.search(peliasConfig, esclient, queries.structured_geocoding, not(hasResponseDataOrRequestErrors)),
+      controllers.structured_libpostal(
+        structuredLibpostalService,
+        structuredLibpostalShouldExecute,
+      ),
+      controllers.search(
+        peliasConfig,
+        esclient,
+        queries.structured_geocoding,
+        not(hasResponseDataOrRequestErrors),
+      ),
       middleware.trimByGranularityStructured(),
       middleware.distance('focus.point.'),
       middleware.confidenceScore(peliasConfig.api),
       middleware.confidenceScoreFallback(),
-      middleware.interpolate(interpolationService, interpolationShouldExecute, interpolationConfiguration),
+      middleware.interpolate(
+        interpolationService,
+        interpolationShouldExecute,
+        interpolationConfiguration,
+      ),
       middleware.applyOverrides(),
       middleware.dedupe(),
       middleware.accuracy(),
@@ -259,16 +336,24 @@ function addRoutes(app, peliasConfig) {
       middleware.renamePlacenames(),
       middleware.parseBBox(),
       middleware.normalizeParentIds(),
-      middleware.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
+      middleware.changeLanguage(
+        changeLanguageService,
+        changeLanguageShouldExecute,
+      ),
       middleware.assignLabels(),
       middleware.geocodeJSON(peliasConfig.api, base),
-      middleware.sendJSON
+      middleware.sendJSON,
     ]),
     autocomplete: createRouter([
       sanitizers.autocomplete.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.sizeCalculator(),
-      controllers.search(peliasConfig, esclient, queries.autocomplete, not(hasResponseDataOrRequestErrors)),
+      controllers.search(
+        peliasConfig,
+        esclient,
+        queries.autocomplete,
+        not(hasResponseDataOrRequestErrors),
+      ),
       middleware.distance('focus.point.'),
       middleware.confidenceScore(peliasConfig.api),
       middleware.applyOverrides(),
@@ -278,16 +363,24 @@ function addRoutes(app, peliasConfig) {
       middleware.renamePlacenames(),
       middleware.parseBBox(),
       middleware.normalizeParentIds(),
-      middleware.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
+      middleware.changeLanguage(
+        changeLanguageService,
+        changeLanguageShouldExecute,
+      ),
       middleware.assignLabels(),
       middleware.geocodeJSON(peliasConfig.api, base),
-      middleware.sendJSON
+      middleware.sendJSON,
     ]),
     reverse: createRouter([
       sanitizers.reverse.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.sizeCalculator(2),
-      controllers.search(peliasConfig, esclient, queries.reverse, nonCoarseReverseShouldExecute),
+      controllers.search(
+        peliasConfig,
+        esclient,
+        queries.reverse,
+        nonCoarseReverseShouldExecute,
+      ),
       controllers.coarse_reverse(pipService, coarseReverseShouldExecute),
       middleware.distance('point.'),
       // reverse confidence scoring depends on distance from origin
@@ -300,16 +393,24 @@ function addRoutes(app, peliasConfig) {
       middleware.renamePlacenames(),
       middleware.parseBBox(),
       middleware.normalizeParentIds(),
-      middleware.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
+      middleware.changeLanguage(
+        changeLanguageService,
+        changeLanguageShouldExecute,
+      ),
       middleware.assignLabels(),
       middleware.geocodeJSON(peliasConfig.api, base),
-      middleware.sendJSON
+      middleware.sendJSON,
     ]),
     nearby: createRouter([
       sanitizers.nearby.middleware(peliasConfig.api),
       middleware.requestLanguage,
       middleware.sizeCalculator(),
-      controllers.search(peliasConfig, esclient, queries.reverse, not(hasResponseDataOrRequestErrors)),
+      controllers.search(
+        peliasConfig,
+        esclient,
+        queries.reverse,
+        not(hasResponseDataOrRequestErrors),
+      ),
       middleware.distance('point.'),
       // reverse confidence scoring depends on distance from origin
       //  so it must be calculated first
@@ -321,10 +422,13 @@ function addRoutes(app, peliasConfig) {
       middleware.renamePlacenames(),
       middleware.parseBBox(),
       middleware.normalizeParentIds(),
-      middleware.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
+      middleware.changeLanguage(
+        changeLanguageService,
+        changeLanguageShouldExecute,
+      ),
       middleware.assignLabels(),
       middleware.geocodeJSON(peliasConfig.api, base),
-      middleware.sendJSON
+      middleware.sendJSON,
     ]),
     place: createRouter([
       sanitizers.place.middleware(peliasConfig.api),
@@ -336,34 +440,37 @@ function addRoutes(app, peliasConfig) {
       middleware.renamePlacenames(),
       middleware.parseBBox(),
       middleware.normalizeParentIds(),
-      middleware.changeLanguage(changeLanguageService, changeLanguageShouldExecute),
+      middleware.changeLanguage(
+        changeLanguageService,
+        changeLanguageShouldExecute,
+      ),
       middleware.assignLabels(),
       middleware.geocodeJSON(peliasConfig.api, base),
-      middleware.sendJSON
+      middleware.sendJSON,
     ]),
-    status: createRouter([
-      controllers.status
-    ])
+    status: createRouter([controllers.status]),
   };
 
-
   // static data endpoints
-  app.get ( base,                          routers.index );
-  app.get ( base + 'attribution',          routers.attribution );
-  app.get (        '/attribution',         routers.attribution );
-  app.get (        '/status',              routers.status );
+  app.get(base, routers.index);
+  app.get(base + 'attribution', routers.attribution);
+  app.get('/attribution', routers.attribution);
+  app.get('/status', routers.status);
 
   // backend dependent endpoints
-  app.get ( base + 'place',                routers.place );
-  app.get ( base + 'autocomplete',         routers.autocomplete );
-  app.get ( base + 'search',               routers.search );
-  app.post( base + 'search',               routers.search );
-  app.get ( base + 'search/structured',    routers.structured );
-  app.get ( base + 'reverse',              routers.reverse );
-  app.get ( base + 'nearby',               routers.nearby );
+  app.get(base + 'place', routers.place);
+  app.get(base + 'autocomplete', routers.autocomplete);
+  app.get(base + 'search', routers.search);
+  app.post(base + 'search', routers.search);
+  app.get(base + 'search/structured', routers.structured);
+  app.get(base + 'reverse', routers.reverse);
+  app.get(base + 'nearby', routers.nearby);
 
   if (peliasConfig.api.exposeInternalDebugTools) {
-    app.use ( '/frontend',                   express.static('node_modules/pelias-compare/dist-api/'));
+    app.use(
+      '/frontend',
+      express.static('node_modules/pelias-compare/dist-api/'),
+    );
   }
 }
 
@@ -380,6 +487,5 @@ function createRouter(functions) {
   });
   return router;
 }
-
 
 module.exports.addRoutes = addRoutes;

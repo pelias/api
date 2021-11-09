@@ -1,7 +1,10 @@
 const sanitizer = require('../../../sanitizer/_address_layer_filter');
 const TypeMapping = require('../../../helper/TypeMapping');
 const NO_MESSAGES = { errors: [], warnings: [] };
-const STD_MESSAGES = { errors: [], warnings: ['performance optimization: excluding \'address\' layer'] };
+const STD_MESSAGES = {
+  errors: [],
+  warnings: ["performance optimization: excluding 'address' layer"],
+};
 
 module.exports.tests = {};
 
@@ -17,9 +20,12 @@ module.exports.tests.sanitize = function (test, common) {
   real_type_mapping.load();
   const real_sanitizer = sanitizer(real_type_mapping);
 
-
   test('sanitize - do nothing if clean.layers already specified', (t) => {
-    let clean = { text: '1 example', layers: ['not empty'], positive_layers: ['not empty'] };
+    let clean = {
+      text: '1 example',
+      layers: ['not empty'],
+      positive_layers: ['not empty'],
+    };
     t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
     t.deepEqual(clean.layers, ['not empty']);
     t.end();
@@ -69,11 +75,15 @@ module.exports.tests.sanitize = function (test, common) {
 
   test('sanitize - reduce target layers when clean.sources specified', (t) => {
     let tm = new TypeMapping();
-    tm.setLayersBySource({ A: ['A', 'address'], B: ['B', 'address'], C: ['C'] });
+    tm.setLayersBySource({
+      A: ['A', 'address'],
+      B: ['B', 'address'],
+      C: ['C'],
+    });
     tm.generateMappings();
     let s = sanitizer(tm);
 
-    let clean = { text: 'foo', sources: [ 'A', 'C' ] };
+    let clean = { text: 'foo', sources: ['A', 'C'] };
     t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'C']);
     t.end();
@@ -92,7 +102,11 @@ module.exports.tests.sanitize = function (test, common) {
   });
 
   test('sanitize - do nothing when address layer explicitly specified', (t) => {
-    let clean = { text: 'foo', layers: ['address', 'venue'], positive_layers: ['address', 'venue'] };
+    let clean = {
+      text: 'foo',
+      layers: ['address', 'venue'],
+      positive_layers: ['address', 'venue'],
+    };
 
     t.deepEqual(real_sanitizer.sanitize(null, clean), NO_MESSAGES);
     t.deepEqual(clean.layers, ['address', 'venue']);
@@ -100,7 +114,7 @@ module.exports.tests.sanitize = function (test, common) {
   });
 
   test('sanitize - do nothing when source with only addresses (OA) specified', (t) => {
-    let clean = { text: 'foo', sources: ['openaddresses']};
+    let clean = { text: 'foo', sources: ['openaddresses'] };
 
     t.deepEqual(real_sanitizer.sanitize(null, clean), NO_MESSAGES);
     t.equal(clean.layers, undefined);
@@ -109,24 +123,42 @@ module.exports.tests.sanitize = function (test, common) {
   });
 
   test('sanitize - exclude layers when source with addresses and other layers (OSM) specified', (t) => {
-    let clean = { text: 'foo', sources: ['openstreetmap']};
+    let clean = { text: 'foo', sources: ['openstreetmap'] };
 
     t.deepEqual(real_sanitizer.sanitize(null, clean), STD_MESSAGES);
-    t.deepEqual(clean.layers, ['venue', 'street'], 'layer list is reduced to exclude addresses');
+    t.deepEqual(
+      clean.layers,
+      ['venue', 'street'],
+      'layer list is reduced to exclude addresses',
+    );
     t.deepEqual(clean.sources, ['openstreetmap']);
     t.end();
   });
 
   test('sanitize - exclude addresses when negative layers other than address are specified', (t) => {
     // select all layers except venue to simulate value of clean.layers from targets sanitizer
-    const clean_layers = real_type_mapping.getCanonicalLayers().filter(layer => layer !== 'venue').sort();
+    const clean_layers = real_type_mapping
+      .getCanonicalLayers()
+      .filter((layer) => layer !== 'venue')
+      .sort();
 
-    let clean = { text: 'foo', layers: clean_layers, negative_layers: ['-venue'], positive_layers: []};
+    let clean = {
+      text: 'foo',
+      layers: clean_layers,
+      negative_layers: ['-venue'],
+      positive_layers: [],
+    };
 
-    const expected_layers = clean_layers.filter(layer => layer !== 'address').sort();
+    const expected_layers = clean_layers
+      .filter((layer) => layer !== 'address')
+      .sort();
 
     t.deepEqual(real_sanitizer.sanitize(null, clean), STD_MESSAGES);
-    t.deepEqual(clean.layers.sort(), expected_layers, 'layer list is reduced to exclude addresses');
+    t.deepEqual(
+      clean.layers.sort(),
+      expected_layers,
+      'layer list is reduced to exclude addresses',
+    );
     t.end();
   });
 };
@@ -160,21 +192,30 @@ module.exports.tests.parsed_text = function (test, common) {
   let s = sanitizer(tm);
 
   test('naive parser - apply filter due to comma being present', (t) => {
-    let clean = { text: 'A', parsed_text: { name: '1', admin_parts: 'Avenue' } };
+    let clean = {
+      text: 'A',
+      parsed_text: { name: '1', admin_parts: 'Avenue' },
+    };
     t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();
   });
 
   test('pelias_parser/libpostal - do not apply filter for numeric addresses', (t) => {
-    let clean = { text: 'A', parsed_text: { housenumber: '1', street: 'Main St' } };
+    let clean = {
+      text: 'A',
+      parsed_text: { housenumber: '1', street: 'Main St' },
+    };
     t.deepEqual(s.sanitize(null, clean), NO_MESSAGES);
     t.false(clean.layers);
     t.end();
   });
 
   test('pelias_parser/libpostal - apply filter for non-numeric addresses', (t) => {
-    let clean = { text: 'A', parsed_text: { housenumber: 'Foo', street: 'Main St' } };
+    let clean = {
+      text: 'A',
+      parsed_text: { housenumber: 'Foo', street: 'Main St' },
+    };
     t.deepEqual(s.sanitize(null, clean), STD_MESSAGES);
     t.deepEqual(clean.layers, ['A', 'B', 'C']);
     t.end();

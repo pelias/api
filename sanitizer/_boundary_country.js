@@ -12,14 +12,15 @@ function _sanitize(raw, clean) {
   // param 'boundary.country' is optional and should not
   // error when simply not set by the user
   if (!_.isNil(countries)) {
-
     // must be valid string
     if (!nonEmptyString(countries)) {
       messages.errors.push('boundary.country is not a string');
     } else {
       // support for multi countries
       countries = countries.split(',').filter(nonEmptyString);
-      const invalidIsoCodes = countries.filter(country => !containsIsoCode(country));
+      const invalidIsoCodes = countries.filter(
+        (country) => !containsIsoCode(country),
+      );
 
       // country list must contains at least one element
       if (_.isArray(countries) && _.isEmpty(countries)) {
@@ -28,14 +29,20 @@ function _sanitize(raw, clean) {
 
       // must be a valid ISO 3166 code
       else if (_.isArray(invalidIsoCodes) && !_.isEmpty(invalidIsoCodes)) {
-        invalidIsoCodes.forEach(country => messages.errors.push(country + ' is not a valid ISO2/ISO3 country code'));
+        invalidIsoCodes.forEach((country) =>
+          messages.errors.push(
+            country + ' is not a valid ISO2/ISO3 country code',
+          ),
+        );
       }
 
       // valid ISO 3166 country code, set alpha3 code on 'clean.boundary.country'
       else {
         // the only way for boundary.country to be assigned is if input is
         //  a string and a known ISO2 or ISO3
-        clean['boundary.country'] = countries.map(country => iso3166.iso3Code(country));
+        clean['boundary.country'] = countries.map((country) =>
+          iso3166.iso3Code(country),
+        );
       }
     }
   }
@@ -47,11 +54,11 @@ function containsIsoCode(isoCode) {
   return iso3166.isISO2Code(isoCode) || iso3166.isISO3Code(isoCode);
 }
 
-function _expected(){
+function _expected() {
   return [{ name: 'boundary.country' }];
 }
 
 module.exports = () => ({
   sanitize: _sanitize,
-  expected: _expected
+  expected: _expected,
 });

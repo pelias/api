@@ -8,8 +8,8 @@ module.exports = (parameter) => (req, res) => {
   const has_request_parameter = _.has(req, ['clean', parameter]);
 
   debugLog.push(req, () => ({
-    reply: {[parameter]: has_request_parameter},
-    stack_trace: stackTraceLine()
+    reply: { [parameter]: has_request_parameter },
+    stack_trace: stackTraceLine(),
   }));
   return has_request_parameter;
 };

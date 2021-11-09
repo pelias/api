@@ -20,17 +20,18 @@ function setup(comparator, should_execute) {
     const postsort_order = res.data.map(_.property('_id'));
 
     // log it for debugging purposes
-    logger.debug([
-      `req.clean: ${JSON.stringify(req.clean)}`,
-      `pre-sort: [${presort_order}]`,
-      `post-sort: [${postsort_order}]`
-    ].join(', '));
+    logger.debug(
+      [
+        `req.clean: ${JSON.stringify(req.clean)}`,
+        `pre-sort: [${presort_order}]`,
+        `post-sort: [${postsort_order}]`,
+      ].join(', '),
+    );
 
     next();
   }
 
   return middleware;
-
 }
 
 module.exports = setup;

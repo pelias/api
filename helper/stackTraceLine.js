@@ -3,7 +3,7 @@ module.exports = () => {
   let targetLine;
 
   stack.forEach((line) => {
-    if(line.indexOf('at controller') !== -1) {
+    if (line.indexOf('at controller') !== -1) {
       targetLine = line.trim();
     }
   });

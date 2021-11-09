@@ -2,25 +2,41 @@ var sanitize = require('../../../sanitizer/_geo_common');
 
 module.exports.tests = {};
 
-module.exports.tests.interface = function(test, common) {
-  test('valid interface', function(t) {
-    t.equal(typeof sanitize.sanitize_rect, 'function', 'sanitize_rect is a valid function');
-    t.equal(typeof sanitize.sanitize_coord, 'function', 'sanitize_coord is a valid function');
-    t.equal(typeof sanitize.sanitize_circle, 'function', 'sanitize_circle is a valid function');
-    t.equal(typeof sanitize.sanitize_point, 'function', 'sanitize_point is a valid function');
+module.exports.tests.interface = function (test, common) {
+  test('valid interface', function (t) {
+    t.equal(
+      typeof sanitize.sanitize_rect,
+      'function',
+      'sanitize_rect is a valid function',
+    );
+    t.equal(
+      typeof sanitize.sanitize_coord,
+      'function',
+      'sanitize_coord is a valid function',
+    );
+    t.equal(
+      typeof sanitize.sanitize_circle,
+      'function',
+      'sanitize_circle is a valid function',
+    );
+    t.equal(
+      typeof sanitize.sanitize_point,
+      'function',
+      'sanitize_point is a valid function',
+    );
     t.end();
   });
 };
 
 // @note: for better coverage see unit tests for 'wrap.js'.
-module.exports.tests.wrapping = function(test, common) {
+module.exports.tests.wrapping = function (test, common) {
   test('control - no wrapping required', function (t) {
     var clean = {};
     var params = {
       'point.lat': +1.1,
-      'point.lon': -1.1
+      'point.lon': -1.1,
     };
-    sanitize.sanitize_point( 'point', clean, params, false );
+    sanitize.sanitize_point('point', clean, params, false);
     t.equal(clean['point.lat'], +1.1, 'not changed');
     t.equal(clean['point.lon'], -1.1, 'not changed');
     t.end();
@@ -29,9 +45,9 @@ module.exports.tests.wrapping = function(test, common) {
     var clean = {};
     var params = {
       'point.lat': +1.1,
-      'point.lon': +181.1
+      'point.lon': +181.1,
     };
-    sanitize.sanitize_point( 'point', clean, params, false );
+    sanitize.sanitize_point('point', clean, params, false);
     t.equal(clean['point.lat'], +1.1, 'not changed');
     t.equal(clean['point.lon'], -178.9, 'equal to (-180 + 1.1)');
     t.end();
@@ -40,9 +56,9 @@ module.exports.tests.wrapping = function(test, common) {
     var clean = {};
     var params = {
       'point.lat': -1.1,
-      'point.lon': -181.1
+      'point.lon': -181.1,
     };
-    sanitize.sanitize_point( 'point', clean, params, false );
+    sanitize.sanitize_point('point', clean, params, false);
     t.equal(clean['point.lat'], -1.1, 'not changed');
     t.equal(clean['point.lon'], +178.9, 'equal to (+180 - 1.1)');
     t.end();
@@ -51,9 +67,9 @@ module.exports.tests.wrapping = function(test, common) {
     var clean = {};
     var params = {
       'point.lat': 91.1,
-      'point.lon': 1.1
+      'point.lon': 1.1,
     };
-    sanitize.sanitize_point( 'point', clean, params, false );
+    sanitize.sanitize_point('point', clean, params, false);
     t.equal(clean['point.lat'], +88.9, 'equal to (+90 - 1.1)');
     t.equal(clean['point.lon'], -178.9, 'equal to (-180 + 1.1)'); // polar flip
     t.end();
@@ -62,24 +78,24 @@ module.exports.tests.wrapping = function(test, common) {
     var clean = {};
     var params = {
       'point.lat': -91.1,
-      'point.lon': -1.1
+      'point.lon': -1.1,
     };
-    sanitize.sanitize_point( 'point', clean, params, false );
+    sanitize.sanitize_point('point', clean, params, false);
     t.equal(clean['point.lat'], -88.9, 'equal to (-90 + 1.1)');
     t.equal(clean['point.lon'], +178.9, 'equal to (+180 - 1.1)'); // polar flip
     t.end();
   });
 };
 
-module.exports.tests.coord = function(test, common) {
+module.exports.tests.coord = function (test, common) {
   test('valid coord', function (t) {
     var clean = {};
     var params = {
-      'foo': -40.659
+      foo: -40.659,
     };
     var mandatory = false;
 
-    sanitize.sanitize_coord( 'foo', clean, params, mandatory );
+    sanitize.sanitize_coord('foo', clean, params, mandatory);
     t.equal(clean.foo, params.foo);
     t.end();
   });
@@ -87,11 +103,11 @@ module.exports.tests.coord = function(test, common) {
   test('invalid coord', function (t) {
     var clean = {};
     var params = {
-      'foo': 'bar'
+      foo: 'bar',
     };
     var mandatory = false;
 
-    sanitize.sanitize_coord( 'foo', clean, params, mandatory );
+    sanitize.sanitize_coord('foo', clean, params, mandatory);
     t.equal(clean.foo, undefined, 'not set');
     t.end();
   });
@@ -101,8 +117,8 @@ module.exports.tests.coord = function(test, common) {
     var params = {};
     var mandatory = false;
 
-    t.doesNotThrow( function(){
-      sanitize.sanitize_coord( 'foo', clean, params, mandatory );
+    t.doesNotThrow(function () {
+      sanitize.sanitize_coord('foo', clean, params, mandatory);
     });
     t.end();
   });
@@ -112,24 +128,23 @@ module.exports.tests.coord = function(test, common) {
     var params = {};
     var mandatory = true;
 
-    t.throws( function(){
-      sanitize.sanitize_coord( 'foo', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_coord('foo', clean, params, mandatory);
     });
     t.end();
   });
-
 };
 
-module.exports.tests.point = function(test, common) {
+module.exports.tests.point = function (test, common) {
   test('valid point duo', function (t) {
     var clean = {};
     var params = {
       'foo.bar.lat': 11,
-      'foo.bar.lon': 22
+      'foo.bar.lon': 22,
     };
     var mandatory = false;
 
-    sanitize.sanitize_point( 'foo.bar', clean, params, mandatory );
+    sanitize.sanitize_point('foo.bar', clean, params, mandatory);
     t.equal(clean['foo.bar.lat'], params['foo.bar.lat'], 'lat approved');
     t.equal(clean['foo.bar.lon'], params['foo.bar.lon'], 'lon approved');
     t.end();
@@ -138,12 +153,12 @@ module.exports.tests.point = function(test, common) {
   test('invalid point, lat only', function (t) {
     var clean = {};
     var params = {
-      'foo.bar.lat': 11
+      'foo.bar.lat': 11,
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_point( 'foo.bar', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_point('foo.bar', clean, params, mandatory);
     });
     t.end();
   });
@@ -155,8 +170,8 @@ module.exports.tests.point = function(test, common) {
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_point( 'foo.bar', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_point('foo.bar', clean, params, mandatory);
     });
     t.end();
   });
@@ -169,8 +184,8 @@ module.exports.tests.point = function(test, common) {
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_point( 'foo.bar', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_point('foo.bar', clean, params, mandatory);
     });
     t.end();
   });
@@ -179,12 +194,12 @@ module.exports.tests.point = function(test, common) {
     var clean = {};
     var params = {
       'foo.bar.lat': 11,
-      'foo.bar.lon': 'foobar'
+      'foo.bar.lon': 'foobar',
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_point( 'foo.bar', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_point('foo.bar', clean, params, mandatory);
     });
     t.end();
   });
@@ -194,8 +209,8 @@ module.exports.tests.point = function(test, common) {
     var params = {};
     var mandatory = false;
 
-    t.doesNotThrow( function(){
-      sanitize.sanitize_point( 'foo.bar', clean, params, mandatory );
+    t.doesNotThrow(function () {
+      sanitize.sanitize_point('foo.bar', clean, params, mandatory);
     });
     t.end();
   });
@@ -205,29 +220,45 @@ module.exports.tests.point = function(test, common) {
     var params = {};
     var mandatory = true;
 
-    t.throws( function(){
-      sanitize.sanitize_point( 'foo.bar', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_point('foo.bar', clean, params, mandatory);
     });
     t.end();
   });
 };
 
-module.exports.tests.rect = function(test, common) {
+module.exports.tests.rect = function (test, common) {
   test('valid rect quad', function (t) {
     var clean = {};
     var params = {
       'boundary.rect.min_lat': -41.614,
       'boundary.rect.max_lat': -40.659,
       'boundary.rect.min_lon': 174.612,
-      'boundary.rect.max_lon': 176.333
+      'boundary.rect.max_lon': 176.333,
     };
     var mandatory = false;
 
-    sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
-    t.equal(clean['boundary.rect.min_lat'], params['boundary.rect.min_lat'], 'min_lat approved');
-    t.equal(clean['boundary.rect.max_lat'], params['boundary.rect.max_lat'], 'min_lat approved');
-    t.equal(clean['boundary.rect.min_lon'], params['boundary.rect.min_lon'], 'min_lat approved');
-    t.equal(clean['boundary.rect.max_lon'], params['boundary.rect.max_lon'], 'min_lat approved');
+    sanitize.sanitize_rect('boundary.rect', clean, params, mandatory);
+    t.equal(
+      clean['boundary.rect.min_lat'],
+      params['boundary.rect.min_lat'],
+      'min_lat approved',
+    );
+    t.equal(
+      clean['boundary.rect.max_lat'],
+      params['boundary.rect.max_lat'],
+      'min_lat approved',
+    );
+    t.equal(
+      clean['boundary.rect.min_lon'],
+      params['boundary.rect.min_lon'],
+      'min_lat approved',
+    );
+    t.equal(
+      clean['boundary.rect.max_lon'],
+      params['boundary.rect.max_lon'],
+      'min_lat approved',
+    );
     t.end();
   });
 
@@ -237,25 +268,25 @@ module.exports.tests.rect = function(test, common) {
       'boundary.rect.min_lat': 0,
       'boundary.rect.max_lat': 0,
       'boundary.rect.min_lon': 0,
-      'boundary.rect.max_lon': 0
+      'boundary.rect.max_lon': 0,
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
-    },/boundary.rect.min_lat \(0\) must be less than boundary.rect.max_lat \(0\)/);
+    t.throws(function () {
+      sanitize.sanitize_rect('boundary.rect', clean, params, mandatory);
+    }, /boundary.rect.min_lat \(0\) must be less than boundary.rect.max_lat \(0\)/);
     t.end();
   });
 
   test('invalid rect - partially specified', function (t) {
     var clean = {};
     var params = {
-      'boundary.rect.min_lat': -40.659
+      'boundary.rect.min_lat': -40.659,
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_rect('boundary.rect', clean, params, mandatory);
     });
     t.end();
   });
@@ -265,8 +296,8 @@ module.exports.tests.rect = function(test, common) {
     var params = {};
     var mandatory = false;
 
-    t.doesNotThrow( function(){
-      sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
+    t.doesNotThrow(function () {
+      sanitize.sanitize_rect('boundary.rect', clean, params, mandatory);
     });
     t.end();
   });
@@ -276,8 +307,8 @@ module.exports.tests.rect = function(test, common) {
     var params = {};
     var mandatory = true;
 
-    t.throws( function(){
-      sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_rect('boundary.rect', clean, params, mandatory);
     });
     t.end();
   });
@@ -288,13 +319,17 @@ module.exports.tests.rect = function(test, common) {
       'boundary.rect.max_lat': 52.2387,
       'boundary.rect.max_lon': 14.1367,
       'boundary.rect.min_lat': 52.7945,
-      'boundary.rect.min_lon': 12.6398
+      'boundary.rect.min_lon': 12.6398,
     };
     var mandatory = false;
 
-    t.throws( function() {
-      sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
-    },/boundary.rect.min_lat \(52.7945\) must be less than boundary.rect.max_lat \(52.2387\)/, 'should error when min >= max');
+    t.throws(
+      function () {
+        sanitize.sanitize_rect('boundary.rect', clean, params, mandatory);
+      },
+      /boundary.rect.min_lat \(52.7945\) must be less than boundary.rect.max_lat \(52.2387\)/,
+      'should error when min >= max',
+    );
     t.end();
   });
 
@@ -304,63 +339,83 @@ module.exports.tests.rect = function(test, common) {
       'boundary.rect.max_lat': 52,
       'boundary.rect.max_lon': 14,
       'boundary.rect.min_lat': 52,
-      'boundary.rect.min_lon': 12
+      'boundary.rect.min_lon': 12,
     };
     var mandatory = false;
 
-    t.throws( function() {
-      sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_rect('boundary.rect', clean, params, mandatory);
     });
     t.end();
   });
 
-  test('invalid rect - out of range latitude', function(t) {
+  test('invalid rect - out of range latitude', function (t) {
     var clean = {};
     var params = {
       'boundary.rect.max_lat': 352.2387,
       'boundary.rect.max_lon': 14.1367,
       'boundary.rect.min_lat': 52.7945,
-      'boundary.rect.min_lon': 12.6398
+      'boundary.rect.min_lon': 12.6398,
     };
     var mandatory = false;
 
-    t.throws( function() {
-      sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
-    }, /boundary.rect.max_lat value 352.2387 is outside range -90,90/, 'should throw error on boundary.rect.max_lat value');
+    t.throws(
+      function () {
+        sanitize.sanitize_rect('boundary.rect', clean, params, mandatory);
+      },
+      /boundary.rect.max_lat value 352.2387 is outside range -90,90/,
+      'should throw error on boundary.rect.max_lat value',
+    );
     t.end();
   });
 
-  test('invalid rect - out of range longitude', function(t) {
+  test('invalid rect - out of range longitude', function (t) {
     var clean = {};
     var params = {
       'boundary.rect.max_lat': 52.2387,
       'boundary.rect.max_lon': 14.1367,
       'boundary.rect.min_lat': 12.7945,
-      'boundary.rect.min_lon': -200.6398
+      'boundary.rect.min_lon': -200.6398,
     };
     var mandatory = false;
 
-    t.throws( function() {
-      sanitize.sanitize_rect( 'boundary.rect', clean, params, mandatory );
-    }, /boundary.rect.min_lon value -200.6398 is outside range -180,180/, 'should throw error on boundary.rect.min_lon');
+    t.throws(
+      function () {
+        sanitize.sanitize_rect('boundary.rect', clean, params, mandatory);
+      },
+      /boundary.rect.min_lon value -200.6398 is outside range -180,180/,
+      'should throw error on boundary.rect.min_lon',
+    );
     t.end();
   });
 };
 
-module.exports.tests.circle = function(test, common) {
+module.exports.tests.circle = function (test, common) {
   test('valid circle trio', function (t) {
     var clean = {};
     var params = {
       'boundary.circle.lat': 11,
       'boundary.circle.lon': 22,
-      'boundary.circle.radius': 33
+      'boundary.circle.radius': 33,
     };
     var mandatory = false;
 
-    sanitize.sanitize_circle( 'boundary.circle', clean, params, mandatory );
-    t.equal(clean['boundary.circle.lat'], params['boundary.circle.lat'], 'lat approved');
-    t.equal(clean['boundary.circle.lon'], params['boundary.circle.lon'], 'lon approved');
-    t.equal(clean['boundary.circle.radius'], params['boundary.circle.radius'], 'radius approved');
+    sanitize.sanitize_circle('boundary.circle', clean, params, mandatory);
+    t.equal(
+      clean['boundary.circle.lat'],
+      params['boundary.circle.lat'],
+      'lat approved',
+    );
+    t.equal(
+      clean['boundary.circle.lon'],
+      params['boundary.circle.lon'],
+      'lon approved',
+    );
+    t.equal(
+      clean['boundary.circle.radius'],
+      params['boundary.circle.radius'],
+      'radius approved',
+    );
     t.end();
   });
 
@@ -368,13 +423,21 @@ module.exports.tests.circle = function(test, common) {
     var clean = {};
     var params = {
       'boundary.circle.lat': 11,
-      'boundary.circle.lon': 22
+      'boundary.circle.lon': 22,
     };
     var mandatory = false;
 
-    sanitize.sanitize_circle( 'boundary.circle', clean, params, mandatory );
-    t.equal(clean['boundary.circle.lat'], params['boundary.circle.lat'], 'lat approved');
-    t.equal(clean['boundary.circle.lon'], params['boundary.circle.lon'], 'lon approved');
+    sanitize.sanitize_circle('boundary.circle', clean, params, mandatory);
+    t.equal(
+      clean['boundary.circle.lat'],
+      params['boundary.circle.lat'],
+      'lat approved',
+    );
+    t.equal(
+      clean['boundary.circle.lon'],
+      params['boundary.circle.lon'],
+      'lon approved',
+    );
     t.end();
   });
 
@@ -385,8 +448,8 @@ module.exports.tests.circle = function(test, common) {
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_circle( 'boundary.circle', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_circle('boundary.circle', clean, params, mandatory);
     });
     t.end();
   });
@@ -398,8 +461,8 @@ module.exports.tests.circle = function(test, common) {
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_circle( 'boundary.circle', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_circle('boundary.circle', clean, params, mandatory);
     });
     t.end();
   });
@@ -407,12 +470,12 @@ module.exports.tests.circle = function(test, common) {
   test('invalid circle, radius only', function (t) {
     var clean = {};
     var params = {
-      'boundary.circle.radius': 33
+      'boundary.circle.radius': 33,
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_circle( 'boundary.circle', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_circle('boundary.circle', clean, params, mandatory);
     });
     t.end();
   });
@@ -421,12 +484,12 @@ module.exports.tests.circle = function(test, common) {
     var clean = {};
     var params = {
       'boundary.circle.lon': 22,
-      'boundary.circle.radius': 33
+      'boundary.circle.radius': 33,
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_circle( 'boundary.circle', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_circle('boundary.circle', clean, params, mandatory);
     });
     t.end();
   });
@@ -435,12 +498,12 @@ module.exports.tests.circle = function(test, common) {
     var clean = {};
     var params = {
       'boundary.circle.lat': 11,
-      'boundary.circle.radius': 33
+      'boundary.circle.radius': 33,
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_circle( 'boundary.circle', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_circle('boundary.circle', clean, params, mandatory);
     });
     t.end();
   });
@@ -450,12 +513,12 @@ module.exports.tests.circle = function(test, common) {
     var params = {
       'boundary.circle.lat': 'foobar',
       'boundary.circle.lon': 22,
-      'boundary.circle.radius': 33
+      'boundary.circle.radius': 33,
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_circle( 'boundary.circle', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_circle('boundary.circle', clean, params, mandatory);
     });
     t.end();
   });
@@ -465,12 +528,12 @@ module.exports.tests.circle = function(test, common) {
     var params = {
       'boundary.circle.lat': 11,
       'boundary.circle.lon': 'foobar',
-      'boundary.circle.radius': 33
+      'boundary.circle.radius': 33,
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_circle( 'boundary.circle', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_circle('boundary.circle', clean, params, mandatory);
     });
     t.end();
   });
@@ -480,12 +543,12 @@ module.exports.tests.circle = function(test, common) {
     var params = {
       'boundary.circle.lat': 11,
       'boundary.circle.lon': 22,
-      'boundary.circle.radius': 'foobar'
+      'boundary.circle.radius': 'foobar',
     };
     var mandatory = false;
 
-    t.throws( function(){
-      sanitize.sanitize_circle( 'boundary.circle', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_circle('boundary.circle', clean, params, mandatory);
     });
     t.end();
   });
@@ -495,8 +558,8 @@ module.exports.tests.circle = function(test, common) {
     var params = {};
     var mandatory = false;
 
-    t.doesNotThrow( function(){
-      sanitize.sanitize_circle( 'boundary.circle', clean, params, mandatory );
+    t.doesNotThrow(function () {
+      sanitize.sanitize_circle('boundary.circle', clean, params, mandatory);
     });
     t.end();
   });
@@ -506,20 +569,19 @@ module.exports.tests.circle = function(test, common) {
     var params = {};
     var mandatory = true;
 
-    t.throws( function(){
-      sanitize.sanitize_circle( 'boundary.circle', clean, params, mandatory );
+    t.throws(function () {
+      sanitize.sanitize_circle('boundary.circle', clean, params, mandatory);
     });
     t.end();
   });
 };
 
 module.exports.all = function (tape, common) {
-
   function test(name, testFunction) {
     return tape('SANITIZER _geo_common ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

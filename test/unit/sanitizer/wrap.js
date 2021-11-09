@@ -2,7 +2,7 @@ var wrap = require('../../../sanitizer/wrap');
 
 module.exports.tests = {};
 
-module.exports.tests.control = function(test, common) {
+module.exports.tests.control = function (test, common) {
   test('control - no wrapping required', function (t) {
     var norm = wrap(55.555, 22.222);
     t.equal(norm.lat, 55.555);
@@ -11,7 +11,7 @@ module.exports.tests.control = function(test, common) {
   });
 };
 
-module.exports.tests.latitude_positive = function(test, common) {
+module.exports.tests.latitude_positive = function (test, common) {
   test('positive latitude wrapping - 1 degree', function (t) {
     var norm = wrap(1, 0);
     t.equal(norm.lat, 1);
@@ -56,7 +56,7 @@ module.exports.tests.latitude_positive = function(test, common) {
   });
 };
 
-module.exports.tests.latitude_negative = function(test, common) {
+module.exports.tests.latitude_negative = function (test, common) {
   test('negative latitude wrapping - 1 degree', function (t) {
     var norm = wrap(-1, 0);
     t.equal(norm.lat, -1);
@@ -101,7 +101,7 @@ module.exports.tests.latitude_negative = function(test, common) {
   });
 };
 
-module.exports.tests.longitude_positive = function(test, common) {
+module.exports.tests.longitude_positive = function (test, common) {
   test('positive longitude wrapping - 1 degree', function (t) {
     var norm = wrap(0, 1);
     t.equal(norm.lat, 0);
@@ -140,7 +140,7 @@ module.exports.tests.longitude_positive = function(test, common) {
   });
 };
 
-module.exports.tests.longitude_negative = function(test, common) {
+module.exports.tests.longitude_negative = function (test, common) {
   test('negative longitude wrapping - 1 degree', function (t) {
     var norm = wrap(0, -1);
     t.equal(norm.lat, 0);
@@ -184,7 +184,7 @@ module.exports.all = function (tape, common) {
     return tape('SANTIZE wrap ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

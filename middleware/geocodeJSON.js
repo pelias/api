@@ -11,10 +11,9 @@ var _ = require('lodash');
  * @returns {middleware}
  */
 function setup(peliasConfig, basePath) {
-
   var opts = {
     config: peliasConfig || require('pelias-config').generate().api,
-    basePath: basePath || '/'
+    basePath: basePath || '/',
   };
 
   function middleware(req, res, next) {
@@ -37,7 +36,6 @@ function setup(peliasConfig, basePath) {
  * @returns {*}
  */
 function convertToGeocodeJSON(req, res, next, opts) {
-
   res.body = { geocoding: {} };
 
   // REQUIRED. A semver.org compliant version number. Describes the version of
@@ -47,11 +45,13 @@ function convertToGeocodeJSON(req, res, next, opts) {
   // OPTIONAL. Default: null. The attribution of the data. In case of multiple sources,
   // and then multiple attributions, can be an object with one key by source.
   // Can be a URI on the server, which outlines attribution details.
-  res.body.geocoding.attribution = opts.config.attributionURL || url.format({
-    protocol: req.protocol,
-    host: req.get('host'),
-    pathname: 'attribution'
-  });
+  res.body.geocoding.attribution =
+    opts.config.attributionURL ||
+    url.format({
+      protocol: req.protocol,
+      host: req.get('host'),
+      pathname: 'attribution',
+    });
 
   // OPTIONAL. Default: null. The query that has been issued to trigger the
   // search.
@@ -100,7 +100,7 @@ function addEngine(version, geocoding) {
   geocoding.engine = {
     name: 'Pelias',
     author: 'Mapzen',
-    version: version
+    version: version,
   };
 }
 

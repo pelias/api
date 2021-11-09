@@ -36,7 +36,6 @@ function computeAccuracy(req, res, next) {
  * @returns {object}
  */
 function computeAccuracyLevelForResult(hit) {
-
   // TODO: add a check for interpolated addresses when that feature lands
 
   switch (hit.layer) {

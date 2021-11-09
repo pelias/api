@@ -2,68 +2,68 @@ var logger = require('pelias-logger').get('api');
 var _ = require('lodash');
 
 // all the address parsing logic
-function addParsedVariablesToQueryVariables( parsed_text, vs ){
+function addParsedVariablesToQueryVariables(parsed_text, vs) {
   // ==== add parsed matches [address components] ====
 
   // query - Mexitaly, Sunoco, Lowes
-  if ( ! _.isEmpty(parsed_text.query) ) {
+  if (!_.isEmpty(parsed_text.query)) {
     vs.var('input:query', parsed_text.query);
   }
 
   // categories - restaurants, hotels, bars
-  if ( ! _.isEmpty(parsed_text.category) ) {
+  if (!_.isEmpty(parsed_text.category)) {
     vs.var('input:category', parsed_text.category);
   }
 
-  if ( ! _.isEmpty(parsed_text.address) ) {
-    vs.var( 'input:address', parsed_text.address );
+  if (!_.isEmpty(parsed_text.address)) {
+    vs.var('input:address', parsed_text.address);
   }
 
   // house number
-  if( ! _.isEmpty(parsed_text.housenumber) ){
-    vs.var( 'input:housenumber', parsed_text.housenumber );
+  if (!_.isEmpty(parsed_text.housenumber)) {
+    vs.var('input:housenumber', parsed_text.housenumber);
   }
 
   // street name
-  if( ! _.isEmpty(parsed_text.street) ){
-    vs.var( 'input:street', parsed_text.street );
+  if (!_.isEmpty(parsed_text.street)) {
+    vs.var('input:street', parsed_text.street);
   }
 
   // neighbourhood
-  if ( ! _.isEmpty(parsed_text.neighbourhood) ) {
-    vs.var( 'input:neighbourhood', parsed_text.neighbourhood);
+  if (!_.isEmpty(parsed_text.neighbourhood)) {
+    vs.var('input:neighbourhood', parsed_text.neighbourhood);
   }
 
   // borough
-  if ( ! _.isEmpty(parsed_text.borough) ) {
-    vs.var( 'input:borough', parsed_text.borough);
+  if (!_.isEmpty(parsed_text.borough)) {
+    vs.var('input:borough', parsed_text.borough);
   }
 
   // postal code
-  if( ! _.isEmpty(parsed_text.postalcode) ){
-    vs.var( 'input:postcode', parsed_text.postalcode );
+  if (!_.isEmpty(parsed_text.postalcode)) {
+    vs.var('input:postcode', parsed_text.postalcode);
   }
 
   // ==== add parsed matches [admin components] ====
 
   // city
-  if( ! _.isEmpty(parsed_text.city) ){
-    vs.var( 'input:locality', parsed_text.city );
+  if (!_.isEmpty(parsed_text.city)) {
+    vs.var('input:locality', parsed_text.city);
   }
 
   // county
-  if( ! _.isEmpty(parsed_text.county) ){
-    vs.var( 'input:county', parsed_text.county );
+  if (!_.isEmpty(parsed_text.county)) {
+    vs.var('input:county', parsed_text.county);
   }
 
   // state
-  if( ! _.isEmpty(parsed_text.state) ){
-    vs.var( 'input:region', parsed_text.state );
+  if (!_.isEmpty(parsed_text.state)) {
+    vs.var('input:region', parsed_text.state);
   }
 
   // country
-  if( ! _.isEmpty(parsed_text.country) ){
-    vs.var( 'input:country', parsed_text.country );
+  if (!_.isEmpty(parsed_text.country)) {
+    vs.var('input:country', parsed_text.country);
   }
 
   // libpostal sometimes parses addresses with prefix house numbers in places where
@@ -84,16 +84,17 @@ function addParsedVariablesToQueryVariables( parsed_text, vs ){
   // there's no house number, and the query is parseable as an integer, then use the
   // query as the house number and blank out the query.
   if (shouldSetQueryIntoHouseNumber(vs)) {
-    vs.var( 'input:housenumber', vs.var('input:query').toString());
-    vs.unset( 'input:query' );
+    vs.var('input:housenumber', vs.var('input:query').toString());
+    vs.unset('input:query');
   }
-
 }
 
 function shouldSetQueryIntoHouseNumber(vs) {
-  return !vs.isset('input:housenumber') &&
-          vs.isset('input:street') &&
-          /^[0-9]+$/.test(vs.var('input:query').toString());
+  return (
+    !vs.isset('input:housenumber') &&
+    vs.isset('input:street') &&
+    /^[0-9]+$/.test(vs.var('input:query').toString())
+  );
 }
 
 module.exports = addParsedVariablesToQueryVariables;

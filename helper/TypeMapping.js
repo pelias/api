@@ -1,8 +1,7 @@
 const _ = require('lodash');
 const loadFromElasticsearch = require('./type_mapping_discovery');
 
-var TypeMapping = function(){
-
+var TypeMapping = function () {
   // A list of all sources
   this.sources = [];
 
@@ -44,9 +43,9 @@ var TypeMapping = function(){
   this.layer_mapping = {};
 };
 
-TypeMapping.addStandardTargetsToAliases = function(standard, aliases) {
+TypeMapping.addStandardTargetsToAliases = function (standard, aliases) {
   var combined = _.extend({}, aliases);
-  standard.forEach(function(target) {
+  standard.forEach(function (target) {
     if (combined[target] === undefined) {
       combined[target] = [target];
     }
@@ -56,89 +55,98 @@ TypeMapping.addStandardTargetsToAliases = function(standard, aliases) {
 };
 
 // source alias setter
-TypeMapping.prototype.setSourceAliases = function( aliases ){
+TypeMapping.prototype.setSourceAliases = function (aliases) {
   safeReplace(this.source_aliases, aliases);
 };
 
 // layers-by-source alias setter
-TypeMapping.prototype.setLayersBySource = function( lbs ){
+TypeMapping.prototype.setLayersBySource = function (lbs) {
   safeReplace(this.layers_by_source, lbs);
 };
 
 // layer alias setter
-TypeMapping.prototype.setLayerAliases = function( aliases ){
+TypeMapping.prototype.setLayerAliases = function (aliases) {
   safeReplace(this.layer_aliases, aliases);
 };
 
 // canonical sources setter
-TypeMapping.prototype.setCanonicalSources = function( sources ){
+TypeMapping.prototype.setCanonicalSources = function (sources) {
   safeReplace(this.canonical_sources, sources);
 };
 
 // generate mappings after setters have been run
-TypeMapping.prototype.generateMappings = function(){
-
-  safeReplace(this.sources, Object.keys(this.layers_by_source) );
+TypeMapping.prototype.generateMappings = function () {
+  safeReplace(this.sources, Object.keys(this.layers_by_source));
 
   safeReplace(
     this.source_mapping,
-    TypeMapping.addStandardTargetsToAliases(this.sources, this.source_aliases)
+    TypeMapping.addStandardTargetsToAliases(this.sources, this.source_aliases),
   );
 
   safeReplace(
     this.layers,
-    _.uniq(Object.keys(this.layers_by_source).reduce(function (acc, key) {
-      return acc.concat(this.layers_by_source[key]);
-    }.bind(this), []))
+    _.uniq(
+      Object.keys(this.layers_by_source).reduce(
+        function (acc, key) {
+          return acc.concat(this.layers_by_source[key]);
+        }.bind(this),
+        [],
+      ),
+    ),
   );
 
   safeReplace(
     this.layer_mapping,
-    TypeMapping.addStandardTargetsToAliases(this.layers, this.layer_aliases)
+    TypeMapping.addStandardTargetsToAliases(this.layers, this.layer_aliases),
   );
 };
 
 // generate a list of all layers which are part of the canonical Pelias configuration
-TypeMapping.prototype.getCanonicalLayers = function(){
+TypeMapping.prototype.getCanonicalLayers = function () {
   var canonicalLayers = [];
-  for( var source in this.layers_by_source ){
-    if( _.includes( this.canonical_sources, source ) ){
-      canonicalLayers = _.uniq( canonicalLayers.concat( this.layers_by_source[source] ) );
+  for (var source in this.layers_by_source) {
+    if (_.includes(this.canonical_sources, source)) {
+      canonicalLayers = _.uniq(
+        canonicalLayers.concat(this.layers_by_source[source]),
+      );
     }
   }
   return canonicalLayers;
 };
 
 // load values from targets block
-TypeMapping.prototype.loadTargets = function( targetsBlock ){
-
-  if( !_.isPlainObject(targetsBlock) ){ return; }
+TypeMapping.prototype.loadTargets = function (targetsBlock) {
+  if (!_.isPlainObject(targetsBlock)) {
+    return;
+  }
 
   // set values from targets block
-  this.setSourceAliases( targetsBlock.source_aliases || {} );
-  this.setLayersBySource( targetsBlock.layers_by_source || {} );
-  this.setLayerAliases( targetsBlock.layer_aliases || {} );
-  this.setCanonicalSources( targetsBlock.canonical_sources || [] );
+  this.setSourceAliases(targetsBlock.source_aliases || {});
+  this.setLayersBySource(targetsBlock.layers_by_source || {});
+  this.setLayerAliases(targetsBlock.layer_aliases || {});
+  this.setCanonicalSources(targetsBlock.canonical_sources || []);
 
   // generate the mappings
   this.generateMappings();
 };
 
 // load values from either pelias config file or from elasticsearch
-TypeMapping.prototype.load = function( done ){
-
+TypeMapping.prototype.load = function (done) {
   // load pelias config
   const peliasConfigTargets = _.get(
     require('pelias-config').generate(require('../schema')),
-    'api.targets', {}
+    'api.targets',
+    {},
   );
 
   // load targets from config file
-  this.loadTargets( peliasConfigTargets );
+  this.loadTargets(peliasConfigTargets);
 
   // do not load values from elasticsearch
-  if( true !== peliasConfigTargets.auto_discover ){
-    if( 'function' === typeof done ){ done(); }
+  if (true !== peliasConfigTargets.auto_discover) {
+    if ('function' === typeof done) {
+      done();
+    }
     return;
   }
 
@@ -148,20 +156,26 @@ TypeMapping.prototype.load = function( done ){
 
 // replace the contents of an object or array
 // while maintaining the original pointer reference
-function safeReplace(reference, replacement){
-  if (_.isPlainObject(reference) && _.isPlainObject(replacement) ){
-    for (let attr in reference) { delete reference[attr]; }
+function safeReplace(reference, replacement) {
+  if (_.isPlainObject(reference) && _.isPlainObject(replacement)) {
+    for (let attr in reference) {
+      delete reference[attr];
+    }
     for (let attr in replacement) {
       let el = replacement[attr];
       // skip nully elements
-      if (_.isNil(el) || _.isNaN(el)) { continue; }
+      if (_.isNil(el) || _.isNaN(el)) {
+        continue;
+      }
       reference[attr] = el;
     }
   } else if (_.isArray(reference) && _.isArray(replacement)) {
     reference.length = 0;
-    replacement.forEach(el => {
+    replacement.forEach((el) => {
       // skip nully elements
-      if (_.isNil(el) || _.isNaN(el)) { return; }
+      if (_.isNil(el) || _.isNaN(el)) {
+        return;
+      }
       reference.push(el);
     });
   }

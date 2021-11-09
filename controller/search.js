@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const searchService = require('../service/search');
 const logger = require('pelias-logger').get('api');
-const logging = require( '../helper/logging' );
+const logging = require('../helper/logging');
 const retry = require('retry');
 const Debug = require('../helper/debug');
 
@@ -9,10 +9,10 @@ function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
 
-function setup( peliasConfig, esclient, query, should_execute ){
+function setup(peliasConfig, esclient, query, should_execute) {
   const apiConfig = _.get(peliasConfig, 'api', {});
 
-  function controller( req, res, next ){
+  function controller(req, res, next) {
     if (!should_execute(req, res)) {
       return next();
     }
@@ -41,7 +41,7 @@ function setup( peliasConfig, esclient, query, should_execute ){
     const operationOptions = {
       retries: _.get(apiConfig, 'requestRetries', 3),
       factor: 1,
-      minTimeout: _.get(esclient, 'transport.requestTimeout')
+      minTimeout: _.get(esclient, 'transport.requestTimeout'),
     };
 
     // setup a new operation
@@ -51,7 +51,7 @@ function setup( peliasConfig, esclient, query, should_execute ){
     const cmd = {
       index: apiConfig.indexName,
       searchType: 'dfs_query_then_fetch',
-      body: renderedQuery.body
+      body: renderedQuery.body,
     };
 
     // support for the 'clean.enableElasticExplain' config flag
@@ -62,34 +62,36 @@ function setup( peliasConfig, esclient, query, should_execute ){
     // support for the 'clean.exposeInternalDebugTools' config flag
     let debugUrl;
     if (_.get(req, 'clean.exposeInternalDebugTools') === true) {
-
       // select a random elasticsearch host to use for 'exposeInternalDebugTools' actions
-      const host = _.first(esclient.transport.connectionPool.getConnections(null, 1)).host;
+      const host = _.first(
+        esclient.transport.connectionPool.getConnections(null, 1),
+      ).host;
 
       // generate a URL which opens this query directly in elasticsearch
       debugUrl = host.makeUrl({
         path: `${apiConfig.indexName}/_search`,
         query: {
           source_content_type: 'application/json',
-          source: JSON.stringify(cmd.body)
-        }
+          source: JSON.stringify(cmd.body),
+        },
       });
     }
 
     debugLog.push(req, {
       debugUrl,
-      ES_req: cmd
+      ES_req: cmd,
     });
 
     operation.attempt((currentAttempt) => {
       const initialTime = debugLog.beginTimer(req, `Attempt ${currentAttempt}`);
       // query elasticsearch
-      searchService( esclient, cmd, function( err, docs, meta, data ){
-
+      searchService(esclient, cmd, function (err, docs, meta, data) {
         // keep tally of hit counts - compatible with new/old versions of ES
         let totalHits = 0;
-        if( _.has(data, 'hits.total') ) {
-          totalHits = _.isPlainObject(data.hits.total) ? data.hits.total.value : data.hits.total;
+        if (_.has(data, 'hits.total')) {
+          totalHits = _.isPlainObject(data.hits.total)
+            ? data.hits.total.value
+            : data.hits.total;
         }
 
         const message = {
@@ -101,7 +103,7 @@ function setup( peliasConfig, esclient, query, should_execute ){
           response_time: _.get(data, 'response_time', undefined),
           params: req.clean,
           retries: currentAttempt - 1,
-          text_length: _.get(req, 'clean.text.length', 0)
+          text_length: _.get(req, 'clean.text.length', 0),
         };
         logger.info('elasticsearch', message);
 
@@ -120,11 +122,11 @@ function setup( peliasConfig, esclient, query, should_execute ){
         // in any case, handle the error or results
 
         // error handler
-        if( err ){
+        if (err) {
           if (_.isObject(err) && err.message) {
-            req.errors.push( err.message );
+            req.errors.push(err.message);
           } else {
-            req.errors.push( err );
+            req.errors.push(err);
           }
         }
         // set response data
@@ -140,19 +142,23 @@ function setup( peliasConfig, esclient, query, should_execute ){
           }
 
           // put an entry in the debug log no matter the number of results
-          debugLog.push(req, {queryType: {
-            [renderedQuery.type] : {
-              es_took: message.es_took,
-              response_time: message.response_time,
-              retries: message.retries,
-              es_hits: message.es_hits,
-              es_result_count: message.result_count
-            }
-          }});
+          debugLog.push(req, {
+            queryType: {
+              [renderedQuery.type]: {
+                es_took: message.es_took,
+                response_time: message.response_time,
+                retries: message.retries,
+                es_hits: message.es_hits,
+                es_result_count: message.result_count,
+              },
+            },
+          });
         }
         logger.debug('[ES response]', docs);
         if (req.clean.enableElasticDebug) {
-          debugLog.push(req, { ES_response: _.cloneDeep({ docs, meta, data }) });
+          debugLog.push(req, {
+            ES_response: _.cloneDeep({ docs, meta, data }),
+          });
         }
         next();
       });

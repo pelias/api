@@ -59,17 +59,23 @@ function service(apiConfig, esclient) {
       // For each field, send an RPC to elastic search to analyze it
       // If you give ES the field name, it will match it to the analyzers specified in
       // the schema mapping, without needing to explicitly ask for any individual analyzers
-      // 
+      //
       // ignore failed responses, they'll get filtered out
-      const esResponse = await esclient.indices.analyze({
-        index: apiConfig.indexName,
-        body: { field, text: value },
-      }).catch(() => ({}));
+      const esResponse = await esclient.indices
+        .analyze({
+          index: apiConfig.indexName,
+          body: { field, text: value },
+        })
+        .catch(() => ({}));
 
       // Group tokens by position and then make the output more compact
-      const tokensByPosition = _.groupBy(esResponse.tokens || [], (token) => token.position);
-      const simplifiedTokensByPosition = _.mapValues(tokensByPosition, (tokens) =>
-        tokens.map((token) => `${token.token} (${token.type})`)
+      const tokensByPosition = _.groupBy(
+        esResponse.tokens || [],
+        (token) => token.position,
+      );
+      const simplifiedTokensByPosition = _.mapValues(
+        tokensByPosition,
+        (tokens) => tokens.map((token) => `${token.token} (${token.type})`),
       );
 
       // rebuild an object in doc.debug.expanded.[fieldName] with the analysis results
@@ -78,13 +84,14 @@ function service(apiConfig, esclient) {
       }
     }
 
-
     // Figure out all the fields that have dynamically defined ngram sub-fields.
     const ngramFields = new Set();
-    const mapping = await esclient.indices.getMapping({index: apiConfig.indexName});
+    const mapping = await esclient.indices.getMapping({
+      index: apiConfig.indexName,
+    });
 
     // getMapping returns a map of index name to mappings, but if we ask for the index
-    // "pelias" and its an alias to index "pelias-index-2020-08-08," we'll get back the 
+    // "pelias" and its an alias to index "pelias-index-2020-08-08," we'll get back the
     // full name and have a hard time figuring that out so ... just grab the first (and only)
     // mapping dict
     const indexMappings = _.values(mapping)[0] || {};
@@ -95,7 +102,10 @@ function service(apiConfig, esclient) {
         // and we want to extract from that "parent.borough" is a field that has ngrams on it
         if (keypath.includes('.fields.') && keypath.includes('.ngram.')) {
           const keyParts = keypath.split('.');
-          const fieldKey = _.dropRight(keyParts.filter((k) => !['properties', 'fields'].includes(k)), 2).join('.');
+          const fieldKey = _.dropRight(
+            keyParts.filter((k) => !['properties', 'fields'].includes(k)),
+            2,
+          ).join('.');
           ngramFields.add(fieldKey);
         }
       });

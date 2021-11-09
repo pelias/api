@@ -15,5 +15,5 @@ module.exports = [
   'locality',
   'borough',
   'neighbourhood',
-  'postalcode'
+  'postalcode',
 ];

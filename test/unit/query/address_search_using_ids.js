@@ -21,7 +21,7 @@ const views = {
   boundary_rect: 'boundary_rect view',
   sources: 'sources view',
   boundary_gid: 'boundary_gid view',
-  layers: 'layers view'
+  layers: 'layers view',
 };
 
 module.exports.tests.base_query = (test, common) => {
@@ -34,38 +34,52 @@ module.exports.tests.base_query = (test, common) => {
         postalcode: 'postcode value',
         street: 'street value',
       },
-      layers: ['venue', 'street', 'address']
+      layers: ['venue', 'street', 'address'],
     };
 
     const res = {
-      data: []
+      data: [],
     };
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
     t.equals(generatedQuery.type, 'address_search_using_ids');
 
-    t.equals(generatedQuery.body.vs.var('input:housenumber').toString(), 'housenumber value');
-    t.equals(generatedQuery.body.vs.var('input:postcode').toString(), 'postcode value');
-    t.equals(generatedQuery.body.vs.var('input:street').toString(), 'street value');
-    t.deepEquals(generatedQuery.body.vs.var('layers').toString(), [ 'venue', 'street', 'address' ]);
+    t.equals(
+      generatedQuery.body.vs.var('input:housenumber').toString(),
+      'housenumber value',
+    );
+    t.equals(
+      generatedQuery.body.vs.var('input:postcode').toString(),
+      'postcode value',
+    );
+    t.equals(
+      generatedQuery.body.vs.var('input:street').toString(),
+      'street value',
+    );
+    t.deepEquals(generatedQuery.body.vs.var('layers').toString(), [
+      'venue',
+      'street',
+      'address',
+    ]);
     t.notOk(generatedQuery.body.vs.isset('sources'));
     t.equals(generatedQuery.body.vs.var('size').toString(), 20);
 
-    t.deepEquals(generatedQuery.body.score_functions, [
-      'focus_only_function'
-    ]);
+    t.deepEquals(generatedQuery.body.score_functions, ['focus_only_function']);
 
     t.deepEquals(generatedQuery.body.filter_functions, [
       'boundary_country view',
@@ -73,11 +87,10 @@ module.exports.tests.base_query = (test, common) => {
       'boundary_rect view',
       'sources view',
       'boundary_gid view',
-      'layers view'
+      'layers view',
     ]);
 
     t.end();
-
   });
 };
 
@@ -88,30 +101,32 @@ module.exports.tests.other_parameters = (test, common) => {
     const clean = {
       parsed_text: {
         housenumber: 'housenumber value',
-        street: 'street value'
+        street: 'street value',
       },
-      querySize: 'querySize value'
+      querySize: 'querySize value',
     };
     const res = {
-      data: []
+      data: [],
     };
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
     t.equals(generatedQuery.body.vs.var('size').toString(), 'querySize value');
     t.end();
-
   });
 
   test('explicit sources set', (t) => {
@@ -120,30 +135,35 @@ module.exports.tests.other_parameters = (test, common) => {
     const clean = {
       parsed_text: {
         housenumber: 'housenumber value',
-        street: 'street value'
+        street: 'street value',
       },
-      sources: ['source 1', 'source 2']
+      sources: ['source 1', 'source 2'],
     };
     const res = {
-      data: []
+      data: [],
     };
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.deepEquals(generatedQuery.body.vs.var('sources').toString(), ['source 1', 'source 2']);
+    t.deepEquals(generatedQuery.body.vs.var('sources').toString(), [
+      'source 1',
+      'source 2',
+    ]);
     t.end();
-
   });
 
   test('address_parts.street slop defaults to 4', (t) => {
@@ -152,27 +172,33 @@ module.exports.tests.other_parameters = (test, common) => {
     const clean = {
       parsed_text: {
         housenumber: 'housenumber value',
-        street: 'street value'
-      }
+        street: 'street value',
+      },
     };
     const res = {
-      data: []
+      data: [],
     };
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.deepEquals(generatedQuery.body.vs.var('address:street:slop').toString(), 4);
+    t.deepEquals(
+      generatedQuery.body.vs.var('address:street:slop').toString(),
+      4,
+    );
     t.end();
   });
 };
@@ -184,105 +210,107 @@ module.exports.tests.granularity_bands = (test, common) => {
     const clean = {
       parsed_text: {
         housenumber: 'housenumber value',
-        street: 'street value'
-      }
+        street: 'street value',
+      },
     };
     const res = {
       data: [
         {
           layer: 'neighbourhood',
-          source_id: 1
+          source_id: 1,
         },
         {
           layer: 'borough',
-          source_id: 2
+          source_id: 2,
         },
         {
           layer: 'locality',
-          source_id: 3
+          source_id: 3,
         },
         {
           layer: 'localadmin',
-          source_id: 4
+          source_id: 4,
         },
         {
           layer: 'county',
-          source_id: 5
+          source_id: 5,
         },
         {
           layer: 'macrocounty',
-          source_id: 6
+          source_id: 6,
         },
         {
           layer: 'region',
-          source_id: 7
+          source_id: 7,
         },
         {
           layer: 'macroregion',
-          source_id: 8
+          source_id: 8,
         },
         {
           layer: 'dependency',
-          source_id: 9
+          source_id: 9,
         },
         {
           layer: 'country',
-          source_id: 10
+          source_id: 10,
         },
         {
           layer: 'neighbourhood',
-          source_id: 11
+          source_id: 11,
         },
         {
           layer: 'borough',
-          source_id: 12
+          source_id: 12,
         },
         {
           layer: 'locality',
-          source_id: 13
+          source_id: 13,
         },
         {
           layer: 'localadmin',
-          source_id: 14
+          source_id: 14,
         },
         {
           layer: 'county',
-          source_id: 15
+          source_id: 15,
         },
         {
           layer: 'macrocounty',
-          source_id: 16
+          source_id: 16,
         },
         {
           layer: 'region',
-          source_id: 17
+          source_id: 17,
         },
         {
           layer: 'macroregion',
-          source_id: 18
+          source_id: 18,
         },
         {
           layer: 'dependency',
-          source_id: 19
+          source_id: 19,
         },
         {
           layer: 'country',
-          source_id: 20
-        }
-      ]
+          source_id: 20,
+        },
+      ],
     };
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
@@ -294,7 +322,7 @@ module.exports.tests.granularity_bands = (test, common) => {
       region: [7, 17],
       macroregion: [8, 18],
       dependency: [9, 19],
-      country: [10, 20]
+      country: [10, 20],
     });
 
     t.end();
@@ -306,28 +334,31 @@ module.exports.tests.granularity_bands = (test, common) => {
     const clean = {
       parsed_text: {
         housenumber: 'housenumber value',
-        street: 'street value'
-      }
+        street: 'street value',
+      },
     };
     const res = {
       data: [
         {
           layer: 'neighbourhood',
-          source_id: 1
-        }
-      ]
+          source_id: 1,
+        },
+      ],
     };
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
@@ -339,7 +370,7 @@ module.exports.tests.granularity_bands = (test, common) => {
       region: [],
       macroregion: [],
       dependency: [],
-      country: []
+      country: [],
     });
 
     t.end();
@@ -351,52 +382,53 @@ module.exports.tests.granularity_bands = (test, common) => {
     const clean = {
       parsed_text: {
         housenumber: 'housenumber value',
-        street: 'street value'
-      }
+        street: 'street value',
+      },
     };
     const res = {
       data: [
         {
           layer: 'county',
-          source_id: 1
+          source_id: 1,
         },
         {
           layer: 'macrocounty',
-          source_id: 2
+          source_id: 2,
         },
         {
           layer: 'county',
-          source_id: 4
+          source_id: 4,
         },
         {
           layer: 'macrocounty',
-          source_id: 5
-        }
-      ]
+          source_id: 5,
+        },
+      ],
     };
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
     t.deepEquals(generatedQuery.body.vs.var('input:layers').$, {
       county: [1, 4],
-      macrocounty: [2, 5]
+      macrocounty: [2, 5],
     });
 
     t.end();
   });
-
 };
 
 module.exports.tests.boundary_filters = (test, common) => {
@@ -406,30 +438,34 @@ module.exports.tests.boundary_filters = (test, common) => {
     const clean = {
       parsed_text: {
         housenumber: 'housenumber value',
-        street: 'street value'
+        street: 'street value',
       },
-      'boundary.country': ['boundary.country', 'value']
+      'boundary.country': ['boundary.country', 'value'],
     };
     const res = {};
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.equals(generatedQuery.body.vs.var('boundary:country').toString(), 'boundary.country value');
+    t.equals(
+      generatedQuery.body.vs.var('boundary:country').toString(),
+      'boundary.country value',
+    );
 
     t.end();
-
   });
 
   test('focus.point.lat/lon w/both numbers should add to query', (t) => {
@@ -438,32 +474,39 @@ module.exports.tests.boundary_filters = (test, common) => {
     const clean = {
       parsed_text: {
         housenumber: 'housenumber value',
-        street: 'street value'
+        street: 'street value',
       },
       'focus.point.lat': 12.121212,
-      'focus.point.lon': 21.212121
+      'focus.point.lon': 21.212121,
     };
     const res = {};
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.equals(generatedQuery.body.vs.var('focus:point:lat').toString(), 12.121212);
-    t.equals(generatedQuery.body.vs.var('focus:point:lon').toString(), 21.212121);
+    t.equals(
+      generatedQuery.body.vs.var('focus:point:lat').toString(),
+      12.121212,
+    );
+    t.equals(
+      generatedQuery.body.vs.var('focus:point:lon').toString(),
+      21.212121,
+    );
 
     t.end();
-
   });
 
   test('boundary.rect with all numbers should add to query', (t) => {
@@ -472,36 +515,49 @@ module.exports.tests.boundary_filters = (test, common) => {
     const clean = {
       parsed_text: {
         housenumber: 'housenumber value',
-        street: 'street value'
+        street: 'street value',
       },
       'boundary.rect.min_lat': 12.121212,
       'boundary.rect.max_lat': 13.131313,
       'boundary.rect.min_lon': 21.212121,
-      'boundary.rect.max_lon': 31.313131
+      'boundary.rect.max_lon': 31.313131,
     };
     const res = {};
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.equals(generatedQuery.body.vs.var('boundary:rect:top').toString(), 13.131313);
-    t.equals(generatedQuery.body.vs.var('boundary:rect:right').toString(), 31.313131);
-    t.equals(generatedQuery.body.vs.var('boundary:rect:bottom').toString(), 12.121212);
-    t.equals(generatedQuery.body.vs.var('boundary:rect:left').toString(), 21.212121);
+    t.equals(
+      generatedQuery.body.vs.var('boundary:rect:top').toString(),
+      13.131313,
+    );
+    t.equals(
+      generatedQuery.body.vs.var('boundary:rect:right').toString(),
+      31.313131,
+    );
+    t.equals(
+      generatedQuery.body.vs.var('boundary:rect:bottom').toString(),
+      12.121212,
+    );
+    t.equals(
+      generatedQuery.body.vs.var('boundary:rect:left').toString(),
+      21.212121,
+    );
 
     t.end();
-
   });
 
   test('boundary circle without radius should set radius to default', (t) => {
@@ -510,33 +566,43 @@ module.exports.tests.boundary_filters = (test, common) => {
     const clean = {
       parsed_text: {
         housenumber: 'housenumber value',
-        street: 'street value'
+        street: 'street value',
       },
       'boundary.circle.lat': 12.121212,
-      'boundary.circle.lon': 21.212121
+      'boundary.circle.lon': 21.212121,
     };
     const res = {};
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.equals(generatedQuery.body.vs.var('boundary:circle:lat').toString(), 12.121212);
-    t.equals(generatedQuery.body.vs.var('boundary:circle:lon').toString(), 21.212121);
-    t.equals(generatedQuery.body.vs.var('boundary:circle:radius').toString(), '50km');
+    t.equals(
+      generatedQuery.body.vs.var('boundary:circle:lat').toString(),
+      12.121212,
+    );
+    t.equals(
+      generatedQuery.body.vs.var('boundary:circle:lon').toString(),
+      21.212121,
+    );
+    t.equals(
+      generatedQuery.body.vs.var('boundary:circle:radius').toString(),
+      '50km',
+    );
 
     t.end();
-
   });
 
   test('boundary circle with radius set radius to that value rounded', (t) => {
@@ -545,34 +611,44 @@ module.exports.tests.boundary_filters = (test, common) => {
     const clean = {
       parsed_text: {
         housenumber: 'housenumber value',
-        street: 'street value'
+        street: 'street value',
       },
       'boundary.circle.lat': 12.121212,
       'boundary.circle.lon': 21.212121,
-      'boundary.circle.radius': 17.6
+      'boundary.circle.radius': 17.6,
     };
     const res = {};
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
-    t.equals(generatedQuery.body.vs.var('boundary:circle:lat').toString(), 12.121212);
-    t.equals(generatedQuery.body.vs.var('boundary:circle:lon').toString(), 21.212121);
-    t.equals(generatedQuery.body.vs.var('boundary:circle:radius').toString(), '18km');
+    t.equals(
+      generatedQuery.body.vs.var('boundary:circle:lat').toString(),
+      12.121212,
+    );
+    t.equals(
+      generatedQuery.body.vs.var('boundary:circle:lon').toString(),
+      21.212121,
+    );
+    t.equals(
+      generatedQuery.body.vs.var('boundary:circle:radius').toString(),
+      '18km',
+    );
 
     t.end();
-
   });
 
   test('boundary.gid available should add to query', (t) => {
@@ -581,32 +657,32 @@ module.exports.tests.boundary_filters = (test, common) => {
     const clean = {
       parsed_text: {
         housenumber: 'housenumber value',
-        street: 'street value'
+        street: 'street value',
       },
-      'boundary.gid': '123'
+      'boundary.gid': '123',
     };
     const res = {};
 
-    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
-      'pelias-logger': logger,
-      'pelias-query': {
-        layout: {
-          AddressesUsingIdsQuery: MockQuery
+    const generateQuery = proxyquire(
+      '../../../query/address_search_using_ids',
+      {
+        'pelias-logger': logger,
+        'pelias-query': {
+          layout: {
+            AddressesUsingIdsQuery: MockQuery,
+          },
+          view: views,
+          Vars: require('pelias-query').Vars,
         },
-        view: views,
-        Vars: require('pelias-query').Vars
-      }
-
-    });
+      },
+    );
 
     const generatedQuery = generateQuery(clean, res);
 
     t.equals(generatedQuery.body.vs.var('boundary:gid').toString(), '123');
 
     t.end();
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
@@ -614,7 +690,7 @@ module.exports.all = (tape, common) => {
     return tape(`address_search_using_ids query ${name}`, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

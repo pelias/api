@@ -19,13 +19,18 @@ const coarse_granularities = [
   'empire',
   'continent',
   'ocean',
-  'marinearea'
+  'marinearea',
 ];
 
 // remove non-coarse layers and return what's left (or all if empty)
 function getEffectiveLayers(requested_layers) {
   // remove non-coarse layers
-  const non_coarse_layers_removed = _.without(requested_layers, 'venue', 'address', 'street');
+  const non_coarse_layers_removed = _.without(
+    requested_layers,
+    'venue',
+    'address',
+    'street',
+  );
 
   // if resulting array is empty, use all coarse granularities
   if (_.isEmpty(non_coarse_layers_removed)) {
@@ -34,7 +39,6 @@ function getEffectiveLayers(requested_layers) {
 
   // otherwise use requested layers with non-coarse layers removed
   return non_coarse_layers_removed;
-
 }
 
 // drop from coarse_granularities until there's one that was requested
@@ -72,35 +76,40 @@ function synthesizeDoc(results) {
 
     // assign the administrative hierarchy
     _.keys(results).forEach((layer) => {
-      doc.addParent(layer, results[layer][0].name, results[layer][0].id.toString(), results[layer][0].abbr || undefined);
+      doc.addParent(
+        layer,
+        results[layer][0].name,
+        results[layer][0].id.toString(),
+        results[layer][0].abbr || undefined,
+      );
     });
 
     // set centroid if available
     if (_.has(results[most_granular_layer][0], 'centroid')) {
-      doc.setCentroid( results[most_granular_layer][0].centroid );
+      doc.setCentroid(results[most_granular_layer][0].centroid);
     }
 
     // set bounding box if available
     if (_.has(results[most_granular_layer][0], 'bounding_box')) {
-      const parsed_bounding_box = results[most_granular_layer][0].bounding_box.split(',').map(parseFloat);
+      const parsed_bounding_box = results[most_granular_layer][0].bounding_box
+        .split(',')
+        .map(parseFloat);
       doc.setBoundingBox({
         upperLeft: {
           lat: parsed_bounding_box[3],
-          lon: parsed_bounding_box[0]
+          lon: parsed_bounding_box[0],
         },
         lowerRight: {
           lat: parsed_bounding_box[1],
-          lon: parsed_bounding_box[2]
-        }
+          lon: parsed_bounding_box[2],
+        },
       });
-
     }
 
     const esDoc = doc.toESDocument();
     esDoc.data._id = esDoc._id;
     return esDoc.data;
-
-  } catch( e ) {
+  } catch (e) {
     // an error occurred when generating a new Document
     logger.error('[controller:coarse_reverse][error]', e);
 
@@ -117,17 +126,19 @@ function setup(service, should_execute) {
     const initialTime = debugLog.beginTimer(req);
     // return a warning to the caller that boundary.circle.radius will be ignored
     if (!_.isUndefined(req.clean['boundary.circle.radius'])) {
-      req.warnings.push('boundary.circle.radius is not applicable for coarse reverse');
+      req.warnings.push(
+        'boundary.circle.radius is not applicable for coarse reverse',
+      );
     }
 
     // because coarse reverse is called when non-coarse reverse didn't return
     //  anything, treat requested layers as if it didn't contain non-coarse layers
     const effective_layers = getEffectiveLayers(req.clean.layers);
-    debugLog.push(req, {effective_layers: effective_layers});
+    debugLog.push(req, { effective_layers: effective_layers });
 
     const centroid = {
       lat: req.clean['point.lat'],
-      lon: req.clean['point.lon']
+      lon: req.clean['point.lon'],
     };
 
     service(req, (err, results, metadata) => {
@@ -141,14 +152,17 @@ function setup(service, should_execute) {
         controller: 'coarse_reverse',
         queryType: 'pip',
         response_time: _.get(metadata, 'response_time'),
-        result_count: _.size(results)
+        result_count: _.size(results),
       };
       logger.info('pip', logInfo);
 
       // now keep everything from the response that is equal to or less granular
       // than the most granular layer requested.  that is, if effective_layers=['county'],
       // remove neighbourhoods, boroughs, localities, localadmins
-      const applicable_results = _.pick(results, getApplicableRequestedLayers(effective_layers));
+      const applicable_results = _.pick(
+        results,
+        getApplicableRequestedLayers(effective_layers),
+      );
 
       res.meta = {};
       res.data = [];
@@ -156,19 +170,16 @@ function setup(service, should_execute) {
       // if there's a result at the requested layer(s), synthesize a doc from results
       if (hasResultsAtRequestedLayers(applicable_results, effective_layers)) {
         const doc = synthesizeDoc(applicable_results);
-        if (doc){
+        if (doc) {
           res.data.push(doc);
         }
       }
       debugLog.stopTimer(req, initialTime);
       return next();
-
     });
-
   }
 
   return controller;
-
 }
 
 module.exports = setup;

@@ -4,14 +4,15 @@ const proxyquire = require('proxyquire').noCallThru();
 
 module.exports.tests = {};
 
-module.exports.tests.parseBBox = function(test, common) {
-  test('valid bounding_box json', function(t) {
+module.exports.tests.parseBBox = function (test, common) {
+  test('valid bounding_box json', function (t) {
     var res = {
       data: [
         {
-          bounding_box: '{"min_lat":40.6514712164,"max_lat":40.6737320588,"min_lon":-73.8967895508,"max_lon":-73.8665771484}'
-        }
-      ]
+          bounding_box:
+            '{"min_lat":40.6514712164,"max_lat":40.6737320588,"min_lon":-73.8967895508,"max_lon":-73.8665771484}',
+        },
+      ],
     };
 
     var expected = {
@@ -21,10 +22,10 @@ module.exports.tests.parseBBox = function(test, common) {
             min_lat: 40.6514712164,
             max_lat: 40.6737320588,
             min_lon: -73.8967895508,
-            max_lon: -73.8665771484
-          }
-        }
-      ]
+            max_lon: -73.8665771484,
+          },
+        },
+      ],
     };
 
     parseBBox({}, res, function () {
@@ -33,19 +34,17 @@ module.exports.tests.parseBBox = function(test, common) {
     });
   });
 
-  test('invalid bounding_box json', function(t) {
+  test('invalid bounding_box json', function (t) {
     var res = {
       data: [
         {
-          bounding_box: 'garbage json'
-        }
-      ]
+          bounding_box: 'garbage json',
+        },
+      ],
     };
 
     var expected = {
-      data: [
-        {}
-      ]
+      data: [{}],
     };
 
     const parseBBox = proxyquire('../../../middleware/parseBBox', {
@@ -55,11 +54,10 @@ module.exports.tests.parseBBox = function(test, common) {
             error: (msg1, msg2) => {
               t.equals(msg1, 'Invalid bounding_box json string:');
               t.deepEquals(msg2, { bounding_box: 'garbage json' });
-            }
+            },
           };
-
-        }
-      }
+        },
+      },
     })();
 
     parseBBox({}, res, function () {
@@ -70,12 +68,11 @@ module.exports.tests.parseBBox = function(test, common) {
 };
 
 module.exports.all = function (tape, common) {
-
   function test(name, testFunction) {
     return tape('[middleware] parseBBox: ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

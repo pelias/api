@@ -8,15 +8,13 @@
   crosses a pole.
 **/
 
-
-function wrap( lat, lon ){
-
+function wrap(lat, lon) {
   var point = { lat: lat, lon: lon };
-  var quadrant = Math.floor( Math.abs(lat) / 90) % 4;
-  var pole = ( lat > 0 ) ? 90 : -90;
+  var quadrant = Math.floor(Math.abs(lat) / 90) % 4;
+  var pole = lat > 0 ? 90 : -90;
   var offset = lat % 90;
 
-  switch( quadrant ){
+  switch (quadrant) {
     case 0:
       point.lat = offset;
       break;
@@ -33,8 +31,8 @@ function wrap( lat, lon ){
       break;
   }
 
-  if( point.lon > 180 || point.lon <= -180 ){
-    point.lon -= Math.floor(( point.lon + 180 ) / 360) * 360;
+  if (point.lon > 180 || point.lon <= -180) {
+    point.lon -= Math.floor((point.lon + 180) / 360) * 360;
   }
 
   return point;

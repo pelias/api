@@ -8,9 +8,8 @@ module.exports.tests.interface = (test, common) => {
       'pelias-logger': {
         get: (section) => {
           t.equal(section, 'api');
-        }
-      }
-
+        },
+      },
     });
 
     t.equal(typeof service, 'function', 'service is a function');
@@ -28,16 +27,16 @@ module.exports.tests.error_conditions = (test, common) => {
           return {
             error: (msg) => {
               errorMessages.push(msg);
-            }
+            },
           };
-        }
-      }
+        },
+      },
     });
 
     const expectedCmd = {
       body: {
-        docs: 'this is the query'
-      }
+        docs: 'this is the query',
+      },
     };
 
     const esclient = {
@@ -50,28 +49,28 @@ module.exports.tests.error_conditions = (test, common) => {
             {
               found: true,
               _id: 'doc id',
-              _source: {}
-            }
-          ]
+              _source: {},
+            },
+          ],
         };
 
         callback('this is an error', data);
-
-      }
+      },
     };
 
     const next = (err, docs) => {
       t.equals(err, 'this is an error', 'err should have been passed on');
       t.equals(docs, undefined);
 
-      t.ok(errorMessages.find((msg) => {
-        return msg === `elasticsearch error ${err}`;
-      }));
+      t.ok(
+        errorMessages.find((msg) => {
+          return msg === `elasticsearch error ${err}`;
+        }),
+      );
       t.end();
     };
 
     service(esclient, 'this is the query', next);
-
   });
 };
 
@@ -85,16 +84,16 @@ module.exports.tests.success_conditions = (test, common) => {
           return {
             error: (msg) => {
               errorMessages.push(msg);
-            }
+            },
           };
-        }
-      }
+        },
+      },
     });
 
     const expectedCmd = {
       body: {
-        docs: 'this is the query'
-      }
+        docs: 'this is the query',
+      },
     };
 
     const esclient = {
@@ -107,39 +106,37 @@ module.exports.tests.success_conditions = (test, common) => {
               found: true,
               _id: 'doc id 1',
               _source: {
-                random_key: 'value 1'
-              }
+                random_key: 'value 1',
+              },
             },
             {
               found: false,
               _id: 'doc id 2',
-              _source: {}
+              _source: {},
             },
             {
               found: true,
               _id: 'doc id 3',
               _source: {
-                random_key: 'value 3'
-              }
-            }
-          ]
+                random_key: 'value 3',
+              },
+            },
+          ],
         };
 
         callback(undefined, data);
-
-      }
+      },
     };
 
     const expectedDocs = [
       {
         _id: 'doc id 1',
-        random_key: 'value 1'
+        random_key: 'value 1',
       },
       {
         _id: 'doc id 3',
-        random_key: 'value 3'
-      }
-
+        random_key: 'value 3',
+      },
     ];
 
     const next = (err, docs) => {
@@ -151,7 +148,6 @@ module.exports.tests.success_conditions = (test, common) => {
     };
 
     service(esclient, 'this is the query', next);
-
   });
 
   test('esclient.mget callback with falsy data should return empty array', (t) => {
@@ -163,16 +159,16 @@ module.exports.tests.success_conditions = (test, common) => {
           return {
             error: (msg) => {
               errorMessages.push(msg);
-            }
+            },
           };
-        }
-      }
+        },
+      },
     });
 
     const expectedCmd = {
       body: {
-        docs: 'this is the query'
-      }
+        docs: 'this is the query',
+      },
     };
 
     const esclient = {
@@ -180,8 +176,7 @@ module.exports.tests.success_conditions = (test, common) => {
         t.deepEquals(cmd, expectedCmd);
 
         callback(undefined, undefined);
-
-      }
+      },
     };
 
     const expectedDocs = [];
@@ -195,7 +190,6 @@ module.exports.tests.success_conditions = (test, common) => {
     };
 
     service(esclient, 'this is the query', next);
-
   });
 
   test('esclient.mget callback with non-array data.docs should return empty array', (t) => {
@@ -207,16 +201,16 @@ module.exports.tests.success_conditions = (test, common) => {
           return {
             error: (msg) => {
               errorMessages.push(msg);
-            }
+            },
           };
-        }
-      }
+        },
+      },
     });
 
     const expectedCmd = {
       body: {
-        docs: 'this is the query'
-      }
+        docs: 'this is the query',
+      },
     };
 
     const esclient = {
@@ -224,12 +218,11 @@ module.exports.tests.success_conditions = (test, common) => {
         t.deepEquals(cmd, expectedCmd);
 
         const data = {
-          docs: 'this isn\'t an array'
+          docs: "this isn't an array",
         };
 
         callback(undefined, data);
-
-      }
+      },
     };
 
     const expectedDocs = [];
@@ -243,18 +236,15 @@ module.exports.tests.success_conditions = (test, common) => {
     };
 
     service(esclient, 'this is the query', next);
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
-
   function test(name, testFunction) {
     return tape('SERVICE /mget ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

@@ -17,14 +17,18 @@ const coarse_layers = [
   'microhood',
   'disputed',
   'ocean',
-  'marinearea'
+  'marinearea',
 ];
 
 module.exports.tests = {};
 
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
-    t.equal(typeof isCoarseReverse, 'function', 'isCoarseReverse is a function');
+    t.equal(
+      typeof isCoarseReverse,
+      'function',
+      'isCoarseReverse is a function',
+    );
     t.end();
   });
 };
@@ -32,70 +36,62 @@ module.exports.tests.interface = (test, common) => {
 module.exports.tests.false_conditions = (test, common) => {
   test('request without layers should return false', (t) => {
     const req = {
-      clean: {}
+      clean: {},
     };
 
     t.notOk(isCoarseReverse(req));
     t.end();
-
   });
 
   test('request with empty layers should return false', (t) => {
     const req = {
       clean: {
-        layers: []
-      }
+        layers: [],
+      },
     };
 
     t.notOk(isCoarseReverse(req));
     t.end();
-
   });
 
   test('request with layers just "address" or "venue" return false', (t) => {
     ['address', 'street', 'venue'].forEach((non_coarse_layer) => {
       const req = {
         clean: {
-          layers: [non_coarse_layer]
-        }
+          layers: [non_coarse_layer],
+        },
       };
 
       t.notOk(isCoarseReverse(req));
-
     });
 
     t.end();
-
   });
 
   test('request with layers containing "address" or "venue" and a coarse layer should return false', (t) => {
     ['address', 'street', 'venue'].forEach((non_coarse_layer) => {
       const req = {
         clean: {
-          layers: [_.sample(coarse_layers), non_coarse_layer]
-        }
+          layers: [_.sample(coarse_layers), non_coarse_layer],
+        },
       };
 
       t.notOk(isCoarseReverse(req));
-
     });
 
     t.end();
-
   });
 
   test('request with layers containing "address" and "venue" should return false', (t) => {
     const req = {
       clean: {
-        layers: ['address', 'venue']
-      }
+        layers: ['address', 'venue'],
+      },
     };
 
     t.notOk(isCoarseReverse(req));
     t.end();
-
   });
-
 };
 
 module.exports.tests.true_conditions = (test, common) => {
@@ -103,18 +99,15 @@ module.exports.tests.true_conditions = (test, common) => {
     coarse_layers.forEach((coarse_layer) => {
       const req = {
         clean: {
-          layers: [coarse_layer]
-        }
+          layers: [coarse_layer],
+        },
       };
 
       t.ok(isCoarseReverse(req));
-
     });
 
     t.end();
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
@@ -122,7 +115,7 @@ module.exports.all = (tape, common) => {
     return tape(`isCoarseReverse ${name}`, testFunction);
   }
 
-  for( const testCase in module.exports.tests ){
+  for (const testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

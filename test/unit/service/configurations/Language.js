@@ -3,11 +3,11 @@ module.exports.tests = {};
 const Language = require('../../../../service/configurations/Language');
 
 module.exports.tests.all = (test, common) => {
-  test('getName should return \'language\'', (t) => {
+  test("getName should return 'language'", (t) => {
     const configBlob = {
       url: 'http://localhost:1234',
       timeout: 17,
-      retries: 19
+      retries: 19,
     };
 
     const language = new Language(configBlob);
@@ -17,28 +17,26 @@ module.exports.tests.all = (test, common) => {
     t.equals(language.getTimeout(), 17);
     t.equals(language.getRetries(), 19);
     t.end();
-
   });
 
   test('getUrl should return value passed to constructor', (t) => {
     const configBlob = {
       url: 'http://localhost:1234',
       timeout: 17,
-      retries: 19
+      retries: 19,
     };
 
     const language = new Language(configBlob);
 
     t.equals(language.getUrl(), 'http://localhost:1234/parser/findbyid');
     t.end();
-
   });
 
   test('getParameters should return object with all deduped ids extracted from res', (t) => {
     const configBlob = {
       url: 'http://localhost:1234',
       timeout: 17,
-      retries: 19
+      retries: 19,
     };
 
     const language = new Language(configBlob);
@@ -50,12 +48,12 @@ module.exports.tests.all = (test, common) => {
             layer1_name: 'layer1 name',
             layer1_id: [1],
             layer2_name: 'layer2 name',
-            layer2_id: [2]
-          }
+            layer2_id: [2],
+          },
         },
         {
           // empty parent
-          parent: {}
+          parent: {},
         },
         {
           // no parent
@@ -66,8 +64,8 @@ module.exports.tests.all = (test, common) => {
             layer3_id: [3],
             layer4_name: 'layer4 name',
             // doesn't end with '_id', will be ignored
-            layer4id: [4]
-          }
+            layer4id: [4],
+          },
         },
         {
           parent: {
@@ -76,93 +74,85 @@ module.exports.tests.all = (test, common) => {
             layer1_id: [1],
             // two ids, both should be added
             layer5_name: 'layer5 name',
-            layer5_id: [5, 6]
-          }
-        }
-      ]
+            layer5_id: [5, 6],
+          },
+        },
+      ],
     };
 
     t.deepEquals(language.getParameters(undefined, res), { ids: '1,2,3,5,6' });
     t.end();
-
   });
 
   test('getParameters should return empty ids array when res is undefined', (t) => {
     const configBlob = {
       url: 'http://localhost:1234',
       timeout: 17,
-      retries: 19
+      retries: 19,
     };
 
     const language = new Language(configBlob);
 
     t.deepEquals(language.getParameters(undefined, undefined), { ids: '' });
     t.end();
-
   });
 
   test('getParameters should return empty ids array when res.data is undefined', (t) => {
     const configBlob = {
       url: 'http://localhost:1234',
       timeout: 17,
-      retries: 19
+      retries: 19,
     };
 
-    const res = { };
+    const res = {};
 
     const language = new Language(configBlob);
 
     t.deepEquals(language.getParameters(undefined, res), { ids: '' });
     t.end();
-
   });
-
 
   test('getParameters should return lang when req.clean.lang.iso6393 is defined', (t) => {
     const configBlob = {
       url: 'http://localhost:1234',
       timeout: 17,
-      retries: 19
+      retries: 19,
     };
 
-    const req = {clean: {lang: {iso6393: 'eng' }}};
-    const res = { };
+    const req = { clean: { lang: { iso6393: 'eng' } } };
+    const res = {};
 
     const language = new Language(configBlob);
 
     t.deepEquals(language.getParameters(req, res), { ids: '', lang: 'eng' });
     t.end();
-
   });
 
   test('getHeaders should return empty object', (t) => {
     const configBlob = {
       url: 'base url',
       timeout: 17,
-      retries: 19
+      retries: 19,
     };
 
     const language = new Language(configBlob);
 
     t.deepEquals(language.getHeaders(), {});
     t.end();
-
   });
 
-  test('baseUrl ending in / should not have double /\'s return by getUrl', (t) => {
+  test("baseUrl ending in / should not have double /'s return by getUrl", (t) => {
     const configBlob = {
       url: 'http://localhost:1234/',
       timeout: 17,
-      retries: 19
+      retries: 19,
     };
 
     const language = new Language(configBlob);
 
     t.deepEquals(language.getUrl(), 'http://localhost:1234/parser/findbyid');
     t.end();
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
@@ -170,7 +160,7 @@ module.exports.all = (tape, common) => {
     return tape(`SERVICE CONFIGURATION /Language ${name}`, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

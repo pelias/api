@@ -1,5 +1,12 @@
-var fieldsToRemove = ['text', 'focus.point.lat', 'focus.point.lon',
-  'boundary.circle.lat', 'boundary.circle.lon', 'point.lat', 'point.lon'];
+var fieldsToRemove = [
+  'text',
+  'focus.point.lat',
+  'focus.point.lon',
+  'boundary.circle.lat',
+  'boundary.circle.lon',
+  'point.lat',
+  'point.lon',
+];
 
 function isDNT(req) {
   if (!req.headers) {
@@ -9,7 +16,7 @@ function isDNT(req) {
 }
 
 function removeFields(query) {
-  fieldsToRemove.forEach(function(field) {
+  fieldsToRemove.forEach(function (field) {
     if (query[field]) {
       query[field] = '[removed]';
     }
@@ -20,5 +27,5 @@ function removeFields(query) {
 
 module.exports = {
   isDNT: isDNT,
-  removeFields: removeFields
+  removeFields: removeFields,
 };

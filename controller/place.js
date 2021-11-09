@@ -14,10 +14,10 @@ function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
 
-function setup( apiConfig, esclient ){
-  function controller( req, res, next ){
+function setup(apiConfig, esclient) {
+  function controller(req, res, next) {
     // do not run controller when a request validation error has occurred.
-    if (requestHasErrors(req)){
+    if (requestHasErrors(req)) {
       return next();
     }
 
@@ -27,34 +27,34 @@ function setup( apiConfig, esclient ){
     const operationOptions = {
       retries: _.get(apiConfig, 'requestRetries', 3),
       factor: 1,
-      minTimeout: _.get(esclient, 'transport.requestTimeout')
+      minTimeout: _.get(esclient, 'transport.requestTimeout'),
     };
 
     // setup a new operation
     const operation = retry.operation(operationOptions);
 
     //generate Elasticsearch mget entries based on GID
-    const cmd = req.clean.ids.map( function(id) {
+    const cmd = req.clean.ids.map(function (id) {
       return {
         _index: apiConfig.indexName,
-        _id: `${id.source}:${id.layer}:${id.id}`
+        _id: `${id.source}:${id.layer}:${id.id}`,
       };
     });
 
-    logger.debug( '[ES req]', cmd );
-    debugLog.push(req, {ES_req: cmd});
+    logger.debug('[ES req]', cmd);
+    debugLog.push(req, { ES_req: cmd });
 
     operation.attempt((currentAttempt) => {
       const initialTime = debugLog.beginTimer(req);
 
-      mgetService( esclient, cmd, function( err, docs, data) {
+      mgetService(esclient, cmd, function (err, docs, data) {
         const message = {
           controller: 'place',
           queryType: 'place',
           result_count: _.get(data, 'docs.length'),
           response_time: _.get(data, 'response_time', undefined),
           params: req.clean,
-          retries: currentAttempt - 1
+          retries: currentAttempt - 1,
         };
         logger.info('elasticsearch', message);
 
@@ -62,7 +62,11 @@ function setup( apiConfig, esclient ){
         // (handles bookkeeping of maxRetries)
         // only consider for status 408 (request timeout)
         if (isRequestTimeout(err) && operation.retry(err)) {
-          debugLog.stopTimer(req, initialTime, `request timed out on attempt ${currentAttempt}, retrying`);
+          debugLog.stopTimer(
+            req,
+            initialTime,
+            `request timed out on attempt ${currentAttempt}, retrying`,
+          );
           return;
         }
 
@@ -73,11 +77,11 @@ function setup( apiConfig, esclient ){
         // in either case, handle the error or results
 
         // error handler
-        if( err ){
+        if (err) {
           if (_.isObject(err) && err.message) {
-            req.errors.push( err.message );
+            req.errors.push(err.message);
           } else {
-            req.errors.push( err );
+            req.errors.push(err);
           }
         }
         // set response data
@@ -90,7 +94,6 @@ function setup( apiConfig, esclient ){
       });
       debugLog.stopTimer(req, initialTime);
     });
-
   }
 
   return controller;

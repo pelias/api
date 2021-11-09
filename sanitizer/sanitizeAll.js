@@ -2,7 +2,7 @@ const PeliasParameterError = require('./PeliasParameterError');
 const PeliasTimeoutError = require('../sanitizer/PeliasTimeoutError');
 
 function getCorrectErrorType(message) {
-  if (message.includes( 'Timeout')) {
+  if (message.includes('Timeout')) {
     return new PeliasTimeoutError(message);
   }
 
@@ -24,7 +24,7 @@ function ensureInstanceOfError(error) {
   return getCorrectErrorType(error);
 }
 
-function sanitize( req, sanitizers ){
+function sanitize(req, sanitizers) {
   // init an object to store clean (sanitized) input parameters if not initialized
   req.clean = req.clean || {};
 
@@ -37,18 +37,18 @@ function sanitize( req, sanitizers ){
   const params = req.query || {};
 
   for (let s in sanitizers) {
-    var sanity = sanitizers[s].sanitize( params, req.clean );
+    var sanity = sanitizers[s].sanitize(params, req.clean);
 
     // if errors occurred then set them
     // on the req object.
-    if( sanity.errors.length ){
-      req.errors = req.errors.concat( sanity.errors );
+    if (sanity.errors.length) {
+      req.errors = req.errors.concat(sanity.errors);
     }
 
     // if warnings occurred then set them
     // on the req object.
-    if( sanity.warnings.length ){
-      req.warnings = req.warnings.concat( sanity.warnings );
+    if (sanity.warnings.length) {
+      req.warnings = req.warnings.concat(sanity.warnings);
     }
   }
 
@@ -57,7 +57,7 @@ function sanitize( req, sanitizers ){
 }
 
 // Adds to goodParameters every acceptable parameter passed through API call
-function checkParameters( req, sanitizers ) {
+function checkParameters(req, sanitizers) {
   req.warnings = req.warnings || [];
   // source of input parameters
   // (in this case from the GET querystring params)
@@ -65,14 +65,13 @@ function checkParameters( req, sanitizers ) {
   const goodParameters = {};
 
   for (let s in sanitizers) {
-
     // checks if function exists
-    if (typeof sanitizers[s].expected === 'function'){
+    if (typeof sanitizers[s].expected === 'function') {
       /** expected() returns {array} ex: [{ name: 'text' }] */
       for (let t in sanitizers[s].expected()) {
         /** {object} prop */
         const prop = sanitizers[s].expected()[t];
-        if (prop.hasOwnProperty('name')){
+        if (prop.hasOwnProperty('name')) {
           // adds name of valid parameter
           goodParameters[prop.name] = prop.name;
         }
@@ -83,7 +82,7 @@ function checkParameters( req, sanitizers ) {
   // add a warning message
   if (Object.keys(goodParameters).length !== 0) {
     for (let p in params) {
-      if (!goodParameters.hasOwnProperty(p)){
+      if (!goodParameters.hasOwnProperty(p)) {
         req.warnings = req.warnings.concat('Invalid Parameter: ' + p);
       }
     }
@@ -91,7 +90,7 @@ function checkParameters( req, sanitizers ) {
 }
 
 // runs both sanitize and checkParameters functions in async parallel
-function runAllChecks (req, sanitizers) {
+function runAllChecks(req, sanitizers) {
   sanitize(req, sanitizers);
   checkParameters(req, sanitizers);
 }
@@ -100,5 +99,5 @@ function runAllChecks (req, sanitizers) {
 module.exports = {
   sanitize: sanitize,
   checkParameters: checkParameters,
-  runAllChecks: runAllChecks
+  runAllChecks: runAllChecks,
 };

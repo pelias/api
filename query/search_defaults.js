@@ -2,9 +2,8 @@ var peliasQuery = require('pelias-query');
 var _ = require('lodash');
 
 module.exports = _.merge({}, peliasQuery.defaults, {
-
-  'size': 20,
-  'track_scores': true,
+  size: 20,
+  track_scores: true,
 
   'centroid:field': 'center_point',
 
@@ -119,9 +118,9 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'boost:street': 5,
 
   // boost_sources_and_layers view
-  'custom:boosting:min_score': 1,           // score applied to documents which don't score anything via functions
-  'custom:boosting:boost': 5,               // multiply score by this number to increase the strength of the boost
-  'custom:boosting:max_boost': 50,          // maximum boosting which can be applied (max_boost/boost = max_score)
-  'custom:boosting:score_mode': 'sum',      // sum all function scores before multiplying the boost
-  'custom:boosting:boost_mode': 'multiply'  // this mode is not relevant because there is no query section
+  'custom:boosting:min_score': 1, // score applied to documents which don't score anything via functions
+  'custom:boosting:boost': 5, // multiply score by this number to increase the strength of the boost
+  'custom:boosting:max_boost': 50, // maximum boosting which can be applied (max_boost/boost = max_score)
+  'custom:boosting:score_mode': 'sum', // sum all function scores before multiplying the boost
+  'custom:boosting:boost_mode': 'multiply', // this mode is not relevant because there is no query section
 });

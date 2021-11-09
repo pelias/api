@@ -13,8 +13,7 @@ const _ = require('lodash');
   note: this sanitizer should run *after* the '_text' sanitizer so it can
   use the output of clean.parsed_text where available.
 **/
-function _sanitize( raw, clean ){
-
+function _sanitize(raw, clean) {
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
@@ -26,15 +25,15 @@ function _sanitize( raw, clean ){
 
   // if the text parser has run then we only tokenize the 'subject' section
   // of the 'parsed_text' object, ignoring the 'admin' parts.
-  if( _.isPlainObject(clean, 'parsed_text') && !_.isEmpty(clean.parsed_text) ) {
+  if (_.isPlainObject(clean, 'parsed_text') && !_.isEmpty(clean.parsed_text)) {
     // parsed_text.subject is set, this is the highest priority, use this string
-    if( _.has(clean.parsed_text, 'subject') ){
+    if (_.has(clean.parsed_text, 'subject')) {
       text = clean.parsed_text.subject; // use this string instead
 
       // note: we cannot be sure that the input is complete if a street is
       // detected because the parser will detect partially completed suffixes
       // which are not safe to match against a phrase index
-      if( _.has(clean.parsed_text, 'street') ){
+      if (_.has(clean.parsed_text, 'street')) {
         parserConsumedAllTokens = false;
       }
 
@@ -61,14 +60,13 @@ function _sanitize( raw, clean ){
   clean.tokens_incomplete = [];
 
   // sanity check that the text is valid.
-  if( _.isString(text) && !_.isEmpty(text) ){
-
+  if (_.isString(text) && !_.isEmpty(text)) {
     // split according to the regex used in the elasticsearch tokenizer
     // see: https://github.com/pelias/schema/blob/master/settings.js
     // see: settings.analysis.tokenizer.peliasNameTokenizer
     clean.tokens = text
       .split(/[\s,\\\/]+/) // split on delimeters
-      .filter(el => el); // remove empty elements
+      .filter((el) => el); // remove empty elements
   } else {
     // text is empty, this sanitizer should be a no-op
     return messages;
@@ -83,32 +81,30 @@ function _sanitize( raw, clean ){
   **/
 
   // split the tokens in to 'complete' and 'incomplete'.
-  if( clean.tokens.length ){
-
+  if (clean.tokens.length) {
     // if all the tokens are complete, simply copy them from clean.tokens
-    if( parserConsumedAllTokens ){
-
+    if (parserConsumedAllTokens) {
       // all these tokens are complete!
       clean.tokens_complete = clean.tokens.slice();
 
-    // user hasn't finished typing yet
+      // user hasn't finished typing yet
     } else {
-
       // make a copy of the tokens and remove the last element
       var tokensCopy = clean.tokens.slice(),
-          lastToken = tokensCopy.pop();
+        lastToken = tokensCopy.pop();
 
       // set all but the last token as 'complete'
       clean.tokens_complete = tokensCopy;
 
-      if( lastToken ){
-        clean.tokens_incomplete = [ lastToken ];
+      if (lastToken) {
+        clean.tokens_incomplete = [lastToken];
       }
     }
-
   } else {
     // set error if no substantial tokens were found
-    messages.errors.push('invalid `text` input: must contain more than just delimiters');
+    messages.errors.push(
+      'invalid `text` input: must contain more than just delimiters',
+    );
   }
 
   return messages;
@@ -116,5 +112,5 @@ function _sanitize( raw, clean ){
 
 // export function
 module.exports = () => ({
-  sanitize: _sanitize
+  sanitize: _sanitize,
 });

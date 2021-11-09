@@ -4,7 +4,8 @@ const Debug = require('../../helper/debug');
 const debugLog = new Debug('interpolation:request');
 const querystring = require('querystring');
 
-const ServiceConfiguration = require('pelias-microservice-wrapper').ServiceConfiguration;
+const ServiceConfiguration =
+  require('pelias-microservice-wrapper').ServiceConfiguration;
 
 class Interpolation extends ServiceConfiguration {
   constructor(o) {
@@ -16,7 +17,7 @@ class Interpolation extends ServiceConfiguration {
       number: req.clean.parsed_text.housenumber,
       street: hit.address_parts.street || req.clean.parsed_text.street,
       lat: hit.center_point.lat,
-      lon: hit.center_point.lon
+      lon: hit.center_point.lon,
     };
 
     return params;
@@ -30,11 +31,17 @@ class Interpolation extends ServiceConfiguration {
     const params = this.getParameters(req, hit);
 
     if (req.clean.exposeInternalDebugTools) {
-      const table = url.resolve(this.baseUrl, 'extract/table') + '?' + querystring.stringify({...params, names: params.street});
+      const table =
+        url.resolve(this.baseUrl, 'extract/table') +
+        '?' +
+        querystring.stringify({ ...params, names: params.street });
       const raw = this.getUrl() + '?' + querystring.stringify(params);
-      const demo = url.resolve(this.baseUrl, 'demo') + `/#16/${hit.center_point.lat}/${hit.center_point.lon}` +
-        '?' + querystring.stringify({name: params.street});
-      return { links: {table, raw, demo}, params };
+      const demo =
+        url.resolve(this.baseUrl, 'demo') +
+        `/#16/${hit.center_point.lat}/${hit.center_point.lon}` +
+        '?' +
+        querystring.stringify({ name: params.street });
+      return { links: { table, raw, demo }, params };
     } else {
       return { params };
     }

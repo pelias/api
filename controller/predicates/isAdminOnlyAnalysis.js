@@ -10,13 +10,20 @@ module.exports = (request, response) => {
   }
 
   // return true only if all non-admin properties of parsed_text are empty
-  const is_admin_only_analysis = ['unit', 'housenumber', 'street', 'query', 'category', 'postalcode'].every((prop) => {
+  const is_admin_only_analysis = [
+    'unit',
+    'housenumber',
+    'street',
+    'query',
+    'category',
+    'postalcode',
+  ].every((prop) => {
     return _.isEmpty(request.clean.parsed_text[prop]);
   });
 
   debugLog.push(request, () => ({
     reply: is_admin_only_analysis,
-    stack_trace: stackTraceLine()
+    stack_trace: stackTraceLine(),
   }));
   return is_admin_only_analysis;
 };

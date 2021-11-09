@@ -7,14 +7,14 @@ var _ = require('lodash');
  * @param {boolean} defaultValue value to set variable to if none specified
  * @returns {Object} object containing functions
  */
-function _setup( paramName, defaultValue ) {
+function _setup(paramName, defaultValue) {
   /**
    * {object} opts
-  */
+   */
 
   const opts = {
     paramName: paramName,
-    defaultValue: defaultValue
+    defaultValue: defaultValue,
   };
 
   return {
@@ -26,23 +26,21 @@ function _setup( paramName, defaultValue ) {
      * @returns {{errors: Array, warnings: Array}}
      */
 
-    sanitize: function _sanitize( raw, clean){
-
+    sanitize: function _sanitize(raw, clean) {
       // error & warning messages`1
       var messages = { errors: [], warnings: [] };
 
-      if( !_.isUndefined( raw[opts.paramName] ) ){
-        clean[opts.paramName] = isTruthy( raw[opts.paramName] );
-      }
-      else {
+      if (!_.isUndefined(raw[opts.paramName])) {
+        clean[opts.paramName] = isTruthy(raw[opts.paramName]);
+      } else {
         clean[opts.paramName] = opts.defaultValue;
       }
       return messages;
     }, // end of _sanitize function
 
-    expected: function _expected(){
-      return [{ name: opts.paramName}];
-    } // end of _expected function
+    expected: function _expected() {
+      return [{ name: opts.paramName }];
+    }, // end of _expected function
   }; // end of return object
 } // end of _setup function
 
@@ -52,7 +50,7 @@ function _setup( paramName, defaultValue ) {
  * @returns {boolean}
  */
 function isTruthy(val) {
-  return _.includes( ['true', '1', 1, true], val );
+  return _.includes(['true', '1', 1, true], val);
 }
 
 module.exports = _setup;

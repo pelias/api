@@ -6,10 +6,9 @@ module.exports.tests = {};
 module.exports.tests.text_parser = function (test, common) {
   test('short input text has admin layers set ', function (t) {
     var raw = {
-      text: 'emp'  //start of empire state building
+      text: 'emp', //start of empire state building
     };
-    var clean = {
-    };
+    var clean = {};
 
     var messages = sanitizer.sanitize(raw, clean);
 
@@ -22,137 +21,188 @@ module.exports.tests.text_parser = function (test, common) {
   let cases = [];
 
   // USA queries
-  cases.push(['soho, new york, NY', {
-    subject: 'soho',
-    locality: 'new york',
-    region: 'NY',
-    admin: 'new york, NY'
-  }]);
+  cases.push([
+    'soho, new york, NY',
+    {
+      subject: 'soho',
+      locality: 'new york',
+      region: 'NY',
+      admin: 'new york, NY',
+    },
+  ]);
 
-  cases.push(['123 main st, new york, NY', {
-    subject: '123 main st',
-    housenumber: '123',
-    street: 'main st',
-    locality: 'new york',
-    region: 'NY',
-    admin: 'new york, NY'
-  }]);
+  cases.push([
+    '123 main st, new york, NY',
+    {
+      subject: '123 main st',
+      housenumber: '123',
+      street: 'main st',
+      locality: 'new york',
+      region: 'NY',
+      admin: 'new york, NY',
+    },
+  ]);
 
   // GBR queries
-  cases.push(['chelsea, london', {
-    subject: 'chelsea',
-    locality: 'chelsea',
-    admin: 'london'
-  }]);
+  cases.push([
+    'chelsea, london',
+    {
+      subject: 'chelsea',
+      locality: 'chelsea',
+      admin: 'london',
+    },
+  ]);
 
   // Query with one token
-  cases.push(['yugolsavia', {
-    subject: 'yugolsavia'
-  }]);
+  cases.push([
+    'yugolsavia',
+    {
+      subject: 'yugolsavia',
+    },
+  ]);
 
   // Query with two tokens, no numbers
-  cases.push(['small town', {
-    subject: 'small town'
-  }]);
+  cases.push([
+    'small town',
+    {
+      subject: 'small town',
+    },
+  ]);
 
   // Query with two tokens, number first
-  cases.push(['123 main', {
-    subject: '123 main'
-  }]);
+  cases.push([
+    '123 main',
+    {
+      subject: '123 main',
+    },
+  ]);
 
   // Query with two tokens, number second
-  cases.push(['main 123', {
-    subject: '123 main',
-    street: 'main',
-    housenumber: '123'
-  }]);
+  cases.push([
+    'main 123',
+    {
+      subject: '123 main',
+      street: 'main',
+      housenumber: '123',
+    },
+  ]);
 
   // Query with many tokens
-  cases.push(['main particle new york', {
-    subject: 'main particle',
-    locality: 'new york',
-    admin: 'new york'
-  }]);
+  cases.push([
+    'main particle new york',
+    {
+      subject: 'main particle',
+      locality: 'new york',
+      admin: 'new york',
+    },
+  ]);
 
   // Valid address with housenumber
-  cases.push(['123 main st new york ny', {
-    subject: '123 main st',
-    housenumber: '123',
-    street: 'main st',
-    locality: 'new york',
-    region: 'ny',
-    admin: 'new york ny'
-  }]);
+  cases.push([
+    '123 main st new york ny',
+    {
+      subject: '123 main st',
+      housenumber: '123',
+      street: 'main st',
+      locality: 'new york',
+      region: 'ny',
+      admin: 'new york ny',
+    },
+  ]);
 
   // Valid address with postcode
-  cases.push(['123 main st new york ny 10010', {
-    subject: '123 main st',
-    housenumber: '123',
-    street: 'main st',
-    locality: 'new york',
-    region: 'ny',
-    postcode: '10010',
-    admin: 'new york ny'
-  }]);
+  cases.push([
+    '123 main st new york ny 10010',
+    {
+      subject: '123 main st',
+      housenumber: '123',
+      street: 'main st',
+      locality: 'new york',
+      region: 'ny',
+      postcode: '10010',
+      admin: 'new york ny',
+    },
+  ]);
 
   // Valid address with leading 0 in postcode
-  cases.push(['339 W Main St, Cheshire, 06410', {
-    subject: '339 W Main St',
-    housenumber: '339',
-    street: 'W Main St',
-    locality: 'Cheshire',
-    postcode: '06410',
-    admin: 'Cheshire'
-  }]);
+  cases.push([
+    '339 W Main St, Cheshire, 06410',
+    {
+      subject: '339 W Main St',
+      housenumber: '339',
+      street: 'W Main St',
+      locality: 'Cheshire',
+      postcode: '06410',
+      admin: 'Cheshire',
+    },
+  ]);
 
   // Valid address with no spaces after comma
-  cases.push(['339 W Main St,Lancaster,PA', {
-    subject: '339 W Main St',
-    housenumber: '339',
-    street: 'W Main St',
-    locality: 'Lancaster',
-    region: 'PA',
-    admin: 'Lancaster, PA'
-  }]);
+  cases.push([
+    '339 W Main St,Lancaster,PA',
+    {
+      subject: '339 W Main St',
+      housenumber: '339',
+      street: 'W Main St',
+      locality: 'Lancaster',
+      region: 'PA',
+      admin: 'Lancaster, PA',
+    },
+  ]);
 
   // Valid address without commas
-  cases.push(['123 main st new york ny', {
-    subject: '123 main st',
-    housenumber: '123',
-    street: 'main st',
-    locality: 'new york',
-    region: 'ny',
-    admin: 'new york ny'
-  }]);
+  cases.push([
+    '123 main st new york ny',
+    {
+      subject: '123 main st',
+      housenumber: '123',
+      street: 'main st',
+      locality: 'new york',
+      region: 'ny',
+      admin: 'new york ny',
+    },
+  ]);
 
   // AUS - state only
-  cases.push(['NSW', {
-    subject: 'NSW',
-    region: 'NSW'
-  }]);
+  cases.push([
+    'NSW',
+    {
+      subject: 'NSW',
+      region: 'NSW',
+    },
+  ]);
 
   // when admin name is $subject it should
   // be removed from $admin
-  cases.push(['paris texas', {
-    subject: 'paris',
-    locality: 'paris',
-    region: 'texas',
-    admin: 'texas'
-  }]);
-  cases.push(['rome italy', {
-    subject: 'rome',
-    locality: 'rome',
-    country: 'italy',
-    admin: 'italy'
-  }]);
+  cases.push([
+    'paris texas',
+    {
+      subject: 'paris',
+      locality: 'paris',
+      region: 'texas',
+      admin: 'texas',
+    },
+  ]);
+  cases.push([
+    'rome italy',
+    {
+      subject: 'rome',
+      locality: 'rome',
+      country: 'italy',
+      admin: 'italy',
+    },
+  ]);
 
   // university
-  cases.push(['Union College, Kentucky', {
-    subject: 'Union College',
-    venue: 'Union College',
-    region: 'Kentucky',
-    admin: 'Kentucky'
-  }]);
+  cases.push([
+    'Union College, Kentucky',
+    {
+      subject: 'Union College',
+      venue: 'Union College',
+      region: 'Kentucky',
+      admin: 'Kentucky',
+    },
+  ]);
 
   // street (USA style)
   cases.push(['M', { subject: 'M' }, true]);
@@ -215,21 +265,57 @@ module.exports.tests.text_parser = function (test, common) {
   // cases.push(['Calle Principal Barcel', { subject: 'Calle Principal' }, true]); // jitter issue
   // cases.push(['Calle Principal Barcelo', { subject: 'Calle Principal' }, true]); // jitter issue
   // cases.push(['Calle Principal Barcelon', { subject: 'Calle Principal' }, true]); // jitter issue
-  cases.push(['Calle Principal Barcelona', { subject: 'Calle Principal' }, true]);
+  cases.push([
+    'Calle Principal Barcelona',
+    { subject: 'Calle Principal' },
+    true,
+  ]);
 
   // address (ESP style)
   cases.push(['Calle Principal 20', { subject: '20 Calle Principal' }, true]);
   cases.push(['Calle Principal 20', { subject: '20 Calle Principal' }, true]);
   cases.push(['Calle Principal 20 ', { subject: '20 Calle Principal' }, true]);
   cases.push(['Calle Principal 20 B', { subject: '20 Calle Principal' }, true]);
-  cases.push(['Calle Principal 20 Ba', { subject: '20 Calle Principal' }, true]);
-  cases.push(['Calle Principal 20 Bar', { subject: '20 Calle Principal' }, true]);
-  cases.push(['Calle Principal 20 Barc', { subject: '20 Calle Principal' }, true]);
-  cases.push(['Calle Principal 20 Barce', { subject: '20 Calle Principal' }, true]);
-  cases.push(['Calle Principal 20 Barcel', { subject: '20 Calle Principal' }, true]);
-  cases.push(['Calle Principal 20 Barcelo', { subject: '20 Calle Principal' }, true]);
-  cases.push(['Calle Principal 20 Barcelon', { subject: '20 Calle Principal' }, true]);
-  cases.push(['Calle Principal 20 Barcelona', { subject: '20 Calle Principal' }, true]);
+  cases.push([
+    'Calle Principal 20 Ba',
+    { subject: '20 Calle Principal' },
+    true,
+  ]);
+  cases.push([
+    'Calle Principal 20 Bar',
+    { subject: '20 Calle Principal' },
+    true,
+  ]);
+  cases.push([
+    'Calle Principal 20 Barc',
+    { subject: '20 Calle Principal' },
+    true,
+  ]);
+  cases.push([
+    'Calle Principal 20 Barce',
+    { subject: '20 Calle Principal' },
+    true,
+  ]);
+  cases.push([
+    'Calle Principal 20 Barcel',
+    { subject: '20 Calle Principal' },
+    true,
+  ]);
+  cases.push([
+    'Calle Principal 20 Barcelo',
+    { subject: '20 Calle Principal' },
+    true,
+  ]);
+  cases.push([
+    'Calle Principal 20 Barcelon',
+    { subject: '20 Calle Principal' },
+    true,
+  ]);
+  cases.push([
+    'Calle Principal 20 Barcelona',
+    { subject: '20 Calle Principal' },
+    true,
+  ]);
 
   // street (DEU style)
   cases.push(['H', { subject: 'H' }, true]);
@@ -309,7 +395,11 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['Air & Space Museum', { subject: 'Air & Space Museum' }, true]);
   cases.push(['Air & Space Museum ', { subject: 'Air & Space Museum' }, true]);
   cases.push(['Air & Space Museum D', { subject: 'Air & Space Museum' }, true]);
-  cases.push(['Air & Space Museum DC', { subject: 'Air & Space Museum' }, true]);
+  cases.push([
+    'Air & Space Museum DC',
+    { subject: 'Air & Space Museum' },
+    true,
+  ]);
 
   // admin areas
   cases.push(['N', { subject: 'N' }, true]);
@@ -356,10 +446,10 @@ module.exports.tests.text_parser = function (test, common) {
   cases.push(['e8 1dn', { subject: 'e8 1dn' }, true]);
   // cases.push(['london e8 1dn', { subject: 'e8 1dn' }, true]); // issue
 
-  cases.forEach(testcase => {
+  cases.forEach((testcase) => {
     let input = testcase[0];
     let expected = testcase[1];
-    let subjectOnly = (testcase[2] === true);
+    let subjectOnly = testcase[2] === true;
 
     function assert(label, replacement, replaceAdmin) {
       let text = input.replace(/\s+/, ' ');
@@ -367,13 +457,15 @@ module.exports.tests.text_parser = function (test, common) {
       if (Array.isArray(replacement) && replacement.length === 2) {
         text = text.replace(replacement[0], replacement[1]);
         if (replaceAdmin === true && clone.admin) {
-          clone.admin = clone.admin.replace(replacement[0], replacement[1]).trim();
+          clone.admin = clone.admin
+            .replace(replacement[0], replacement[1])
+            .trim();
         }
       }
       if (clone.admin) {
         clone.admin = clone.admin.replace(/\s+/g, ' ').trim();
       }
-      test(`${label}: ${text}`, t => {
+      test(`${label}: ${text}`, (t) => {
         let raw = { text: text };
         let clean = { parsed_text: 'this should be removed' };
         let messages = sanitizer.sanitize(raw, clean);
@@ -381,8 +473,12 @@ module.exports.tests.text_parser = function (test, common) {
         t.deepEqual(messages, { errors: [], warnings: [] }, 'messages');
         t.equal(clean.text, raw.text.trim(), 'text');
         t.equal(clean.parser, 'pelias', 'parser');
-        if( subjectOnly ){
-          t.equals(clean.parsed_text.subject, clone.subject, `${label}: ${text}`);
+        if (subjectOnly) {
+          t.equals(
+            clean.parsed_text.subject,
+            clone.subject,
+            `${label}: ${text}`,
+          );
         } else {
           t.deepEqual(clean.parsed_text, clone, `${label}: ${text}`);
         }
@@ -405,7 +501,9 @@ module.exports.tests.text_parser = function (test, common) {
     const messages = sanitizer.sanitize(raw, clean);
 
     t.deepEquals(clean, expected_clean);
-    t.deepEquals(messages.errors, ['invalid param \'text\': text length, must be >0']);
+    t.deepEquals(messages.errors, [
+      "invalid param 'text': text length, must be >0",
+    ]);
     t.deepEquals(messages.warnings, [], 'no warnings');
     t.end();
   });
@@ -424,13 +522,16 @@ Sometimes we make the process more complicated than we need to.
 We will never make a journey of a thousand miles by fretting about 
 how long it will take or how hard it will be.
 We make the journey by taking each day step by step and then repeating 
-it again and again until we reach our destination.` };
+it again and again until we reach our destination.`,
+    };
     const clean = {};
     const messages = sanitizer.sanitize(raw, clean);
 
     t.equals(clean.text.length, 140);
     t.deepEquals(messages.errors, [], 'no errors');
-    t.deepEquals(messages.warnings, [`param 'text' truncated to 140 characters`]);
+    t.deepEquals(messages.warnings, [
+      `param 'text' truncated to 140 characters`,
+    ]);
     t.end();
   });
 

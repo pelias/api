@@ -7,7 +7,7 @@ var flipNumberAndStreetCountries = [
   'AUT' /* Austria */,
   'CHE' /* Switzerland */,
   'DEU' /* Germany */,
-  'SVN' /* Slovenia */ ,
+  'SVN' /* Slovenia */,
   'POL' /* Poland */,
   'AND' /* Andorra */,
   'BIH' /* Bosnia and Herzegovina */,
@@ -53,35 +53,45 @@ function setup() {
   var settings = api.localization;
   if (settings && settings.flipNumberAndStreetCountries) {
     var countries = settings.flipNumberAndStreetCountries;
-    flipNumberAndStreetCountries = _.uniq(flipNumberAndStreetCountries.concat(countries));
+    flipNumberAndStreetCountries = _.uniq(
+      flipNumberAndStreetCountries.concat(countries),
+    );
   }
 
   return applyLocalNamingConventions;
 }
 
 function applyLocalNamingConventions(req, res, next) {
-
   // do nothing if no result data set
   if (!res || !res.data) {
     return next();
   }
 
   // loop through data items and flip relevant number/street
-  res.data.filter(function(place){
-    // do nothing for records with no admin info
-    if (!_.has(place, 'parent.country_a')) { return false; }
+  res.data
+    .filter(function (place) {
+      // do nothing for records with no admin info
+      if (!_.has(place, 'parent.country_a')) {
+        return false;
+      }
 
-    // relevant for some countries
-    const flip = place.parent.country_a.some(country => {
-      return _.includes(flipNumberAndStreetCountries, country);
-    });
-    if (!flip){ return false; }
-    if (!_.has(place, 'address_parts.number')) { return false; }
-    if (!_.has(place, 'address_parts.street')) { return false; }
+      // relevant for some countries
+      const flip = place.parent.country_a.some((country) => {
+        return _.includes(flipNumberAndStreetCountries, country);
+      });
+      if (!flip) {
+        return false;
+      }
+      if (!_.has(place, 'address_parts.number')) {
+        return false;
+      }
+      if (!_.has(place, 'address_parts.street')) {
+        return false;
+      }
 
-    return true;
-  })
-  .forEach( flipNumberAndStreet );
+      return true;
+    })
+    .forEach(flipNumberAndStreet);
 
   next();
 }

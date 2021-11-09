@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const Debug = require('../../helper/debug');
-const debugLog = new Debug('controller:predicates:is_request_layers_any_address_related');
+const debugLog = new Debug(
+  'controller:predicates:is_request_layers_any_address_related',
+);
 const stackTraceLine = require('../../helper/stackTraceLine');
 
 // return true if any layers allowed by the query are related to an address query
@@ -15,13 +17,16 @@ module.exports = (req, res) => {
   if (request_layers.length === 0) {
     result = true;
   } else {
-    const request_address_related_layers = _.intersection(request_layers, address_related_layers);
+    const request_address_related_layers = _.intersection(
+      request_layers,
+      address_related_layers,
+    );
     result = request_address_related_layers.length > 0;
   }
 
   debugLog.push(req, () => ({
     reply: result,
-    stack_trace: stackTraceLine()
+    stack_trace: stackTraceLine(),
   }));
 
   return result;

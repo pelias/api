@@ -1,6 +1,7 @@
 const url = require('url');
 
-const ServiceConfiguration = require('pelias-microservice-wrapper').ServiceConfiguration;
+const ServiceConfiguration =
+  require('pelias-microservice-wrapper').ServiceConfiguration;
 
 class Libpostal extends ServiceConfiguration {
   constructor(o, propertyExtractor) {
@@ -12,20 +13,17 @@ class Libpostal extends ServiceConfiguration {
     // * _.property('clean.parsed_text.address')
     // will return those properties from req
     this.propertyExtractor = propertyExtractor;
-    
   }
 
   getParameters(req) {
     return {
-      address: this.propertyExtractor(req)
+      address: this.propertyExtractor(req),
     };
-
   }
 
   getUrl(req) {
     return url.resolve(this.baseUrl, 'parse');
   }
-
 }
 
 module.exports = Libpostal;

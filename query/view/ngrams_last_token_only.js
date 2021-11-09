@@ -1,5 +1,5 @@
 var peliasQuery = require('pelias-query'),
-    ngrams_strict = require('./ngrams_strict');
+  ngrams_strict = require('./ngrams_strict');
 /**
   Ngrams view which trims the 'input:name' and only uses the LAST TOKEN.
 
@@ -11,24 +11,25 @@ var peliasQuery = require('pelias-query'),
   unaltered form by other views.
 **/
 
-module.exports = function( vs ){
-
+module.exports = function (vs) {
   // get a copy of the *tokens_incomplete* tokens produced from the input:name
   var tokens = vs.var('input:name:tokens_incomplete').get();
 
   // no valid tokens to use, fail now, don't render this view.
-  if( !tokens || tokens.length < 1 ){ return null; }
+  if (!tokens || tokens.length < 1) {
+    return null;
+  }
 
   // make a copy Vars so we don't mutate the original
-  var vsCopy = new peliasQuery.Vars( vs.export() );
+  var vsCopy = new peliasQuery.Vars(vs.export());
 
   // set the 'name' variable in the copy to only the last token
-  vsCopy.var('input:name').set( tokens.join(' ') );
+  vsCopy.var('input:name').set(tokens.join(' '));
 
   // return the view rendered using the copy
   return {
-    'constant_score': {
-      'filter': ngrams_strict( vsCopy )
-    }
+    constant_score: {
+      filter: ngrams_strict(vsCopy),
+    },
   };
 };

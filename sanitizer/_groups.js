@@ -44,7 +44,7 @@ function error_message(keys) {
   var listStart = keys.slice(0, -1).join(', ');
   var listEnd = ' and ' + keys[keys.length - 1];
 
-  var adjective = (keys.length > 2) ? 'all' : 'both';
+  var adjective = keys.length > 2 ? 'all' : 'both';
 
   var end = ' must ' + adjective + ' be specified';
 
@@ -53,5 +53,5 @@ function error_message(keys) {
 
 module.exports = {
   optional: optional_group,
-  required: required_group
+  required: required_group,
 };

@@ -21,11 +21,14 @@ const allLayers = require('../../helper/type_mapping').layers;
 const MIN_CHAR_COUNT = 1;
 const MAX_CHAR_COUNT = 99;
 
-module.exports = function( excludedLayers, maxCharCount ) {
-
+module.exports = function (excludedLayers, maxCharCount) {
   // validate args, return no-op view if invalid
-  if( !_.isArray(excludedLayers) || _.isEmpty(excludedLayers) ||
-      !_.isNumber(maxCharCount) || maxCharCount === 0 ){
+  if (
+    !_.isArray(excludedLayers) ||
+    _.isEmpty(excludedLayers) ||
+    !_.isNumber(maxCharCount) ||
+    maxCharCount === 0
+  ) {
     return () => null;
   }
 
@@ -33,7 +36,7 @@ module.exports = function( excludedLayers, maxCharCount ) {
   let includedLayers = _.difference(allLayers, excludedLayers);
 
   // included layers is equal to all layers, return no-op view
-  if( includedLayers.length === allLayers.length ){
+  if (includedLayers.length === allLayers.length) {
     return () => null;
   }
 
@@ -42,22 +45,23 @@ module.exports = function( excludedLayers, maxCharCount ) {
   // ensure char count is within a reasonable range
   maxCharCount = _.clamp(maxCharCount, MIN_CHAR_COUNT, MAX_CHAR_COUNT);
 
-  return function( vs ){
-
+  return function (vs) {
     // validate required params
-    if( !vs.isset('input:name') ){
+    if (!vs.isset('input:name')) {
       return null;
     }
 
     // enforce maximum character length
     let charCount = vs.var('input:name').toString().length;
-    if( !_.inRange(charCount, 1, maxCharCount+1) ){
+    if (!_.inRange(charCount, 1, maxCharCount + 1)) {
       return null;
     }
 
     // update layers var to not include excludedLayers
     const old_layers = vs.var('layers').get() || allLayers;
-    const new_layers = old_layers.filter(layer => !excludedLayers.includes(layer));
+    const new_layers = old_layers.filter(
+      (layer) => !excludedLayers.includes(layer),
+    );
     vs.var('layers', new_layers);
 
     // this 'view' doesn't render anything, it merely mutates the `layers` variable

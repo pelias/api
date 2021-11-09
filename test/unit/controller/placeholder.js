@@ -1,5 +1,5 @@
 const placeholder = require('../../../controller/placeholder');
-const proxyquire =  require('proxyquire').noCallThru();
+const proxyquire = require('proxyquire').noCallThru();
 const mock_logger = require('pelias-mock-logger');
 const _ = require('lodash');
 
@@ -8,7 +8,11 @@ module.exports.tests = {};
 module.exports.tests.interface = (test, common) => {
   test('valid interface', (t) => {
     t.equal(typeof placeholder, 'function', 'placeholder is a function');
-    t.equal(typeof placeholder(), 'function', 'placeholder returns a controller');
+    t.equal(
+      typeof placeholder(),
+      'function',
+      'placeholder returns a controller',
+    );
     t.end();
   });
 };
@@ -38,7 +42,6 @@ module.exports.tests.should_execute = (test, common) => {
       t.deepEquals(res, { b: 2 });
       t.end();
     });
-
   });
 
   test('should_execute returning true should call service', (t) => {
@@ -60,9 +63,7 @@ module.exports.tests.should_execute = (test, common) => {
       t.deepEquals(res.data, []);
       t.end();
     });
-
   });
-
 };
 
 module.exports.tests.success = (test, common) => {
@@ -84,104 +85,104 @@ module.exports.tests.success = (test, common) => {
               country: {
                 id: 1,
                 name: 'country name 1',
-                abbr: 'ABC'
+                abbr: 'ABC',
               },
               dependency: {
                 id: 2,
-                name: 'dependency name 1'
+                name: 'dependency name 1',
               },
               macroregion: {
                 id: 3,
-                name: 'macroregion name 1'
+                name: 'macroregion name 1',
               },
               region: {
                 id: 4,
-                name: 'region name 1'
+                name: 'region name 1',
               },
               macrocounty: {
                 id: 5,
-                name: 'macrocounty name 1'
+                name: 'macrocounty name 1',
               },
               county: {
                 id: 6,
-                name: 'county name 1'
+                name: 'county name 1',
               },
               localadmin: {
                 id: 7,
-                name: 'localadmin name 1'
+                name: 'localadmin name 1',
               },
               locality: {
                 id: 8,
-                name: 'locality name 1'
+                name: 'locality name 1',
               },
               borough: {
                 id: 9,
-                name: 'borough name 1'
+                name: 'borough name 1',
               },
               neighbourhood: {
                 id: 10,
-                name: 'neighbourhood name 1'
-              }
+                name: 'neighbourhood name 1',
+              },
             },
             {
               country: {
                 id: 11,
                 name: 'country name 2',
-                abbr: 'XYZ'
+                abbr: 'XYZ',
               },
               dependency: {
                 id: 12,
                 name: 'dependency name 2',
-                abbr: 'dependency abbr 2'
+                abbr: 'dependency abbr 2',
               },
               macroregion: {
                 id: 13,
                 name: 'macroregion name 2',
-                abbr: 'macroregion abbr 2'
+                abbr: 'macroregion abbr 2',
               },
               region: {
                 id: 14,
                 name: 'region name 2',
-                abbr: 'region abbr 2'
+                abbr: 'region abbr 2',
               },
               macrocounty: {
                 id: 15,
                 name: 'macrocounty name 2',
-                abbr: 'macrocounty abbr 2'
+                abbr: 'macrocounty abbr 2',
               },
               county: {
                 id: 16,
                 name: 'county name 2',
-                abbr: 'county abbr 2'
+                abbr: 'county abbr 2',
               },
               localadmin: {
                 id: 17,
                 name: 'localadmin name 2',
-                abbr: 'localadmin abbr 2'
+                abbr: 'localadmin abbr 2',
               },
               locality: {
                 id: 18,
                 name: 'locality name 2',
-                abbr: 'locality abbr 2'
+                abbr: 'locality abbr 2',
               },
               borough: {
                 id: 19,
                 name: 'borough name 2',
-                abbr: 'borough abbr 2'
+                abbr: 'borough abbr 2',
               },
               neighbourhood: {
                 id: 20,
                 name: 'neighbourhood name 2',
-                abbr: 'neighbourhood abbr 2'
-              }
-            }
+                abbr: 'neighbourhood abbr 2',
+              },
+            },
           ],
           geom: {
             area: 12.34,
             bbox: '21.212121,12.121212,31.313131,13.131313',
             lat: 14.141414,
-            lon: 41.414141
-          }
+            lon: 41.414141,
+          },
         },
         {
           id: 456,
@@ -189,30 +190,30 @@ module.exports.tests.success = (test, common) => {
           placetype: 'locality',
           population: 4321,
           popularity: 8765,
-          lineage: [ {} ],
+          lineage: [{}],
           geom: {
             area: 23.45,
             bbox: '51.515151,15.151515,61.616161,16.161616',
             lat: 17.171717,
-            lon: 71.717171
-          }
-        }
+            lon: 71.717171,
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = { param1: 'param1 value' };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -222,14 +223,15 @@ module.exports.tests.success = (test, common) => {
             source_id: '123',
             center_point: {
               lat: 14.141414,
-              lon: 41.414141
+              lon: 41.414141,
             },
-            bounding_box: '{"min_lat":12.121212,"max_lat":13.131313,"min_lon":21.212121,"max_lon":31.313131}',
+            bounding_box:
+              '{"min_lat":12.121212,"max_lat":13.131313,"min_lon":21.212121,"max_lon":31.313131}',
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             population: 1234,
             popularity: 5678,
@@ -273,8 +275,8 @@ module.exports.tests.success = (test, common) => {
               country: ['country name 1', 'country name 2'],
               country_id: ['1', '11'],
               country_a: ['ABC', 'XYZ'],
-              country_source: [null]
-            }
+              country_source: [null],
+            },
           },
           {
             _id: 'whosonfirst:locality:456',
@@ -283,26 +285,26 @@ module.exports.tests.success = (test, common) => {
             source_id: '456',
             center_point: {
               lat: 17.171717,
-              lon: 71.717171
+              lon: 71.717171,
             },
-            bounding_box: '{"min_lat":15.151515,"max_lat":16.161616,"min_lon":51.515151,"max_lon":61.616161}',
+            bounding_box:
+              '{"min_lat":15.151515,"max_lat":16.161616,"min_lon":51.515151,"max_lon":61.616161}',
             name: {
-              'default': 'name 3'
+              default: 'name 3',
             },
             phrase: {
-              'default': 'name 3'
+              default: 'name 3',
             },
             population: 4321,
-            popularity: 8765
-          }
-        ]
+            popularity: 8765,
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:2]'));
       t.end();
     });
-
   });
 
   test('results with no lineage should not set any parent fields', (t) => {
@@ -320,25 +322,25 @@ module.exports.tests.success = (test, common) => {
             area: 12.34,
             bbox: '21.212121,12.121212,31.313131,13.131313',
             lat: 14.141414,
-            lon: 41.414141
-          }
-        }
+            lon: 41.414141,
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = { param1: 'param1 value' };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -348,24 +350,24 @@ module.exports.tests.success = (test, common) => {
             source_id: '123',
             center_point: {
               lat: 14.141414,
-              lon: 41.414141
+              lon: 41.414141,
             },
-            bounding_box: '{"min_lat":12.121212,"max_lat":13.131313,"min_lon":21.212121,"max_lon":31.313131}',
+            bounding_box:
+              '{"min_lat":12.121212,"max_lat":13.131313,"min_lon":21.212121,"max_lon":31.313131}',
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
-          }
-        ]
+              default: 'name 1',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:1]'));
       t.end();
     });
-
   });
 
   test('results with string population/popularity should convert to number', (t) => {
@@ -382,25 +384,25 @@ module.exports.tests.success = (test, common) => {
           population: '123.4',
           popularity: '567.8',
           geom: {
-            area: 12.34
-          }
-        }
+            area: 12.34,
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = { param1: 'param1 value' };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -411,20 +413,19 @@ module.exports.tests.success = (test, common) => {
             population: 123.4,
             popularity: 568,
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
-          }
-        ]
+              default: 'name 1',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:1]'));
       t.end();
     });
-
   });
 
   test('results with negative population/popularity should not set population/popularity', (t) => {
@@ -441,25 +442,25 @@ module.exports.tests.success = (test, common) => {
           population: -1,
           popularity: -1,
           geom: {
-            area: 12.34
-          }
-        }
+            area: 12.34,
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = { param1: 'param1 value' };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -468,20 +469,19 @@ module.exports.tests.success = (test, common) => {
             source: 'whosonfirst',
             source_id: '123',
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
-          }
-        ]
+              default: 'name 1',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:1]'));
       t.end();
     });
-
   });
 
   test('results with undefined or empty name should be skipped', (t) => {
@@ -497,33 +497,33 @@ module.exports.tests.success = (test, common) => {
             name: invalid_name,
             placetype: 'neighbourhood',
             geom: {
-              area: 12.34
-            }
+              area: 12.34,
+            },
           },
           {
             id: 456,
             name: 'name 2',
             placetype: 'neighbourhood',
             geom: {
-              area: 12.34
-            }
-          }
+              area: 12.34,
+            },
+          },
         ];
 
         callback(null, response);
       };
 
       const controller = proxyquire('../../../controller/placeholder', {
-        'pelias-logger': logger
+        'pelias-logger': logger,
       })(placeholder_service, true, () => true);
 
       const req = { param1: 'param1 value' };
-      const res = { };
+      const res = {};
 
       controller(req, res, () => {
         const expected_res = {
           meta: {
-            query_type: 'search_fallback'
+            query_type: 'search_fallback',
           },
           data: [
             {
@@ -532,23 +532,23 @@ module.exports.tests.success = (test, common) => {
               source: 'whosonfirst',
               source_id: '456',
               name: {
-                'default': 'name 2'
+                default: 'name 2',
               },
               phrase: {
-                'default': 'name 2'
-              }
-            }
-          ]
+                default: 'name 2',
+              },
+            },
+          ],
         };
 
         t.deepEquals(res, expected_res);
-        t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:1]'));
+        t.ok(
+          logger.isDebugMessage('[controller:placeholder] [result_count:1]'),
+        );
       });
-
     });
 
     t.end();
-
   });
 
   test('results with string geom.lat/geom.lon should convert to numbers', (t) => {
@@ -565,9 +565,9 @@ module.exports.tests.success = (test, common) => {
           geom: {
             area: 12.34,
             lat: '14.141414',
-            lon: '41.414141'
-          }
-        }
+            lon: '41.414141',
+          },
+        },
       ];
 
       callback(null, response);
@@ -578,16 +578,16 @@ module.exports.tests.success = (test, common) => {
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = { param1: 'param1 value' };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -597,25 +597,23 @@ module.exports.tests.success = (test, common) => {
             source_id: '1',
             center_point: {
               lat: 14.141414,
-              lon: 41.414141
+              lon: 41.414141,
             },
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
-          }
-        ]
+              default: 'name 1',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:1]'));
       t.end();
     });
-
   });
-
 };
 
 module.exports.tests.result_filtering = (test, common) => {
@@ -629,8 +627,8 @@ module.exports.tests.result_filtering = (test, common) => {
           'boundary.rect.min_lat': -2,
           'boundary.rect.max_lat': 2,
           'boundary.rect.min_lon': -2,
-          'boundary.rect.max_lon': 2
-        }
+          'boundary.rect.max_lon': 2,
+        },
       });
 
       const response = [
@@ -641,8 +639,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: -1,
-            lon: -1
-          }
+            lon: -1,
+          },
         },
         {
           // outside bbox on max_lon
@@ -651,8 +649,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: -1,
-            lon: 3
-          }
+            lon: 3,
+          },
         },
         {
           // outside bbox on max_lat
@@ -661,8 +659,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: 3,
-            lon: -1
-          }
+            lon: -1,
+          },
         },
         {
           // outside bbox on min_lon
@@ -671,8 +669,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: -1,
-            lon: -3
-          }
+            lon: -3,
+          },
         },
         {
           // outside bbox on min_lat
@@ -681,16 +679,15 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: -3,
-            lon: -1
-          }
+            lon: -1,
+          },
         },
         {
           // no lat/lon
           id: 6,
           name: 'name 6',
           placetype: 'neighbourhood',
-          geom: {
-          }
+          geom: {},
         },
         {
           // empty string lat/lon
@@ -699,8 +696,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: '',
-            lon: ''
-          }
+            lon: '',
+          },
         },
         {
           // valid lat, empty string lon
@@ -709,8 +706,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: 0,
-            lon: ' '
-          }
+            lon: ' ',
+          },
         },
         {
           // valid lon, empty string lat
@@ -719,8 +716,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: ' ',
-            lon: 0
-          }
+            lon: 0,
+          },
         },
         {
           // inside bbox
@@ -729,9 +726,9 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: 1,
-            lon: 1
-          }
-        }
+            lon: 1,
+          },
+        },
       ];
 
       callback(null, response);
@@ -742,7 +739,7 @@ module.exports.tests.result_filtering = (test, common) => {
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = {
@@ -751,15 +748,15 @@ module.exports.tests.result_filtering = (test, common) => {
         'boundary.rect.min_lat': -2,
         'boundary.rect.max_lat': 2,
         'boundary.rect.min_lon': -2,
-        'boundary.rect.max_lon': 2
-      }
+        'boundary.rect.max_lon': 2,
+      },
     };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -769,14 +766,14 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '1',
             center_point: {
               lat: -1,
-              lon: -1
+              lon: -1,
             },
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
+              default: 'name 1',
+            },
           },
           {
             _id: 'whosonfirst:neighbourhood:10',
@@ -785,22 +782,21 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '10',
             center_point: {
               lat: 1,
-              lon: 1
+              lon: 1,
             },
             name: {
-              'default': 'name 10'
+              default: 'name 10',
             },
             phrase: {
-              'default': 'name 10'
-            }
-          }
-        ]
+              default: 'name 10',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.end();
     });
-
   });
 
   test('when geometric_filters_apply is false, boundary.rect should not apply', (t) => {
@@ -813,8 +809,8 @@ module.exports.tests.result_filtering = (test, common) => {
           'boundary.rect.min_lat': -1,
           'boundary.rect.max_lat': 1,
           'boundary.rect.min_lon': -1,
-          'boundary.rect.max_lon': 1
-        }
+          'boundary.rect.max_lon': 1,
+        },
       });
 
       const response = [
@@ -825,8 +821,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: 0,
-            lon: 0
-          }
+            lon: 0,
+          },
         },
         {
           // outside bbox
@@ -835,8 +831,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: -2,
-            lon: 2
-          }
+            lon: 2,
+          },
         },
         {
           // outside bbox
@@ -845,9 +841,9 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: 2,
-            lon: -2
-          }
-        }
+            lon: -2,
+          },
+        },
       ];
 
       callback(null, response);
@@ -858,7 +854,7 @@ module.exports.tests.result_filtering = (test, common) => {
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, false, () => true);
 
     const req = {
@@ -867,15 +863,15 @@ module.exports.tests.result_filtering = (test, common) => {
         'boundary.rect.min_lat': -1,
         'boundary.rect.max_lat': 1,
         'boundary.rect.min_lon': -1,
-        'boundary.rect.max_lon': 1
-      }
+        'boundary.rect.max_lon': 1,
+      },
     };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -885,14 +881,14 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '1',
             center_point: {
               lat: 0,
-              lon: 0
+              lon: 0,
             },
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
+              default: 'name 1',
+            },
           },
           {
             _id: 'whosonfirst:neighbourhood:2',
@@ -901,14 +897,14 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '2',
             center_point: {
               lat: -2,
-              lon: 2
+              lon: 2,
             },
             name: {
-              'default': 'name 2'
+              default: 'name 2',
             },
             phrase: {
-              'default': 'name 2'
-            }
+              default: 'name 2',
+            },
           },
           {
             _id: 'whosonfirst:neighbourhood:3',
@@ -917,22 +913,21 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '3',
             center_point: {
               lat: 2,
-              lon: -2
+              lon: -2,
             },
             name: {
-              'default': 'name 3'
+              default: 'name 3',
             },
             phrase: {
-              'default': 'name 3'
-            }
-          }
-        ]
+              default: 'name 3',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.end();
     });
-
   });
 
   test('when boundary.circle is available, results outside of it should be removed', (t) => {
@@ -944,8 +939,8 @@ module.exports.tests.result_filtering = (test, common) => {
         clean: {
           'boundary.circle.lat': 0,
           'boundary.circle.lon': 0,
-          'boundary.circle.radius': 500
-        }
+          'boundary.circle.radius': 500,
+        },
       });
 
       const response = [
@@ -956,8 +951,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: 1,
-            lon: 1
-          }
+            lon: 1,
+          },
         },
         {
           // outside circle on +lon
@@ -966,8 +961,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: 0,
-            lon: 45
-          }
+            lon: 45,
+          },
         },
         {
           // outside bbox on +lat
@@ -976,8 +971,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: 45,
-            lon: 0
-          }
+            lon: 0,
+          },
         },
         {
           // outside bbox on -lon
@@ -986,8 +981,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: 0,
-            lon: -45
-          }
+            lon: -45,
+          },
         },
         {
           // outside bbox on -lat
@@ -996,16 +991,15 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: -45,
-            lon: 0
-          }
+            lon: 0,
+          },
         },
         {
           // no lat/lon
           id: 6,
           name: 'name 6',
           placetype: 'neighbourhood',
-          geom: {
-          }
+          geom: {},
         },
         {
           // empty string lat/lon
@@ -1014,8 +1008,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: '',
-            lon: ''
-          }
+            lon: '',
+          },
         },
         {
           // valid lat, empty string lon
@@ -1024,8 +1018,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: 0,
-            lon: ' '
-          }
+            lon: ' ',
+          },
         },
         {
           // valid lon, empty string lat
@@ -1034,8 +1028,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: ' ',
-            lon: 0
-          }
+            lon: 0,
+          },
         },
         {
           // inside circle
@@ -1044,9 +1038,9 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: -1,
-            lon: -1
-          }
-        }
+            lon: -1,
+          },
+        },
       ];
 
       callback(null, response);
@@ -1057,7 +1051,7 @@ module.exports.tests.result_filtering = (test, common) => {
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = {
@@ -1065,15 +1059,15 @@ module.exports.tests.result_filtering = (test, common) => {
       clean: {
         'boundary.circle.lat': 0,
         'boundary.circle.lon': 0,
-        'boundary.circle.radius': 500
-      }
+        'boundary.circle.radius': 500,
+      },
     };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -1083,14 +1077,14 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '1',
             center_point: {
               lat: 1,
-              lon: 1
+              lon: 1,
             },
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
+              default: 'name 1',
+            },
           },
           {
             _id: 'whosonfirst:neighbourhood:10',
@@ -1099,22 +1093,21 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '10',
             center_point: {
               lat: -1,
-              lon: -1
+              lon: -1,
             },
             name: {
-              'default': 'name 10'
+              default: 'name 10',
             },
             phrase: {
-              'default': 'name 10'
-            }
-          }
-        ]
+              default: 'name 10',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.end();
     });
-
   });
 
   test('when geometric_filters_apply is false, boundary.circle should not apply', (t) => {
@@ -1126,8 +1119,8 @@ module.exports.tests.result_filtering = (test, common) => {
         clean: {
           'boundary.circle.lat': 0,
           'boundary.circle.lon': 0,
-          'boundary.circle.radius': 500
-        }
+          'boundary.circle.radius': 500,
+        },
       });
 
       const response = [
@@ -1138,8 +1131,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: 1,
-            lon: 1
-          }
+            lon: 1,
+          },
         },
         {
           // outside circle on +lon
@@ -1148,8 +1141,8 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: -45,
-            lon: 45
-          }
+            lon: 45,
+          },
         },
         {
           // outside bbox on +lat
@@ -1158,9 +1151,9 @@ module.exports.tests.result_filtering = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             lat: 45,
-            lon: -45
-          }
-        }
+            lon: -45,
+          },
+        },
       ];
 
       callback(null, response);
@@ -1171,7 +1164,7 @@ module.exports.tests.result_filtering = (test, common) => {
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, false, () => true);
 
     const req = {
@@ -1179,15 +1172,15 @@ module.exports.tests.result_filtering = (test, common) => {
       clean: {
         'boundary.circle.lat': 0,
         'boundary.circle.lon': 0,
-        'boundary.circle.radius': 500
-      }
+        'boundary.circle.radius': 500,
+      },
     };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -1197,14 +1190,14 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '1',
             center_point: {
               lat: 1,
-              lon: 1
+              lon: 1,
             },
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
+              default: 'name 1',
+            },
           },
           {
             _id: 'whosonfirst:neighbourhood:2',
@@ -1213,14 +1206,14 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '2',
             center_point: {
               lat: -45,
-              lon: 45
+              lon: 45,
             },
             name: {
-              'default': 'name 2'
+              default: 'name 2',
             },
             phrase: {
-              'default': 'name 2'
-            }
+              default: 'name 2',
+            },
           },
           {
             _id: 'whosonfirst:neighbourhood:3',
@@ -1229,22 +1222,21 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '3',
             center_point: {
               lat: 45,
-              lon: -45
+              lon: -45,
             },
             name: {
-              'default': 'name 3'
+              default: 'name 3',
             },
             phrase: {
-              'default': 'name 3'
-            }
-          }
-        ]
+              default: 'name 3',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.end();
     });
-
   });
 
   test('only results matching explicit layers should be returned', (t) => {
@@ -1254,8 +1246,8 @@ module.exports.tests.result_filtering = (test, common) => {
       t.deepEqual(req, {
         param1: 'param1 value',
         clean: {
-          layers: ['neighbourhood', 'locality', 'county']
-        }
+          layers: ['neighbourhood', 'locality', 'county'],
+        },
       });
 
       const response = [
@@ -1263,82 +1255,78 @@ module.exports.tests.result_filtering = (test, common) => {
           id: 1,
           name: 'name 1',
           placetype: 'neighbourhood',
-          lineage: [ {} ],
+          lineage: [{}],
           geom: {
             area: 1,
             lat: 14.141414,
-            lon: 41.414141
-          }
+            lon: 41.414141,
+          },
         },
         {
           id: 2,
           name: 'name 2',
           placetype: 'borough',
-          lineage: [ {} ],
+          lineage: [{}],
           geom: {
             area: 2,
             lat: 15.151515,
-            lon: 51.515151
-          }
+            lon: 51.515151,
+          },
         },
         {
           id: 3,
           name: 'name 3',
           placetype: 'locality',
-          lineage: [ {} ],
+          lineage: [{}],
           geom: {
             area: 3,
             lat: 16.161616,
-            lon: 61.616161
-          }
+            lon: 61.616161,
+          },
         },
         {
           id: 4,
           name: 'name 4',
           placetype: 'localadmin',
-          lineage: [ {} ],
+          lineage: [{}],
           geom: {
             area: 4,
             lat: 17.171717,
-            lon: 71.717171
-          }
+            lon: 71.717171,
+          },
         },
         {
           id: 5,
           name: 'name 5',
           placetype: 'county',
-          lineage: [ {} ],
+          lineage: [{}],
           geom: {
             area: 5,
             lat: 18.181818,
-            lon: 81.818181
-          }
-        }
+            lon: 81.818181,
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = {
       param1: 'param1 value',
       clean: {
-        layers: [
-          'neighbourhood',
-          'locality',
-          'county'
-        ]
-      }
+        layers: ['neighbourhood', 'locality', 'county'],
+      },
     };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -1348,14 +1336,14 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '1',
             center_point: {
               lat: 14.141414,
-              lon: 41.414141
+              lon: 41.414141,
             },
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
+              default: 'name 1',
+            },
           },
           {
             _id: 'whosonfirst:locality:3',
@@ -1364,14 +1352,14 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '3',
             center_point: {
               lat: 16.161616,
-              lon: 61.616161
+              lon: 61.616161,
             },
             name: {
-              'default': 'name 3'
+              default: 'name 3',
             },
             phrase: {
-              'default': 'name 3'
-            }
+              default: 'name 3',
+            },
           },
           {
             _id: 'whosonfirst:county:5',
@@ -1380,26 +1368,25 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '5',
             center_point: {
               lat: 18.181818,
-              lon: 81.818181
+              lon: 81.818181,
             },
             name: {
-              'default': 'name 5'
+              default: 'name 5',
             },
             phrase: {
-              'default': 'name 5'
-            }
-          }
-        ]
+              default: 'name 5',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:3]'));
       t.end();
     });
-
   });
 
-  test('if req.clean.parsed_text contains street, don\'t filter on anything', (t) => {
+  test("if req.clean.parsed_text contains street, don't filter on anything", (t) => {
     const logger = mock_logger();
 
     const placeholder_service = (req, callback) => {
@@ -1408,9 +1395,9 @@ module.exports.tests.result_filtering = (test, common) => {
         clean: {
           layers: ['neighbourhood'],
           parsed_text: {
-            street: 'street value'
-          }
-        }
+            street: 'street value',
+          },
+        },
       });
 
       const response = [
@@ -1418,42 +1405,42 @@ module.exports.tests.result_filtering = (test, common) => {
           id: 1,
           name: 'name 1',
           placetype: 'neighbourhood',
-          lineage: [ {} ],
+          lineage: [{}],
           geom: {
             area: 1,
             lat: 14.141414,
-            lon: 41.414141
-          }
+            lon: 41.414141,
+          },
         },
         {
           id: 2,
           name: 'name 2',
           placetype: 'borough',
-          lineage: [ {} ],
+          lineage: [{}],
           geom: {
             area: 2,
             lat: 15.151515,
-            lon: 51.515151
-          }
+            lon: 51.515151,
+          },
         },
         {
           id: 3,
           name: 'name 3',
           placetype: 'locality',
-          lineage: [ {} ],
+          lineage: [{}],
           geom: {
             area: 3,
             lat: 16.161616,
-            lon: 61.616161
-          }
-        }
+            lon: 61.616161,
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = {
@@ -1461,16 +1448,16 @@ module.exports.tests.result_filtering = (test, common) => {
       clean: {
         layers: ['neighbourhood'],
         parsed_text: {
-          street: 'street value'
-        }
-      }
+          street: 'street value',
+        },
+      },
     };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -1480,14 +1467,14 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '1',
             center_point: {
               lat: 14.141414,
-              lon: 41.414141
+              lon: 41.414141,
             },
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
+              default: 'name 1',
+            },
           },
           {
             _id: 'whosonfirst:borough:2',
@@ -1496,14 +1483,14 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '2',
             center_point: {
               lat: 15.151515,
-              lon: 51.515151
+              lon: 51.515151,
             },
             name: {
-              'default': 'name 2'
+              default: 'name 2',
             },
             phrase: {
-              'default': 'name 2'
-            }
+              default: 'name 2',
+            },
           },
           {
             _id: 'whosonfirst:locality:3',
@@ -1512,23 +1499,22 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '3',
             center_point: {
               lat: 16.161616,
-              lon: 61.616161
+              lon: 61.616161,
             },
             name: {
-              'default': 'name 3'
+              default: 'name 3',
             },
             phrase: {
-              'default': 'name 3'
-            }
-          }
-        ]
+              default: 'name 3',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:3]'));
       t.end();
     });
-
   });
 
   test('only synthesized docs matching explicit boundary.country should be returned', (t) => {
@@ -1538,8 +1524,8 @@ module.exports.tests.result_filtering = (test, common) => {
       t.deepEqual(req, {
         param1: 'param1 value',
         clean: {
-          'boundary.country': ['ABC']
-        }
+          'boundary.country': ['ABC'],
+        },
       });
 
       const response = [
@@ -1552,31 +1538,31 @@ module.exports.tests.result_filtering = (test, common) => {
               country: {
                 id: 1,
                 name: 'country name 1',
-                abbr: 'ABC'
-              }
+                abbr: 'ABC',
+              },
             },
             {
               country: {
                 id: 2,
                 name: 'country name 2',
-                abbr: 'DEF'
-              }
-            }
+                abbr: 'DEF',
+              },
+            },
           ],
           geom: {
             lat: 14.141414,
-            lon: 41.414141
-          }
+            lon: 41.414141,
+          },
         },
         {
           id: 3,
           name: 'name 3',
           placetype: 'locality',
-          lineage: [ {} ],
+          lineage: [{}],
           geom: {
             lat: 15.151515,
-            lon: 51.515151
-          }
+            lon: 51.515151,
+          },
         },
         {
           id: 4,
@@ -1587,36 +1573,36 @@ module.exports.tests.result_filtering = (test, common) => {
               country: {
                 id: 4,
                 name: 'country name 4',
-                abbr: 'ABC'
-              }
-            }
+                abbr: 'ABC',
+              },
+            },
           ],
           geom: {
             lat: 16.161616,
-            lon: 61.616161
-          }
-        }
+            lon: 61.616161,
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = {
       param1: 'param1 value',
       clean: {
-        'boundary.country': ['ABC']
-      }
+        'boundary.country': ['ABC'],
+      },
     };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -1626,20 +1612,20 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '1',
             center_point: {
               lat: 14.141414,
-              lon: 41.414141
+              lon: 41.414141,
             },
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             parent: {
               country: ['country name 1'],
               country_id: ['1'],
               country_a: ['ABC'],
-              country_source: [null]
-            }
+              country_source: [null],
+            },
           },
           {
             _id: 'whosonfirst:locality:4',
@@ -1648,29 +1634,28 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '4',
             center_point: {
               lat: 16.161616,
-              lon: 61.616161
+              lon: 61.616161,
             },
             name: {
-              'default': 'name 4'
+              default: 'name 4',
             },
             phrase: {
-              'default': 'name 4'
+              default: 'name 4',
             },
             parent: {
               country: ['country name 4'],
               country_id: ['4'],
               country_a: ['ABC'],
-              country_source: [null]
-            }
-          }
-        ]
+              country_source: [null],
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:2]'));
       t.end();
     });
-
   });
 
   test('when geometric_filters_apply is false, boundary.country should not apply', (t) => {
@@ -1680,8 +1665,8 @@ module.exports.tests.result_filtering = (test, common) => {
       t.deepEqual(req, {
         param1: 'param1 value',
         clean: {
-          'boundary.country': ['ABC']
-        }
+          'boundary.country': ['ABC'],
+        },
       });
 
       const response = [
@@ -1694,21 +1679,21 @@ module.exports.tests.result_filtering = (test, common) => {
               country: {
                 id: 1,
                 name: 'country name 1',
-                abbr: 'ABC'
-              }
+                abbr: 'ABC',
+              },
             },
             {
               country: {
                 id: 2,
                 name: 'country name 2',
-                abbr: 'DEF'
-              }
-            }
+                abbr: 'DEF',
+              },
+            },
           ],
           geom: {
             lat: 14.141414,
-            lon: 41.414141
-          }
+            lon: 41.414141,
+          },
         },
         {
           id: 3,
@@ -1719,14 +1704,14 @@ module.exports.tests.result_filtering = (test, common) => {
               country: {
                 id: 3,
                 name: 'country name 3',
-                abbr: 'ABC'
-              }
-            }
+                abbr: 'ABC',
+              },
+            },
           ],
           geom: {
             lat: 15.151515,
-            lon: 51.515151
-          }
+            lon: 51.515151,
+          },
         },
         {
           id: 4,
@@ -1737,36 +1722,36 @@ module.exports.tests.result_filtering = (test, common) => {
               country: {
                 id: 4,
                 name: 'country name 4',
-                abbr: 'GHI'
-              }
-            }
+                abbr: 'GHI',
+              },
+            },
           ],
           geom: {
             lat: 16.161616,
-            lon: 61.616161
-          }
-        }
+            lon: 61.616161,
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, false, () => true);
 
     const req = {
       param1: 'param1 value',
       clean: {
-        'boundary.country': ['ABC']
-      }
+        'boundary.country': ['ABC'],
+      },
     };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -1776,20 +1761,20 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '1',
             center_point: {
               lat: 14.141414,
-              lon: 41.414141
+              lon: 41.414141,
             },
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             parent: {
               country: ['country name 1', 'country name 2'],
               country_id: ['1', '2'],
               country_a: ['ABC', 'DEF'],
-              country_source: [null]
-            }
+              country_source: [null],
+            },
           },
           {
             _id: 'whosonfirst:locality:3',
@@ -1798,20 +1783,20 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '3',
             center_point: {
               lat: 15.151515,
-              lon: 51.515151
+              lon: 51.515151,
             },
             name: {
-              'default': 'name 3'
+              default: 'name 3',
             },
             phrase: {
-              'default': 'name 3'
+              default: 'name 3',
             },
             parent: {
               country: ['country name 3'],
               country_id: ['3'],
               country_a: ['ABC'],
-              country_source: [null]
-            }
+              country_source: [null],
+            },
           },
           {
             _id: 'whosonfirst:locality:4',
@@ -1820,31 +1805,29 @@ module.exports.tests.result_filtering = (test, common) => {
             source_id: '4',
             center_point: {
               lat: 16.161616,
-              lon: 61.616161
+              lon: 61.616161,
             },
             name: {
-              'default': 'name 4'
+              default: 'name 4',
             },
             phrase: {
-              'default': 'name 4'
+              default: 'name 4',
             },
             parent: {
               country: ['country name 4'],
               country_id: ['4'],
               country_a: ['GHI'],
-              country_source: [null]
-            }
-          }
-        ]
+              country_source: [null],
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:3]'));
       t.end();
     });
-
   });
-
 };
 
 module.exports.tests.lineage_errors = (test, common) => {
@@ -1864,36 +1847,35 @@ module.exports.tests.lineage_errors = (test, common) => {
               country: {
                 id: 1,
                 name: 'country name 1',
-                abbr: 'country abbr 1'
+                abbr: 'country abbr 1',
               },
               unknown: {
                 id: 2,
                 name: 'unknown name 2',
-                abbr: 'unknown abbr 2'
-              }
-
-            }
+                abbr: 'unknown abbr 2',
+              },
+            },
           ],
           geom: {
-            area: 12.34
-          }
-        }
+            area: 12.34,
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = { param1: 'param1 value' };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -1902,25 +1884,24 @@ module.exports.tests.lineage_errors = (test, common) => {
             source: 'whosonfirst',
             source_id: '123',
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             parent: {
               country: ['country name 1'],
               country_id: ['1'],
               country_a: ['country abbr 1'],
-              country_source: [null]
-            }
-          }
-        ]
+              country_source: [null],
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.end();
     });
-
   });
 
   test('lineage placetypes lacking names should be ignored', (t) => {
@@ -1939,35 +1920,34 @@ module.exports.tests.lineage_errors = (test, common) => {
               country: {
                 id: 1,
                 name: 'country name 1',
-                abbr: 'country abbr 1'
+                abbr: 'country abbr 1',
               },
               region: {
                 id: 2,
-                abbr: 'region abbr 2'
-              }
-
-            }
+                abbr: 'region abbr 2',
+              },
+            },
           ],
           geom: {
-            area: 12.34
-          }
-        }
+            area: 12.34,
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = { param1: 'param1 value' };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -1976,25 +1956,24 @@ module.exports.tests.lineage_errors = (test, common) => {
             source: 'whosonfirst',
             source_id: '123',
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             parent: {
               country: ['country name 1'],
               country_id: ['1'],
               country_a: ['country abbr 1'],
-              country_source: [null]
-            }
-          }
-        ]
+              country_source: [null],
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.end();
     });
-
   });
 
   test('lineage placetypes lacking ids should be ignored', (t) => {
@@ -2013,34 +1992,34 @@ module.exports.tests.lineage_errors = (test, common) => {
               country: {
                 id: 1,
                 name: 'country name 1',
-                abbr: 'country abbr 1'
+                abbr: 'country abbr 1',
               },
               region: {
                 name: 'region name 2',
-                abbr: 'region abbr 2'
-              }
-            }
+                abbr: 'region abbr 2',
+              },
+            },
           ],
           geom: {
-            area: 12.34
-          }
-        }
+            area: 12.34,
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = { param1: 'param1 value' };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -2049,27 +2028,25 @@ module.exports.tests.lineage_errors = (test, common) => {
             source: 'whosonfirst',
             source_id: '123',
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             parent: {
               country: ['country name 1'],
               country_id: ['1'],
               country_a: ['country abbr 1'],
-              country_source: [null]
-            }
-          }
-        ]
+              country_source: [null],
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.end();
     });
-
   });
-
 };
 
 module.exports.tests.geometry_errors = (test, common) => {
@@ -2083,24 +2060,24 @@ module.exports.tests.geometry_errors = (test, common) => {
         {
           id: 123,
           name: 'name 1',
-          placetype: 'neighbourhood'
-        }
+          placetype: 'neighbourhood',
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = { param1: 'param1 value' };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -2109,21 +2086,19 @@ module.exports.tests.geometry_errors = (test, common) => {
             source: 'whosonfirst',
             source_id: '123',
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
-          }
-        ]
+              default: 'name 1',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.end();
     });
-
   });
-
 };
 
 module.exports.tests.centroid_errors = (test, common) => {
@@ -2140,25 +2115,25 @@ module.exports.tests.centroid_errors = (test, common) => {
           placetype: 'neighbourhood',
           geom: {
             area: 12.34,
-            bbox: '21.212121,12.121212,31.313131,13.131313'
-          }
-        }
+            bbox: '21.212121,12.121212,31.313131,13.131313',
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = { param1: 'param1 value' };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -2166,22 +2141,22 @@ module.exports.tests.centroid_errors = (test, common) => {
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '123',
-            bounding_box: '{"min_lat":12.121212,"max_lat":13.131313,"min_lon":21.212121,"max_lon":31.313131}',
+            bounding_box:
+              '{"min_lat":12.121212,"max_lat":13.131313,"min_lon":21.212121,"max_lon":31.313131}',
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
-          }
-        ]
+              default: 'name 1',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.ok(logger.isErrorMessage(`could not parse centroid for id 123`));
       t.end();
     });
-
   });
 
   test('result with non-number-parseable geom.lat/geom.lon should leave centroid undefined and log error', (t) => {
@@ -2199,25 +2174,25 @@ module.exports.tests.centroid_errors = (test, common) => {
             area: 12.34,
             bbox: '21.212121,12.121212,31.313131,13.131313',
             lat: 'this is not a number',
-            lon: 'this is not a number'
-          }
-        }
+            lon: 'this is not a number',
+          },
+        },
       ];
 
       callback(null, response);
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = { param1: 'param1 value' };
-    const res = { };
+    const res = {};
 
     controller(req, res, () => {
       const expected_res = {
         meta: {
-          query_type: 'search_fallback'
+          query_type: 'search_fallback',
         },
         data: [
           {
@@ -2225,24 +2200,23 @@ module.exports.tests.centroid_errors = (test, common) => {
             layer: 'neighbourhood',
             source: 'whosonfirst',
             source_id: '123',
-            bounding_box: '{"min_lat":12.121212,"max_lat":13.131313,"min_lon":21.212121,"max_lon":31.313131}',
+            bounding_box:
+              '{"min_lat":12.121212,"max_lat":13.131313,"min_lon":21.212121,"max_lon":31.313131}',
             name: {
-              'default': 'name 1'
+              default: 'name 1',
             },
             phrase: {
-              'default': 'name 1'
-            }
-          }
-        ]
+              default: 'name 1',
+            },
+          },
+        ],
       };
 
       t.deepEquals(res, expected_res);
       t.ok(logger.isErrorMessage(`could not parse centroid for id 123`));
       t.end();
     });
-
   });
-
 };
 
 module.exports.tests.boundingbox_errors = (test, common) => {
@@ -2253,7 +2227,7 @@ module.exports.tests.boundingbox_errors = (test, common) => {
       '21.212121,12.121212,31.313131',
       '21.212121,this is not parseable as a number,31.313131,13.131313',
       '21.212121,NaN,31.313131,13.131313',
-      '21.212121,Infinity,31.313131,13.131313'
+      '21.212121,Infinity,31.313131,13.131313',
     ].forEach((bbox) => {
       const logger = mock_logger();
 
@@ -2267,9 +2241,9 @@ module.exports.tests.boundingbox_errors = (test, common) => {
               area: 12.34,
               bbox: bbox,
               lat: 14.141414,
-              lon: 41.414141
-            }
-          }
+              lon: 41.414141,
+            },
+          },
         ];
 
         t.deepEqual(req, { param1: 'param1 value' });
@@ -2277,16 +2251,16 @@ module.exports.tests.boundingbox_errors = (test, common) => {
       };
 
       const controller = proxyquire('../../../controller/placeholder', {
-        'pelias-logger': logger
+        'pelias-logger': logger,
       })(placeholder_service, true, () => true);
 
       const req = { param1: 'param1 value' };
-      const res = { };
+      const res = {};
 
       controller(req, res, () => {
         const expected_res = {
           meta: {
-            query_type: 'search_fallback'
+            query_type: 'search_fallback',
           },
           data: [
             {
@@ -2296,27 +2270,24 @@ module.exports.tests.boundingbox_errors = (test, common) => {
               source_id: '123',
               center_point: {
                 lat: 14.141414,
-                lon: 41.414141
+                lon: 41.414141,
               },
               name: {
-                'default': 'name 1'
+                default: 'name 1',
               },
               phrase: {
-                'default': 'name 1'
-              }
-            }
-          ]
+                default: 'name 1',
+              },
+            },
+          ],
         };
 
         t.deepEquals(res, expected_res);
         t.ok(logger.isErrorMessage(`could not parse bbox for id 123: ${bbox}`));
       });
-
     });
     t.end();
-
   });
-
 };
 
 module.exports.tests.error_conditions = (test, common) => {
@@ -2328,21 +2299,24 @@ module.exports.tests.error_conditions = (test, common) => {
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = {
-      errors: []
+      errors: [],
     };
     const res = {};
 
     controller(req, res, () => {
       t.deepEquals(res, {}, 'res should not have been modified');
       t.deepEquals(req.errors, ['placeholder service error']);
-      t.notOk(logger.isDebugMessage(/\\[controller:placeholder\\] \\[result_count:\\d+\\]/));
+      t.notOk(
+        logger.isDebugMessage(
+          /\\[controller:placeholder\\] \\[result_count:\\d+\\]/,
+        ),
+      );
       t.end();
     });
-
   });
 
   test('service return error object should add message to req.errors', (t) => {
@@ -2357,21 +2331,24 @@ module.exports.tests.error_conditions = (test, common) => {
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = {
-      errors: []
+      errors: [],
     };
     const res = {};
 
     controller(req, res, () => {
       t.deepEquals(res, {}, 'res should not have been modified');
       t.deepEquals(req.errors, ['placeholder service error']);
-      t.notOk(logger.isDebugMessage(/\\[controller:placeholder\\] \\[result_count:\\d+\\]/));
+      t.notOk(
+        logger.isDebugMessage(
+          /\\[controller:placeholder\\] \\[result_count:\\d+\\]/,
+        ),
+      );
       t.end();
     });
-
   });
 
   test('service return error object should add stringified error to req.errors', (t) => {
@@ -2382,32 +2359,33 @@ module.exports.tests.error_conditions = (test, common) => {
     };
 
     const controller = proxyquire('../../../controller/placeholder', {
-      'pelias-logger': logger
+      'pelias-logger': logger,
     })(placeholder_service, true, () => true);
 
     const req = {
-      errors: []
+      errors: [],
     };
     const res = {};
 
     controller(req, res, () => {
       t.deepEquals(res, {}, 'res should not have been modified');
       t.deepEquals(req.errors, [{ error_key: 'error_value' }]);
-      t.notOk(logger.isDebugMessage(/\\[controller:placeholder\\] \\[result_count:\\d+\\]/));
+      t.notOk(
+        logger.isDebugMessage(
+          /\\[controller:placeholder\\] \\[result_count:\\d+\\]/,
+        ),
+      );
       t.end();
     });
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
-
   function test(name, testFunction) {
     return tape(`GET /placeholder ${name}`, testFunction);
   }
 
-  for( const testCase in module.exports.tests ){
+  for (const testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

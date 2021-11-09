@@ -9,7 +9,6 @@ function setup(labelGenerator) {
 }
 
 function assignLabel(req, res, next, labelGenerator) {
-
   // do nothing if there's nothing to process
   if (!res || !res.data) {
     return next();

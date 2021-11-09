@@ -10,7 +10,7 @@ module.exports = class MockQuery {
       vs: vs,
       score_functions: this._score_functions,
       sort_functions: this._sort_functions,
-      filter_functions: this._filter_functions
+      filter_functions: this._filter_functions,
     };
   }
 
@@ -28,5 +28,4 @@ module.exports = class MockQuery {
     this._filter_functions.push(view);
     return this;
   }
-
 };

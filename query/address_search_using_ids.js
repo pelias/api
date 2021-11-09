@@ -8,16 +8,16 @@ const defaults = require('./search_defaults');
 const addressUsingIdsQuery = new peliasQuery.layout.AddressesUsingIdsQuery();
 
 // scoring boost
-addressUsingIdsQuery.score( peliasQuery.view.focus_only_function( ) );
+addressUsingIdsQuery.score(peliasQuery.view.focus_only_function());
 // --------------------------------
 
 // non-scoring hard filters
-addressUsingIdsQuery.filter( peliasQuery.view.boundary_country );
-addressUsingIdsQuery.filter( peliasQuery.view.boundary_circle );
-addressUsingIdsQuery.filter( peliasQuery.view.boundary_rect );
-addressUsingIdsQuery.filter( peliasQuery.view.sources );
-addressUsingIdsQuery.filter( peliasQuery.view.boundary_gid );
-addressUsingIdsQuery.filter( peliasQuery.view.layers );
+addressUsingIdsQuery.filter(peliasQuery.view.boundary_country);
+addressUsingIdsQuery.filter(peliasQuery.view.boundary_circle);
+addressUsingIdsQuery.filter(peliasQuery.view.boundary_rect);
+addressUsingIdsQuery.filter(peliasQuery.view.sources);
+addressUsingIdsQuery.filter(peliasQuery.view.boundary_gid);
+addressUsingIdsQuery.filter(peliasQuery.view.layers);
 // --------------------------------
 
 // This query is a departure from traditional Pelias queries where textual
@@ -76,18 +76,29 @@ addressUsingIdsQuery.filter( peliasQuery.view.layers );
 // (though it could, but that's good because it's legitimate)
 
 const granularity_bands = [
-  ['neighbourhood', 'borough', 'locality', 'localadmin', 'region', 'macroregion', 'dependency', 'country'],
-  ['county', 'macrocounty']
+  [
+    'neighbourhood',
+    'borough',
+    'locality',
+    'localadmin',
+    'region',
+    'macroregion',
+    'dependency',
+    'country',
+  ],
+  ['county', 'macrocounty'],
 ];
 
 // returns IFF there are *any* results in the granularity band
 function anyResultsAtGranularityBand(results, band) {
-  return results.some(result => _.includes(band, result.layer));
+  return results.some((result) => _.includes(band, result.layer));
 }
 
 // returns the ids of results at the requested layer
 function getIdsAtLayer(results, layer) {
-  return results.filter(result => result.layer === layer).map(_.property('source_id'));
+  return results
+    .filter((result) => result.layer === layer)
+    .map(_.property('source_id'));
 }
 
 /**
@@ -95,41 +106,43 @@ function getIdsAtLayer(results, layer) {
   provided by this HTTP request.  This function operates on res.data which is the
   Document-ified placeholder repsonse.
 **/
-function generateQuery( clean, res ){
-  const vs = new peliasQuery.Vars( defaults );
+function generateQuery(clean, res) {
+  const vs = new peliasQuery.Vars(defaults);
   const results = _.defaultTo(res.data, []);
 
   // sources
-  if( !_.isEmpty(clean.sources) ) {
-    vs.var( 'sources', clean.sources);
+  if (!_.isEmpty(clean.sources)) {
+    vs.var('sources', clean.sources);
   }
 
   // layers
-  if (_.isArray(clean.layers) && !_.isEmpty(clean.layers) ){
-    vs.var( 'layers', clean.layers);
+  if (_.isArray(clean.layers) && !_.isEmpty(clean.layers)) {
+    vs.var('layers', clean.layers);
   }
 
   // size
-  if( clean.querySize ) {
-    vs.var( 'size', clean.querySize );
+  if (clean.querySize) {
+    vs.var('size', clean.querySize);
   }
 
-  if( ! _.isEmpty(clean.parsed_text.housenumber) ){
-    vs.var( 'input:housenumber', clean.parsed_text.housenumber );
+  if (!_.isEmpty(clean.parsed_text.housenumber)) {
+    vs.var('input:housenumber', clean.parsed_text.housenumber);
   }
 
-  if( ! _.isEmpty(clean.parsed_text.unit) ){
-    vs.var( 'input:unit', clean.parsed_text.unit );
+  if (!_.isEmpty(clean.parsed_text.unit)) {
+    vs.var('input:unit', clean.parsed_text.unit);
   }
 
-  if( ! _.isEmpty(clean.parsed_text.postalcode) ){
-    vs.var( 'input:postcode', clean.parsed_text.postalcode );
+  if (!_.isEmpty(clean.parsed_text.postalcode)) {
+    vs.var('input:postcode', clean.parsed_text.postalcode);
   }
 
-  vs.var( 'input:street', clean.parsed_text.street );
+  vs.var('input:street', clean.parsed_text.street);
 
   // find the first granularity band for which there are results
-  const granularity_band = granularity_bands.find(band => anyResultsAtGranularityBand(results, band));
+  const granularity_band = granularity_bands.find((band) =>
+    anyResultsAtGranularityBand(results, band),
+  );
 
   // if there's a granularity band, accumulate the ids from each layer in the band
   // into an object mapping layer->ids of those layers
@@ -142,65 +155,73 @@ function generateQuery( clean, res ){
     // use an object here instead of calling `set` since that flattens out an
     // object into key/value pairs and makes identifying layers harder in query module
     vs.var('input:layers', layers_to_ids);
-
   }
 
   // focus point
-  if( _.isFinite(clean['focus.point.lat']) &&
-      _.isFinite(clean['focus.point.lon']) ){
+  if (
+    _.isFinite(clean['focus.point.lat']) &&
+    _.isFinite(clean['focus.point.lon'])
+  ) {
     vs.set({
       'focus:point:lat': clean['focus.point.lat'],
-      'focus:point:lon': clean['focus.point.lon']
+      'focus:point:lon': clean['focus.point.lon'],
     });
   }
 
   // boundary rect
-  if( _.isFinite(clean['boundary.rect.min_lat']) &&
-      _.isFinite(clean['boundary.rect.max_lat']) &&
-      _.isFinite(clean['boundary.rect.min_lon']) &&
-      _.isFinite(clean['boundary.rect.max_lon']) ){
+  if (
+    _.isFinite(clean['boundary.rect.min_lat']) &&
+    _.isFinite(clean['boundary.rect.max_lat']) &&
+    _.isFinite(clean['boundary.rect.min_lon']) &&
+    _.isFinite(clean['boundary.rect.max_lon'])
+  ) {
     vs.set({
       'boundary:rect:top': clean['boundary.rect.max_lat'],
       'boundary:rect:right': clean['boundary.rect.max_lon'],
       'boundary:rect:bottom': clean['boundary.rect.min_lat'],
-      'boundary:rect:left': clean['boundary.rect.min_lon']
+      'boundary:rect:left': clean['boundary.rect.min_lon'],
     });
   }
 
   // boundary circle
-  if( _.isFinite(clean['boundary.circle.lat']) &&
-      _.isFinite(clean['boundary.circle.lon']) ){
+  if (
+    _.isFinite(clean['boundary.circle.lat']) &&
+    _.isFinite(clean['boundary.circle.lon'])
+  ) {
     vs.set({
       'boundary:circle:lat': clean['boundary.circle.lat'],
-      'boundary:circle:lon': clean['boundary.circle.lon']
+      'boundary:circle:lon': clean['boundary.circle.lon'],
     });
 
-    if( _.isFinite(clean['boundary.circle.radius']) ){
+    if (_.isFinite(clean['boundary.circle.radius'])) {
       vs.set({
-        'boundary:circle:radius': Math.round( clean['boundary.circle.radius'] ) + 'km'
+        'boundary:circle:radius':
+          Math.round(clean['boundary.circle.radius']) + 'km',
       });
     }
   }
 
   // boundary country
-  if( _.isArray(clean['boundary.country']) && !_.isEmpty(clean['boundary.country']) ){
+  if (
+    _.isArray(clean['boundary.country']) &&
+    !_.isEmpty(clean['boundary.country'])
+  ) {
     vs.set({
-      'boundary:country': clean['boundary.country'].join(' ')
+      'boundary:country': clean['boundary.country'].join(' '),
     });
   }
 
   // boundary gid
-  if ( _.isString(clean['boundary.gid']) ){
+  if (_.isString(clean['boundary.gid'])) {
     vs.set({
-      'boundary:gid': clean['boundary.gid']
+      'boundary:gid': clean['boundary.gid'],
     });
   }
 
   return {
     type: 'address_search_using_ids',
-    body: addressUsingIdsQuery.render(vs)
+    body: addressUsingIdsQuery.render(vs),
   };
-
 }
 
 module.exports = generateQuery;

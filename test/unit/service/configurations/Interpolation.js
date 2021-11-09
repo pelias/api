@@ -3,11 +3,11 @@ module.exports.tests = {};
 const Interpolation = require('../../../../service/configurations/Interpolation');
 
 module.exports.tests.all = (test, common) => {
-  test('getName should return \'interpolation\'', t => {
+  test("getName should return 'interpolation'", (t) => {
     const configBlob = {
       url: 'http://localhost:1234',
       timeout: 17,
-      retries: 19
+      retries: 19,
     };
 
     const interpolation = new Interpolation(configBlob);
@@ -17,36 +17,33 @@ module.exports.tests.all = (test, common) => {
     t.equals(interpolation.getTimeout(), 17);
     t.equals(interpolation.getRetries(), 19);
     t.end();
-
   });
 
-  test('getUrl should return value passed to constructor', t => {
+  test('getUrl should return value passed to constructor', (t) => {
     const configBlob = {
-      url: 'http://localhost:1234'
+      url: 'http://localhost:1234',
     };
 
     const interpolation = new Interpolation(configBlob);
 
     t.equals(interpolation.getUrl(), 'http://localhost:1234/search/geojson');
     t.end();
-
   });
 
-  test('getHeaders should return empty object', t => {
+  test('getHeaders should return empty object', (t) => {
     const configBlob = {
-      url: 'base url'
+      url: 'base url',
     };
 
     const interpolation = new Interpolation(configBlob);
 
     t.deepEquals(interpolation.getHeaders(), {});
     t.end();
-
   });
 
-  test('getParameters should return hit.address_parts.street over req.clean.parsed_text.street', t => {
+  test('getParameters should return hit.address_parts.street over req.clean.parsed_text.street', (t) => {
     const configBlob = {
-      url: 'base url'
+      url: 'base url',
     };
 
     const interpolation = new Interpolation(configBlob);
@@ -55,34 +52,33 @@ module.exports.tests.all = (test, common) => {
       clean: {
         parsed_text: {
           housenumber: 'parsed number value',
-          street: 'parsed street value'
-        }
-      }
+          street: 'parsed street value',
+        },
+      },
     };
 
     const hit = {
       address_parts: {
-        street: 'hit street value'
+        street: 'hit street value',
       },
       center_point: {
         lat: 12.121212,
-        lon: 21.212121
-      }
+        lon: 21.212121,
+      },
     };
 
     t.deepEquals(interpolation.getParameters(req, hit), {
       number: 'parsed number value',
       street: 'hit street value',
       lat: 12.121212,
-      lon: 21.212121
+      lon: 21.212121,
     });
     t.end();
-
   });
 
-  test('getParameters should return req.clean.parsed_text.street when hit.address_parts.street unavailable', t => {
+  test('getParameters should return req.clean.parsed_text.street when hit.address_parts.street unavailable', (t) => {
     const configBlob = {
-      url: 'base url'
+      url: 'base url',
     };
 
     const interpolation = new Interpolation(configBlob);
@@ -91,42 +87,41 @@ module.exports.tests.all = (test, common) => {
       clean: {
         parsed_text: {
           housenumber: 'parsed number value',
-          street: 'parsed street value'
-        }
-      }
+          street: 'parsed street value',
+        },
+      },
     };
 
     const hit = {
-      address_parts: {
-      },
+      address_parts: {},
       center_point: {
         lat: 12.121212,
-        lon: 21.212121
-      }
+        lon: 21.212121,
+      },
     };
 
     t.deepEquals(interpolation.getParameters(req, hit), {
       number: 'parsed number value',
       street: 'parsed street value',
       lat: 12.121212,
-      lon: 21.212121
+      lon: 21.212121,
     });
     t.end();
-
   });
 
-  test('baseUrl ending in / should not have double /\'s return by getUrl', t => {
+  test("baseUrl ending in / should not have double /'s return by getUrl", (t) => {
     const configBlob = {
-      url: 'http://localhost:1234/'
+      url: 'http://localhost:1234/',
     };
 
     const interpolation = new Interpolation(configBlob);
 
-    t.deepEquals(interpolation.getUrl(), 'http://localhost:1234/search/geojson');
+    t.deepEquals(
+      interpolation.getUrl(),
+      'http://localhost:1234/search/geojson',
+    );
     t.end();
-
   });
-
 };
 
 module.exports.all = (tape, common) => {
@@ -134,7 +129,7 @@ module.exports.all = (tape, common) => {
     return tape(`SERVICE CONFIGURATION /Interpolation ${name}`, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

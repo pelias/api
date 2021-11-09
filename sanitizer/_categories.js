@@ -2,12 +2,14 @@ const _ = require('lodash');
 const allValidValidator = { isValidCategory: () => true };
 
 const WARNINGS = {
-  empty: 'Categories parameter left blank, showing results from all categories.',
-  notEmpty: 'Categories filtering not supported on this endpoint, showing results from all categories.'
+  empty:
+    'Categories parameter left blank, showing results from all categories.',
+  notEmpty:
+    'Categories filtering not supported on this endpoint, showing results from all categories.',
 };
 
 // validate inputs, convert types and apply defaults
-function _sanitize (raw, clean, validator) {
+function _sanitize(raw, clean, validator) {
   validator = validator || allValidValidator;
 
   // error & warning messages
@@ -20,18 +22,23 @@ function _sanitize (raw, clean, validator) {
 
   // if categories string has been set
   // map input categories to valid format
-  clean.categories = raw.categories.split(',')
-    .map(cat => {
+  clean.categories = raw.categories
+    .split(',')
+    .map((cat) => {
       return cat.toLowerCase().trim(); // lowercase inputs
     })
-    .filter(cat => {
-      if (_.isString(cat) && !_.isEmpty(cat) && validator.isValidCategory(cat)) {
+    .filter((cat) => {
+      if (
+        _.isString(cat) &&
+        !_.isEmpty(cat) &&
+        validator.isValidCategory(cat)
+      ) {
         return true;
       }
       return false;
     });
 
-  if( !clean.categories.length ){
+  if (!clean.categories.length) {
     // display a warning that the input was empty
     messages.warnings.push(WARNINGS.empty);
   }
@@ -39,7 +46,7 @@ function _sanitize (raw, clean, validator) {
   return messages;
 }
 
-function _alwaysBlank (raw, clean, categories) {
+function _alwaysBlank(raw, clean, categories) {
   // error & warning messages
   const messages = { errors: [], warnings: [] };
 
@@ -53,11 +60,11 @@ function _alwaysBlank (raw, clean, categories) {
   return messages;
 }
 
-function _expected () {
+function _expected() {
   return [{ name: 'categories' }];
 }
 // export function
 module.exports = (alwaysBlank) => ({
   sanitize: alwaysBlank ? _alwaysBlank : _sanitize,
-  expected: _expected
+  expected: _expected,
 });
