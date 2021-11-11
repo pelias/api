@@ -47,6 +47,13 @@ module.exports.tests.normalize = function (test) {
     t.equal(norm('👩‍❤️‍👩'), '', 'complex emoji ZWJ sequence (6 codepoints)');
     t.end();
   });
+
+  // https://github.com/pelias/api/issues/1574
+  test('normalize: issue 1574', function (t) {
+    const input = 'ASDFJK СТРАНЫ БЫЛИ КТО СЛУШАЕТ МЕНЯФ1💒🌋🚭🚱⬆️↗️➡️↘️⬇️↙️⬅️↖️↕️↔️↩↪⤴️👯‍♂️🇰🇿⤵️🔃🔄🛐⚛🕉✡☸♍☯️☸✡🕉🛐⚛🔅🔆🔴🟠🟡🟢НЗЕВИ Л К ВО УНТВА854У32Й1🔵🟣🟤⚪⚫⚫🟥🟧🟨🔶️🟩🟦🟪🟫⬛⬜◼◻◾◽💠'; // jshint ignore:line
+    t.equal(norm(input), 'ASDFJK СТРАНЫ БЫЛИ КТО СЛУШАЕТ МЕНЯФ1НЗЕВИ Л К ВО УНТВА854У32Й1', 'issue 1574');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
