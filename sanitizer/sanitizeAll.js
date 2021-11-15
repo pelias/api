@@ -37,7 +37,7 @@ function sanitize( req, sanitizers ){
   const params = req.query || {};
 
   for (let s in sanitizers) {
-    var sanity = sanitizers[s].sanitize( params, req.clean );
+    var sanity = sanitizers[s].sanitize( params, req.clean, req );
 
     // if errors occurred then set them
     // on the req object.
