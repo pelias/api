@@ -1,4 +1,6 @@
 const logger = require('pelias-logger').get('api');
+const Debug = require('../helper/debug');
+const debugLog = new Debug('santizer:text:pelias_parser');
 const unicode = require('../helper/unicode');
 const Tokenizer = require('pelias-parser/tokenization/Tokenizer');
 const Solution = require('pelias-parser/solver/Solution');
@@ -19,7 +21,7 @@ const MAX_TEXT_LENGTH = 140;
 **/
 
 // validate texts, convert types and apply defaults
-function _sanitize (raw, clean) {
+function _sanitize (raw, clean, req) {
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
@@ -43,30 +45,48 @@ function _sanitize (raw, clean) {
       text = text.substring(0, MAX_TEXT_LENGTH);
     }
 
+    // tokenize text
+    const start = new Date();
+    const tokenizer = new Tokenizer(text);
+    parser.classify(tokenizer);
+    parser.solve(tokenizer);
+
+    // log summary info
+    logger.info('pelias_parser', {
+      response_time: (new Date()) - start,
+      params: clean,
+      solutions: tokenizer.solution.length,
+      text_length: _.get(clean, 'text.length', 0)
+    });
+
+    // add debugging info with all parser solutions
+    if (req) {
+      debugLog.push(req, () => {
+        try {
+          return tokenizer.solution.map(s => _.reduce(
+            s.pair,
+            (text, c, i) => {
+              const delim = (i === 0) ? '' : ',';
+              return `${text}${delim} ${c.classification.label}='${c.span.body}'`;
+            },
+            `${s.score.toFixed(2)} ➜`
+          ));
+        } catch (e) {
+          return e.message;
+        }
+      });
+    }
+
     // parse text with pelias/parser
     clean.text = text;
     clean.parser = 'pelias';
-    clean.parsed_text = parse(clean);
+    clean.parsed_text = parse(tokenizer);
   }
 
   return messages;
 }
 
-function parse (clean) {
-  
-  // parse text
-  let start = new Date();
-  const t = new Tokenizer(clean.text);
-  parser.classify(t);
-  parser.solve(t);
-
-  // log summary info
-  logger.info('pelias_parser', {
-    response_time: (new Date()) - start,
-    params: clean,
-    solutions: t.solution.length,
-    text_length: _.get(clean, 'text.length', 0)
-  });
+function parse (t) {
 
   // only use the first solution generated
   // @todo: we could expand this in the future to accomodate more solutions
@@ -225,7 +245,7 @@ function parse (clean) {
       }
     }
   }
-  
+
   // unknown query type
   else {
     parsed_text.subject = t.span.body;
