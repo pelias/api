@@ -199,8 +199,14 @@ function checkFallbackOccurred(req, hit) {
     );
   });
 
-  if (res) {
-    debugLog.push(req, hit, {'fallback rule matched': res});
+  // see: https://github.com/pelias/api/pull/1436
+  if (Debug.isEnabled(req) && res) {
+    if (!_.isArray(hit.debug)) { hit.debug = []; }
+    hit.debug.push({
+      'middleware:confidenceScoreFallback': {
+        'fallback rule matched': res
+      }
+    });
   }
 
   return !!res;
