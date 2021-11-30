@@ -89,7 +89,7 @@ module.exports.tests.valid_categories = function(test, common) {
       clean: { }
     };
 
-    var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
+    var messages = sanitizer.sanitize(req.query, req.clean, req, validCategories);
 
     t.deepEqual(req.clean.categories, ['food'], 'categories should contain food');
     t.deepEqual(messages.errors, [], 'no error returned');
@@ -110,7 +110,7 @@ module.exports.tests.valid_categories = function(test, common) {
     };
     var expectedCategories = ['food', 'health'];
 
-    var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
+    var messages = sanitizer.sanitize(req.query, req.clean, req, validCategories);
 
     t.deepEqual(req.clean.categories, expectedCategories,
                 'clean.categories should be an array with proper values');
@@ -145,7 +145,7 @@ module.exports.tests.invalid_categories = function(test, common) {
       ]
     };
 
-    var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
+    var messages = sanitizer.sanitize(req.query, req.clean, req, validCategories);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
     t.deepEqual(req.clean.categories, [], 'empty categories array should be defined');
@@ -166,7 +166,7 @@ module.exports.tests.invalid_categories = function(test, common) {
       ]
     };
 
-    var messages = sanitizer.sanitize(req.query, req.clean, validCategories);
+    var messages = sanitizer.sanitize(req.query, req.clean, req, validCategories);
 
     t.deepEqual(messages, expected_messages, 'error with message returned');
     t.deepEqual(req.clean.categories, [], 'empty categories array should be defined');

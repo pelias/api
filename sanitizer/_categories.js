@@ -7,7 +7,7 @@ const WARNINGS = {
 };
 
 // validate inputs, convert types and apply defaults
-function _sanitize (raw, clean, validator) {
+function _sanitize (raw, clean, req, validator) {
   validator = validator || allValidValidator;
 
   // error & warning messages
