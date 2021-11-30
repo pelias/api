@@ -9,7 +9,7 @@ const _ = require('lodash');
 
 const coarse_reverse_message ='coarse /reverse does not support geonames. See https://github.com/pelias/pelias/issues/675 for more info';
 
-function _sanitize( raw, clean, opts ) {
+function _sanitize( raw, clean ) {
   // error & warning messages
   const messages = { errors: [], warnings: [] };
 
