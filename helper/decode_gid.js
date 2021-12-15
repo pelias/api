@@ -10,10 +10,13 @@ function decodeGID(gid) {
     return;
   }
 
+  const source = parts[0].toLowerCase();
+  const layer = parts[1].toLowerCase();
+
   // empty strings and other invalid values are expected to be handled by the caller
   return {
-    source: parts[0],
-    layer: parts[1],
+    source: source,
+    layer: layer,
     id: parts.slice(2).join(':'),
   };
 }

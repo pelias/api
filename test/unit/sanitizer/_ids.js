@@ -155,6 +155,22 @@ test('ids: valid short input (openaddresses)', function(t) {
     t.deepEqual( clean.ids, expected_ids, 'osm has node: or way: in id field');
     t.end();
   });
+
+  test('ids: valid capitalized input (Openstreetmap)', function(t) {
+    var raw = { ids: 'Openstreetmap:venue:node:500' };
+    var clean = {};
+    var expected_ids = [{
+      source: 'openstreetmap',
+      layer: 'venue',
+      id: 'node:500',
+    }];
+
+    var messages = sanitizer.sanitize( raw, clean );
+
+    t.deepEqual( messages.errors, [], ' no errors - should be the same as lowercase');
+    t.deepEqual( clean.ids, expected_ids, 'osm has node: or way: in id field');
+    t.end();
+  });
 };
 
 module.exports.tests.multiple_ids = function(test, common) {
