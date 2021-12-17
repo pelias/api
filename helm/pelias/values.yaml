@@ -15,7 +15,7 @@ image:
   identifier: ${artifact.metadata.image}
   imagePullPolicy: Always
 secondaryImage:
-  identifier: eu.gcr.io/entur-system-1287/es-static:2.0.4
+  identifier: eu.gcr.io/entur-system-1287/es-static:2.0.8
   imagePullPolicy: Always
   containerPort: 9200
   resources:
