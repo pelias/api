@@ -66,139 +66,138 @@ module.exports.tests.should_execute = (test, common) => {
 };
 
 module.exports.tests.success = (test, common) => {
+  const response = [
+    {
+      id: '123',
+      name: 'name 1',
+      placetype: 'neighbourhood',
+      population: 1234,
+      popularity: 5678,
+      lineage: [
+        {
+          country: {
+            id: 1,
+            name: 'country name 1',
+            abbr: 'ABC'
+          },
+          dependency: {
+            id: 2,
+            name: 'dependency name 1'
+          },
+          macroregion: {
+            id: 3,
+            name: 'macroregion name 1'
+          },
+          region: {
+            id: 4,
+            name: 'region name 1'
+          },
+          macrocounty: {
+            id: 5,
+            name: 'macrocounty name 1'
+          },
+          county: {
+            id: 6,
+            name: 'county name 1'
+          },
+          localadmin: {
+            id: 7,
+            name: 'localadmin name 1'
+          },
+          locality: {
+            id: 8,
+            name: 'locality name 1'
+          },
+          borough: {
+            id: 9,
+            name: 'borough name 1'
+          },
+          neighbourhood: {
+            id: 10,
+            name: 'neighbourhood name 1'
+          }
+        },
+        {
+          country: {
+            id: 11,
+            name: 'country name 2',
+            abbr: 'XYZ'
+          },
+          dependency: {
+            id: 12,
+            name: 'dependency name 2',
+            abbr: 'dependency abbr 2'
+          },
+          macroregion: {
+            id: 13,
+            name: 'macroregion name 2',
+            abbr: 'macroregion abbr 2'
+          },
+          region: {
+            id: 14,
+            name: 'region name 2',
+            abbr: 'region abbr 2'
+          },
+          macrocounty: {
+            id: 15,
+            name: 'macrocounty name 2',
+            abbr: 'macrocounty abbr 2'
+          },
+          county: {
+            id: 16,
+            name: 'county name 2',
+            abbr: 'county abbr 2'
+          },
+          localadmin: {
+            id: 17,
+            name: 'localadmin name 2',
+            abbr: 'localadmin abbr 2'
+          },
+          locality: {
+            id: 18,
+            name: 'locality name 2',
+            abbr: 'locality abbr 2'
+          },
+          borough: {
+            id: 19,
+            name: 'borough name 2',
+            abbr: 'borough abbr 2'
+          },
+          neighbourhood: {
+            id: 20,
+            name: 'neighbourhood name 2',
+            abbr: 'neighbourhood abbr 2'
+          }
+        }
+      ],
+      geom: {
+        area: 12.34,
+        bbox: '21.212121,12.121212,31.313131,13.131313',
+        lat: 14.141414,
+        lon: 41.414141
+      }
+    },
+    {
+      id: 456,
+      name: 'name 3',
+      placetype: 'locality',
+      population: 4321,
+      popularity: 8765,
+      lineage: [{}],
+      geom: {
+        area: 23.45,
+        bbox: '51.515151,15.151515,61.616161,16.161616',
+        lat: 17.171717,
+        lon: 71.717171
+      }
+    }
+  ];
+
   test('response from service should be converted', (t) => {
     const logger = mock_logger();
 
     const placeholder_service = (req, callback) => {
-      t.deepEqual(req, { param1: 'param1 value' });
-
-      const response = [
-        {
-          id: '123',
-          name: 'name 1',
-          placetype: 'neighbourhood',
-          population: 1234,
-          popularity: 5678,
-          lineage: [
-            {
-              country: {
-                id: 1,
-                name: 'country name 1',
-                abbr: 'ABC'
-              },
-              dependency: {
-                id: 2,
-                name: 'dependency name 1'
-              },
-              macroregion: {
-                id: 3,
-                name: 'macroregion name 1'
-              },
-              region: {
-                id: 4,
-                name: 'region name 1'
-              },
-              macrocounty: {
-                id: 5,
-                name: 'macrocounty name 1'
-              },
-              county: {
-                id: 6,
-                name: 'county name 1'
-              },
-              localadmin: {
-                id: 7,
-                name: 'localadmin name 1'
-              },
-              locality: {
-                id: 8,
-                name: 'locality name 1'
-              },
-              borough: {
-                id: 9,
-                name: 'borough name 1'
-              },
-              neighbourhood: {
-                id: 10,
-                name: 'neighbourhood name 1'
-              }
-            },
-            {
-              country: {
-                id: 11,
-                name: 'country name 2',
-                abbr: 'XYZ'
-              },
-              dependency: {
-                id: 12,
-                name: 'dependency name 2',
-                abbr: 'dependency abbr 2'
-              },
-              macroregion: {
-                id: 13,
-                name: 'macroregion name 2',
-                abbr: 'macroregion abbr 2'
-              },
-              region: {
-                id: 14,
-                name: 'region name 2',
-                abbr: 'region abbr 2'
-              },
-              macrocounty: {
-                id: 15,
-                name: 'macrocounty name 2',
-                abbr: 'macrocounty abbr 2'
-              },
-              county: {
-                id: 16,
-                name: 'county name 2',
-                abbr: 'county abbr 2'
-              },
-              localadmin: {
-                id: 17,
-                name: 'localadmin name 2',
-                abbr: 'localadmin abbr 2'
-              },
-              locality: {
-                id: 18,
-                name: 'locality name 2',
-                abbr: 'locality abbr 2'
-              },
-              borough: {
-                id: 19,
-                name: 'borough name 2',
-                abbr: 'borough abbr 2'
-              },
-              neighbourhood: {
-                id: 20,
-                name: 'neighbourhood name 2',
-                abbr: 'neighbourhood abbr 2'
-              }
-            }
-          ],
-          geom: {
-            area: 12.34,
-            bbox: '21.212121,12.121212,31.313131,13.131313',
-            lat: 14.141414,
-            lon: 41.414141
-          }
-        },
-        {
-          id: 456,
-          name: 'name 3',
-          placetype: 'locality',
-          population: 4321,
-          popularity: 8765,
-          lineage: [ {} ],
-          geom: {
-            area: 23.45,
-            bbox: '51.515151,15.151515,61.616161,16.161616',
-            lat: 17.171717,
-            lon: 71.717171
-          }
-        }
-      ];
-
+      t.deepEqual(req, { param1: 'param1 value', clean: { enableDebug: true }, debug: [ { 'controller:placeholder': 'Timer Began' } ] });
       callback(null, response);
     };
 
@@ -206,7 +205,7 @@ module.exports.tests.success = (test, common) => {
       'pelias-logger': logger
     })(placeholder_service, true, () => true);
 
-    const req = { param1: 'param1 value' };
+    const req = { param1: 'param1 value', clean: { enableDebug: true } };
     const res = { };
 
     controller(req, res, () => {
@@ -300,6 +299,11 @@ module.exports.tests.success = (test, common) => {
 
       t.deepEquals(res, expected_res);
       t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:2]'));
+
+      t.equal(req.debug[0]['controller:placeholder'], 'Timer Began');
+      t.deepEqual(req.debug[1]['controller:placeholder'], response);
+      t.match(req.debug[2]['controller:placeholder'], /Timer Stopped. \d+ ms/);
+
       t.end();
     });
 
