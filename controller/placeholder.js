@@ -302,8 +302,7 @@ function setup(placeholderService, do_geometric_filters_apply, should_execute) {
         ];
 
         logger.debug(messageParts.join(' '));
-        debugLog.push(req, messageParts[1].slice(1,-1));
-        debugLog.push(req, res.data);
+        debugLog.push(req, (results || []));
       }
 
       debugLog.stopTimer(req, initialTime);
