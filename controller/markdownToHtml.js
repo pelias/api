@@ -7,7 +7,7 @@ function setup(peliasConfig, markdownFile){
   var text = '# Pelias API\n';
   text += '### Version: [' + peliasConfig.version + '](https://github.com/pelias/api/releases)\n';
   text += fs.readFileSync( markdownFile, 'utf8');
-  var html = styleString + markdown.toHTML(text);
+  var html = '<html><body>'+styleString + markdown.toHTML(text)+'</body></html>';
 
   function controller( req, res ) {
     if (req.accepts('html')) {
