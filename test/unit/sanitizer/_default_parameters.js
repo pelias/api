@@ -1,4 +1,7 @@
-const sanitizer = require('../../../sanitizer/_location_bias');
+const sanitizer = require('../../../sanitizer/_default_parameters');
+const paramGroups = [
+  ['focus.point.lon', 'focus.point.lat']
+];
 
 module.exports.tests = {};
 
@@ -8,11 +11,11 @@ module.exports.tests.setLocationBias = function(test, common) {
       'focus.point.lat': 12.12121212,
       'focus.point.lon': 21.21212121
     };
-    const locationBias = sanitizer(defaultParameters);
+    const locationBias = sanitizer(defaultParameters, paramGroups);
     const raw = {};
     const expected = {
-          'focus.point.lat': 12.12121212,
-          'focus.point.lon': 21.21212121
+      'focus.point.lat': 12.12121212,
+      'focus.point.lon': 21.21212121
     };
 
     locationBias.sanitize(raw, undefined);
@@ -23,10 +26,10 @@ module.exports.tests.setLocationBias = function(test, common) {
 
   test('undefined raw', t => {
     const defaultParameters = {
-        'focus.point.lat': 12.12121212,
-        'focus.point.lon': 21.21212121
+      'focus.point.lat': 12.12121212,
+      'focus.point.lon': 21.21212121
     };
-    const locationBias = sanitizer(defaultParameters);
+    const locationBias = sanitizer(defaultParameters, paramGroups);
 
     locationBias.sanitize(undefined, undefined);
     t.deepEqual(undefined, undefined, 'should be unmodified' );
@@ -37,7 +40,7 @@ module.exports.tests.setLocationBias = function(test, common) {
     const defaultParameters = {
       'focus.point.lon': 12.2121212
     };
-    const locationBias = sanitizer(defaultParameters);
+    const locationBias = sanitizer(defaultParameters, paramGroups);
     const raw = {};
     const expected = {};
 
@@ -50,7 +53,7 @@ module.exports.tests.setLocationBias = function(test, common) {
     const defaultParameters = {
       'focus.point.lat': 12.2121212
     };
-    const locationBias = sanitizer(defaultParameters);
+    const locationBias = sanitizer(defaultParameters, paramGroups);
     const raw = {};
     const expected = {};
 
@@ -64,7 +67,7 @@ module.exports.tests.setLocationBias = function(test, common) {
       'focus.point.lon': 12.2121212,
       'focus.point.lat': 12.2121212
     };
-    const locationBias = sanitizer(defaultParameters);
+    const locationBias = sanitizer(defaultParameters, paramGroups);
     const raw = {
       'focus.point.lon': 43.4343434
     };
@@ -82,7 +85,7 @@ module.exports.tests.setLocationBias = function(test, common) {
       'focus.point.lon': 12.2121212,
       'focus.point.lat': 12.2121212
     };
-    const locationBias = sanitizer(defaultParameters);
+    const locationBias = sanitizer(defaultParameters, paramGroups);
     const raw = {
       'focus.point.lat': 34.3434343
     };
@@ -100,7 +103,7 @@ module.exports.tests.setLocationBias = function(test, common) {
 module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {
-    return tape(`SANITIZE _location_bias: ${name}`, testFunction);
+    return tape(`SANITIZE _default_parameters: ${name}`, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
