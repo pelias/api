@@ -10,30 +10,11 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-module.exports.tests.info_json = function(test, common) {
-  test('returns server info in json', function(t) {
-    var controller = setup({}, './public/attribution.md');
-    var req = {
-      accepts: function (format) {
-        t.equal(format, 'html', 'check for Accepts:html');
-        return false;
-      }
-    };
-    var res = { json: function( json ){
-      t.equal(typeof json, 'object', 'returns json');
-      t.assert(json.hasOwnProperty('markdown'), 'return object contains markdown property');
-      t.assert(json.hasOwnProperty('html'), 'return object contains html property');
-      t.end();
-    }};
-    controller( req, res );
-  });
-};
-
 module.exports.tests.info_html = function(test, common) {
   test('returns server info in html', function(t) {
     var filePath = './foo.md';
 
-    var style = '<style>html{font-family:monospace}</style>';
+    var style = '<style>html { font-family:monospace; }</style>';
     var mockText = 'this text should show up in the html content';
     var fsMock = {
       readFileSync: function (path, format) {
@@ -56,8 +37,8 @@ module.exports.tests.info_html = function(test, common) {
     };
     var res = { send: function( content ){
       t.equal(typeof content, 'string', 'returns string');
-      t.assert(content.indexOf(style) === 0, 'style set');
-      t.assert(content.indexOf(mockText) !== -1, 'file content added');
+      t.assert(content.includes(style), 'style set');
+      t.assert(content.includes(mockText), 'file content added');
       t.end();
     }};
     controller( req, res );
