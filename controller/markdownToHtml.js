@@ -3,22 +3,27 @@ var fs = require('fs');
 
 function setup(peliasConfig, markdownFile){
 
-  var styleString = '<style>html{font-family:monospace}</style>';
-  var text = '# Pelias API\n';
-  text += '### Version: [' + peliasConfig.version + '](https://github.com/pelias/api/releases)\n';
-  text += fs.readFileSync( markdownFile, 'utf8');
-  var html = '<html><body>'+styleString + markdown.toHTML(text)+'</body></html>';
+  const text = `
+  # Pelias API
+  ### Version: [${peliasConfig.version}](https://github.com/pelias/api/releases)
+  ${fs.readFileSync( markdownFile, 'utf8')}`
+  
+  const html = `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Pelias Geocoder</title>
+    <style>html { font-family:monospace; }</style>
+  </head>
+  <body>
+    ${markdown.toHTML(text)}
+  </body>
+  </html>`
+
 
   function controller( req, res ) {
-    if (req.accepts('html')) {
-      res.send(html);
-      return;
-    }
-    // default behaviour
-    res.json({
-      markdown: text,
-      html: html
-    });
+    res.send(html);
   }
 
   return controller;
