@@ -1,3 +1,6 @@
+# Pelias API
+### Version: [1.0](https://github.com/pelias/api/releases)
+
 ## Attribution
 * Geocoding by [Pelias](https://pelias.io).
 * Data from
