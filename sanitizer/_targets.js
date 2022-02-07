@@ -65,19 +65,21 @@ function _setup( paramName, targetMap ) {
         );
       });
 
+      // calculate the "effective" list of positive and negative targets, by expanding aliases
+      const effective_positive_targets = expandAliases(positive_targets, opts.targetMap);
+      const effective_negative_targets = expandAliases(negative_targets, opts.targetMap);
+
+      const all_targets = allTargets(opts.targetMap);
+
       // for calculating the final list of targets use either:
       // - the list of positive targets, if there are any
       // - otherwise, the list of all possible targets
       const starting_positive_targets = positive_targets.length ?
-        positive_targets :
-        allTargets(opts.targetMap);
-
-      // calculate the "effective" list of positive and negative targets, by expanding aliases
-      const effective_positive_targets = expandAliases(starting_positive_targets, opts.targetMap);
-      const effective_negative_targets = expandAliases(negative_targets, opts.targetMap);
+        effective_positive_targets :
+        all_targets;
 
       // the final list of targets is the positive list, with the negative list excluded
-      const final_targets = effective_positive_targets.filter((t) => !effective_negative_targets.includes(t));
+      const final_targets = starting_positive_targets.filter((t) => !effective_negative_targets.includes(t));
 
       if (final_targets.length === 0) {
         messages.errors.push(
