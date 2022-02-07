@@ -5,6 +5,7 @@ const field = require('./fieldValue');
 // If a property is identified as a single string, assume it should be presented as a string in response
 // If something other than string is desired, use the following structure: { name: 'category', type: 'array' }
 const DETAILS_PROPS = [
+  { name: 'unit',              type: 'string' },
   { name: 'housenumber',       type: 'string' },
   { name: 'street',            type: 'string' },
   { name: 'postalcode',        type: 'string' },
