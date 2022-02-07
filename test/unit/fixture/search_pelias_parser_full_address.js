@@ -5,12 +5,10 @@ module.exports = {
     'bool': {
       'must': [{
         'match': {
-          'name.default': {
+          'phrase.default': {
             'query': '123 main st',
-            'cutoff_frequency': 0.01,
             'minimum_should_match': '1<-1 3<-25%',
             'analyzer': 'peliasQuery',
-            'boost': 1
           }
         }
       }],
