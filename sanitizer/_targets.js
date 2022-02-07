@@ -14,6 +14,10 @@ function expandAliases(targets, targetMap) {
   return [...new Set(expanded)];
 }
 
+function allTargets(targetMap) {
+  return [...new Set(Object.values(targetMap).flat())];
+}
+
 function _setup( paramName, targetMap ) {
   const opts = {
     paramName: paramName,
@@ -66,7 +70,7 @@ function _setup( paramName, targetMap ) {
       // - otherwise, the list of all possible targets
       const starting_positive_targets = positive_targets.length ?
         positive_targets :
-        Object.keys(opts.targetMap);
+        allTargets(opts.targetMap);
 
       // calculate the "effective" list of positive and negative targets, by expanding aliases
       const effective_positive_targets = expandAliases(starting_positive_targets, opts.targetMap);
