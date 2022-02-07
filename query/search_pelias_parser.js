@@ -18,7 +18,7 @@ var adminFields = placeTypes.concat(['region_a']);
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
-query.score( peliasQuery.view.ngrams, 'must' );
+query.score( peliasQuery.view.leaf.match('main'), 'must' );
 
 // scoring boost
 const phrase_view = peliasQuery.view.leaf.match_phrase('main');
@@ -59,6 +59,7 @@ function generateQuery( clean ){
 
   // input text
   vs.var( 'input:name', clean.text );
+  vs.var( 'match:main:input', clean.text );
   vs.var( 'match_phrase:main:input', clean.text );
 
   // sources

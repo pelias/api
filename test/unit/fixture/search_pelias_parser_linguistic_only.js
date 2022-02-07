@@ -3,10 +3,8 @@ module.exports = {
     'bool': {
       'must': [{
         'match': {
-          'name.default': {
+          'phrase.default': {
             'query': 'test',
-            'cutoff_frequency': 0.01,
-            'boost': 1,
             'minimum_should_match': '1<-1 3<-25%',
             'analyzer': 'peliasQuery'
           }
