@@ -158,6 +158,8 @@ module.exports.tests.sanitize_layers = function(test, common) {
     const expected_layers = type_mapping.getCanonicalLayers().filter(layer => layer !== 'venue').sort();
 
     t.deepEqual(clean.layers.sort(), expected_layers, 'all layers except negative layer selected');
+    t.deepEqual(clean.negative_layers, ['venue'], 'venue marked as negative layer');
+    t.deepEqual(clean.positive_layers, [], 'no positive layers marked as selected');
     t.end();
   });
 
