@@ -5,6 +5,7 @@ module.exports.tests = {};
 module.exports.tests.geojsonify_place_details = (test, common) => {
   test('plain old string values should be copied verbatim, replacing old values', t => {
     const source = {
+      unit: 'unit value',
       housenumber: 'housenumber value',
       street: 'street value',
       postalcode: 'postalcode value',
@@ -53,6 +54,7 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
     };
 
     const expected = {
+      unit: 'unit value',
       housenumber: 'housenumber value',
       street: 'street value',
       postalcode: 'postalcode value',
@@ -110,6 +112,7 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
   test('\'empty\' string-type values should be output as \'\'', t => {
     [ [], {}, '', true, null, undefined ].forEach(empty_value => {
       const source = {
+        unit: empty_value,
         housenumber: empty_value,
         street: empty_value,
         postalcode: empty_value,
@@ -170,6 +173,7 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
 
   test('source arrays should be copy first value', t => {
     const source = {
+      unit: ['unit value 1', 'unit value 2'],
       housenumber: ['housenumber value 1', 'housenumber value 2'],
       street: ['street value 1', 'street value 2'],
       postalcode: ['postalcode value 1', 'postalcode value 2'],
@@ -218,6 +222,7 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
     };
 
     const expected = {
+      unit: 'unit value 1',
       housenumber: 'housenumber value 1',
       street: 'street value 1',
       postalcode: 'postalcode value 1',
@@ -275,6 +280,7 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
   test('non-empty objects should be converted to strings', t => {
     // THIS TEST SHOWS THAT THE CODE DOES NOT DO WHAT IT EXPECTED
     const source = {
+      unit: { unit: 'unit value'},
       housenumber: { housenumber: 'housenumber value'},
       street: { street: 'street value'},
       postalcode: { postalcode: 'postalcode value'},
@@ -323,6 +329,7 @@ module.exports.tests.geojsonify_place_details = (test, common) => {
     };
 
     const expected = {
+      unit: '[object Object]',
       housenumber: '[object Object]',
       street: '[object Object]',
       postalcode: '[object Object]',
