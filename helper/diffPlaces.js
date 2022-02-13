@@ -124,18 +124,70 @@ function isNameDifferent(item1, item2, requestLanguage){
   // iterate over all the languages in item2, comparing them to the
   // 'default' name of item1 and also against the language requested by the user.
   for( let lang in names2 ){
+    if (!names2.hasOwnProperty(lang)) { continue; } // do not iterate over inherited properties
     if( !isPropertyDifferent({[lang]: names1.default}, names2, lang) ){ return false; }
     if( requestLanguage && !isPropertyDifferent({[lang]: names1[requestLanguage]}, names2, lang) ){ return false; }
   }
 
-  // iterate over all the languages in item1, comparing them to the
-  // 'default' name of item2 and also against the language requested by the user.
+  // as above, but inverse
   for( let lang in names1 ){
+    if (!names1.hasOwnProperty(lang)) { continue; } // do not iterate over inherited properties
     if( !isPropertyDifferent({[lang]: names2.default}, names1, lang) ){ return false; }
     if( requestLanguage && !isPropertyDifferent({[lang]: names2[requestLanguage]}, names1, lang) ){ return false; }
   }
 
   return true;
+}
+
+// convenience function to return a GID (or null in case of an error)
+// note: supports scalar values else takes the first element of an Array.
+const GID = (item) => {
+  const parts = _.compact([
+    _.first(_.castArray(_.get(item, 'source'))),
+    _.first(_.castArray(_.get(item, 'layer'))),
+    _.first(_.castArray(_.get(item, 'source_id')))
+  ]);
+
+  return (parts.length === 3) ? parts.join(':') : null;
+};
+
+// convenience function to return a *parent GID (or null in case of an error)
+// note: supports scalar values else takes the first element of an Array.
+// note: defaults the 'source' to 'whosonfirst' for backwards compatibility
+const parentGID = (item, layer) => {
+  const source = _.first(_.compact(_.castArray(_.get(item, ['parent', `${layer}_source`]))));
+  const source_id = _.get(item, ['parent', `${layer}_id`]);
+
+  return GID({ layer, source: (source || 'whosonfirst'), source_id });
+};
+
+/**
+ * Compare the item properties and return true for any of the following predicates, else false
+ * - IsEqual -- The two items are save the same source, source_id and layer
+ * - IsEquivalant -- The two items are otherwise equalivant (as per corresponding code comments)
+ */
+function isEquivalentIdentity(item1, item2) {
+
+  // Both items must be on the same layer
+  if (item1.layer !== item2.layer) { return false; }
+
+  // Generate a GID value for each item
+  const gid1 = GID(item1);
+  const gid2 = GID(item2);
+
+  // Invalid GID(s)
+  if (gid1 === null || gid2 === null) { return false; }
+
+  // Equal GIDs
+  if (gid1 === gid2) { return true; }
+
+  // Equivalant GID ($item1 == $item2.parent[$item1.layer])
+  if (gid1 === parentGID(item2, item1.layer)) { return true; }
+
+  // Equivalant GID ($item2 = $item1.parent[$item2.layer])
+  if (gid2 === parentGID(item1, item2.layer)) { return true; }
+
+  return false;
 }
 
 /**
@@ -174,6 +226,7 @@ function isAddressDifferent(item1, item2){
  * Optionally provide $requestLanguage (req.clean.lang.iso6393) to improve name deduplication.
  */
 function isDifferent(item1, item2, requestLanguage){
+  if( isEquivalentIdentity( item1, item2 ) ){ return false; }
   if( isLayerDifferent( item1, item2 ) ){ return true; }
   if( isParentHierarchyDifferent( item1, item2 ) ){ return true; }
   if( isNameDifferent( item1, item2, requestLanguage ) ){ return true; }
@@ -245,3 +298,4 @@ module.exports.isDifferent = isDifferent;
 module.exports.layerPreferences = layerPreferences;
 module.exports.isNameDifferent = isNameDifferent;
 module.exports.normalizeString = normalizeString;
+module.exports.isEquivalentIdentity = isEquivalentIdentity;
