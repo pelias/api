@@ -1,3 +1,4 @@
+const _ = require('lodash');
 var data = require('../fixture/dedupe_elasticsearch_results');
 var nonAsciiData = require('../fixture/dedupe_elasticsearch_nonascii_results');
 var customLayerData = require('../fixture/dedupe_elasticsearch_custom_layer_results');
@@ -820,6 +821,38 @@ module.exports.tests.priority = function(test, common) {
       t.end();
     });
   });
+
+  // test('real-world test case Berlin', function (t) {
+  //   const req = {
+  //     clean: {
+  //       text: 'Berlin',
+  //       lang: { iso6393: 'eng' },
+  //       size: 10
+  //     }
+  //   };
+
+  //   // actual response from real-world autocomplete query for Berlin (contains 20 results)
+  //   const res = { data: require('../fixture/berlin_response.json') };
+  //   dedupe(req, res, () => {
+
+  //     // first result
+  //     t.deepEqual(
+  //       _.pick(res.data[0], ['name.default', 'source', 'source_id', 'layer']),
+  //       { name: { default: 'Berlin' }, source: 'whosonfirst', source_id: '101909779', layer: 'locality' }
+  //     );
+
+  //     // second result
+  //     t.deepEqual(
+  //       _.pick(res.data[1], ['name.default', 'source', 'source_id', 'layer']),
+  //       { name: { default: ['Berlin', 'Stadt'] }, source: 'geonames', source_id: '6547383', layer: 'locality' }
+  //     );
+
+  //     // does not contain 'Land Berlin'
+  //     t.false(res.data.some(f => f.source === 'geonames' && f.source_id === '2950157'));
+
+  //     t.end();
+  //   });
+  // });
 };
 
 module.exports.all = function (tape, common) {

@@ -1,0 +1,2104 @@
+[
+  {
+    "center_point": {
+      "lon": 13.41377,
+      "lat": 52.5233
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Berlin"
+      ],
+      "region_id": [
+        "85682499"
+      ],
+      "region_a": [
+        "BE"
+      ],
+      "region_source": [
+        null
+      ],
+      "borough": [
+        "Mitte"
+      ],
+      "borough_id": [
+        "1108815545"
+      ],
+      "borough_a": [
+        null
+      ],
+      "borough_source": [
+        null
+      ],
+      "locality": [
+        "Berlin"
+      ],
+      "locality_id": [
+        "101909779"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "localadmin": [
+        "Berlin"
+      ],
+      "localadmin_id": [
+        "1377694153"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ],
+      "neighbourhood": [
+        "Mitte"
+      ],
+      "neighbourhood_id": [
+        "420784293"
+      ],
+      "neighbourhood_a": [
+        null
+      ],
+      "neighbourhood_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": "Berlin"
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"ADM4\"}"
+    },
+    "source": "geonames",
+    "source_id": "6547539",
+    "category": [
+      "admin"
+    ],
+    "layer": "neighbourhood",
+    "population": 3669491,
+    "_id": "geonames:neighbourhood:6547539",
+    "_score": 20.994846
+  },
+  {
+    "center_point": {
+      "lon": 13.41377,
+      "lat": 52.5233
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Berlin"
+      ],
+      "region_id": [
+        "85682499"
+      ],
+      "region_a": [
+        "BE"
+      ],
+      "region_source": [
+        null
+      ],
+      "locality": [
+        "Berlin",
+        "Stadt"
+      ],
+      "locality_id": [
+        "6547383"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "localadmin": [
+        "Berlin"
+      ],
+      "localadmin_id": [
+        "1377694153"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": [
+        "Berlin",
+        "Stadt"
+      ]
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"ADM3\"}"
+    },
+    "source": "geonames",
+    "source_id": "6547383",
+    "category": [
+      "admin"
+    ],
+    "layer": "locality",
+    "population": 3669491,
+    "_id": "geonames:locality:6547383",
+    "_score": 20.994846
+  },
+  {
+    "center_point": {
+      "lon": 13.41667,
+      "lat": 52.5
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Berlin"
+      ],
+      "region_id": [
+        "85682499"
+      ],
+      "region_a": [
+        "BE"
+      ],
+      "region_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": "Land Berlin"
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"ADM1\"}"
+    },
+    "source": "geonames",
+    "source_id": "2950157",
+    "category": [
+      "admin:admin1",
+      "admin"
+    ],
+    "layer": "region",
+    "population": 3442675,
+    "_id": "geonames:region:2950157",
+    "_score": 20.911718
+  },
+  {
+    "center_point": {
+      "lon": 13.41053,
+      "lat": 52.52437
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Berlin"
+      ],
+      "region_id": [
+        "85682499"
+      ],
+      "region_a": [
+        "BE"
+      ],
+      "region_source": [
+        null
+      ],
+      "locality": [
+        "Berlin"
+      ],
+      "locality_id": [
+        "2950159"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "localadmin": [
+        "Berlin"
+      ],
+      "localadmin_id": [
+        "1377694153"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": "Berlin"
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"PPLC\"}"
+    },
+    "source": "geonames",
+    "source_id": "2950159",
+    "category": [
+      "admin:city:capital",
+      "admin:city",
+      "admin"
+    ],
+    "layer": "locality",
+    "population": 3426354,
+    "_id": "geonames:locality:2950159",
+    "_score": 20.905527
+  },
+  {
+    "center_point": {
+      "lon": 13.407032,
+      "lat": 52.524932
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "localadmin": [
+        "Berlin"
+      ],
+      "localadmin_id": [
+        "1377694153"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ],
+      "locality": [
+        "Berlin"
+      ],
+      "locality_id": [
+        "101909779"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "region": [
+        "Berlin"
+      ],
+      "region_id": [
+        "85682499"
+      ],
+      "region_a": [
+        "BE"
+      ],
+      "region_source": [
+        null
+      ]
+    },
+    "bounding_box": "{\"min_lat\":52.338242,\"max_lat\":52.674917,\"min_lon\":13.088333,\"max_lon\":13.760469}",
+    "name": {
+      "default": "Berlin",
+      "ab": "Берлин",
+      "af": "Berlyn",
+      "am": "በርሊን",
+      "ar": "برلين",
+      "an": "Berlín",
+      "av": "Берлин",
+      "ba": "Берлин",
+      "be": "Берлін",
+      "bn": "বার্লিন",
+      "bo": "པེར་ལིན །",
+      "bg": "Берлин",
+      "ca": [
+        "Berlín",
+        "Estat de Berlín"
+      ],
+      "cs": "Berlín",
+      "ce": "Берлин",
+      "cu": "Бєрлинъ",
+      "cv": "Берлин",
+      "co": "Berlinu",
+      "el": "Βερολίνο",
+      "eo": "Berlino",
+      "et": "Berliin",
+      "fa": "برلین",
+      "fi": "Berliini",
+      "fy": "Berlyn",
+      "ga": "Beirlín",
+      "gl": "Berlín",
+      "gv": "Berleen",
+      "gu": "બર્લિન",
+      "ht": "Bèlen",
+      "he": "ברלין",
+      "hi": "बर्लिन",
+      "hy": [
+        "Բերլին",
+        "Բեռլին"
+      ],
+      "iu": "ᐱᕐᓖᓐ",
+      "is": "Berlín",
+      "it": "Berlino",
+      "ja": "ベルリン",
+      "kn": "ಬರ್ಲಿನ್",
+      "ka": "ბერლინი",
+      "kk": "Берлин",
+      "km": "ប៊ែរឡាំង",
+      "ky": "Берлин",
+      "kv": "Берлин",
+      "ko": "베를린",
+      "ku": "Berlîn",
+      "la": "Berolinum",
+      "lv": "Berlīne",
+      "li": "Berlien",
+      "lt": "Berlynas",
+      "ml": "ബെർലിൻ",
+      "mr": "बर्लिन",
+      "mk": "Берлин",
+      "mn": "Берлин",
+      "mi": "Pearīni",
+      "my": "ဘာလင်မြို့",
+      "ne": "बर्लिन",
+      "nl": "Berlijn",
+      "or": "ବର୍ଲିନ",
+      "om": "Barliin",
+      "os": "Берлин",
+      "pa": "ਬਰਲਿਨ",
+      "pt": "Berlim",
+      "ps": "برلين",
+      "qu": "Berlín",
+      "ru": "Берлин",
+      "sa": "बर्लिन",
+      "si": "බර්ලිනය",
+      "sk": "Berlín",
+      "sm": "Perelini",
+      "sd": [
+        "برلن، جرمني",
+        "برلن"
+      ],
+      "so": "Baarliin",
+      "es": "Berlín",
+      "sq": "Berlini",
+      "sc": "Berlino",
+      "sr": "Берлин",
+      "su": "Bérlin",
+      "ta": "பெர்லின்",
+      "tt": "Берлин",
+      "te": "బెర్లిన్",
+      "tg": "Берлин",
+      "th": "เบอร์ลิน",
+      "ti": "በረሊን",
+      "ug": "Bérlin",
+      "uk": "Берлін",
+      "ur": "برلن",
+      "xh": "I-Berlin",
+      "yi": "בערלין",
+      "zh": "柏林",
+      "zu": "IBerlini"
+    },
+    "source": "whosonfirst",
+    "source_id": "101909779",
+    "layer": "locality",
+    "population": 3375222,
+    "_id": "whosonfirst:locality:101909779",
+    "_score": 20.885937
+  },
+  {
+    "center_point": {
+      "lon": 13.407028,
+      "lat": 52.524932
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Berlin"
+      ],
+      "region_id": [
+        "85682499"
+      ],
+      "region_a": [
+        "BE"
+      ],
+      "region_source": [
+        null
+      ]
+    },
+    "bounding_box": "{\"min_lat\":52.338242,\"max_lat\":52.674917,\"min_lon\":13.088333,\"max_lon\":13.760469}",
+    "name": {
+      "default": [
+        "Berlin",
+        "Berlin State"
+      ],
+      "ab": "Берлин",
+      "af": "Berlyn",
+      "am": "በርሊን",
+      "ar": "برلين",
+      "an": "Berlín",
+      "av": "Берлин",
+      "ba": "Берлин",
+      "be": [
+        "Горад Берлін",
+        "Берлін"
+      ],
+      "bn": "বার্লিন",
+      "bo": [
+        "པེར་ལིན​།",
+        "པེར་ལིན །"
+      ],
+      "bg": "Берлин",
+      "ca": "Berlín",
+      "cs": "Berlín",
+      "ce": "Берлин",
+      "cu": "Бєрлинъ",
+      "cv": "Берлин",
+      "co": "Berlinu",
+      "el": "Βερολίνο",
+      "eo": "Berlino",
+      "et": "Berliin",
+      "fa": "برلین",
+      "fi": "Berliini",
+      "fy": "Berlyn",
+      "ga": "Beirlín",
+      "gl": "Berlín",
+      "gv": "Berleen",
+      "gu": "બર્લિન",
+      "ht": "Bèlen",
+      "he": "ברלין",
+      "hi": "बर्लिन",
+      "hy": "Բեռլին",
+      "iu": "ᐱᕐᓖᓐ",
+      "is": "Berlín",
+      "it": "Berlino",
+      "ja": "ベルリン",
+      "kn": "ಬರ್ಲಿನ್",
+      "ks": "बर्लिन",
+      "ka": "ბერლინი",
+      "kk": "Берлин",
+      "ky": "Берлин",
+      "kv": "Берлин",
+      "ko": "베를린",
+      "ku": "Berlîn",
+      "la": "Berolinum",
+      "lv": "Berlīne",
+      "li": "Berlien",
+      "lt": "Berlynas",
+      "ml": "ബെർലിൻ",
+      "mr": "बर्लिन",
+      "mk": "Берлин",
+      "mn": "Берлин",
+      "mi": "Pearīni",
+      "my": "ဘာလင်မြို့",
+      "ne": "बर्लिन",
+      "nl": "Berlijn",
+      "or": "ବର୍ଲିନ",
+      "om": "Barliin",
+      "os": "Берлин",
+      "pa": "ਬਰਲਿਨ",
+      "pt": "Berlim",
+      "ps": "برلين",
+      "ru": "Берлин",
+      "sa": "बर्लिन",
+      "si": "බර්ලිනය",
+      "sk": "Berlín",
+      "sm": "Perelini",
+      "sd": "برلن",
+      "so": "Baarliin",
+      "es": "Berlín",
+      "sq": "Berlini",
+      "sc": "Berlino",
+      "sr": "Берлин",
+      "su": "Bérlin",
+      "ta": "பெர்லின்",
+      "tt": "Берлин",
+      "te": "బెర్లిన్",
+      "tg": "Берлин",
+      "th": "เบอร์ลิน",
+      "ti": "በረሊን",
+      "ug": "Bérlin",
+      "uk": "Берлін",
+      "ur": "برلن",
+      "xh": "I-Berlin",
+      "yi": "בערלין",
+      "zh": "柏林",
+      "zu": "IBerlini"
+    },
+    "source": "whosonfirst",
+    "source_id": "85682499",
+    "layer": "region",
+    "population": 3292365,
+    "_id": "whosonfirst:region:85682499",
+    "_score": 20.853554
+  },
+  {
+    "center_point": {
+      "lon": 13.58228,
+      "lat": 52.44254
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Berlin"
+      ],
+      "region_id": [
+        "85682499"
+      ],
+      "region_a": [
+        "BE"
+      ],
+      "region_source": [
+        null
+      ],
+      "borough": [
+        "Treptow-Kopenick"
+      ],
+      "borough_id": [
+        "1108815559"
+      ],
+      "borough_a": [
+        null
+      ],
+      "borough_source": [
+        null
+      ],
+      "locality": [
+        "Berlin"
+      ],
+      "locality_id": [
+        "101909779"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "localadmin": [
+        "Berlin"
+      ],
+      "localadmin_id": [
+        "1377694153"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ],
+      "neighbourhood": [
+        "Kopenick"
+      ],
+      "neighbourhood_id": [
+        "420784377"
+      ],
+      "neighbourhood_a": [
+        null
+      ],
+      "neighbourhood_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": "Berlin Köpenick"
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"PPLX\"}"
+    },
+    "source": "geonames",
+    "source_id": "2885657",
+    "category": [
+      "admin"
+    ],
+    "layer": "neighbourhood",
+    "population": 59561,
+    "_id": "geonames:neighbourhood:2885657",
+    "_score": 15.625938
+  },
+  {
+    "center_point": {
+      "lon": 13.44469,
+      "lat": 52.49376
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Berlin"
+      ],
+      "region_id": [
+        "85682499"
+      ],
+      "region_a": [
+        "BE"
+      ],
+      "region_source": [
+        null
+      ],
+      "borough": [
+        "Treptow-Kopenick"
+      ],
+      "borough_id": [
+        "1108815559"
+      ],
+      "borough_a": [
+        null
+      ],
+      "borough_source": [
+        null
+      ],
+      "locality": [
+        "Berlin"
+      ],
+      "locality_id": [
+        "101909779"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "localadmin": [
+        "Berlin"
+      ],
+      "localadmin_id": [
+        "1377694153"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ],
+      "neighbourhood": [
+        "Alt-Treptow"
+      ],
+      "neighbourhood_id": [
+        "85928793"
+      ],
+      "neighbourhood_a": [
+        null
+      ],
+      "neighbourhood_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": "Berlin Treptow"
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"PPLX\"}"
+    },
+    "source": "geonames",
+    "source_id": "7290255",
+    "category": [
+      "admin"
+    ],
+    "layer": "neighbourhood",
+    "population": 50000,
+    "_id": "geonames:neighbourhood:7290255",
+    "_score": 15.397966
+  },
+  {
+    "center_point": {
+      "lon": 13.5965,
+      "lat": 52.6821
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Brandenburg"
+      ],
+      "region_id": [
+        "85682553"
+      ],
+      "region_a": [
+        "BB"
+      ],
+      "region_source": [
+        null
+      ],
+      "county": [
+        "Barnim"
+      ],
+      "county_id": [
+        "102063973"
+      ],
+      "county_a": [
+        "BR"
+      ],
+      "county_source": [
+        null
+      ],
+      "locality": [
+        "Bernau bei Berlin"
+      ],
+      "locality_id": [
+        "101758637"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "localadmin": [
+        "Bernau bei Berlin"
+      ],
+      "localadmin_id": [
+        "1377694207"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": "Bernau bei Berlin"
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"ADM4\"}"
+    },
+    "source": "geonames",
+    "source_id": "6551168",
+    "category": [
+      "admin"
+    ],
+    "layer": "neighbourhood",
+    "population": 40031,
+    "_id": "geonames:neighbourhood:6551168",
+    "_score": 15.108252
+  },
+  {
+    "center_point": {
+      "lon": -88.10842,
+      "lat": 42.9764
+    },
+    "parent": {
+      "continent": [
+        "North America"
+      ],
+      "continent_id": [
+        "102191575"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "United States"
+      ],
+      "country_id": [
+        "85633793"
+      ],
+      "country_a": [
+        "USA"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Wisconsin"
+      ],
+      "region_id": [
+        "85688517"
+      ],
+      "region_a": [
+        "WI"
+      ],
+      "region_source": [
+        null
+      ],
+      "county": [
+        "Waukesha County"
+      ],
+      "county_id": [
+        "102081741"
+      ],
+      "county_a": [
+        "WK"
+      ],
+      "county_source": [
+        null
+      ],
+      "locality": [
+        "New Berlin"
+      ],
+      "locality_id": [
+        "5264381"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "localadmin": [
+        "New Berlin"
+      ],
+      "localadmin_id": [
+        "404492511"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": "New Berlin"
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"PPL\"}"
+    },
+    "source": "geonames",
+    "source_id": "5264381",
+    "category": [
+      "admin:city",
+      "admin"
+    ],
+    "layer": "locality",
+    "population": 39825,
+    "_id": "geonames:locality:5264381",
+    "_score": 15.10153
+  },
+  {
+    "center_point": {
+      "lon": -88.129117,
+      "lat": 42.973476
+    },
+    "parent": {
+      "continent": [
+        "North America"
+      ],
+      "continent_id": [
+        "102191575"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "United States"
+      ],
+      "country_id": [
+        "85633793"
+      ],
+      "country_a": [
+        "USA"
+      ],
+      "country_source": [
+        null
+      ],
+      "county": [
+        "Waukesha County"
+      ],
+      "county_id": [
+        "102081741"
+      ],
+      "county_a": [
+        null
+      ],
+      "county_source": [
+        null
+      ],
+      "localadmin": [
+        "New Berlin"
+      ],
+      "localadmin_id": [
+        "404492511"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ],
+      "region": [
+        "Wisconsin"
+      ],
+      "region_id": [
+        "85688517"
+      ],
+      "region_a": [
+        "WI"
+      ],
+      "region_source": [
+        null
+      ]
+    },
+    "bounding_box": "{\"min_lat\":42.922858,\"max_lat\":43.017325,\"min_lon\":-88.188994,\"max_lon\":-88.067252}",
+    "name": {
+      "default": "New Berlin",
+      "sr": "Њу Берлин",
+      "uk": "Нью-Берлін",
+      "ur": "نیو برلن"
+    },
+    "source": "whosonfirst",
+    "source_id": "404492511",
+    "layer": "localadmin",
+    "population": 39584,
+    "_id": "whosonfirst:localadmin:404492511",
+    "_score": 15.093622
+  },
+  {
+    "center_point": {
+      "lon": -88.129117,
+      "lat": 42.973476
+    },
+    "parent": {
+      "continent": [
+        "North America"
+      ],
+      "continent_id": [
+        "102191575"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "United States"
+      ],
+      "country_id": [
+        "85633793"
+      ],
+      "country_a": [
+        "USA"
+      ],
+      "country_source": [
+        null
+      ],
+      "county": [
+        "Waukesha County"
+      ],
+      "county_id": [
+        "102081741"
+      ],
+      "county_a": [
+        null
+      ],
+      "county_source": [
+        null
+      ],
+      "localadmin": [
+        "New Berlin"
+      ],
+      "localadmin_id": [
+        "404492511"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ],
+      "locality": [
+        "New Berlin"
+      ],
+      "locality_id": [
+        "101733503"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "region": [
+        "Wisconsin"
+      ],
+      "region_id": [
+        "85688517"
+      ],
+      "region_a": [
+        "WI"
+      ],
+      "region_source": [
+        null
+      ]
+    },
+    "bounding_box": "{\"min_lat\":42.922858,\"max_lat\":43.017325,\"min_lon\":-88.188994,\"max_lon\":-88.067252}",
+    "name": {
+      "default": "New Berlin",
+      "ar": "نيو برلين",
+      "eo": "Nov-Berlino",
+      "fa": [
+        "برلین جدید، ویسکانسین",
+        "برلین جدید"
+      ],
+      "lt": "Naujasis Berlynas",
+      "ru": "Нью-Берлин",
+      "sr": "Њу Берлин",
+      "ur": [
+        "نیو برلن، وسکونسن",
+        "نیو برلن"
+      ]
+    },
+    "source": "whosonfirst",
+    "source_id": "101733503",
+    "layer": "locality",
+    "population": 39584,
+    "_id": "whosonfirst:locality:101733503",
+    "_score": 15.093622
+  },
+  {
+    "center_point": {
+      "lon": -88.12914,
+      "lat": 42.97259
+    },
+    "parent": {
+      "continent": [
+        "North America"
+      ],
+      "continent_id": [
+        "102191575"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "United States"
+      ],
+      "country_id": [
+        "85633793"
+      ],
+      "country_a": [
+        "USA"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Wisconsin"
+      ],
+      "region_id": [
+        "85688517"
+      ],
+      "region_a": [
+        "WI"
+      ],
+      "region_source": [
+        null
+      ],
+      "county": [
+        "Waukesha County"
+      ],
+      "county_id": [
+        "102081741"
+      ],
+      "county_a": [
+        "WK"
+      ],
+      "county_source": [
+        null
+      ],
+      "locality": [
+        "City of New Berlin"
+      ],
+      "locality_id": [
+        "5264390"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "localadmin": [
+        "New Berlin"
+      ],
+      "localadmin_id": [
+        "404492511"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": "City of New Berlin"
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"ADM3\"}"
+    },
+    "source": "geonames",
+    "source_id": "5264390",
+    "category": [
+      "admin"
+    ],
+    "layer": "locality",
+    "population": 39584,
+    "_id": "geonames:locality:5264390",
+    "_score": 15.093622
+  },
+  {
+    "center_point": {
+      "lon": 13.576713,
+      "lat": 52.678721
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "county": [
+        "Barnim District"
+      ],
+      "county_id": [
+        "102063973"
+      ],
+      "county_a": [
+        null
+      ],
+      "county_source": [
+        null
+      ],
+      "localadmin": [
+        "Bernau bei Berlin"
+      ],
+      "localadmin_id": [
+        "1377694207"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ],
+      "locality": [
+        "Bernau bei Berlin"
+      ],
+      "locality_id": [
+        "101758637"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "region": [
+        "Brandenburg"
+      ],
+      "region_id": [
+        "85682553"
+      ],
+      "region_a": [
+        "BB"
+      ],
+      "region_source": [
+        null
+      ]
+    },
+    "bounding_box": "{\"min_lat\":52.608694,\"max_lat\":52.757101,\"min_lon\":13.467358,\"max_lon\":13.668668}",
+    "name": {
+      "default": "Bernau bei Berlin",
+      "be": "Бэрнаў",
+      "fa": "برنا بای برلین",
+      "he": "ברנאו שליד ברלין",
+      "hy": "Բերնաու",
+      "ja": "ベルナウ・バイ・ベルリン",
+      "la": "Bernoa",
+      "lv": "Bernava pie Berlīnes",
+      "mk": "Бернау кај Берлин",
+      "ru": "Бернау",
+      "sr": "Бернау бај Берлин",
+      "uk": "Бернау",
+      "zh": "柏林附近贝尔瑙"
+    },
+    "source": "whosonfirst",
+    "source_id": "101758637",
+    "layer": "locality",
+    "population": 34866,
+    "_id": "whosonfirst:locality:101758637",
+    "_score": 14.928274
+  },
+  {
+    "center_point": {
+      "lon": 13.58708,
+      "lat": 52.67982
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Brandenburg"
+      ],
+      "region_id": [
+        "85682553"
+      ],
+      "region_a": [
+        "BB"
+      ],
+      "region_source": [
+        null
+      ],
+      "county": [
+        "Barnim"
+      ],
+      "county_id": [
+        "102063973"
+      ],
+      "county_a": [
+        "BR"
+      ],
+      "county_source": [
+        null
+      ],
+      "locality": [
+        "Bernau bei Berlin"
+      ],
+      "locality_id": [
+        "2950096"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "localadmin": [
+        "Bernau bei Berlin"
+      ],
+      "localadmin_id": [
+        "1377694207"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": "Bernau bei Berlin"
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"PPL\"}"
+    },
+    "source": "geonames",
+    "source_id": "2950096",
+    "category": [
+      "admin:city",
+      "admin"
+    ],
+    "layer": "locality",
+    "population": 34866,
+    "_id": "geonames:locality:2950096",
+    "_score": 14.928274
+  },
+  {
+    "center_point": {
+      "lon": -72.77582,
+      "lat": 41.61139
+    },
+    "parent": {
+      "continent": [
+        "North America"
+      ],
+      "continent_id": [
+        "102191575"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "United States"
+      ],
+      "country_id": [
+        "85633793"
+      ],
+      "country_a": [
+        "USA"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Connecticut"
+      ],
+      "region_id": [
+        "85688629"
+      ],
+      "region_a": [
+        "CT"
+      ],
+      "region_source": [
+        null
+      ],
+      "county": [
+        "Hartford County"
+      ],
+      "county_id": [
+        "102085381"
+      ],
+      "county_a": [
+        "HA"
+      ],
+      "county_source": [
+        null
+      ],
+      "locality": [
+        "Town of Berlin"
+      ],
+      "locality_id": [
+        "5282251"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "localadmin": [
+        "Berlin"
+      ],
+      "localadmin_id": [
+        "404495869"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": "Town of Berlin"
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"ADM3\"}"
+    },
+    "source": "geonames",
+    "source_id": "5282251",
+    "category": [
+      "admin"
+    ],
+    "layer": "locality",
+    "population": 20560,
+    "_id": "geonames:locality:5282251",
+    "_score": 14.240163
+  },
+  {
+    "center_point": {
+      "lon": -72.782292,
+      "lat": 41.61178
+    },
+    "parent": {
+      "continent": [
+        "North America"
+      ],
+      "continent_id": [
+        "102191575"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "United States"
+      ],
+      "country_id": [
+        "85633793"
+      ],
+      "country_a": [
+        "USA"
+      ],
+      "country_source": [
+        null
+      ],
+      "county": [
+        "Hartford County"
+      ],
+      "county_id": [
+        "102085381"
+      ],
+      "county_a": [
+        null
+      ],
+      "county_source": [
+        null
+      ],
+      "localadmin": [
+        "Berlin"
+      ],
+      "localadmin_id": [
+        "404495869"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ],
+      "region": [
+        "Connecticut"
+      ],
+      "region_id": [
+        "85688629"
+      ],
+      "region_a": [
+        "CT"
+      ],
+      "region_source": [
+        null
+      ]
+    },
+    "bounding_box": "{\"min_lat\":41.554195,\"max_lat\":41.652706,\"min_lon\":-72.840244,\"max_lon\":-72.711134}",
+    "name": {
+      "default": "Berlin",
+      "ab": "Берлин",
+      "af": "Berlyn",
+      "am": "በርሊን",
+      "ar": "برلين",
+      "an": "Berlín",
+      "av": "Берлин",
+      "ba": "Берлин",
+      "be": "Берлін",
+      "bn": "বার্লিন",
+      "bh": "बर्लिन",
+      "bo": "པེར་ལིན།",
+      "bg": "Берлин",
+      "ca": "Berlín",
+      "cs": "Berlín",
+      "ce": "Берлин",
+      "cu": "Бєрлинъ",
+      "cv": "Берлин",
+      "co": "Berlinu",
+      "el": "Βερολίνο",
+      "eo": "Berlino",
+      "et": "Berliin",
+      "fa": "برلین",
+      "fi": "Berliini",
+      "fy": "Berlyn",
+      "ga": "Beirlín",
+      "gl": "Berlín",
+      "gv": "Berleen",
+      "ht": "Bèlen",
+      "he": "ברלין",
+      "hi": "बर्लिन",
+      "hy": "Բեռլին",
+      "iu": "ᐱᕐᓖᓐ",
+      "is": "Berlín",
+      "it": "Berlino",
+      "ja": "ベルリン",
+      "kn": "ಬರ್ಲಿನ್",
+      "ka": "ბერლინი",
+      "kk": "Берлин",
+      "ky": "Берлин",
+      "kv": "Берлин",
+      "ko": "베를린",
+      "ku": "Berlîn",
+      "la": "Berolinum",
+      "lv": "Berlīne",
+      "li": "Berlien",
+      "lt": "Berlynas",
+      "ml": "ബെർലിൻ",
+      "mr": "बर्लिन",
+      "mk": "Берлин",
+      "mn": "Берлин",
+      "mi": "Pearīni",
+      "my": "ဘာလင်မြို့",
+      "ne": "बर्लिन",
+      "nl": "Berlijn",
+      "or": "ବର୍ଲିନ",
+      "om": "Barliin",
+      "os": "Берлин",
+      "pa": "ਬਰਲਿਨ",
+      "pt": "Berlim",
+      "ps": "برلين",
+      "ru": "Берлин",
+      "sa": "बर्लिन",
+      "si": "බර්ලිනය",
+      "sk": "Berlín",
+      "sm": "Perelini",
+      "sd": "برلن",
+      "so": "Baarliin",
+      "es": "Berlín",
+      "sq": "Berlini",
+      "sc": "Berlino",
+      "sr": "Берлин",
+      "su": "Bérlin",
+      "ta": "பெர்லின்",
+      "tt": "Берлин",
+      "te": "బెర్లిన్",
+      "tg": "Берлин",
+      "th": "เบอร์ลิน",
+      "ti": "በረሊን",
+      "tw": "Bɛɛlin",
+      "ug": "Bérlin",
+      "uk": "Берлін",
+      "ur": "برلن",
+      "xh": "I-Berlin",
+      "yi": "בערלין",
+      "zu": "IBerlini"
+    },
+    "source": "whosonfirst",
+    "source_id": "404495869",
+    "layer": "localadmin",
+    "population": 19866,
+    "_id": "whosonfirst:localadmin:404495869",
+    "_score": 14.195427
+  },
+  {
+    "center_point": {
+      "lon": 13.6833,
+      "lat": 52.5333
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Brandenburg"
+      ],
+      "region_id": [
+        "85682553"
+      ],
+      "region_a": [
+        "BB"
+      ],
+      "region_source": [
+        null
+      ],
+      "county": [
+        "Märkisch-Oderland"
+      ],
+      "county_id": [
+        "102063963"
+      ],
+      "county_a": [
+        "MO"
+      ],
+      "county_source": [
+        null
+      ],
+      "locality": [
+        "Neuenhagen bei Berlin"
+      ],
+      "locality_id": [
+        "101756041"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "localadmin": [
+        "Neuenhagen bei Berlin"
+      ],
+      "localadmin_id": [
+        "1377694663"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": "Neuenhagen bei Berlin"
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"ADM4\"}"
+    },
+    "source": "geonames",
+    "source_id": "6547610",
+    "category": [
+      "admin"
+    ],
+    "layer": "neighbourhood",
+    "population": 18657,
+    "_id": "geonames:neighbourhood:6547610",
+    "_score": 14.113626
+  },
+  {
+    "center_point": {
+      "lon": 13.704144,
+      "lat": 52.518561
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "county": [
+        "Märkisch-Oderland"
+      ],
+      "county_id": [
+        "102063963"
+      ],
+      "county_a": [
+        null
+      ],
+      "county_source": [
+        null
+      ],
+      "localadmin": [
+        "Neuenhagen bei Berlin"
+      ],
+      "localadmin_id": [
+        "1377694663"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ],
+      "locality": [
+        "Neuenhagen bei Berlin"
+      ],
+      "locality_id": [
+        "101756041"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "region": [
+        "Brandenburg"
+      ],
+      "region_id": [
+        "85682553"
+      ],
+      "region_a": [
+        "BB"
+      ],
+      "region_source": [
+        null
+      ]
+    },
+    "bounding_box": "{\"min_lat\":52.499043,\"max_lat\":52.546415,\"min_lon\":13.656866,\"max_lon\":13.742898}",
+    "name": {
+      "default": "Neuenhagen bei Berlin",
+      "fa": "نوینهاگن بای برلین",
+      "hy": "Նոյենհագեն",
+      "ja": "ノイエンハーゲン・バイ・ベルリン",
+      "mk": "Нојенхаген кај Берлин",
+      "ru": "Нойенхаген",
+      "sr": "Нојенхаген беј Берлин",
+      "uk": "Ноєнгаген-бай-Берлін",
+      "zh": "柏林附近新恩哈根"
+    },
+    "source": "whosonfirst",
+    "source_id": "101756041",
+    "layer": "locality",
+    "population": 17007,
+    "_id": "whosonfirst:locality:101756041",
+    "_score": 13.99299
+  },
+  {
+    "center_point": {
+      "lon": 13.7736,
+      "lat": 52.4707
+    },
+    "parent": {
+      "continent": [
+        "Europe"
+      ],
+      "continent_id": [
+        "102191581"
+      ],
+      "continent_a": [
+        null
+      ],
+      "continent_source": [
+        null
+      ],
+      "country": [
+        "Germany"
+      ],
+      "country_id": [
+        "85633111"
+      ],
+      "country_a": [
+        "DEU"
+      ],
+      "country_source": [
+        null
+      ],
+      "region": [
+        "Brandenburg"
+      ],
+      "region_id": [
+        "85682553"
+      ],
+      "region_a": [
+        "BB"
+      ],
+      "region_source": [
+        null
+      ],
+      "county": [
+        "Märkisch-Oderland"
+      ],
+      "county_id": [
+        "102063963"
+      ],
+      "county_a": [
+        "MO"
+      ],
+      "county_source": [
+        null
+      ],
+      "locality": [
+        "Rüdersdorf bei Berlin"
+      ],
+      "locality_id": [
+        "101841449"
+      ],
+      "locality_a": [
+        null
+      ],
+      "locality_source": [
+        null
+      ],
+      "localadmin": [
+        "Rüdersdorf bei Berlin"
+      ],
+      "localadmin_id": [
+        "1377694669"
+      ],
+      "localadmin_a": [
+        null
+      ],
+      "localadmin_source": [
+        null
+      ],
+      "neighbourhood": [
+        "Schönblick"
+      ],
+      "neighbourhood_id": [
+        "85900029"
+      ],
+      "neighbourhood_a": [
+        null
+      ],
+      "neighbourhood_source": [
+        null
+      ]
+    },
+    "name": {
+      "default": "Rüdersdorf bei Berlin"
+    },
+    "addendum": {
+      "geonames": "{\"feature_code\":\"ADM4\"}"
+    },
+    "source": "geonames",
+    "source_id": "6547614",
+    "category": [
+      "admin"
+    ],
+    "layer": "neighbourhood",
+    "population": 15812,
+    "_id": "geonames:neighbourhood:6547614",
+    "_score": 13.898073
+  }
+]

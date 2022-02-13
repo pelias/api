@@ -1,6 +1,7 @@
 const isDifferent = require('../../../helper/diffPlaces').isDifferent;
 const isNameDifferent = require('../../../helper/diffPlaces').isNameDifferent;
 const normalizeString = require('../../../helper/diffPlaces').normalizeString;
+const isEquivalentIdentity = require('../../../helper/diffPlaces').isEquivalentIdentity;
 
 module.exports.tests = {};
 
@@ -529,11 +530,91 @@ module.exports.tests.isNameDifferent = function (test, common) {
 
     t.end();
   });
-  test('real-world tests', function (t) {
-    t.false(isNameDifferent(
-      { name: { default: 'Malmoe', eng: 'Malmo' } },
-      { name: { default: 'Malmö', eng: 'Malmo' } }
-    ), 'Malmö');
+};
+
+module.exports.tests.isEquivalentIdentity = function (test, common) {
+  test('basic equivalence', function (t) {
+    t.true(isEquivalentIdentity(
+      { source: 'test', source_id: '1', layer: 'example' },
+      { source: 'test', source_id: '1', layer: 'example' }
+    ), 'same source, source_id and layer');
+
+    t.false(isEquivalentIdentity(
+      { source: 'test', source_id: '1', layer: 'example' },
+      { source: 'foo', source_id: '1', layer: 'example' }
+    ), 'different source');
+
+    t.false(isEquivalentIdentity(
+      { source: 'test', source_id: '1', layer: 'example' },
+      { source: 'test', source_id: '2', layer: 'example' }
+    ), 'different source_id');
+
+    // two records sharing the same source, source_id but with
+    // differing layer are considered not equal.
+    // in practice this should be rare/never happen but if it
+    // becomes an issue would could consider making this stricter.
+    t.false(isEquivalentIdentity(
+      { source: 'test', source_id: '1', layer: 'example' },
+      { source: 'test', source_id: '1', layer: 'foo' }
+    ), 'same source, source_id and layer');
+
+    // if either record fails to generate a valid GID then they are
+    // considered not equivalent.
+    t.false(isEquivalentIdentity(
+      { source: 'test', source_id: '1' },
+      { source: 'test', source_id: '1', layer: 'example' }
+    ), 'invalid GID');
+
+    t.end();
+  });
+
+  test('equivalence via parent hierarchy', function (t) {
+    t.true(isEquivalentIdentity(
+      { source: 'foo', source_id: '1', layer: 'example' },
+      { source: 'bar', source_id: '2', layer: 'example', parent: {
+        example_id: '1',
+        example_source: 'foo'
+      }
+    }), 'match parent GID');
+
+    t.false(isEquivalentIdentity(
+      { source: 'foo', source_id: '1', layer: 'example' },
+      { source: 'bar', source_id: '2', layer: 'example', parent: {
+        foo_id: '1',
+        foo_source: 'foo'
+      }
+    }), 'parent name must be from same layer');
+
+    t.false(isEquivalentIdentity(
+      { source: 'foo', source_id: '1', layer: 'example' },
+      { source: 'bar', source_id: '2', layer: 'example', parent: {
+        foo_id: '1',
+        example_source: 'foo'
+      }
+    }), 'parent name must have the same source_id');
+
+    t.false(isEquivalentIdentity(
+      { source: 'foo', source_id: '1', layer: 'example' },
+      { source: 'bar', source_id: '2', layer: 'example', parent: {
+        example_id: '1',
+        example_source: 'not_foo'
+      }
+    }), 'parent name must have the same source');
+
+    t.true(isEquivalentIdentity(
+      { source: 'whosonfirst', source_id: '1', layer: 'example' },
+      { source: 'test', source_id: '2', layer: 'example', parent: {
+        example_id: '1'
+      }
+    }), 'parent source defaults to "whosonfirst"');
+
+    t.true(isEquivalentIdentity(
+      { source: 'whosonfirst', source_id: '1', layer: 'example' },
+      { source: 'test', source_id: '2', layer: 'example', parent: {
+        example_id: ['1'],
+        example_source: [null]
+      }
+    }), 'parent source defaults to "whosonfirst" (arrays)');
 
     t.end();
   });
