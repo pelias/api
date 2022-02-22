@@ -71,7 +71,10 @@ function _setup(tm) {
         }
       }
 
-      const hasBoundaryCountry = !_.isEmpty(clean['boundary.country']);
+      // check if any boundary parameters are present
+      // exclude the boundary.country parameter if includes the 'USA'. The
+      // states have too many housenumbers that look like postalcodes, and lots of addresses
+      const hasBoundaryCountry = !_.isEmpty(clean['boundary.country']) && !clean['boundary.country'].includes('USA');
       const hasBoundaryGid = !_.isEmpty(clean['boundary.gid']);
       const hasBoundaryRect = _.isNumber(clean['boundary.rect.min_lat']); // at this point if one param is present they all are
 
