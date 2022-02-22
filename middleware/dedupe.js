@@ -18,10 +18,8 @@ const formatLog = (hit) => {
  * 1. iterate over results starting at position 0
  * 2. on each iteration search for duplicate candidates:
  *  2.1  at higher positions in array
- *  2.2  not contained in the skip-list
  * 3. from the list of candidates, select a preferred master record
  * 4. push master record on to return array
- * 5. add non-master candidates to a skip-list
  * 6. continue down list until end
  */
 
@@ -36,27 +34,14 @@ function dedupeResults(req, res, next) {
   // loop through data items and only copy unique items to unique
   const unique = [];
 
-  // maintain a skip-list
-  const skip = [];
-
   // use the user agent language to improve deduplication
   const lang = _.get(req, 'clean.lang.iso6393');
 
   // 1. iterate over res.data
   res.data.forEach((place, ppos) => {
 
-    // skip records in the skip-list
-    if (skip.includes(place)){ return; }
-
     // 2. search for duplicate candidates
-    const candidates = res.data.filter((candidate, cpos) => {
-
-      // 2.1 at higher positions in array
-      if (cpos <= ppos) { return false; }
-
-      // 2.2 not contained in the skip-list
-      if (skip.includes(candidate)) { return false; }
-
+    const candidates = res.data.filter((candidate) => {
       // true if the two records are considered duplicates
       return !isDifferent(place, candidate, lang);
     });
@@ -91,16 +76,17 @@ function dedupeResults(req, res, next) {
 
     // 4. push master record on to return array
     unique.push(master);
-
-    // 5. add non-master candidates to a skip-list
-    candidates.forEach(candidate => {
-      skip.push(candidate);
-    });
   });
 
-  // replace the original data with only the unique hits
+  // assign unique (as in, equivalent as far as geocoding is concerned) values to res.data
+  res.data = unique;
+
+  // do not allow duplicate (as in, duplicates of the same Javascript object) in the final list
+  res.data = res.data.filter((value, idx, self) => self.indexOf(value) === idx);
+
+  // limit data to the maximum specified size
   const maxElements = _.get(req, 'clean.size', undefined);
-  res.data = unique.slice(0, maxElements);
+  res.data = res.data.slice(0, maxElements);
 
   next();
 }
