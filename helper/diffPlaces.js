@@ -169,11 +169,47 @@ function isAddressDifferent(item1, item2){
   return false;
 }
 
+function isGeonamesConcordanceSame(item1, item2) {
+  let wof_record;
+  let gn_record;
+
+  if (item1.source === 'geonames' && item2.source === 'whosonfirst') {
+    gn_record = item1;
+    wof_record = item2;
+  } else if (item2.source === 'geonames' && item1.source === 'whosonfirst') {
+    gn_record = item2;
+    wof_record = item1;
+  } else {
+    // could not match to one geonames and one wof concordance, so this check does not apply
+    return false;
+  }
+
+  const concordances = _.get(wof_record, 'addendum.concordances');
+
+  if (concordances) {
+    const json = JSON.parse(concordances);
+
+    //console.log(`comparing gn ${gn_record.source_id} to concordance ${json['gn:id']} (wof ${wof_record.source_id})`);
+
+    const concordance_id = json['gn:id'];
+
+    if (concordance_id && typeof concordance_id === 'number' && json['gn:id'].toString() === gn_record.source_id) {
+      console.log(`gn ${gn_record.source_id} matches concordance from wof ${wof_record.source_id}`);
+      return true;
+    }
+  }
+
+  return false;
+}
+
 /**
  * Compare the two records and return true if they differ and false if same.
  * Optionally provide $requestLanguage (req.clean.lang.iso6393) to improve name deduplication.
  */
 function isDifferent(item1, item2, requestLanguage){
+  // records that share a geonames concordance are the same, regardless of any other checks
+  if( isGeonamesConcordanceSame( item1, item2 ) ){ return false; }
+
   if( isLayerDifferent( item1, item2 ) ){ return true; }
   if( isParentHierarchyDifferent( item1, item2 ) ){ return true; }
   if( isNameDifferent( item1, item2, requestLanguage ) ){ return true; }
