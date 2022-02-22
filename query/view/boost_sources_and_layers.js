@@ -68,7 +68,7 @@ const TARGETS = ['source', 'layer'];
 module.exports = function( config ) {
 
   // no valid config to use, fail now, don't render this view.
-  if( !config ) { return function(){ return null; }; }
+  if( !config ) { config = { layer: { postalcode: 1} }; }
 
   return function( vs ) {
 
