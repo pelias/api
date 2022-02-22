@@ -71,6 +71,8 @@ function _setup(tm) {
         }
       }
 
+      const hasFocusPoint = _.isNumber(clean['focus.point.lat']); // at this point if one param is present they all are
+
       // count the number of words specified
       let totalWords = input.split(/\s+/).filter(nonEmptyString).length;
 
@@ -84,7 +86,7 @@ function _setup(tm) {
 
       // if less than two words were specified /or no numeral is present
       // then it is safe to apply the layer filter
-      if (totalWords < 2 || !hasNumeral) {
+      if ((totalWords < 2 || !hasNumeral) && !hasFocusPoint) {
 
         // handle the common case where neither sources nor (positive) layers were specified
         if (!_.isArray(clean.sources) || _.isEmpty(clean.sources)) {
