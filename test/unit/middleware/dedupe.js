@@ -820,6 +820,41 @@ module.exports.tests.priority = function(test, common) {
       t.end();
     });
   });
+
+  test('A->B B->C dependency graph', function (t) {
+    var req = {
+      clean: {
+        text: 'A B C',
+        size: 10
+      }
+    };
+    var res = {
+      data: [
+        {
+          'source': 'example',
+          'source_id': 'A',
+          'layer': 'test',
+          'name': { 'default': ['name1'] }
+        }, {
+          'source': 'example',
+          'source_id': 'B',
+          'layer': 'test',
+          'name': { 'default': ['name1', 'name2'] }
+        }, {
+          'source': 'example',
+          'source_id': 'C',
+          'layer': 'test',
+          'name': { 'default': ['name2'] }
+        }
+      ]
+    };
+
+    dedupe(req, res, () => {
+      t.equal(res.data.length, 1, 'results are deduped');
+      t.equal(res.data[0].source_id, 'A');
+      t.end();
+    });
+  });
 };
 
 module.exports.all = function (tape, common) {
