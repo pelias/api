@@ -54,7 +54,5 @@ module.exports = {
   },
   'size': 20,
   'track_scores': true,
-  'sort': [
-    '_score'
-  ]
+  'sort': ['_score', '_id'],
 };

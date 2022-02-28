@@ -88,7 +88,8 @@
     "size": 10,
     "track_scores": true,
     "sort": [
-      "_score"
+      "_score",
+      "_id"
     ]
   }
 }
