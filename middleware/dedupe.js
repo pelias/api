@@ -15,14 +15,9 @@ const formatLog = (hit) => {
 /**
  * Deduplication workflow:
  *
- * 1. iterate over results starting at position 0
- * 2. on each iteration search for duplicate candidates:
- *  2.1  at higher positions in array
- *  2.2  not contained in the skip-list
- * 3. from the list of candidates, select a preferred master record
- * 4. push master record on to return array
- * 5. add non-master candidates to a skip-list
- * 6. continue down list until end
+ * 1. maintain a list of superseded records
+ * 2. remove superseded records
+ * 3. replace the original data with only the unique hits
  */
 
 function dedupeResults(req, res, next) {
@@ -33,72 +28,26 @@ function dedupeResults(req, res, next) {
   // do nothing if no result data is invalid
   if( _.isUndefined(res) || !_.isArray(res.data) || _.isEmpty(res.data) ){ return next(); }
 
-  // loop through data items and only copy unique items to unique
-  const unique = [];
-
-  // maintain a skip-list
-  const skip = [];
-
   // use the user agent language to improve deduplication
   const lang = _.get(req, 'clean.lang.iso6393');
 
-  // 1. iterate over res.data
-  res.data.forEach((place, ppos) => {
+  // 1. maintain a list of superseded records
+  const superseded = [];
+  for (var i = 0; i < res.data.length; i++) {
+    for (var j = (i+1); j < res.data.length; j++) {
 
-    // skip records in the skip-list
-    if (skip.includes(place)){ return; }
+      // ensure the two records are considered duplicates
+      if (isDifferent(res.data[i], res.data[j], lang)) { continue; }
 
-    // 2. search for duplicate candidates
-    const candidates = res.data.filter((candidate, cpos) => {
-
-      // 2.1 at higher positions in array
-      if (cpos <= ppos) { return false; }
-
-      // 2.2 not contained in the skip-list
-      if (skip.includes(candidate)) { return false; }
-
-      // true if the two records are considered duplicates
-      return !isDifferent(place, candidate, lang);
-    });
-
-    // 3. select a preferred master record
-
-    // simple case where no candidates were found
-    if (candidates.length === 0){
-      unique.push(place);
-      return;
+      // record which record was superseded
+      superseded.push(isPreferred(res.data[i], res.data[j]) ? i : j);
     }
+  }
 
-    // by default we consider the candidate with the lowest index as master
-    let master = place;
+  // 2. remove superseded records
+  const unique = res.data.filter((v, o) => !superseded.includes(o));
 
-    // iterate over candidates looking for one which is preferred to
-    // the currently selected master
-    candidates.forEach(candidate => {
-      if (isPreferred(master, candidate)){
-        master = candidate;
-      }
-    });
-
-    // logging
-    if (master !== place) {
-      logger.debug('[dupe][replacing]', {
-        query: req.clean.text,
-        previous: formatLog(place),
-        hit: formatLog(master)
-      });
-    }
-
-    // 4. push master record on to return array
-    unique.push(master);
-
-    // 5. add non-master candidates to a skip-list
-    candidates.forEach(candidate => {
-      skip.push(candidate);
-    });
-  });
-
-  // replace the original data with only the unique hits
+  // 3. replace the original data with only the unique hits
   const maxElements = _.get(req, 'clean.size', undefined);
   res.data = unique.slice(0, maxElements);
 
