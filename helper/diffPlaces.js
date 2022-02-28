@@ -100,13 +100,40 @@ function isParentHierarchyDifferent(item1, item2){
   });
 }
 
+/* Generate a 'name' value for comparison
+ * This includes normalizations for specific dataset features
+ */
+function nameForComparison(name) {
+  // recurse into object properties if this is an object
+  if (_.isPlainObject(name)) {
+    const new_object = {};
+    Object.keys(name).forEach((key) => {
+      new_object[key] = nameForComparison(name[key]);
+    });
+
+    return new_object;
+  }
+
+  // otherwise, only handle strings
+  if (!_.isString(name)) {
+    return name;
+  }
+
+  // remove some common Geonames prefix/postfix values
+  return name
+    .replace(/^county\s(of\s)?(.*)$/gi, '$2')
+    .replace(/^(.*)\scounty$/gi, '$1')
+    .replace(/^city\sof(?!\s?the)\s?(.*)$/gi, '$1')
+    .replace(/^(.*\s)charter\s(township)$/gi, '$1$2');
+}
+
 /**
  * Compare the name properties if they exist.
  * Returns false if the objects are the same, else true.
  */
 function isNameDifferent(item1, item2, requestLanguage){
-  let names1 = _.get(item1, 'name');
-  let names2 = _.get(item2, 'name');
+  let names1 = nameForComparison(_.get(item1, 'name'));
+  let names2 = nameForComparison(_.get(item2, 'name'));
 
   // check if these are plain 'ol javascript objects
   let isPojo1 = _.isPlainObject(names1);

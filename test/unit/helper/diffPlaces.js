@@ -539,6 +539,21 @@ module.exports.tests.isNameDifferent = function (test, common) {
   });
 };
 
+module.exports.tests.nameForcomparison = function (test, common) {
+  test('geonames City of', function (t) {
+    t.false(isNameDifferent(
+      { name: { default: 'City of New York' } },
+      { name: { default: 'New York' } }
+    ), 'Geonames \'City of\' prefix is ignored');
+
+    t.false(isNameDifferent(
+      { name: { en: 'City of New York' } },
+      { name: { default: 'New York' } }
+    ), 'Geonames \'City of\' prefix is ignored across languages');
+    t.end();
+  });
+};
+
 module.exports.tests.normalizeString = function (test, common) {
   test('lowercase', function (t) {
     t.equal(normalizeString('Foo Bar'), 'foo bar');
