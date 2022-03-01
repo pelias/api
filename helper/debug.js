@@ -1,74 +1,54 @@
 const _ = require('lodash');
 
 class Debug {
-  constructor(moduleName){
+  constructor(moduleName) {
     this.name = moduleName || 'unnamed module';
   }
 
-  getValueAndDest(req, args) {
-    if (args.length === 0) {
-      return {dest: req, value: undefined};
-    } 
-
-    if (args.length === 1) {
-      return {dest: req, value: args[0]};
-    } 
-    
-    if (args.length === 2) {
-      return {dest: args[0], value: args[1]};
-    }
-
-    throw new Error('Too many arguments to function');
+  static isEnabled(req) {
+    return _.get(req, 'clean.enableDebug') === true;
   }
 
-  // two variants
-  // - push(req, value) 
-  //    checks req.clean.enableDebug and if true, pushes values onto req.debug
-  // - push(req, dest, value) 
-  //    checks req.clean.enableDebug and if true, pushes values onto dest.debug
-  push(req, ...args){
-    const { value, dest } = this.getValueAndDest(req, args);
-    
-    if (!req || _.isEmpty(req.clean) || !req.clean.enableDebug){
-      return;
-    }
-    dest.debug = dest.debug || [];
-    switch(typeof value) {
-      case 'function':
-        dest.debug.push({[this.name]: value()});
-        break;
-      default:
-        dest.debug.push({[this.name]: value});
+  static validMessage(msg) {
+    return _.isString(msg) && !_.isEmpty(msg);
+  }
+
+  push(req, value) {
+    if (!Debug.isEnabled(req)) { return; }
+
+    if (!_.isArray(req.debug)) { req.debug = []; }
+
+    if (_.isFunction(value)) {
+      req.debug.push({ [this.name]: value() });
+    } else {
+      req.debug.push({ [this.name]: value });
     }
   }
 
-  beginTimer(req, debugMsg){
-     if (req && !_.isEmpty(req.clean) && req.clean.enableDebug){
-       // debugMsg is optional
-       this.push(req, () => {
-         if (debugMsg){
-           return `Timer Began. ${debugMsg}`;
-         } else {
-           return `Timer Began`;
-         }
-       });
-       return Date.now();
-     }
-   }
+  beginTimer(req, message) {
+    if (!Debug.isEnabled(req)) { return; }
 
-  stopTimer(req, startTime, debugMsg){
-    if (req && !_.isEmpty(req.clean) && req.clean.enableDebug){
-      let timeElapsed = Date.now() - startTime;
-        this.push(req, () => {
-          if (debugMsg){
-            return `Timer Stopped. ${timeElapsed} ms. ${debugMsg}`;
-          } else {
-            return `Timer Stopped. ${timeElapsed} ms`;
-          }
-        });
-      }
+    if (Debug.validMessage(message)) {
+      this.push(req, `Timer Began. ${message}`);
+    } else {
+      this.push(req, `Timer Began.`);
     }
 
+    return Date.now();
+  }
+
+  stopTimer(req, timer, message) {
+    if (!Debug.isEnabled(req)) { return; }
+
+    // measure elapsed duration
+    const elapsed = _.isFinite(timer) ? (Date.now() - timer) : -1;
+
+    if (Debug.validMessage(message)) {
+      this.push(req, `Timer Stopped. ${elapsed} ms. ${message}`);
+    } else {
+      this.push(req, `Timer Stopped. ${elapsed} ms`);
+    }
+  }
 }
 
 module.exports = Debug;
