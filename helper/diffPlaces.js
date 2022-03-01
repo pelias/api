@@ -157,6 +157,7 @@ function isAddressDifferent(item1, item2){
   if( !isPojo1 || !isPojo2 ){ return false; }
 
   // else both have address info
+  if( isPropertyDifferent(address1, address2, 'unit') ){ return true; }
   if( isPropertyDifferent(address1, address2, 'number') ){ return true; }
   if( isPropertyDifferent(address1, address2, 'street') ){ return true; }
 
