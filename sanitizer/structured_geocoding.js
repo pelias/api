@@ -13,7 +13,23 @@ var sanitizeAll = require('../sanitizer/sanitizeAll');
  * the other is missing then we don't make modifications.
  */
 const paramGroups = [
-  ['focus.point.lon', 'focus.point.lat']
+  ['address'],
+  ['neighbourhood'],
+  ['borough'],
+  ['locality'],
+  ['county'],
+  ['region'],
+  ['postalcode'],
+  ['country'],
+  ['size'],
+  ['sources'],
+  ['layers'],
+  ['focus.point.lon', 'focus.point.lat'],
+  ['boundary.rect.min_lon', 'boundary.rect.max_lon', 'boundary.rect.min_lat', 'boundary.rect.max_lat'],
+  ['boundary.circle.lon', 'boundary.circle.lat'],
+  ['boundary.circle.radius'],
+  ['boundary.country'],
+  ['boundary.gid']
 ];
 
 // middleware
