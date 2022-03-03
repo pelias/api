@@ -46,6 +46,26 @@ function isUsState(item) {
   return item.parent.country_a[0] === 'USA' && item.layer === 'region';
 }
 
+// Geonames records in the locality and localadmin layer are parented by themselves
+// This breaks our other hierarchy logic, so check for this special case
+function isGeonamesWithSelfParent(item, placeType) {
+  if (item.source !== 'geonames') { return false; }
+  if (item.layer !== placeType) { return false; }
+
+  if (!item.parent) { return false; }
+
+  // get the relevant parent id(s) for the placeType in question
+  const parent_records = item.parent[`${placeType}_id`] || [];
+
+  // check if the parent ids at this layer match this Geonames record
+  // we have special cased Geonames parents in many cases
+  // handle both array and scalar values
+  if (item.source_id === parent_records) { return true; }
+  if (parent_records.includes(item.source_id)) { return true; }
+
+  return false;
+}
+
 /**
  * Compare the parent properties if they exist.
  * Returns false if the objects are the same, else true.
@@ -107,6 +127,11 @@ function isParentHierarchyDifferent(item1, item2){
 
     // skip layers that are more granular than $maxRank
     if (rank > maxRank){ return false; }
+
+    // Special case Geonames records that are parented by themselves and would otherwise break these checks
+    if (isGeonamesWithSelfParent(item1, placeType) || isGeonamesWithSelfParent(item2, placeType)) {
+      return false;
+    }
 
     // ensure the parent ids are the same for all placetypes
     return isPropertyDifferent( parent1, parent2, `${placeType}_id` );
