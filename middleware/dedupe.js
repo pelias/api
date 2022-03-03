@@ -23,9 +23,15 @@ function dedupeResults(req, res, next) {
   // use the user agent language to improve deduplication
   const lang = _.get(req, 'clean.lang.iso6393');
 
-  // maintain a set of inferior records (by their array offsets)
+  // maintain a set of inferior records
   const inferior = new Set();
-  for (var i = 0; i < (res.data.length-1); i++) {
+
+  // maintain a set of superior records
+  // note: this set maintains ordering of synonymous records
+  // while also preventing duplicates.
+  const superior = new Set();
+
+  for (var i = 0; i < res.data.length; i++) {
     for (var j = (i+1); j < res.data.length; j++) {
 
       // ensure these two records are considered duplicates
@@ -34,7 +40,8 @@ function dedupeResults(req, res, next) {
       // decide which of the two records was 'inferior'
       // note: $preference equals true when $j is preferred and vice versa
       const preference = isPreferred(res.data[i], res.data[j]);
-      inferior.add(preference ? i : j);
+      superior.add(preference ? res.data[j] : res.data[i]);
+      inferior.add(preference ? res.data[i] : res.data[j]);
 
       // logging
       logger.debug('[dupe][replacing]', {
@@ -43,12 +50,14 @@ function dedupeResults(req, res, next) {
         inferior: formatLog(res.data[preference ? i : j]),
       });
     }
+
+    superior.add(res.data[i]);
   }
 
   // remove inferior records, return the remaining results
-  const unique = res.data.filter((v, o) => !inferior.has(o));
+  const result = Array.from(superior).filter(v => !inferior.has(v));
   const maxElements = _.get(req, 'clean.size', undefined);
-  res.data = unique.slice(0, maxElements);
+  res.data = result.slice(0, maxElements);
 
   next();
 }
