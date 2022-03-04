@@ -188,29 +188,28 @@ function isAddressDifferent(item1, item2){
 }
 
 function isGeonamesConcordanceSame(item1, item2) {
-  let wof_record;
-  let gn_record;
+  const items = [item1, item2];
 
-  if (item1.source === 'geonames' && item2.source === 'whosonfirst') {
-    gn_record = item1;
-    wof_record = item2;
-  } else if (item2.source === 'geonames' && item1.source === 'whosonfirst') {
-    gn_record = item2;
-    wof_record = item1;
-  } else {
-    // could not match to one geonames and one wof concordance, so this check does not apply
-    return false;
-  }
+  const wof_record = items.find(i => i.source === 'whosonfirst');
+  const gn_record = items.find(i => i.source === 'geonames');
+
+  // must have found one wof and one gn record or this check does not apply
+  if (!wof_record || !gn_record) { return false; }
 
   const concordances = _.get(wof_record, 'addendum.concordances');
 
-  if (concordances) {
-    const json = codec.decode(concordances);
-    const concordance_id = json['gn:id'];
+  if (!concordances) {
+    return false;
+  }
 
-    if (concordance_id && typeof concordance_id === 'number' && concordance_id.toString() === gn_record.source_id) {
-      return true;
-    }
+  const json = codec.decode(concordances);
+  const concordance_id = json['gn:id'];
+
+  if (!concordance_id || !_.isNumber(concordance_id)) { return false; }
+
+  // only records with a matching concordance pass this check
+  if (concordance_id.toString() === gn_record.source_id) {
+    return true;
   }
 
   return false;
