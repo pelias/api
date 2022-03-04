@@ -12,19 +12,6 @@ const formatLog = (hit) => {
   return [name, zip, hit._id].filter(Boolean).join(' ');
 };
 
-/**
- * Deduplication workflow:
- *
- * 1. iterate over results starting at position 0
- * 2. on each iteration search for duplicate candidates:
- *  2.1  at higher positions in array
- *  2.2  not contained in the skip-list
- * 3. from the list of candidates, select a preferred master record
- * 4. push master record on to return array
- * 5. add non-master candidates to a skip-list
- * 6. continue down list until end
- */
-
 function dedupeResults(req, res, next) {
 
   // do nothing if request data is invalid
@@ -33,74 +20,44 @@ function dedupeResults(req, res, next) {
   // do nothing if no result data is invalid
   if( _.isUndefined(res) || !_.isArray(res.data) || _.isEmpty(res.data) ){ return next(); }
 
-  // loop through data items and only copy unique items to unique
-  const unique = [];
-
-  // maintain a skip-list
-  const skip = [];
-
   // use the user agent language to improve deduplication
   const lang = _.get(req, 'clean.lang.iso6393');
 
-  // 1. iterate over res.data
-  res.data.forEach((place, ppos) => {
+  // maintain a set of inferior records
+  const inferior = new Set();
 
-    // skip records in the skip-list
-    if (skip.includes(place)){ return; }
+  // maintain a set of superior records
+  // note: this set maintains ordering of synonymous records
+  // while also preventing duplicates.
+  const superior = new Set();
 
-    // 2. search for duplicate candidates
-    const candidates = res.data.filter((candidate, cpos) => {
+  for (var i = 0; i < res.data.length; i++) {
+    for (var j = (i+1); j < res.data.length; j++) {
 
-      // 2.1 at higher positions in array
-      if (cpos <= ppos) { return false; }
+      // ensure these two records are considered duplicates
+      if (isDifferent(res.data[i], res.data[j], lang)) { continue; }
 
-      // 2.2 not contained in the skip-list
-      if (skip.includes(candidate)) { return false; }
+      // decide which of the two records was 'inferior'
+      // note: $preference equals true when $j is preferred and vice versa
+      const preference = isPreferred(res.data[i], res.data[j]);
+      superior.add(preference ? res.data[j] : res.data[i]);
+      inferior.add(preference ? res.data[i] : res.data[j]);
 
-      // true if the two records are considered duplicates
-      return !isDifferent(place, candidate, lang);
-    });
-
-    // 3. select a preferred master record
-
-    // simple case where no candidates were found
-    if (candidates.length === 0){
-      unique.push(place);
-      return;
-    }
-
-    // by default we consider the candidate with the lowest index as master
-    let master = place;
-
-    // iterate over candidates looking for one which is preferred to
-    // the currently selected master
-    candidates.forEach(candidate => {
-      if (isPreferred(master, candidate)){
-        master = candidate;
-      }
-    });
-
-    // logging
-    if (master !== place) {
+      // logging
       logger.debug('[dupe][replacing]', {
         query: req.clean.text,
-        previous: formatLog(place),
-        hit: formatLog(master)
+        superior: formatLog(res.data[preference ? j : i]),
+        inferior: formatLog(res.data[preference ? i : j]),
       });
     }
 
-    // 4. push master record on to return array
-    unique.push(master);
+    superior.add(res.data[i]);
+  }
 
-    // 5. add non-master candidates to a skip-list
-    candidates.forEach(candidate => {
-      skip.push(candidate);
-    });
-  });
-
-  // replace the original data with only the unique hits
+  // remove inferior records, return the remaining results
+  const result = Array.from(superior).filter(v => !inferior.has(v));
   const maxElements = _.get(req, 'clean.size', undefined);
-  res.data = unique.slice(0, maxElements);
+  res.data = result.slice(0, maxElements);
 
   next();
 }

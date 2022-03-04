@@ -820,6 +820,115 @@ module.exports.tests.priority = function(test, common) {
       t.end();
     });
   });
+
+  test('A->B B->C dependency graph', function (t) {
+    var req = {
+      clean: {
+        text: 'A B C',
+        size: 10
+      }
+    };
+    var res = {
+      data: [
+        {
+          'source': 'example',
+          'source_id': 'A',
+          'layer': 'test',
+          'name': { 'default': ['name1'] }
+        }, {
+          'source': 'example',
+          'source_id': 'B',
+          'layer': 'test',
+          'name': { 'default': ['name1', 'name2'] }
+        }, {
+          'source': 'example',
+          'source_id': 'C',
+          'layer': 'test',
+          'name': { 'default': ['name2'] }
+        }
+      ]
+    };
+
+    dedupe(req, res, () => {
+      t.deepEqual(res.data.map(v => v.source_id), ['A']);
+      t.end();
+    });
+  });
+
+  test('A B C->A position substitution', function (t) {
+    var req = {
+      clean: {
+        text: 'A B C',
+        size: 10
+      }
+    };
+    var res = {
+      data: [
+        {
+          'source': 'example',
+          'source_id': 'A',
+          'layer': 'test',
+          'name': { 'default': ['name2'] }
+        }, {
+          'source': 'example',
+          'source_id': 'B',
+          'layer': 'test',
+          'name': { 'default': ['name1'] }
+        }, {
+          'source': 'example',
+          'source_id': 'C',
+          'layer': 'test',
+          'name': { 'default': ['name2'] },
+          'address_parts': { 'zip': '10000' }
+        }
+      ]
+    };
+
+    dedupe(req, res, () => {
+      t.deepEqual(res.data.map(v => v.source_id), ['C','B']);
+      t.end();
+    });
+  });
+
+  test('A->B C D->A position substitution', function (t) {
+    var req = {
+      clean: {
+        text: 'A B C',
+        size: 10
+      }
+    };
+    var res = {
+      data: [
+        {
+          'source': 'example',
+          'source_id': 'A',
+          'layer': 'test',
+          'name': { 'default': ['name1'] }
+        }, {
+          'source': 'example',
+          'source_id': 'B',
+          'layer': 'test',
+          'name': { 'default': ['name1'] }
+        }, {
+          'source': 'example',
+          'source_id': 'C',
+          'layer': 'test',
+          'name': { 'default': ['name2'] }
+        }, {
+          'source': 'example',
+          'source_id': 'D',
+          'layer': 'test',
+          'name': { 'default': ['name1'] },
+          'address_parts': { 'zip': '10000' }
+        }
+      ]
+    };
+
+    dedupe(req, res, () => {
+      t.deepEqual(res.data.map(v => v.source_id), ['D', 'C']);
+      t.end();
+    });
+  });
 };
 
 module.exports.all = function (tape, common) {
