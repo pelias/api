@@ -82,6 +82,46 @@ module.exports.tests.dedupe = function(test, common) {
     t.end();
   });
 
+  test('isParentHierarchyDifferent: do not dedupe US states', function(t) {
+    var item1 = {
+      layer: 'region',
+      parent: {
+        region_id: '123',
+        country_a: ['USA']
+      }
+    };
+    var item2 = {
+      layer: 'locality',
+      parent: {
+        region_id: '123',
+        locality_id: '456'
+      }
+    };
+
+    t.true(isDifferent(item1, item2), 'should be considered different');
+    t.end();
+  });
+
+  test('isParentHierarchyDifferent: do not dedupe US states, except against each other', function(t) {
+    var item1 = {
+      layer: 'region',
+      parent: {
+        region_id: '123',
+        country_a: ['USA']
+      }
+    };
+    var item2 = {
+      layer: 'region',
+      parent: {
+        region_id: '123',
+        country_a: ['USA']
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should not be considered different');
+    t.end();
+  });
+
   test('isParentHierarchyDifferent: do compare parentage at higher levels than the highest item placetypes', function(t) {
     var item1 = {
       'layer': 'country',

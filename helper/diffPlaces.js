@@ -40,6 +40,11 @@ function isLayerDifferent(item1, item2){
   return false;
 }
 
+function isUsState(item) {
+  if (!_.isArray(item.parent.country_a)) { return false; }
+  return item.parent.country_a[0] === 'USA' && item.layer === 'region';
+}
+
 /**
  * Compare the parent properties if they exist.
  * Returns false if the objects are the same, else true.
@@ -58,6 +63,13 @@ function isParentHierarchyDifferent(item1, item2){
   // if only one has parent info, we consider them the same
   // note: this really shouldn't happen as at least one parent should exist
   if( !isPojo1 || !isPojo2 ){ return false; }
+
+  // US states should not be deduplicated, except against other US states
+  if (isUsState(item1) || isUsState(item2)) {
+    if (!isUsState(item1) || !isUsState(item2)) {
+      return true;
+    }
+  }
 
   // special handling of postal codes, which we consider to be strictly
   // unique within a single country/dependency regardless of the rest of
