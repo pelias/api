@@ -765,6 +765,31 @@ module.exports.tests.layerDependentNormalization = function (test, common) {
   });
 };
 
+module.exports.tests.geonames = function (test, common) {
+  test('geonames record with concordance is the same, regardless of anything else', function(t) {
+    const gn_record = {
+      source: 'geonames',
+      source_id: '123',
+      name: {
+        'default': 'One name'
+      }
+    };
+    const wof_record = {
+      source: 'whosonfirst',
+      source_id: '345',
+      name: {
+        default: 'Different name'
+      },
+      addendum: {
+        concordances: '{ "gn:id": 123 }'
+      }
+    };
+
+    t.false(isDifferent(gn_record, wof_record), 'should be the same based on concordance');
+    t.end();
+  });
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {

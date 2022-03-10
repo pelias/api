@@ -4,6 +4,7 @@ const unicode = require('./unicode');
 const placeTypes = require('./placeTypes');
 const canonicalLayers = require('../helper/type_mapping').getCanonicalLayers();
 const field = require('../helper/fieldValue');
+const codec = require('pelias-model').codec;
 
 // only consider these layers as synonymous for deduplication purposes.
 // when performing inter-layer deduping, layers coming earlier in this list take
@@ -186,11 +187,42 @@ function isAddressDifferent(item1, item2){
   return false;
 }
 
+function isGeonamesConcordanceSame(item1, item2) {
+  const items = [item1, item2];
+
+  const wof_record = items.find(i => i.source === 'whosonfirst');
+  const gn_record = items.find(i => i.source === 'geonames');
+
+  // must have found one wof and one gn record or this check does not apply
+  if (!wof_record || !gn_record) { return false; }
+
+  const concordances = _.get(wof_record, 'addendum.concordances');
+
+  if (!concordances) {
+    return false;
+  }
+
+  const json = codec.decode(concordances);
+  const concordance_id = json['gn:id'];
+
+  if (!concordance_id || !_.isNumber(concordance_id)) { return false; }
+
+  // only records with a matching concordance pass this check
+  if (concordance_id.toString() === gn_record.source_id) {
+    return true;
+  }
+
+  return false;
+}
+
 /**
  * Compare the two records and return true if they differ and false if same.
  * Optionally provide $requestLanguage (req.clean.lang.iso6393) to improve name deduplication.
  */
 function isDifferent(item1, item2, requestLanguage){
+  // records that share a geonames concordance are the same, regardless of any other checks
+  if( isGeonamesConcordanceSame( item1, item2 ) ){ return false; }
+
   if( isLayerDifferent( item1, item2 ) ){ return true; }
   if( isParentHierarchyDifferent( item1, item2 ) ){ return true; }
   if( isNameDifferent( item1, item2, requestLanguage ) ){ return true; }
