@@ -790,6 +790,40 @@ module.exports.tests.geonames = function (test, common) {
   });
 };
 
+module.exports.tests.geonames_self_parent = function (test, common) {
+  test('geonames records that parent themselves should not break hierarchy checks', function(t) {
+    const gn_record = {
+      source: 'geonames',
+      layer: 'localadmin',
+      source_id: '7163824',
+      name: {
+        default: 'City of New York'
+      },
+      parent: {
+        country_id: ['85633793'], // USA, WOF
+        region_id: ['85688543'], // NY, WOF
+        localadmin_id: ['7163824'] // New York County, Geonames
+      }
+    };
+    const wof_record = {
+      source: 'whosonfirst',
+      layer: 'locality',
+      source_id: '85977539',
+      name: {
+        default: 'New York'
+      },
+      parent: {
+        country_id: ['85633793'], // USA, WOF
+        region_id: ['85688543'], // NY, WOF
+        //localadmin_id: null // no localadmin is set for NYC in WOF
+      }
+    };
+
+    t.false(isDifferent(gn_record, wof_record), 'should be the same based on hierarchy');
+    t.end();
+  });
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
