@@ -10,6 +10,18 @@ module.exports.tests.sanitize = function(test, common) {
     // rather than re-verify the functionality of all the sanitizers, this test just verifies that they
     //  were all called correctly
     var search = proxyquire('../../../sanitizer/structured_geocoding', {
+      '../sanitizer/_default_parameters': function (defaultParameters) {
+        return {
+          sanitize: () => {
+            if (defaultParameters.key === 'value') {
+              called_sanitizers.push('_default_parameters');
+              return { errors: [], warnings: [] };
+            } else {
+              throw new Error('incorrect parameter passed to _default_parameters');
+            }
+          }
+        };
+      },
       '../sanitizer/_single_scalar_parameters': function () {
         return {
           sanitize: () => {
@@ -118,18 +130,6 @@ module.exports.tests.sanitize = function(test, common) {
           }
         };
       },
-      '../sanitizer/_location_bias': function (defaultParameters) {
-        return {
-          sanitize: () => {
-            if (defaultParameters.key === 'value'){
-                called_sanitizers.push('_location_bias');
-                return { errors: [], warnings: [] };
-            } else {
-                throw new Error('incorrect parameter passed to _location_bias');
-            }
-          }
-        };
-      },
       '../sanitizer/_request_language': () => {
         return {
           sanitize: () => {
@@ -149,6 +149,7 @@ module.exports.tests.sanitize = function(test, common) {
     });
 
     var expected_sanitizers = [
+      '_default_parameters',
       '_single_scalar_parameters',
       '_debug',
       '_synthesize_analysis',
@@ -159,7 +160,6 @@ module.exports.tests.sanitize = function(test, common) {
       '_targets/sources',
       '_sources_and_layers',
       '_flag_bool',
-      '_location_bias',
       '_geo_search',
       '_boundary_country',
       '_categories',
