@@ -1,10 +1,9 @@
-var geo_common = require ('./_geo_common');
-var _ = require('lodash');
-var defaults = require('../query/reverse_defaults');
-var LAT_LON_IS_REQUIRED = true,
-    CIRCLE_IS_REQUIRED = false;
-
-const non_coarse_layers = ['venue', 'address', 'street'];
+const _ = require('lodash');
+const geo_common = require ('./_geo_common');
+const LAT_LON_IS_REQUIRED = true;
+const CIRCLE_IS_REQUIRED = false;
+const CIRCLE_MIN_RADIUS = 0.00001;
+const CIRCLE_MAX_RADIUS = 5.0;
 
 // validate inputs, convert types and apply defaults
 function _sanitize( raw, clean ){
@@ -31,6 +30,15 @@ function _sanitize( raw, clean ){
 
     // santize the boundary.circle
     geo_common.sanitize_circle( 'boundary.circle', clean, raw, CIRCLE_IS_REQUIRED );
+
+    // clamp the 'boundary.circle.radius' param to an absolute value range.
+    // note: large radius values have a severe performance impact.
+    if (_.isNumber(clean['boundary.circle.radius']) ){
+      clean['boundary.circle.radius'] = _.clamp(
+        clean['boundary.circle.radius'],
+        CIRCLE_MIN_RADIUS, CIRCLE_MAX_RADIUS
+      );
+    }
 
   }
   catch (err) {
