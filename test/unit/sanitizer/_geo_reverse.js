@@ -61,27 +61,76 @@ module.exports.tests.warning_situations = (test, common) => {
 };
 
 module.exports.tests.success_conditions = (test, common) => {
-  test('boundary.circle.radius specified in request should override default', (t) => {
+  // note: this behaviour is historic and should probably be removed.
+  // it's possible to add non-numeric tokens to the boundary.circle.radius
+  // value and they are simply stripped out by parseFloat() with warning.
+  test('boundary.circle.radius must be a positive number', (t) => {
     const raw = {
       'point.lat': '12.121212',
       'point.lon': '21.212121',
-      'boundary.circle.radius': '3248732857km' // this will never be the default
+      'boundary.circle.radius': '1km' // note the 'km'
     };
     const clean = {};
     const errorsAndWarnings = sanitizer.sanitize(raw, clean);
 
-    t.equals(raw['boundary.circle.lat'], 12.121212);
-    t.equals(raw['boundary.circle.lon'], 21.212121);
-    t.equals(raw['boundary.circle.radius'], '3248732857km');
     t.equals(clean['boundary.circle.lat'], 12.121212);
     t.equals(clean['boundary.circle.lon'], 21.212121);
-    t.equals(clean['boundary.circle.radius'], 3248732857.0);
+    t.equals(clean['boundary.circle.radius'], 1.0);
 
     t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] });
     t.end();
-
   });
 
+  test('boundary.circle.radius specified in request should override default', (t) => {
+    const raw = {
+      'point.lat': '12.121212',
+      'point.lon': '21.212121',
+      'boundary.circle.radius': '2'
+    };
+    const clean = {};
+    const errorsAndWarnings = sanitizer.sanitize(raw, clean);
+
+    t.equals(clean['boundary.circle.lat'], 12.121212);
+    t.equals(clean['boundary.circle.lon'], 21.212121);
+    t.equals(clean['boundary.circle.radius'], 2.0);
+
+    t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] });
+    t.end();
+  });
+
+  test('boundary.circle.radius specified should be clamped to MAX', (t) => {
+    const raw = {
+      'point.lat': '12.121212',
+      'point.lon': '21.212121',
+      'boundary.circle.radius': '10000'
+    };
+    const clean = {};
+    const errorsAndWarnings = sanitizer.sanitize(raw, clean);
+
+    t.equals(clean['boundary.circle.lat'], 12.121212);
+    t.equals(clean['boundary.circle.lon'], 21.212121);
+    t.equals(clean['boundary.circle.radius'], 5.0); // CIRCLE_MAX_RADIUS
+
+    t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] });
+    t.end();
+  });
+
+  test('boundary.circle.radius specified should be clamped to MIN', (t) => {
+    const raw = {
+      'point.lat': '12.121212',
+      'point.lon': '21.212121',
+      'boundary.circle.radius': '0.000000000000001'
+    };
+    const clean = {};
+    const errorsAndWarnings = sanitizer.sanitize(raw, clean);
+
+    t.equals(clean['boundary.circle.lat'], 12.121212);
+    t.equals(clean['boundary.circle.lon'], 21.212121);
+    t.equals(clean['boundary.circle.radius'], 0.00001); // CIRCLE_MIN_RADIUS
+
+    t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] });
+    t.end();
+  });
 };
 
 module.exports.all = (tape, common) => {
