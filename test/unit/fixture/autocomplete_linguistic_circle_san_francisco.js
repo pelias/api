@@ -33,7 +33,7 @@ module.exports = {
                   'field': 'popularity',
                   'missing': 1
                 },
-                'weight': 7
+                'weight': 5
               }
             ],
             'score_mode': 'first',

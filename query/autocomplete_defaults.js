@@ -138,7 +138,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'popularity:field': 'popularity',
   'popularity:modifier': 'log1p',
   'popularity:max_boost': 20,
-  'popularity:weight': 7,
+  'popularity:weight': 5,
 
   'population:field': 'population',
   'population:modifier': 'log1p',
