@@ -5,7 +5,14 @@ module.exports = {
         'constant_score': {
           'filter': {
             'multi_match': {
-              'fields': ['name.default', 'name.en'],
+              'fields': [
+                'name.default',
+                'name.en',
+                'name.alt',
+                'name.abbr',
+                'name.code',
+                'name.org'
+              ],
               'analyzer': 'peliasQuery',
               'query': 'test',
               'boost': 100,

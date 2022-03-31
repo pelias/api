@@ -1,5 +1,5 @@
-function toMultiFields(baseField, suffix) {
-  return [baseField, toSingleField(baseField, suffix)];
+function toMultiFields(baseField, ...suffix) {
+  return [baseField].concat(suffix.map(suffix => toSingleField(baseField, suffix)));
 }
 
 function toSingleField(baseField, suffix) {

@@ -1,5 +1,6 @@
 const peliasQuery = require('pelias-query');
 const toMultiFields = require('./helper').toMultiFields;
+const additionalNameFields = ['alt', 'abbr', 'code', 'org'];
 
 /**
   Ngrams view with the additional properties to enable:
@@ -16,7 +17,11 @@ module.exports = function( vs ){
   }
 
   vs.var('multi_match:ngrams_strict:input', vs.var('input:name').get());
-  vs.var('multi_match:ngrams_strict:fields', toMultiFields(vs.var('ngram:field').get(), vs.var('lang').get()));
+  vs.var('multi_match:ngrams_strict:fields', toMultiFields(
+    vs.var('ngram:field').get(),
+    vs.var('lang').get(),
+    ...additionalNameFields
+  ));
 
   vs.var('multi_match:ngrams_strict:analyzer', vs.var('ngram:analyzer').get());
   vs.var('multi_match:ngrams_strict:slop', vs.var('phrase:slop').get());

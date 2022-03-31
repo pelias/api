@@ -3,7 +3,14 @@ module.exports = {
     'bool': {
       'must': [{
         'multi_match': {
-          'fields': ['phrase.default', 'phrase.en'],
+          'fields': [
+            'phrase.default',
+            'phrase.en',
+            'phrase.alt',
+            'phrase.abbr',
+            'phrase.code',
+            'phrase.org'
+          ],
           'analyzer': 'peliasQuery',
           'type': 'phrase',
           'slop': 3,
@@ -15,7 +22,14 @@ module.exports = {
         'constant_score': {
           'filter': {
             'multi_match': {
-              'fields': ['name.default', 'name.en'],
+              'fields': [
+                'name.default',
+                'name.en',
+                'name.alt',
+                'name.abbr',
+                'name.code',
+                'name.org'
+              ],
               'analyzer': 'peliasQuery',
               'query': 'three',
               'boost': 100,

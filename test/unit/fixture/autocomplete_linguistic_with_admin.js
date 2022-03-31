@@ -4,7 +4,14 @@ module.exports = {
       'must': [
         {
           'multi_match': {
-            'fields': ['phrase.default', 'phrase.en'],
+            'fields': [
+              'phrase.default',
+              'phrase.en',
+              'phrase.alt',
+              'phrase.abbr',
+              'phrase.code',
+              'phrase.org'
+            ],
             'analyzer': 'peliasQuery',
             'type': 'phrase',
             'slop': 3,
