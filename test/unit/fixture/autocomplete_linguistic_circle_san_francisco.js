@@ -25,7 +25,7 @@ module.exports = {
 
               }
             },
-            'max_boost': 20,
+            'max_boost': 25,
             'functions': [
               {
                 'field_value_factor': {

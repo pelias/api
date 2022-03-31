@@ -44,7 +44,7 @@ module.exports = {
           'query': {
             'match_all': {}
           },
-          'max_boost': 20,
+          'max_boost': 25,
           'score_mode': 'first',
           'boost_mode': 'replace',
           'functions': [{
