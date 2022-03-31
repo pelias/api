@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const defaultLabelGenerator = require('pelias-labels');
 
 function setup(labelGenerator) {
@@ -16,7 +18,7 @@ function assignLabel(req, res, next, labelGenerator) {
   }
 
   res.data.forEach(function (result) {
-    result.label = labelGenerator(result);
+    result.label = labelGenerator(result, _.get(req, 'clean.lang.iso6393'));
   });
 
   next();
