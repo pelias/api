@@ -6,11 +6,9 @@ module.exports = {
           'multi_match': {
             'fields': [
               'phrase.default',
+              'phrase.default_*',
               'phrase.en',
-              'phrase.alt',
-              'phrase.abbr',
-              'phrase.code',
-              'phrase.org'
+              'phrase.en_*'
             ],
             'analyzer': 'peliasQuery',
             'type': 'phrase',

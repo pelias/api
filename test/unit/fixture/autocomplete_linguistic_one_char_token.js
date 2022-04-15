@@ -7,11 +7,9 @@ module.exports = {
             'multi_match': {
               'fields': [
                 'name.default',
+                'name.default_*',
                 'name.en',
-                'name.alt',
-                'name.abbr',
-                'name.code',
-                'name.org'
+                'name.en_*'
               ],
               'analyzer': 'peliasQuery',
               'query': 't',
