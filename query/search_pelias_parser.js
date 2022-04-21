@@ -5,7 +5,10 @@ const textParser = require('./text_parser_pelias');
 const config = require('pelias-config').generate().api;
 
 var placeTypes = require('../helper/placeTypes');
-var views = { custom_boosts: require('./view/boost_sources_and_layers') };
+var views = {
+  custom_boosts: require('./view/boost_sources_and_layers'),
+  query_multi_match: require('./view/query_multi_match')
+};
 
 // region_a is also an admin field which can be identified by
 // the pelias_parser. this functionality was inherited from the
@@ -18,10 +21,10 @@ var adminFields = placeTypes.concat(['region_a']);
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
-query.score( peliasQuery.view.leaf.match('main'), 'must' );
+query.score( views.query_multi_match('match', 'main'), 'must' );
 
 // scoring boost
-const phrase_view = peliasQuery.view.leaf.match_phrase('main');
+const phrase_view = views.query_multi_match('match_phrase', 'main', 'phrase');
 
 query.score( phrase_view );
 query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );

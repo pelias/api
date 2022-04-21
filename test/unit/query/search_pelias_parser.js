@@ -227,7 +227,7 @@ module.exports.tests.query = function(test, common) {
 
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape('search query ' + name, testFunction);
+    return tape('search pelias parser ' + name, testFunction);
   }
 
   for( var testCase in module.exports.tests ){

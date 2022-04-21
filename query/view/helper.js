@@ -1,5 +1,12 @@
+const _ = require('lodash');
+
 function toMultiFields(baseField, ...suffix) {
-  return [baseField, ...suffix.map(suffix => toSingleField(baseField, suffix))];
+  return [
+    baseField,
+    ...suffix
+      .filter(e => _.isString(e) && !_.isEmpty(e))
+      .map(suffix => toSingleField(baseField, suffix))
+  ];
 }
 
 function toSingleField(baseField, suffix) {

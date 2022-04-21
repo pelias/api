@@ -1,5 +1,4 @@
 const peliasQuery = require('pelias-query');
-const toMultiFields = require('./helper').toMultiFields;
 const toMultiFieldsWithWildcards = require('./helper').toMultiFieldsWithWildcards;
 
 /**
