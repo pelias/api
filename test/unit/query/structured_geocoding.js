@@ -14,7 +14,10 @@ const views = {
   sources: 'sources view',
   layers: 'layers view',
   categories: 'categories view',
-  boundary_gid: 'boundary_gid view'
+  boundary_gid: 'boundary_gid view',
+  leaf: {
+    multi_match: () => 'multi_match leaf view'
+  }
 };
 
 module.exports.tests = {};
@@ -76,7 +79,7 @@ module.exports.tests.query = (test, common) => {
     ]);
 
     t.deepEquals(query.body.filter_functions, [
-      'boundary_country view',
+      'multi_match leaf view',
       'boundary_circle view',
       'boundary_rect view',
       'sources view',
@@ -592,7 +595,7 @@ module.exports.tests.boundary_country = (test, common) => {
       }
     })(clean);
 
-    t.equals(query.body.vs.var('boundary:country').toString(), 'boundary country value');
+    t.equals(query.body.vs.var('multi_match:boundary_country:input').toString(), 'boundary country value');
 
     t.end();
 
