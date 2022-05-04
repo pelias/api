@@ -72,6 +72,10 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'admin:country_a:boost': 1,
   'admin:country_a:cutoff_frequency': 0.01,
 
+  // these options affect the `boundary.country` hard filter
+  'multi_match:boundary_country:analyzer': 'standard',
+  'multi_match:boundary_country:fields': ['parent.country_a', 'parent.dependency_a'],
+
   'admin:country:analyzer': 'peliasAdmin',
   'admin:country:field': 'parent.country.ngram',
   'admin:country:boost': 1,

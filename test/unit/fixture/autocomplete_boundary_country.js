@@ -51,12 +51,12 @@ module.exports = {
         }
       }],
       'filter': [{
-        'match': {
-          'parent.country_a.ngram': {
+          'multi_match': {
+            'type': 'best_fields',
+            'fields': ['parent.country_a', 'parent.dependency_a'],
             'analyzer': 'standard',
             'query': 'ABC'
           }
-        }
       }]
     }
   },

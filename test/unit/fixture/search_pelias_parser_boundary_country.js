@@ -65,11 +65,11 @@ module.exports = {
           }
         },
         {
-          'match': {
-            'parent.country_a': {
-              'analyzer': 'standard',
-              'query': 'ABC'
-            }
+          'multi_match': {
+            'type': 'best_fields',
+            'fields': ['parent.country_a', 'parent.dependency_a'],
+            'analyzer': 'standard',
+            'query': 'ABC'
           }
         }
       ]

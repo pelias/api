@@ -33,11 +33,11 @@ module.exports = {
             'bool': {
               'must': [
                 {
-                  'match': {
-                    'parent.country_a': {
-                      'analyzer': 'standard',
-                      'query': 'ABC DEF'
-                    }
+                  'multi_match': {
+                    'type': 'best_fields',
+                    'fields': ['parent.country_a', 'parent.dependency_a'],
+                    'analyzer': 'standard',
+                    'query': 'ABC DEF'
                   }
                 },
                 {

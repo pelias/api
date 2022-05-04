@@ -15,7 +15,7 @@ structuredQuery.score( peliasQuery.view.population_only_function );
 // --------------------------------
 
 // non-scoring hard filters
-structuredQuery.filter( peliasQuery.view.boundary_country );
+structuredQuery.filter( peliasQuery.view.leaf.multi_match('boundary_country') );
 structuredQuery.filter( peliasQuery.view.boundary_circle );
 structuredQuery.filter( peliasQuery.view.boundary_rect );
 structuredQuery.filter( peliasQuery.view.sources );
@@ -87,7 +87,7 @@ function generateQuery( clean ){
   // boundary country
   if( _.isArray(clean['boundary.country']) && !_.isEmpty(clean['boundary.country']) ){
     vs.set({
-      'boundary:country': clean['boundary.country'].join(' ')
+      'multi_match:boundary_country:input': clean['boundary.country'].join(' ')
     });
   }
 
