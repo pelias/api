@@ -1,5 +1,5 @@
 const peliasQuery = require('pelias-query');
-const toMultiFields = require('./helper').toMultiFields;
+const toMultiFieldsWithWildcards = require('./helper').toMultiFieldsWithWildcards;
 
 /**
   Phrase view which trims the 'input:name' and uses ALL BUT the last token.
@@ -18,7 +18,10 @@ module.exports = function( vs ){
 
   // set the 'input' variable to all but the last token
   vs.var(`multi_match:${view_name}:input`).set( tokens.join(' ') );
-  vs.var(`multi_match:${view_name}:fields`).set(toMultiFields(vs.var('phrase:field').get(), vs.var('lang').get()));
+  vs.var(`multi_match:${view_name}:fields`, toMultiFieldsWithWildcards(
+    vs.var('phrase:field').get(),
+    vs.var('lang').get(),
+  ));
 
   vs.var(`multi_match:${view_name}:analyzer`).set(vs.var('phrase:analyzer').get());
   vs.var(`multi_match:${view_name}:boost`).set(vs.var('phrase:boost').get());

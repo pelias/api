@@ -1,5 +1,12 @@
-function toMultiFields(baseField, suffix) {
-  return [baseField, toSingleField(baseField, suffix)];
+const _ = require('lodash');
+
+function toMultiFields(baseField, ...suffix) {
+  return [
+    baseField,
+    ...suffix
+      .filter(e => _.isString(e) && !_.isEmpty(e))
+      .map(suffix => toSingleField(baseField, suffix))
+  ];
 }
 
 function toSingleField(baseField, suffix) {
@@ -9,4 +16,12 @@ function toSingleField(baseField, suffix) {
   return parts.join('.');
 }
 
-module.exports = { toMultiFields, toSingleField };
+function toMultiFieldsWithWildcards(baseField, ...suffix) {
+  const result = [];
+  toMultiFields(baseField, ...suffix).forEach(field => {
+    result.push(field, `${field}_*`);
+  });
+  return result;
+}
+
+module.exports = { toMultiFields, toSingleField, toMultiFieldsWithWildcards };

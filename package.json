@@ -55,7 +55,7 @@
     "pelias-microservice-wrapper": "^1.10.0",
     "pelias-model": "^9.0.0",
     "pelias-parser": "2.2.0",
-    "pelias-query": "^11.0.0",
+    "pelias-query": "github:pelias/query#additional-name-fields",
     "pelias-sorting": "^1.2.0",
     "predicates": "^2.0.0",
     "regenerate": "^1.4.0",

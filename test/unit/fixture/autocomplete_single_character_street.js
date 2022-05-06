@@ -3,7 +3,12 @@ module.exports = {
     'bool': {
       'must': [{
         'multi_match': {
-          'fields': ['phrase.default', 'phrase.en'],
+          'fields': [
+            'phrase.default',
+            'phrase.default_*',
+            'phrase.en',
+            'phrase.en_*'
+          ],
           'analyzer': 'peliasQuery',
           'query': 'k road',
           'boost': 1,

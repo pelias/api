@@ -4,22 +4,27 @@ module.exports = {
   'query': {
     'bool': {
       'must': [{
-        'match': {
-          'phrase.default': {
-            'query': '123 main st',
-            'minimum_should_match': '1<-1 3<-25%',
-            'analyzer': 'peliasQuery',
-          }
+        'multi_match': {
+          'query': '123 main st',
+          'minimum_should_match': '1<-1 3<-25%',
+          'analyzer': 'peliasQuery',
+          'fields': [
+            'phrase.default',
+            'phrase.default_*'
+          ]
         }
       }],
       'should': [{
-        'match_phrase': {
-          'phrase.default': {
-            'query': '123 main st',
-            'analyzer': 'peliasPhrase',
-            'slop': 2,
-            'boost': 1
-          }
+        'multi_match': {
+          'query': '123 main st',
+          'type': 'phrase',
+          'analyzer': 'peliasPhrase',
+          'fields': [
+            'phrase.default',
+            'phrase.default_*'
+          ],
+          'slop': 2,
+          'boost': 1
         }
       },
       {

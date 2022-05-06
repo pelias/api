@@ -14,7 +14,8 @@ module.exports = {
                       'query': 'query value',
                       'type': 'phrase',
                       'fields': [
-                        'phrase.default'
+                        'phrase.default',
+                        'phrase.default_*'
                       ]
                     }
                   },
