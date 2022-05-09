@@ -45,7 +45,13 @@ module.exports = (tm, done) => {
     }
 
     // query error
-    if( err ){ logger.error( err ); }
+    if( err ){
+      logger.error( err );
+
+      if (peliasConfig.get('api.targets.auto_discover_required') === true) {
+        process.exit(1);
+      }
+    }
 
     // invalid response
     else if ( totalHits < 1 ){

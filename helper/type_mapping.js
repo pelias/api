@@ -1,8 +1,11 @@
 const TypeMapping = require('./TypeMapping');
 
-// instantiate a new type mapping
+// instantiate a singleton type mapping
+// loading normal defaults from pelias-config happens now
+// updating that config from Elasticsearch happens later
+// before the webserver is started
 var tm = new TypeMapping();
-tm.load();
+tm.loadFromConfig();
 
 // export singleton
 module.exports = tm;
