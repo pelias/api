@@ -45,7 +45,11 @@ module.exports = (tm, done) => {
     }
 
     // query error
-    if( err ){ logger.error( err ); }
+    if( err ){
+      logger.error( err );
+
+      process.exit(1);
+    }
 
     // invalid response
     else if ( totalHits < 1 ){
