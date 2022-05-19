@@ -109,6 +109,6 @@ module.exports = {
     }
   },
   'size': 10,
-  'sort': [ '_score' ],
+  'sort': ['_score', '_id'],
   'track_scores': true
 };

@@ -63,7 +63,7 @@ module.exports = {
       }]
     }
   },
-  'sort': [ '_score' ],
+  'sort': ['_score', '_id'],
   'size': 20,
   'track_scores': true
 };
