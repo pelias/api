@@ -103,12 +103,7 @@ module.exports.tests.general_tests = (test, common) => {
 module.exports.tests.successful_sort = (test, common) => {
   test('comparator should be sort res.data', (t) => {
     const logger = mock_logger();
-
-    const comparator = () => {
-      return (a, b) => {
-        return a._id > b._id;
-      };
-    };
+    const comparator = () => (a, b) => (a._id > b._id) ? +1 : -1;
 
     const sortResponseData = proxyquire('../../../middleware/sortResponseData', {
       'pelias-logger': logger
@@ -130,9 +125,9 @@ module.exports.tests.successful_sort = (test, common) => {
     };
 
     sort(req, res, () => {
-      t.deepEquals(res.data.shift(), { _id: 1 });
-      t.deepEquals(res.data.shift(), { _id: 2 });
-      t.deepEquals(res.data.shift(), { _id: 3 });
+      t.deepEquals(res.data[0], { _id: 1 });
+      t.deepEquals(res.data[1], { _id: 2 });
+      t.deepEquals(res.data[2], { _id: 3 });
 
       t.ok(logger.isDebugMessage(
         'req.clean: {"field":"value"}, pre-sort: [3,2,1], post-sort: [1,2,3]'));
