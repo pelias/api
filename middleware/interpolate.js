@@ -2,7 +2,6 @@ const async = require('async');
 const logger = require( 'pelias-logger' ).get( 'api' );
 const source_mapping = require('../helper/type_mapping').source_mapping;
 const _ = require('lodash');
-const stable = require('stable');
 const Debug = require('../helper/debug');
 const debugLog = new Debug('middleware:interpolate');
 
@@ -140,7 +139,7 @@ function setup(service, should_execute, interpolationConfiguration) {
 
       // sort the results to ensure that addresses show up higher than street centroids
       if (_.has(res, 'data')) {
-        res.data = stable(res.data, (a, b) => {
+        res.data.sort((a, b) => {
           if (a.layer === 'address' && b.layer !== 'address') { return -1; }
           if (a.layer !== 'address' && b.layer === 'address') { return 1; }
           return 0;
