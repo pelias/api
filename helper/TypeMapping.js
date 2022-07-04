@@ -126,15 +126,13 @@ TypeMapping.prototype.loadTargets = function( targetsBlock ){
 
 // load values from either pelias config file or from elasticsearch
 TypeMapping.prototype.load = function( done ){
+  // load targets from config file
+  this.loadFromConfig();
 
-  // load pelias config
   const peliasConfigTargets = _.get(
     require('pelias-config').generate(require('../schema')),
     'api.targets', {}
   );
-
-  // load targets from config file
-  this.loadTargets( peliasConfigTargets );
 
   // do not load values from elasticsearch
   if( true !== peliasConfigTargets.auto_discover ){
@@ -144,6 +142,19 @@ TypeMapping.prototype.load = function( done ){
 
   // load values from elasticsearch
   loadFromElasticsearch(this, done);
+};
+
+// load values from either pelias config file or from elasticsearch
+TypeMapping.prototype.loadFromConfig = function( done ){
+
+  // load pelias config
+  const peliasConfigTargets = _.get(
+    require('pelias-config').generate(require('../schema')),
+    'api.targets', {}
+  );
+
+  // load targets from config file
+  this.loadTargets( peliasConfigTargets );
 };
 
 // replace the contents of an object or array

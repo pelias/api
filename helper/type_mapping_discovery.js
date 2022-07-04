@@ -6,7 +6,7 @@ const logger = require('pelias-logger').get('api:type_mapping_discovery');
 /**
  * This module allows discovery of the sources and layers used
  * in an existing elasticsearch index.
- * 
+ *
  * note: this will override any previously configured type mappings.
  */
 
@@ -43,15 +43,21 @@ module.exports = (tm, done) => {
     if( _.has(res, 'hits.total') ) {
       totalHits =  _.isPlainObject(res.hits.total) ? res.hits.total.value : res.hits.total;
     }
-    
+
     // query error
-    if( err ){ logger.error( err ); }
-    
+    if( err ){
+      logger.error( err );
+
+      if (peliasConfig.get('api.targets.auto_discover_required') === true) {
+        process.exit(1);
+      }
+    }
+
     // invalid response
     else if ( totalHits < 1 ){
       logger.error( 'no hits for aggregation' );
     }
-    
+
     // valid response
     else {
 
