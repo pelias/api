@@ -28,7 +28,7 @@
     }]
   },
   "logger": {
-    "level": "info"
+    "level": "warn"
   },
   "api": {
     "textAnalyzer": "addressit"
