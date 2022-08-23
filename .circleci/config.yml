@@ -6,15 +6,16 @@ aliases:
   - &test
     name: Test
     command: npm run test
-  - &GCP-auth
-    name: GCP Authenticate
+  - &google-sdk-container-config
+    docker:
+      - image: google/cloud-sdk:latest
+        auth:
+          username: $DOCKERHUB_LOGIN
+          password: $DOCKERHUB_PASSWORD
+  - &GCP-auth-docker
+    name: GCP authentication with docker
     command: |
-      echo 'export GCLOUD_SERVICE_KEY="$GCLOUD_SERVICE_KEY"' >> $BASH_ENV
-      /tools/gcp_authenticate.sh
-  - &docker-login
-    name: Docker login
-    command: |
-      docker login -u _json_key --password-stdin https://eu.gcr.io <<< "${DOCKER_PASSWORD}"
+      echo $DOCKER_PASSWORD > ${HOME}/account-auth.json
   - &docker-build-and-push
     name: Docker build and push
     command: |
@@ -22,7 +23,8 @@ aliases:
       echo "Image: ${IMAGE}"
       docker build -t $IMAGE .
       docker tag $IMAGE "${IMAGE}":"${VERSION}"
-      docker push $IMAGE
+      docker login -u _json_key --password-stdin https://eu.gcr.io < ${HOME}/account-auth.json
+      docker push "${IMAGE}":"${VERSION}"
     environment:
       CIRCLE_PROJECT_REPONAME: "pelias"
   - &save-dependency-cache
@@ -45,56 +47,41 @@ aliases:
     command: |
           echo "export VERSION=$CIRCLE_BRANCH-v$CIRCLE_BUILD_NUM-$(echo -n $CIRCLE_SHA1 | tail -c 8)"  >> $BASH_ENV
 jobs:
-  install:
+  install-and-test:
     docker:
-      - image: eu.gcr.io/entur-system-1287/circleci-toolbox-image
+      - image: cimg/node:12.22.2
         auth:
-          username: _json_key
-          password: $DOCKER_PASSWORD
+          username: $DOCKERHUB_LOGIN
+          password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
       - run: *install-dependencies
       - save-cache: *save-dependency-cache
-  test:
-    docker:
-      - image: eu.gcr.io/entur-system-1287/circleci-toolbox-image
-        auth:
-          username: _json_key
-          password: $DOCKER_PASSWORD
-    steps:
-      - checkout
-      - restore-cache: *restore-dependency-cache
       - run: *test
   docker-build:
-    docker:
-      - image: eu.gcr.io/entur-system-1287/circleci-toolbox-image
-        auth:
-          username: _json_key
-          password: $DOCKER_PASSWORD
+    <<: *google-sdk-container-config
     steps:
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_caching: true
+      - attach_workspace:
+          at: ~/project
+      - run: *GCP-auth-docker
       - checkout
       - restore-cache: *restore-dependency-cache
       - run: *create-image-version
       - run: *tag-git-version
-      - run: *GCP-auth
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run: *docker-login
       - run: *docker-build-and-push
 workflows:
   version: 2
   install-test-build-deploy:
     jobs:
-      - install:
-          context: org-carbon
-      - test:
-          context: org-carbon
-          requires:
-            - install
+      - install-and-test:
+          context: global
       - docker-build:
           context: global
           requires:
-            - test
+            - install-and-test
           filters:
             branches:
               only:
