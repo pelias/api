@@ -209,27 +209,6 @@ module.exports.tests.layers = (test, common) => {
 
   });
 
-  test('non-empty array clean.layers should only set non-coarse layers in vs', t => {
-    const clean = {
-      layers: all_layers
-    };
-
-    const query = proxyquire('../../../query/reverse', {
-      'pelias-query': {
-        layout: {
-          FilteredBooleanQuery: MockQuery
-        },
-        view: views,
-        Vars: require('pelias-query').Vars
-      },
-      './reverse_defaults': {}
-    })(clean);
-
-    t.deepEquals(query.body.vs.var('layers').toString(), ['address', 'venue', 'street']);
-    t.end();
-
-  });
-
 };
 
 module.exports.tests.focus_point = (test, common) => {

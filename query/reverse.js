@@ -39,8 +39,7 @@ function generateQuery( clean ){
 
   // layers
   if( _.isArray(clean.layers) && !_.isEmpty(clean.layers) ) {
-    // only include non-coarse layers
-    vs.var( 'layers', _.intersection(clean.layers, ['address', 'street', 'venue']));
+    vs.var( 'layers', clean.layers);
   }
 
   // focus point to score by distance
