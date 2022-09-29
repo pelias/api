@@ -57,8 +57,7 @@ module.exports.tests.query = (test, common) => {
     t.notOk(query.body.vs.isset('input:categories'));
     t.notOk(query.body.vs.isset('boundary:gid'));
 
-    t.deepEquals(query.body.score_functions, [
-    ]);
+    t.deepEquals(query.body.score_functions, []);
 
     t.deepEquals(query.body.filter_functions, [
       'boundary_circle view',
@@ -209,6 +208,66 @@ module.exports.tests.layers = (test, common) => {
 
   });
 
+  test('non-empty array clean.layers should only set non-coarse layers in vs, using user-defined configuration for coarse layers', t => {
+    const clean = {
+      layers: all_layers
+    };
+
+    const config_with_coarse_layers = {
+      generate: function () {
+        return {
+          api: {
+            targets: {
+              layer_aliases: {
+                coarse: [
+                  'country',
+                  'county',
+                  'locality'
+                ]
+              }
+            }
+          }
+        };
+      }
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-config': config_with_coarse_layers,
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {}
+    })(clean);
+
+    t.deepEquals(query.body.vs.var('layers').toString(), _.difference(clean.layers, ['country', 'county', 'locality']));
+    t.end();
+
+  });
+
+  test('non-empty array clean.layers should only set non-coarse layers in vs, using default configuration for coarse layers', t => {
+    const clean = {
+      layers: all_layers
+    };
+
+    const query = proxyquire('../../../query/reverse', {
+      'pelias-query': {
+        layout: {
+          FilteredBooleanQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      },
+      './reverse_defaults': {}
+    })(clean);
+
+    t.deepEquals(query.body.vs.var('layers').toString(), [ 'address', 'venue', 'street' ]);
+    t.end();
+
+  });
 };
 
 module.exports.tests.focus_point = (test, common) => {
