@@ -40,7 +40,7 @@ function generateQuery( clean ){
 
   // layers
   if( _.isArray(clean.layers) && !_.isEmpty(clean.layers) ) {
-    vs.var( 'layers', _.difference(clean.layers, peliasConfig.api.targets.layer_aliases.coarse));
+    vs.var( 'layers', _.difference(clean.layers, peliasConfig.get('api.targets.layer_aliases.coarse', [])));
   }
 
   // focus point to score by distance

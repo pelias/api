@@ -213,20 +213,25 @@ module.exports.tests.layers = (test, common) => {
       layers: all_layers
     };
 
+    const coarseLayers = [
+      'country',
+      'county',
+      'locality'
+    ];
+
     const config_with_coarse_layers = {
       generate: function () {
         return {
           api: {
             targets: {
               layer_aliases: {
-                coarse: [
-                  'country',
-                  'county',
-                  'locality'
-                ]
+                coarse: coarseLayers
               }
             }
-          }
+          },
+          get: function () {
+            return coarseLayers;
+          },
         };
       }
     };
