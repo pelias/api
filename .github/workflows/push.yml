@@ -2,28 +2,10 @@ name: Continuous Integration
 on: push
 jobs:
   unit-tests:
-    runs-on: '${{ matrix.os }}'
-    strategy:
-      matrix:
-        os:
-          - ubuntu-20.04
-        node-version:
-          - 12.x
-          - 14.x
-          - 16.x
-    steps:
-      - uses: actions/checkout@v2
-      - name: 'Install node.js ${{ matrix.node-version }}'
-        uses: actions/setup-node@v2-beta
-        with:
-          node-version: '${{ matrix.node-version }}'
-      - name: Run unit tests
-        run: |
-          npm install
-          npm run ci
+    uses: ./.github/workflows/_test.yml
   npm-publish:
     needs: unit-tests
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && needs.unit-tests.result == 'success'
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
