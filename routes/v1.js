@@ -206,10 +206,10 @@ function addRoutes(app, peliasConfig) {
 
   var routers = {
     index: createRouter([
-      controllers.markdownToHtml(peliasConfig.api, './public/apiDoc.md')
+      controllers.markdownToHtml(peliasConfig.api, path.join(__dirname, '../public/apiDoc.md'))
     ]),
     attribution: createRouter([
-      controllers.markdownToHtml(peliasConfig.api, './public/attribution.md')
+      controllers.markdownToHtml(peliasConfig.api, path.join(__dirname, '../public/attribution.md'))
     ]),
     search: createRouter([
       sanitizers.search.middleware(peliasConfig.api),
