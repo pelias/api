@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const fs = require('fs');
 const path = require('path');
 const requireAll = require('require-all');
 const express = require('express');
@@ -205,12 +206,6 @@ function addRoutes(app, peliasConfig) {
   /** ------------------------- routers ------------------------- **/
 
   var routers = {
-    index: createRouter([
-      controllers.markdownToHtml(peliasConfig.api, './public/apiDoc.md')
-    ]),
-    attribution: createRouter([
-      controllers.markdownToHtml(peliasConfig.api, './public/attribution.md')
-    ]),
     search: createRouter([
       sanitizers.search.middleware(peliasConfig.api),
       middleware.requestLanguage,
@@ -346,11 +341,19 @@ function addRoutes(app, peliasConfig) {
     ])
   };
 
+  if (fs.existsSync('./public')) {
+    routers.index = createRouter([
+      controllers.markdownToHtml(peliasConfig.api, './public/apiDoc.md')
+    ]);
+    routers.attribution = createRouter([
+      controllers.markdownToHtml(peliasConfig.api, './public/attribution.md')
+    ]);
+    app.get ( base,                          routers.index );
+    app.get ( base + 'attribution',          routers.attribution );
+    app.get (        '/attribution',         routers.attribution );
+  }
 
   // static data endpoints
-  app.get ( base,                          routers.index );
-  app.get ( base + 'attribution',          routers.attribution );
-  app.get (        '/attribution',         routers.attribution );
   app.get (        '/status',              routers.status );
 
   // backend dependent endpoints
