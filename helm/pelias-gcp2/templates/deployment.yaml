@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "app.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "common.labels" . | indent 4 }}
+spec:
+  progressDeadlineSeconds: 600
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "app.name" . }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        {{- include "common.labels" . | indent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.identifier }}
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        env:
+         - name: TZ
+           value: Europe/Oslo
+        resources:
+          limits:
+            cpu: {{ .Values.resources.cpuLimit }}
+            memory: {{ .Values.resources.memLimit }}
+          requests:
+            cpu: {{ .Values.resources.cpuRequest }}
+            memory: {{ .Values.resources.memRequest }}
+        ports:
+         - containerPort: {{ .Values.service.http.internalPort }}
+           protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: {{ .Values.service.http.internalPort }}
+          timeoutSeconds: 5
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - name: elasticsearch
+        image: {{ .Values.secondaryImage.identifier }}
+        imagePullPolicy: {{ .Values.secondaryImage.imagePullPolicy }}
+        env:
+         - name: TZ
+           value: Europe/Oslo
+         - name: GCS_BASE_PATH
+           value: {{.Values.gcpBasePath}}
+        ports:
+        - containerPort: {{ .Values.secondaryImage.containerPort }}
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: _cluster/health?wait_for_status=yellow&timeout=120s
+            port: {{ .Values.secondaryImage.containerPort }}
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: {{ .Values.secondaryImage.resources.cpuLimit }}
+            memory: {{ .Values.secondaryImage.resources.memLimit }}
+          requests:
+            cpu: {{ .Values.secondaryImage.resources.cpuRequest }}
+            memory: {{ .Values.secondaryImage.resources.memRequest }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+      serviceAccountName: application
+      terminationGracePeriodSeconds: 30
+

@@ -1,0 +1,38 @@
+env: dev
+
+replicas: 1
+
+
+rollingUpdate:
+  maxSurge: 1
+  maxUnavailable: 0
+
+resources:
+  cpuLimit: 800m
+  memLimit: 750Mi
+  cpuRequest: 200m
+  memRequest: 500Mi
+
+
+image:
+  identifier: ${artifact.metadata.image}
+  imagePullPolicy: Always
+secondaryImage:
+  identifier: eu.gcr.io/entur-system-1287/es-static:master-v24-5921ecae
+  imagePullPolicy: Always
+  containerPort: 9200
+  resources:
+    cpuLimit: '2'
+    memLimit: 1500Mi
+    cpuRequest: 600m
+    memRequest: 1000Mi
+
+service:
+  http:
+    externalPort: 80
+    internalPort: 3000
+
+horizontalPodAutoscaler:
+  maxReplicas: 2
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
