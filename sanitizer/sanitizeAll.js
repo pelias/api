@@ -1,5 +1,6 @@
 const PeliasParameterError = require('./PeliasParameterError');
 const PeliasTimeoutError = require('../sanitizer/PeliasTimeoutError');
+const peliasConfig = require('pelias-config').generate();
 
 function getCorrectErrorType(message) {
   if (message.includes( 'Timeout')) {
@@ -37,7 +38,7 @@ function sanitize( req, sanitizers ){
   const params = req.query || {};
 
   for (let s in sanitizers) {
-    var sanity = sanitizers[s].sanitize( params, req.clean, req );
+    const sanity = sanitizers[s].sanitize(params, req.clean, req);
 
     // if errors occurred then set them
     // on the req object.
@@ -63,6 +64,7 @@ function checkParameters( req, sanitizers ) {
   // (in this case from the GET querystring params)
   const params = req.query || {};
   const goodParameters = {};
+  const configuredAddendumNamespaces = peliasConfig.get('addendum_namespaces');
 
   for (let s in sanitizers) {
 
@@ -74,7 +76,7 @@ function checkParameters( req, sanitizers ) {
         const prop = sanitizers[s].expected()[t];
         if (prop.hasOwnProperty('name')){
           // adds name of valid parameter
-          goodParameters[prop.name] = prop.name;
+          goodParameters[prop.name] = prop;
         }
       }
     }
@@ -83,7 +85,7 @@ function checkParameters( req, sanitizers ) {
   // add a warning message
   if (Object.keys(goodParameters).length !== 0) {
     for (let p in params) {
-      if (!goodParameters.hasOwnProperty(p)){
+      if (!goodParameters.hasOwnProperty(p) && !configuredAddendumNamespaces.hasOwnProperty(p)) {
         req.warnings = req.warnings.concat('Invalid Parameter: ' + p);
       }
     }
