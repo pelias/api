@@ -11,32 +11,65 @@ function _sanitize(raw, clean) {
   const configuredAddendumNamespaces = peliasConfig.get('addendum_namespaces');
 
   Object.keys(raw)
-    .filter(field => configuredAddendumNamespaces.hasOwnProperty(field))
-    .forEach(field => {
-      const rawValue = raw[field];
+    .filter(namespace => configuredAddendumNamespaces.hasOwnProperty(namespace))
+    .forEach(namespace => {
 
-      if (!nonEmptyString(rawValue)) {
-        messages.errors.push(field + ' should not be empty');
+      if (!nonEmptyString(raw[namespace])) {
+        messages.errors.push(namespace + ' should be a non empty string');
       } else {
-        const validationType = configuredAddendumNamespaces[field].type;
-        if (validationType.toLowerCase() === 'array') {
-          const valuesArray = rawValue.split(',').filter(nonEmptyString);
-          if (_.isArray(valuesArray) && _.isEmpty(valuesArray)) {
-            messages.errors.push(field + ' should not be empty');
-          }
-        } else {
-          if (typeof rawValue !== validationType) {
-            messages.errors.push(field + ': Invalid parameter type, expecting: ' + validationType + ', got: ' + rawValue);
-          }
-          if (validationType === 'number' && isNaN(rawValue)) {
-            messages.errors.push(field + ': Invalid parameter type, expecting: ' + validationType + ', got NaN: ' + rawValue);
-          }
-          if (validationType === 'object' && !_.isObject(rawValue)) {
-            messages.errors.push(field + ': Invalid parameter type, expecting: ' + validationType + ', got: ' + rawValue);
-          }
-          if (validationType === 'object' && _.isArray(rawValue)) {
-            messages.errors.push(field + ': Invalid parameter type, expecting: ' + validationType + ', got array: ' + rawValue);
-          }
+        const rawValue = raw[namespace].trim();
+        const validationType = configuredAddendumNamespaces[namespace].type;
+        switch (validationType.toLowerCase()) {
+          case 'array':
+            const valuesArray = rawValue.split(',').filter(nonEmptyString);
+            if (_.isArray(valuesArray) && _.isEmpty(valuesArray)) {
+              messages.errors.push(namespace + ' should not be empty');
+            } else {
+              clean[namespace] = valuesArray;
+            }
+            break;
+
+          case 'string':
+            clean[namespace] = rawValue;
+            break;
+
+          case 'number':
+            if (isNaN(rawValue)) {
+              messages.errors.push(namespace + ': Invalid parameter type, expecting: ' + validationType + ', got NaN: ' + rawValue);
+            } else {
+              clean[namespace] = Number(rawValue);
+            }
+            break;
+
+          case 'boolean':
+            if ('true' !== rawValue && 'false' !== rawValue) {
+              messages.errors.push(namespace + ': Invalid parameter type, expecting: ' + validationType + ', got: ' + rawValue);
+            } else {
+              clean[namespace] = 'true' === rawValue;
+            }
+            break;
+
+          case 'object':
+            try {
+              const parsed = JSON.parse(rawValue);
+              if (!_.isObject(parsed)) {
+                messages.errors.push(namespace + ': Invalid parameter type, expecting: ' + validationType + ', got ' + rawValue);
+              } else if (_.isArray(parsed)) {
+                messages.errors.push(namespace + ': Invalid parameter type, expecting: ' + validationType + ', got array: ' + rawValue);
+              } else {
+                clean[namespace] = parsed;
+              }
+            } catch (e) {
+              messages.errors.push(
+                namespace + ': Invalid parameter type, expecting: ' + validationType + ', got invalid JSON: ' + rawValue
+              );
+            }
+            break;
+
+          default:
+            if (typeof rawValue !== validationType) {
+              messages.errors.push(namespace + ': Invalid parameter type, expecting: ' + validationType + ', got: ' + rawValue);
+            }
         }
       }
     });
