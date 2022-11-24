@@ -1,8 +1,8 @@
 const proxyquire = require('proxyquire').noCallThru();
-const realPeliasConfig = require('pelias-config');
+const peliasConfig = require('pelias-config');
 
 const makePeliasConfig = (addendum_namespaces) => {
-  const config = realPeliasConfig.generateDefaults();
+  const config = peliasConfig.generateDefaults();
 
   return addendum_namespaces ? {
     generate: () => ({

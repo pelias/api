@@ -1,6 +1,7 @@
 const _ = require('lodash');
-const nonEmptyString = (v) => _.isString(v) && !_.isEmpty(v);
 const peliasConfig = require('pelias-config').generate();
+
+const nonEmptyString = (v) => _.isString(v) && !_.isEmpty(v);
 
 function _sanitize(raw, clean) {
 
@@ -67,9 +68,8 @@ function _sanitize(raw, clean) {
             break;
 
           default:
-            if (typeof rawValue !== validationType) {
-              messages.errors.push(namespace + ': Invalid parameter type, expecting: ' + validationType + ', got: ' + rawValue);
-            }
+            messages.errors.push(namespace + ': Unsupported configured type ' + validationType + ', ' +
+              'valid types are array, string, number, boolean and object');
         }
       }
     });
