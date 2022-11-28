@@ -5,7 +5,6 @@ const textParser = require('./text_parser_pelias');
 const config = require('pelias-config').generate();
 const placeTypes = require('../helper/placeTypes');
 const toSingleField = require('./view/helper').toSingleField;
-const peliasConfig = require('pelias-config').generate();
 
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
@@ -67,7 +66,7 @@ query.filter( peliasQuery.view.categories );
 query.filter( peliasQuery.view.boundary_gid );
 query.filter( views.focus_point_filter );
 
-const configuredAddendumNamespaces = peliasConfig.get('addendum_namespaces');
+const configuredAddendumNamespaces = config.get('addendum_namespaces');
 Object.keys(configuredAddendumNamespaces).forEach(namespace => {
   query.filter( views.addendum_namespace_filter(namespace) );
 });
@@ -83,7 +82,7 @@ function generateQuery( clean ){
   const vs = new peliasQuery.Vars( defaults );
 
   //addendum
-  const configuredAddendumNamespaces = peliasConfig.get('addendum_namespaces');
+  const configuredAddendumNamespaces = config.get('addendum_namespaces');
   Object.keys(configuredAddendumNamespaces)
     .filter(namespace => clean[namespace])
     .forEach(namespace => {

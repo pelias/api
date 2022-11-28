@@ -1,10 +1,8 @@
-const Joi = require('@hapi/joi');
 const schema = require('../../schema');
-const _ = require('lodash');
 
 module.exports.tests = {};
 
-module.exports.tests.completely_valid = (test, common) => {
+module.exports.tests.completely_valid = (test) => {
   test('all valid configuration elements should not throw error', (t) => {
     var config = {
       api: {
@@ -70,7 +68,7 @@ module.exports.tests.completely_valid = (test, common) => {
 
 };
 
-module.exports.tests.api_validation = (test, common) => {
+module.exports.tests.api_validation = (test) => {
   test('config without api should throw error', (t) => {
     var config = {
       esclient: {}
@@ -520,7 +518,7 @@ module.exports.tests.api_validation = (test, common) => {
 
 };
 
-module.exports.tests.api_services_validation = (test, common) => {
+module.exports.tests.api_services_validation = (test) => {
   test('unsupported children of api.services should be disallowed', (t) => {
     var config = {
       api: {
@@ -544,7 +542,7 @@ module.exports.tests.api_services_validation = (test, common) => {
 
 };
 
-module.exports.tests.service_validation = (test, common) => {
+module.exports.tests.service_validation = (test) => {
   // these tests apply for all the individual service definitions
   const services = ['pip', 'placeholder', 'interpolation', 'libpostal'];
 
@@ -865,7 +863,7 @@ module.exports.tests.service_validation = (test, common) => {
 
 };
 
-module.exports.tests.esclient_validation = (test, common) => {
+module.exports.tests.esclient_validation = (test) => {
   test('config without esclient should throw error', (t) => {
     var config = {
       api: {
@@ -967,6 +965,174 @@ module.exports.tests.esclient_validation = (test, common) => {
     t.equals(result.error.details[0].message, '"esclient.requestTimeout" must be larger than or equal to 0');
     t.end();
 
+  });
+
+};
+
+module.exports.tests.addendum_namespaces_validation = (test) => {
+  test( 'addendum_namespaces should be of object type', (t) => {
+    const config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value'
+      },
+      addendum_namespaces: {
+        tariff_zone_ids: '123'
+      },
+      esclient: {
+        requestTimeout: 1
+      }
+    };
+
+    const result = schema.validate(config);
+
+    t.equals(result.error.details.length, 1);
+    t.equals(result.error.details[0].message, '"addendum_namespaces.tariff_zone_ids" must be of type object');
+    t.end();
+
+  });
+
+  test( 'addendum_namespaces of type other than array, string , boolean and number, should not be acceptable', (t) => {
+    const config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value'
+      },
+      addendum_namespaces: {
+        tariff_zone_ids: {
+          type: 'object'
+        }
+      },
+      esclient: {
+        requestTimeout: 1
+      }
+    };
+
+    const result = schema.validate(config);
+
+    t.equals(result.error.details.length, 1);
+    t.equals(result.error.details[0].message, '"addendum_namespaces.tariff_zone_ids.type" must be one of [array, number, string, boolean]');
+    t.end();
+
+  });
+
+  test( 'addendum_namespaces name should be at least 2 characters', (t) => {
+    const config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value'
+      },
+      addendum_namespaces: {
+        t: {
+          type: 'object'
+        }
+      },
+      esclient: {
+        requestTimeout: 1
+      }
+    };
+
+    const result = schema.validate(config);
+
+    t.equals(result.error.details.length, 1);
+    t.equals(result.error.details[0].message, '"addendum_namespaces.t" is not allowed');
+    t.end();
+  });
+
+  test( 'addendum_namespaces of type array should be acceptable', (t) => {
+    const config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value'
+      },
+      addendum_namespaces: {
+        tariff_zone_ids: {
+          type: 'array'
+        }
+      },
+      esclient: {
+        requestTimeout: 1
+      }
+    };
+
+    const result = schema.validate(config);
+
+    t.notOk(result.error);
+    t.end();
+
+  });
+
+  test( 'addendum_namespaces of type string should be acceptable', (t) => {
+    const config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value'
+      },
+      addendum_namespaces: {
+        tariff_zone_ids: {
+          type: 'string'
+        }
+      },
+      esclient: {
+        requestTimeout: 1
+      }
+    };
+
+    const result = schema.validate(config);
+
+    t.notOk(result.error);
+    t.end();
+  });
+
+  test( 'addendum_namespaces of type number should be acceptable', function(t) {
+    const config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value'
+      },
+      addendum_namespaces: {
+        tariff_zone_ids: {
+          type: 'number'
+        }
+      },
+      esclient: {
+        requestTimeout: 1
+      }
+    };
+
+    const result = schema.validate(config);
+
+    t.notOk(result.error);
+    t.end();
+  });
+
+  test( 'addendum_namespaces of type boolean should be acceptable', function(t) {
+    const config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value'
+      },
+      addendum_namespaces: {
+        tariff_zone_ids: {
+          type: 'boolean'
+        }
+      },
+      esclient: {
+        requestTimeout: 1
+      }
+    };
+
+    const result = schema.validate(config);
+
+    t.notOk(result.error);
+    t.end();
   });
 
 };

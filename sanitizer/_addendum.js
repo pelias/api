@@ -50,26 +50,9 @@ function _sanitize(raw, clean) {
             }
             break;
 
-          case 'object':
-            try {
-              const parsed = JSON.parse(rawValue);
-              if (!_.isObject(parsed)) {
-                messages.errors.push(namespace + ': Invalid parameter type, expecting: ' + validationType + ', got ' + rawValue);
-              } else if (_.isArray(parsed)) {
-                messages.errors.push(namespace + ': Invalid parameter type, expecting: ' + validationType + ', got array: ' + rawValue);
-              } else {
-                clean[namespace] = parsed;
-              }
-            } catch (e) {
-              messages.errors.push(
-                namespace + ': Invalid parameter type, expecting: ' + validationType + ', got invalid JSON: ' + rawValue
-              );
-            }
-            break;
-
           default:
             messages.errors.push(namespace + ': Unsupported configured type ' + validationType + ', ' +
-              'valid types are array, string, number, boolean and object');
+              'valid types are array, string, number and boolean');
         }
       }
     });

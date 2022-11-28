@@ -20,7 +20,7 @@ const makePeliasConfig = (addendum_namespaces) => {
 
 module.exports.tests = {};
 
-module.exports.tests.sanitize_boundary_country = function (test, common) {
+module.exports.tests.sanitize_boundary_country = function (test) {
   test('no addendum_namespaces config, should return no errors and warnings', function (t) {
     const raw = {};
     const clean = {};
@@ -181,7 +181,7 @@ module.exports.tests.sanitize_boundary_country = function (test, common) {
     t.deepEquals(errorsAndWarnings, {
       errors: ['tariff_zone_id: Invalid parameter type, expecting: number, got NaN: 123b'],
       warnings: []
-    }, 'no warnings or errors');
+    }, 'should be a error');
     t.end();
   });
 
@@ -216,11 +216,11 @@ module.exports.tests.sanitize_boundary_country = function (test, common) {
     t.deepEquals(
       errorsAndWarnings,
       { errors: ['tariff_zone: Invalid parameter type, expecting: boolean, got: true123'], warnings: [] },
-      'no warnings or errors');
+      'should be a error');
     t.end();
   });
 
-  test('configured addendum_namespace of type object with correct value, should return no errors and warnings', function (t) {
+  test('configured addendum_namespace of any type other than array, string, number and boolean, should return error', function (t) {
     const raw = { tariff_zone: '{\"a\":\"b\"}' };
     const clean = {};
     const sanitizer = proxyquire('../../../sanitizer/_addendum', {
@@ -231,74 +231,11 @@ module.exports.tests.sanitize_boundary_country = function (test, common) {
       })
     });
     const errorsAndWarnings = sanitizer().sanitize(raw, clean);
-    t.deepEquals(clean.tariff_zone, { 'a': 'b' }, 'should be valid object');
-    t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] }, 'no warnings or errors');
-    t.end();
-  });
-
-  test('configured addendum_namespace of type object with incorrect value, should return error', function (t) {
-    const raw = { tariff_zone: '{\"a\":\"b\"' };
-    const clean = {};
-    const sanitizer = proxyquire('../../../sanitizer/_addendum', {
-      'pelias-config': makePeliasConfig({
-        tariff_zone: {
-          type: 'object'
-        }
-      })
-    });
-    const errorsAndWarnings = sanitizer().sanitize(raw, clean);
     t.deepEquals(clean.tariff_zone, undefined, 'should be undefined');
     t.deepEquals(
       errorsAndWarnings,
-      {
-        errors: ['tariff_zone: Invalid parameter type, expecting: object, got invalid JSON: {"a":"b"'],
-        warnings: []
-      },
-      'no warnings or errors');
-    t.end();
-  });
-
-  test('configured addendum_namespace of type object with array value, should return error', function (t) {
-    const raw = { tariff_zone: '[1,2,3]' };
-    const clean = {};
-    const sanitizer = proxyquire('../../../sanitizer/_addendum', {
-      'pelias-config': makePeliasConfig({
-        tariff_zone: {
-          type: 'object'
-        }
-      })
-    });
-    const errorsAndWarnings = sanitizer().sanitize(raw, clean);
-    t.deepEquals(clean.tariff_zone, undefined, 'should be undefined');
-    t.deepEquals(
-      errorsAndWarnings,
-      {
-        errors: ['tariff_zone: Invalid parameter type, expecting: object, got array: [1,2,3]'],
-        warnings: []
-      },
-      'no warnings or errors');
-    t.end();
-  });
-
-  test('configured addendum_namespace of type object with non object value, should return error', function (t) {
-    const raw = { tariff_zone: 'anyStringOrNumber' };
-    const clean = {};
-    const sanitizer = proxyquire('../../../sanitizer/_addendum', {
-      'pelias-config': makePeliasConfig({
-        tariff_zone: {
-          type: 'object'
-        }
-      })
-    });
-    const errorsAndWarnings = sanitizer().sanitize(raw, clean);
-    t.deepEquals(clean.tariff_zone, undefined, 'should be undefined');
-    t.deepEquals(
-      errorsAndWarnings,
-      {
-        errors: ['tariff_zone: Invalid parameter type, expecting: object, got invalid JSON: anyStringOrNumber'],
-        warnings: []
-      },
-      'no warnings or errors');
+      { errors: ['tariff_zone: Unsupported configured type object, valid types are array, string, number and boolean'], warnings: [] },
+      'should be a errors');
     t.end();
   });
 };
