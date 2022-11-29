@@ -61,10 +61,5 @@ module.exports = Joi.object().keys({
   }).unknown(true),
   esclient: Joi.object().required().keys({
     requestTimeout: Joi.number().integer().min(0)
-  }).unknown(true),
-  addendum_namespaces: Joi.object().pattern(
-    Joi.string().min(2), Joi.object().required().keys({
-      type: Joi.string().valid('array', 'number', 'string', 'boolean').required()
-    })
-  )
+  }).unknown(true)
 }).unknown(true);
