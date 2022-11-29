@@ -1,13 +1,22 @@
-module.exports = function (addendumParameter) {
+module.exports = function (addendumParameter, type) {
   return function (vs) {
     if (!vs.isset(addendumParameter)) {
       return null;
     }
 
-    return {
-      terms: {
-        [`addendum.${addendumParameter}`]: vs.var(addendumParameter)
-      }
-    };
+    switch (type) {
+      case 'array':
+        return {
+          terms: {
+            [`addendum.${addendumParameter}`]: vs.var(addendumParameter)
+          }
+        };
+      default:
+        return {
+          term: {
+            [`addendum.${addendumParameter}`]: vs.var(addendumParameter)
+          }
+        };
+    }
   };
 };

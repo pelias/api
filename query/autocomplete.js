@@ -68,7 +68,7 @@ query.filter( views.focus_point_filter );
 
 const configuredAddendumNamespaces = config.get('addendum_namespaces');
 Object.keys(configuredAddendumNamespaces).forEach(namespace => {
-  query.filter( views.addendum_namespace_filter(namespace) );
+  query.filter( views.addendum_namespace_filter(namespace, configuredAddendumNamespaces[namespace].type) );
 });
 
 // --------------------------------

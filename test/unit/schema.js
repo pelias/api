@@ -1,8 +1,10 @@
+const Joi = require('@hapi/joi');
 const schema = require('../../schema');
+const _ = require('lodash');
 
 module.exports.tests = {};
 
-module.exports.tests.completely_valid = (test) => {
+module.exports.tests.completely_valid = (test, common) => {
   test('all valid configuration elements should not throw error', (t) => {
     var config = {
       api: {
@@ -68,7 +70,7 @@ module.exports.tests.completely_valid = (test) => {
 
 };
 
-module.exports.tests.api_validation = (test) => {
+module.exports.tests.api_validation = (test, common) => {
   test('config without api should throw error', (t) => {
     var config = {
       esclient: {}
@@ -518,7 +520,7 @@ module.exports.tests.api_validation = (test) => {
 
 };
 
-module.exports.tests.api_services_validation = (test) => {
+module.exports.tests.api_services_validation = (test, common) => {
   test('unsupported children of api.services should be disallowed', (t) => {
     var config = {
       api: {
@@ -542,7 +544,7 @@ module.exports.tests.api_services_validation = (test) => {
 
 };
 
-module.exports.tests.service_validation = (test) => {
+module.exports.tests.service_validation = (test, common) => {
   // these tests apply for all the individual service definitions
   const services = ['pip', 'placeholder', 'interpolation', 'libpostal'];
 
@@ -863,7 +865,7 @@ module.exports.tests.service_validation = (test) => {
 
 };
 
-module.exports.tests.esclient_validation = (test) => {
+module.exports.tests.esclient_validation = (test, common) => {
   test('config without esclient should throw error', (t) => {
     var config = {
       api: {
@@ -968,6 +970,7 @@ module.exports.tests.esclient_validation = (test) => {
   });
 
 };
+
 module.exports.all = (tape, common) => {
 
   function test(name, testFunction) {

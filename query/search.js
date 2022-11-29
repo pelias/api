@@ -27,7 +27,7 @@ fallbackQuery.filter( peliasQuery.view.boundary_gid );
 
 const configuredAddendumNamespaces = config.get('addendum_namespaces');
 Object.keys(configuredAddendumNamespaces).forEach(namespace => {
-  fallbackQuery.filter( addendum_namespace_filter(namespace) );
+  fallbackQuery.filter( addendum_namespace_filter(namespace, configuredAddendumNamespaces[namespace].type) );
 });
 
 // --------------------------------

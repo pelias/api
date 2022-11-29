@@ -27,7 +27,7 @@ structuredQuery.filter( peliasQuery.view.boundary_gid );
 
 const configuredAddendumNamespaces = config.get('addendum_namespaces');
 Object.keys(configuredAddendumNamespaces).forEach(namespace => {
-  structuredQuery.filter( addendum_namespace_filter(namespace) );
+  structuredQuery.filter( addendum_namespace_filter(namespace, configuredAddendumNamespaces[namespace].type) );
 });
 // --------------------------------
 
