@@ -68,7 +68,7 @@ module.exports = {
           }
         },
         {
-          'terms': {
+          'term': {
             'addendum.public_id': '12345'
           }
         }
