@@ -146,3 +146,15 @@ Travis tests every release against Node.js versions `4` and `6`.
 We rely on semantic-release and Greenkeeper to maintain our module and dependency versions.
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/pelias/api.svg)](https://greenkeeper.io/)
+
+### Elasticsearch
+## Enviroment Variables
+
+```
+- name: TZ
+  value: Europe/Oslo
+- name: GCS_BASE_PATH                         (Requried, uses default path of es data file)
+  value: gs://kakka-dev/es-data/
+- name: ES_DATA_PATH                          (Optional, if set overides the current file path, useful for quick rollbacks)
+  value: data/es-data-20221207142613.tar.gz
+
