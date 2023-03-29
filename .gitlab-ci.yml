@@ -1,0 +1,24 @@
+stages:
+  - build
+
+variables:
+  IMAGE_TAG: "$CI_COMMIT_REF_SLUG"
+
+build_image:
+  stage: build
+  tags:
+    - docker
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [ "" ]
+  script:
+    # TODO: Would be nice to additionally tag `latest` if we're on master...
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor
+      --cache=true
+      --context $CI_PROJECT_DIR
+      --verbosity info
+      --image-name-tag-with-digest-file image.digest
+      --dockerfile $CI_PROJECT_DIR/Dockerfile
+      --destination $CI_REGISTRY_IMAGE$PATH_EXTRA:$IMAGE_TAG
+  interruptible: true
