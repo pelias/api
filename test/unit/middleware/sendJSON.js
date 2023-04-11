@@ -1,6 +1,7 @@
 const es = require('elasticsearch');
 const middleware = require('../../../middleware/sendJSON');
 const PeliasTimeoutError = require('../../../sanitizer/PeliasTimeoutError');
+const PeliasServiceError = require('../../../sanitizer/PeliasServiceError');
 
 module.exports.tests = {};
 
@@ -237,6 +238,24 @@ module.exports.tests.unknown_exception = function(test, common) {
         t.deepEqual( body, res.body, 'body set' );
         t.end();
       }};
+    };
+
+    middleware(null, res);
+  });
+};
+
+module.exports.tests.econnrefused = function(test, common) {
+  test('connection refused', function(t) {
+    var res = { body: { geocoding: {
+          errors: [ new PeliasServiceError('Some service error') ]
+        }}};
+
+    res.status = function( code ){
+      return { json: function( body ){
+          t.equal( code, 502, 'Bad Gateway' );
+          t.deepEqual( body, res.body, 'body set' );
+          t.end();
+        }};
     };
 
     middleware(null, res);

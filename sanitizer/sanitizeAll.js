@@ -5,7 +5,9 @@ const PeliasServiceError = require('../sanitizer/PeliasServiceError');
 function getCorrectErrorType(message) {
   if (message.includes( 'Timeout') || message.includes('timeout')) {
     return new PeliasTimeoutError(message);
-  } else if (message.includes('Parse') || message.includes('parse') || message.includes('connect') || message.includes('ECONN')) {
+  } else if ( message.includes('parse response') ||
+      message.includes('ECONN') ||
+      message.includes('ENOTFOUND')) {
     return new PeliasServiceError(message);
   }
 
@@ -18,7 +20,7 @@ function getCorrectErrorType(message) {
 // on Error objects here
 function ensureInstanceOfError(error) {
   if (error instanceof Error) {
-    // preserve the message and stack trace of existing Error objecs
+    // preserve the message and stack trace of existing Error objects
     const newError = getCorrectErrorType(error.message);
     newError.stack = error.stack;
     return newError;

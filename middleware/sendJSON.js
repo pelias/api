@@ -3,9 +3,14 @@ const es = require('elasticsearch');
 const logger = require( 'pelias-logger' ).get( 'api' );
 const PeliasParameterError = require('../sanitizer/PeliasParameterError');
 const PeliasTimeoutError = require('../sanitizer/PeliasTimeoutError');
+const PeliasServiceError = require('../sanitizer/PeliasServiceError');
 
 function isParameterError(error) {
   return error instanceof PeliasParameterError;
+}
+
+function isServiceError(error) {
+  return error instanceof PeliasServiceError;
 }
 
 function isTimeoutError(error) {
@@ -36,7 +41,7 @@ function sendJSONResponse(req, res, next) {
   const errorCodes = errors.map(function(error) {
     if (isParameterError(error)) {
       return 400;
-    } else if (isTimeoutError(error) || isElasticsearchError(error)) {
+    } else if (isTimeoutError(error) || isElasticsearchError(error) || isServiceError(error)) {
       return 502;
     } else {
       return 500;
