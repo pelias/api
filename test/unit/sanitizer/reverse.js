@@ -86,10 +86,10 @@ module.exports.tests.sanitize = function(test, common) {
           }
         };
       },
-      '../sanitizer/_boundary_country': function () {
+      '../sanitizer/_countries': function (key) {
         return {
           sanitize: () => {
-            called_sanitizers.push('_boundary_country');
+            called_sanitizers.push(`_${key}_country`);
             return { errors: [], warnings: [] };
           }
         };

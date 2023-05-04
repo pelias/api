@@ -1,4 +1,5 @@
-var sanitizer = require('../../../sanitizer/_boundary_country')();
+const countries = require('../../../sanitizer/_countries');
+const sanitizer = countries();
 
 module.exports.tests = {};
 
@@ -69,6 +70,13 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
   test('return an array of expected parameters in object form for validation', (t) => {
     const expected = [{ name: 'boundary.country' }];
     const validParameters = sanitizer.expected();
+    t.deepEquals(validParameters, expected);
+    t.end();
+  });
+
+  test('return an array of expected custom parameters in object form for validation', (t) => {
+    const expected = [{ name: 'custom-name.country' }];
+    const validParameters = countries('custom-name').expected();
     t.deepEquals(validParameters, expected);
     t.end();
   });

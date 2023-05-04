@@ -40,7 +40,7 @@ module.exports.middleware = (_api_pelias_config) => {
         sources_and_layers: require('../sanitizer/_sources_and_layers')(),
         private: require('../sanitizer/_flag_bool')('private', false),
         geo_search: require('../sanitizer/_geo_search')(),
-        boundary_country: require('../sanitizer/_boundary_country')(),
+        boundary_country: require('../sanitizer/_countries')('boundary'),
         categories: require('../sanitizer/_categories')(),
         // this can go away once geonames has been abrogated
         geonames_warnings: require('../sanitizer/_geonames_warnings')(),

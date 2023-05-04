@@ -2,20 +2,21 @@ const _ = require('lodash');
 const nonEmptyString = (v) => _.isString(v) && !_.isEmpty(v);
 const iso3166 = require('../helper/iso3166');
 
-function _sanitize(raw, clean) {
+const _sanitize = (key) => 
+    (raw, clean) => {
   // error & warning messages
   const messages = { errors: [], warnings: [] };
 
   // target input param
-  let countries = raw['boundary.country'];
+  let countries = raw[`${key}.country`];
 
-  // param 'boundary.country' is optional and should not
+  // param `*.country` is optional and should not
   // error when simply not set by the user
   if (!_.isNil(countries)) {
 
     // must be valid string
     if (!nonEmptyString(countries)) {
-      messages.errors.push('boundary.country is not a string');
+      messages.errors.push(`${key}.country is not a string`);
     } else {
       // support for multi countries
       countries = countries.split(',').filter(nonEmptyString);
@@ -23,7 +24,7 @@ function _sanitize(raw, clean) {
 
       // country list must contains at least one element
       if (_.isArray(countries) && _.isEmpty(countries)) {
-        messages.errors.push('boundary.country is empty');
+        messages.errors.push(`${key}.country is empty`);
       }
 
       // must be a valid ISO 3166 code
@@ -35,23 +36,23 @@ function _sanitize(raw, clean) {
       else {
         // the only way for boundary.country to be assigned is if input is
         //  a string and a known ISO2 or ISO3
-        clean['boundary.country'] = countries.map(country => iso3166.iso3Code(country));
+        clean[`${key}.country`] = countries.map(country => iso3166.iso3Code(country));
       }
     }
   }
 
   return messages;
-}
+};
 
 function containsIsoCode(isoCode) {
   return iso3166.isISO2Code(isoCode) || iso3166.isISO3Code(isoCode);
 }
 
-function _expected(){
-  return [{ name: 'boundary.country' }];
+function _expected(key) {
+  return () => [{ name: `${key}.country` }];
 }
 
-module.exports = () => ({
-  sanitize: _sanitize,
-  expected: _expected
+module.exports = (key = 'boundary') => ({
+  sanitize: _sanitize(key),
+  expected: _expected(key)
 });

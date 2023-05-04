@@ -112,10 +112,10 @@ module.exports.tests.sanitizers = function(test, common) {
           }
         };
       },
-      '../sanitizer/_boundary_country': function () {
+      '../sanitizer/_countries': function (key) {
         return {
           sanitize: () => {
-            called_sanitizers.push('_boundary_country');
+            called_sanitizers.push(`_${key}_country`);
             return { errors: [], warnings: [] };
           }
         };
@@ -160,6 +160,7 @@ module.exports.tests.sanitizers = function(test, common) {
       '_flag_bool',
       '_geo_autocomplete',
       '_boundary_country',
+      '_focus_country',
       '_categories',
       '_request_language',
       '_boundary_gid'
