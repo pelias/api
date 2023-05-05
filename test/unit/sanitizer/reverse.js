@@ -102,10 +102,10 @@ module.exports.tests.sanitize = function(test, common) {
           }
         };
       },
-      '../sanitizer/_boundary_gid': () => {
+      '../sanitizer/_gids': (key) => {
         return {
           sanitize: () => {
-            called_sanitizers.push('_boundary_gid');
+            called_sanitizers.push(`_${key}_gid`);
             return { errors: [], warnings: [] };
           }
         };

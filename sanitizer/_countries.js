@@ -2,8 +2,7 @@ const _ = require('lodash');
 const nonEmptyString = (v) => _.isString(v) && !_.isEmpty(v);
 const iso3166 = require('../helper/iso3166');
 
-const _sanitize = (key) => 
-    (raw, clean) => {
+const _sanitize = (key) => (raw, clean) => {
   // error & warning messages
   const messages = { errors: [], warnings: [] };
 

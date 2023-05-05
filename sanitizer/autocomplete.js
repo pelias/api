@@ -22,7 +22,9 @@ const paramGroups = [
   ['boundary.circle.lon', 'boundary.circle.lat'],
   ['boundary.circle.radius'],
   ['boundary.country'],
-  ['boundary.gid']
+  ['boundary.gid'],
+  ['focus.country'],
+  ['focus.gid']
 ];
 
 // middleware
@@ -45,7 +47,8 @@ module.exports.middleware = (_api_pelias_config) => {
       focus_country: require('../sanitizer/_countries')('focus'),
       categories: require('../sanitizer/_categories')(),
       request_language: require('../sanitizer/_request_language')(),
-      boundary_gid: require('../sanitizer/_boundary_gid')()
+      boundary_gid: require('../sanitizer/_gids')('boundary'),
+      focus_gid: require('../sanitizer/_gids')('focus')
     };
 
   return ( req, res, next ) => {

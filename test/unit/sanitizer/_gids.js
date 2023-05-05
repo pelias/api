@@ -1,4 +1,5 @@
-var sanitizer = require('../../../sanitizer/_boundary_gid')();
+const gids = require('../../../sanitizer/_gids');
+const sanitizer = gids();
 
 module.exports.tests = {};
 
@@ -92,6 +93,13 @@ module.exports.tests.sanitize_boundary_gid = function(test, common) {
   test('return an array of expected parameters in object form for validation', (t) => {
     const expected = [{ name: 'boundary.gid' }];
     const validParameters = sanitizer.expected();
+    t.deepEquals(validParameters, expected);
+    t.end();
+  });
+
+  test('return an array of expected custom parameters in object form for validation', (t) => {
+    const expected = [{ name: 'custom-name.gid' }];
+    const validParameters = gids('custom-name').expected();
     t.deepEquals(validParameters, expected);
     t.end();
   });

@@ -136,10 +136,10 @@ module.exports.tests.sanitizers = function(test, common) {
           }
         };
       },
-      '../sanitizer/_boundary_gid': () => {
+      '../sanitizer/_gids': (key) => {
         return {
           sanitize: () => {
-            called_sanitizers.push('_boundary_gid');
+            called_sanitizers.push(`_${key}_gid`);
             return { errors: [], warnings: [] };
           }
         };
@@ -163,7 +163,8 @@ module.exports.tests.sanitizers = function(test, common) {
       '_focus_country',
       '_categories',
       '_request_language',
-      '_boundary_gid'
+      '_boundary_gid',
+      '_focus_gid'
     ];
 
     const req = {};

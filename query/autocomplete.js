@@ -18,7 +18,7 @@ var views = {
   boost_exact_matches:        require('./view/boost_exact_matches'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
   focus_point_filter:         require('./view/focus_point_distance_filter'),
-  focus_country:              require('./view/focus_country')
+  focus_multi_match:          require('./view/focus_multi_match')
 };
 
 // add abbrevations for the fields pelias/parser is able to detect.
@@ -53,7 +53,8 @@ query.score( views.admin_multi_match_last( adminFields ), 'must');
 query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );
-query.score( views.focus_country );
+query.score( views.focus_multi_match('focus_country') );
+query.score( views.focus_multi_match('focus_gid') );
 query.score( views.custom_boosts( config.get('api.customBoosts') ) );
 
 // non-scoring hard filters
@@ -98,6 +99,13 @@ function generateQuery( clean ){
   if( _.isArray(clean['focus.country']) && !_.isEmpty(clean['focus.country']) ){
     vs.set({
       'multi_match:focus_country:input': clean['focus.country'].join(' ')
+    });
+  }
+
+  // focus gid
+  if( _.isString(clean['focus.gid']) && !_.isEmpty(clean['focus.gid']) ){
+    vs.set({
+      'multi_match:focus_gid:input': clean['focus.gid']
     });
   }
 

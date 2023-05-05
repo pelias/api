@@ -37,7 +37,7 @@ module.exports.middleware = (_api_pelias_config) => {
     geo_reverse: require('../sanitizer/_geo_reverse')(),
     boundary_country: require('../sanitizer/_countries')('boundary'),
     request_language: require('../sanitizer/_request_language')(),
-    boundary_gid: require('../sanitizer/_boundary_gid')()
+    boundary_gid: require('../sanitizer/_gids')('boundary')
   };
 
   // middleware

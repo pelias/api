@@ -103,7 +103,7 @@ var tests = [
   require('./sanitizer/_text_pelias_parser'),
   require('./sanitizer/_tokenizer'),
   require('./sanitizer/_categories'),
-  require('./sanitizer/_boundary_gid'),
+  require('./sanitizer/_gids'),
   require('./sanitizer/nearby'),
   require('./sanitizer/autocomplete'),
   require('./sanitizer/structured_geocoding'),
