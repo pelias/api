@@ -126,6 +126,86 @@ client.index(
     }
   }
 );
+//
+// client.index(
+//     {
+//       index: config.indexName,
+//       type: 'city',
+//       id: 'way:265038872',
+//       body: {
+//         'center_point': {
+//           'lon': 3.864104,
+//           'lat': 43.614719
+//         },
+//         'parent': {
+//           'country': [
+//             'France'
+//           ],
+//           'neighbourhood_id': [
+//             null
+//           ],
+//           'country_a': [
+//             'FRA'
+//           ],
+//           'locality_a': [
+//             null
+//           ],
+//           'region_id': [
+//             '85683419'
+//           ],
+//           'county': [
+//             'France'
+//           ],
+//           'borough_a': [
+//             null
+//           ],
+//           'borough_id': [
+//             null
+//           ],
+//           'locality': [
+//             'Montpellier'
+//           ],
+//           'borough': [
+//             null
+//           ],
+//           'region_a': [
+//             'HE'
+//           ],
+//           'county_id': [
+//             '85633147'
+//           ],
+//           'locality_id': [
+//             '101749209'
+//           ],
+//           'neighbourhood_a': [
+//             null
+//           ],
+//           'neighbourhood': [
+//             null
+//           ],
+//           'region': [
+//             'Département de L\'Hérault'
+//           ],
+//           'country_id': [
+//             '85633147'
+//           ],
+//           'county_a': [
+//             null
+//           ]
+//         },
+//         'name': {'default': '30 West 26th Street'},
+//         'address_parts': {
+//           'zip': '10010',
+//           'number': '30',
+//           'street': 'West 26th Street'
+//         },
+//         'alpha3': 'USA',
+//         'source': 'openstreetmap',
+//         'source_id': 'way:265038872',
+//         'layer': 'address'
+//       }
+//     }
+// );
 
 // call refresh so the index merges the changes
 actions.push( function( done ){

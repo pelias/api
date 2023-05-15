@@ -1,6 +1,7 @@
 
-#> language
-path: '/v1/place?lang=example&ids=geonames:venue:1'
+#> basic autocomplete
+path: '/v1/autocomplete?text=montpellier'
+headers: 'Accept-Language': 'fr'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -24,15 +25,12 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.not.exist json.geocoding.errors
-
+console.log json
 #? expected warnings
-json.geocoding.warnings.should.eql [ 'invalid language provided via querystring' ]
+should.not.exist json.geocoding.warnings
 
-#? language
-json.geocoding.query['lang'].should.eql {
-  name: 'English',
-  iso6391: 'en',
-  iso6393: 'eng',
-  defaulted: true,
-  via: 'default'
-}
+#? inputs
+json.geocoding.query['text'].should.eql 'montpellier'
+json.geocoding.query['size'].should.eql 10
+json.features[0].properties.country.should.eql 'France'
+json.features[0].properties.county.should.eql 'Montpellier'

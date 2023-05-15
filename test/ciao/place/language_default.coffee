@@ -33,5 +33,6 @@ json.geocoding.query['lang'].should.eql {
   name: 'English',
   iso6391: 'en',
   iso6393: 'eng',
-  defaulted: true
+  defaulted: true,
+  via: 'default'
 }
