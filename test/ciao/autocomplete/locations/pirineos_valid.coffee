@@ -1,7 +1,7 @@
 
 #> basic autocomplete
-path: '/v1/autocomplete?text=montpellier'
-headers: 'Accept-Language': 'fr'
+path: '/v1/autocomplete?text=pirineos'
+headers: 'Accept-Language': 'es'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -25,13 +25,13 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.not.exist json.geocoding.errors
-console.log json
+
 #? expected warnings
 #should.not.exist json.geocoding.warnings
 json.geocoding.warnings.should.eql ['performance optimization: excluding \'address\' layer']
 
 #? inputs
-json.geocoding.query['text'].should.eql 'montpellier'
+json.geocoding.query['text'].should.eql 'pirineos'
 json.geocoding.query['size'].should.eql 10
 json.features[0].properties.country.should.eql 'France'
-json.features[0].properties.county.should.eql 'Montpellier'
+json.features[0].properties.region.should.eql 'Département des Pyrénées-Atlantiques'
