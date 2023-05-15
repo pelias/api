@@ -27,7 +27,8 @@ json.features.should.be.instanceof Array
 should.not.exist json.geocoding.errors
 console.log json
 #? expected warnings
-should.not.exist json.geocoding.warnings
+#should.not.exist json.geocoding.warnings
+json.geocoding.warnings.should.eql ['performance optimization: excluding \'address\' layer']
 
 #? inputs
 json.geocoding.query['text'].should.eql 'montpellier'

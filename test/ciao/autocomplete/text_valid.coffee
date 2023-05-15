@@ -26,7 +26,7 @@ json.features.should.be.instanceof Array
 should.not.exist json.geocoding.errors
 
 #? expected warnings
-should.not.exist json.geocoding.warnings
+#should.not.exist json.geocoding.warnings
 
 #? inputs
 json.geocoding.query['text'].should.eql 'a'

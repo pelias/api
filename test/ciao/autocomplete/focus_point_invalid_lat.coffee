@@ -27,7 +27,8 @@ should.exist json.geocoding.errors
 json.geocoding.errors.should.eql [ 'missing param \'focus.point.lat\'' ]
 
 #? expected warnings
-should.not.exist json.geocoding.warnings
+#should.not.exist json.geocoding.warnings
+json.geocoding.warnings.should.eql ['performance optimization: excluding \'address\' layer']
 
 #? inputs
 json.geocoding.query['text'].should.eql 'a'

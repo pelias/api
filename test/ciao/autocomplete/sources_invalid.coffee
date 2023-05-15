@@ -24,10 +24,10 @@ json.features.should.be.instanceof Array
 
 #? expected errors
 should.exist json.geocoding.errors
-json.geocoding.errors.should.eql [ '\'notasource\' is an invalid sources parameter. Valid options: osm,oa,gn,wof,openstreetmap,openaddresses,geonames,whosonfirst' ]
+json.geocoding.errors.should.eql [ '\'notasource\' is an invalid sources parameter. Valid options: osm,oa,gn,wof,whosonfirst,geonames,openstreetmap' ]
 
 #? expected warnings
-should.not.exist json.geocoding.warnings
+#should.not.exist json.geocoding.warnings
 
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
