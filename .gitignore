@@ -1,6 +1,6 @@
-node_modules
+node_modules/*
+!node_modules/.gitignore
 coverage
-.idea
 *.log
 reports
 pids

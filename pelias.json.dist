@@ -1,0 +1,48 @@
+{
+  "logger": {
+    "level": "debug",
+    "timestamp": false
+  },
+  "esclient": {
+    "apiVersion": "7.5",
+    "hosts": [
+      {
+        "host": "elasticsearch_http"
+      }
+    ]
+  },
+  "elasticsearch": {
+    "settings": {
+      "index": {
+        "refresh_interval": "10s",
+        "number_of_replicas": "0",
+        "number_of_shards": "1"
+      }
+    }
+  },
+  "api": {
+    "querySize": 20,
+    "autocomplete": {
+      "exclude_address_length": 5
+    },
+    "customBoosts": {
+      "source": {
+        "campings.com": 5,
+        "whosonfirst": 3,
+        "geonames": 1,
+        "openstreetmap": 0
+      }
+    },
+    "services": {
+      "libpostal": {
+        "url": "http://libpostal_http"
+      },
+      "placeholder": {
+        "url": "http://placeholder_http"
+      },
+      "pip": {
+        "url": "http://pip_http"
+      }
+    }
+  }
+}

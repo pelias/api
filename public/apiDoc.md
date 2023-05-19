@@ -1,4 +1,5 @@
-# Pelias API
-### Version: [1.0](https://github.com/pelias/api/releases)
+# Campings.com Pelias API
 
-## [View our documentation on GitHub](https://github.com/pelias/documentation/)
+### Version: [1.0](https://github.com/campings-group/pelias-api/releases)
+
+## [View our documentation on GitHub](https://github.com/campings-group/pelias-api/documentation)

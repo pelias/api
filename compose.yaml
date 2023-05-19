@@ -1,0 +1,18 @@
+services:
+  npm:
+    build: .
+    entrypoint: npm run dev
+    environment: ["PORT=4000"]
+    ports:
+      - 2700:4000
+    volumes:
+      - ${DOCKER_COMPOSE_WORKSPACE:-.}/:/home/pelias
+      - ${DOCKER_COMPOSE_WORKSPACE:-.}/pelias.json:/code/pelias.json
+    networks:
+      global:
+        aliases:
+          - pelias_api
+
+networks:
+  global:
+    external: true
