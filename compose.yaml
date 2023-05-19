@@ -1,5 +1,5 @@
 services:
-  npm:
+  app:
     build: .
     entrypoint: npm run dev
     environment: ["PORT=4000"]
@@ -7,6 +7,7 @@ services:
       - 2700:4000
     volumes:
       - ${DOCKER_COMPOSE_WORKSPACE:-.}/:/home/pelias
+      - ${DOCKER_COMPOSE_WORKSPACE:-.}/node_modules:/home/pelias/node_modules:rw,delegated
       - ${DOCKER_COMPOSE_WORKSPACE:-.}/pelias.json:/code/pelias.json
     networks:
       global:

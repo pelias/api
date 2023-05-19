@@ -14,7 +14,10 @@ DOCKER_COMPOSE ?= docker compose
 DOCKER_COMPOSE_WORKSPACE ?= .
 
 ## Initialize the project
-init: set-env docker-pull docker-up
+init: set-env npm-install docker-network docker-pull docker-up
+
+npm-install:
+	@${DOCKER_COMPOSE} run --rm --entrypoint '' app npm i
 
 ## Copy pelias.json.dist to pelias.json
 set-env:
