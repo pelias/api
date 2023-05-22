@@ -19,7 +19,7 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   'ngram:analyzer': 'peliasQuery',
   'ngram:field': 'name.default',
-  'ngram:boost': 100,
+  'ngram:boost': 1,
 
   'phrase:analyzer': 'peliasQuery',
   'phrase:field': 'phrase.default',

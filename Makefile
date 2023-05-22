@@ -55,6 +55,9 @@ docker-down:
 docker-logs:
 	@${DOCKER_COMPOSE} logs -f
 
+test:
+	@${DOCKER_COMPOSE} run --rm --entrypoint '' app npm run ci
+
 ## List all available commands
 help:
 	@printf "${COLOR_TITLE_BLOCK}${PROJECT} Makefile${COLOR_RESET}\n"
