@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const peliasQuery = require('pelias-query');
-const defaults = require('./autocomplete_defaults');
+const overrides = require('./autocomplete_overrides');
 const textParser = require('./text_parser_pelias');
 const config = require('pelias-config').generate();
 const placeTypes = require('../helper/placeTypes');
@@ -16,7 +16,8 @@ var views = {
   admin_multi_match_last: require('./view/admin_multi_match_last'),
   phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
-  focus_point_filter:         require('./view/focus_point_distance_filter')
+  focus_point_filter:         require('./view/focus_point_distance_filter'),
+  population: require('./view/population_custom'),
 };
 
 // add abbrevations for the fields pelias/parser is able to detect.
@@ -50,7 +51,7 @@ query.score( views.admin_multi_match_last( adminFields ), 'must');
 // scoring boost
 query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
-query.score( peliasQuery.view.population( peliasQuery.view.leaf.match_all ) );
+query.score( views.population() );
 query.score( views.custom_boosts( config.get('api.customBoosts') ) );
 
 // non-scoring hard filters
@@ -72,7 +73,7 @@ query.filter( views.focus_point_filter );
 **/
 function generateQuery( clean ){
 
-  const vs = new peliasQuery.Vars( defaults );
+  const vs = new peliasQuery.Vars( overrides );
 
   // sources
   if( _.isArray(clean.sources) && !_.isEmpty(clean.sources) ){

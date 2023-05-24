@@ -52,17 +52,15 @@ module.exports = {
         }
       },{
         'function_score': {
-          'query': {
-            'match_all': {}
-          },
           'max_boost': 20,
           'score_mode': 'first',
           'boost_mode': 'replace',
           'functions': [{
             'field_value_factor': {
-              'modifier': 'log1p',
+              'modifier': 'none',
               'field': 'population',
-              'missing': 1
+              'missing': 1,
+              'factor': 0.0002
             },
             'weight': 3
           }]

@@ -15,13 +15,15 @@ var generate = proxyquire('../../../query/autocomplete', {
 });
 
 const peliasQuery = require('pelias-query');
-const defaults = new peliasQuery.Vars( require('../../../query/autocomplete_defaults') );
+// const defaults = new peliasQuery.Vars( require('../../../query/autocomplete_defaults') );
+const defaults = new peliasQuery.Vars( require('../../../query/autocomplete_overrides') );
 
 // additional views
 const views = {
   ngrams_last_token_only:     require('../../../query/view/ngrams_last_token_only'),
   ngrams_last_token_only_multi: require('../../../query/view/ngrams_last_token_only_multi')(adminFields),
   phrase_first_tokens_only:   require('../../../query/view/phrase_first_tokens_only'),
+  population: require('../../../query/view//population_custom'),
 };
 
 module.exports.tests = {};
@@ -67,7 +69,7 @@ module.exports.tests.single_token = function(test, common) {
       must: [ views.ngrams_last_token_only( vs ) ],
       should: [
         peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
-        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
+        views.population()(vs)
       ]
     });
   });
@@ -87,7 +89,7 @@ module.exports.tests.single_token = function(test, common) {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
         peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
-        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
+        views.population()( vs )
       ]
     });
   });
@@ -107,7 +109,7 @@ module.exports.tests.single_token = function(test, common) {
       must: [ views.ngrams_last_token_only( vs ) ],
       should: [
         peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
-        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
+        views.population()( vs )
       ]
     });
   });
@@ -127,7 +129,7 @@ module.exports.tests.single_token = function(test, common) {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
         peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
-        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
+        views.population()( vs )
       ]
     });
   });
@@ -147,7 +149,7 @@ module.exports.tests.single_token = function(test, common) {
       must: [ views.ngrams_last_token_only( vs ) ],
       should: [
         peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
-        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
+        views.population()( vs )
       ]
     });
   });
@@ -167,7 +169,7 @@ module.exports.tests.single_token = function(test, common) {
       must: [ views.phrase_first_tokens_only( vs ) ],
       should: [
         peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
-        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
+        views.population()( vs )
       ]
     });
   });
@@ -194,7 +196,7 @@ module.exports.tests.multiple_tokens = function(test, common) {
       ],
       should: [
         peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
-        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
+        views.population()( vs )
       ]
     });
   });
@@ -216,7 +218,7 @@ module.exports.tests.multiple_tokens = function(test, common) {
       ],
       should: [
         peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
-        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
+        views.population()( vs )
       ]
     });
   });
@@ -241,7 +243,7 @@ module.exports.tests.multiple_tokens = function(test, common) {
       ],
       should: [
         peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
-        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
+        views.population()( vs )
       ]
     });
   });
@@ -263,7 +265,7 @@ module.exports.tests.multiple_tokens = function(test, common) {
       ],
       should: [
         peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
-        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
+        views.population()( vs )
       ]
     });
   });
@@ -291,7 +293,7 @@ module.exports.tests.multiple_tokens = function(test, common) {
       ],
       should: [
         peliasQuery.view.popularity( peliasQuery.view.leaf.match_all )( vs ),
-        peliasQuery.view.population( peliasQuery.view.leaf.match_all )( vs )
+        views.population()( vs )
       ]
     });
   });
