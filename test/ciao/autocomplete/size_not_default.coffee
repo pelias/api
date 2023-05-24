@@ -27,8 +27,8 @@ should.not.exist json.geocoding.errors
 
 #? expected warnings
 should.exist json.geocoding.warnings
-json.geocoding.warnings.should.eql [ 'out-of-range integer \'size\', using MIN_SIZE' ]
+json.geocoding.warnings.should.eql ['performance optimization: excluding \'address\' layer' ]
 
 #? inputs
 json.geocoding.query['text'].should.eql 'a'
-json.geocoding.query['size'].should.eql 10 # should remain the default size
+json.geocoding.query['size'].should.eql 3 # 10 should remain the default size

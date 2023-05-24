@@ -33,5 +33,6 @@ json.geocoding.query['lang'].should.eql {
   defaulted: false,
   iso6391: 'fr',
   iso6393: 'fra',
-  name: 'French'
+  name: 'French',
+  via: 'querystring'
 }

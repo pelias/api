@@ -27,12 +27,14 @@ json.features.should.be.instanceof Array
 should.not.exist json.geocoding.errors
 
 #? expected warnings
-should.not.exist json.geocoding.warnings
+#should.not.exist json.geocoding.warnings
+json.geocoding.warnings.should.eql ['performance optimization: excluding \'address\' layer']
 
 #? language
 json.geocoding.query['lang'].should.eql {
   defaulted: false,
   iso6391: 'fr',
   iso6393: 'fra',
-  name: 'French'
+  name: 'French',
+  via: 'header'
 }

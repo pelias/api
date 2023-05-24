@@ -1,6 +1,7 @@
 
-#> language
-path: '/v1/autocomplete?lang=example&text=example'
+#> basic autocomplete
+path: '/v1/autocomplete?text=Isola%20Elba'
+headers: 'Accept-Language': 'fr'
 
 #? 200 ok
 response.statusCode.should.be.equal 200
@@ -26,13 +27,10 @@ json.features.should.be.instanceof Array
 should.not.exist json.geocoding.errors
 
 #? expected warnings
-json.geocoding.warnings.should.eql [ 'performance optimization: excluding \'address\' layer', 'invalid language provided via querystring' ]
+#should.not.exist json.geocoding.warnings
+json.geocoding.warnings.should.eql ['performance optimization: excluding \'address\' layer']
 
-#? language
-json.geocoding.query['lang'].should.eql {
-  name: 'English',
-  iso6391: 'en',
-  iso6393: 'eng',
-  defaulted: true,
-  via: 'default'
-}
+#? inputs
+json.geocoding.query['text'].should.eql 'Isola Elba'
+json.geocoding.query['size'].should.eql 10
+json.features[0].properties.label.should.eql 'Isola d\'Elba'
