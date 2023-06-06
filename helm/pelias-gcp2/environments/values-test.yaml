@@ -1,2 +1,2 @@
 replicas: 1
-gcpBasePath: gs://kakka-test/es-data/
+gcpBasePath: gs://ror-kakka-test/es-data/
