@@ -1,5 +1,5 @@
 replicas: 3
-gcpBasePath: gs://kakka-production/es-data/
+gcpBasePath: gs://ror-kakka-production/es-data/
 
 horizontalPodAutoscaler:
   maxReplicas: 6
