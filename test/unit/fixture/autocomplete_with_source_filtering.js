@@ -7,8 +7,12 @@ module.exports = {
           'analyzer': 'peliasQuery',
           'query': 'test',
           'boost': 1,
-          'type': 'phrase',
-          'slop': 3
+          'type': 'best_fields',
+          'fuzziness': 'AUTO',
+          'minimum_should_match': '2<90%',
+          'prefix_length': 0,
+          'max_expansions': 50,
+          'zero_terms_query': 'NONE'
         }
       }],
       'should':[{

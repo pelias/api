@@ -4,36 +4,16 @@ module.exports = {
       'must': [
         {
           'multi_match': {
-            'fields': ['phrase.default', 'phrase.en'],
+            'fields': ['name.default', 'name.en'],
             'analyzer': 'peliasQuery',
-            'type': 'phrase',
-            'slop': 3,
+            'type': 'best_fields',
+            'fuzziness': 'AUTO',
+            'minimum_should_match': '2<90%',
             'boost': 1,
-            'query': 'one two'
-          }
-        },
-        {
-          'multi_match': {
-            'fields': [
-              'parent.country.ngram^1',
-              'parent.dependency.ngram^1',
-              'parent.macroregion.ngram^1',
-              'parent.region.ngram^1',
-              'parent.macrocounty.ngram^1',
-              'parent.county.ngram^1',
-              'parent.localadmin.ngram^1',
-              'parent.locality.ngram^1',
-              'parent.borough.ngram^1',
-              'parent.neighbourhood.ngram^1',
-              'parent.locality_a.ngram^1',
-              'parent.region_a.ngram^1',
-              'parent.country_a.ngram^1',
-              'name.default^1.5',
-              'name.en^1.5'
-            ],
-            'query': 'three',
-            'analyzer': 'peliasAdmin',
-            'type': 'cross_fields'
+            'query': 'one two three',
+            'prefix_length': 0,
+            'max_expansions': 50,
+            'zero_terms_query': 'NONE'
           }
         }
       ],

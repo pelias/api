@@ -8,16 +8,17 @@ const toSingleField = require('./view/helper').toSingleField;
 
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
-  custom_boosts:              require('./view/boost_sources_and_layers'),
-  ngrams_strict:              require('./view/ngrams_strict'),
-  ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
-  ngrams_last_token_only_multi: require('./view/ngrams_last_token_only_multi'),
-  admin_multi_match_first: require('./view/admin_multi_match_first'),
-  admin_multi_match_last: require('./view/admin_multi_match_last'),
-  phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
-  max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
-  focus_point_filter:         require('./view/focus_point_distance_filter'),
-  population: require('./view/population_custom'),
+  custom_boosts:                    require('./view/boost_sources_and_layers'),
+  ngrams_strict:                    require('./view/ngrams_strict'),
+  ngrams_last_token_only:           require('./view/ngrams_last_token_only'),
+  ngrams_last_token_only_multi:     require('./view/ngrams_last_token_only_multi'),
+  admin_multi_match_first:          require('./view/admin_multi_match_first'),
+  admin_multi_match_last:           require('./view/admin_multi_match_last'),
+  phrase_first_tokens_only:         require('./view/phrase_first_tokens_only'),
+  max_character_count_layer_filter: require('./view/max_character_count_layer_filter'),
+  focus_point_filter:               require('./view/focus_point_distance_filter'),
+  population:                       require('./view/population_custom'),
+  full_text_search:                 require('./view/full_text_search')
 };
 
 // add abbrevations for the fields pelias/parser is able to detect.
@@ -41,17 +42,18 @@ adminFields = adminFields.concat(['add_name_to_multimatch', 'add_name_lang_to_mu
 var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // mandatory matches
-query.score( views.phrase_first_tokens_only, 'must' );
-query.score( views.ngrams_last_token_only_multi( adminFields ), 'must' );
+query.score(views.full_text_search(adminFields), 'must');
+// query.score( views.phrase_first_tokens_only, 'must' );
+// query.score( views.ngrams_last_token_only_multi( adminFields ), 'must' );
 
 // admin components
-query.score( views.admin_multi_match_first( adminFields ), 'must');
-query.score( views.admin_multi_match_last( adminFields ), 'must');
+// query.score( views.admin_multi_match_first( adminFields ), 'must');
+// query.score( views.admin_multi_match_last( adminFields ), 'must');
 
 // scoring boost
 query.score( peliasQuery.view.focus( peliasQuery.view.leaf.match_all ) );
 query.score( peliasQuery.view.popularity( peliasQuery.view.leaf.match_all ) );
-query.score( views.population() );
+query.score( views.population );
 query.score( views.custom_boosts( config.get('api.customBoosts') ) );
 
 // non-scoring hard filters

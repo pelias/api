@@ -271,27 +271,28 @@ module.exports.tests.query = function(test, common) {
     t.end();
   });
 
-  test('single character street address', function(t) {
-    var query = generate({
-      text: 'k road, laird',
-      parsed_text: {
-        subject: 'k road',
-        street: 'k road',
-        locality: 'laird',
-        admin: 'laird'
-      },
-      tokens: ['k', 'road'],
-      tokens_complete: ['k', 'road'],
-      tokens_incomplete: []
-    });
-
-    var compiled = JSON.parse( JSON.stringify( query ) );
-    var expected = require('../fixture/autocomplete_single_character_street');
-
-    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
-    t.deepEqual(compiled.body, expected, 'autocomplete_single_character_street');
-    t.end();
-  });
+  // Not supporting addresses
+  // test('single character street address', function(t) {
+  //   var query = generate({
+  //     text: 'k road, laird',
+  //     parsed_text: {
+  //       subject: 'k road',
+  //       street: 'k road',
+  //       locality: 'laird',
+  //       admin: 'laird'
+  //     },
+  //     tokens: ['k', 'road'],
+  //     tokens_complete: ['k', 'road'],
+  //     tokens_incomplete: []
+  //   });
+  //
+  //   var compiled = JSON.parse( JSON.stringify( query ) );
+  //   var expected = require('../fixture/autocomplete_single_character_street');
+  //
+  //   t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+  //   t.deepEqual(compiled.body, expected, 'autocomplete_single_character_street');
+  //   t.end();
+  // });
 
   test('valid boundary.country search', function(t) {
     var query = generate({

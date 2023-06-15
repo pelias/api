@@ -22,6 +22,7 @@
   },
   "api": {
     "querySize": 20,
+    "exposeInternalDebugTools": true,
     "autocomplete": {
       "exclude_address_length": 5
     },
