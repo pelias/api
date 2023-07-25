@@ -365,6 +365,40 @@ module.exports.tests.query = function(test, common) {
     t.deepEqual(compiled.body, expected, 'autocomplete: valid boundary.gid query');
     t.end();
   });
+
+  test('valid focus.country search', function(t) {
+    var query = generate({
+      text: 'test',
+      tokens: ['test'],
+      tokens_complete: [],
+      tokens_incomplete: ['test'],
+      'focus.country': ['ABC']
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_focus_country');
+
+    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+    t.deepEqual(compiled.body, expected, 'autocomplete: valid focus.country query');
+    t.end();
+  });
+
+  test('valid focus.gid search', function(t) {
+    var query = generate({
+      text: 'test',
+      tokens: ['test'],
+      tokens_complete: [],
+      tokens_incomplete: ['test'],
+      'focus.gid': '123'
+    });
+
+    var compiled = JSON.parse( JSON.stringify( query ) );
+    var expected = require('../fixture/autocomplete_focus_gid');
+
+    t.deepEqual(compiled.type, 'autocomplete', 'query type set');
+    t.deepEqual(compiled.body, expected, 'autocomplete: valid focus.gid query');
+    t.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
