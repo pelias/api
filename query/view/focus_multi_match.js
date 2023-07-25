@@ -7,10 +7,5 @@ module.exports = (view_name) => (vs) => {
     return null;
   }
 
-  return {
-    'function_score': {
-      'query': peliasQuery.view.leaf.multi_match(view_name)(vs),
-      'score_mode': 'multiply',
-    },
-  };
+  return peliasQuery.view.leaf.multi_match(view_name)(vs);
 };
