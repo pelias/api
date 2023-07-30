@@ -103,7 +103,6 @@ function _setup(tm) {
 
         // handle the case where 'sources' were explicitly specified
         else if (_.isArray(clean.sources)) {
-
           // we need to create a list of layers for the specified sources
           let sourceLayers = clean.sources.reduce((l, key) => l.concat(tm.layers_by_source[key] || []), []);
           sourceLayers = _.uniq(sourceLayers); // dedupe
@@ -114,8 +113,18 @@ function _setup(tm) {
             return messages;
           }
 
-          // target all layers for the sources specified except 'address'
-          clean.layers = sourceLayers.filter(item => item !== 'address'); // exclude 'address'
+          // create a list of all "possible layers": layers from the specified sources, minus address layer
+          const possibleLayers = sourceLayers.filter(item => item !== 'address');
+
+          // intersect the possible layers with any already specified layer preferences
+          if (_.isArray(clean.layers) && clean.layers.length > 1) {
+            // layers already exist, intersect
+            clean.layers = _.intersection(clean.layers, possibleLayers);
+          } else {
+            // no layers already, use all possible layers
+            clean.layers = possibleLayers;
+          }
+
           messages.warnings.push(ADDRESS_FILTER_WARNING);
         }
       }

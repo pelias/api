@@ -117,6 +117,26 @@ module.exports.tests.sanitize = function (test, common) {
     t.end();
   });
 
+  test('sanitize - exclude addresses when negative layers and sources are specified', (t) => {
+    // select all layers except venue to simulate value of clean.layers from targets sanitizer
+    const clean_layers = real_type_mapping.getCanonicalLayers().filter(layer => layer !== 'venue').sort();
+
+    let clean = { text: 'foo',
+      layers: clean_layers,
+      negative_layers: ['venue'],
+      positive_layers: [],
+      sources: ['openstreetmap', 'openaddresses','whosonfirst'],
+      negative_sources: ['geonames'],
+      positive_sources: []
+    };
+
+    const expected_layers = clean_layers.filter(layer => layer !== 'address').sort();
+
+    t.deepEqual(real_sanitizer.sanitize(null, clean), STD_MESSAGES);
+    t.deepEqual(clean.layers.sort(), expected_layers, 'layer list is reduced to exclude addresses');
+    t.end();
+  });
+
   test('sanitize - exclude addresses when negative layers other than address are specified', (t) => {
     // select all layers except venue to simulate value of clean.layers from targets sanitizer
     const clean_layers = real_type_mapping.getCanonicalLayers().filter(layer => layer !== 'venue').sort();
