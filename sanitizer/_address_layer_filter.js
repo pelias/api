@@ -25,6 +25,51 @@ const nonEmptyString = (v) => _.isString(v) && !_.isEmpty(v);
 
 const ADDRESS_FILTER_WARNING = 'performance optimization: excluding \'address\' layer';
 
+function can_remove_addresses(clean) {
+  // default to using the full 'clean.text'
+  // note: this should already have superfluous characters removed
+  let input = clean.text;
+
+  // if a parser has removed tokens, use the parsed text instead, this
+  // is the text which will be queried against the 'name.default' field.
+  // @todo: this logic is duplicated from 'query/text_parser.js' and may
+  // be subject to change.
+  if (_.isObject(clean.parsed_text) && !_.isEmpty(clean.parsed_text)) {
+
+    var isStreetAddress = clean.parsed_text.hasOwnProperty('housenumber') && clean.parsed_text.hasOwnProperty('street');
+
+    // use $subject where available (pelias parser)
+    if (_.has(clean, 'parsed_text.subject')) {
+      input = clean.parsed_text.subject;
+    }
+
+    // if 'pelias_parser' or 'libpostal' identified input as a street address
+    else if (isStreetAddress) {
+      input = clean.parsed_text.housenumber + ' ' + clean.parsed_text.street;
+    }
+
+    // else if the 'naive parser' was used, input is equal to 'name'
+    else if (nonEmptyString(clean.parsed_text.admin_parts) && nonEmptyString(clean.parsed_text.name)) {
+      input = clean.parsed_text.name;
+    }
+  }
+
+  // count the number of words specified
+  let totalWords = input.split(/\s+/).filter(nonEmptyString).length;
+
+  // check that at least one numeral was specified
+  let hasNumeral = /\d/.test(input);
+
+  // do not consider numeric street names, such as '26 st' in numeric check.
+  if( _.has(clean, 'parsed_text.street') ){
+    hasNumeral = /\d/.test(input.replace(clean.parsed_text.street, ''));
+  }
+
+  // if less than two words were specified /or no numeral is present
+  // then it is safe to apply the layer filter
+  return totalWords < 2 || !hasNumeral;
+}
+
 function _setup(tm) {
 
   return {
@@ -38,54 +83,12 @@ function _setup(tm) {
         return messages;
       }
 
-      // default to using the full 'clean.text'
-      // note: this should already have superfluous characters removed
-      let input = clean.text;
-
       // do nothing if no input text specified in the request
-      if (!nonEmptyString(input)) {
+      if (!nonEmptyString(clean.text)) {
         return messages;
       }
 
-      // if a parser has removed tokens, use the parsed text instead, this
-      // is the text which will be queried against the 'name.default' field.
-      // @todo: this logic is duplicated from 'query/text_parser.js' and may
-      // be subject to change.
-      if (_.isObject(clean.parsed_text) && !_.isEmpty(clean.parsed_text)) {
-
-        var isStreetAddress = clean.parsed_text.hasOwnProperty('housenumber') && clean.parsed_text.hasOwnProperty('street');
-
-        // use $subject where available (pelias parser)
-        if (_.has(clean, 'parsed_text.subject')) {
-          input = clean.parsed_text.subject;
-        }
-
-        // if 'pelias_parser' or 'libpostal' identified input as a street address
-        else if (isStreetAddress) {
-          input = clean.parsed_text.housenumber + ' ' + clean.parsed_text.street;
-        }
-
-        // else if the 'naive parser' was used, input is equal to 'name'
-        else if (nonEmptyString(clean.parsed_text.admin_parts) && nonEmptyString(clean.parsed_text.name)) {
-          input = clean.parsed_text.name;
-        }
-      }
-
-      // count the number of words specified
-      let totalWords = input.split(/\s+/).filter(nonEmptyString).length;
-
-      // check that at least one numeral was specified
-      let hasNumeral = /\d/.test(input);
-
-      // do not consider numeric street names, such as '26 st' in numeric check.
-      if( _.has(clean, 'parsed_text.street') ){
-        hasNumeral = /\d/.test(input.replace(clean.parsed_text.street, ''));
-      }
-
-      // if less than two words were specified /or no numeral is present
-      // then it is safe to apply the layer filter
-      if (totalWords < 2 || !hasNumeral) {
-
+      if (can_remove_addresses(clean)) {
         // handle the common case where neither sources nor (positive) layers were specified
         if (!_.isArray(clean.sources) || _.isEmpty(clean.sources)) {
           // if there are no layers already set, start with the list of all of them
