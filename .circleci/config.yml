@@ -49,7 +49,7 @@ aliases:
 jobs:
   install-and-test:
     docker:
-      - image: cimg/node:12.22.2
+      - image: cimg/node:16.20.1
         auth:
           username: $DOCKERHUB_LOGIN
           password: $DOCKERHUB_PASSWORD
@@ -62,7 +62,7 @@ jobs:
     <<: *google-sdk-container-config
     steps:
       - setup_remote_docker:
-          version: 19.03.13
+          version: 20.10.24
           docker_layer_caching: true
       - attach_workspace:
           at: ~/project
