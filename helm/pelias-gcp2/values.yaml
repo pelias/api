@@ -8,9 +8,8 @@ rollingUpdate:
   maxUnavailable: 0
 
 resources:
-  cpuLimit: 1200m
   memLimit: 750Mi
-  cpuRequest: 600m
+  cpuRequest: 650m
   memRequest: 500Mi
 
 
@@ -22,7 +21,6 @@ secondaryImage:
   imagePullPolicy: Always
   containerPort: 9200
   resources:
-    cpuLimit: '2'
     memLimit: 1500Mi
     cpuRequest: 600m
     memRequest: 1000Mi
