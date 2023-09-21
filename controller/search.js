@@ -7,111 +7,16 @@ const logger = require('pelias-logger').get('api');
 const logging = require( '../helper/logging' );
 const retry = require('retry');
 const Debug = require('../helper/debug');
+const filterByParentIds = require('./filters/filter_by_parent_ids');
+const filterByTariffZones = require('./filters/filter_by_tariff_zones');
+const filterByCategories = require('./filters/filter_by_categories');
 
 function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
-function filterByCategories(req, renderedQuery) {
-    if (!req || !req.query) {
-        return;
-    }
 
-    if (!renderedQuery || !renderedQuery.body || !renderedQuery.body.query || !renderedQuery.body.query.bool) {
-        return;
-    }
 
-    if (!renderedQuery.body.query.bool.filter) {
-      renderedQuery.body.query.bool.filter = [];
-    }
 
-    // Entur:
-    // Using req.query.categories bypasses the sanitizer function and
-    // leaves intact the original categories filter from pelias-query package,
-    // e.g.: query.filter( peliasQuery.view.categories );
-    // in query/reverse.js#L24
-    //
-    // Instead we splice out categories from the rendered query and use that to add a
-    // new filter, wich uses our own field.
-    var index = renderedQuery.body.query.bool.filter.findIndex(f => f.terms && f.terms.category);
-    var match = index !== -1 && renderedQuery.body.query.bool.filter.splice(index).shift();
-    var categories = match ? match.terms.category : [];
-
-    if (categories.length > 0 && !categories.includes('no_filter')) {
-        var categoriesTerms = {
-            terms: {
-                'category_filter': categories
-            }
-        };
-
-        renderedQuery.body.query.bool.filter.push(categoriesTerms);
-    }
-}
-function filterByParentIds(req, renderedQuery) {
-    if (!req || !req.query) {
-        return;
-    }
-    if (!renderedQuery || !renderedQuery.body || !renderedQuery.body.query || !renderedQuery.body.query.bool) {
-        return;
-    }
-    var countyIds = req.query['boundary.county_ids'];
-    var localityIds = req.query['boundary.locality_ids'];
-    if (countyIds || localityIds) {
-        if (!renderedQuery.body.query.bool.filter) {
-            renderedQuery.body.query.bool.filter = [];
-        }
-
-        if (countyIds) {
-            var countyTerms = {
-                terms: {
-                    'parent.county_id': countyIds.split(',')
-                }
-            };
-            renderedQuery.body.query.bool.filter.push(countyTerms);
-        }
-
-        if (localityIds) {
-            var localityTerms = {
-                terms: {
-                    'parent.locality_id': localityIds.split(',')
-                }
-            };
-            renderedQuery.body.query.bool.filter.push(localityTerms);
-        }
-    }
-}
-function filterByTariffZones(req, renderedQuery) {
-    if (!req || !req.query) {
-        return;
-    }
-    if (!renderedQuery || !renderedQuery.body || !renderedQuery.body.query || !renderedQuery.body.query.bool) {
-        return;
-    }
-    var tariffZoneIds = req.query.tariff_zone_ids;
-    var tariffZoneAuthorities = req.query.tariff_zone_authorities;
-    if (tariffZoneIds || tariffZoneAuthorities) {
-        if (!renderedQuery.body.query.bool.filter) {
-            renderedQuery.body.query.bool.filter = [];
-        }
-
-        if (tariffZoneIds) {
-            var tariffZoneIdsTerms = {
-                terms: {
-                    'tariff_zones': tariffZoneIds.split(',')
-                }
-            };
-            renderedQuery.body.query.bool.filter.push(tariffZoneIdsTerms);
-        }
-
-        if (tariffZoneAuthorities) {
-            var tariffZoneAuthoritiesTerms = {
-                terms: {
-                    'tariff_zone_authorities': tariffZoneAuthorities.split(',')
-                }
-            };
-            renderedQuery.body.query.bool.filter.push(tariffZoneAuthoritiesTerms);
-        }
-    }
-}
 function setup( apiConfig, esclient, query, should_execute ){
   function controller( req, res, next ){
     if (!should_execute(req, res)) {
