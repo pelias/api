@@ -21,9 +21,9 @@ secondaryImage:
   imagePullPolicy: Always
   containerPort: 9200
   resources:
-    memLimit: 1500Mi
-    cpuRequest: 600m
-    memRequest: 1000Mi
+    memLimit: 2000Mi
+    cpuRequest: 1200m
+    memRequest: 1500Mi
 
 service:
   http:

@@ -30,7 +30,6 @@ spec:
            value: Europe/Oslo
         resources:
           limits:
-            cpu: {{ .Values.resources.cpuLimit }}
             memory: {{ .Values.resources.memLimit }}
           requests:
             cpu: {{ .Values.resources.cpuRequest }}
@@ -51,6 +50,13 @@ spec:
       - name: elasticsearch
         image: {{ .Values.secondaryImage.identifier }}
         imagePullPolicy: {{ .Values.secondaryImage.imagePullPolicy }}
+        lifecycle:
+          preStop:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - sleep 30
         env:
          - name: TZ
            value: Europe/Oslo
@@ -71,7 +77,6 @@ spec:
           timeoutSeconds: 5
         resources:
           limits:
-            cpu: {{ .Values.secondaryImage.resources.cpuLimit }}
             memory: {{ .Values.secondaryImage.resources.memLimit }}
           requests:
             cpu: {{ .Values.secondaryImage.resources.cpuRequest }}
