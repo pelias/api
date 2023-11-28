@@ -2,15 +2,16 @@
 FROM pelias/baseimage
 USER pelias
 
-# Where the app is built and run inside the docker fs
-ENV WORK=/home/pelias
-WORKDIR ${WORK}
+# change working dir
+ENV WORKDIR /code/pelias/api
+RUN mkdir -p ${WORKDIR}
+WORKDIR ${WORKDIR}
 
 # copy package.json first to prevent npm install being rerun when only code changes
-COPY ./package.json ${WORK}
+COPY ./package.json ${WORKDIR}
 RUN npm install
 
-COPY . ${WORK}
+COPY . ${WORKDIR}
 
 # only allow containers to succeed if tests pass
 RUN npm test
