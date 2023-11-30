@@ -1,5 +1,5 @@
 # base image
-FROM pelias/baseimage
+FROM pelias/baseimage:node-v20
 USER pelias
 
 # change working dir
