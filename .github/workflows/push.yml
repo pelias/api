@@ -33,5 +33,6 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_BUILD_PLATFORMS: classic
         run: |
           curl "https://raw.githubusercontent.com/pelias/ci-tools/master/build-docker-images.sh" | bash -
