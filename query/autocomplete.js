@@ -67,6 +67,8 @@ query.filter( views.focus_point_filter );
 
 // --------------------------------
 
+const overrides = config.get('api.autocomplete.default_overrides');
+
 /**
   map request variables to query variables for all inputs
   provided by this HTTP request.
@@ -74,6 +76,10 @@ query.filter( views.focus_point_filter );
 function generateQuery( clean ){
 
   const vs = new peliasQuery.Vars( defaults );
+
+  if (_.isObject(overrides)) {
+    vs.set(overrides);
+  }
 
   // sources
   if( _.isArray(clean.sources) && !_.isEmpty(clean.sources) ){

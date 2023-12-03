@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const peliasQuery = require('pelias-query');
+const config = require('pelias-config').generate();
 const defaults = require('./reverse_defaults');
 
 //------------------------------
@@ -23,9 +24,15 @@ query.filter( peliasQuery.view.boundary_gid );
 
 // --------------------------------
 
+const overrides = config.get('api.reverse.default_overrides');
+
 function generateQuery( clean ){
 
   const vs = new peliasQuery.Vars( defaults );
+
+  if (_.isObject(overrides)) {
+    vs.set(overrides);
+  }
 
   // set size
   if( clean.querySize ){

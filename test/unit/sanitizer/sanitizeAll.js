@@ -1,6 +1,7 @@
 var sanitizeAll = require('../../../sanitizer/sanitizeAll');
 const PeliasParameterError = require('../../../sanitizer/PeliasParameterError');
 const PeliasTimeoutError = require('../../../sanitizer/PeliasTimeoutError');
+const PeliasServiceError = require('../../../sanitizer/PeliasServiceError');
 
 module.exports.tests = {};
 
@@ -146,6 +147,38 @@ module.exports.tests.all = function(test, common) {
         a: 'first sanitizer'
       },
       errors: [ new PeliasTimeoutError(error_message) ],
+      warnings: []
+    };
+
+    sanitizeAll.runAllChecks(req, sanitizers);
+    t.deepEquals(req, expected_req);
+    t.end();
+  });
+
+  test('Various connection errors should be converted to a PeliasServiceError type', function(t) {
+    var req = {};
+    const error_messages = [
+        'connect ECONNREFUSED 127.0.0.1:12345',
+        'getaddrinfo ENOTFOUND foobar',
+        'http://127.0.0.1:12345/parse?address=3400%20Kane%20Hill%20Rd could not parse response: foobar',
+    ];
+    var sanitizers = {
+      'first': {
+        sanitize: function(){
+          req.clean.a = 'first sanitizer';
+          return {
+            errors: error_messages.map(msg => new Error(msg)),
+            warnings: []
+          };
+        }
+      }
+    };
+
+    var expected_req = {
+      clean: {
+        a: 'first sanitizer'
+      },
+      errors: error_messages.map(msg => new PeliasServiceError(msg)),
       warnings: []
     };
 

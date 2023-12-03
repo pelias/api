@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const peliasQuery = require('pelias-query');
 const defaults = require('./search_defaults');
+const config = require('pelias-config').generate();
 const textParser = require('./text_parser');
 
 //------------------------------
@@ -24,6 +25,8 @@ fallbackQuery.filter( peliasQuery.view.categories );
 fallbackQuery.filter( peliasQuery.view.boundary_gid );
 // --------------------------------
 
+const overrides = config.get('api.search.default_overrides');
+
 /**
   map request variables to query variables for all inputs
   provided by this HTTP request.
@@ -32,6 +35,9 @@ function generateQuery( clean ){
 
   const vs = new peliasQuery.Vars( defaults );
 
+  if (_.isObject(overrides)) {
+    vs.set(overrides);
+  }
 
   // input text
   vs.var( 'input:name', clean.text );
