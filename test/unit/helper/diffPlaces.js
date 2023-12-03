@@ -480,6 +480,45 @@ module.exports.tests.dedupe = function(test, common) {
     t.end();
   });
 
+  test('same address, different unit number', function (t) {
+    var item1 = {
+      'address_parts': {
+        'unit': '1',
+        'number': '10',
+        'street': 'Main Street'
+      }
+    };
+    var item2 = {
+      'address_parts': {
+        'unit': '2',
+        'number': '10',
+        'street': 'Main Street'
+      }
+    };
+
+    t.true(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
+  test('same address, different one missing unit number', function (t) {
+    var item1 = {
+      'address_parts': {
+        'number': '10',
+        'street': 'Main Street'
+      }
+    };
+    var item2 = {
+      'address_parts': {
+        'unit': '2',
+        'number': '10',
+        'street': 'Main Street'
+      }
+    };
+
+    t.true(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
   test('completely empty objects', function(t) {
     var item1 = {};
     var item2 = {};
