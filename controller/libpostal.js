@@ -76,11 +76,18 @@ function setup(libpostalService, should_execute) {
         // push err.message or err onto req.errors
         req.errors.push( _.get(err, 'message', err) );
 
+      } else if (!Array.isArray(response) || !response.length) {
+        return next();
+
       } else if (_.some(_.countBy(response, o => o.label), count => count > 1)) {
         logger.warn(`discarding libpostal parse of '${req.clean.text}' due to duplicate field assignments`);
         return next();
 
-      } else if (_.isEmpty(response)) {
+      // libpostal classifies some airports as 'suburb'
+      // when we see a single 'suburb' label, discard it.
+      // examples: 'john f kennedy international airport', 'soho'
+      } else if (response.length === 1 && response[0].label === 'suburb') {
+        logger.warn(`discarding libpostal parse of '${req.clean.text}' due to solo 'suburb' label`);
         return next();
 
       } else {
@@ -121,7 +128,6 @@ const IS_NUMERIC_REGEXP = /^\d+$/;
 
 // apply fixes for known bugs in libpostal
 function patchBuggyResponses(response){
-  if( !Array.isArray(response) || !response.length ){ return response; }
 
   // patches which are only applied when a single label is generated
   if( response.length === 1 ){
