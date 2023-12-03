@@ -1,5 +1,5 @@
-var type_mapping = require('../helper/type_mapping');
-var sanitizeAll = require('../sanitizer/sanitizeAll');
+const type_mapping = require('../helper/type_mapping');
+const sanitizeAll = require('../sanitizer/sanitizeAll');
 
 /**
  * a list of query-string parameters groups for this endpoint
@@ -44,7 +44,8 @@ module.exports.middleware = (_api_pelias_config) => {
       boundary_country: require('../sanitizer/_boundary_country')(),
       categories: require('../sanitizer/_categories')(),
       request_language: require('../sanitizer/_request_language')(),
-      boundary_gid: require('../sanitizer/_boundary_gid')()
+      boundary_gid: require('../sanitizer/_boundary_gid')(),
+      addendum: require('../sanitizer/_addendum')()
     };
 
   return ( req, res, next ) => {

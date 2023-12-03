@@ -8,16 +8,17 @@ const toSingleField = require('./view/helper').toSingleField;
 
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
-  custom_boosts:              require('./view/boost_sources_and_layers'),
-  ngrams_strict:              require('./view/ngrams_strict'),
-  ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
-  ngrams_last_token_only_multi: require('./view/ngrams_last_token_only_multi'),
-  admin_multi_match_first: require('./view/admin_multi_match_first'),
-  admin_multi_match_last: require('./view/admin_multi_match_last'),
-  phrase_first_tokens_only:   require('./view/phrase_first_tokens_only'),
-  boost_exact_matches:        require('./view/boost_exact_matches'),
+  custom_boosts:                      require('./view/boost_sources_and_layers'),
+  ngrams_strict:                      require('./view/ngrams_strict'),
+  ngrams_last_token_only:             require('./view/ngrams_last_token_only'),
+  ngrams_last_token_only_multi:       require('./view/ngrams_last_token_only_multi'),
+  admin_multi_match_first:            require('./view/admin_multi_match_first'),
+  admin_multi_match_last:             require('./view/admin_multi_match_last'),
+  phrase_first_tokens_only:           require('./view/phrase_first_tokens_only'),
+  boost_exact_matches:                require('./view/boost_exact_matches'),
   max_character_count_layer_filter:   require('./view/max_character_count_layer_filter'),
-  focus_point_filter:         require('./view/focus_point_distance_filter')
+  focus_point_filter:                 require('./view/focus_point_distance_filter'),
+  addendum_namespace_filter:          require('./view/addendum_namespace_filter')
 };
 
 // add abbrevations for the fields pelias/parser is able to detect.
@@ -65,6 +66,11 @@ query.filter( peliasQuery.view.categories );
 query.filter( peliasQuery.view.boundary_gid );
 query.filter( views.focus_point_filter );
 
+const configuredAddendumNamespaces = config.get('addendum_namespaces');
+Object.keys(configuredAddendumNamespaces).forEach(namespace => {
+  query.filter( views.addendum_namespace_filter(namespace, configuredAddendumNamespaces[namespace].type) );
+});
+
 // --------------------------------
 
 /**
@@ -74,6 +80,14 @@ query.filter( views.focus_point_filter );
 function generateQuery( clean ){
 
   const vs = new peliasQuery.Vars( defaults );
+
+  //addendum
+  const configuredAddendumNamespaces = config.get('addendum_namespaces');
+  Object.keys(configuredAddendumNamespaces)
+    .filter(namespace => clean[namespace])
+    .forEach(namespace => {
+      vs.var( namespace, clean[namespace] );
+    });
 
   // sources
   if( _.isArray(clean.sources) && !_.isEmpty(clean.sources) ){
@@ -104,7 +118,7 @@ function generateQuery( clean ){
   vs.var( 'input:name', clean.text );
 
   // if the tokenizer has run then we set 'input:name' to as the combination of the
-  // 'complete' tokens with the 'incomplete' tokens, the resuting array differs
+  // 'complete' tokens with the 'incomplete' tokens, the resulting array differs
   // slightly from the 'input:name:tokens' array as some tokens might have been
   // removed in the process; such as single grams which are not present in then
   // ngrams index.

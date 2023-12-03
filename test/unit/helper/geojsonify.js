@@ -1,11 +1,29 @@
 const geojsonify = require('../../../helper/geojsonify');
 const proxyquire = require('proxyquire').noCallThru();
 const codec = require('pelias-model').codec;
+const peliasConfig = require('pelias-config');
+
+const makePeliasConfig = (addendum_namespaces) => {
+  const config = peliasConfig.generateDefaults();
+
+  return addendum_namespaces ? {
+    generate: () => ({
+      ...config,
+      addendum_namespaces: addendum_namespaces,
+      get: (name) => name === 'addendum_namespaces' ? addendum_namespaces : undefined
+    }),
+  } : {
+    generate: () => ({
+      ...config,
+      get: () => undefined
+    }),
+  };
+};
 
 module.exports.tests = {};
 
-module.exports.tests.interface = function(test, common) {
-  test('valid interface', function(t) {
+module.exports.tests.interface = function (test, common) {
+  test('valid interface', function (t) {
     t.equal(typeof geojsonify, 'function', 'geojsonify is a function');
     t.equal(geojsonify.length, 2, 'accepts x arguments');
     t.end();
@@ -14,9 +32,9 @@ module.exports.tests.interface = function(test, common) {
 
 // ensure null island coordinates work
 // ref: https://github.com/pelias/pelias/issues/84
-module.exports.tests.earth = function(test, common) {
-  test('earth', function(t) {
-    var earth = [{
+module.exports.tests.earth = function (test, common) {
+  test('earth', function (t) {
+    const earth = [{
       '_type': 'doc',
       '_id': 'whosonfirst:continent:6295630',
       'source': 'whosonfirst',
@@ -30,8 +48,8 @@ module.exports.tests.earth = function(test, common) {
       }
     }];
 
-    t.doesNotThrow(function(){
-      geojsonify( {}, earth );
+    t.doesNotThrow(function () {
+      geojsonify({}, earth);
     });
     t.end();
   });
@@ -93,7 +111,7 @@ module.exports.tests.bounding_box = (test, common) => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 21.212121, 12.121212 ]
+            coordinates: [21.212121, 12.121212]
           },
           properties: {
             id: 'id 1',
@@ -111,7 +129,7 @@ module.exports.tests.bounding_box = (test, common) => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 31.313131, 13.131313 ]
+            coordinates: [31.313131, 13.131313]
           },
           properties: {
             id: 'id 2',
@@ -200,7 +218,7 @@ module.exports.tests.bounding_box = (test, common) => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 21.212121, 12.121212 ]
+            coordinates: [21.212121, 12.121212]
           },
           properties: {
             id: 'id 1',
@@ -213,13 +231,13 @@ module.exports.tests.bounding_box = (test, common) => {
             property1: 'property 1',
             property2: 'property 2'
           },
-          bbox: [ 1, 1, 2, 2 ]
+          bbox: [1, 1, 2, 2]
         },
         {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 31.313131, 13.131313 ]
+            coordinates: [31.313131, 13.131313]
           },
           properties: {
             id: 'id 2',
@@ -232,10 +250,10 @@ module.exports.tests.bounding_box = (test, common) => {
             property3: 'property 3',
             property4: 'property 4'
           },
-          bbox: [ -3, -3, -1, -1 ]
+          bbox: [-3, -3, -1, -1]
         }
       ],
-      bbox: [ -3, -3, 2, 2 ]
+      bbox: [-3, -3, 2, 2]
     };
 
     t.deepEquals(actual, expected);
@@ -304,7 +322,7 @@ module.exports.tests.bounding_box = (test, common) => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 21.212121, 12.121212 ]
+            coordinates: [21.212121, 12.121212]
           },
           properties: {
             id: 'id 1',
@@ -322,7 +340,7 @@ module.exports.tests.bounding_box = (test, common) => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 31.313131, 13.131313 ]
+            coordinates: [31.313131, 13.131313]
           },
           properties: {
             id: 'id 2',
@@ -335,10 +353,10 @@ module.exports.tests.bounding_box = (test, common) => {
             property3: 'property 3',
             property4: 'property 4'
           },
-          bbox: [ -3, -3, -1, -1 ]
+          bbox: [-3, -3, -1, -1]
         }
       ],
-      bbox: [ -3, -3, 21.212121, 12.121212 ]
+      bbox: [-3, -3, 21.212121, 12.121212]
     };
 
     t.deepEquals(actual, expected);
@@ -390,7 +408,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 21.212121, 12.121212 ]
+            coordinates: [21.212121, 12.121212]
           },
           properties: {
             id: 'id 1',
@@ -461,7 +479,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 31.313131, 13.131313 ]
+            coordinates: [31.313131, 13.131313]
           },
           properties: {
             id: 'id 2',
@@ -554,7 +572,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 21.212121, 12.121212 ]
+            coordinates: [21.212121, 12.121212]
           },
           properties: {
             id: 'id 1',
@@ -571,7 +589,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 31.313131, 13.131313 ]
+            coordinates: [31.313131, 13.131313]
           },
           properties: {
             id: 'id 2',
@@ -588,7 +606,7 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 41.414141, 14.141414 ]
+            coordinates: [41.414141, 14.141414]
           },
           properties: {
             id: 'id 3',
@@ -641,9 +659,9 @@ module.exports.tests.non_optimal_conditions = (test, common) => {
 
 // ensure that if elasticsearch returns an array of values for name.default
 // .. that we handle this case and select the first element for the label.
-module.exports.tests.nameAliases = function(test, common) {
-  test('name aliases', function(t) {
-    var aliases = [{
+module.exports.tests.nameAliases = function (test, common) {
+  test('name aliases', function (t) {
+    const aliases = [{
       '_id': 'example:example:1',
       'source': 'example',
       'layer': 'example',
@@ -662,7 +680,7 @@ module.exports.tests.nameAliases = function(test, common) {
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates: [ 0, 0 ]
+          coordinates: [0, 0]
         },
         properties: {
           id: '1',
@@ -674,10 +692,10 @@ module.exports.tests.nameAliases = function(test, common) {
           name: 'Example1'
         }
       }],
-      bbox: [ 0, 0, 0, 0 ]
+      bbox: [0, 0, 0, 0]
     };
 
-    var actual = geojsonify( {}, aliases );
+    const actual = geojsonify({}, aliases);
     t.deepEquals(actual, expected);
     t.end();
   });
@@ -685,9 +703,9 @@ module.exports.tests.nameAliases = function(test, common) {
 };
 
 // ensure addendums aree decoded and printed properly
-module.exports.tests.addendum = function(test, common) {
-  test('addendum: not set in source', function(t) {
-    var example = [{
+module.exports.tests.addendum = function (test, common) {
+  test('addendum: not set in source', function (t) {
+    const example = [{
       '_id': 'whosonfirst:continent:6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
@@ -705,8 +723,8 @@ module.exports.tests.addendum = function(test, common) {
     t.end();
   });
 
-  test('addendum: set in source', function(t) {
-    var example = [{
+  test('addendum: set in source', function (t) {
+    const example = [{
       '_id': 'whosonfirst:continent:6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
@@ -731,8 +749,8 @@ module.exports.tests.addendum = function(test, common) {
     t.end();
   });
 
-  test('addendum: partially corrupted', function(t) {
-    var example = [{
+  test('addendum: partially corrupted', function (t) {
+    const example = [{
       '_id': 'whosonfirst:continent:6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
@@ -755,8 +773,9 @@ module.exports.tests.addendum = function(test, common) {
     });
     t.end();
   });
-  test('addendum: all corrupted', function(t) {
-    var example = [{
+
+  test('addendum: all corrupted', function (t) {
+    const example = [{
       '_id': 'whosonfirst:continent:6295630',
       'source': 'whosonfirst',
       'layer': 'continent',
@@ -776,6 +795,112 @@ module.exports.tests.addendum = function(test, common) {
 
     let collection = geojsonify({}, example);
     t.false(collection.features[0].properties.addendum);
+    t.end();
+  });
+
+  test('addendum: only configured addendum namespaces', function (t) {
+    const example = [{
+      '_id': 'whosonfirst:continent:6295630',
+      'source': 'whosonfirst',
+      'layer': 'continent',
+      'name': {
+        'default': 'Earth'
+      },
+      'center_point': {
+        'lon': 0,
+        'lat': 0
+      },
+      'addendum': {
+        'wikipedia': { slug: 'HackneyCityFarm' },
+        'geonames': ['name1', 'name2']
+      }
+    }];
+
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      'pelias-config': makePeliasConfig({
+        wikipedia: {
+          type: 'object'
+        },
+        geonames: {
+          type: 'array'
+        }
+      })
+    });
+
+    let collection = geojsonify({}, example);
+    t.deepEqual(collection.features[0].properties.wikipedia, { slug: 'HackneyCityFarm' });
+    t.deepEqual(collection.features[0].properties.geonames, ['name1', 'name2']);
+    t.end();
+  });
+
+  test('addendum: mix of configured and non-configured addendum namespaces', function (t) {
+    const example = [{
+      '_id': 'whosonfirst:continent:6295630',
+      'source': 'whosonfirst',
+      'layer': 'continent',
+      'name': {
+        'default': 'Earth'
+      },
+      'center_point': {
+        'lon': 0,
+        'lat': 0
+      },
+      'addendum': {
+        'description': '{\"nor\":\"i Bogstadveien\"}',
+        'wikipedia': { slug: 'HackneyCityFarm' },
+        'geonames': ['name1', 'name2']
+      }
+    }];
+
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      'pelias-config': makePeliasConfig({
+        wikipedia: {
+          type: 'object'
+        },
+        geonames: {
+          type: 'array'
+        }
+      })
+    });
+
+    let collection = geojsonify({}, example);
+    t.deepEqual(collection.features[0].properties.wikipedia, { slug: 'HackneyCityFarm' });
+    t.deepEqual(collection.features[0].properties.geonames, ['name1', 'name2']);
+    t.deepEqual(collection.features[0].properties.addendum, {
+      description: { nor: 'i Bogstadveien' }
+    });
+    t.end();
+  });
+
+  test('addendum: removing the configuration for the previously configured namespace should be ignored with warning', function (t) {
+    const example = [{
+      '_id': 'whosonfirst:continent:6295630',
+      'source': 'whosonfirst',
+      'layer': 'continent',
+      'name': {
+        'default': 'Earth'
+      },
+      'center_point': {
+        'lon': 0,
+        'lat': 0
+      },
+      'addendum': {
+        'wikipedia': { slug: 'HackneyCityFarm' },
+        'geonames': ['name1', 'name2']
+      }
+    }];
+
+    const geojsonify = proxyquire('../../../helper/geojsonify', {
+      'pelias-config': makePeliasConfig({
+        geonames: {
+          type: 'array'
+        }
+      })
+    });
+
+    let collection = geojsonify({}, example);
+    t.deepEqual(collection.features[0].properties.wikipedia, undefined);
+    t.deepEqual(collection.features[0].properties.geonames, ['name1', 'name2']);
     t.end();
   });
 };
@@ -857,7 +982,7 @@ module.exports.all = (tape, common) => {
     return tape(`geojsonify: ${name}`, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (const testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };

@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const peliasQuery = require('pelias-query');
 const defaults = require('./reverse_defaults');
+const config = require('pelias-config').generate();
+const addendum_namespace_filter = require('./view/addendum_namespace_filter');
 
 //------------------------------
 // reverse geocode query
@@ -21,11 +23,24 @@ query.filter( peliasQuery.view.categories );
 query.filter( peliasQuery.view.boundary_country );
 query.filter( peliasQuery.view.boundary_gid );
 
+const configuredAddendumNamespaces = config.get('addendum_namespaces');
+Object.keys(configuredAddendumNamespaces).forEach(namespace => {
+  query.filter( addendum_namespace_filter(namespace, configuredAddendumNamespaces[namespace].type) );
+});
+
 // --------------------------------
 
 function generateQuery( clean ){
 
   const vs = new peliasQuery.Vars( defaults );
+
+  //addendum
+  const configuredAddendumNamespaces = config.get('addendum_namespaces');
+  Object.keys(configuredAddendumNamespaces)
+    .filter(namespace => clean[namespace])
+    .forEach(namespace => {
+      vs.var( namespace, clean[namespace] );
+    });
 
   // set size
   if( clean.querySize ){
@@ -55,7 +70,7 @@ function generateQuery( clean ){
   // bounding circle
   // note: the sanitizers will take care of the case
   // where point.lan/point.lon are provided in the
-  // absense of boundary.circle.lat/boundary.circle.lon
+  // absence of boundary.circle.lat/boundary.circle.lon
   if( _.isFinite(clean['boundary.circle.lat']) &&
       _.isFinite(clean['boundary.circle.lon']) ){
 

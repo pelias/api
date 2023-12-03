@@ -2,6 +2,8 @@ const _ = require('lodash');
 const peliasQuery = require('pelias-query');
 const defaults = require('./search_defaults');
 const textParser = require('./text_parser');
+const config = require('pelias-config').generate();
+const addendum_namespace_filter = require('./view/addendum_namespace_filter');
 
 //------------------------------
 // general-purpose search query
@@ -22,6 +24,11 @@ structuredQuery.filter( peliasQuery.view.sources );
 structuredQuery.filter( peliasQuery.view.layers );
 structuredQuery.filter( peliasQuery.view.categories );
 structuredQuery.filter( peliasQuery.view.boundary_gid );
+
+const configuredAddendumNamespaces = config.get('addendum_namespaces');
+Object.keys(configuredAddendumNamespaces).forEach(namespace => {
+  structuredQuery.filter( addendum_namespace_filter(namespace, configuredAddendumNamespaces[namespace].type) );
+});
 // --------------------------------
 
 /**
@@ -34,6 +41,14 @@ function generateQuery( clean ){
 
   // input text
   vs.var( 'input:name', clean.text );
+
+  //addendum
+  const configuredAddendumNamespaces = config.get('addendum_namespaces');
+  Object.keys(configuredAddendumNamespaces)
+    .filter(namespace => clean[namespace])
+    .forEach(namespace => {
+      vs.var( namespace, clean[namespace] );
+    });
 
   // sources
   vs.var( 'sources', clean.sources);
@@ -103,11 +118,7 @@ function generateQuery( clean ){
     textParser( clean.parsed_text, vs );
   }
 
-  const q = getQuery(vs);
-
-  // console.log(JSON.stringify(q.body, null, 2));
-
-  return q;
+  return getQuery(vs);
 }
 
 function getQuery(vs) {

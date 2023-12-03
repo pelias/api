@@ -1,14 +1,14 @@
-var tape = require('tape'),
-    diff = require('difflet')({ indent : 2, comment : true });
+const tape = require('tape'),
+  diff = require('difflet')({ indent: 2, comment: true });
 
-var common = {
+const common = {
   // a visual deep diff rendered using console.error()
-  diff: function( actual, expected ){
-    console.error( diff.compare( actual, expected ) );
+  diff: function (actual, expected) {
+    console.error(diff.compare(actual, expected));
   }
 };
 
-var tests = [
+const tests = [
   require('./app'),
   require('./schema'),
   require('./controller/coarse_reverse'),
@@ -68,6 +68,7 @@ var tests = [
   require('./query/autocomplete'),
   require('./query/autocomplete_token_matching_permutations'),
   require('./query/autocomplete_defaults'),
+  require('./query/autocomplete_with_configured_addendum_namespaces'),
   require('./query/autocomplete_with_custom_boosts'),
   require('./query/reverse'),
   require('./query/reverse_defaults'),
@@ -113,6 +114,7 @@ var tests = [
   require('./sanitizer/search'),
   require('./sanitizer/defer_to_pelias_parser'),
   require('./sanitizer/wrap'),
+  require('./sanitizer/_addendum'),
   require('./service/configurations/Interpolation'),
   require('./service/configurations/Language'),
   require('./service/configurations/Libpostal'),
@@ -122,6 +124,6 @@ var tests = [
   require('./service/search')
 ];
 
-tests.map(function(t) {
+tests.map(function (t) {
   t.all(tape, common);
 });
