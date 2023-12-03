@@ -329,6 +329,59 @@ module.exports.tests.interface = function(test, common) {
     });
 
   });
+  
+  test('address zip may override postalcode parent hierarchy', function(t) {
+    var input = {
+      data: [{
+        'address_parts': { 'number': '815', 'street': 'Tennessee Street', 'zip': '94107.0' },
+        'parent': {
+          'country_id': [ '85633793' ],
+          'country': [ 'United States' ],
+          'country_a': [ 'USA' ],
+          'postalcode': [ '94107' ],
+          'postalcode_id': [ '554784675' ],
+        },
+        'source': 'openaddresses',
+        'source_id': 'us/ca/san_francisco:819b088d2837cf5d',
+        'layer': 'address',
+        'country': [ 'United States' ],
+        'country_a': [ 'USA' ],
+        'country_gid': ['85633793'],
+        'postalcode': [ '94107.0' ],
+        'postalcode_gid': [ 'us/ca/san_francisco:819b088d2837cf5d:819b088d2837cf5d' ],
+        'postalcode_source': [ 'openaddresses' ],
+        'postalcode_layer': [ 'address' ],
+      }]
+    };
+
+    var expected = {
+      data: [{
+        'address_parts': { 'number': '815', 'street': 'Tennessee Street', 'zip': '94107.0' },
+        'parent': {
+          'country_id': [ '85633793' ],
+          'country': [ 'United States' ],
+          'country_a': [ 'USA' ],
+          'postalcode': [ '94107' ],
+          'postalcode_id': [ '554784675' ],
+        },
+        'source': 'openaddresses',
+        'source_id': 'us/ca/san_francisco:819b088d2837cf5d',
+        'layer': 'address',
+        'country': [ 'United States' ],
+        'country_a': [ 'USA' ],
+        'country_gid': [ 'whosonfirst:country:85633793' ],
+        'postalcode': [ '94107.0' ],
+        'postalcode_gid': [ 'openaddresses:address:us/ca/san_francisco:819b088d2837cf5d:819b088d2837cf5d' ],
+        'postalcode_source': [ 'openaddresses' ],
+        'postalcode_layer': [ 'address' ],
+      }]
+    };
+
+    normalizer({}, input, function () {
+      t.deepEqual(input, expected);
+      t.end();
+    });
+  });
 };
 
 module.exports.all = function (tape, common) {

@@ -37,6 +37,8 @@ function normalizeParentIds(place) {
         // The default values via lodash _.get is used only when the value is `undefined`, in our case it may be null.
         let source = _.get(place, `${placeType}_source[0]`) || 'whosonfirst';
 
+        const layer = _.get(place, `${placeType}_layer[0]`, placeType);
+
         const placetype_ids = _.get(place, `${placeType}_gid[0]`, null);
 
         // looking forward to the day we can remove all geonames specific hacks, but until then...
@@ -46,7 +48,7 @@ function normalizeParentIds(place) {
           source = place.source;
         }
         
-        place[`${placeType}_gid`] = [ makeNewId(source, placeType, placetype_ids) ];
+        place[`${placeType}_gid`] = [ makeNewId(source, layer, placetype_ids) ];
       }
     });
   }
