@@ -60,8 +60,10 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   // generic multi_match config
   'multi_match:type': 'cross_fields',
   'multi_match:ngrams_strict:type': 'phrase',
+  'multi_match:ngrams_fuzzy:operator': 'and',
   'multi_match:first_tokens_only:type': 'phrase',
   'multi_match:boost_exact_matches:type': 'phrase',
+  'multi_match:first_tokens_only_fuzzy:operator': 'and',
 
   // setting 'cutoff_frequency' will result in very common
   // terms such as country not scoring at all
@@ -154,5 +156,9 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'custom:boosting:boost': 5,               // multiply score by this number to increase the strength of the boost
   'custom:boosting:max_boost': 50,          // maximum boosting which can be applied (max_boost/boost = max_score)
   'custom:boosting:score_mode': 'sum',      // sum all function scores before multiplying the boost
-  'custom:boosting:boost_mode': 'multiply'  // this mode is not relevant because there is no query section
+  'custom:boosting:boost_mode': 'multiply',  // this mode is not relevant because there is no query section
+
+  'fuzzy:fuzziness': 0,
+  'fuzzy:max_expansions': 10,
+  'fuzzy:prefix_length': 1
 });
