@@ -1,4 +1,4 @@
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ template "app.name" . }}
@@ -6,22 +6,10 @@ metadata:
   labels:
     {{- include "common.labels" . | indent 4 }}
 spec:
-  maxReplicas:  {{ .Values.horizontalPodAutoscaler.maxReplicas }}
-  minReplicas: {{ .Values.horizontalPodAutoscaler.minReplicas }}
+  maxReplicas:  {{ .Values.horizontalPodAutoscaler.maxReplicas | default "2" }}
+  minReplicas: {{ .Values.horizontalPodAutoscaler.minReplicas | default "1" }}
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ template "app.name" . }}
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: {{ .Values.horizontalPodAutoscaler.targetCPUUtilizationPercentage | default "80" }}
-  behavior:
-    scaleDown:
-      policies:
-        - type: Percent
-          value: 10
-          periodSeconds: 60
+  targetCPUUtilizationPercentage: {{ .Values.horizontalPodAutoscaler.targetCPUUtilizationPercentage | default "80" }}

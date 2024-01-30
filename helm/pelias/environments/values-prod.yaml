@@ -1,21 +1,7 @@
-env: production
 replicas: 3
-gcpBasePath: gs://kakka-production/es-data/
-
-cronjobRedeployPelias:
-  enabled: true
-  concurrencyPolicy: Replace
-  failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 1
-  environmentValues:
-    cloudsdkCoreProject: entur-1287
-    slackName: ror-prod-slack-url
-  image:
-    repo: eu.gcr.io/entur-system-1287/deployment-rollout-restart:0.1.0
-rbac:
-  enabled: true
+gcpBasePath: gs://ror-kakka-production/es-data/
 
 horizontalPodAutoscaler:
-  maxReplicas: 9
+  maxReplicas: 6
   minReplicas: 3
-  targetCPUUtilizationPercentage: 70
+  targetCPUUtilizationPercentage: 80
