@@ -14,7 +14,7 @@ resources:
 
 
 image:
-  identifier: ${artifact.metadata.image}
+  identifier: <+artifacts.primary.image>
   imagePullPolicy: Always
 secondaryImage:
   identifier: eu.gcr.io/entur-system-1287/es-static:master-v26-8908900a
