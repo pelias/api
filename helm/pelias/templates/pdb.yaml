@@ -1,0 +1,12 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "app.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "common.labels" . | indent 4 }}
+spec:
+  minAvailable: {{ .Values.PodDisruptionBudget.minAvailable | default "50%" }}
+  selector:
+    matchLabels:
+      app: {{ template "app.name" . }}

@@ -32,4 +32,4 @@ function filterByParentIds(req, renderedQuery) {
   }
 }
 
-module.exports = filterByParentIds
+module.exports = filterByParentIds;

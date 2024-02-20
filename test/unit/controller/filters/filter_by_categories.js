@@ -44,7 +44,7 @@ module.exports.tests.true_conditions = (test, common) => {
     t.end();
 
   });
-}
+};
 
 module.exports.tests.true_conditions = (test, common) => {
   test('leaves other filters intact', (t) => {
@@ -88,7 +88,7 @@ module.exports.tests.true_conditions = (test, common) => {
     t.end();
 
   });
-}
+};
 
 module.exports.all = (tape, common) => {
   function test(name, testFunction) {
