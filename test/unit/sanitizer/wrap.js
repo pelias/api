@@ -93,9 +93,9 @@ module.exports.tests.latitude_negative = function(test, common) {
     t.equal(norm.lon, 0);
     t.end();
   });
-  test('positive latitude wrapping - 721 degrees', function (t) {
-    var norm = wrap(721, 0);
-    t.equal(norm.lat, 1);
+  test('negative latitude wrapping - 721 degrees', function (t) {
+    var norm = wrap(-721, 0);
+    t.equal(norm.lat, -1);
     t.equal(norm.lon, 0);
     t.end();
   });
