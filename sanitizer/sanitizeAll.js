@@ -1,9 +1,12 @@
 const PeliasParameterError = require('./PeliasParameterError');
 const PeliasTimeoutError = require('../sanitizer/PeliasTimeoutError');
+const PeliasServiceError = require('../sanitizer/PeliasServiceError');
 
 function getCorrectErrorType(message) {
-  if (message.includes( 'Timeout')) {
+  if (message.includes('Timeout') || message.includes('timeout')) {
     return new PeliasTimeoutError(message);
+  } else if (message.includes('Parse') || message.includes('parse') || message.includes('connect') || message.includes('ECONN')) {
+    return new PeliasServiceError(message);
   }
 
   // most errors are parameter errors
