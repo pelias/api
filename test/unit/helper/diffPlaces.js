@@ -690,7 +690,7 @@ module.exports.tests.normalizeString = function (test, common) {
 
   test('diacritics', function (t) {
     t.equal(normalizeString('Malmö'), 'malmo');
-    t.equal(normalizeString('Grolmanstraße'), 'grolmanstraße');
+    t.equal(normalizeString('Grolmanstraße'), 'grolmanstrasse');
     t.equal(normalizeString('àáâãäåấắæầằçḉèéêëếḗềḕ'), 'aaaaaaaaaeaacceeeeeeee');
     t.end();
   });
