@@ -20,13 +20,11 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'ngram:analyzer': 'peliasQuery',
   'ngram:field': 'name.default',
   'ngram:boost': 100,
-  'ngram:cutoff_frequency': 0.01,
 
   'phrase:analyzer': 'peliasQuery',
   'phrase:field': 'phrase.default',
   'phrase:boost': 1,
   'phrase:slop': 3,
-  'phrase:cutoff_frequency': 0.01,
 
   'focus:function': 'exp',
   'focus:offset': '0km',
@@ -40,22 +38,18 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'address:housenumber:analyzer': 'peliasHousenumber',
   'address:housenumber:field': 'address_parts.number',
   'address:housenumber:boost': 2,
-  'address:housenumber:cutoff_frequency': 0.01,
 
   'address:street:analyzer': 'peliasQuery',
   'address:street:field': 'address_parts.street',
   'address:street:boost': 1,
-  'address:street:cutoff_frequency': 0.01,
 
   'address:cross_street:analyzer': 'peliasQuery',
   'address:cross_street:field': 'address_parts.cross_street',
   'address:cross_street:boost': 5,
-  'address:cross_street:cutoff_frequency': 0.01,
 
   'address:postcode:analyzer': 'peliasZip',
   'address:postcode:field': 'address_parts.zip',
   'address:postcode:boost': 2000,
-  'address:postcode:cutoff_frequency': 0.01,
 
   // generic multi_match config
   'multi_match:type': 'cross_fields',
@@ -63,14 +57,9 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'multi_match:first_tokens_only:type': 'phrase',
   'multi_match:boost_exact_matches:type': 'phrase',
 
-  // setting 'cutoff_frequency' will result in very common
-  // terms such as country not scoring at all
-  // 'multi_match:cutoff_frequency': 0.01,
-
   'admin:country_a:analyzer': 'standard',
   'admin:country_a:field': 'parent.country_a.ngram',
   'admin:country_a:boost': 1,
-  'admin:country_a:cutoff_frequency': 0.01,
 
   // these options affect the `boundary.country` hard filter
   'multi_match:boundary_country:analyzer': 'standard',
@@ -79,62 +68,50 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'admin:country:analyzer': 'peliasAdmin',
   'admin:country:field': 'parent.country.ngram',
   'admin:country:boost': 1,
-  'admin:country:cutoff_frequency': 0.01,
 
   'admin:dependency:analyzer': 'peliasAdmin',
   'admin:dependency:field': 'parent.dependency.ngram',
   'admin:dependency:boost': 1,
-  'admin:dependency:cutoff_frequency': 0.01,
 
   'admin:region:analyzer': 'peliasAdmin',
   'admin:region:field': 'parent.region.ngram',
   'admin:region:boost': 1,
-  'admin:region:cutoff_frequency': 0.01,
 
   'admin:region_a:analyzer': 'peliasAdmin',
   'admin:region_a:field': 'parent.region_a.ngram',
   'admin:region_a:boost': 1,
-  'admin:region_a:cutoff_frequency': 0.01,
 
   'admin:macroregion:analyzer': 'peliasAdmin',
   'admin:macroregion:field': 'parent.macroregion.ngram',
   'admin:macroregion:boost': 1,
-  'admin:macroregion:cutoff_frequency': 0.01,
 
   'admin:county:analyzer': 'peliasAdmin',
   'admin:county:field': 'parent.county.ngram',
   'admin:county:boost': 1,
-  'admin:county:cutoff_frequency': 0.01,
 
   'admin:macrocounty:analyzer': 'peliasAdmin',
   'admin:macrocounty:field': 'parent.macrocounty.ngram',
   'admin:macrocounty:boost': 1,
-  'admin:macrocounty:cutoff_frequency': 0.01,
 
   'admin:localadmin:analyzer': 'peliasAdmin',
   'admin:localadmin:field': 'parent.localadmin.ngram',
   'admin:localadmin:boost': 1,
-  'admin:localadmin:cutoff_frequency': 0.01,
 
   'admin:locality:analyzer': 'peliasAdmin',
   'admin:locality:field': 'parent.locality.ngram',
   'admin:locality:boost': 1,
-  'admin:locality:cutoff_frequency': 0.01,
 
   'admin:locality_a:analyzer': 'peliasAdmin',
   'admin:locality_a:field': 'parent.locality_a.ngram',
   'admin:locality_a:boost': 1,
-  'admin:locality_a:cutoff_frequency': 0.01,
 
   'admin:neighbourhood:analyzer': 'peliasAdmin',
   'admin:neighbourhood:field': 'parent.neighbourhood.ngram',
   'admin:neighbourhood:boost': 1,
-  'admin:neighbourhood:cutoff_frequency': 0.01,
 
   'admin:borough:analyzer': 'peliasAdmin',
   'admin:borough:field': 'parent.borough.ngram',
   'admin:borough:boost': 1,
-  'admin:borough:cutoff_frequency': 0.01,
 
   // an additional 'name' field to add to admin multi-match queries.
   // this is used to improve venue matching in cases where the we
