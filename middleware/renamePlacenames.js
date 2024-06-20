@@ -5,7 +5,7 @@ const PARENT_PROPS = require('../helper/placeTypes');
 const ADDRESS_PROPS = [
   { name: 'unit',   newName: 'unit' },
   { name: 'number', newName: 'housenumber' },
-  { name: 'zip',    newName: 'postalcode', transform: (value) => { return [value]; } },
+  { name: 'zip',    newName: 'postalcode', transform: (value) => { return [value]; }, addOriginalId: true },
   { name: 'street', newName: 'street' }
 ];
 
@@ -62,6 +62,12 @@ function renameAddressProperty(place, prop) {
   }
   else {
     place[prop.newName] = place.address_parts[prop.name];
+  }
+
+  if (prop.addOriginalId) {
+    place[`${prop.newName}_gid`] = [place.source_id];
+    place[`${prop.newName}_source`] = [place.source];
+    place[`${prop.newName}_layer`] = [place.layer];
   }
 }
 
