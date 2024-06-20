@@ -9,7 +9,6 @@ const toSingleField = require('./view/helper').toSingleField;
 // additional views (these may be merged in to pelias/query at a later date)
 var views = {
   custom_boosts:              require('./view/boost_sources_and_layers'),
-  ngrams_strict:              require('./view/ngrams_strict'),
   ngrams_last_token_only:     require('./view/ngrams_last_token_only'),
   ngrams_last_token_only_multi: require('./view/ngrams_last_token_only_multi'),
   admin_multi_match_first: require('./view/admin_multi_match_first'),
