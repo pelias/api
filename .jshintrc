@@ -2,7 +2,7 @@
   "node": true,
   "curly": true,
   "eqeqeq": true,
-  "esversion": 9,
+  "esversion": "2022",
   "freeze": true,
   "immed": true,
   "indent": 2,
