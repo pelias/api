@@ -12,7 +12,7 @@ module.exports.tests.interface = (test, common) => {
 
 module.exports.tests.true_conditions = (test, common) => {
   test('request with specified parameter should return true', t => {
-    [[], {}, 'string value', 17].forEach(val => {
+    [['foo'], {foo: 'bar'}, 'string value', 0, 17].forEach(val => {
       const req = {
         clean: {
           'parameter name': val
@@ -20,6 +20,25 @@ module.exports.tests.true_conditions = (test, common) => {
       };
 
       t.ok(hasRequestParameter('parameter name')(req));
+
+    });
+
+    t.end();
+
+  });
+
+};
+
+module.exports.tests.empty_values = (test, common) => {
+  test('request with specified parameter, but empty value, should true', t => {
+    [[], {}, '', null, undefined].forEach(val => {
+      const req = {
+        clean: {
+          'parameter name': val
+        }
+      };
+
+      t.notOk(hasRequestParameter('parameter name')(req));
 
     });
 
