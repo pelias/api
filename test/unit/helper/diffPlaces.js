@@ -480,6 +480,58 @@ module.exports.tests.dedupe = function(test, common) {
     t.end();
   });
 
+  test('ZIP vs ZIP+4', function(t) {
+    var item1 = {
+      'parent': {
+        'country_a': ['USA']
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210'
+      }
+    };
+    var item2 = {
+      'parent': {
+        'country_a': ['USA']
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210-1111'
+      }
+    };
+
+    t.false(isDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+
+  test('ZIP vs ZIP+4 functionality does not apply for non-USA documents', function(t) {
+    var item1 = {
+      'parent': {
+        'country_a': ['NOT']
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210'
+      }
+    };
+    var item2 = {
+      'parent': {
+        'country_a': ['NOT']
+      },
+      'address_parts': {
+        'number': '1',
+        'street': 'Main Street',
+        'zip': '90210-1111'
+      }
+    };
+
+    t.true(isDifferent(item1, item2), 'should be the same');
+    t.end();
+  });
+
   test('completely empty objects', function(t) {
     var item1 = {};
     var item2 = {};
