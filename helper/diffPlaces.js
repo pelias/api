@@ -41,9 +41,12 @@ function isLayerDifferent(item1, item2){
   return false;
 }
 
+function isCountryCode(item, code) {
+  return field.getStringValue( item?.parent?.country_a ) === code;
+}
+
 function isUsState(item) {
-  if (!_.isArray(item.parent.country_a)) { return false; }
-  return item.parent.country_a[0] === 'USA' && item.layer === 'region';
+  return isCountryCode(item, 'USA') && item.layer === 'region';
 }
 
 // Geonames records in the locality and localadmin layer are parented by themselves
@@ -206,7 +209,7 @@ function isAddressDifferent(item1, item2){
   // only compare zip if both records have it, otherwise just ignore and assume it's the same
   // since by this time we've already compared parent hierarchies
   if( _.has(address1, 'zip') && _.has(address2, 'zip') ){
-    if( isPropertyDifferent(address1, address2, 'zip') ){ return true; }
+    if( isZipDifferent(item1, item2) ){ return true; }
   }
 
   return false;
@@ -256,9 +259,25 @@ function isDifferent(item1, item2, requestLanguage){
 }
 
 /**
+ * return true if zip codes are different
+ */
+function isZipDifferent(item1, item2) {
+  let address1 = _.get(item1, 'address_parts');
+  let address2 = _.get(item2, 'address_parts');
+
+  // handle USA ZIP+4 vs ZIP (98036-6119 vs 98036)
+  if (isCountryCode(item1, 'USA') && isCountryCode(item2, 'USA')) {
+    const firstWordOnly = (str) => _.first(normalizeString(str).split(' '));
+    return isPropertyDifferent(address1, address2, 'zip', firstWordOnly);
+  }
+
+  return isPropertyDifferent(address1, address2, 'zip');
+}
+
+/**
  * return true if properties are different
  */
-function isPropertyDifferent(item1, item2, prop ){
+function isPropertyDifferent(item1, item2, prop, normalizer = normalizeString ){
 
   // if neither item has prop, we consider them the same
   if( !_.has(item1, prop) && !_.has(item2, prop) ){ return false; }
@@ -274,7 +293,7 @@ function isPropertyDifferent(item1, item2, prop ){
     let prop1StringValue = field.getStringValue( prop1[i] );
     for( let j=0; j<prop2.length; j++ ){
       let prop2StringValue = field.getStringValue( prop2[j] );
-      if( normalizeString( prop1StringValue ) === normalizeString( prop2StringValue ) ){
+      if( normalizer( prop1StringValue ) === normalizer( prop2StringValue ) ){
         return false;
       }
     }
