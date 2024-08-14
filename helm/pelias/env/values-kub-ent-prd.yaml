@@ -2,6 +2,10 @@ replicas: 3
 gcpBasePath: gs://ror-kakka-production/es-data/
 
 horizontalPodAutoscaler:
-  maxReplicas: 6
+  maxReplicas: 10
   minReplicas: 3
   targetCPUUtilizationPercentage: 80
+
+
+PodDisruptionBudget:
+  minAvailable: 80%
