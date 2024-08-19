@@ -7,27 +7,30 @@ const port = ( process.env.PORT || 3100 );
 const host = ( process.env.HOST || undefined );
 
 function onSignal () {
-  logger.info('server is starting cleanup');
+  logger.warn('server is starting cleanup');
   return Promise.all([
     // your clean logic, like closing database connections
   ]);
 }
 
 function beforeShutdown () {
-  // given your readiness probes run every 5 second
-  // may be worth using a bigger number so you won't
-  // run into any race conditions
+  logger.warn('server will shut down');
+
   return new Promise(resolve => {
-    setTimeout(resolve, 10000);
+    setTimeout(resolve, 20000);
   });
 }
 
 function onShutdown () {
-  logger.info('cleanup finished, server is shutting down');
+  logger.warn('cleanup finished, server is shutting down');
 }
 
 function healthCheck ({ state }) {
   // `state.isShuttingDown` (boolean) shows whether the server is shutting down or not
+  if (state.isShuttingDown) {
+    return Promise.reject();
+  }
+
   return Promise.resolve(
     // optionally include a resolve value to be included as
     // info in the health check response
@@ -47,7 +50,7 @@ const options = {
   onSignal,
   beforeShutdown,
   onShutdown,
-
+  useExit0: true,
   logger: logger.error
 };
 
@@ -56,6 +59,5 @@ createTerminus(server, options);
 server.listen( port, host, () => {
   // ask server for the actual address and port its listening on
   const listenAddress = server.address();
-  logger.info( `pelias is now running on ${listenAddress.address}:${listenAddress.port}` );
+  logger.warn( `pelias is now running on ${listenAddress.address}:${listenAddress.port}` );
 });
-
