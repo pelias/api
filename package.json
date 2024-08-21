@@ -71,7 +71,7 @@
     "ciao": "1.0.0",
     "difflet": "1.0.1",
     "istanbul": "0.4.5",
-    "jshint": "2.12.0",
+    "jshint": "2.13.6",
     "nsp": "2.8.1",
     "pelias-mock-logger": "1.2.0",
     "precommit-hook": "3.0.0",
