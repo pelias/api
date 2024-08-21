@@ -73,7 +73,7 @@
     "istanbul": "0.4.5",
     "jshint": "2.13.6",
     "nsp": "2.8.1",
-    "pelias-mock-logger": "1.2.0",
+    "pelias-mock-logger": "1.7.0",
     "precommit-hook": "3.0.0",
     "proxyquire": "1.8.0",
     "semantic-release": "8.2.3",
