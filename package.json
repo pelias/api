@@ -36,7 +36,7 @@
     "node": "22.7.0"
   },
   "dependencies": {
-    "@godaddy/terminus": "4.9.0",
+    "@godaddy/terminus": "4.12.1",
     "@mapbox/geojson-extent": "0.3.2",
     "addressit": "1.5.0",
     "async": "2.6.4",
