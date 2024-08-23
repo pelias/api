@@ -38,7 +38,7 @@
   "dependencies": {
     "@godaddy/terminus": "4.12.1",
     "@mapbox/geojson-extent": "0.4.0",
-    "addressit": "1.5.0",
+    "addressit": "1.8.2",
     "async": "2.6.4",
     "check-types": "7.4.0",
     "elasticsearch": "13.3.1",
