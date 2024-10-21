@@ -55,7 +55,6 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'multi_match:type': 'cross_fields',
   'multi_match:ngrams_strict:type': 'phrase',
   'multi_match:first_tokens_only:type': 'phrase',
-  'multi_match:boost_exact_matches:type': 'phrase',
 
   'admin:country_a:analyzer': 'standard',
   'admin:country_a:field': 'parent.country_a.ngram',
