@@ -187,6 +187,13 @@ module.exports = {
                 'should': [
                   {
                     'match_phrase': {
+                      'phrase.default': {
+                        'query': 'number value'
+                      }
+                    }
+                  },
+                  {
+                    'match_phrase': {
                       'address_parts.zip': {
                         'query': 'postalcode value'
                       }
