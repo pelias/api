@@ -11,10 +11,10 @@ const ADDRESS_PROPS = [
 
 
 function setup() {
-  return renamePlacenames;
+  return mapFields;
 }
 
-function renamePlacenames(req, res, next) {
+function mapFields(req, res, next) {
   // do nothing if no result data set
   if (!res || !res.data) {
     return next();
