@@ -26,7 +26,7 @@ module.exports.tests.mapFields = function(test, common) {
       },
       unit: 'unit value',
       housenumber: 'number value',
-      postalcode: ['zip value'],
+      postalcode: 'zip value',
       street: 'street value'
     }];
 
@@ -164,7 +164,7 @@ module.exports.tests.mapFields = function(test, common) {
 
       unit: 'unit value',
       housenumber: 'number value',
-      postalcode: ['zip value'],
+      postalcode: 'zip value',
       street: 'street value',
     }];
 
