@@ -340,6 +340,143 @@ module.exports.tests.success_conditions = (test, common) => {
 
   });
 
+  test('as above, case insensitive', t => {
+    const service = (req, callback) => {
+      const response = [
+        {
+          label: 'road',
+          value: 'the street'
+        },
+        {
+          label: 'house_number',
+          value: '22'
+        },
+        {
+          label: 'unit',
+          value: '1 th'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
+
+    const req = {
+      clean: {
+        parsed_text: {
+          address: 'the street 22 1 TH'
+        }
+      },
+      errors: []
+    };
+
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          parsed_text: {
+            street: 'the street',
+            housenumber: '22',
+            unit: '1 th'
+          }
+        },
+        errors: []
+      }, 'req should have been modified');
+
+      t.end();
+
+    });
+
+  });
+
+  test('service returning house_number and road should set req.clean.parsed_text.street', t => {
+    const service = (req, callback) => {
+      const response = [
+        {
+          label: 'road',
+          value: 'kinkerstraat'
+        },
+        {
+          label: 'house_number',
+          value: '175f'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
+
+    const req = {
+      clean: {
+        parsed_text: {
+          address: 'kinkerstraat 175f'
+        }
+      },
+      errors: []
+    };
+
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          parsed_text: {
+            street: 'kinkerstraat',
+            housenumber: '175f'
+          }
+        },
+        errors: []
+      }, 'req should have been modified');
+
+      t.end();
+
+    });
+
+  });
+
+  test('as above, case insensitive', t => {
+    const service = (req, callback) => {
+      const response = [
+        {
+          label: 'road',
+          value: 'kinkerstraat'
+        },
+        {
+          label: 'house_number',
+          value: '175f'
+        }
+      ];
+
+      callback(null, response);
+    };
+
+    const controller = libpostal(service, () => true);
+
+    const req = {
+      clean: {
+        parsed_text: {
+          address: 'kinkerstraat 175F'
+        }
+      },
+      errors: []
+    };
+
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          parsed_text: {
+            street: 'kinkerstraat',
+            housenumber: '175f'
+          }
+        },
+        errors: []
+      }, 'req should have been modified');
+
+      t.end();
+
+    });
+
+  });
+
   // test('service returning valid response should convert and append', t => {
   //   const service = (req, callback) => {
   //     const response = [
