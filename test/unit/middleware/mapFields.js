@@ -1,8 +1,8 @@
-const renamePlacenames = require('../../../middleware/renamePlacenames')();
+const mapFields = require('../../../middleware/mapFields')();
 
 module.exports.tests = {};
 
-module.exports.tests.renamePlacenames = function(test, common) {
+module.exports.tests.mapFields = function(test, common) {
 
   test('rename address_parts', function(t) {
     const req = {};
@@ -30,7 +30,7 @@ module.exports.tests.renamePlacenames = function(test, common) {
       street: 'street value'
     }];
 
-    renamePlacenames(req, res, () => {});
+    mapFields(req, res, () => {});
     t.deepEqual(res.data, expected);
     t.end();
   });
@@ -168,7 +168,7 @@ module.exports.tests.renamePlacenames = function(test, common) {
       street: 'street value',
     }];
 
-    renamePlacenames(req, res, () => {});
+    mapFields(req, res, () => {});
     t.deepEqual(res.data, expected);
     t.end();
   });
@@ -176,7 +176,7 @@ module.exports.tests.renamePlacenames = function(test, common) {
 
 module.exports.all = function (tape, common) {
   function test(name, testFunction) {
-    return tape(`[middleware] renamePlacenames: ${name}`, testFunction);
+    return tape(`[middleware] mapFields: ${name}`, testFunction);
   }
 
   for( var testCase in module.exports.tests ){
