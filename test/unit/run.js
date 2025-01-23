@@ -59,6 +59,7 @@ var tests = [
   require('./middleware/parseBBox'),
   require('./middleware/sendJSON'),
   require('./middleware/normalizeParentIds'),
+  require('./middleware/renamePlacenames'),
   require('./middleware/sizeCalculator'),
   require('./middleware/sortResponseData'),
   require('./middleware/trimByGranularity'),
