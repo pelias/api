@@ -49,14 +49,14 @@ function setup(libpostalService, should_execute) {
           req.clean.parsed_text.housenumber = house_number_field.value;
 
           // remove the first instance of the number and trim whitespace
-          req.clean.parsed_text.street = _.trim(_.replace(req.clean.parsed_text.address, req.clean.parsed_text.housenumber, ''));
+          req.clean.parsed_text.street = _.trim(replaceIgnoreCase(req.clean.parsed_text.address, req.clean.parsed_text.housenumber, ''));
 
           // If libpostal have parsed unit then add it for search
           const unit_field = findField(response, 'unit');
           if(unit_field) {
             req.clean.parsed_text.unit = unit_field.value;
             // Removing unit from street and trim
-            req.clean.parsed_text.street = _.trim(_.replace(req.clean.parsed_text.street, req.clean.parsed_text.unit, ''));
+            req.clean.parsed_text.street = _.trim(replaceIgnoreCase(req.clean.parsed_text.street, req.clean.parsed_text.unit, ''));
           }
 
         } else {
@@ -81,6 +81,11 @@ function setup(libpostalService, should_execute) {
   }
 
   return controller;
+}
+
+function replaceIgnoreCase(str, match, replacement) {
+  if (!_.isString(str) || !str.length) { return ''; }
+  return str.replace(new RegExp(_.escapeRegExp(match), 'i'), replacement);
 }
 
 module.exports = setup;
