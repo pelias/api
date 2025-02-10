@@ -20,7 +20,7 @@ RUN npm install
 COPY . ${WORK}
 
 #  Copying pelias config file
-COPY .github/workflow/pelias.json ${WORK}/pelias.json
+COPY .github/workflows/pelias.json ${WORK}/pelias.json
 
 ENV PELIAS_CONFIG=${WORK}/pelias.json
 
