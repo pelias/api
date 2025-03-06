@@ -34,7 +34,10 @@ module.exports.tests.completely_valid = (test, common) => {
         defaultParameters: {
           'focus.point.lat': 19,
           'focus.point.lon': 91
-        }
+        },
+        minSize: 1,
+        maxSize: 40,
+        defaultSize: 10
       },
       esclient: {
         requestTimeout: 17
@@ -517,6 +520,92 @@ module.exports.tests.api_validation = (test, common) => {
 
   });
 
+  test('config with non-integer maxSize should throw an error', (t) => {
+    var config = {
+      api: {
+        version: 'version value',
+        indexName: 'index name value',
+        host: 'host value',
+        maxSize: 'ab'
+      },
+      esclient: {
+        requestTimeout: 17
+      },
+    };
+
+    const result = schema.validate(config);
+
+    t.equals(result.error.details.length, 1);
+    t.equals(result.error.details[0].message, '"api.maxSize" must be a number');
+    t.end();
+
+ });
+
+ test('config with a negative minSize should throw an error', (t) => {
+  var config = {
+    api: {
+      version: 'version value',
+      indexName: 'index name value',
+      host: 'host value',
+      minSize: -1
+    },
+    esclient: {
+      requestTimeout: 17
+    },
+  };
+
+  const result = schema.validate(config);
+
+  t.equals(result.error.details.length, 1);
+  t.equals(result.error.details[0].message, '"api.minSize" must be larger than or equal to 1');
+  t.end();
+
+});
+
+test('config with a bigger defaultSize than maxSize should throw an error', (t) => {
+  var config = {
+    api: {
+      version: 'version value',
+      indexName: 'index name value',
+      host: 'host value',
+      maxSize: 5,
+      defaultSize: 6
+    },
+    esclient: {
+      requestTimeout: 17
+    },
+  };
+
+  const result = schema.validate(config);
+
+  t.equals(result.error.details.length, 1);
+  t.equals(result.error.details[0].message, '"api.defaultSize" must be less than or equal to ref:maxSize');
+  t.end();
+
+});
+
+test('config with a bigger minSize than maxSize should throw an error', (t) => {
+  var config = {
+    api: {
+      version: 'version value',
+      indexName: 'index name value',
+      host: 'host value',
+      maxSize: 5,
+      minSize: 6
+    },
+    esclient: {
+      requestTimeout: 17
+    },
+  };
+
+  const result = schema.validate(config);
+
+  t.equals(result.error.details.length, 1);
+  t.equals(result.error.details[0].message, '"api.minSize" must be less than or equal to ref:maxSize');
+  t.end();
+
+});
+
 
 };
 
@@ -977,7 +1066,7 @@ module.exports.all = (tape, common) => {
     return tape('configValidation: ' + name, testFunction);
   }
 
-  for( var testCase in module.exports.tests ){
+  for (var testCase in module.exports.tests) {
     module.exports.tests[testCase](test, common);
   }
 };
