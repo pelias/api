@@ -13,6 +13,9 @@ const Joi = require('@hapi/joi');
 // * api.relativeScores (boolean)
 // * api.exposeInternalDebugTools (boolean)
 // * api.localization (flipNumberAndStreetCountries is array of 3 character strings)
+// * api.maxSize (int)
+// * api.minSize (int)
+// * api.defaultSize (int)
 module.exports = Joi.object().keys({
   api: Joi.object().required().keys({
     version: Joi.string(),
@@ -26,6 +29,10 @@ module.exports = Joi.object().keys({
       layer: Joi.object(),
       source: Joi.object()
     }),
+    minSize: Joi.number().min(1).max(Joi.ref('maxSize')).default(1),
+    maxSize: Joi.number().min(1).default(40),
+    defaultSize: Joi.number().min(1).max(Joi.ref('maxSize')).min(Joi.ref('minSize')).default(10), 
+    //Cant be smaller/bigger than the min/max values. Newline for the linter
     localization: Joi.object().keys({
       flipNumberAndStreetCountries: Joi.array().items(Joi.string().regex(/^[A-Z]{3}$/))
     }).unknown(false),
@@ -54,8 +61,8 @@ module.exports = Joi.object().keys({
       }).unknown(false)
     }).unknown(false).default({}), // default api.services to an empty object
     defaultParameters: Joi.object().keys({
-        'focus.point.lat': Joi.number(),
-        'focus.point.lon': Joi.number(),
+      'focus.point.lat': Joi.number(),
+      'focus.point.lon': Joi.number(),
     }).unknown(true).default({})
 
   }).unknown(true),
