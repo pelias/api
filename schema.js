@@ -29,8 +29,8 @@ module.exports = Joi.object().keys({
       layer: Joi.object(),
       source: Joi.object()
     }),
-    minSize: Joi.number().min(1).max(Joi.ref('maxSize')).default(1),
-    maxSize: Joi.number().min(1).default(40),
+    minSize: Joi.number().integer().min(1).max(Joi.ref('maxSize')).default(1),
+    maxSize: Joi.number().integer().min(1).default(40),
     defaultSize: Joi.number().min(1).max(Joi.ref('maxSize')).min(Joi.ref('minSize')).default(10), 
     //Cant be smaller/bigger than the min/max values. Newline for the linter
     localization: Joi.object().keys({
