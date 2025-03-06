@@ -73,6 +73,9 @@ The API recognizes the following properties under the top-level `api` key in you
 |`accessLog`|*no*||name of the format to use for access logs; may be any one of the [predefined values](https://github.com/expressjs/morgan#predefined-formats) in the `morgan` package. Defaults to `"common"`; if set to `false`, or an otherwise falsy value, disables access-logging entirely.|
 |`relativeScores`|*no*|true|if set to true, confidence scores will be normalized, realistically at this point setting this to false is not tested or desirable
 |`exposeInternalDebugTools`|*no*|true|Exposes several debugging tools, such as the ability to enable Elasticsearch explain mode, that may come at a performance cost or expose sensitive infrastructure details. Not recommended if the Pelias API is open to the public.
+|`minSize`|*no*|1|Allows to overwrite the minimal amount for the parameter size
+|`maxSize`|*no*|40|Allows to overwrite the maximal amount for the parameter size
+|`defaultSize`|*no*|10|Allows to overwrite the default amount for the parameter size. Must be greater than or equal to `minSize` and smaller than or equal to `maxSize`
 
 A good starting configuration file includes this section (fill in the service and Elasticsearch hosts as needed):
 
