@@ -31,7 +31,7 @@ module.exports = Joi.object().keys({
     }),
     minSize: Joi.number().integer().min(1).max(Joi.ref('maxSize')).default(1),
     maxSize: Joi.number().integer().min(1).default(40),
-    defaultSize: Joi.number().min(1).max(Joi.ref('maxSize')).min(Joi.ref('minSize')).default(10), 
+    defaultSize: Joi.number().min(1).max(Joi.ref('maxSize')).min(Joi.ref('minSize')).default(10),
     //Cant be smaller/bigger than the min/max values. Newline for the linter
     localization: Joi.object().keys({
       flipNumberAndStreetCountries: Joi.array().items(Joi.string().regex(/^[A-Z]{3}$/))
@@ -61,8 +61,8 @@ module.exports = Joi.object().keys({
       }).unknown(false)
     }).unknown(false).default({}), // default api.services to an empty object
     defaultParameters: Joi.object().keys({
-      'focus.point.lat': Joi.number(),
-      'focus.point.lon': Joi.number(),
+        'focus.point.lat': Joi.number(),
+        'focus.point.lon': Joi.number(),
     }).unknown(true).default({})
 
   }).unknown(true),

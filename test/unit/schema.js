@@ -1066,7 +1066,7 @@ module.exports.all = (tape, common) => {
     return tape('configValidation: ' + name, testFunction);
   }
 
-  for (var testCase in module.exports.tests) {
+  for( var testCase in module.exports.tests ){
     module.exports.tests[testCase](test, common);
   }
 };
