@@ -1,21 +1,10 @@
 const _ = require('lodash');
-const peliasConfig = require('pelias-config').generate().api;
-//Allow custom min, max and default sizes
-const MIN_SIZE = peliasConfig.minSize || 1;
-const MAX_SIZE = peliasConfig.maxSize || 40;
-let default_size_init = 10;
-if (peliasConfig.DEFAULT_SIZE && peliasConfig.DEFAULT_SIZE >= MIN_SIZE && peliasConfig.DEFAULT_SIZE <= MAX_SIZE) {
-  default_size_init = peliasConfig.DEFAULT_SIZE;
-}
-else if (MIN_SIZE > 10) {
-  default_size_init = MIN_SIZE;
-}
-else if (MAX_SIZE < 10) {
-  default_size_init = MAX_SIZE;
-}
-const DEFAULT_SIZE = default_size_init;
+const peliasConfig = require('pelias-config').generate();
 
-
+// Allow custom min, max and default sizes
+const MIN_SIZE = _.get(peliasConfig, 'api.minSize', 1);
+const MAX_SIZE = _.get(peliasConfig, 'api.maxSize', 40);
+const DEFAULT_SIZE = _.clamp(_.get(peliasConfig, 'api.defaultSize', 10), MIN_SIZE, MAX_SIZE);
 
 // validate inputs, convert types and apply defaults
 function _setup( size_min, size_max, size_def ){
