@@ -13,6 +13,9 @@ const Joi = require('@hapi/joi');
 // * api.relativeScores (boolean)
 // * api.exposeInternalDebugTools (boolean)
 // * api.localization (flipNumberAndStreetCountries is array of 3 character strings)
+// * api.maxSize (int)
+// * api.minSize (int)
+// * api.defaultSize (int)
 module.exports = Joi.object().keys({
   api: Joi.object().required().keys({
     version: Joi.string(),
@@ -26,6 +29,9 @@ module.exports = Joi.object().keys({
       layer: Joi.object(),
       source: Joi.object()
     }),
+    minSize: Joi.number().integer().min(1).max(Joi.ref('maxSize')).default(1),
+    maxSize: Joi.number().integer().min(1).default(40),
+    defaultSize: Joi.number().min(Joi.ref('minSize')).max(Joi.ref('maxSize')).default(10),
     localization: Joi.object().keys({
       flipNumberAndStreetCountries: Joi.array().items(Joi.string().regex(/^[A-Z]{3}$/))
     }).unknown(false),
