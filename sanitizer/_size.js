@@ -3,9 +3,8 @@ const peliasConfig = require('pelias-config').generate().api;
 //Allow custom min, max and default sizes
 const MIN_SIZE = peliasConfig.minSize || 1;
 const MAX_SIZE = peliasConfig.maxSize || 40;
-let default_size_init;
-if (peliasConfig.DEFAULT_SIZE) {
-  //Cant be smaller/bigger than min/max due to validation in schema.js
+let default_size_init = 10;
+if (peliasConfig.DEFAULT_SIZE && peliasConfig.DEFAULT_SIZE >= MIN_SIZE && peliasConfig.DEFAULT_SIZE <= MAX_SIZE) {
   default_size_init = peliasConfig.DEFAULT_SIZE;
 }
 else if (MIN_SIZE > 10) {
@@ -14,10 +13,7 @@ else if (MIN_SIZE > 10) {
 else if (MAX_SIZE < 10) {
   default_size_init = MAX_SIZE;
 }
-else {
-  default_size_init = 10;
-}
-const DEFAULT_SIZE =default_size_init;
+const DEFAULT_SIZE = default_size_init;
 
 
 
@@ -27,7 +23,7 @@ function _setup(size_min, size_max, size_def) {
   // allow caller to inject custom min/max/default values
   if (!_.isFinite(size_min)) { size_min = MIN_SIZE; }
   if (!_.isFinite(size_max)) { size_max = MAX_SIZE; }
-  if (!_.isFinite(size_def)) { size_def = default_size_init; }
+  if (!_.isFinite(size_def)) { size_def = DEFAULT_SIZE; }
 
   return {
     sanitize: function _sanitize(raw, clean) {
