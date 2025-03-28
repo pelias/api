@@ -43,7 +43,7 @@ module.exports.tests.error_conditions = (test, common) => {
 
     const service = (req, res, callback) => {
       t.deepEquals(req, { a: 1 } );
-      t.deepEquals(res, { b: 2 } );
+      t.deepEquals(res, { data: ['record1'] } );
       callback('this is an error');
     };
 
@@ -54,11 +54,11 @@ module.exports.tests.error_conditions = (test, common) => {
     })(service, () => true);
 
     const req = { a: 1 };
-    const res = { b: 2 };
+    const res = { data: ['record1'] };
 
     controller(req, res, () => {
       t.ok(logger.isErrorMessage('this is an error'));
-      t.deepEquals(res, { b: 2 }, 'res should not have been modified');
+      t.deepEquals(res, { data: ['record1'] }, 'res should not have been modified');
     });
 
   });

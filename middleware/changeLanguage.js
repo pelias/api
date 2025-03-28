@@ -33,6 +33,10 @@ function setup(service, should_execute) {
       return next();
     }
 
+    if (!isLanguageChangeRequired(req, res)) {
+      return next();
+    }
+
     const start = Date.now();
     service(req, res, (err, translations) => {
       // if there's an error, log it and bail
@@ -133,7 +137,7 @@ function updateDocs( req, res, translations ){
 // boolean function to check if changing the language is required
 function isLanguageChangeRequired( req, res ){
   return req && res && res.data && res.data.length &&
-         req.hasOwnProperty('language');
+         _.get(req, 'clean.lang.defaulted', false) === false;
 }
 
 // update name.default with the corresponding translation if available
