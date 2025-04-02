@@ -1,5 +1,9 @@
 var proxyquire =  require('proxyquire').noCallThru();
 
+function partsGenerator(cb) {
+  return { partsGenerator: cb };
+}
+
 module.exports.tests = {};
 
 module.exports.tests.serialization = function(test, common) {
@@ -30,10 +34,10 @@ module.exports.tests.serialization = function(test, common) {
   test('labels should be assigned to all results', function(t) {
     var labelGenerator = function(result) {
       if (result.id === 1) {
-        return 'label 1';
+        return { labelParts: [{ label: 'label 1', role: 'required' }], separator: ', '};
       }
       if (result.id === 2) {
-        return 'label 2';
+        return { labelParts: [{ label: 'label 2', role: 'required' }], separator: ', '};
       }
 
     };
@@ -73,11 +77,11 @@ module.exports.tests.serialization = function(test, common) {
 
   test('no explicit labelGenerator supplied should use pelias-labels module', function(t) {
     var assignLabels = proxyquire('../../../middleware/assignLabels', {
-      'pelias-labels': function(result) {
+      'pelias-labels': partsGenerator(function(result) {
         if (result.id === 1) {
-          return 'label 1';
+          return { labelParts: [{ label: 'label 1', role: 'required' }], separator: ', '};
         }
-      }
+      })
     })();
 
     var input = {
