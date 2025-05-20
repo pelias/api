@@ -52,7 +52,6 @@ module.exports = {
       }],
       'filter': [{
         'geo_bounding_box': {
-          'type': 'indexed',
           'center_point': {
             'top': 37.83239,
             'right': -122.35698,
