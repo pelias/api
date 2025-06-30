@@ -185,7 +185,12 @@ function parse (t) {
 
   // an address query
   if (!_.isEmpty(parsed_text.housenumber) && !_.isEmpty(parsed_text.street)) {
-    parsed_text.subject = `${parsed_text.housenumber} ${parsed_text.street}`;
+    const housenoFirstNumericSection = parsed_text.housenumber.match(/\d+/);
+    if (housenoFirstNumericSection) {
+      parsed_text.subject = `${housenoFirstNumericSection[0]} ${parsed_text.street}`;
+    } else {
+      parsed_text.subject = `${parsed_text.housenumber} ${parsed_text.street}`;
+    }
   }
   // an intersection query
   else if (!_.isEmpty(parsed_text.street) && !_.isEmpty(parsed_text.cross_street)) {
