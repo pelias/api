@@ -47,7 +47,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -89,7 +89,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -127,7 +127,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -165,7 +165,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'address_search_with_ids'
+        queryType: 'address_search_using_ids'
       }
     };
 
@@ -203,7 +203,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'structured'
+        queryType: 'structured'
       }
     };
 
@@ -239,7 +239,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -273,7 +273,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -306,7 +306,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -341,7 +341,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -376,7 +376,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -412,7 +412,7 @@ module.exports.tests.confidenceScore = function(test, common) {
       }],
       meta: {
         scores: [10],
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -436,7 +436,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         layer: 'locality'
       }],
       meta: {
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -460,7 +460,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         layer: 'localadmin'
       }],
       meta: {
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -484,7 +484,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         layer: 'region'
       }],
       meta: {
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -509,7 +509,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         layer: 'country'
       }],
       meta: {
-        query_type: 'search_fallback'
+        queryType: 'search_fallback'
       }
     };
 
@@ -518,7 +518,7 @@ module.exports.tests.confidenceScore = function(test, common) {
     t.equal(res.data[0].match_type, 'fallback', 'fallback match indicated');
     t.end();
   });
-    
+
     test('address fallback to postal code should have a score set to 0.8', function(t) {
         var req = {
             clean: {
@@ -537,7 +537,7 @@ module.exports.tests.confidenceScore = function(test, common) {
                 layer: 'postalcode'
             }],
             meta: {
-                query_type: 'search_fallback'
+                queryType: 'search_fallback'
             }
         };
         confidenceScore(req, res, function() {});
@@ -545,7 +545,7 @@ module.exports.tests.confidenceScore = function(test, common) {
         t.equal(res.data[0].match_type, 'fallback', 'fallback match indicated');
         t.end();
     });
-    
+
     test('matching address search with postalcode and country should have an exact match with score of 1.0', function(t) {
         var req = {
             clean: {
@@ -561,7 +561,7 @@ module.exports.tests.confidenceScore = function(test, common) {
                 layer: 'postalcode'
             }],
             meta: {
-                query_type: 'search_fallback'
+                queryType: 'search_fallback'
             }
         };
         confidenceScore(req, res, function() {});
