@@ -190,8 +190,11 @@ module.exports.tests.loadTargets = function(test) {
     });
     t.deepEqual(tm.sources, [ 'source1', 'source2' ]);
     t.deepEqual(tm.source_mapping, { source1: [ 's1', 's2' ], source2: [ 's3', 's4' ] });
-    t.deepEqual(tm.layers, [ 'layer1', 'layer3', 'layer2' ]);
-    t.deepEqual(tm.layer_mapping, { layer1: [ 'l1', 'l2' ], layer2: [ 'l3', 'l4' ], layer3: [ 'layer3' ] });
+    t.deepEqual(tm.layers, [ 'l1', 'l2', 'layer3', 'l3', 'l4' ]);
+    t.deepEqual(tm.layer_mapping, {
+      layer1: [ 'l1', 'l2' ], layer2: [ 'l3', 'l4' ], layer3: [ 'layer3' ],
+      l1: [ 'l1' ], l2: [ 'l2' ], l3: [ 'l3' ], l4: [ 'l4' ]
+    });
     t.end();
   });
 };
