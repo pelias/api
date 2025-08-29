@@ -770,7 +770,7 @@ module.exports.tests.bug_fixes = (test, common) => {
   test('bug fix: recast entirely numeric input - 99', t => {
     const service = (req, callback) => {
       callback(null, [{
-        'label': 'suburb',
+        'label': 'house_number',
         'value': '99'
       }]);
     };
@@ -826,6 +826,67 @@ module.exports.tests.bug_fixes = (test, common) => {
         },
         errors: []
       }, 'req should not have been modified');
+
+      t.end();
+    });
+  });
+
+  test('bug fix: discard single label of type "suburb"', t => {
+    const service = (req, callback) => {
+      callback(null, [{
+        'label': 'suburb',
+        'value': 'example'
+      }]);
+    };
+    const controller = libpostal(service, () => true);
+    const req = {
+      clean: {
+        text: 'example'
+      },
+      errors: []
+    };
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: 'example',
+          // parse discarded
+        },
+        errors: []
+      });
+
+      t.end();
+    });
+  });
+
+  test('bug fix: do not discard "suburb" when accompanied by another label', t => {
+    const service = (req, callback) => {
+      callback(null, [{
+        'label': 'road',
+        'value': 'avenue'
+      },{
+        'label': 'suburb',
+        'value': 'example'
+      }]);
+    };
+    const controller = libpostal(service, () => true);
+    const req = {
+      clean: {
+        text: 'avenue example'
+      },
+      errors: []
+    };
+    controller(req, undefined, () => {
+      t.deepEquals(req, {
+        clean: {
+          text: 'avenue example',
+          parser: 'libpostal',
+          parsed_text: {
+            street: 'avenue',
+            neighbourhood: 'example'
+          }
+        },
+        errors: []
+      });
 
       t.end();
     });
