@@ -1,2 +1,6 @@
-*.sh text eol=lf
+# Ensure shell scripts and files in bin/ are LF
 bin/* text eol=lf
+*.sh text eol=lf
+
+# default
+* text=auto
