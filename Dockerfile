@@ -1,5 +1,5 @@
 # base image
-FROM pelias/baseimage
+FROM pelias/baseimage:ubuntu-24-noble
 USER pelias
 
 # change working dir
