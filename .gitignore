@@ -5,3 +5,4 @@ coverage
 reports
 pids
 pelias.json
+.env

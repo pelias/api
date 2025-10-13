@@ -5,7 +5,7 @@ const express = require('express');
 const { Router } = express;
 const sorting = require('pelias-sorting');
 const {all, any, not} = require('predicates');
-const createClient = require('../helper/client');
+const { createClient } = require('../helper/client');
 
 // imports
 const sanitizers = requireAll(path.join(__dirname, '../sanitizer'));

@@ -40,6 +40,7 @@
     "@mapbox/geojson-extent": "^1.0.0",
     "@opensearch-project/opensearch": "^3.5.1",
     "async": "^3.0.1",
+    "dotenv": "^17.2.3",
     "elasticsearch": "^16.0.0",
     "express": "^4.8.8",
     "geojson": "^0.5.0",
