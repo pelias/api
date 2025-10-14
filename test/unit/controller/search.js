@@ -1,3 +1,4 @@
+require('dotenv').config();
 const _ = require('lodash');
 const setup = require('../../../controller/search');
 const proxyquire =  require('proxyquire').noCallThru();
@@ -34,11 +35,18 @@ module.exports.tests.success = function(test, common) {
     const controller = proxyquire('../../../controller/search', {
       '../service/search': (esclient, cmd, callback) => {
         t.equal(esclient, 'this is the esclient');
-        t.deepEqual(cmd, {
+        const expectedCmd = {
           index: 'indexName value',
-          searchType: 'dfs_query_then_fetch',
           body: 'this is the query body'
-        });
+        };
+
+        if (process.env.PELIAS_OPENSEARCH === 'true') {
+          expectedCmd.search_type = 'dfs_query_then_fetch';
+        } else {
+          expectedCmd.searchType = 'dfs_query_then_fetch';
+        }
+
+        t.deepEqual(cmd, expectedCmd);
 
         const docs = [{}, {}];
         const meta = { key: 'value' };
@@ -98,11 +106,18 @@ module.exports.tests.success = function(test, common) {
     const controller = proxyquire('../../../controller/search', {
       '../service/search': (esclient, cmd, callback) => {
         t.equal(esclient, 'this is the esclient');
-        t.deepEqual(cmd, {
+        const expectedCmd = {
           index: 'indexName value',
-          searchType: 'dfs_query_then_fetch',
           body: 'this is the query body'
-        });
+        };
+
+        if (process.env.PELIAS_OPENSEARCH === 'true') {
+          expectedCmd.search_type = 'dfs_query_then_fetch';
+        } else {
+          expectedCmd.searchType = 'dfs_query_then_fetch';
+        }
+
+        t.deepEqual(cmd, expectedCmd);
 
         const docs = [{}, {}];
 
@@ -161,11 +176,18 @@ module.exports.tests.success = function(test, common) {
     const controller = proxyquire('../../../controller/search', {
       '../service/search': (esclient, cmd, callback) => {
         t.equal(esclient, 'this is the esclient');
-        t.deepEqual(cmd, {
+        const expectedCmd = {
           index: 'indexName value',
-          searchType: 'dfs_query_then_fetch',
           body: 'this is the query body'
-        });
+        };
+
+        if (process.env.PELIAS_OPENSEARCH === 'true') {
+          expectedCmd.search_type = 'dfs_query_then_fetch';
+        } else {
+          expectedCmd.searchType = 'dfs_query_then_fetch';
+        }
+
+        t.deepEqual(cmd, expectedCmd);
 
         const meta = { key: 'value' };
 
@@ -237,11 +259,18 @@ module.exports.tests.success = function(test, common) {
     const controller = proxyquire('../../../controller/search', {
       '../service/search': (esclient, cmd, callback) => {
         t.equal(esclient, 'this is the esclient');
-        t.deepEqual(cmd, {
+        const expectedCmd = {
           index: 'indexName value',
-          searchType: 'dfs_query_then_fetch',
           body: 'this is the query body'
-        });
+        };
+
+        if (process.env.PELIAS_OPENSEARCH === 'true') {
+          expectedCmd.search_type = 'dfs_query_then_fetch';
+        } else {
+          expectedCmd.searchType = 'dfs_query_then_fetch';
+        }
+
+        t.deepEqual(cmd, expectedCmd);
 
         if (searchServiceCallCount < 2) {
           // note that the searchService got called
@@ -320,11 +349,18 @@ module.exports.tests.timeout = function(test, common) {
     const controller = proxyquire('../../../controller/search', {
       '../service/search': (esclient, cmd, callback) => {
         t.equal(esclient, 'this is the esclient');
-        t.deepEqual(cmd, {
+        const expectedCmd = {
           index: 'indexName value',
-          searchType: 'dfs_query_then_fetch',
           body: 'this is the query body'
-        });
+        };
+
+        if (process.env.PELIAS_OPENSEARCH === 'true') {
+          expectedCmd.search_type = 'dfs_query_then_fetch';
+        } else {
+          expectedCmd.searchType = 'dfs_query_then_fetch';
+        }
+
+        t.deepEqual(cmd, expectedCmd);
 
         // not that the searchService got called
         searchServiceCallCount++;

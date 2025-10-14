@@ -1,3 +1,4 @@
+require('dotenv').config();
 const _ = require('lodash');
 const searchService = require('../service/search');
 const logger = require('pelias-logger').get('api');
@@ -50,9 +51,14 @@ function setup( peliasConfig, esclient, query, should_execute ){
     // elasticsearch command
     const cmd = {
       index: apiConfig.indexName,
-      searchType: 'dfs_query_then_fetch',
       body: renderedQuery.body
     };
+
+    if (process.env.PELIAS_OPENSEARCH === 'true') {
+      cmd.search_type = 'dfs_query_then_fetch';
+    } else {
+      cmd.searchType = 'dfs_query_then_fetch';
+    }
 
     // support for the 'clean.enableElasticExplain' config flag
     if (_.get(req, 'clean.enableElasticExplain') === true) {
