@@ -56,7 +56,7 @@ function setup( apiConfig, esclient ){
           params: req.clean,
           retries: currentAttempt - 1
         };
-        logger.info('elasticsearch', message);
+        logger.info('searchclient', message);
 
         // returns true if the operation should be attempted again
         // (handles bookkeeping of maxRetries)

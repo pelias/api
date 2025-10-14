@@ -48,7 +48,7 @@ function setup( peliasConfig, esclient, query, should_execute ){
     // setup a new operation
     const operation = retry.operation(operationOptions);
 
-    // elasticsearch command
+    // searchclient command
     const cmd = {
       index: apiConfig.indexName,
       body: renderedQuery.body

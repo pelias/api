@@ -7,7 +7,7 @@ const app = require('./app'),
 
 let server;
 
-// load Elasticsearch type mappings before starting web server
+// load Search Client(Elasticsearch or OpenSearch) type mappings before starting web server
 type_mapping.load(() => {
   server = app.listen( port, host, () => {
     // ask server for the actual address and port its listening on

@@ -5,7 +5,7 @@ const { createClient, compatSearch }  = require('./client');
 
 /**
  * This module allows discovery of the sources and layers used
- * in an existing elasticsearch index.
+ * in an existing Search Client index.
  *
  * note: this will override any previously configured type mappings.
  */
@@ -74,7 +74,7 @@ module.exports = (tm, done) => {
       if( !!Object.keys( layersBySource ).length ){
         logger.info( 'total hits', totalHits );
         logger.info( 'total sources', sources.length );
-        logger.info( 'successfully discovered type mapping from elasticsearch' );
+        logger.info( 'successfully discovered type mapping from search client' );
         tm.setLayersBySource( layersBySource );
 
         // (re)generate the mappings

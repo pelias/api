@@ -27,6 +27,7 @@
   "keywords": [
     "pelias",
     "elasticsearch",
+    "opensearch",
     "webview"
   ],
   "bugs": {

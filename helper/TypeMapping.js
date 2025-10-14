@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const loadFromElasticsearch = require('./type_mapping_discovery');
+const loadFromSearchClient = require('./type_mapping_discovery');
 
 var TypeMapping = function(){
 
@@ -124,7 +124,7 @@ TypeMapping.prototype.loadTargets = function( targetsBlock ){
   this.generateMappings();
 };
 
-// load values from either pelias config file or from elasticsearch
+// load values from either pelias config file or from search client
 TypeMapping.prototype.load = function( done ){
   // load targets from config file
   this.loadFromConfig();
@@ -134,17 +134,17 @@ TypeMapping.prototype.load = function( done ){
     'api.targets', {}
   );
 
-  // do not load values from elasticsearch
+  // do not load values from search client
   if( true !== peliasConfigTargets.auto_discover ){
     if( 'function' === typeof done ){ done(); }
     return;
   }
 
-  // load values from elasticsearch
-  loadFromElasticsearch(this, done);
+  // load values from search client
+  loadFromSearchClient(this, done);
 };
 
-// load values from either pelias config file or from elasticsearch
+// load values from either pelias config file or from search client
 TypeMapping.prototype.loadFromConfig = function( done ){
 
   // load pelias config
