@@ -59,6 +59,10 @@ function setup( peliasConfig, esclient, query, should_execute ){
       cmd.explain = true;
     }
 
+    if (_.get(apiConfig, 'trackTotalHits') === true) {
+      cmd.track_total_hits = true;
+    }
+
     // support for the 'clean.exposeInternalDebugTools' config flag
     let debugUrl;
     if (_.get(req, 'clean.exposeInternalDebugTools') === true) {
