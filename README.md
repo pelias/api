@@ -220,6 +220,7 @@ Most Pelias configuration is done through pelias-config, however the API has add
 | --- | --- | --- |
 | HOST | `undefined` | The network interface the Pelias API will bind to. Defaults to whatever the current Node.js default is, which is currently to listen on all interfaces. See the [Node.js Net documentation](https://nodejs.org/api/net.html#net_server_listen_port_host_backlog_callback) for more info. |
 | PORT | 3100 | The TCP port the Pelias API will use for incoming network connections. |
+| CPUS | 1 | The maximum number of worker processes to be launched. Will not launch more than one process per detected CPU |
 
 ## Contributing
 
