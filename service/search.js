@@ -8,11 +8,12 @@ const _ = require('lodash');
 const es = require('elasticsearch');
 const logger = require( 'pelias-logger' ).get( 'api' );
 
-function service( esclient, cmd, cb ){
+function service( searchClient, cmd, cb ){
 
   // query elasticsearch
   const startTime = new Date();
-  esclient.search( cmd, function( err, data ){
+
+  searchClient.search( cmd, function( err, data ){
     if (data) {
       data.response_time = new Date() - startTime;
     }
@@ -30,7 +31,7 @@ function service( esclient, cmd, cb ){
     // https://github.com/pelias/api/issues/1384
     if( _.get(data, 'timed_out', false) === true ){
       const err = new es.errors.RequestTimeout('request timed_out=true');
-      logger.error( `elasticsearch error ${err}` );
+      logger.error( `searchClient error ${err}` );
       return cb( err );
     }
 

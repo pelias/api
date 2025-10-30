@@ -10,7 +10,7 @@ function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
 
-function setup( peliasConfig, esclient, query, should_execute ){
+function setup( peliasConfig, searchClient, query, should_execute ){
   const apiConfig = _.get(peliasConfig, 'api', {});
 
   function controller( req, res, next ){
@@ -38,11 +38,11 @@ function setup( peliasConfig, esclient, query, should_execute ){
 
     // options for retry
     // maxRetries is from the API config with default of 3
-    // factor of 1 means that each retry attempt will esclient requestTimeout
+    // factor of 1 means that each retry attempt will searchClient requestTimeout
     const operationOptions = {
       retries: _.get(apiConfig, 'requestRetries', 3),
       factor: 1,
-      minTimeout: _.get(esclient, 'transport.requestTimeout')
+      minTimeout: _.get(searchClient, 'transport.requestTimeout')
     };
 
     // setup a new operation
@@ -70,7 +70,7 @@ function setup( peliasConfig, esclient, query, should_execute ){
     if (_.get(req, 'clean.exposeInternalDebugTools') === true) {
 
       // select a random elasticsearch host to use for 'exposeInternalDebugTools' actions
-      const host = _.first(esclient.transport.connectionPool.getConnections(null, 1)).host;
+      const host = _.first(searchClient.transport.connectionPool.getConnections(null, 1)).host;
 
       // generate a URL which opens this query directly in elasticsearch
       debugUrl = host.makeUrl({
@@ -90,7 +90,7 @@ function setup( peliasConfig, esclient, query, should_execute ){
     operation.attempt((currentAttempt) => {
       const initialTime = debugLog.beginTimer(req, `Attempt ${currentAttempt}`);
       // query elasticsearch
-      searchService( esclient, cmd, function( err, docs, meta, data ){
+      searchService( searchClient, cmd, function( err, docs, meta, data ){
 
         // keep tally of hit counts - compatible with new/old versions of ES
         let totalHits = 0;
