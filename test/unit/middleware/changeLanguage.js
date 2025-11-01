@@ -148,6 +148,8 @@ module.exports.tests.success_conditions = (test, common) => {
             default: 'original name for 1st result'
           },
           layer: 'layer1',
+          source: 'whosonfirst',
+          source_id: '1',
           parent: {
             layer1_id: ['1'],
             layer1: ['original name for layer1'],
@@ -165,6 +167,8 @@ module.exports.tests.success_conditions = (test, common) => {
             default: 'original name for 2nd result'
           },
           layer: 'layer10',
+          source: 'whosonfirst',
+          source_id: '2',
           parent: {
             layer3_id: ['3', '4'],
             layer3: ['original name 1 for layer3', 'original name 2 for layer3'],
@@ -190,6 +194,7 @@ module.exports.tests.success_conditions = (test, common) => {
           },
           // note that this is address!
           layer: 'address',
+          source: 'whosonfirst',
           parent: {
             layer1_id: ['1'],
             layer1: ['original name for layer1']
@@ -203,6 +208,7 @@ module.exports.tests.success_conditions = (test, common) => {
           },
           // note that this is address!
           layer: 'address',
+          source: 'whosonfirst',
           parent: {
             layer1_id: ['1'],
             layer1: ['original name for layer1']
@@ -225,6 +231,8 @@ module.exports.tests.success_conditions = (test, common) => {
               default: 'replacement name for layer1'
             },
             layer: 'layer1',
+            source: 'whosonfirst',
+            source_id: '1',
             parent: {
               layer1_id: ['1'],
               layer1: ['replacement name for layer1'],
@@ -239,6 +247,8 @@ module.exports.tests.success_conditions = (test, common) => {
               default: 'original name for 2nd result'
             },
             layer: 'layer10',
+            source: 'whosonfirst',
+            source_id: '2',
             parent: {
               layer3_id: ['3', '4'],
               layer3: ['replacement name 1 for layer3', 'replacement name 2 for layer3'],
@@ -258,6 +268,7 @@ module.exports.tests.success_conditions = (test, common) => {
               'requested language': 'translated name'
             },
             layer: 'address',
+            source: 'whosonfirst',
             parent: {
               layer1_id: ['1'],
               layer1: ['replacement name for layer1']
@@ -269,6 +280,7 @@ module.exports.tests.success_conditions = (test, common) => {
               'random language': 'translated name'
             },
             layer: 'address',
+            source: 'whosonfirst',
             parent: {
               layer1_id: ['1'],
               layer1: ['replacement name for layer1']
@@ -280,7 +292,106 @@ module.exports.tests.success_conditions = (test, common) => {
       t.end();
 
     });
+  });
 
+  test('admin fields from non-whosonfirst source should be skipped', t => {
+
+    const service = (req, res, callback) => {
+      callback(null, { '1': { names: { 'requested language': ['replacement name for layer1'] } } });
+    };
+
+    const logger = require('pelias-mock-logger')();
+
+    const controller = proxyquire('../../../middleware/changeLanguage', {
+      'pelias-logger': logger
+    })(service, () => true);
+
+    const req = {
+      clean: {
+        lang: {
+          iso6393: 'requested language',
+          iso6391: 'requested language',
+          defaulted: false
+        }
+      }
+    };
+
+    const res = {
+      data: [{
+        name: {
+          default: 'original default name 1'
+        },
+        layer: 'layer1',
+        source: 'whosonfirst',
+        source_id: '1',
+        parent: {
+          layer1_id: ['1'],
+          layer1: ['original name for layer1']
+        }
+      }, {
+        name: {
+          default: 'original default name 2'
+        },
+        layer: 'layer1',
+        source: 'foo',
+        source_id: '1',
+        parent: {
+          layer1_id: ['1'],
+          layer1: ['original name for layer1']
+        }
+      }, {
+        name: {
+          default: 'original default name 3'
+        },
+        layer: 'layer1',
+        source: 'whosonfirst',
+        source_id: '2',
+        parent: {
+          layer1_id: ['1'],
+          layer1: ['original name for layer1']
+        }
+      }]
+    };
+
+    controller(req, res, () => {
+      t.deepEquals(res, {
+        data: [{
+          name: {
+            default: 'replacement name for layer1'
+          },
+          layer: 'layer1',
+          source: 'whosonfirst',
+          source_id: '1',
+          parent: {
+            layer1_id: ['1'],
+            layer1: ['replacement name for layer1']
+          }
+        }, {
+          name: {
+            default: 'original default name 2'
+          },
+          layer: 'layer1',
+          source: 'foo',
+          source_id: '1',
+          parent: {
+            layer1_id: ['1'],
+            layer1: ['replacement name for layer1']
+          }
+        },{
+          name: {
+            default: 'original default name 3'
+          },
+          layer: 'layer1',
+          source: 'whosonfirst',
+          source_id: '2',
+          parent: {
+            layer1_id: ['1'],
+            layer1: ['replacement name for layer1']
+          }
+        }]
+      });
+      t.end();
+    });
   });
 
 };
