@@ -287,14 +287,15 @@ module.exports.tests.granularity_bands = (test, common) => {
     const generatedQuery = generateQuery(clean, res);
 
     t.deepEquals(generatedQuery.body.vs.var('input:layers').$, {
-      neighbourhood: [1, 11],
-      borough: [2, 12],
-      locality: [3, 13],
-      localadmin: [4, 14],
-      region: [7, 17],
-      macroregion: [8, 18],
-      dependency: [9, 19],
-      country: [10, 20]
+      neighbourhood: [ 1, 11 ],
+      borough: [ 2, 12 ],
+      locality: [ 3, 13 ],
+      localadmin: [ 4, 14 ],
+      region: [ 7, 17 ],
+      macroregion: [ 8, 18 ],
+      dependency: [ 9, 19 ],
+      country: [ 10, 20 ],
+      macrocounty: [ 6, 16 ]
     });
 
     t.end();
@@ -339,7 +340,8 @@ module.exports.tests.granularity_bands = (test, common) => {
       region: [],
       macroregion: [],
       dependency: [],
-      country: []
+      country: [],
+      macrocounty: []
     });
 
     t.end();
@@ -607,6 +609,85 @@ module.exports.tests.boundary_filters = (test, common) => {
 
   });
 
+};
+
+module.exports.tests.sydney_macrocounty = (test, common) => {
+  test('Refering to Greater Sydney area (macrocounty) rather than Sydney Metro Area (locality)', (t) => {
+    const logger = mock_logger();
+
+    const clean = {
+      text: '300 Burns Bay Road, Sydney, AU',
+      parsed_text: {
+        housenumber: '300',
+        street: 'burns bay road',
+        city: 'sydney',
+        country: 'AUS'
+      }
+    };
+    const res = {
+      data: [
+        {
+          layer: 'continent',
+          source_id: '102191583'
+        },
+        {
+          layer: 'country',
+          source_id: '85632793'
+        },
+        {
+          layer: 'county',
+          source_id: '102049151'
+        },
+        {
+          layer: 'empire',
+          source_id: '136253039'
+        },
+        {
+          layer: 'localadmin',
+          source_id: '404226357'
+        },
+        {
+          layer: 'locality',
+          source_id: '101932003'
+        },
+        {
+          layer: 'macrocounty',
+          source_id: '1376953385'
+        },
+        {
+          layer: 'region',
+          source_id: '85681545'
+        }
+      ]
+    };
+
+    const generateQuery = proxyquire('../../../query/address_search_using_ids', {
+      'pelias-logger': logger,
+      'pelias-query': {
+        layout: {
+          AddressesUsingIdsQuery: MockQuery
+        },
+        view: views,
+        Vars: require('pelias-query').Vars
+      }
+    });
+
+    const generatedQuery = generateQuery(clean, res);
+
+    t.deepEquals(generatedQuery.body.vs.var('input:layers').$, {
+      neighbourhood: [],
+      borough: [],
+      locality: [ '101932003' ],
+      localadmin: [ '404226357' ],
+      region: [ '85681545' ],
+      macroregion: [],
+      dependency: [],
+      country: [ '85632793' ],
+      macrocounty: [ '1376953385' ]
+    });
+
+    t.end();
+  });
 };
 
 module.exports.all = (tape, common) => {
