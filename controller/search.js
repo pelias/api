@@ -30,9 +30,9 @@ function setup( peliasConfig, searchClient, query, should_execute ){
     // some queries use the results of previous queries to Placeholder
     const renderedQuery = query(req.clean, res);
 
-    // if there's no query to call ES with, skip the service
+    // if there's no query to call Elasticsearch/OpenSearch with, skip the service
     if (_.isUndefined(renderedQuery)) {
-      debugLog.push(req, 'No query to call ES with. Skipping');
+      debugLog.push(req, 'No query to call Elasticsearch/OpenSearch with. Skipping');
       return next();
     }
 
@@ -96,7 +96,7 @@ function setup( peliasConfig, searchClient, query, should_execute ){
       // query elasticsearch or opensearch
       searchService( searchClient, cmd, function( err, docs, meta, data ){
 
-        // keep tally of hit counts - compatible with new/old versions of ES
+        // keep tally of hit counts - compatible with new/old versions of Elasticsearch/OpenSearch
         let totalHits = 0;
         if( _.has(data, 'hits.total') ) {
           totalHits = _.isPlainObject(data.hits.total) ? data.hits.total.value : data.hits.total;

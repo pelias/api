@@ -33,7 +33,7 @@ function normalizeParentIds(place) {
     placeTypes.forEach(function (placeType) {
       if (place[placeType] && place[placeType].length > 0 && place[placeType][0]) {
         // This is a solution for geonames hack.
-        // We can store in ES the source and defaulted to wof for backward compatibility.
+        // We can store in Elasticsearch/OpenSearch the source and defaulted to wof for backward compatibility.
         // The default values via lodash _.get is used only when the value is `undefined`, in our case it may be null.
         let source = _.get(place, `${placeType}_source[0]`) || 'whosonfirst';
 

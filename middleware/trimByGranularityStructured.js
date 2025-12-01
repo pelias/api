@@ -15,7 +15,7 @@ const _ = require('lodash');
 // layers in increasing order of granularity
 // some places where this list differs in order from trimByGranularity:
 // - because house number and street are in a single field, street hits must be considered
-//   more important than addresses due to how ES matches
+//   more important than addresses due to how Elasticsearch/OpenSearch matches
 // - country outranks dependency, this was done to ensure that "country=United States" doesn't
 //   bump up US dependencies containing "United States" above the country
 // - retain both borough and locality results if both exist for when city=Manhattan is

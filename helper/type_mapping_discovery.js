@@ -38,7 +38,7 @@ const DISCOVERY_QUERY = {
 module.exports = (tm, done) => {
   const client = createClient(peliasConfig);
   compatSearch(client, DISCOVERY_QUERY, (err, res) => {
-    // keep tally of hit counts - compatible with new/old versions of ES
+    // keep tally of hit counts - compatible with new/old versions of Elasticsearch/OpenSearch
     let totalHits = 0;
     if( _.has(res, 'hits.total') ) {
       totalHits =  _.isPlainObject(res.hits.total) ? res.hits.total.value : res.hits.total;

@@ -5,8 +5,8 @@
  *
  * Some factors to consider:
  *
- * - number of results from ES
- * - score of item within the range of highest-lowest scores from ES (within the returned set)
+ * - number of results from Elasticsearch/OpenSearch
+ * - score of item within the range of highest-lowest scores from Elasticsearch/OpenSearch (within the returned set)
  * - linguistic match of query
  * - detection (or specification) of query type. i.e. an address shouldn't match an admin address.
  */

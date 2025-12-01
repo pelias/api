@@ -5,7 +5,7 @@
  *
  * Some factors to consider:
  *
- * - number of results from ES
+ * - number of results from Elasticsearch/OpenSearch
  * - fallback status (aka layer match between expected and actual)
  */
 
@@ -53,7 +53,7 @@ function computeConfidenceScore(req, hit) {
     return hit;
   }
 
-  // start with a confidence level of 1 because we trust ES queries to be accurate
+  // start with a confidence level of 1 because we trust Elasticsearch/OpenSearch queries to be accurate
   hit.confidence = 1.0;
 
   // in the case of fallback there might be deductions
