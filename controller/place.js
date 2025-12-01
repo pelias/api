@@ -14,7 +14,7 @@ function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
 }
 
-function setup( apiConfig, esclient ){
+function setup( apiConfig, searchClient ){
   function controller( req, res, next ){
     // do not run controller when a request validation error has occurred.
     if (requestHasErrors(req)){
@@ -23,17 +23,17 @@ function setup( apiConfig, esclient ){
 
     // options for retry
     // maxRetries is from the API config with default of 3
-    // factor of 1 means that each retry attempt will esclient requestTimeout
+    // factor of 1 means that each retry attempt will searchClient requestTimeout
     const operationOptions = {
       retries: _.get(apiConfig, 'requestRetries', 3),
       factor: 1,
-      minTimeout: _.get(esclient, 'transport.requestTimeout')
+      minTimeout: _.get(searchClient, 'transport.requestTimeout')
     };
 
     // setup a new operation
     const operation = retry.operation(operationOptions);
 
-    //generate Elasticsearch mget entries based on GID
+    //generate Elasticsearch or Opensearch mget entries based on GID
     const cmd = req.clean.ids.map( function(id) {
       return {
         _index: apiConfig.indexName,
@@ -41,13 +41,13 @@ function setup( apiConfig, esclient ){
       };
     });
 
-    logger.debug( '[ES req]', cmd );
-    debugLog.push(req, {ES_req: cmd});
+    logger.debug( '[SearchClient req]', cmd );
+    debugLog.push(req, {SearchClient_req: cmd});
 
     operation.attempt((currentAttempt) => {
       const initialTime = debugLog.beginTimer(req);
 
-      mgetService( esclient, cmd, function( err, docs, data) {
+      mgetService( searchClient, cmd, function( err, docs, data) {
         const message = {
           controller: 'place',
           queryType: 'place',
@@ -56,7 +56,7 @@ function setup( apiConfig, esclient ){
           params: req.clean,
           retries: currentAttempt - 1
         };
-        logger.info('searchclient', message);
+        logger.info('SearchClient', message);
 
         // returns true if the operation should be attempted again
         // (handles bookkeeping of maxRetries)
@@ -84,7 +84,7 @@ function setup( apiConfig, esclient ){
         else {
           res.data = docs;
         }
-        logger.debug('[ES response]', docs);
+        logger.debug('[SearchClient response]', docs);
 
         next();
       });

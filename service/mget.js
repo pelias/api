@@ -1,6 +1,6 @@
 var logger = require( 'pelias-logger' ).get( 'api' );
 
-function service( esclient, query, cb ){
+function service( searchClient, query, cb ){
 
   // elasticsearch command
   var cmd = {
@@ -11,7 +11,7 @@ function service( esclient, query, cb ){
 
   // query elasticsearch
   const startTime = new Date();
-  esclient.mget( cmd, function( err, data ){
+  searchClient.mget( cmd, function( err, data ){
     if (data) {
       data.response_time = new Date() - startTime;
     }

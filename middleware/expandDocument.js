@@ -26,16 +26,16 @@ function traverse(obj, cb) {
   traverseHelper(obj, undefined, cb);
 }
 
-function service(apiConfig, esclient) {
+function service(apiConfig, searchClient) {
   /**
-   * Given a document, expandDocument attempts to create a human readable version of what elastic search
+   * Given a document, expandDocument attempts to create a human readable version of what elastic search / OpenSearch
    * indexes (as the result of running analyzers on the incoming document). It does this by asking
-   * ES to perform run-time analysis on every field in the document using the analyzers defined at index
+   * SearchClient to perform run-time analysis on every field in the document using the analyzers defined at index
    * time.
    *
    * When a document is indexed by ES, it is run through a series of analzyers, that perform tasks like
    * synonym expansion. Because these transformations are only useful for indexing, they are not saved
-   * on the indexed document. This makes it hard to reason about what is inside ES. This is a debug
+   * on the indexed document. This makes it hard to reason about what is inside SearchClient. This is a debug
    * function to help make that easier.
    */
   async function expandDocument(doc) {
@@ -61,7 +61,7 @@ function service(apiConfig, esclient) {
       // the schema mapping, without needing to explicitly ask for any individual analyzers
       // 
       // ignore failed responses, they'll get filtered out
-      const esResponse = await esclient.indices.analyze({
+      const esResponse = await searchClient.indices.analyze({
         index: apiConfig.indexName,
         body: { field, text: value },
       }).catch(() => ({}));
@@ -81,7 +81,7 @@ function service(apiConfig, esclient) {
 
     // Figure out all the fields that have dynamically defined ngram sub-fields.
     const ngramFields = new Set();
-    const mapping = await esclient.indices.getMapping({index: apiConfig.indexName});
+    const mapping = await searchClient.indices.getMapping({index: apiConfig.indexName});
 
     // getMapping returns a map of index name to mappings, but if we ask for the index
     // "pelias" and its an alias to index "pelias-index-2020-08-08," we'll get back the 
