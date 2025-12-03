@@ -62,9 +62,8 @@ function setup(service, should_execute, interpolationConfiguration) {
     const street_results = _.get(res, 'data', []).filter(result => result.layer === 'street');
 
     // perform interpolations asynchronously for all relevant hits
-    const initialTime = debugLog.beginTimer(req);
 
-    const startTime = Date.now();
+    const start = Date.now();
     const logInfo = {
       controller: 'interpolation', //technically middleware, but stay consistent with other log lines
       street_count: street_results.length,
@@ -148,9 +147,11 @@ function setup(service, should_execute, interpolationConfiguration) {
 
 
       // log and continue
-      logInfo.total_response_time = Date.now() - startTime;
+      logInfo.total_response_time = Date.now() - start;
       logger.info('interpolation', logInfo);
-      debugLog.stopTimer(req, initialTime);
+      debugLog.push(req, {
+        duration: Date.now() - start
+      });
       next();
     });
   };

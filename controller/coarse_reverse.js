@@ -114,7 +114,7 @@ function setup(service, should_execute) {
     if (!should_execute(req, res)) {
       return next();
     }
-    const initialTime = debugLog.beginTimer(req);
+
     // return a warning to the caller that boundary.circle.radius will be ignored
     if (!_.isUndefined(req.clean['boundary.circle.radius'])) {
       req.warnings.push('boundary.circle.radius is not applicable for coarse reverse');
@@ -125,11 +125,7 @@ function setup(service, should_execute) {
     const effective_layers = getEffectiveLayers(req.clean.layers);
     debugLog.push(req, {effective_layers: effective_layers});
 
-    const centroid = {
-      lat: req.clean['point.lat'],
-      lon: req.clean['point.lon']
-    };
-
+    const start = Date.now();
     service(req, (err, results, metadata) => {
       // if there's an error, log it and bail
       if (err) {
@@ -160,7 +156,7 @@ function setup(service, should_execute) {
           res.data.push(doc);
         }
       }
-      debugLog.stopTimer(req, initialTime);
+      debugLog.push(req, { duration: Date.now() - start });
       return next();
 
     });

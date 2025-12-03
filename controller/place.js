@@ -6,6 +6,7 @@ const logger = require('pelias-logger').get('api');
 const Debug = require('../helper/debug');
 const debugLog = new Debug('controller:place');
 
+// @todo: remove this and replace with the predicate
 function requestHasErrors(request) {
   return _.get(request, 'errors', []).length > 0;
 }
@@ -34,20 +35,19 @@ function setup( apiConfig, esclient ){
     const operation = retry.operation(operationOptions);
 
     //generate Elasticsearch mget entries based on GID
-    const cmd = req.clean.ids.map( function(id) {
+    const cmd = req.clean.ids.map((id) => {
       return {
         _index: apiConfig.indexName,
         _id: `${id.source}:${id.layer}:${id.id}`
       };
     });
 
-    logger.debug( '[ES req]', cmd );
-    debugLog.push(req, {ES_req: cmd});
+    logger.debug('[ES req]', cmd);
 
     operation.attempt((currentAttempt) => {
-      const initialTime = debugLog.beginTimer(req);
+      const start = Date.now();
 
-      mgetService( esclient, cmd, function( err, docs, data) {
+      mgetService(esclient, cmd, (err, docs, data) => {
         const message = {
           controller: 'place',
           queryType: 'place',
@@ -62,7 +62,10 @@ function setup( apiConfig, esclient ){
         // (handles bookkeeping of maxRetries)
         // only consider for status 408 (request timeout)
         if (isRequestTimeout(err) && operation.retry(err)) {
-          debugLog.stopTimer(req, initialTime, `request timed out on attempt ${currentAttempt}, retrying`);
+          debugLog.push(req, {
+            warning: `request timed out on attempt ${currentAttempt}, retrying`,
+            duration: Date.now() - start
+          });
           return;
         }
 
@@ -88,7 +91,10 @@ function setup( apiConfig, esclient ){
 
         next();
       });
-      debugLog.stopTimer(req, initialTime);
+      debugLog.push(req, {
+        ES_req: cmd,
+        duration: Date.now() - start
+      });
     });
 
   }

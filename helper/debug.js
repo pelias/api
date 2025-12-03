@@ -24,31 +24,6 @@ class Debug {
       req.debug.push({ [this.name]: value });
     }
   }
-
-  beginTimer(req, message) {
-    if (!Debug.isEnabled(req)) { return; }
-
-    if (Debug.validMessage(message)) {
-      this.push(req, `Timer Began. ${message}`);
-    } else {
-      this.push(req, `Timer Began.`);
-    }
-
-    return Date.now();
-  }
-
-  stopTimer(req, timer, message) {
-    if (!Debug.isEnabled(req)) { return; }
-
-    // measure elapsed duration
-    const elapsed = _.isFinite(timer) ? (Date.now() - timer) : -1;
-
-    if (Debug.validMessage(message)) {
-      this.push(req, `Timer Stopped. ${elapsed} ms. ${message}`);
-    } else {
-      this.push(req, `Timer Stopped. ${elapsed} ms`);
-    }
-  }
 }
 
 module.exports = Debug;

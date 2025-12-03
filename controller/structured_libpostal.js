@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const Debug = require('../helper/debug');
 const debugLog = new Debug('controller:libpostal');
-const logger = require('pelias-logger').get('api');
 
 // Find field in libpostal response 
 function findField(response, field, replacementField) {
@@ -24,8 +23,7 @@ function setup(libpostalService, should_execute) {
       return next();
     }
 
-    const initialTime = debugLog.beginTimer(req);
-
+    const start = Date.now();
     libpostalService(req, (err, response) => {
       if (err) {
         // push err.message or err onto req.errors
@@ -69,11 +67,12 @@ function setup(libpostalService, should_execute) {
         // the address field no longer means anything since it's been parsed, so remove it
         delete req.clean.parsed_text.address;
 
-        debugLog.push(req, {parsed_text: response});
-
+        debugLog.push(req, {
+          parsed_text: response,
+          duration: Date.now() - start
+        });
       }
-
-      debugLog.stopTimer(req, initialTime);
+      
       return next();
 
     });
