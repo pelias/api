@@ -144,6 +144,7 @@ module.exports.tests.success_conditions = (test, common) => {
       data: [
         // doc with 2 layer names that will be changed
         {
+          source: 'whosonfirst',
           name: {
             default: 'original name for 1st result'
           },
@@ -161,6 +162,7 @@ module.exports.tests.success_conditions = (test, common) => {
         {},
         // doc with only 1 layer name that will be changed and no default name change
         {
+          source: 'whosonfirst',
           name: {
             default: 'original name for 2nd result'
           },
@@ -184,6 +186,7 @@ module.exports.tests.success_conditions = (test, common) => {
         },
         // doc with name that will be translated
         {
+          source: 'whosonfirst',
           name: {
             default: 'original name for 4th result',
             'requested language': 'translated name'
@@ -197,12 +200,25 @@ module.exports.tests.success_conditions = (test, common) => {
         },
         // doc with name that will be translated
         {
+          source: 'whosonfirst',
           name: {
             default: 'original name for 5th result',
             'random language': 'translated name'
           },
           // note that this is address!
           layer: 'address',
+          parent: {
+            layer1_id: ['1'],
+            layer1: ['original name for layer1']
+          }
+        },
+        // geonames record will have parents translated but not default name
+        {
+          source: 'geonames',
+          name: {
+            default: 'geonames name'
+          },
+          layer: 'locality',
           parent: {
             layer1_id: ['1'],
             layer1: ['original name for layer1']
@@ -221,6 +237,7 @@ module.exports.tests.success_conditions = (test, common) => {
       t.deepEquals(res, {
         data: [
           {
+            source: 'whosonfirst',
             name: {
               default: 'replacement name for layer1'
             },
@@ -235,6 +252,7 @@ module.exports.tests.success_conditions = (test, common) => {
           undefined,
           {},
           {
+            source: 'whosonfirst',
             name: {
               default: 'original name for 2nd result'
             },
@@ -253,6 +271,7 @@ module.exports.tests.success_conditions = (test, common) => {
             }
           },
           {
+            source: 'whosonfirst',
             name: {
               default: 'translated name',
               'requested language': 'translated name'
@@ -264,11 +283,23 @@ module.exports.tests.success_conditions = (test, common) => {
             }
           },
           {
+            source: 'whosonfirst',
             name: {
               default: 'original name for 5th result',
               'random language': 'translated name'
             },
             layer: 'address',
+            parent: {
+              layer1_id: ['1'],
+              layer1: ['replacement name for layer1']
+            }
+          },
+          {
+            source: 'geonames',
+            name: {
+              default: 'geonames name'
+            },
+            layer: 'locality',
             parent: {
               layer1_id: ['1'],
               layer1: ['replacement name for layer1']

@@ -1,6 +1,10 @@
-var field = require('../helper/fieldValue');
-var logger = require( 'pelias-logger' ).get( 'api' );
+const field = require('../helper/fieldValue');
+const logger = require( 'pelias-logger' ).get( 'api' );
 const _ = require('lodash');
+
+// note: responses from the language service are (at time of writing)
+// all from the 'whosonfirst' source.
+const LANG_SERVICE_SOURCE = 'whosonfirst';
 
 /**
 example response from language web service:
@@ -112,7 +116,7 @@ function updateDocs( req, res, translations ){
 
         // if the record is an admin record we also translate
         // the 'name.default' property.
-        if( adminKey === doc.layer ){
+        if( adminKey === doc.layer && doc.source === LANG_SERVICE_SOURCE ){
           doc.name.default = translations[id].names[ requestLanguage ][0];
         }
       }
