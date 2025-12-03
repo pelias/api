@@ -519,7 +519,7 @@ module.exports.tests.priority = function(test, common) {
     var expectedCount = 1;
     dedupe(req, res, function () {
       t.equal(res.data.length, expectedCount, 'results have fewer items than before');
-      t.deepEqual(res.data[0].layer, 'locality', 'locality result won');
+      t.deepEqual(res.data[0].layer, 'country', 'country result won');
       t.end();
     });
   });
