@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const Debug = require('../../helper/debug');
 const debugLog = new Debug('controller:predicates:is_request_layers_any_address_related');
-const stackTraceLine = require('../../helper/stackTraceLine');
 
 // return true if any layers allowed by the query are related to an address query
 // this includes address and street but NOT venue, postalcode, admin, and custom layers
@@ -20,8 +19,7 @@ module.exports = (req, res) => {
   }
 
   debugLog.push(req, () => ({
-    reply: result,
-    stack_trace: stackTraceLine()
+    reply: result
   }));
 
   return result;

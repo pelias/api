@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const Debug = require('../../helper/debug');
 const debugLog = new Debug('controller:predicates:is_admin_only_analysis');
-const stackTraceLine = require('../../helper/stackTraceLine');
 
 module.exports = (request, response) => {
   if (!request.clean.hasOwnProperty('parsed_text')) {
@@ -15,8 +14,7 @@ module.exports = (request, response) => {
   });
 
   debugLog.push(request, () => ({
-    reply: is_admin_only_analysis,
-    stack_trace: stackTraceLine()
+    reply: is_admin_only_analysis
   }));
   return is_admin_only_analysis;
 };

@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const Debug = require('../../helper/debug');
 const debugLog = new Debug('controller:predicates:is_request_sources_undefined');
-const stackTraceLine = require('../../helper/stackTraceLine');
 
 // returns true IFF there are no requested sources
 module.exports = (req, res) => {
@@ -9,8 +8,7 @@ module.exports = (req, res) => {
     _.get(req, 'clean.sources')
   );
   debugLog.push(req, () => ({
-    reply: is_request_sources_undefined,
-    stack_trace: stackTraceLine()
+    reply: is_request_sources_undefined
   }));
   return is_request_sources_undefined;
 };
