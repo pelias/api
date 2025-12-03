@@ -68,8 +68,7 @@ function setup(libpostalService, should_execute) {
       return next();
     }
 
-    const initialTime = debugLog.beginTimer(req);
-
+    const start = Date.now();
     libpostalService(req, (err, response) => {
 
       if (err) {
@@ -101,15 +100,14 @@ function setup(libpostalService, should_execute) {
           req.clean.parsed_text.country = iso3166.convertISO2ToISO3(req.clean.parsed_text.country);
         }
 
-        debugLog.push(req, {parsed_text: req.clean.parsed_text});
-
+        debugLog.push(req, {
+          parsed_text: req.clean.parsed_text,
+          duration: Date.now() - start
+        });
       }
 
-      debugLog.stopTimer(req, initialTime);
       return next();
-
     });
-
   }
 
   return controller;

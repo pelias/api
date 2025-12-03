@@ -4,6 +4,7 @@ const logger = require('pelias-logger').get('api');
 const logging = require( '../helper/logging' );
 const retry = require('retry');
 const Debug = require('../helper/debug');
+const debugLog = new Debug('controller:search');
 
 function isRequestTimeout(err) {
   return _.get(err, 'status') === 408;
@@ -16,8 +17,6 @@ function setup( peliasConfig, esclient, query, should_execute ){
     if (!should_execute(req, res)) {
       return next();
     }
-
-    const debugLog = new Debug('controller:search');
 
     let cleanOutput = _.cloneDeep(req.clean);
     if (logging.isDNT(req)) {
@@ -86,7 +85,8 @@ function setup( peliasConfig, esclient, query, should_execute ){
     });
 
     operation.attempt((currentAttempt) => {
-      const initialTime = debugLog.beginTimer(req, `Attempt ${currentAttempt}`);
+      const start = Date.now();
+
       // query elasticsearch
       searchService( esclient, cmd, function( err, docs, meta, data ){
 
@@ -113,7 +113,10 @@ function setup( peliasConfig, esclient, query, should_execute ){
         // (handles bookkeeping of maxRetries)
         // only consider for status 408 (request timeout)
         if (isRequestTimeout(err) && operation.retry(err)) {
-          debugLog.stopTimer(req, initialTime, 'request timed out, retrying');
+          debugLog.push(req, {
+            warning: `request timed out on attempt ${currentAttempt}, retrying`,
+            duration: Date.now() - start
+          });
           return;
         }
 
@@ -160,7 +163,9 @@ function setup( peliasConfig, esclient, query, should_execute ){
         }
         next();
       });
-      debugLog.stopTimer(req, initialTime);
+      debugLog.push(req, {
+        duration: Date.now() - start
+      });
     });
   }
 

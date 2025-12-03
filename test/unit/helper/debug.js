@@ -21,18 +21,6 @@ module.exports.tests.debug = function(test, common) {
     t.end();
   });
 
-  test('don\'t start timer if enableDebug is false', (t) => {
-    const debugLog = new Debug('debugger');
-    const req = {
-      clean: {
-        enableDebug: false
-      }
-    };
-    debugLog.beginTimer(req, 'This should not be pushed');
-    t.deepEquals(req.debug, undefined);
-    t.end();
-  });
-
   test('don\'t push debug message if req.clean is empty', (t) => {
     const debugLog = new Debug('debugger');
     const req = {
@@ -53,13 +41,9 @@ module.exports.tests.debug = function(test, common) {
     const expected_req = [
       {
         debugger: 'This should be pushed'
-      },
-      {
-        debugger: 'Timer Began. Timer 1'
       }
     ];
     debugLog.push(req, 'This should be pushed');
-    debugLog.beginTimer(req, 'Timer 1');
     t.deepEquals(req.debug, expected_req);
     t.end();
   });
@@ -80,22 +64,6 @@ module.exports.tests.debug = function(test, common) {
     t.deepEquals(req.debug, expected_req);
     t.end();
   });
-
-  test('Timer should return number of milliseconds', (t) => {
-    const debugLog = new Debug('debugger');
-    const req = {
-      clean: {
-        enableDebug: true
-      }
-    };
-    const timer = debugLog.beginTimer(req);
-    debugLog.stopTimer(req, timer);
-    // Checks that there is a debug message
-    // that matches the pattern "Timer Stopped. [number] ms"
-    t.deepEquals(req.debug[1].debugger.match(/Timer Stopped\. \d+ ms/i).length, 1);
-    t.end();
-  });
-
 };
 
 module.exports.all = function (tape, common) {

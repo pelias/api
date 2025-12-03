@@ -252,9 +252,8 @@ function setup(placeholderService, do_geometric_filters_apply, should_execute) {
     if (!should_execute(req, res)) {
       return next();
     }
-    const initialTime = debugLog.beginTimer(req);
+    
     const start = Date.now();
-
     placeholderService(req, (err, results) => {
       logger.info('placeholder', {
         response_time: Date.now() - start,
@@ -305,7 +304,9 @@ function setup(placeholderService, do_geometric_filters_apply, should_execute) {
         debugLog.push(req, (results || []));
       }
 
-      debugLog.stopTimer(req, initialTime);
+      debugLog.push(req, {
+        duration: Date.now() - start
+      });
       return next();
     });
 

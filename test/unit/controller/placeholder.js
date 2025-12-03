@@ -197,7 +197,7 @@ module.exports.tests.success = (test, common) => {
     const logger = mock_logger();
 
     const placeholder_service = (req, callback) => {
-      t.deepEqual(req, { param1: 'param1 value', clean: { enableDebug: true }, debug: [ { 'controller:placeholder': 'Timer Began.' } ] });
+      t.deepEqual(req, { param1: 'param1 value', clean: { enableDebug: true }});
       callback(null, response);
     };
 
@@ -300,9 +300,8 @@ module.exports.tests.success = (test, common) => {
       t.deepEquals(res, expected_res);
       t.ok(logger.isDebugMessage('[controller:placeholder] [result_count:2]'));
 
-      t.equal(req.debug[0]['controller:placeholder'], 'Timer Began.');
-      t.deepEqual(req.debug[1]['controller:placeholder'], response);
-      t.match(req.debug[2]['controller:placeholder'], /Timer Stopped. \d+ ms/);
+      t.deepEqual(req.debug[0]['controller:placeholder'], response);
+      t.true(req.debug[1]['controller:placeholder'].hasOwnProperty('duration'));
 
       t.end();
     });
