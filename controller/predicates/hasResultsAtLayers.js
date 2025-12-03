@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const Debug = require('../../helper/debug');
 const debugLog = new Debug('controller:predicates:has_results_at_layers');
-const stackTraceLine = require('../../helper/stackTraceLine');
 // returns a function that returns true if any result.layer is in any of the
 // supplied layers using array intersection
 
@@ -18,8 +17,7 @@ module.exports = (layers) => {
     ));
 
     debugLog.push(request, () => ({
-    reply: {[layers]: has_results_at_layers},
-    stack_trace: stackTraceLine()
+      reply: {[layers]: has_results_at_layers}
     }));
     return has_results_at_layers;
   };

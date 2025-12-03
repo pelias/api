@@ -42,7 +42,6 @@ var tests = [
   require('./helper/logging'),
   require('./helper/TypeMapping'),
   require('./helper/type_mapping'),
-  require('./helper/stackTraceLine'),
   require('./helper/unicode'),
   require('./middleware/access_log'),
   require('./middleware/accuracy'),

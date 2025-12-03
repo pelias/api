@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const Debug = require('../../helper/debug');
 const debugLog = new Debug('controller:predicates:is_request_sources_includes_whosonfirst');
-const stackTraceLine = require('../../helper/stackTraceLine');
 
 // returns true IFF 'whosonfirst' is included in the requested sources
 module.exports = (req, res) => {
@@ -9,8 +8,7 @@ module.exports = (req, res) => {
     'whosonfirst'
   );
   debugLog.push(req, () => ({
-    reply: is_request_sources_includes_whosonfirst,
-    stack_trace: stackTraceLine()
+    reply: is_request_sources_includes_whosonfirst
   }));
   return is_request_sources_includes_whosonfirst;
 };
