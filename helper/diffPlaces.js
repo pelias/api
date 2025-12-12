@@ -10,8 +10,8 @@ const codec = require('pelias-model').codec;
 // when performing inter-layer deduping, layers coming earlier in this list take
 // preference to those appearing later.
 const layerPreferences = [
-  'locality',
   'country',
+  'locality',
   'localadmin',
   'county',
   'region',
