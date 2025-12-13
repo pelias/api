@@ -316,7 +316,12 @@ module.exports.tests.city_state = function(test, common) {
 
     var query = generate(clean);
 
-    t.equals(query, undefined, 'should have returned undefined');
+    var compiled = JSON.parse(JSON.stringify(query));
+    var expected = require('../fixture/search_fallback_venue_city_state');
+
+    t.deepEqual(compiled.type, 'search_fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_fallback_venue_city_state');
+
     t.end();
 
   });
@@ -475,7 +480,12 @@ module.exports.tests.city_country = function(test, common) {
 
     var query = generate(clean);
 
-    t.equals(query, undefined, 'should have returned undefined');
+    var compiled = JSON.parse(JSON.stringify(query));
+    var expected = require('../fixture/search_fallback_venue_city_country');
+
+    t.deepEqual(compiled.type, 'search_fallback', 'query type set');
+    t.deepEqual(compiled.body, expected, 'search_fallback_venue_city_country');
+
     t.end();
 
   });
