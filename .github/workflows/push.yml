@@ -7,6 +7,8 @@ jobs:
     needs: unit-tests
     if: github.ref == 'refs/heads/master' && needs.unit-tests.result == 'success'
     runs-on: ubuntu-22.04
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - name: Install Node.js
@@ -16,9 +18,8 @@ jobs:
       - name: Run semantic-release
         env:
           GH_TOKEN: ${{ secrets.GH_SEMANTIC_RELEASE_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: >
-          if [[ -n "$GH_TOKEN" && -n "$NPM_TOKEN" ]]; then
+          if [[ -n "$GH_TOKEN" ]]; then
             curl "https://raw.githubusercontent.com/pelias/ci-tools/master/semantic-release.sh" | bash -
           fi
   build-docker-images:
