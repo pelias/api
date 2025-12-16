@@ -19,7 +19,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: >
           if [[ -n "$GH_TOKEN" && -n "$NPM_TOKEN" ]]; then
-            curl "https://raw.githubusercontent.com/pelias/ci-tools/master/semantic-release.sh" | bash -
+            curl "https://raw.githubusercontent.com/pelias/ci-tools/refs/heads/semantic-release-v25/semantic-release.sh" | bash -
           fi
   build-docker-images:
     # run this job if the unit tests passed and the npm-publish job was a success or was skipped
