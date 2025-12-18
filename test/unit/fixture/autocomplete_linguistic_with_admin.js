@@ -11,7 +11,9 @@ module.exports = {
             'boost': 1,
             'query': 'one two'
           }
-        },
+        }
+      ],
+      'should': [
         {
           'multi_match': {
             'fields': [
@@ -35,9 +37,7 @@ module.exports = {
             'analyzer': 'peliasAdmin',
             'type': 'cross_fields'
           }
-        }
-      ],
-      'should': [
+        },
         {
           'function_score': {
             'query': {
