@@ -129,12 +129,12 @@ function generateQuery( clean, res ){
   vs.var( 'input:street', clean.parsed_text.street );
 
   // find the first granularity band for which there are results
-  const granularity_band = granularity_bands.find(band => anyResultsAtGranularityBand(results, band));
+  let granularity_band = granularity_bands.find(band => anyResultsAtGranularityBand(results, band));
 
   // special case: if locality is present in the band, also include macrocounty
   // this is used to cover the Greater Syndey Area
   if (granularity_band && granularity_band.includes('locality')) {
-    granularity_band.push('macrocounty');
+    granularity_band = [...granularity_band, 'macrocounty'];
   }
 
   // if there's a granularity band, accumulate the ids from each layer in the band
