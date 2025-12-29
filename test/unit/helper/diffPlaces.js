@@ -737,6 +737,7 @@ module.exports.tests.normalizeString = function (test, common) {
     t.equal(normalizeString('foo, bar'), 'foo bar');
     t.equal(normalizeString('foo-bar'), 'foo bar');
     t.equal(normalizeString('foo , - , - bar'), 'foo bar');
+    t.equal(normalizeString('St. Marks'), 'st marks');
     t.end();
   });
 
