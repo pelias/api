@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const peliasQuery = require('pelias-query');
+const peliasConfig = require('pelias-config').generate();
 const defaults = require('./reverse_defaults');
 
 //------------------------------
@@ -39,8 +40,7 @@ function generateQuery( clean ){
 
   // layers
   if( _.isArray(clean.layers) && !_.isEmpty(clean.layers) ) {
-    // only include non-coarse layers
-    vs.var( 'layers', _.intersection(clean.layers, ['address', 'street', 'venue']));
+    vs.var( 'layers', _.difference(clean.layers, peliasConfig.get('api.targets.layer_aliases.coarse', [])));
   }
 
   // focus point to score by distance
