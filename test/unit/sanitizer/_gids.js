@@ -1,4 +1,6 @@
-var sanitizer = require('../../../sanitizer/_boundary_gid')();
+const gids = require('../../../sanitizer/_gids');
+const sanitizer = gids();
+const focusSanitizer = gids('focus');
 
 module.exports.tests = {};
 
@@ -78,6 +80,15 @@ module.exports.tests.sanitize_boundary_gid = function(test, common) {
     t.end();
   });
 
+  test('correctly formatted focus.gid in raw should set focus.gid', function(t) {
+    var raw = { 'focus.gid': 'whosonfirst:locality:123' };
+    var clean = {};
+    var errorsAndWarnings = focusSanitizer.sanitize(raw, clean);
+    t.equals(clean['focus.gid'], '123', 'should be set correctly');
+    t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] }, 'valid focus_gid is set');
+    t.end();
+  });
+
   test('correctly formatted OSM-style boundary.gid in raw should set boundary.gid', function(t) {
     var raw = { 'boundary.gid': 'openstreetmap:street:polyline:123' };
     var clean = {};
@@ -87,11 +98,25 @@ module.exports.tests.sanitize_boundary_gid = function(test, common) {
     t.end();
   });
 
-
+  test('correctly formatted OSM-style focus.gid in raw should set focus.gid', function(t) {
+    var raw = { 'focus.gid': 'openstreetmap:street:polyline:123' };
+    var clean = {};
+    var errorsAndWarnings = focusSanitizer.sanitize(raw, clean);
+    t.equals(clean['focus.gid'], 'polyline:123', 'should be set correctly');
+    t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] }, 'valid focus_gid is set');
+    t.end();
+  });
 
   test('return an array of expected parameters in object form for validation', (t) => {
     const expected = [{ name: 'boundary.gid' }];
     const validParameters = sanitizer.expected();
+    t.deepEquals(validParameters, expected);
+    t.end();
+  });
+
+  test('return an array of expected custom parameters in object form for validation', (t) => {
+    const expected = [{ name: 'custom-name.gid' }];
+    const validParameters = gids('custom-name').expected();
     t.deepEquals(validParameters, expected);
     t.end();
   });
