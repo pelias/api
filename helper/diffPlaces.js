@@ -386,7 +386,7 @@ function layerDependentNormalization(names, layer) {
  * lowercase characters and remove diacritics and some punctuation
  */
 function normalizeString(str){
-  return removeAccents(unicode.normalize(str)).toLowerCase().split(/[ ,-]+/).join(' ');
+  return removeAccents(unicode.normalize(str)).toLowerCase().split(/[ ,-.]+/).join(' ');
 }
 
 module.exports.isDifferent = isDifferent;
