@@ -95,6 +95,14 @@ function isParentHierarchyDifferent(item1, item2){
     }
   }
 
+  // special case to consider empires and country as the same for deduplication purposes
+  if (
+    (item1.layer === 'empire' && item2.layer === 'country') ||
+    (item1.layer === 'country' && item2.layer === 'empire')
+  ) {
+    return false;
+  }
+
   // special handling of postal codes, which we consider to be strictly
   // unique within a single country/dependency regardless of the rest of
   // the hierarchy (ie. we ignore other parent properties)
@@ -346,6 +354,17 @@ function layerDependentNormalization(names, layer) {
         return name
           .replace(/^state\sof(?!\s?the)\s?(.*)$/i, '$1')
           .replace(/^(.*)\sstate$/i, '$1')
+          .trim();
+      });
+    });
+  }
+
+  // empire / country USA synonyms
+  if (layer === 'empire' || layer === 'country') {
+    _.forEach(names, (value, lang) => {
+      copy[lang] = field.getArrayValue(value).map(name => {
+        return name
+          .replace(/^(united states) of america$/i, '$1')
           .trim();
       });
     });
