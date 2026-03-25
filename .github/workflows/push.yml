@@ -11,9 +11,9 @@ jobs:
       id-token: write
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
       - name: Run semantic-release
@@ -30,7 +30,7 @@ jobs:
     needs: [unit-tests, npm-publish]
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Build Docker images
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
