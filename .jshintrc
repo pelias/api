@@ -1,8 +1,8 @@
 {
   "node": true,
-  "curly": true,
+  "curly": "multi",
   "eqeqeq": true,
-  "esversion": "2022",
+  "esversion": 13,
   "freeze": true,
   "immed": true,
   "indent": 2,
