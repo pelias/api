@@ -1,4 +1,6 @@
-var sanitizer = require('../../../sanitizer/_boundary_country')();
+const countries = require('../../../sanitizer/_countries');
+const sanitizer = countries();
+const focusSanitizer = countries('focus');
 
 module.exports.tests = {};
 
@@ -39,11 +41,29 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
     t.end();
   });
 
+  test('iso2 focus.country in raw should set focus.country to ISO3 uppercased', function(t) {
+    var raw = { 'focus.country': 'aq' };
+    var clean = {};
+    var errorsAndWarnings = focusSanitizer.sanitize(raw, clean);
+    t.deepEquals(clean['focus.country'], ['ATA'], 'should be uppercased ISO3');
+    t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] }, 'no warnings or errors');
+    t.end();
+  });
+
   test('iso3 boundary.country in raw should set boundary.country to matching ISO3 uppercased', function(t) {
     var raw = { 'boundary.country': 'aTa' };
     var clean = {};
     var errorsAndWarnings = sanitizer.sanitize(raw, clean);
     t.deepEquals(clean['boundary.country'], ['ATA'], 'should be uppercased ISO3');
+    t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] }, 'no warnings or errors');
+    t.end();
+  });
+
+  test('iso3 focus.country in raw should set focus.country to matching ISO3 uppercased', function(t) {
+    var raw = { 'focus.country': 'aTa' };
+    var clean = {};
+    var errorsAndWarnings = focusSanitizer.sanitize(raw, clean);
+    t.deepEquals(clean['focus.country'], ['ATA'], 'should be uppercased ISO3');
     t.deepEquals(errorsAndWarnings, { errors: [], warnings: [] }, 'no warnings or errors');
     t.end();
   });
@@ -69,6 +89,13 @@ module.exports.tests.sanitize_boundary_country = function(test, common) {
   test('return an array of expected parameters in object form for validation', (t) => {
     const expected = [{ name: 'boundary.country' }];
     const validParameters = sanitizer.expected();
+    t.deepEquals(validParameters, expected);
+    t.end();
+  });
+
+  test('return an array of expected custom parameters in object form for validation', (t) => {
+    const expected = [{ name: 'custom-name.country' }];
+    const validParameters = countries('custom-name').expected();
     t.deepEquals(validParameters, expected);
     t.end();
   });
