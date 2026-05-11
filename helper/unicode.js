@@ -1,6 +1,11 @@
 const _ = require('lodash');
 const regenerate = require('regenerate');
 
+// shared grapheme segmenter (UAX-29)
+// note: locale 'en' only affects word/sentence granularity; grapheme rules are script-agnostic.
+const graphemeSegmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });
+const toGraphemes = (str) => Array.from(graphemeSegmenter.segment(str), ({ segment }) => segment);
+
 // non-printable control characters
 // ref: https://en.wikipedia.org/wiki/List_of_Unicode_characters
 const CONTROL_CODES = regenerate()
@@ -96,3 +101,23 @@ function normalize(str) {
 }
 
 module.exports.normalize = normalize;
+
+// unicode aware truncation function
+// counts user-perceived characters (UAX-29 grapheme clusters) via Intl.Segmenter.
+module.exports.truncate = (input, len) => {
+
+  // sanity checking
+  if (!_.isString(input)) { throw new Error('invalid string'); }
+
+  // short-circuit common case of short strings
+  // if input.length <= len, grapheme count must also be <= len
+  if (input.length > len) {
+    // truncate to len graphemes
+    const graphemes = toGraphemes(input);
+    if (graphemes.length > len) {
+      return graphemes.slice(0, len).join('');
+    }
+  }
+
+  return null;
+};
