@@ -40,9 +40,10 @@ function _sanitize (raw, clean, req) {
   else {
 
     // truncate text to $MAX_TEXT_LENGTH chars
-    if (text.length > MAX_TEXT_LENGTH) {
+    const truncated = unicode.truncate(text, MAX_TEXT_LENGTH);
+    if( truncated ){
       messages.warnings.push(`param 'text' truncated to ${MAX_TEXT_LENGTH} characters`);
-      text = text.substring(0, MAX_TEXT_LENGTH);
+      text = truncated;
     }
 
     // tokenize text

@@ -1,4 +1,5 @@
 const sanitizer = require('../../../sanitizer/_text')();
+const unicode = require('../../../helper/unicode');
 
 module.exports.tests = {};
 
@@ -163,6 +164,28 @@ it again and again until we reach our destination.` };
     t.equals(clean.text, 'abc');
     t.deepEquals(messages.errors, [], 'no errors');
     t.deepEquals(messages.warnings, []);
+    t.end();
+  });
+
+  test('truncate should be unicode aware', (t) => {
+    const grapheme = '\uD842\uDFB7';
+    const raw = { text: grapheme.repeat(200) };
+    const clean = {};
+    const messages = sanitizer.sanitize(raw, clean);
+
+    // sanity: fixture genuinely distinguishes code units from graphemes
+    t.equals(grapheme.length, 2, 'fixture is a surrogate pair (2 code units)');
+    t.equals([...grapheme].length, 1, 'fixture is one code point');
+    t.equals(grapheme.normalize('NFC'), grapheme, 'fixture is NFC-stable');
+
+    // truncated text is 140 graphemes (user-perceived characters),
+    t.equals(clean.text, grapheme.repeat(140), 'truncated correctly');
+
+    // text.length on the truncated result is 280 (140 × 2 code units),
+    t.equals(clean.text.length, 280, 'truncated string is 280 UTF-16 code units');
+
+    t.deepEquals(messages.errors, [], 'no errors');
+    t.deepEquals(messages.warnings, [`param 'text' truncated to 140 characters`]);
     t.end();
   });
 };
