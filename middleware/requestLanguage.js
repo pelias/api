@@ -102,6 +102,10 @@ module.exports = function middleware( req, res, next ){
     defaulted: req.language.defaulted
   };
 
+  if (req.query && req.query.queryByLang !== undefined) {
+    req.clean.lang.queryByLang = true;
+  }
+
   logger.debug( '[lang] \'%s\' via \'%s\'', lang.iso6391, via );
 
   next();
