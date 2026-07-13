@@ -31,7 +31,8 @@ module.exports.tests.dedupe = function(test, common) {
         'number': '1',
         'street': 'Main Street'
       },
-      'layer': 'address'
+      'layer': 'address',
+      'category': [ 'entertainment' ],
     };
 
     t.false(isDifferent(item1, item1), 'should be the same');
@@ -58,6 +59,47 @@ module.exports.tests.dedupe = function(test, common) {
       'parent': {
         'country_id': '54321'
       }
+    };
+
+    t.true(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
+  test('catch diff category', function(t) {
+    var item1 = {
+      'layer': 'same',
+      'category': [ 'transport' ]
+    };
+    var item2 = {
+      'layer': 'same',
+      'category': [ 'entertainment' ]
+    };
+
+    t.true(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
+  test('isCategoryDifferent: one empty category are considerend different', function(t) {
+    var item1 = {
+      'layer': 'same',
+      'category': [ 'transport' ]
+    };
+    var item2 = {
+      'layer': 'same',
+      'category': []
+    };
+
+    t.true(isDifferent(item1, item2), 'should be different');
+    t.end();
+  });
+
+  test('isCategoryDifferent: one missing category are considered different', function(t) {
+    var item1 = {
+      'layer': 'same',
+      'category': [ 'transport' ]
+    };
+    var item2 = {
+      'layer': 'same',
     };
 
     t.true(isDifferent(item1, item2), 'should be different');
