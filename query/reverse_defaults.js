@@ -9,6 +9,8 @@ module.exports = _.merge({}, peliasQuery.defaults, {
 
   'centroid:field': 'center_point',
 
+  'sort:field': 'distance',
+
   'sort:distance:order': 'asc',
   'sort:distance:distance_type': 'plane',
 

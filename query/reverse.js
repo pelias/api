@@ -12,6 +12,7 @@ var query = new peliasQuery.layout.FilteredBooleanQuery();
 
 // scoring boost
 query.sort( peliasQuery.view.sort_distance );
+query.sort( peliasQuery.view.sort_popularity );
 
 // non-scoring hard filters
 query.filter( peliasQuery.view.boundary_circle );
@@ -94,6 +95,10 @@ function generateQuery( clean ){
   // categories
   if (clean.categories && !_.isEmpty(clean.categories)) {
     vs.var('input:categories', clean.categories);
+  }
+
+  if (_.isString(clean.sort)) {
+    vs.var('sort:field', clean.sort);
   }
 
   return {
