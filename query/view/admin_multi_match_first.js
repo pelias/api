@@ -1,4 +1,5 @@
 const peliasQuery = require('pelias-query');
+const toSingleField = require('./helper').toSingleField;
 
 module.exports = function (adminFields) {
   const subview = peliasQuery.view.admin_multi_match(adminFields, 'peliasAdmin');
@@ -30,6 +31,13 @@ module.exports = function (adminFields) {
 
     // change field mappings
     vsCopy.var('admin:add_name_to_multimatch:field', 'phrase.default');
+
+    const lang = vsCopy.var('lang').get(); 
+    if(lang) {
+      const field = toSingleField(vsCopy.var('admin:add_name_to_multimatch:field').get(), lang);
+      vsCopy.var('admin:add_name_lang_to_multimatch:field', field);
+    }  
+
     adminFields.forEach(field => {
       if( vsCopy.isset(`admin:${field}:field`) ){
         vsCopy.var(`admin:${field}:field`, vsCopy.var(`admin:${field}:field`).get().replace('.ngram', ''));
