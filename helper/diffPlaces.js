@@ -4,6 +4,7 @@ const unicode = require('./unicode');
 const placeTypes = require('./placeTypes');
 const canonicalLayers = require('../helper/type_mapping').getCanonicalLayers();
 const field = require('../helper/fieldValue');
+const getSourceId = require('./getSourceId');
 const codec = require('pelias-model').codec;
 
 // only consider these layers as synonymous for deduplication purposes.
@@ -63,8 +64,9 @@ function isGeonamesWithSelfParent(item, placeType) {
   // check if the parent ids at this layer match this Geonames record
   // we have special cased Geonames parents in many cases
   // handle both array and scalar values
-  if (item.source_id === parent_records) { return true; }
-  if (parent_records.includes(item.source_id)) { return true; }
+  const source_id = getSourceId(item);
+  if (source_id === parent_records) { return true; }
+  if (parent_records.includes(source_id)) { return true; }
 
   return false;
 }
@@ -236,7 +238,7 @@ function isGeonamesConcordanceSame(item1, item2) {
   if (!concordance_id || !_.isNumber(concordance_id)) { return false; }
 
   // only records with a matching concordance pass this check
-  if (concordance_id.toString() === gn_record.source_id) {
+  if (concordance_id.toString() === getSourceId(gn_record)) {
     return true;
   }
 
