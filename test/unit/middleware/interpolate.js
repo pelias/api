@@ -161,8 +161,6 @@ module.exports.tests.success_conditions = (test, common) => {
             default: 'street name 1'
           },
           address_parts: {},
-          // will be replaced
-          source_id: 'original source_id',
           // bounding_box should be removed
           bounding_box: {}
         },
@@ -207,7 +205,6 @@ module.exports.tests.success_conditions = (test, common) => {
               default: '17 street name 1'
             },
             source: 'full source name 1',
-            source_id: 'source 1 source id',
             address_parts: {
               number: 17
             },
@@ -224,7 +221,6 @@ module.exports.tests.success_conditions = (test, common) => {
               default: '18 street name 3'
             },
             source: 'full source name 2',
-            source_id: 'source 2 source id',
             address_parts: {
               number: 18
             },
@@ -241,7 +237,6 @@ module.exports.tests.success_conditions = (test, common) => {
               default: '19 street name 4'
             },
             source: 'mixed',
-            source_id: 'mixed source id',
             address_parts: {
               number: 19
             },
@@ -306,8 +301,7 @@ module.exports.tests.success_conditions = (test, common) => {
         id: id+1,
         layer: 'street',
         name: { default: `name ${id+1}` },
-        address_parts: {},
-        source_id: 'original source_id'
+        address_parts: {}
       };
     }
 
@@ -451,7 +445,6 @@ module.exports.tests.success_conditions = (test, common) => {
               default: '17 street name 1'
             },
             source: 'full source name 1',
-            source_id: 'source 1 source id',
             address_parts: {
               number: 17
             },
@@ -468,7 +461,6 @@ module.exports.tests.success_conditions = (test, common) => {
               default: '18 street name 4'
             },
             source: 'full source name 4',
-            source_id: 'source 4 source id',
             address_parts: {
               number: 18
             },
@@ -495,84 +487,6 @@ module.exports.tests.success_conditions = (test, common) => {
           }
         ]
       }, 'hits should be mapped in and res.data sorted with addresses first and non-addresses last');
-
-      t.end();
-
-    });
-
-  });
-
-  test('interpolation result without source_id should default to street ID', t => {
-    const service = (req, res, callback) => {
-      if (res.id === 1) {
-        callback(null, {
-          properties: {
-            number: 17,
-            source: 'OA',
-            lat: 12.121212,
-            lon: 21.212121
-          }
-        });
-
-      } else {
-        t.fail(`should not have been called with id ${res.id}`);
-
-      }
-
-    };
-
-    const logger = require('pelias-mock-logger')();
-
-    const controller = proxyquire('../../../middleware/interpolate', {
-      'pelias-logger': logger
-    })(service, () => true);
-
-    const req = {
-      clean: {
-        parsed_text: 'this is req.clean.parsed_text'
-      }
-    };
-
-    const res = {
-      data: [
-        // doc with 2 layer names that will be changed
-        {
-          id: 1,
-          layer: 'street',
-          name: {
-            default: 'street name 1'
-          },
-          // will be used in the case where interpolated result has no source_id
-          source_id: 'original source_id',
-          address_parts: {}
-        }
-      ]
-    };
-
-    controller(req, res, () => {
-      t.notOk(logger.hasErrorMessages(), 'there shouldn\'t be any error messages');
-
-      t.deepEquals(res, {
-        data: [
-          {
-            id: 1,
-            layer: 'address',
-            match_type: 'interpolated',
-            name: {
-              default: '17 street name 1'
-            },
-            source: 'openaddresses',
-            source_id: 'original source_id',
-            address_parts: {
-              number: 17
-            },
-            center_point: {
-              lat: 12.121212,
-              lon: 21.212121
-            }
-          }
-        ]
-      }, 'interpolation result did not have source_id so removed from source result');
 
       t.end();
 
@@ -650,7 +564,6 @@ module.exports.tests.success_conditions = (test, common) => {
               default: '18 street name 2'
             },
             source: 'openaddresses',
-            source_id: 'openaddresses source id',
             address_parts: {
               number: 18
             },
@@ -746,7 +659,6 @@ module.exports.tests.success_conditions = (test, common) => {
               default: '18 street name 2'
             },
             source: 'openaddresses',
-            source_id: 'openaddresses source id',
             address_parts: {
               number: 18
             },

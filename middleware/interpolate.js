@@ -117,12 +117,6 @@ function setup(service, should_execute, interpolationConfiguration) {
           ['mixed']
         )[0];
 
-        // -- source_id --
-        // note: interpolated values often have no source_id, so street id will be used
-        if( interpolation_result.properties.hasOwnProperty( 'source_id' ) ){
-          source_result.source_id = interpolation_result.properties.source_id;
-        }
-
         // -- address_parts --
         source_result.address_parts.number = interpolation_result.properties.number;
 
