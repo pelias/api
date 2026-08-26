@@ -75,6 +75,18 @@ TypeMapping.prototype.setCanonicalSources = function( sources ){
   safeReplace(this.canonical_sources, sources);
 };
 
+TypeMapping.prototype.updateLayersBySourceWithAliases = function (){
+  for (let source in this.layers_by_source) {
+    const layers = this.layers_by_source[source].reduce((acc, layer) => {
+      if (!this.layer_aliases[layer]) {
+        return acc.concat([layer]);
+      }
+      return acc.concat(this.layer_aliases[layer]);
+    }, []);
+    safeReplace(this.layers_by_source[source], _.uniq(layers));
+  }
+};
+
 // generate mappings after setters have been run
 TypeMapping.prototype.generateMappings = function(){
 
@@ -119,6 +131,8 @@ TypeMapping.prototype.loadTargets = function( targetsBlock ){
   this.setLayersBySource( targetsBlock.layers_by_source || {} );
   this.setLayerAliases( targetsBlock.layer_aliases || {} );
   this.setCanonicalSources( targetsBlock.canonical_sources || [] );
+
+  this.updateLayersBySourceWithAliases();
 
   // generate the mappings
   this.generateMappings();
