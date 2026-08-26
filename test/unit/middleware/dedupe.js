@@ -821,6 +821,174 @@ module.exports.tests.priority = function(test, common) {
     });
   });
 
+  test('real-world test New Zealand: empire vs country', function (t) {
+    var req = {
+      clean: {
+        text: 'New Zealand',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': {
+            'default': 'New Zealand'
+          },
+          'source': 'whosonfirst',
+          'source_id': '136253053',
+          'layer': 'empire',
+          'parent': {
+            'empire_id': 136253053
+          },
+        },
+        {
+          'name': {
+            'default': [ 'New Zealand', 'Aotearoa' ],
+          },
+          'source': 'whosonfirst',
+          'source_id': '85633345',
+          'layer': 'country',
+          'parent': {
+            'continent_id': 102191583,
+            'country_id': 85633345
+          },
+        }
+      ]
+    };
+
+    dedupe(req, res, function () {
+      t.equal(res.data.length, 1, 'results have fewer items than before');
+      t.equal(res.data[0].layer, 'country', 'empire result removed');
+      t.end();
+    });
+  });
+
+  test('real-world test New Zealand: empire vs country - inverted order', function (t) {
+    var req = {
+      clean: {
+        text: 'New Zealand',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': {
+            'default': [ 'New Zealand', 'Aotearoa' ],
+          },
+          'source': 'whosonfirst',
+          'source_id': '85633345',
+          'layer': 'country',
+          'parent': {
+            'continent_id': 102191583,
+            'country_id': 85633345
+          },
+        },
+        {
+          'name': {
+            'default': 'New Zealand'
+          },
+          'source': 'whosonfirst',
+          'source_id': '136253053',
+          'layer': 'empire',
+          'parent': {
+            'empire_id': 136253053
+          },
+        }
+      ]
+    };
+
+    dedupe(req, res, function () {
+      t.equal(res.data.length, 1, 'results have fewer items than before');
+      t.equal(res.data[0].layer, 'country', 'empire result removed');
+      t.end();
+    });
+  });
+
+  test('real-world test United States: empire vs country', function (t) {
+    var req = {
+      clean: {
+        text: 'United States',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': {
+            'default': 'United States'
+          },
+          'source': 'whosonfirst',
+          'source_id': '85633793',
+          'layer': 'country',
+          'parent': {
+            'empire_id': 136253057,
+            'country_id': 85633793
+          },
+        },
+        {
+          'name': {
+            'default': 'United States of America',
+          },
+          'source': 'whosonfirst',
+          'source_id': '136253057',
+          'layer': 'empire',
+          'parent': {
+            'empire_id': 136253057,
+          },
+        }
+      ]
+    };
+
+    dedupe(req, res, function () {
+      t.equal(res.data.length, 1, 'results have fewer items than before');
+      t.equal(res.data[0].layer, 'country', 'empire result removed');
+      t.end();
+    });
+  });
+
+  test('real-world test United States: empire vs country - inverted order', function (t) {
+    var req = {
+      clean: {
+        text: 'United States',
+        size: 100
+      }
+    };
+    var res = {
+      data:  [
+        {
+          'name': {
+            'default': 'United States of America',
+          },
+          'source': 'whosonfirst',
+          'source_id': '136253057',
+          'layer': 'empire',
+          'parent': {
+            'empire_id': 136253057,
+          },
+        },
+        {
+          'name': {
+            'default': 'United States'
+          },
+          'source': 'whosonfirst',
+          'source_id': '85633793',
+          'layer': 'country',
+          'parent': {
+            'empire_id': 136253057,
+            'country_id': 85633793
+          },
+        }
+      ]
+    };
+
+    dedupe(req, res, function () {
+      t.equal(res.data.length, 1, 'results have fewer items than before');
+      t.equal(res.data[0].layer, 'country', 'empire result removed');
+      t.end();
+    });
+  });
+
   test('A->B B->C dependency graph', function (t) {
     var req = {
       clean: {
