@@ -29,7 +29,7 @@ function computeScores(req, res, next) {
   // do nothing if no result data set or if query is not of the pelias_parser variety
   if (_.isUndefined(req.clean) || _.isUndefined(res) ||
       _.isUndefined(res.data) || _.isUndefined(res.meta) ||
-      res.meta.query_type !== 'search_pelias_parser') {
+      res.meta.queryType !== 'search_pelias_parser') {
     return next();
   }
 
