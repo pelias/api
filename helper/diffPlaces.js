@@ -205,6 +205,7 @@ function isAddressDifferent(item1, item2){
   // else both have address info
   if( isPropertyDifferent(address1, address2, 'number') ){ return true; }
   if( isPropertyDifferent(address1, address2, 'street') ){ return true; }
+  if( isPropertyDifferent(address1, address2, 'unit') ){ return true; }
 
   // only compare zip if both records have it, otherwise just ignore and assume it's the same
   // since by this time we've already compared parent hierarchies
