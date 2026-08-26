@@ -10,7 +10,8 @@ module.exports = {
           'type': 'phrase',
           'slop': 3
         }
-      }, {
+      }],
+      'should':[{
         'multi_match': {
           'fields': [
             'parent.country.ngram^1',
@@ -33,9 +34,7 @@ module.exports = {
           'analyzer': 'peliasAdmin',
           'type': 'cross_fields'
         }
-      }],
-      'should':[
-        {
+      },{
         'function_score': {
           'query': {
             'match_all': {}
