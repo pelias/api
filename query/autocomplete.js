@@ -163,6 +163,9 @@ function generateQuery( clean ){
   if (clean.categories && clean.categories.length) {
     vs.var('input:categories', clean.categories);
   }
+  if (clean.not_categories && clean.not_categories.length) {
+    vs.var('input:not_categories', clean.not_categories);
+  }
 
   // size
   if( clean.querySize ) {
