@@ -52,7 +52,7 @@
     "pelias-config": "^7.0.0",
     "pelias-labels": "^2.0.0",
     "pelias-logger": "^2.0.0",
-    "pelias-microservice-wrapper": "^1.10.0",
+    "pelias-microservice-wrapper": "^2.0.0",
     "pelias-model": "^9.0.0",
     "pelias-parser": "2.2.0",
     "pelias-query": "^11.4.0",
