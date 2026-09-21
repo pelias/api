@@ -123,6 +123,82 @@ module.exports.tests.valid_categories = function(test, common) {
   });
 };
 
+module.exports.tests.negative_categories = function(test, common) {
+  var validCategories = {
+    isValidCategory: function (cat) {
+      return ['food','health','financial','education','government'].indexOf(cat) !== -1; }
+  };
+
+  test('single negative category', function(t) {
+    var req = {
+      query: {
+        categories: '-food'
+      },
+      clean: { }
+    };
+
+    var messages = sanitizer.sanitize(req.query, req.clean, req, validCategories);
+
+    t.deepEqual(req.clean.categories, [], 'no positive categories');
+    t.deepEqual(req.clean.not_categories, ['food'], 'not_categories should contain food');
+    t.deepEqual(messages.errors, [], 'no error returned');
+    t.deepEqual(messages.warnings, [], 'no warnings returned');
+    t.end();
+  });
+
+  test('mix of positive and negative categories', function(t) {
+    var req = {
+      query: {
+        categories: 'food,-health,education,-financial'
+      },
+      clean: { }
+    };
+
+    var messages = sanitizer.sanitize(req.query, req.clean, req, validCategories);
+
+    t.deepEqual(req.clean.categories, ['food', 'education'], 'positive categories');
+    t.deepEqual(req.clean.not_categories, ['health', 'financial'], 'negative categories');
+    t.deepEqual(messages.errors, [], 'no error returned');
+    t.deepEqual(messages.warnings, [], 'no warnings returned');
+    t.end();
+  });
+
+  test('invalid negative category is dropped silently, like invalid positive category', function(t) {
+    var req = {
+      query: {
+        categories: '-barf'
+      },
+      clean: { }
+    };
+    var expected_warning = 'Categories parameter left blank, showing results from all categories.';
+
+    var messages = sanitizer.sanitize(req.query, req.clean, req, validCategories);
+
+    t.deepEqual(req.clean.categories, [], 'no positive categories');
+    t.deepEqual(req.clean.not_categories, [], 'no negative categories');
+    t.deepEqual(messages.errors, [], 'no errors returned');
+    t.deepEqual(messages.warnings, [expected_warning], 'warning returned');
+    t.end();
+  });
+
+  test('only a leading dash with nothing after it is dropped', function(t) {
+    var req = {
+      query: {
+        categories: '-'
+      },
+      clean: { }
+    };
+    var expected_warning = 'Categories parameter left blank, showing results from all categories.';
+
+    var messages = sanitizer.sanitize(req.query, req.clean, req, validCategories);
+
+    t.deepEqual(req.clean.categories, [], 'no positive categories');
+    t.deepEqual(req.clean.not_categories, [], 'no negative categories');
+    t.deepEqual(messages.warnings, [expected_warning], 'warning returned');
+    t.end();
+  });
+};
+
 module.exports.tests.invalid_categories = function(test, common) {
   var isValidCategoryCalled = 0;
   var validCategories = {
