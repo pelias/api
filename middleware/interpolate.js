@@ -3,6 +3,7 @@ const logger = require( 'pelias-logger' ).get( 'api' );
 const source_mapping = require('../helper/type_mapping').source_mapping;
 const _ = require('lodash');
 const Debug = require('../helper/debug');
+const getSourceId = require('../helper/getSourceId');
 const debugLog = new Debug('middleware:interpolate');
 
 /**
@@ -78,7 +79,7 @@ function setup(service, should_execute, interpolationConfiguration) {
         const resultLogInfo = {
           controller: 'interpolation',
           street_name: street_results[idx].name.default,
-          street_id: street_results[idx].source_id,
+          street_id: getSourceId(street_results[idx]),
           outcome: 'hit', //assume hit, update later if not
           idx: idx,
           response_time: _.get(interpolation_result, 'metadata.response_time')
@@ -115,12 +116,6 @@ function setup(service, should_execute, interpolationConfiguration) {
           source_mapping[_.toLower(interpolation_result.properties.source)],
           ['mixed']
         )[0];
-
-        // -- source_id --
-        // note: interpolated values often have no source_id, so street id will be used
-        if( interpolation_result.properties.hasOwnProperty( 'source_id' ) ){
-          source_result.source_id = interpolation_result.properties.source_id;
-        }
 
         // -- address_parts --
         source_result.address_parts.number = interpolation_result.properties.number;

@@ -191,83 +191,83 @@ module.exports.tests.granularity_bands = (test, common) => {
       data: [
         {
           layer: 'neighbourhood',
-          source_id: 1
+          _id: 'whosonfirst:neighbourhood:1'
         },
         {
           layer: 'borough',
-          source_id: 2
+          _id: 'whosonfirst:borough:2'
         },
         {
           layer: 'locality',
-          source_id: 3
+          _id: 'whosonfirst:locality:3'
         },
         {
           layer: 'localadmin',
-          source_id: 4
+          _id: 'whosonfirst:localadmin:4'
         },
         {
           layer: 'county',
-          source_id: 5
+          _id: 'whosonfirst:county:5'
         },
         {
           layer: 'macrocounty',
-          source_id: 6
+          _id: 'whosonfirst:macrocounty:6'
         },
         {
           layer: 'region',
-          source_id: 7
+          _id: 'whosonfirst:region:7'
         },
         {
           layer: 'macroregion',
-          source_id: 8
+          _id: 'whosonfirst:macroregion:8'
         },
         {
           layer: 'dependency',
-          source_id: 9
+          _id: 'whosonfirst:dependency:9'
         },
         {
           layer: 'country',
-          source_id: 10
+          _id: 'whosonfirst:country:10'
         },
         {
           layer: 'neighbourhood',
-          source_id: 11
+          _id: 'whosonfirst:neighbourhood:11'
         },
         {
           layer: 'borough',
-          source_id: 12
+          _id: 'whosonfirst:borough:12'
         },
         {
           layer: 'locality',
-          source_id: 13
+          _id: 'whosonfirst:locality:13'
         },
         {
           layer: 'localadmin',
-          source_id: 14
+          _id: 'whosonfirst:localadmin:14'
         },
         {
           layer: 'county',
-          source_id: 15
+          _id: 'whosonfirst:county:15'
         },
         {
           layer: 'macrocounty',
-          source_id: 16
+          _id: 'whosonfirst:macrocounty:16'
         },
         {
           layer: 'region',
-          source_id: 17
+          _id: 'whosonfirst:region:17'
         },
         {
           layer: 'macroregion',
-          source_id: 18
+          _id: 'whosonfirst:macroregion:18'
         },
         {
           layer: 'dependency',
-          source_id: 19
+          _id: 'whosonfirst:dependency:19'
         },
         {
           layer: 'country',
-          source_id: 20
+          _id: 'whosonfirst:country:20'
         }
       ]
     };
@@ -287,15 +287,15 @@ module.exports.tests.granularity_bands = (test, common) => {
     const generatedQuery = generateQuery(clean, res);
 
     t.deepEquals(generatedQuery.body.vs.var('input:layers').$, {
-      neighbourhood: [ 1, 11 ],
-      borough: [ 2, 12 ],
-      locality: [ 3, 13 ],
-      localadmin: [ 4, 14 ],
-      region: [ 7, 17 ],
-      macroregion: [ 8, 18 ],
-      dependency: [ 9, 19 ],
-      country: [ 10, 20 ],
-      macrocounty: [ 6, 16 ]
+      neighbourhood: [ '1', '11' ],
+      borough: [ '2', '12' ],
+      locality: [ '3', '13' ],
+      localadmin: [ '4', '14' ],
+      region: [ '7', '17' ],
+      macroregion: [ '8', '18' ],
+      dependency: [ '9', '19' ],
+      country: [ '10', '20' ],
+      macrocounty: [ '6', '16' ]
     });
 
     t.end();
@@ -314,7 +314,7 @@ module.exports.tests.granularity_bands = (test, common) => {
       data: [
         {
           layer: 'neighbourhood',
-          source_id: 1
+          _id: 'whosonfirst:neighbourhood:1'
         }
       ]
     };
@@ -333,7 +333,7 @@ module.exports.tests.granularity_bands = (test, common) => {
     const generatedQuery = generateQuery(clean, res);
 
     t.deepEquals(generatedQuery.body.vs.var('input:layers').$, {
-      neighbourhood: [1],
+      neighbourhood: ['1'],
       borough: [],
       locality: [],
       localadmin: [],
@@ -360,19 +360,19 @@ module.exports.tests.granularity_bands = (test, common) => {
       data: [
         {
           layer: 'county',
-          source_id: 1
+          _id: 'whosonfirst:county:1'
         },
         {
           layer: 'macrocounty',
-          source_id: 2
+          _id: 'whosonfirst:macrocounty:2'
         },
         {
           layer: 'county',
-          source_id: 4
+          _id: 'whosonfirst:county:4'
         },
         {
           layer: 'macrocounty',
-          source_id: 5
+          _id: 'whosonfirst:macrocounty:5'
         }
       ]
     };
@@ -392,8 +392,8 @@ module.exports.tests.granularity_bands = (test, common) => {
     const generatedQuery = generateQuery(clean, res);
 
     t.deepEquals(generatedQuery.body.vs.var('input:layers').$, {
-      county: [1, 4],
-      macrocounty: [2, 5]
+      county: ['1', '4'],
+      macrocounty: ['2', '5']
     });
 
     t.end();
@@ -628,35 +628,35 @@ module.exports.tests.sydney_macrocounty = (test, common) => {
       data: [
         {
           layer: 'continent',
-          source_id: '102191583'
+          _id: 'whosonfirst:continent:102191583'
         },
         {
           layer: 'country',
-          source_id: '85632793'
+          _id: 'whosonfirst:country:85632793'
         },
         {
           layer: 'county',
-          source_id: '102049151'
+          _id: 'whosonfirst:county:102049151'
         },
         {
           layer: 'empire',
-          source_id: '136253039'
+          _id: 'whosonfirst:empire:136253039'
         },
         {
           layer: 'localadmin',
-          source_id: '404226357'
+          _id: 'whosonfirst:localadmin:404226357'
         },
         {
           layer: 'locality',
-          source_id: '101932003'
+          _id: 'whosonfirst:locality:101932003'
         },
         {
           layer: 'macrocounty',
-          source_id: '1376953385'
+          _id: 'whosonfirst:macrocounty:1376953385'
         },
         {
           layer: 'region',
-          source_id: '85681545'
+          _id: 'whosonfirst:region:85681545'
         }
       ]
     };

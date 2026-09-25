@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const peliasQuery = require('pelias-query');
+const getSourceId = require('../helper/getSourceId');
 const defaults = require('./search_defaults');
 
 //------------------------------
@@ -87,7 +88,7 @@ function anyResultsAtGranularityBand(results, band) {
 
 // returns the ids of results at the requested layer
 function getIdsAtLayer(results, layer) {
-  return results.filter(result => result.layer === layer).map(_.property('source_id'));
+  return results.filter(result => result.layer === layer).map(getSourceId);
 }
 
 /**

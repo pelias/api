@@ -1,6 +1,7 @@
 const logger = require('pelias-logger').get('api');
 const Document = require('pelias-model').Document;
 const placeTypes = require('../helper/placeTypes');
+const getSourceId = require('../helper/getSourceId');
 const _ = require('lodash');
 
 /**
@@ -42,7 +43,7 @@ function normalizeParentIds(place) {
         // looking forward to the day we can remove all geonames specific hacks, but until then...
         // geonames sometimes has its own ids in the parent hierarchy, so it's dangerous to assume that 
         // it's always WOF ids and hardcode to that
-        if (place.source === 'geonames' && place.source_id === placetype_ids) {
+        if (place.source === 'geonames' && getSourceId(place) === placetype_ids) {
           source = place.source;
         }
         

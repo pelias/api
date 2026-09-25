@@ -822,14 +822,14 @@ module.exports.tests.geonames = function (test, common) {
   test('geonames record with concordance is the same, regardless of anything else', function(t) {
     const gn_record = {
       source: 'geonames',
-      source_id: '123',
+      _id: 'geonames:locality:123',
       name: {
         'default': 'One name'
       }
     };
     const wof_record = {
       source: 'whosonfirst',
-      source_id: '345',
+      _id: 'whosonfirst:locality:345',
       name: {
         default: 'Different name'
       },
@@ -848,7 +848,7 @@ module.exports.tests.geonames_self_parent = function (test, common) {
     const gn_record = {
       source: 'geonames',
       layer: 'localadmin',
-      source_id: '7163824',
+      _id: 'geonames:localadmin:7163824',
       name: {
         default: 'City of New York'
       },
@@ -861,7 +861,7 @@ module.exports.tests.geonames_self_parent = function (test, common) {
     const wof_record = {
       source: 'whosonfirst',
       layer: 'locality',
-      source_id: '85977539',
+      _id: 'whosonfirst:locality:85977539',
       name: {
         default: 'New York'
       },

@@ -180,7 +180,7 @@ module.exports.tests.interface = function(test, common) {
           'region_a': [ 'MS' ]
         },
         'source': 'geonames',
-        'source_id': '4436296',
+        '_id': 'geonames:region:4436296',
         'layer': 'region',
         'country': [ 'United States' ],
         'country_a': [ 'USA' ],
@@ -203,7 +203,7 @@ module.exports.tests.interface = function(test, common) {
         },
         'layer': 'region',
         'source': 'geonames',
-        'source_id': '4436296',
+        '_id': 'geonames:region:4436296',
         'country': ['United States'],
         'country_gid': ['whosonfirst:country:85633793'],
         'country_a': ['USA'],
@@ -233,7 +233,7 @@ module.exports.tests.interface = function(test, common) {
           'region_a': [ 'MS' ]
         },
         'source': 'geonames',
-        'source_id': '4436296',
+        '_id': 'geonames:region:4436296',
         'layer': 'region',
         'country': [ 'United States' ],
         'country_a': [ 'USA' ],
@@ -256,7 +256,7 @@ module.exports.tests.interface = function(test, common) {
         },
         'layer': 'region',
         'source': 'geonames',
-        'source_id': '4436296',
+        '_id': 'geonames:region:4436296',
         'country': ['United States'],
         'country_gid': ['whosonfirst:country:85633793'],
         'country_a': ['USA'],
@@ -287,7 +287,7 @@ module.exports.tests.interface = function(test, common) {
           'region_source': [ 'osm' ]
         },
         'source': 'openaddresses',
-        'source_id': 'us/ms/hinds:992d7de085bf3da1',
+        '_id': 'openaddresses:address:us/ms/hinds:992d7de085bf3da1',
         'layer': 'address',
         'country': [ 'United States' ],
         'country_a': [ 'USA' ],
@@ -311,7 +311,7 @@ module.exports.tests.interface = function(test, common) {
           'region_source': [ 'osm' ]
         },
         'source': 'openaddresses',
-        'source_id': 'us/ms/hinds:992d7de085bf3da1',
+        '_id': 'openaddresses:address:us/ms/hinds:992d7de085bf3da1',
         'layer': 'address',
         'country': [ 'United States' ],
         'country_gid': [ 'whosonfirst:country:85633793' ],
