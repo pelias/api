@@ -32,7 +32,7 @@ module.exports = {
                 'decay': 0.5
               }
             },
-            'weight': 15
+            'weight': 20
           }],
           'score_mode': 'avg',
           'boost_mode': 'replace'
