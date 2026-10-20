@@ -1,18 +1,18 @@
 const _ = require('lodash');
 
-function _sanitize(raw, clean) {
+const _sanitize = (key) => (raw, clean) => {
   // error & warning messages
   var messages = { errors: [], warnings: [] };
 
   // target input param
-  var boundary_gid = raw['boundary.gid'];
+  var boundary_gid = raw[`${key}.gid`];
 
-  // param 'boundary.gid' is optional and should not
+  // param `${key}.gid` is optional and should not
   // error when simply not set by the user
   // must be valid string
   if (!_.isNil(boundary_gid)) {
     if (!_.isString(boundary_gid) || _.isEmpty(boundary_gid)) {
-      messages.errors.push('boundary.gid is not a string');
+      messages.errors.push(`${key}.gid is not a string`);
     }
     else {
       // boundary gid should take the form of source:layer:id,
@@ -22,7 +22,7 @@ function _sanitize(raw, clean) {
           return x !== '';
       });
       if ( _.inRange(fields.length, 3, 5) ) {
-         clean['boundary.gid'] = fields.slice(2).join(':');
+         clean[`${key}.gid`] = fields.slice(2).join(':');
       }
       else {
         messages.errors.push(boundary_gid + ' does not follow source:layer:id format');
@@ -31,13 +31,13 @@ function _sanitize(raw, clean) {
   }
 
   return messages;
+};
+
+function _expected(key) {
+  return () => [{ name: `${key}.gid` }];
 }
 
-function _expected(){
-  return [{ name: 'boundary.gid' }];
-}
-
-module.exports = () => ({
-  sanitize: _sanitize,
-  expected: _expected
+module.exports = (key = 'boundary') => ({
+  sanitize: _sanitize(key),
+  expected: _expected(key)
 });

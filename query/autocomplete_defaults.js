@@ -62,6 +62,16 @@ module.exports = _.merge({}, peliasQuery.defaults, {
   'multi_match:boundary_country:analyzer': 'standard',
   'multi_match:boundary_country:fields': ['parent.country_a', 'parent.dependency_a'],
 
+  // these options affect the `focus.country` hard filter
+  'multi_match:focus_country:analyzer': 'standard',
+  'multi_match:focus_country:fields': ['parent.country_a', 'parent.dependency_a'],
+  'multi_match:focus_country:boost': 1.5,
+
+  // these options affect the `focus.gid` hard filter
+  'multi_match:focus_gid:analyzer': 'standard',
+  'multi_match:focus_gid:fields': ['parent.*_id'],
+  'multi_match:focus_gid:boost': 1.5,
+
   'admin:country:analyzer': 'peliasAdmin',
   'admin:country:field': 'parent.country.ngram',
   'admin:country:boost': 1,
