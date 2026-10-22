@@ -20,18 +20,23 @@ function _sanitize (raw, clean, req, validator) {
 
   // if categories string has been set
   // map input categories to valid format
-  clean.categories = raw.categories.split(',')
+  const inputs = raw.categories.split(',')
     .map(cat => {
       return cat.toLowerCase().trim(); // lowercase inputs
     })
-    .filter(cat => {
-      if (_.isString(cat) && !_.isEmpty(cat) && validator.isValidCategory(cat)) {
-        return true;
-      }
-      return false;
-    });
+    .filter(cat => _.isString(cat) && !_.isEmpty(cat));
 
-  if( !clean.categories.length ){
+  // split in to positive (inclusion) and negative (exclusion, '-' prefixed) categories
+  clean.categories = inputs
+    .filter(cat => cat[0] !== '-')
+    .filter(cat => validator.isValidCategory(cat));
+
+  clean.not_categories = inputs
+    .filter(cat => cat[0] === '-')
+    .map(cat => cat.slice(1)) // remove the leading '-'
+    .filter(cat => !_.isEmpty(cat) && validator.isValidCategory(cat));
+
+  if( !clean.categories.length && !clean.not_categories.length ){
     // display a warning that the input was empty
     messages.warnings.push(WARNINGS.empty);
   }
@@ -45,6 +50,7 @@ function _alwaysBlank (raw, clean, categories) {
 
   if (raw.hasOwnProperty('categories')) {
     clean.categories = [];
+    clean.not_categories = [];
     if (_.isString(raw.categories) && !_.isEmpty(raw.categories)) {
       messages.warnings.push(WARNINGS.notEmpty);
     }

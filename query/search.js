@@ -50,6 +50,9 @@ function generateQuery( clean ){
   if (clean.categories && !_.isEmpty(clean.categories)) {
     vs.var('input:categories', clean.categories);
   }
+  if (clean.not_categories && !_.isEmpty(clean.not_categories)) {
+    vs.var('input:not_categories', clean.not_categories);
+  }
 
   // size
   if( clean.querySize ) {
